@@ -1,0 +1,11 @@
+
+You will need to have the necessary third party libraries installed
+and you will need to have the following environment variables defined.
+
+OPENEXR_HOME  The installation directory of openEXR
+KATANA_HOME  The Katana installation directory at compile-time
+ZMQ_HOME  The installation directory of Zero MQ.
+BOOST_HOME  The root of the boost directory.
+
+Install Instructions
+-

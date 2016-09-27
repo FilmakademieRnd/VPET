@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+<!--
+body,td,th {
+	color: #FFF;	
+}
+div.nav_l1 {
+	font-size: 26px;	
+}
+div.nav_l2 {
+	font-size: 22px;	
+}
+
+body {
+	background-color: #464d56;
+}
+a:link {
+	text-decoration: none;
+	color: #FFF;
+}
+a:visited {
+	text-decoration: none;
+	color: #FFF;
+}
+a:hover {
+	text-decoration: none;
+	color: #FFF;
+}
+a:active {
+	text-decoration: none;
+	color: f8b04e;
+}
+h1 {	
+	font-size: 30px;
+	color: #646464;
+}
+.background-img{
+    background:url('Images/FilmakademieAI_Logo.png');
+    width: 333px;
+	height: 136px;
+	position: fixed;
+	bottom: 10px;
+	right: 0 px;
+}
+-->
+</style></head>
+
+<body>
+
+<script type="text/javascript">
+function changeColor(elem)
+{
+// reset all values
+for (i = 1; i < 5; i++) {
+    TD_Element = "NavEl"+[i];
+	cell = document.getElementById(TD_Element);
+	cell.style.backgroundColor = '#464d56';
+}
+// set active element
+elem.style.backgroundColor = '#55a9d7';
+}
+</script>
+
+<div id="background-img" class="background-img" ></div>
+
+<table width="350" border="0" cellpadding="10">
+  <tr>
+    <td>    	
+        <img src="Images/VPET_Logo.png" width="333" height="116" />
+    </td>
+  </tr>
+  <tr>
+    <td id="NavEl1" bgcolor="#55a9d7" onclick="changeColor(this)">
+    	<div class="nav_l1">
+        <img src="Images/Spacer.png" width="10" height="1"/>
+        <a href="Intro.html" target="mainFrame">
+        Introduction</a></div></td>
+  </tr>
+    <tr>
+    <td id="NavEl2" onclick="changeColor(this)">
+    	<div class="nav_l1">
+        <img src="Images/Spacer.png" width="10" height="1" />
+        <a href="Dreamspace.html" target="mainFrame">
+        Project Dreamspace</a></div></td>
+  </tr>
+  <tr>
+    <td id="NavEl3" onclick="changeColor(this)">
+    	<div class="nav_l1">
+        <img src="Images/Spacer.png" width="10" height="1" />
+        <a href="Components.html" target="mainFrame">
+        VPET Components</a></div></td>
+  </tr>
+  <tr>
+    <td id="NavEl4" onclick="changeColor(this)">
+    	<div class="nav_l1">
+        <img src="Images/Spacer.png" width="10" height="1" />
+        <a href="License.html" target="mainFrame">
+        License</a></div></td>
+  </tr>
+  </table>
+</body>
+</html>

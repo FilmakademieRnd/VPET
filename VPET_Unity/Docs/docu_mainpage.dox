@@ -1,0 +1,334 @@
+/**
+\mainpage
+<H1>VPET</H1>
+<h3>Description</h3>
+<p>"Virtual Production Editing Tool" (VPET) is a tablet based onset editing application to work within a virtual production environment. It's an easy to use tool to make changes during a virtual shooting and synchronize those edits with the film pipeline. VPET communicate through a network interface with the main applications as well other clients and allows live editing of object and lighting parameters. </p>
+<h3>Features</h3>
+<UL>
+    <LI>Receiving virtual set from host application (currently Katana only) containing geometry, textures, lights, cameras and scene hierarchy </LI>
+	<LI>Realtime visualization</LI>
+	<LI>Navigate through scene using touch inpute and tablet gyro</LI>
+	<LI>Select and manipulate assets through various tools</LI>
+	<LI>Instantly sending changes back to host</LI>
+	<LI>Show and edit animations</LI>
+	<LI>Connect to Ncam server and synchronize camera</LI>
+</UL>
+<H3>Basic work flow:</H3>
+<UL>
+    <LI>Setup LiveView on the host machine including the SceneDistributionPlugIn. Run it.</LI>
+    <LI>Alternatively load scene in Katana and LiveRender the scene with the SceneDistributionPlugIn.</LI>
+    <LI>Setup scene in Unity or load VPET_Client scene.</LI>	
+    <LI>Connect tablet and "Build and run" the application.  This compiles and push the content to the tablet.</LI>
+    <LI>Alternatively simply run the app from Unity.</LI>
+</UL>
+<H1>Setup</H1>
+<H3>Preparation:</H3>
+<UL>
+	<LI>Install Unity 5 from: http://unity3d.com/get-unity (the personal (free) edition is sufficient)</LI>
+    <LI></LI>
+	<LI>Android Studio/SDK and it's requirements (JDK) is needed: <a href="http://developer.android.com/sdk/index.html">http://developer.android.com/sdk/index.html</a> to release builts for tablet</LI>
+	<li>Create a new Unity project or open existing </li>
+	<li>Download the unity package from the repository <a href="https://github.com/FilmakademieRnd/v-p-e-t/raw/master/VPET_Unity/VPET.unitypackage">https://github.com/FilmakademieRnd/v-p-e-t/raw/master/VPET_Unity/VPET.unitypackage</a> </li>
+	<li>
+	Alternatively pull the GIT repository: <a href="https://github.com/FilmakademieRnd/v-p-e-t">https://github.com/FilmakademieRnd/v-p-e-t</a> and find the package in /VPET_Unity/</li>
+	<li>Import the package in the Unity project through Assets/Import Package/Custom </li>
+	<li>Select all an press import </li>
+	</ul>	
+	</UL>
+
+<H3>Open project:</H3>
+<UL>
+    <LI>Run Unity</LI>
+    <LI>On the first page select "Open other" and navigate to the folder "TabletRemote - Unity 5" within the repository</LI>
+    <LI>Click "Select Folder"</LI>
+    <LI>Now the assets are loading (this will take a while, but only at first startup)</LI>
+    <LI>After all Assets are loaded, you can open the EmptyScene, MinimumScene or the MainScene in the Project Tab (bottom of the screen)</LI>
+</UL>
+<h3>Use the VPET_Client Scene</h3>
+<ul>
+	<li>Run Unity and open the project </li>
+	<li>From Assets/VPET/Scenes/ open VPET_Client </li>
+	<li>This scene contains setup ready for streaming </li>
+	<li>In the Hierarchy Tab (on the left) all components beeing used are present </li>
+	<li>Objects will be sort under scene/root </li>
+	<li>You do not need to modify anything within the folders GUI, Controller or IO </li>
+</ul>
+
+<H1>Functionality</H1>
+The app already includes a big amount of functionality that is usable for on-set asset editing.
+In this paragraph all functions will be listed.
+
+<h3>Config Widget</h3>
+<ul>
+<li>The configuration screen allows you change a few basic settings. </li>
+<li>IP Address is the IP of the server for requesting a scene and communicating updates. </li>
+<li>"Load from cache" forces the app to load a scene from the resources folder. See below. </li>
+<li>"Use texture" Uncheck this if you want to save memory on your hardware. </li>
+<li>"Debug" is a toggle to display message at the top of the application. </li>
+<li>The config widget can be accesses through the main menu any time. </li>
+</ul>
+
+<h3>Config File</h3>
+<ul>
+<li>VPET looks for the config file Assets/VPET/editing_tool.cfg and reads colon separated key value pairs per line. Every value which key matches a public property in <a class="el" href="_v_p_e_t_settings_8cs.html">VPETSettings.cs</a> will be used from config file. </li>
+<li>Common property examples: <br/>
+ serverIP:172.17.21.188<br/>
+ doLoadFromResource:False<br/>
+ sceneFileName:MySceneName<br/>
+ doLoadTextures:True</li>
+</ul>
+
+<h3>Menus</h3>
+<ul>
+<li>The main menu can be unfolded by tapping on the button in the upper right corner. </li>
+<li>A circular menu is shown whenever an object is selected, this menu will contain only elements relevant to the selected object. </li>
+</ul>
+
+<h3>Navigation</h3>
+<ul>
+<li>On Android and Windows Tablets, simply rotating the tablet will rotate the virtual camera accordingly </li>
+<li>The initial rotation can be defined, by tapping the "Calib" button in the main menu. (Only the y-axis value will be affected.) </li>
+<li>When dragging two fingers on the screen, the viewport is translated on x and y-axis of the image plane. </li>
+<li>When dragging three fingers on the screen vertically, the viewport is translated on z-axis (fly towards the scene or backwards). </li>
+<li>When tapping on the on the main menu button showing a camera, the "point-to-move the camera" mode is activated. When activated you can position the tablets viewport by clicken on the target position on the ground. (Like in google street-view) </li>
+<li>When tapping the ncam button in the main menu, the viewport will be synchronized with the ncam camera view (if available). You can now look into the virtual scene from the perspective of the camera tracked by ncam. Scene editing will remain possible. </li>
+</ul>
+
+<h3>Object Selection</h3>
+<ul>
+<li>You can select objects by clicking on them. </li>
+<li>Deselect them by tapping on an empty space or a non-selectable object. </li>
+<li>When tapping on another selectable object, the selection will be swapped immediately to this object. </li>
+</ul>
+
+<H3>Object Manipulation:</H3>
+<UL>
+    <LI>When an object gets selected a circular menu will be shown, that provides you all available manipulation tools.</LI>
+	<LI>In clockwise order, these are the tools:</LI>
+	<LI><IMG SRC="../images/EditMode_Translate_nrm.png" style="float: left; width: 15px; margin-right: 5px;"><IMG SRC="../images/EditMode_Rotate_nrm.png" style="float: left; width: 15px; margin-right: 5px;"><IMG SRC="../images/EditMode_Scale_nrm.png" style="float: left; width: 15px; margin-right: 5px;">There are standard modifiers (known from common CAD software) available to translate, rotate and scale objects.</LI>
+	<LI><IMG SRC="../images/EditMode_TranslateAttachToCam_nrm.png" style="float: left; width: 15px; margin-right: 5px;">The object can be linked to the camera by the next button. The object can now be positioned by rotating the tablet or moving the tablets viewport, street-view like positioning is enabled in the mode as well.</LI>
+	<LI><IMG SRC="../images/EditMode_GravityOn_nrm.png" style="float: left; width: 15px; margin-right: 5px;">You can disable gravity to be applied to this object with the thereon following button.</LI>
+	<LI><IMG SRC="../images/EditMode_TranslateFingerSwipe_nrm.png" style="float: left; width: 15px; margin-right: 5px;">A multi-touch widget allows you to rotate the object with one finger, translate it on he image plane with two fingers, and push it into the scene or nearer to the camera with three fingers.</LI>
+	<LI><IMG SRC="../images/EditMode_TranslateClickToMove_nrm.png" style="float: left; width: 15px; margin-right: 5px;">Last, you can position objects in a street-view like manner by clicking on the crosshairs.</LI>
+</UL>
+
+<H3>Light Manipulation:</H3>
+<UL>
+    <LI>When an light source gets selected a circular menu will be shown, that provides you all available manipulation tools.</LI>
+	<LI>A selected light will additionally visualize the emitted light according to the light type (point light -> sphere, spot light -> cone, directional light -> arrow)</LI>
+	<LI>Scaling and gravitation enabling is hidden in the light menu, since they are not available for lights.</LI>
+	<LI>Additionally to the already presented tools, buttons are added to access light related parameters. Through those you can manipulate color, intensity and cone angle of the light source.</LI>
+</UL>
+
+<h3>Save streamed scene</h3>
+<ul>
+<li>Through Unity you can save a streamed scene in binary format. Then copy these into your project and build it into the App for offline loading. </li>
+<li>Set the basename of the scene at the IO/ServerAdapter within Unity. </li>
+<li>Alternatively set the basename in the config file. The value from the config file is prior. </li>
+<li>At the ServerAdapter make sure "Do write scene" is checked. </li>
+<li>Run the app in the Editor, set the proper IP address and start the transfer. . </li>
+<li>Three files have been written in a temporary folder: basename_nodes.bytes, basename_objec.bytes, basename_textu.bytes. See the Unity console output for the target location.  </li>
+</ul>
+
+<h3>Load chached scene</h3>
+<ul>
+<li>To load a cached scene place the three binary files (nodes,objec,textu) in Assets/Resources/VPET/SceneDumps. </li>
+<li>Set the basename of the scene at the IO/ServerAdapter within Unity. </li>
+<li>Alternatively set the basename in the config file. This is helpful if you want change the scene after the project was built. The value from the config file is prior. </li>
+<li>Run the app and in the configuration widget check "Load from cache". </li>
+</ul>
+
+<H1>Setup new Scene</H1>
+<H3>How to edit camera parameters:</H3>
+<UL>
+    <LI>open the Cameras folder from the Hierarchy</LI>
+	<LI>select the "Main Camera" (not the RenderInFrontCamera) and change position, rotation, fov, clipping planes in the Inspector (on the right)</LI>
+	<LI>all settings will be automatically synchronized on startup with the second camera (RenderInFrontCamera)</LI>
+</UL>
+
+<H3>How to add a movable and selectable object:</H3>
+<UL>
+    <LI>import the asset (best is .fbx) via drag'n'drop to the Project folder (bottom of the screen)</LI>
+	<LI>then drag'n'drop the asset from the project folder to the Scene folder in the Hierarchy (on the left) (all assets need to be placed in the Scene folder)</LI>
+	<LI>attach the SceneObject script (located in Project folder -> Scripts) by dragging it onto the asset</LI>
+</UL>
+
+<H3>How to add a static not selectable object:</H3>
+<UL>
+    <LI>import the asset (best is .fbx) via drag'n'drop to the Project folder (bottom of the screen)</LI>
+	<LI>then drag'n'drop the asset from the project folder to the Scene folder in the Hierarchy (on the left) (all assets need to be placed in the Scene folder)</LI>
+	<LI>attach the StaticHitObject script (located in Project folder -> Scripts) by dragging it onto the asset</LI>
+</UL>
+
+<H3>How to add add a light source:</H3>
+<UL>
+    <LI>create a new light source from GameObject->Light (point-, spot- and directional lights are currently supported)</LI>
+	<LI>place it in the Scene folder in the Hierarchy</LI>
+	<LI>attach the LightQuad prefab from Project->Resources as child to the new light asset (drag'n'drop)</LI>
+	<LI>spot light: attach the Cone prefab from Project->Resources as child to the new light asset (drag'n'drop)</LI>
+	<LI>point light: attach the Sphere prefab from Project->Resources as child to the new light asset (drag'n'drop)</LI>
+	<LI>directional light: attach the Arrow prefab from Project->Resources as child to the new light asset (drag'n'drop)</LI>
+</UL>
+
+<h3>How to use Tango:</h3>
+<ul>
+<li>import Tango Unity package Tania Borealis (Version 1.41, August 2016) </li>
+<li>activate tango manager </li>
+<li>activate Tango object </li>
+<li>add variable USE_TANGO to Player Settings / Other Settings / Scripting Define Symbols  </li>
+<li>switch to Android build </li>
+</ul>
+
+<H1>Compilation</H1>
+<H3>For a windows tablet:</H3>
+<UL>
+    <LI>In Unity go to File->Build settings</LI>
+	<LI>Select "PC, Mac & Linux Standalone" as Platform</LI>
+	<LI>Select "Windows" as Target Platform</LI>
+	<LI>Select "x86_64" as Architecture (import! - otherwise the sensor reading on windows tablets will not work)</LI>
+	<LI>Info: Sensors are accessed on Windows through a separate dynamic library (native library). The source of the library can be found in VPET_Unity/WindowsSensorWrapper. This became necessary since Unity does not implement sensor access for Windows desktop builds, but only for Windows Store apps.</LI>
+	<LI>next click build</LI>
+</UL>
+
+<H3>For an android tablet:</H3>
+<UL>
+    <LI>Download the Android SDK Tools from: https://developer.android.com/sdk/index.html</LI>
+	<LI>Navigate to the Android Tools folder and download the SDK for your Android version with the SDKManager.exe as described here: https://developer.android.com/sdk/installing/adding-packages.html</LI>
+	<LI>Download & install the Java Development Kit (JDK)</LI>
+	<LI>In Unity go to Edit->Preferences->External Tools.</LI>
+	<LI>Set the "Android SDK Location" and the "JDK location" to the folders you installed those tools.</LI>
+	<LI>Now go to File->Build settings</LI>
+	<LI>Select "Android" as Platform</LI>
+	<LI>Click build</LI>
+</UL>
+
+<H1>Network communication</H1>
+<UL>
+    <LI>All manipulations applied to scene objects and lights are communicated to a synchronisation server and the Katana server.</LI>
+	<LI>For this communication netMQ is used, the .net implementation of zeroMQ (http://zeromq.org/). </LI>
+</UL>
+<H3>How to connect the tablet app to the servers:</H3>
+<UL>
+    <LI>in the Unity project navigate to IO->ServerAdapter in the Hierarchy Tab (left side)</LI>
+	<LI>in the inspector (right side) enter the IP address of the synchronization server and the katana server (ports are set automatically, if a wrong formated IP address is set, communication will automatically be disabled) </LI>
+	<LI>unselect "deactivate receive" (to be able to receive messages from the synchronization server)</LI>
+	<LI>unselect "deactivate publish" (to be able to push messages to the synchronization server)</LI>
+	<LI>unselect "deactivate publish katana" (to be able to push messages to the katana server)</LI>
+	<LI>Important notice: An intermediate synchronization server is always required. Although you can easily replace the provided server to just receive updates from one tablet.</LI>
+</UL>
+
+<H3>Receiving messages with python:</H3>
+<UL>
+    <LI>When you are using only one tablet you can directly grab messages from that tablet, otherwise you can grab all messages from the synchronization server</LI>
+	<LI>If you have python installed you can install the python binding of zeroMQ either with easy_install or pip (follow instructions on: http://zeromq.org/bindings:python)</LI>
+	<LI>Note: You can also use implementations of zeroMQ for other languages.</LI>
+	<LI>the following python scripts will receive all messages coming from the the tablet app and print them to console:</LI>
+	<LI>With intermediate synchronization server:<BR><BR>
+		<code>
+			import zmq<BR>
+			<BR>
+			context = zmq.Context()<BR>
+			socket = context.socket(zmq.SUB)<BR>
+			socket.connect("tcp://000.000.000.000:5556") #change IP to the synchronization IP<BR>
+			socket.setsockopt(zmq.SUBSCRIBE, "client")<BR>
+			socket.setsockopt(zmq.SUBSCRIBE, "ncam")<BR>
+			socket.setsockopt(zmq.SUBSCRIBE, "recorder")<BR>
+			<BR>
+			while True :<BR>
+			message = socket.recv()<BR>
+			topic, messagedata = message.split()<BR>
+			print(messagedata)<BR>
+	</code>
+	</LI>
+	<LI>Direct listening to tablet:<BR><BR>
+		<code>
+			import zmq<BR>
+			<BR>
+			context = zmq.Context()<BR>
+			socket = context.socket(zmq.SUB)<BR>
+			socket.bind("tcp://000.000.000.000:5557") #change IP to the IP of the computer this script is running on<BR>
+			socket.setsockopt(zmq.SUBSCRIBE, "client")<BR>
+			<BR>
+			while True :<BR>
+			message = socket.recv()<BR>
+			topic, messagedata = message.split()<BR>
+			print(messagedata)
+	</code>
+	</LI>
+</UL>
+
+<H3>The communication protocol:</H3>
+<UL>
+    <LI>Each message is distributed by netMQ.</LI>
+	<LI>A message is a standard string, containing all necessary values.</LI>
+	<LI>example message: "client 129|r|CubeParent/Cube|0.01386935|-0.1318762|-0.6923447|0.7092779|physics"</LI>
+	<LI>the fist part of the string (before the space) is the topic (used by the netMQ Publish/Subscribe Pattern)
+		<UL>
+			<LI>available topics that can be subscribed to are:</LI>
+			<LI>"client": updates coming directly from clients (tablets)</LI>
+			<LI>"ncam": ncam data (position, rotation, focal length) for each frame (only available when using the provided synchronization server)</LI>
+			<LI>"record": the synchronization server stores the current scene state and is thereby able to provide an initialisation update to new subscribers (this functionality is in BETA status and is not yet reliable)</LI>
+		</UL>
+	</LI>
+	<LI>all values of the core message are separated by a single "|"</LI>
+	<LI>first value is a unique id of the sender</LI>
+	<LI>second value is the type of information sent</LI>
+		<UL>
+			<LI>available types are:</LI>
+			<LI>r: rotation</LI>
+			<LI>t: translation</LI>
+			<LI>s: scale</LI>
+			<LI>c: light color</LI>
+			<LI>i: light intensity</LI>
+			<LI>a: light spot angle</LI>
+			<LI>d: light range</LI>
+			<LI>k: kinematic change (enables/disables gravity for an object)</LI>
+			<LI>l: lock bool (locks an object if edited by one client to avoid editing on two clients at the same time)</LI>
+			<LI>f: focal length of the ncam camera</LI>
+		</UL>
+	</LI>
+	<LI>third value is the path to the light or object
+		<UL>
+			<LI>only exception is the path within ncam data, which is always simply "cam" </LI>
+			<LI>otherwise this path is relative to the Scene folder</LI>
+			<LI>separation is done with a single "/" (which is natively supported by Unity)</LI>
+		</UL>
+	</LI>
+	<LI>those three values are followed by the actual new values
+		<UL>
+			<LI>number of values for each data type:
+				<UL>
+					    <LI>r: 4 floats (quaternion)</LI>
+						<LI>t: 3 floats (xyz)</LI>
+						<LI>s: 3 floats (xyz)</LI>
+						<LI>c: 3 floats (rgb) range: 0 to 1</LI>
+						<LI>i: 1 float  range: 0 to 8</LI>
+						<LI>a: 1 float  range: 0 to 179 (in degree, including penumbra angle)</LI>
+						<LI>d: 1 float  range: 0 to infinity</LI>
+						<LI>k: 1 bool</LI>
+						<LI>l: 1 bool</LI>
+						<LI>f: 1 float</LI>
+				</UL>
+			</LI>
+		</UL>
+	</LI>
+	<LI>A translation and rotation message can have an additional (optional) last value</LI>
+		<UL>
+			<LI>this value will always be "physics"</LI>
+			<LI>if this is attached to the massage, the rotation or translation is related to a physics interaction with the scene</LI>
+			<LI>On clients having an active physics engine (e.g. other tablets), those messages should be ignored, physics can be directly calculated on that client</LI>
+			<LI>On clients without physics engine (e.g. standard renderers), those messages provide the possibility to see the physics interaction and can be handled as normal scene updates</LI>
+		</UL>
+</UL>
+
+<H1>App structure:</H1>
+<IMG SRC="../images/app_structure.png" style="width: 1500px;">
+<H1>Release Notes</H1>
+<H3>Release 1.0.0</H3>
+<UL>
+    <LI>Synchronized release current state with latest improvements and bug fixes</LI>
+    <LI>Tested with: SceneDistributionPlugIn 1.0.3, SynchronizationServer 0.1.0 </LI>
+    <LI>Updated doxy files</LI>
+</UL>
+
+*/
