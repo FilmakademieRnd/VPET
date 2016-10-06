@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------
 This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/v-p-e-t
+http://github.com/FilmakademieRnd/VPET
 
 Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
 

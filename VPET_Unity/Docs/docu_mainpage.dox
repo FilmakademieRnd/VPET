@@ -28,9 +28,9 @@
     <LI></LI>
 	<LI>Android Studio/SDK and it's requirements (JDK) is needed: <a href="http://developer.android.com/sdk/index.html">http://developer.android.com/sdk/index.html</a> to release builts for tablet</LI>
 	<li>Create a new Unity project or open existing </li>
-	<li>Download the unity package from the repository <a href="https://github.com/FilmakademieRnd/v-p-e-t/raw/master/VPET_Unity/VPET.unitypackage">https://github.com/FilmakademieRnd/v-p-e-t/raw/master/VPET_Unity/VPET.unitypackage</a> </li>
+	<li>Download the unity package from the repository <a href="https://github.com/FilmakademieRnd/VPET/raw/master/VPET_Unity/VPET.unitypackage">https://github.com/FilmakademieRnd/VPET/raw/master/VPET_Unity/VPET.unitypackage</a> </li>
 	<li>
-	Alternatively pull the GIT repository: <a href="https://github.com/FilmakademieRnd/v-p-e-t">https://github.com/FilmakademieRnd/v-p-e-t</a> and find the package in /VPET_Unity/</li>
+	Alternatively pull the GIT repository: <a href="https://github.com/FilmakademieRnd/VPET">https://github.com/FilmakademieRnd/VPET</a> and find the package in /VPET_Unity/</li>
 	<li>Import the package in the Unity project through Assets/Import Package/Custom </li>
 	<li>Select all an press import </li>
 	</ul>	

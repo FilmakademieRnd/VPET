@@ -1,6 +1,6 @@
 VPET - Virtual Production Editing Tool
 vpet.research.animationsinstitut.de
-github.com/FilmakademieRnd/v-p-e-t
+github.com/FilmakademieRnd/VPET
 
 Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation 
 
