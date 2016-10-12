@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------
 This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/VPET
+http://sourceforge.net/projects/v-p-e-t
 
 Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
 
@@ -179,6 +179,11 @@ namespace vpet
         private Quaternion rotationFirst = Quaternion.identity;
         private Vector3 positionOffset = Vector3.zero;
         private Vector3 positionFirst = Vector3.zero;
+        private Vector3 oldPosition = Vector3.zero;
+        private Quaternion oldRotation = Quaternion.identity;
+
+        private Vector3 newPosition = Vector3.zero;
+
 
 
         void Awake()
@@ -200,9 +205,8 @@ namespace vpet
 #elif (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
 	        // SensorHelper.ActivateRotation();
 #endif
-
-            //sync renderInFront camera to mainCamera
-            Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
+        //sync renderInFront camera to mainCamera
+        Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
             if (frontCamera)
             {
                 frontCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
@@ -230,7 +234,8 @@ namespace vpet
             if (mainController == null) Debug.LogError(string.Format("{0}: No MainController found.", this.GetType()));
 
 #if USE_TANGO
-                tangoTransform = GameObject.Find("Tango").transform;
+            tangoTransform = GameObject.Find("Tango").transform;
+
 #else
             Camera.main.transform.parent.transform.Rotate(Vector3.right, 90);
 #endif
@@ -266,7 +271,6 @@ namespace vpet
                 }
 
                 Quaternion newRotation = Quaternion.identity;
-                Vector3 newPosition = Vector3.zero;
 #if !UNITY_EDITOR
 #if (UNITY_ANDROID || UNITY_IOS)
 #if USE_TANGO
@@ -285,18 +289,21 @@ namespace vpet
                     {
                         rotationOffset = rotationFirst * Quaternion.Inverse(newRotation);
                         positionOffset = positionFirst - newPosition;
+
                         firstApplyTransform = true;
                     }
                     //grab sensor reading on current platform
 #if !UNITY_EDITOR
 #if (UNITY_ANDROID || UNITY_IOS) && !USE_TANGO
-                    transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation ;
+                    transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation;
 #elif UNITY_STANDALONE_WIN
                     transform.rotation = rotationOffset * newRotation;
 #else
-                    transform.rotation = rotationOffset * Quaternion.Euler(0,95,0) * newRotation ;
+                    transform.rotation = rotationOffset * newRotation;
+                    //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
 #if USE_TANGO
-                    cameraParent.position = positionOffset + newPosition;              
+                    cameraParent.position += rotationOffset * (newPosition - oldPosition);
+                
 #endif
 #endif
 #endif
@@ -307,6 +314,9 @@ namespace vpet
                     positionFirst = positionOffset + newPosition;
                     firstApplyTransform = false;
                 }
+
+                oldPosition = tangoTransform.position;
+                oldRotation = tangoTransform.rotation;
 
                 //reset rotation of attached gameObjects and send update to server if neccessary 
                 if (this.transform.childCount > 1)
@@ -379,6 +389,7 @@ namespace vpet
         public void resetCameraOffset()
         {
             rotationOffset = Quaternion.identity;
+            cameraParent.position = newPosition;
         }
 
         //!
