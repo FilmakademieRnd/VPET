@@ -315,9 +315,10 @@ namespace vpet
                     firstApplyTransform = false;
                 }
 
+#if USE_TANGO
                 oldPosition = tangoTransform.position;
                 oldRotation = tangoTransform.rotation;
-
+#endif
                 //reset rotation of attached gameObjects and send update to server if neccessary 
                 if (this.transform.childCount > 1)
                 {
