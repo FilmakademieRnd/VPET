@@ -132,8 +132,9 @@ namespace vpet
                         float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
 	                    float touchDeltaMag = (Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude;
 	                    float deltaMagnitudeScale = touchDeltaMag/prevTouchDeltaMag;
-	
-						inputAdapter.pinchToZoom(deltaMagnitudeScale);
+
+                        // TODO: add pinchtToZoom at input adapter if needed 
+                        //inputAdapter.pinchToZoom(deltaMagnitudeScale);
 	
 						inputAdapter.twoPointerDrag(Input.mousePosition);
 	

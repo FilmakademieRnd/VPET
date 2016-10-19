@@ -204,8 +204,7 @@ namespace vpet
             rotationMode,               // show/use rotation modifier
             scaleMode,                  // show/use scale modifier
             objectLinkCamera,           // deactivate kinematic and parent to camera
-            pointToMoveMode,
-            oneForAllMode,
+            pointToMoveMode,            // click on ground to move object
             lightSettingsMode,
             objectMenuMode,
             lightMenuMode,

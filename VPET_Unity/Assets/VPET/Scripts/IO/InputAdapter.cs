@@ -183,15 +183,6 @@ namespace vpet
 	
 			if (!pointerOnGUI())
 			{
-				//oneForAll mode
-				if (mainController.ActiveMode == MainController.Mode.oneForAllMode)
-				{
-					mainController.rotationCollider.gameObject.transform.position = mainController.getSelectionPosition();
-					mainController.rotationCollider.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, mainController.getSelectionPosition()) / 100);
-					hitPositionBuffer = objectRaycast(pos, mainController.rotationCollider);
-					return;
-				}
-	
 				//pointToMove active
 				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 				{
@@ -262,17 +253,8 @@ namespace vpet
 				
 			if (!pause)
 			{ //pause is active when avaoiding double interactions
-	
 				if (!pointerOnGUI())
 				{
-	
-					//oneForAll mode
-					if (mainController.ActiveMode == MainController.Mode.oneForAllMode){
-						undoRedoController.addAction();
-						hitPositionBuffer = nullVector;
-						return;
-					}
-	
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
@@ -355,18 +337,7 @@ namespace vpet
 			{
 				if (!pause)
 				{
-					//oneForAll mode
-					if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-					{
-						Vector3 newHitPosition = objectRaycast(pos, mainController.rotationCollider);
-						if (newHitPosition != nullVector && hitPositionBuffer != nullVector)
-						{
-							mainController.rotateSelection(hitPositionBuffer, newHitPosition);
-						}
-						hitPositionBuffer = newHitPosition;
-						return;
-					}
-	
+
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
@@ -429,32 +400,19 @@ namespace vpet
 		//! dual touch started (called by Mouse or Touch Input)
 		//! @param      pos     screen position of pointer
 		//!
-		public void twoPointerStarted(Vector3 pos){
-	
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = objectRaycast(pos, mainController.planeCollider);
-			}
-			else {
-				camMovePos = pos;
-			}
+		public void twoPointerStarted(Vector3 pos)
+        {
+			camMovePos = pos;
 		}
 	
 		//!
 		//! dual touch ended (called by Mouse or Touch Input)
 		//! @param      pos     screen position of pointer
 		//!
-		public void twoPointerEnded(Vector3 pos) {
-	
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = nullVector;
-				undoRedoController.addAction();
-			}
-			else {
-				camMovePos = Vector3.zero;
-				undoRedoController.addAction();
-			}
+		public void twoPointerEnded(Vector3 pos)
+        {
+			camMovePos = Vector3.zero;
+			undoRedoController.addAction();
 
 			// save the camera offset to restore it next time the app is started
 			mainController.saveCameraOffset();
@@ -464,61 +422,37 @@ namespace vpet
 		//! dual touch down & moving (called by Mouse or Touch Input)
 		//! @param      pos     screen position of second pointer
 		//!
-		public void twoPointerDrag(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				Vector3 newHitPosition = objectRaycast(pos, mainController.planeCollider);
-				if (hitPositionBuffer != nullVector && newHitPosition != nullVector)
-				{                    
-                    mainController.translateSelection(hitPositionBuffer - newHitPosition);
-                    hitPositionBuffer = newHitPosition;
-				}
-			}
-			else {                
-                mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
-            }
+		public void twoPointerDrag(Vector3 pos)
+        {
+            mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
 		}
 	
 		//!
 		//! pinch to zoom gesture (called by Mouse or Touch Input)
 		//! @param      delta     delta distance between fingers since last frame
 		//!
-		public void pinchToZoom(float delta) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode)
-			{
-				mainController.scaleSelectionUniform(delta);
-			}
-	
+		public void pinchToZoom(float delta)
+        {
+			mainController.scaleSelectionUniform(delta);
 		}
 	
 		//!
 		//! triple touch started (called by Mouse or Touch Input)
 		//! @param      pos     screen position of third pointer
 		//!
-		public void threePointerStarted(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = objectRaycast(pos, mainController.planeCollider);
-			}
-			else {
-				camMovePos = new Vector3(0, 0, pos.y);
-			}
+		public void threePointerStarted(Vector3 pos)
+        {
+    		camMovePos = new Vector3(0, 0, pos.y);
 		}
 	
 		//!
 		//! triple touch ended (called by Mouse or Touch Input)
 		//! @param      pos     screen position of third pointer
 		//!
-		public void threePointerEnded(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = nullVector;
-				undoRedoController.addAction();
-			}
-			else {
-				camMovePos = Vector3.zero;
-				undoRedoController.addAction();
-			}
+		public void threePointerEnded(Vector3 pos)
+        {
+			camMovePos = Vector3.zero;
+			undoRedoController.addAction();
 
 			// save the camera offset to restore it next time the app is started
 			mainController.saveCameraOffset();
@@ -528,25 +462,15 @@ namespace vpet
 		//! triple touch down & moving (called by Mouse or Touch Input)
 		//! @param      pos     screen position of third pointer
 		//!
-		public void threePointerDrag(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
+		public void threePointerDrag(Vector3 pos)
+        {
+			if (Camera.main.orthographic == false)
 			{
-				Vector3 newHitPosition = objectRaycast(pos, mainController.planeCollider);
-				if (hitPositionBuffer != nullVector && newHitPosition != nullVector) 
-				{
-					mainController.moveSelectionAwayFromCamera((newHitPosition - hitPositionBuffer).y);
-					hitPositionBuffer = newHitPosition;
-				}
+				mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed );
 			}
-			else {
-				if (Camera.main.orthographic == false)
-				{
-					mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed );
-				}
-				else
-				{
-					Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) / 100f);
-				}
+			else
+			{
+				Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) / 100f);
 			}
 		}
 	

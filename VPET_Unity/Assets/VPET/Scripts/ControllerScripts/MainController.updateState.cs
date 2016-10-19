@@ -129,11 +129,6 @@ namespace vpet
 	                        ui.drawSecondaryMenu(layouts.EDIT);
 	                    }
 	                    break;
-	                case (Mode.oneForAllMode):
-	                    if (currentSelection){
-	                        currentSelection.GetComponent<SceneObject>().setKinematic(false);
-	                    }
-	                    break;
 	                case (Mode.objectMenuMode):
 	                    // ui.hideCenterMenu();
 	                    break;
@@ -188,16 +183,7 @@ namespace vpet
 	                    }
 	                    break;
 	                case (Mode.pointToMoveMode):
-	                    
-	                    break;
-	                case (Mode.oneForAllMode):
-	                    axisLocker = new Vector3(1, 1, 1);
-	                    if (currentSelection){
-	                        currentSelection.GetComponent<SceneObject>().setKinematic(true);
-	                        planeCollider.gameObject.transform.position = currentSelection.position;
-	                        planeCollider.gameObject.transform.rotation = Camera.main.transform.rotation;
-	                        rotationCollider.gameObject.transform.position = currentSelection.position;
-	                    }
+	                    //
 	                    break;
 	                case (Mode.objectMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT )
