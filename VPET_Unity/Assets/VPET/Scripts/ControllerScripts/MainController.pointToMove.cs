@@ -82,7 +82,7 @@ namespace vpet
 	            }
 	            activeMode = Mode.idle;
 	        }
-	        else if(activeMode != Mode.pointShootTranslation)
+	        else
 	        {
 	            activeMode = Mode.pointToMoveMode;
 	        }
@@ -93,7 +93,7 @@ namespace vpet
 	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
 	    public void showPointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode || activeMode == Mode.pointShootTranslation)){
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode )){
 	            pointToMoveModifier.transform.position = pos + new Vector3(0, 0.01f, 0);
 	            pointToMoveModifier.GetComponent<Renderer>().enabled = true;
 	        }
@@ -104,7 +104,7 @@ namespace vpet
 	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
 	    public void movePointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode || activeMode == Mode.pointShootTranslation)){
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
 	            pointToMoveModifier.transform.position = pos + new Vector3(0, 0.01f, 0);
 	        }
 	    }
@@ -114,7 +114,7 @@ namespace vpet
 	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
 	    public void hidePointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode || activeMode == Mode.pointShootTranslation)){
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
 	            if (cameraPointMove){
 	                //use camera as target for the translation
 	                Camera.main.GetComponent<MoveCamera>().smoothTranslate(pos + new Vector3(0, Camera.main.transform.position.y, 0));

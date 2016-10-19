@@ -193,8 +193,7 @@ namespace vpet
 				}
 	
 				//pointToMove active
-				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode ||
-					mainController.ActiveMode == MainController.Mode.pointShootTranslation)
+				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 				{
 					mainController.showPointToMoveIdentifier(objectRaycast(pos, groundPlane));
 					return;
@@ -275,8 +274,7 @@ namespace vpet
 					}
 	
 					//pointToMove active
-					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode || 
-						mainController.ActiveMode == MainController.Mode.pointShootTranslation)
+					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
 						mainController.hidePointToMoveIdentifier(objectRaycast(pos, groundPlane));
 						return;
@@ -370,8 +368,7 @@ namespace vpet
 					}
 	
 					//pointToMove active
-					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode || 
-						mainController.ActiveMode == MainController.Mode.pointShootTranslation)
+					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
 						mainController.movePointToMoveIdentifier(objectRaycast(pos, groundPlane));
 						return;

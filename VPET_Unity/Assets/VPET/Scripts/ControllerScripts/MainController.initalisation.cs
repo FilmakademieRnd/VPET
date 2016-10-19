@@ -200,11 +200,10 @@ namespace vpet
         //! the available states (modes) of the app
         //!
         public enum Mode {
-            translationMode,
-            rotationMode,
-            scaleMode,
-            objectLinkCamera,
-            pointShootTranslation,
+            translationMode,            // show/use translation modifier
+            rotationMode,               // show/use rotation modifier
+            scaleMode,                  // show/use scale modifier
+            objectLinkCamera,           // deactivate kinematic and parent to camera
             pointToMoveMode,
             oneForAllMode,
             lightSettingsMode,

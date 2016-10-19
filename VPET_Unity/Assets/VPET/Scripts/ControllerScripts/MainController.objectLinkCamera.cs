@@ -28,19 +28,17 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 using System.Collections;
 
 //!
-//! MainController part handling pointShootTranslation
+//! MainController part handling object link to camera
 //!
 namespace vpet
 {
 	public partial class MainController : MonoBehaviour {
 	
 	    //!
-	    //! enable/disable pointShootTranslation
+	    //! enable/disable object link to camera
 	    //!
 	    public void toggleObjectLinkCamera()
         {
-
-
             if (activeMode != Mode.objectLinkCamera)
             {
                 activeMode = Mode.objectLinkCamera;
