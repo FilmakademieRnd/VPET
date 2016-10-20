@@ -138,7 +138,7 @@ namespace vpet
 	    //!
 	    public void openMenu()
 	    {
-			if(currentSelection && activeMode != Mode.animationEditing ) // HACK: to handle animationEditing mode
+			if(currentSelection)
 	        {
 	            if (currentSelection.GetComponent<SceneObject>().isDirectionalLight ||
 	                currentSelection.GetComponent<SceneObject>().isPointLight ||
@@ -146,8 +146,6 @@ namespace vpet
 	            {
 	                activeMode = Mode.lightMenuMode;
 	            }
-                // TODO: NILS: this is a hack
-                //else if (activeMode != Mode.animationEditing)
                 else
 				{
                     activeMode = Mode.objectMenuMode;

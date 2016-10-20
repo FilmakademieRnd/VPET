@@ -167,13 +167,11 @@ namespace vpet
         {
             if (active)
             {
-                activeMode = Mode.test;
+                activeMode = Mode.animationEditing;
             }
             else
             {
-                // TODO: NILS: this is a hack
-                oldState = Mode.test;
-                activeMode = Mode.animationEditing;
+                activeMode = Mode.idle;
                 openMenu();
             }
 

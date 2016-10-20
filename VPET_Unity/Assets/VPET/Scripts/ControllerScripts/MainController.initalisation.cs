@@ -205,14 +205,14 @@ namespace vpet
             scaleMode,                  // show/use scale modifier
             objectLinkCamera,           // deactivate kinematic and parent to camera
             pointToMoveMode,            // click on ground to move object
-            lightSettingsMode,
-            objectMenuMode,
-            lightMenuMode,
-            addMode,
-            idle,
-            animationEditing,
-            test,
-            scoutMode };
+            lightSettingsMode,          // show/use light settings widget (intensity, color)
+            objectMenuMode,             // show centre menu (object or animation icons)
+            lightMenuMode,              // show centre menu (light icons depending on light type)
+            addMode,                    // muldtiple selection TODO: not implemented yet
+            idle,                       // no selection and no action
+            animationEditing           // set animation editing, show translation manipulator
+            // scoutMode
+            };
 
 
 		//!

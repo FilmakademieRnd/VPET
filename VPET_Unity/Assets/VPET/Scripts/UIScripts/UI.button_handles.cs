@@ -61,7 +61,7 @@ namespace vpet
 			// make toggle buttons using secondary menu switch of
 			OnSecondaryMenuVisibility.Invoke(false);
 
-            if (layout == layouts.EDIT)
+            if (layout == layouts.EDIT || layout == layouts.ANIMATION )
             {
                 layoutUI = layout;
                 secondaryMenu.switchLayout(layout);
@@ -70,14 +70,12 @@ namespace vpet
                     if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
                         mainController.ActiveMode = MainController.Mode.lightMenuMode;
                     else
+                    {
                         mainController.ActiveMode = MainController.Mode.objectMenuMode;
+                        // force re-draw center menu because it won't be re-drawn in state machine if mode doesn't change
+                        drawCenterMenu(layout);
+                    }
                 }
-            }
-            else if (layout == layouts.ANIMATION)
-            {
-                layoutUI = layout;
-                secondaryMenu.switchLayout(layout);
-                mainController.ActiveMode = MainController.Mode.animationEditing;
             }
             else if (layout == layouts.SCOUT)
             {
@@ -136,8 +134,7 @@ namespace vpet
 	    {
 			// make toggle buttons using secondary menu switch of
 			OnSecondaryMenuVisibility.Invoke(false);
-
-			centerMenu.animateActive( ((Button)button).gameObject );
+         	centerMenu.animateActive( ((Button)button).gameObject );
 			mainController.buttonTranslationClicked( button.Toggled );
 	    }
 	
@@ -188,8 +185,6 @@ namespace vpet
                 animationController.activate();
             else
                 animationController.deactivate();
-            animationController.editingPosition = true;
-
         }
 
         private void animationDelete()
