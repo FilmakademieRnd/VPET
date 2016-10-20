@@ -40,13 +40,11 @@ namespace vpet
         //!
         public void handleSelection(Transform sObject)
         {
-            Debug.Log("Raycast executed: " + sObject.name);
+            Debug.Log("Raycast selection: " + sObject.name);
             Debug.Log("Current selection: " + currentSelection);
-            Debug.Log("Backup selection: " + backupSelection);
 
-            if (currentSelection) {
-                //currently an object is selected
-
+            if (currentSelection)
+            {
                 //user is pointing at WorldCollider
                 if (sObject.tag == "WorldCollider") {
                     this.deselect();
@@ -70,74 +68,10 @@ namespace vpet
                     return;
                 }
 
-                //user is pointing at currently selected object
-                if (currentSelection == sObject)
-                {
-                    if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
-                    {
-                        activeMode = Mode.lightMenuMode;
-                    }
-                    else
-                    {
-                        if (activeMode != Mode.animationEditing)
-                        {
-                            activeMode = Mode.objectMenuMode;
-                        }
-                        else
-                        {
-                            if (animationController.editingPosition)
-                            {
-                                if (!currentSelection.GetComponent<KeyframeScript>())
-                                {
-                                    deselect();
-                                }
-                                else
-                                {
-                                    deselect();
-                                    animationController.enablePositionEditing();
-                                }
-                            }
-                            else
-                            {
-                                animationController.enablePositionEditing();
-                            }
-                        }
-                    }
-                    return;
-                }
-
-                //user is pointing at a keyframe
-                if (activeMode == Mode.animationEditing && sObject.GetComponent<KeyframeScript>())
-                {
-                    print("Pointing Keyframe sphere");
-                    backupSelection = currentSelection;
-                    /////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////
-
-                    currentSelection = frameSphereContainer.transform.FindChild(sObject.name);
-
-
-
-                    // ui.drawKeyframeMenu();
-
-
-
-
-                    //animationController.editingPosition = true;
-                    return;
-                }
-
-                //user is pointing at the object on which animation editing is currently applied (had selected a keyframe before)
-                if (backupSelection)
-                {
-                    if (activeMode == Mode.animationEditing && sObject.name == backupSelection.name)
-                    {
-                        currentSelection = backupSelection;
-                        backupSelection = null;
-                        animationController.editingPosition = true;
-                        return;
-                    }
-                }
+                //user is pointing at previous selected object
+                //if (currentSelection == sObject)
+                //{
+                //}
 
                 //user is pointing at another sceneObject
                 if (sObject.GetComponent<SceneObject>())
@@ -152,21 +86,16 @@ namespace vpet
                         this.select(sObject);
                     }
                 }
-                else
-                {
-                    //user is pointing at other object, not beeing sceneObject
-                    if (activeMode != Mode.animationEditing)
-                    {
-                        this.deselect();
-                        activeMode = Mode.idle;
-                    }
+                else //user is pointing at other object, not beeing sceneObject
+                {                    
+                    this.deselect();
+                    activeMode = Mode.idle;
                 }
             }
-            else if (sObject.GetComponent<SceneObject>())
+            else if (sObject.GetComponent<SceneObject>()) // no current selection
             {
                 this.select(sObject);
             }
-
         }
 
 
@@ -189,15 +118,9 @@ namespace vpet
             //show selection
             sObject.gameObject.GetComponent<SceneObject>().selected = true;
 
-            if (ui.LayoutUI == layouts.ANIMATION )
+	        if ( ui.LayoutUI == layouts.SCOUT )
 	        {
-                // TODO: ??
-                if (activeMode != Mode.animationEditing)
-                    activeMode = Mode.objectMenuMode; // Mode.animationEditing; 
-	        }
-	        else if ( ui.LayoutUI == layouts.SCOUT )
-	        {
-	
+	            // pass
 	        }
 	        else
 	        {
@@ -221,67 +144,28 @@ namespace vpet
 	    //!
 	    private void deselect()
 	    {
+            print("Deselect " + currentSelection);
 
-            if (currentSelection)
-			{
-	            if (animationController.isActive)
-	            {
-                    print("Animation controlle is active. Editing Position: " + animationController.editingPosition);
+            // make sure its not more locked
+            serverAdapter.sendLock(currentSelection, false);
 
-                    /*
-                    if (!animationController.editingPosition)
-	                {
-	                    //deactivate animation editing of previous object
-	                    animationController.deactivate();
-	                }
-	                else
-	                {
-	                    if(currentSelection.GetComponent<KeyframeScript>())
-	                    {
-	                        currentSelection = backupSelection;
-	                        backupSelection = null;
-	                    }
-	                    animationController.editingPosition = false;
-	                    hideModifiers();
-	                    return;
-	                }
-                    */
-                }
-
-                if (!currentSelection.GetComponent<Light>())
-	            {
-	                //currentSelection.GetComponent<SceneObject>().setKinematic(false);
-	            }
-
-
-                //reset Mode
-                print("Deselect " + currentSelection);
-
-                // make sure its not more locked
-                serverAdapter.sendLock(currentSelection, false);
-
-                if ( activeMode == Mode.objectLinkCamera)
+            if ( activeMode == Mode.objectLinkCamera)
+            {
+                if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
+                                            currentSelection.GetComponent<SceneObject>().isPointLight ||
+                                            currentSelection.GetComponent<SceneObject>().isDirectionalLight)
                 {
-                    if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
-                                                currentSelection.GetComponent<SceneObject>().isPointLight ||
-                                                currentSelection.GetComponent<SceneObject>().isDirectionalLight)
-                    {
-                        currentSelection.parent = oldParent;
-                    }
-                    else
-                    {
-                        currentSelection.GetComponent<SceneObject>().setKinematic(false);
-                        currentSelection.parent = oldParent;
-                    }
+                    currentSelection.parent = oldParent;
                 }
+                else
+                {
+                    currentSelection.GetComponent<SceneObject>().setKinematic(false);
+                    currentSelection.parent = oldParent;
+                }
+            }
 
-
-                currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
-                currentSelection = null;
-
-
-	        }
-	        
+            currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
+            currentSelection = null;
 	    }
-}
+    }
 }

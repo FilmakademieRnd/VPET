@@ -37,7 +37,6 @@ namespace vpet
 	    // cache old state
 	    private Mode oldState = Mode.idle;
 	    private Transform oldSelection = null;
-	    private Transform backupSelection = null;
 		public Transform oldParent = null;
 	
 	    //!
@@ -116,11 +115,6 @@ namespace vpet
 	                    }
 	                    break;
 	                case (Mode.pointToMoveMode):
-	                    if (backupSelection)
-	                    {
-	                        currentSelection = backupSelection;
-	                        backupSelection = null;
-	                    }
 	                    if (activeMode != Mode.translationMode && activeMode != Mode.objectLinkCamera)
 	                    {
 	                        ui.drawSecondaryMenu(layouts.EDIT);
@@ -167,7 +161,6 @@ namespace vpet
 	                        currentSelection.GetComponent<SceneObject>().isPointLight ||
 	                        currentSelection.GetComponent<SceneObject>().isDirectionalLight)
 	                    {
-	                        backupSelection = currentSelection;
                             oldParent = currentSelection.parent; //.parent;
 	                        currentSelection.parent = Camera.main.transform;
                             //currentSelection.parent.parent = Camera.main.transform;
