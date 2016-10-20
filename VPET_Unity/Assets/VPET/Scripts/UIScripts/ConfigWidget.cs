@@ -93,7 +93,9 @@ namespace vpet
 		private Toggle debugToggle;
 
         private Toggle gridToggle;
-        
+
+        private Toggle arToggle;
+
         private Slider ambientIntensitySlider;
 
 	    void Awake()
@@ -145,6 +147,19 @@ namespace vpet
                 else
                 {
                     gridToggle.onValueChanged.AddListener(this.OnToggleGrid);
+                }
+            }
+
+            // ar toggle
+            childWidget = this.transform.FindChild("AR_toggle");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: AR_toggle.", this.GetType()));
+            else
+            {
+                arToggle = childWidget.GetComponent<Toggle>();
+                if (arToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                else
+                {
+                    arToggle.onValueChanged.AddListener(this.OnToggleAr);
                 }
             }
 
@@ -347,6 +362,16 @@ namespace vpet
             drawGrid drawGrid = Camera.main.GetComponent<drawGrid>();
             if (drawGrid)
                 drawGrid.enabled = isOn;
+        }
+
+        private void OnToggleAr( bool isOn )
+        {
+            if (arToggle)
+            {
+                // TODO: temporary
+                MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
+                mainCtrl.ToggleArMode(isOn);
+            }
         }
 
         private void OnAmbientChanged( float v )

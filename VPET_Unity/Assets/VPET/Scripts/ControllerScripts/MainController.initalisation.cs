@@ -389,6 +389,7 @@ namespace vpet
         public void setTangoActive(bool isActive)
         {
 #if USE_TANGO
+
             if (tangoApplication)
             {
                 tangoApplication.m_enableMotionTracking = isActive;
