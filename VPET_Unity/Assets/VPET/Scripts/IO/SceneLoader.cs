@@ -55,8 +55,10 @@ namespace vpet
 	    {
 	        get { return sceneCameraList;  }
 	    }
-	
-	    void Start()
+
+        private List<GameObject> geometryPassiveList = new List<GameObject>();
+
+        void Start()
 	    {
 	        // create scene parent if not there
 	        scnPrtGO = GameObject.Find( sceneParent );
@@ -80,6 +82,7 @@ namespace vpet
             sceneTextureList.Clear();
             sceneMeshList.Clear();
             sceneCameraList.Clear();
+            geometryPassiveList.Clear();
 
 
             if (scnRoot != null)
@@ -784,6 +787,59 @@ namespace vpet
 	        }
 	
 	    }
-	
-}
+
+        public void HideGeometry()
+        {
+            if (geometryPassiveList.Count == 0)
+            {
+                getGeometryIter(scnRoot.transform);
+            }
+
+            foreach (GameObject g in geometryPassiveList)
+            {
+                g.SetActive(false);
+            }
+        }
+
+        public void ShowGeometry()
+        {
+            foreach (GameObject g in geometryPassiveList)
+            {
+                g.SetActive(true);
+            }
+        }
+
+        private void getGeometryIter(Transform t)
+        {
+            if (t.GetComponentInChildren<SceneObject>() == null && t.GetComponentInChildren<Light>() == null && t.GetComponentInChildren<Camera>() == null)
+            {
+                geometryPassiveList.Add(t.gameObject);
+            }
+            else if (t.GetComponent<SceneObject>() == null && t.GetComponent<Light>() == null && t.GetComponent<Camera>() == null)
+            {
+                foreach (Transform child in t)
+                {
+                    getGeometryIter(child);
+                }
+            }
+        }
+
+
+        public bool HasHiddenGeo
+        {
+            get
+            {
+                if (geometryPassiveList.Count < 1 || geometryPassiveList[0].activeSelf)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+
+    }
 }

@@ -444,5 +444,24 @@ namespace vpet
 			RenderSettings.ambientIntensity = v;
 		}
 
-	
-}}
+        public void ToggleArMode( bool active )
+        {
+            if ( active)
+            {
+                sceneAdapter.HideGeometry();
+                //Camera.main.renderingPath = RenderingPath.Forward;
+                //tangoApplication.m_enableVideoOverlay = true;
+                //tangoApplication.m_videoOverlayUseTextureMethod = true;
+                Camera.main.gameObject.GetComponent<TangoARScreen>().enabled = true;
+            }
+            else
+            {
+                Camera.main.gameObject.GetComponent<TangoARScreen>().enabled = false;
+                // tangoApplication.m_enableVideoOverlay = false;
+                //Camera.main.renderingPath = RenderingPath.DeferredShading;
+                sceneAdapter.ShowGeometry();
+            }
+        }
+
+    }
+}
