@@ -12,4 +12,4 @@ VPET is a development by Filmakademie Baden-Wuerttemberg, Institute of Animation
 
 [![](https://animationsinstitut.de/fileadmin/public_docs/rnd/Projects/Dreamspace/VPET_1.png)](https://www.youtube.com/watch?v=UpZidBSxsNE)
 
-[Youtube Video](https://www.youtube.com/watch?v=UpZidBSxsNE)
+[Youtube Video](https://youtu.be/6FssNOPKcnc)
