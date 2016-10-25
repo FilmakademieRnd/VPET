@@ -196,6 +196,8 @@ namespace vpet
         private Tango.TangoApplication tangoApplication;
 #endif
 
+        private bool hasUpdatedProjectionMatrix = false;
+
         //!
         //! the available states (modes) of the app
         //!
