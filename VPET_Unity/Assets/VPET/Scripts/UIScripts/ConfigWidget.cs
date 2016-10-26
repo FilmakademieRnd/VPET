@@ -155,12 +155,16 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: AR_toggle.", this.GetType()));
             else
             {
+#if USE_TANGO
                 arToggle = childWidget.GetComponent<Toggle>();
                 if (arToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else
                 {
                     arToggle.onValueChanged.AddListener(this.OnToggleAr);
                 }
+#else
+                childWidget.gameObject.SetActive(false);
+#endif
             }
 
             // Cache Load Local

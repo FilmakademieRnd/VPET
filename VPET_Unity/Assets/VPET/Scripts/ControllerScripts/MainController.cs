@@ -442,22 +442,40 @@ namespace vpet
 			RenderSettings.ambientIntensity = v;
 		}
 
-        public void ToggleArMode( bool active )
+
+        public void ToggleArMode(bool active)
         {
-            if ( active)
+            if (active)
             {
                 sceneAdapter.HideGeometry();
-                //Camera.main.renderingPath = RenderingPath.Forward;
-                //tangoApplication.m_enableVideoOverlay = true;
-                //tangoApplication.m_videoOverlayUseTextureMethod = true;
-                Camera.main.gameObject.GetComponent<TangoARScreen>().enabled = true;
+#if USE_TANGO
+                tangoApplication.m_enableVideoOverlay = true;
+                tangoApplication.m_videoOverlayUseTextureMethod = true;
+                TangoARScreen tangoArScreen = Camera.main.gameObject.GetComponent<TangoARScreen>();
+                if (tangoArScreen == null) tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
+                tangoArScreen.enabled = true;
+#endif
             }
             else
             {
+#if USE_TANGO
                 Camera.main.gameObject.GetComponent<TangoARScreen>().enabled = false;
-                // tangoApplication.m_enableVideoOverlay = false;
-                //Camera.main.renderingPath = RenderingPath.DeferredShading;
+                GameObject.Destroy(Camera.main.GetComponent<TangoARScreen>());
+                tangoApplication.m_enableVideoOverlay = false;
+#endif
+                Camera.main.ResetProjectionMatrix();
                 sceneAdapter.ShowGeometry();
+            }
+
+            hasUpdatedProjectionMatrix = true;
+        }
+
+
+        public void UpdateProjectionMatrixSecondaryCameras()
+        {
+            foreach( Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>() )
+            {
+                cam.projectionMatrix = Camera.main.projectionMatrix;
             }
         }
 

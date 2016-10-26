@@ -44,6 +44,7 @@ namespace vpet
 		//!
 	    void Update ()
 	    {
+
 	        //position modifiers if neccessary
 	        if (currentSelection)
 	        {
@@ -74,9 +75,15 @@ namespace vpet
 	        if (oldState != activeMode || currentSelection != oldSelection)
 	        {
 	            print(oldState.ToString() + " >>>>> " + activeMode );
-	
-	            //properly disable old mode
-	            switch (oldState) {
+
+                if (hasUpdatedProjectionMatrix)
+                {
+                    UpdateProjectionMatrixSecondaryCameras();
+                    hasUpdatedProjectionMatrix = false;
+                }
+
+                //properly disable old mode
+                switch (oldState) {
 	                case (Mode.idle):
 	                    break;
 	                case (Mode.translationMode):
