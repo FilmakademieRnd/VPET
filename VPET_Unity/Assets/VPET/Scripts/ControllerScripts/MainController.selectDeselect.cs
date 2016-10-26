@@ -130,7 +130,7 @@ namespace vpet
 	            }
 	            else
 	            {
-					if ( !(activeMode == Mode.translationMode || activeMode == Mode.rotationMode || activeMode == Mode.scaleMode || activeMode == Mode.animationEditing) )
+					if ( !(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode || activeMode == Mode.scaleMode || activeMode == Mode.animationEditing) )
 					{
 		                activeMode = Mode.objectMenuMode;
 					}

@@ -37,34 +37,17 @@ namespace vpet
 	    //!
 	    //! enable/disable object link to camera
 	    //!
-	    public void toggleObjectLinkCamera()
+	    public void toggleObjectLinkCamera(bool active)
         {
-            if (activeMode != Mode.objectLinkCamera)
+            if (active)
             {
                 activeMode = Mode.objectLinkCamera;
-                print(currentSelection);
                 serverAdapter.sendLock(currentSelection, true);
             }
             else
             {
                 buttonTranslationClicked(true);
             }
-            /*
-	        if (activeMode != Mode.objectLinkCamera){
-	            activeMode = Mode.objectLinkCamera;
-	            print(currentSelection);
-	            serverAdapter.sendLock(currentSelection, true);
-	        }
-	        else{
-	            serverAdapter.sendLock(currentSelection, false);
-	            activeMode = Mode.idle;
-	            openMenu();
-	            if (cameraPointMove)
-	            {
-	                cameraPointMove = false;
-	            }
-	        }
-            */
         }
     }
 }

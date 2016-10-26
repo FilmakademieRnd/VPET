@@ -41,7 +41,6 @@ namespace vpet
 	public partial class MainController : MonoBehaviour {
 	
 
-		public GravityChangeEvent OnObjectGravityChange = new GravityChangeEvent();
 
 		/*
 	    //!
@@ -469,14 +468,23 @@ namespace vpet
 
             hasUpdatedProjectionMatrix = true;
         }
-
-
+        
         public void UpdateProjectionMatrixSecondaryCameras()
         {
             foreach( Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>() )
             {
                 cam.projectionMatrix = Camera.main.projectionMatrix;
             }
+        }
+
+
+        public bool HasGravityOn()
+        {
+            if ( currentSelection && currentSelection.GetComponent<SceneObject>())
+            {
+                return !currentSelection.GetComponent<SceneObject>().lockKinematic;
+            }
+            return false;
         }
 
     }

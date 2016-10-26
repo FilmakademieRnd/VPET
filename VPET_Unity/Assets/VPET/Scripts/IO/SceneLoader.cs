@@ -790,7 +790,7 @@ namespace vpet
 
         public void HideGeometry()
         {
-            if (geometryPassiveList.Count == 0 && scnRoot.transform.childCount > 0)
+            if (geometryPassiveList.Count == 0 && scnRoot.transform.childCount > 0 )
             {
                 getGeometryIter(scnRoot.transform);
             }

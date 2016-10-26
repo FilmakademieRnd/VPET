@@ -53,7 +53,8 @@ namespace vpet
 		public bool Toggled
 		{
 			get { return false; }
-		}
+            set { }
+            }
 			
 		//!
 		//! Adds an action to this button. This button type can hold exactly one action.

@@ -39,7 +39,7 @@ namespace vpet
 	public interface IMenuButton
 	{
 		Menu Menu {set;}
-		bool Toggled {get;}
+		bool Toggled { get; set; }
 		void AddAction(Sprite active, Sprite idle, UnityAction call=null);
         void AddHoldAction(UnityAction call = null);
         void reset();

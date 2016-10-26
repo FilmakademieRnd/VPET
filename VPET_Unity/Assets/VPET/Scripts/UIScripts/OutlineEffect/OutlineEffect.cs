@@ -208,6 +208,11 @@ public class OutlineEffect : MonoBehaviour
         }
     }
 
+    public void UpdateProjectionMatrix( Matrix4x4 proj )
+    {
+        outlineCamera.projectionMatrix = proj;
+    }
+
     // Call this when source camera has been changed.
     public void UpdateFromSource()
     {

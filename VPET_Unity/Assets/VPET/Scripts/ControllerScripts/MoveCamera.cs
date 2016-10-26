@@ -379,7 +379,9 @@ namespace vpet
                     fpsText += " Config2: " + Application.persistentDataPath + "/editing_tool.cfg";
                     fpsText += " Mouse Active: " + mainController.MouseInputActive;
                     fpsText += " Touch Active: " + mainController.TouchInputActive;
-                    fpsText += " Msg: " + VPETSettings.Instance.msg;
+                    fpsText += " Renderpath:" + Camera.main.renderingPath;
+                    fpsText += " ActualRenderpath:" + Camera.main.actualRenderingPath;
+                    fpsText += " Msg:" + VPETSettings.Instance.msg;
                     accum = 0.0F;
                     frames = 0;
                 }

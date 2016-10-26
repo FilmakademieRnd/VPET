@@ -43,7 +43,6 @@ namespace vpet
 	{
 	    public ConfigEvent SubmitEvent = new ConfigEvent();
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
-		public VisibilityChangeEvent OnVisibilityChanged = new VisibilityChangeEvent();
 	
 #if USE_TANGO﻿
         public TangoScaleIntensityChangedEvent TangoScaleChangedEvent = new TangoScaleIntensityChangedEvent();
@@ -242,14 +241,12 @@ namespace vpet
         public void Show()
         {
             gameObject.SetActive(true);
-			OnVisibilityChanged.Invoke( true );
         }
 
         public void Hide()
         {
 			readUIValues();
             gameObject.SetActive(false);
-			OnVisibilityChanged.Invoke( false );
         }
 	
 	    void initUIValues()

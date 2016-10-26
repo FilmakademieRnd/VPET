@@ -36,11 +36,6 @@ namespace vpet
 {
 	public class SecondaryMenu : Menu
 	{
-        // temporary store
-        public MenuButton TranlationButton;
-        public MenuButton LinkToCamButton;
-        public MenuButton PointToShoot;
-
 		private int space = 0;
 		private int width = 0;
 	

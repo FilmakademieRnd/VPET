@@ -43,7 +43,6 @@ namespace vpet
 	            activeMode = Mode.translationMode;
 	        }
 	        else{
-	            activeMode = Mode.idle;
 	            openMenu();
 	        }
 	    }
@@ -57,7 +56,6 @@ namespace vpet
 	            activeMode = Mode.rotationMode;
 	        }
 	        else{
-	            activeMode = Mode.idle;
 	            openMenu();
 	        }
 	    }
@@ -71,7 +69,6 @@ namespace vpet
 	            activeMode = Mode.scaleMode;
 	        }
 	        else{
-	            activeMode = Mode.idle;
 	            openMenu();
 	        }
 	    }
@@ -90,11 +87,9 @@ namespace vpet
 	        }
 	        else
 	        {
-	            activeMode = Mode.idle;
 	            serverAdapter.sendLock(currentSelection, false);
 	            openMenu();
 	        }
-	
 	    }
 	
 	    //!
@@ -111,7 +106,6 @@ namespace vpet
 	        }
 	        else
 	        {
-	            activeMode = Mode.idle;
 	            serverAdapter.sendLock(currentSelection, false);
 	            openMenu();
 	        }
@@ -131,7 +125,6 @@ namespace vpet
 	        }
 	        else
 	        {
-	            activeMode = Mode.idle;
 	            serverAdapter.sendLock(currentSelection, false);
 	            openMenu();
 	        }
@@ -152,7 +145,6 @@ namespace vpet
 	        }
 	        else
 	        {
-	            activeMode = Mode.idle;
 	            serverAdapter.sendLock(currentSelection, false);
 	            openMenu();
 	        }
@@ -171,10 +163,8 @@ namespace vpet
             }
             else
             {
-                activeMode = Mode.idle;
                 openMenu();
             }
-
         }
 
 

@@ -42,9 +42,9 @@ namespace vpet
 	    //!
 	    //! receiving function for GUI
 	    //!
-	    public void togglePointToMove()
+	    public void togglePointToMove( bool active)
 	    {
-            if (activeMode != Mode.pointToMoveMode)
+            if (active)
             {
                 serverAdapter.sendLock(currentSelection, true);
                 activeMode = Mode.pointToMoveMode;
@@ -53,19 +53,6 @@ namespace vpet
             {
                 buttonTranslationClicked(true);
             }
-            /*
-	        if (activeMode == Mode.pointToMoveMode)
-	        {
-	            serverAdapter.sendLock(currentSelection, false);
-	            activeMode = Mode.translationMode;
-	            openMenu();
-	        }
-	        else 
-	        {
-	            serverAdapter.sendLock(currentSelection, true);
-	            activeMode = Mode.pointToMoveMode;
-	        }
-            */
         }
 
         //!

@@ -35,48 +35,33 @@ using System.Reflection;
 //!
 namespace vpet
 {
-	public class MenuStateEvent : UnityEvent<bool> { }
-
 	public partial class UI : MonoBehaviour
 	{
-	
-		public static UnityEvent OnUIChanged = new UnityEvent();
-		public MenuStateEvent OnSecondaryMenuVisibility = new MenuStateEvent();
+        //!
+        //! Event to propagate UI-changes. Register functions here which need to be called to update elements (button visibility e.g.)
+        //!
+        [HideInInspector]
+        public static UnityEvent OnUIChanged = new UnityEvent();
 
-	    //!
-	    //! Currently displayed menu.
-	    //!
-	    Menu activeMenu;
-	
 	    //! 
 	    //! Global icon scale
 	    //!
 	    public static float IconScale = 1f;
 	
-	
-	    [HideInInspector]
 	    //!
 	    //! Linear Menu displayed in the top right corner.
 	    //!
 	    private MainMenu mainMenu;
-	    [HideInInspector]
+
 	    //!
 	    //! Scout Menu displayed at bottom.
 	    //!
 	    private SecondaryMenu secondaryMenu;
 	
-	    [HideInInspector]
 	    //!
 	    //! Scout Menu displayed at bottom.
 	    //!
 	    private CenterMenu centerMenu;
-	
-	
-	    [HideInInspector]
-	    //!
-	    //! Light color and intensity picker menu.
-	    //!
-	    // public ColorIntensityPickerMenu ciPickerMenu;
 	
 	    //!
 	    //! Cached reference to the main controller.
@@ -98,7 +83,7 @@ namespace vpet
 	    //!
 	    //! Reference to main menu button.
 	    //!
-	    GameObject mainMenuButton;
+	    private GameObject mainMenuButton;
 	
 	    //!
 	    //! Is the main menu button active?
@@ -325,9 +310,7 @@ namespace vpet
 	        setupMainMenu();
 	        setupSecondaryMenu();
 	        setupCenterMenu();
-	
 		}
-	
 	
 		public void drawMainMenuButton( bool doOpen = false)
 		{
@@ -351,7 +334,6 @@ namespace vpet
         {
             mainMenu.reset();
         }
-	
 	
 	    //!
 	    //! Receiving function of a button press event on the main menu activation button.
@@ -427,8 +409,8 @@ namespace vpet
             VPETSettings.mapValuesToObject( configWidget );
 
 			configWidget.Show();           
-            configWidget.initConfigWidget();            
-
+            configWidget.initConfigWidget();
+            UI.OnUIChanged.Invoke();
             return configWidget;
 	    }
 	
@@ -443,7 +425,8 @@ namespace vpet
 			// save global settings in preferences
 			VPETSettings.mapValuesToPreferences();
 
-	    }
+            UI.OnUIChanged.Invoke();
+        }
 
 
         // TODO: create generic widget class
@@ -493,40 +476,19 @@ namespace vpet
 	    {
             centerMenu.reset();
 	        centerMenu.switchLayout(layout);
-
-            // invoke gravity event
-            if ( mainController.getCurrentSelection() && mainController.getCurrentSelection().GetComponent<SceneObject>())
-            {
-				mainController.OnObjectGravityChange.Invoke(!mainController.getCurrentSelection().GetComponent<SceneObject>().lockKinematic);
-            }
-
+            UI.OnUIChanged.Invoke();
 	        centerMenu.show();
 	    }
 	
 		public void hideCenterMenu()
 		{
 			centerMenu.ActiveButton = null;
-
-			centerMenu.hide();
-
-            // centerMenu.reset();
-
-            // Odd here
-			if ( secondaryMenu.currentLayout == layouts.TRANSLATION )
-			{
-				secondaryMenu.switchLayout(layouts.EDIT);
-			}
+			centerMenu.hide();           
 		}
 	
 		public void drawSecondaryMenu(layouts layout)
 	    {
-	        print("drawSecondaryMenu " + layout.ToString());
 	        secondaryMenu.switchLayout(layout);
-
-            //secondaryMenu.TranlationButton.Toggled = false;
-            //secondaryMenu.LinkToCamButton.Toggled = false;
-            //secondaryMenu.PointToShoot.Toggled = false;
-
             secondaryMenu.show();
 	    }
 	

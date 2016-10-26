@@ -41,15 +41,15 @@ namespace vpet
 	
 	    }
 	
-	    private void secondaryMenuSwitchLayout(layouts lay)
+	    private void togglePerspectives()
 	    {
-	        if (secondaryMenu.currentLayout == lay)
+	        if (secondaryMenu.currentLayout == layouts.PERSPECTIVES)
 	        {
-	            secondaryMenu.switchLayout(layouts.DEFAULT);
+	            secondaryMenu.switchLayout( secondaryMenu.PreviousLayout);
 	        }
 	        else
 	        {
-	            secondaryMenu.switchLayout(lay);
+	            secondaryMenu.switchLayout(layouts.PERSPECTIVES);
 	        }
 	        secondaryMenu.show();
 	    }
@@ -57,10 +57,6 @@ namespace vpet
 	
 	    private void changeMode(  layouts layout )
 	    {
-
-			// make toggle buttons using secondary menu switch of
-			OnSecondaryMenuVisibility.Invoke(false);
-
             if (layout == layouts.EDIT || layout == layouts.ANIMATION )
             {
                 layoutUI = layout;
@@ -84,6 +80,7 @@ namespace vpet
                 mainController.ActiveMode = MainController.Mode.idle;
             }
 
+            UI.OnUIChanged.Invoke();
             secondaryMenu.show();
         }
 
@@ -122,20 +119,30 @@ namespace vpet
 			mainController.toggleNcam();
 		}
 
-	    private void changeActiveMode( MainController.Mode mode )
+        private void editWidget3D(IMenuButton button)
+        {
+            mainController.buttonTranslationClicked(button.Toggled);
+        }
+
+        private void editLinkToCamera(IMenuButton button)
+        {
+            mainController.toggleObjectLinkCamera(button.Toggled);
+        }
+
+        private void editPointToMove(IMenuButton button)
+        {
+            mainController.togglePointToMove(button.Toggled);
+        }
+
+        // Center
+        //
+        //
+        private void editTranslation(IMenuButton button)
 	    {
-	        mainController.ActiveMode = mode;
-	    }
-				
-		// Center
-		//
-		//
-		private void editTranslation(IMenuButton button)
-	    {
-			// make toggle buttons using secondary menu switch of
-			OnSecondaryMenuVisibility.Invoke(false);
-         	centerMenu.animateActive( ((Button)button).gameObject );
-			mainController.buttonTranslationClicked( button.Toggled );
+            // make toggle buttons using secondary menu switch of
+            UI.OnUIChanged.Invoke();
+            centerMenu.animateActive( ((Button)button).gameObject );
+            editWidget3D(button);
 	    }
 	
 		private void editRotation(IMenuButton button)
@@ -181,10 +188,6 @@ namespace vpet
 	    {
             centerMenu.animateActive(((Button)button).gameObject);
             mainController.buttonAnimationEditClicked(button.Toggled);
-            if (button.Toggled)
-                animationController.activate();
-            else
-                animationController.deactivate();
         }
 
         private void animationDelete()
@@ -192,7 +195,6 @@ namespace vpet
 	        animationController.deleteAnimation();
 	        //  deleteKeyframe(int.Parse(mainController.getCurrentSelection().name));
 	        // animationController.smoothKeyframeTangents(int.Parse(mainController.getCurrentSelection().name));
-	
 	    }
 	
 	

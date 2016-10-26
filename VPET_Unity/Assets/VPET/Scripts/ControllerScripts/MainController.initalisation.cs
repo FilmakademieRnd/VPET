@@ -212,7 +212,7 @@ namespace vpet
             lightMenuMode,              // show centre menu (light icons depending on light type)
             addMode,                    // muldtiple selection TODO: not implemented yet
             idle,                       // no selection and no action
-            animationEditing           // set animation editing, show translation manipulator
+            animationEditing            // set animation editing, show translation manipulator
             // scoutMode
             };
 

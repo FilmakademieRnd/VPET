@@ -44,19 +44,16 @@ namespace vpet
 		//!
 	    void Update ()
 	    {
-
 	        //position modifiers if neccessary
 	        if (currentSelection)
 	        {
 	            if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
 	            {
-	
 	                translateModifier.transform.position = currentSelection.position;
 	                //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
 	
 	                translateModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15)*(Camera.main.fieldOfView/30);
 	                translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
-
 	            }
 	            else if (activeMode == Mode.rotationMode)
 	            {
@@ -88,11 +85,8 @@ namespace vpet
 	                    break;
 	                case (Mode.translationMode):
 	                    translateModifier.GetComponent<Modifier>().setVisible(false);
-	                    if (activeMode != Mode.pointToMoveMode && activeMode != Mode.objectLinkCamera)
-	                    {
-	                        ui.drawSecondaryMenu(layouts.EDIT);
-	                    }
-	                    break;
+                        if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode )  ui.drawSecondaryMenu(layouts.EDIT);
+                        break;
 	                case (Mode.rotationMode):
 	                    rotationModifier.GetComponent<Modifier>().setVisible(false);
 	                    break;
@@ -116,16 +110,9 @@ namespace vpet
                                 //undoRedoController.addAction();
                             }
                         }
-	                    if (activeMode != Mode.pointToMoveMode && activeMode != Mode.translationMode)
-	                    {
-	                        ui.drawSecondaryMenu(layouts.EDIT);
-	                    }
-	                    break;
+                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
+                        break;
 	                case (Mode.pointToMoveMode):
-	                    if (activeMode != Mode.translationMode && activeMode != Mode.objectLinkCamera)
-	                    {
-	                        ui.drawSecondaryMenu(layouts.EDIT);
-	                    }
 	                    break;
 	                case (Mode.objectMenuMode):
 	                    // ui.hideCenterMenu();
@@ -154,14 +141,17 @@ namespace vpet
 	                    ui.hideCenterMenu();
 	                    break;
 	                case (Mode.translationMode):
-	                    translateModifier.GetComponent<Modifier>().setVisible(true);
+                        Camera.main.transform.GetChild(0).GetComponent<Camera>().projectionMatrix = Camera.main.projectionMatrix;
+                        translateModifier.GetComponent<Modifier>().setVisible(true);
 	                    ui.drawSecondaryMenu(layouts.TRANSLATION);
 	                    break;
 	                case (Mode.rotationMode):
-	                    rotationModifier.GetComponent<Modifier>().setVisible(true);
+                        Camera.main.transform.GetChild(0).GetComponent<Camera>().projectionMatrix = Camera.main.projectionMatrix;
+                        rotationModifier.GetComponent<Modifier>().setVisible(true);
 	                    break;
 	                case (Mode.scaleMode):
-	                    scaleModifier.GetComponent<Modifier>().setVisible(true);
+                        Camera.main.transform.GetChild(0).GetComponent<Camera>().projectionMatrix = Camera.main.projectionMatrix;
+                        scaleModifier.GetComponent<Modifier>().setVisible(true);
 	                    break;
 	                case (Mode.objectLinkCamera):
 	                    if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
@@ -188,14 +178,14 @@ namespace vpet
 	                        if (ui.LayoutUI == layouts.ANIMATION)
 	                        {
 	                            ui.drawCenterMenu(layouts.ANIMATION);
+                                ui.drawSecondaryMenu(layouts.ANIMATION);
 	                        }
 	                        else
 	                        {
 	                            ui.drawCenterMenu(layouts.OBJECT);
 	                        }
-	                        // ui.drawObjectModificationMenu(AnimationData.Data.getAnimationClips(currentSelection.gameObject) != null, currentSelectionisKinematic());
-	                    }
-	                    break;
+                        }
+                        break;
 	                case (Mode.lightMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT)
 	                    {
@@ -220,6 +210,7 @@ namespace vpet
 	                    break;
 	                case (Mode.animationEditing):
                         animationController.activate();
+                        Camera.main.transform.GetChild(0).GetComponent<Camera>().projectionMatrix = Camera.main.projectionMatrix;
                         translateModifier.GetComponent<Modifier>().setVisible(true);
                         break;
 	                case (Mode.addMode):
