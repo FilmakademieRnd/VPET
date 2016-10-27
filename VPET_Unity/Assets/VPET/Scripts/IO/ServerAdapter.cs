@@ -616,8 +616,6 @@ namespace vpet
 	
 	    }
 	
-	
-	
 	    //! function to be called to send a kinematic on/off signal to server
 	    //! @param  obj             Transform of GameObject to be locked
 	    //! @param  on              should it be set to on or off
@@ -634,21 +632,30 @@ namespace vpet
 	    //! @param  locked          should it be locked or unlocked
 	    public void sendLock(Transform obj, bool locked)
 	    {
-	        if (locked)
+	        if (locked) // lock it
 	        {
-	            currentlyLockedObject = obj;
-	        }
-	        else
+                if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
+                {
+                    sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false);
+                    // print("Unlock object " + currentlyLockedObject.gameObject.name );
+                }
+                if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
+                {
+                    sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true);
+                    // print("Lock object " + obj.gameObject.name);
+                }
+                currentlyLockedObject = obj;
+            }
+            else // unlock it
 	        {
-	            currentlyLockedObject = null;
-	        }
-	
-	        if (!deactivatePublish)
-	        {
-	            sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj,scene) + "|" + locked);
+                if ( currentlyLockedObject != null && !deactivatePublish ) // unlock if locked
+                {
+                    sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false);
+                    // print("Unlock object " + obj.gameObject.name);
+                }
+                currentlyLockedObject = null;
 	        }
 	    }
-	
 	
 	    //! function parsing received message and executing change
 	    //! @param  message         message string received by server

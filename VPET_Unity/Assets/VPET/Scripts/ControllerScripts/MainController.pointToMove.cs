@@ -32,48 +32,12 @@ using System.Collections;
 //!
 namespace vpet
 {
-	public partial class MainController : MonoBehaviour {
-	
+	public partial class MainController : MonoBehaviour
+    {
 	    //!
 	    //! should point to move be applied to camera
 	    //!
 	    bool cameraPointMove = false;
-	
-	    //!
-	    //! receiving function for GUI
-	    //!
-	    public void togglePointToMove( bool active)
-	    {
-            if (active)
-            {
-                serverAdapter.sendLock(currentSelection, true);
-                activeMode = Mode.pointToMoveMode;
-            }
-            else
-            {
-                buttonTranslationClicked(true);
-            }
-        }
-
-        //!
-        //! receiving function for GUI, special case for moving the camera
-        //!
-        public void togglePointToMoveCamera()
-	    {
-	        cameraPointMove = !cameraPointMove;
-	        if (activeMode == Mode.pointToMoveMode)
-	        {
-	            if (currentSelection)
-	            {
-	                serverAdapter.sendLock(currentSelection, false);
-	            }
-	            activeMode = Mode.idle;
-	        }
-	        else
-	        {
-	            activeMode = Mode.pointToMoveMode;
-	        }
-	    }
 	
 	    //!
 	    //! show the pointToMove widget at the specific place (but place it on top of the groundPlane)
@@ -122,5 +86,5 @@ namespace vpet
 	            pointToMoveModifier.GetComponent<Renderer>().enabled = false;
 	        }
 	    }
-}
+    }
 }

@@ -258,7 +258,7 @@ namespace vpet
 	    {	        
 	        if (layoutDict.ContainsKey(layout))
 	        {
-				print("switchLayout " + layout.ToString());
+				// print("switchLayout " + layout.ToString());
                 PreviousLayout = currentLayout;
                 currentLayout = layout;
 	

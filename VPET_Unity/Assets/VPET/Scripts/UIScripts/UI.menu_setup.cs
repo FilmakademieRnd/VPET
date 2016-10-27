@@ -139,7 +139,7 @@ namespace vpet
 			secondaryMenu.addButton( buttonScout, layouts.SCOUT);
 			// click to move
 			IMenuButton buttonClickMoveCam = Elements.MenuButtonToggle();
-			buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => mainController.togglePointToMoveCamera() ); // 
+			buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => pointToMoveCamera(buttonClickMoveCam) ); // 
 			secondaryMenu.addButton( buttonClickMoveCam, layouts.SCOUT);
 	        // animation mode buttons
 			// previous key
@@ -240,6 +240,7 @@ namespace vpet
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
+            UI.OnUIChanged.AddListener(() => { buttonRot.Toggled = mainController.ActiveMode == MainController.Mode.rotationMode; });
             centerMenu.addButton(buttonRot, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTDIR);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTSPOT);

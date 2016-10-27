@@ -125,8 +125,7 @@ namespace vpet
 	    // public static int ButtonOffset = (int)(UI.SpriteSize.x + UI.SpriteSize.x / 5);
 	    public static int ButtonOffset = (int)(UI.SpriteSize.x+ UI.SpriteSize.x/4f);
 	
-	    public LightSettingsWidget lightSettingsWidget;
-	
+	    private LightSettingsWidget lightSettingsWidget;
 	
 	    private Transform canvas;
 
@@ -138,8 +137,6 @@ namespace vpet
         {
             get { return configWidget; }
         }
-
-
 
         private RoundProgressBar progressWidget = null;
 

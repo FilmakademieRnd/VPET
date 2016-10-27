@@ -108,7 +108,6 @@ namespace vpet
             if (sObject.GetComponent<SceneObject>().locked)
                 return;
 
-            //select object and execute connected tasks
 
             //cache current selection
             currentSelection = sObject;
@@ -126,7 +125,10 @@ namespace vpet
 	        {
 	            if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
 	            {
-	                activeMode = Mode.lightMenuMode;
+                    if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera))
+                    {
+                        activeMode = Mode.lightMenuMode;
+                    }
 	            }
 	            else
 	            {
@@ -134,8 +136,8 @@ namespace vpet
 					{
 		                activeMode = Mode.objectMenuMode;
 					}
-	            }
-	        }
+                }
+            }
 	
 	    }
 	

@@ -47,7 +47,6 @@ namespace vpet
 	    public void handleModifier(Transform modifier){
 	        Debug.Log("Hit modifier " + modifier.name + "!");
 	        modifier.parent.GetComponent<Modifier>().isUsed();
-	        serverAdapter.sendLock(currentSelection, true);
 	        if (activeMode != Mode.animationEditing)
 	        {
 	            currentSelection.GetComponent<SceneObject>().setKinematic(true);
@@ -164,7 +163,6 @@ namespace vpet
 	    //! reset modifiers and push changes to server if neccessary
 	    //!
 	    public void resetModifiers(){
-	        serverAdapter.sendLock(currentSelection, false);
 	        //reset transparency
 	        translateModifier.GetComponent<Modifier>().resetColors();
 	        rotationModifier.GetComponent<Modifier>().resetColors();
