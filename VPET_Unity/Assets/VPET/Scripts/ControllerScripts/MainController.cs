@@ -245,12 +245,16 @@ namespace vpet
 
 			if (Camera.main.orthographic == true)
 			{
-				Camera.main.orthographic = false;
-                foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
-                    cam.orthographic = false;
+                Camera.main.orthographic = false;
+                Camera.main.renderingPath = RenderingPath.UsePlayerSettings;
+
+                UpdatePropertiesSecondaryCameras();
                 cameraAdapter.setMove(true);
 				currentCameraView = View.PERSP;
-			}
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+                Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>().FlipY = false;
+#endif
+            }
 
 			// restore previous view, e.g. when returning from orthographic view
 			Camera.main.transform.position = camPreviousPosition;
@@ -286,6 +290,7 @@ namespace vpet
                     Camera.main.fieldOfView = camScript.fov;
                     Camera.main.nearClipPlane = camScript.near;
                     Camera.main.farClipPlane = camScript.far;
+                    UpdatePropertiesSecondaryCameras();
                 }
                 camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
             }
@@ -312,9 +317,14 @@ namespace vpet
 			// switch off ncam if on
 			if ( serverAdapter.receiveNcam ) toggleNcam();
 
+            Camera.main.renderingPath = RenderingPath.VertexLit;
+
 	        Camera.main.orthographic = true;
-            foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
-                cam.orthographic = true;
+            UpdatePropertiesSecondaryCameras();
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+            Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>().FlipY = true;
+#endif
+
             cameraAdapter.setMove(false);
 			currentCameraView = view;
 
@@ -477,6 +487,16 @@ namespace vpet
             }
         }
 
+        private void UpdatePropertiesSecondaryCameras()
+        {
+            foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
+            {
+                cam.orthographic = Camera.main.orthographic;
+                cam.fieldOfView = Camera.main.fieldOfView;
+                cam.nearClipPlane =  Camera.main.nearClipPlane;
+                cam.farClipPlane = Camera.main.farClipPlane;
+            }
+        }
 
         public bool HasGravityOn()
         {

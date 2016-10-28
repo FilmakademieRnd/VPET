@@ -762,9 +762,6 @@ namespace vpet
 				if (Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>())
 				{
 
-                    // TODO: not here copy camera properties 
-                    Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>().UpdateProjectionMatrix( Camera.main.projectionMatrix );
-
                     Outline outline = obj.GetComponent<Outline>();
                     if (!outline)
                         obj.AddComponent<Outline>();

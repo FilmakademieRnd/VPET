@@ -47,11 +47,7 @@ namespace vpet
 		//! Cached reference to main controller.
 		//!
 		private MainController mainController;
-		public MainController MainControllerXXX
-		{
-	        get { return mainController;  }
-			set{ mainController = value;}
-		}
+
 		//!
 		//! time stamp buffer for long GUI click recognition
 		//!
@@ -120,28 +116,27 @@ namespace vpet
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
 
 
-			// declare touch input
-			#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
+            // declare touch input
+            // #if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
 			touchInput = gameObject.AddComponent<TouchInput>();
 			mainController.TouchInputActive = true;
-			//touchInput.InputAdapter = this;
-			#endif
-	
-	
-			// declare mouse input
-			#if UNITY_EDITOR
-			mouseInput = gameObject.AddComponent<MouseInput>();
-			mainController.MouseInputActive = true;
-			//mouseInput.InputAdapter = this;
-			#endif
-	
-		}
-	
-	
-		//!
-		//! Use this for initialization
-		//!
-		void Start ()
+#endif
+
+
+            // declare mouse input
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+            mouseInput = gameObject.AddComponent<MouseInput>();
+            mainController.MouseInputActive = true;
+#endif
+
+        }
+
+
+        //!
+        //! Use this for initialization
+        //!
+        void Start ()
 		{
 			groundPlane = GameObject.Find("GroundPlane").GetComponent<Collider>();
 			undoRedoController = GameObject.Find ("UndoRedoController").GetComponent<UndoRedoController> ();
@@ -255,6 +250,7 @@ namespace vpet
 			{ //pause is active when avaoiding double interactions
 				if (!pointerOnGUI())
 				{
+
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
@@ -335,9 +331,8 @@ namespace vpet
 	
 			if (!pointerOnGUI())
 			{
-				if (!pause)
+                if (!pause)
 				{
-
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
@@ -354,10 +349,6 @@ namespace vpet
 						if (pointerOnModifier){
 							//Pointer is down on modifier
 							Vector3 newHitPosition = objectRaycast(pos, mainController.helperCollider);
-	
-	
-							// print( "hitPositionBuffer " + hitPositionBuffer + " newHitPosition " + newHitPosition );
-	
 	
 							if ( newHitPosition != nullVector && hitPositionBuffer != nullVector )
 							{
@@ -464,16 +455,19 @@ namespace vpet
 		//!
 		public void threePointerDrag(Vector3 pos)
         {
-			if (Camera.main.orthographic == false)
-			{
-				mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed );
-			}
-			else
-			{
-				Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) / 100f);
-			}
+            if (Camera.main.orthographic == false)
+            {
+                mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed);
+            }
+            else
+            {
+                Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) / 100f);
+                foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
+                {
+                    cam.orthographicSize = Camera.main.orthographicSize;
+                }
+            }
 		}
-	
 	
 		//!
 		//! execute a raycast through the current position on a specific Unity layer (& ignore other layers)
@@ -504,24 +498,14 @@ namespace vpet
 		private Vector3 objectRaycast(Vector3 pos, Collider target) {
 			Ray ray = Camera.main.ScreenPointToRay(pos);
 			RaycastHit hit;
-	
-			// print("ray " + ray);
-	
-			// if (target.Raycast(ray, out hit, 100.0f))
-	
-	
-	
-	
+		
 			if ( target.Raycast( ray, out hit, 100000f ) )
 			{
-				// print(hit.point + " + " + hit.distance);
 				//raycast was executed and hit an object
 				return hit.point;
 			}
 			else {
-				// print("nullvector " + nullVector);
 				return nullVector;
-				//return new Vector3(1,2,3);
 			}
 		}
 	
@@ -531,16 +515,23 @@ namespace vpet
 		//!
 		private bool pointerOnGUI()
 		{
-			if (EventSystem.current.IsPointerOverGameObject()) return true;
-			foreach (Touch touch in Input.touches)
-			{
-				int pointerID = touch.fingerId;
-				if (EventSystem.current.IsPointerOverGameObject(pointerID))
-				{
-					// at least on touch is over a canvas UI
-					return true;
-				}
-			}
+            if ( Input.touchCount > 0 )
+            {
+                foreach (Touch touch in Input.touches)
+                {
+                    int pointerID = touch.fingerId;
+                    if (EventSystem.current.IsPointerOverGameObject(pointerID))
+                    {
+                        // at least on touch is over a canvas UI
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (EventSystem.current.IsPointerOverGameObject()) return true;
+            }
+
 			return false;
 		}
 	}

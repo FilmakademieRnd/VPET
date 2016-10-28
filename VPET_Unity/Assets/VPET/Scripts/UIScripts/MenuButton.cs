@@ -38,6 +38,7 @@ namespace vpet
 	//!
 	public class MenuButton : Button, IMenuButton
 	{
+
 		//!
 		//! Reference to the menu this button is included 
 		//!
@@ -82,8 +83,8 @@ namespace vpet
 		//!
 		public override void OnPointerClick (PointerEventData eventData)
 		{
-			// set active button at menu
-			menu.ActiveButton = this.gameObject;
+            // set active button at menu
+            menu.ActiveButton = this.gameObject;
 
 			// call base
 			base.OnPointerClick (eventData);

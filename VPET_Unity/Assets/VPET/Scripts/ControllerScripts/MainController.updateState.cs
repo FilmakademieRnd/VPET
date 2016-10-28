@@ -38,7 +38,7 @@ namespace vpet
 	    private Mode oldState = Mode.idle;
 	    private Transform oldSelection = null;
 		public Transform oldParent = null;
-	
+
 	    //!
 		//! Update is called once per frame
 		//!
@@ -52,19 +52,19 @@ namespace vpet
 	                translateModifier.transform.position = currentSelection.position;
 	                //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
 	
-	                translateModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15)*(Camera.main.fieldOfView/30);
-	                translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
+                    translateModifier.transform.localScale = getModifierScale();
+                    translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 	            }
 	            else if (activeMode == Mode.rotationMode)
 	            {
 	                rotationModifier.transform.position = currentSelection.position;
-	                rotationModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15) * (Camera.main.fieldOfView / 30);
+	                rotationModifier.transform.localScale = getModifierScale() ;
 	            }
 	            else if (activeMode == Mode.scaleMode)
 	            {
 	                scaleModifier.transform.position = currentSelection.position;
 	                scaleModifier.transform.rotation = currentSelection.rotation;
-	                scaleModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15) * (Camera.main.fieldOfView / 30);
+	                scaleModifier.transform.localScale = getModifierScale();
 	            }
 	        }
 	
