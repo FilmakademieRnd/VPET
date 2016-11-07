@@ -13,22 +13,15 @@ INCLUDES = -Iinclude
 INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
 
 # Third Party libraries
-BOOST_INCLUDE ?= $(BOOST_HOME)/include
-INCLUDES += -I$(BOOST_INCLUDE)
 ifdef ZMQ_HOME
 INCLUDES += -I$(ZMQ_HOME)/include
 endif
-#INCLUDES += -I$(OPENEXR_HOME)/include
 
-LIBPATH = -L$(BOOST_HOME)/lib
 ifdef ZMQ_HOME
 LIBPATH += -L$(ZMQ_HOME)/lib
 endif
-#LIBPATH += -L$(OPENEXR_HOME)/lib
 LIBPATH += -L/usr/lib64
 
-#LIBS = -Wl,-Bstatic -lboost_thread -lzmq_static
-#LIBS = -Wl,-Bstatic -lboost_thread
 ifdef ZMQ_HOME
 #LIBS += -lzmq_static
 endif

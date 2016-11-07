@@ -18,7 +18,7 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 
-The VPET Unity sourcecode AND binaries incorporate the following resources:
+The VPET Unity sourcecode AND binaries incorporate the following resources (linked dynamically):
 
 NetMQ  				- LGPLv3 (https://github.com/zeromq/netmq)
 AsyncIO 			- MPLv2.0 (https://github.com/somdoron/AsyncIO)

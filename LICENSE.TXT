@@ -18,7 +18,7 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 
-The VPET sourcecode AND binaries incorporate the following resources:
+The VPET sourcecode AND binaries incorporate the following resources (linked dynamically):
 
 VPET Unity:
 NetMQ  				- LGPLv3 (https://github.com/zeromq/netmq)
@@ -26,6 +26,7 @@ AsyncIO 			- MPLv2.0 (https://github.com/somdoron/AsyncIO)
 
 Scene Distribution Katana:
 ZeroMQ 				- LGPLv3 (http://zeromq.org/area:licensing)
+OpenGL Math (GLM)	- The Happy Bunny License and MIT License (http://glm.g-truc.net/copying.txt)
 
 Syncronisation Server:
 ZeroMQ 				- LGPLv3 (http://zeromq.org/area:licensing)

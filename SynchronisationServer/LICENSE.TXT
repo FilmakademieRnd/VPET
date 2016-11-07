@@ -18,7 +18,7 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 
-Syncronisation Server sourcecode AND binaries incorporate the following resources:
+Syncronisation Server sourcecode AND binaries incorporate the following resources (linked dynamically):
 
 ZeroMQ 				- LGPLv3 (http://zeromq.org/area:licensing)
 Qt                  - LGPL (http://qt.nokia.com)

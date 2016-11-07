@@ -38,41 +38,8 @@ INCLUDES = -Iinclude
 INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
 
 # Third Party libraries
-# OpenEXR
-#OPENEXR_INCLUDE ?= $(OPENEXR_HOME)/include
-#INCLUDES  += -I$(OPENEXR_INCLUDE)
-# Boost
-BOOST_INCLUDE ?= $(BOOST_HOME)/include
-INCLUDES += -I$(BOOST_INCLUDE)
-
-LIBPATH   = -L$(BOOST_HOME)/lib
-#LIBPATH   += -L$(OPENEXR_HOME)/lib
-
-
-
-#LIBPATH   += -L$(SOIL)/lib
-#LIBPATH   += -L$(GLEW)/lib
-
-
-
-#LIBS      =  -lboost_thread
-#LIBS      += -lHalf -lIex -lIlmImf -lIlmThread -lImath
-
-
-#LIBS += -lSOIL
-#LIBS += -lGLEW
-
-
 INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
 INCLUDES += -I$(PLUGIN_RELATIVE_PATH)/include
-
-
-
-
-#INCLUDES += -I$(SOIL)/src
-#INCLUDES += -I$(GLEW)/include
-
-
 
 # Object files and flags
 OBJS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(SOURCES))
