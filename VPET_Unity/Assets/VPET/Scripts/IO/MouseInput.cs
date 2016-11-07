@@ -40,11 +40,7 @@ namespace vpet
 		//! cached reference to human input controller
 		//!
 		private InputAdapter inputAdapter;
-		public InputAdapter InputAdapterXXX
-		{
-			set { inputAdapter = value; }
-		}
-	
+
 	    //!
 	    //! is pointer down & moving
 	    //!
@@ -69,7 +65,6 @@ namespace vpet
 	        moveCamera = Camera.main.transform.GetComponent<MoveCamera>();
 	
 	        inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();
-	
 	    }
 		
 	    //!
@@ -77,65 +72,68 @@ namespace vpet
 	    //!
 	    void Update()
 	    {
-	        //single mouse gesture
-	        if (Input.GetMouseButtonDown(0))
-	        {
-	            //left mouse Button down
-	            if (Input.GetKey(KeyCode.Alpha3))
-	            {
-					inputAdapter.threePointerStarted(Input.mousePosition);
-	            }
-	            else if (Input.GetKey(KeyCode.Alpha2))
-	            {
-					inputAdapter.twoPointerStarted(Input.mousePosition);
-	            }
-	            else
-	            {
-					inputAdapter.singlePointerStarted(Input.mousePosition);
-	            }
-	            startMousePosition = Input.mousePosition;
-	            drag = true;
-	        }
-	        else if (Input.GetMouseButtonUp(0))
-	        {
-	            //left mouse Button up
-	            if (Input.GetKey(KeyCode.Alpha3))
-	            {
-					inputAdapter.threePointerEnded(Input.mousePosition);
-	            }
-	            else if (Input.GetKey(KeyCode.Alpha2))
-	            {
-					inputAdapter.twoPointerEnded(Input.mousePosition);
-	            }
-	            else
-	            {
-					inputAdapter.singlePointerEnded(Input.mousePosition);
-	            }
-	            drag = false;
-	        }
-	        else if (drag)
-	        {
-	            //left mouse Button down and mouse moving
-	            if (Input.GetKey(KeyCode.Alpha3))
-	            {
-					inputAdapter.threePointerDrag(Input.mousePosition);
-	            }
-	            else if (Input.GetKey(KeyCode.Alpha2))
-	            {
-					inputAdapter.twoPointerDrag(Input.mousePosition);
-	            }
-	            else if ( Input.GetKey( KeyCode.Alpha1 ) )
-	            {
-	                // set rotation
-	                Vector3 _mouseDelta = Input.mousePosition-startMousePosition;
-	                Quaternion _rotation =   Quaternion.Euler( -_mouseDelta.y*Time.deltaTime, _mouseDelta.x*Time.deltaTime, 0 );
-	                moveCamera.transform.localRotation *= _rotation ;
-	            }
-	            else 
-	            {
-					inputAdapter.singlePointerDrag(Input.mousePosition);
-	            }
-	        }
+            if (Input.touchCount == 0) // no touch input needed for devices with touch and mouse
+            {
+                //single mouse gesture
+                if (Input.GetMouseButtonDown(0))
+                {
+                    //left mouse Button down
+                    if (Input.GetKey(KeyCode.Alpha3))
+                    {
+                        inputAdapter.threePointerStarted(Input.mousePosition);
+                    }
+                    else if (Input.GetKey(KeyCode.Alpha2))
+                    {
+                        inputAdapter.twoPointerStarted(Input.mousePosition);
+                    }
+                    else
+                    {
+                        inputAdapter.singlePointerStarted(Input.mousePosition);
+                    }
+                    startMousePosition = Input.mousePosition;
+                    drag = true;
+                }
+                else if (Input.GetMouseButtonUp(0))
+                {
+                    //left mouse Button up
+                    if (Input.GetKey(KeyCode.Alpha3))
+                    {
+                        inputAdapter.threePointerEnded(Input.mousePosition);
+                    }
+                    else if (Input.GetKey(KeyCode.Alpha2))
+                    {
+                        inputAdapter.twoPointerEnded(Input.mousePosition);
+                    }
+                    else
+                    {
+                        inputAdapter.singlePointerEnded(Input.mousePosition);
+                    }
+                    drag = false;
+                }
+                else if (drag)
+                {
+                    //left mouse Button down and mouse moving
+                    if (Input.GetKey(KeyCode.Alpha3))
+                    {
+                        inputAdapter.threePointerDrag(Input.mousePosition);
+                    }
+                    else if (Input.GetKey(KeyCode.Alpha2))
+                    {
+                        inputAdapter.twoPointerDrag(Input.mousePosition);
+                    }
+                    else if (Input.GetKey(KeyCode.Alpha1))
+                    {
+                        // set rotation
+                        Vector3 _mouseDelta = Input.mousePosition - startMousePosition;
+                        Quaternion _rotation = Quaternion.Euler(-_mouseDelta.y * Time.deltaTime, _mouseDelta.x * Time.deltaTime, 0);
+                        moveCamera.transform.localRotation *= _rotation;
+                    }
+                    else
+                    {
+                        inputAdapter.singlePointerDrag(Input.mousePosition);
+                    }
+                }
+            }
 	    }
 }
 }

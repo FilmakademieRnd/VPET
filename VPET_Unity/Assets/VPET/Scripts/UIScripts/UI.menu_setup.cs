@@ -32,36 +32,35 @@ namespace vpet
 {
 	public partial class UI : MonoBehaviour 
 	{
-	    //!
-	    //! Sets up all buttons for the main menu.
-	    //!
-	    private void setupMainMenu()
-	    {
-			// views
-			IMenuButton buttonPers = Elements.MenuButtonToggle();
-			buttonPers.AddAction( GeneralMenu_Perspective_sel, GeneralMenu_Perspective_nrm, () => secondaryMenuSwitchLayout(layouts.PERSPECTIVES)  );
-			OnSecondaryMenuVisibility.AddListener( ((MenuButtonToggle)buttonPers).setToggleState ); // register changes 
-			mainMenu.addButton( buttonPers);
-	        // info button
-			//
-			// modes
-			IMenuButton buttonModes = Elements.MenuButtonList();
-			buttonModes.AddAction(ModeMenu_EditMode_sel, ModeMenu_EditMode_nrm,  () => changeMode(layouts.EDIT));
-			buttonModes.AddAction(ModeMenu_AnimationMode_sel, ModeMenu_AnimationMode_nrm,  () => changeMode(layouts.ANIMATION)); // anim
-			buttonModes.AddAction(ModeMenu_ScoutMode_sel, ModeMenu_ScoutMode_nrm, () => changeMode(layouts.SCOUT)); //scout
-			mainMenu.addButton( buttonModes);
+        //!
+        //! Sets up all buttons for the main menu.
+        //!
+        private void setupMainMenu()
+        {
+            // views
+            IMenuButton buttonPers = Elements.MenuButtonToggle();
+            buttonPers.AddAction(GeneralMenu_Perspective_sel, GeneralMenu_Perspective_nrm, () => togglePerspectives());
+            UI.OnUIChanged.AddListener(() => { buttonPers.Toggled = (secondaryMenu.currentLayout == layouts.PERSPECTIVES); });  // register for ui changes 
+            mainMenu.addButton(buttonPers);
+            // info button
+            //
+            // modes
+            IMenuButton buttonModes = Elements.MenuButtonList();
+            buttonModes.AddAction(ModeMenu_EditMode_sel, ModeMenu_EditMode_nrm, () => changeMode(layouts.EDIT));
+            buttonModes.AddAction(ModeMenu_AnimationMode_sel, ModeMenu_AnimationMode_nrm, () => changeMode(layouts.ANIMATION)); // anim
+            buttonModes.AddAction(ModeMenu_ScoutMode_sel, ModeMenu_ScoutMode_nrm, () => changeMode(layouts.SCOUT)); //scout
+            mainMenu.addButton(buttonModes);
             // gyro toggle
-			IMenuButton buttonGyro = Elements.MenuButtonToggle();
-			buttonGyro.AddAction(GeneralMenu_Gyro_sel, GeneralMenu_Gyro_nrm, () => mainController.toggleCameraRotation() ); // for toggle
-			buttonGyro.AddAction(GeneralMenu_Gyro_sel, GeneralMenu_Gyro_nrm, () => mainController.toggleCameraRotation() ); // for untogle
+            IMenuButton buttonGyro = Elements.MenuButtonToggle();
+            buttonGyro.AddAction(GeneralMenu_Gyro_sel, GeneralMenu_Gyro_nrm, () => mainController.toggleCameraRotation()); // for toggle
             buttonGyro.AddHoldAction(() => mainController.resetCameraOffset());
             mainMenu.addButton(buttonGyro);
-			// config
-			IMenuButton buttonConfig = Elements.MenuButtonToggle();
-			buttonConfig.AddAction(GeneralMenu_Settings_sel, GeneralMenu_Settings_nrm, () => drawConfigWidget() ); 
-			buttonConfig.AddAction(GeneralMenu_Settings_sel, GeneralMenu_Settings_nrm, () => hideConfigWidget()); // untoggle action
-			configWidget.OnVisibilityChanged.AddListener( ((MenuButtonToggle)buttonConfig).setToggleState ); // register changes (connect to config widget visibility)
-			mainMenu.addButton( buttonConfig);
+            // config
+            IMenuButton buttonConfig = Elements.MenuButtonToggle();
+            buttonConfig.AddAction(GeneralMenu_Settings_sel, GeneralMenu_Settings_nrm, () => drawConfigWidget());
+            buttonConfig.AddAction(GeneralMenu_Settings_sel, GeneralMenu_Settings_nrm, () => hideConfigWidget()); // untoggle action
+            UI.OnUIChanged.AddListener(() => { buttonConfig.Toggled = (configWidget.gameObject.activeSelf == true); } );  // register for ui changes 
+            mainMenu.addButton( buttonConfig);
 			mainMenu.addButtonToLayout( buttonConfig, layouts.SPLASH);
 			// quit
 			IMenuButton buttonQuit = Elements.MenuButton();
@@ -113,7 +112,6 @@ namespace vpet
 			// ncam
 			IMenuButton buttonNcam = Elements.MenuButtonToggle();
 			buttonNcam.AddAction(PerspectiveMenu_PrincipalCam_sel, PerspectiveMenu_PrincipalCam_nrm, call: () => ncamCamera() );  
-			// buttonNcam.AddAction(PerspectiveMenu_PrincipalCam_sel, PerspectiveMenu_PrincipalCam_nrm, call: () => perspectiveCamera() );  
 			secondaryMenu.addButton( buttonNcam, layouts.PERSPECTIVES);
 			// predefined
 			IMenuButton buttonPre = Elements.MenuButton();
@@ -141,7 +139,7 @@ namespace vpet
 			secondaryMenu.addButton( buttonScout, layouts.SCOUT);
 			// click to move
 			IMenuButton buttonClickMoveCam = Elements.MenuButtonToggle();
-			buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => mainController.togglePointToMoveCamera() ); // 
+			buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => pointToMoveCamera(buttonClickMoveCam) ); // 
 			secondaryMenu.addButton( buttonClickMoveCam, layouts.SCOUT);
 	        // animation mode buttons
 			// previous key
@@ -175,18 +173,19 @@ namespace vpet
 							
 	        // translation mode buttons
 			// 3dwidget
-			IMenuButton buttonTrans = Elements.MenuButtonToggle();
-			buttonTrans.AddAction(EditMode_Translate3DWidget_sel, EditMode_Translate3DWidget_nrm, () => mainController.buttonTranslationClicked(true) ); // 
-			secondaryMenu.addButton( buttonTrans, layouts.TRANSLATION);
+			//IMenuButton buttonTrans = Elements.MenuButtonToggle();
+			//buttonTrans.AddAction(EditMode_Translate3DWidget_sel, EditMode_Translate3DWidget_nrm, () => editWidget3D(buttonTrans) ); // 
+			//secondaryMenu.addButton( buttonTrans, layouts.TRANSLATION);
 			// attach to cam
 			IMenuButton buttonAttachCam = Elements.MenuButtonToggle();
-			buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm,() => mainController.toggleObjectLinkCamera()); // 
+			buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm,() => editLinkToCamera(buttonAttachCam)); // 
+            UI.OnUIChanged.AddListener(() => { buttonAttachCam.Toggled = (mainController.ActiveMode == MainController.Mode.objectLinkCamera); }); // register ui changes
 			secondaryMenu.addButton( buttonAttachCam, layouts.TRANSLATION);
-            //secondaryMenu.addButton(EditMode_TranslateFingerSwipe_sel, EditMode_TranslateFingerSwipe_nrm, toggle: true, call: () => editFingerSwip()); // 
 			// click to move
 			IMenuButton buttonClickMove = Elements.MenuButtonToggle();
-			buttonClickMove.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, () => mainController.togglePointToMove() ); // 
-			secondaryMenu.addButton( buttonClickMove, layouts.TRANSLATION);
+			buttonClickMove.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, () => editPointToMove(buttonClickMove) ); // 
+            UI.OnUIChanged.AddListener(() => { buttonClickMove.Toggled = (mainController.ActiveMode == MainController.Mode.pointToMoveMode); }); // register ui changes
+            secondaryMenu.addButton( buttonClickMove, layouts.TRANSLATION);
 	    }
 
         private void animationFireCueMenu(IMenuButton button)
@@ -241,6 +240,7 @@ namespace vpet
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
+            UI.OnUIChanged.AddListener(() => { buttonRot.Toggled = mainController.ActiveMode == MainController.Mode.rotationMode; });
             centerMenu.addButton(buttonRot, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTDIR);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTSPOT);
@@ -258,8 +258,8 @@ namespace vpet
 	        // graviy/kinematic on off
 			IMenuButton buttonKin = Elements.MenuButtonToggle();
 			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic() );
-			mainController.OnObjectGravityChange.AddListener( ((MenuButtonToggle)buttonKin).setToggleState ); // register changes ( updatet button state when gravity set on/off )
-			centerMenu.addButton( buttonKin, layouts.OBJECT );
+            UI.OnUIChanged.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
+            centerMenu.addButton( buttonKin, layouts.OBJECT );
             // light color
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
             buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 

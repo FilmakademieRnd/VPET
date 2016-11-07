@@ -205,7 +205,7 @@ namespace vpet
 			startFrameDisplay.text = Mathf.RoundToInt( startTime*25 ).ToString();
 			endFrameDisplay.text = Mathf.RoundToInt( endTime * 25).ToString();
 
-			print("a1: " + m_a1 + "b1: " + m_b1 + "a2: " + m_a2 + "b2: " + m_b2 + "a3: " + m_a3 + "b3: " + m_b3);
+			// print("a1: " + m_a1 + "b1: " + m_b1 + "a2: " + m_a2 + "b2: " + m_b2 + "a3: " + m_a3 + "b3: " + m_b3);
 		}
 
 	    //!

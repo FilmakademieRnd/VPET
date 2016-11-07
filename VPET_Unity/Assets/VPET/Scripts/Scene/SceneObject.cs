@@ -761,7 +761,8 @@ namespace vpet
 
 				if (Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>())
 				{
-					Outline outline = obj.GetComponent<Outline>();
+
+                    Outline outline = obj.GetComponent<Outline>();
                     if (!outline)
                         obj.AddComponent<Outline>();
                     else
@@ -774,6 +775,7 @@ namespace vpet
 				this.showHighlighted(child.gameObject);
 			}
 		}
+
 
 		//!
 		//! recursively delete highlight shader of object

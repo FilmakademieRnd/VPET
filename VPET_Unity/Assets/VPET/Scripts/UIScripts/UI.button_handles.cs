@@ -41,15 +41,15 @@ namespace vpet
 	
 	    }
 	
-	    private void secondaryMenuSwitchLayout(layouts lay)
+	    private void togglePerspectives()
 	    {
-	        if (secondaryMenu.currentLayout == lay)
+	        if (secondaryMenu.currentLayout == layouts.PERSPECTIVES)
 	        {
-	            secondaryMenu.switchLayout(layouts.DEFAULT);
+	            secondaryMenu.switchLayout( secondaryMenu.PreviousLayout);
 	        }
 	        else
 	        {
-	            secondaryMenu.switchLayout(lay);
+	            secondaryMenu.switchLayout(layouts.PERSPECTIVES);
 	        }
 	        secondaryMenu.show();
 	    }
@@ -57,11 +57,7 @@ namespace vpet
 	
 	    private void changeMode(  layouts layout )
 	    {
-
-			// make toggle buttons using secondary menu switch of
-			OnSecondaryMenuVisibility.Invoke(false);
-
-            if (layout == layouts.EDIT)
+            if (layout == layouts.EDIT || layout == layouts.ANIMATION )
             {
                 layoutUI = layout;
                 secondaryMenu.switchLayout(layout);
@@ -70,14 +66,12 @@ namespace vpet
                     if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
                         mainController.ActiveMode = MainController.Mode.lightMenuMode;
                     else
+                    {
                         mainController.ActiveMode = MainController.Mode.objectMenuMode;
+                        // force re-draw center menu because it won't be re-drawn in state machine if mode doesn't change
+                        drawCenterMenu(layout);
+                    }
                 }
-            }
-            else if (layout == layouts.ANIMATION)
-            {
-                layoutUI = layout;
-                secondaryMenu.switchLayout(layout);
-                mainController.ActiveMode = MainController.Mode.animationEditing;
             }
             else if (layout == layouts.SCOUT)
             {
@@ -86,6 +80,7 @@ namespace vpet
                 mainController.ActiveMode = MainController.Mode.idle;
             }
 
+            UI.OnUIChanged.Invoke();
             secondaryMenu.show();
         }
 
@@ -124,21 +119,36 @@ namespace vpet
 			mainController.toggleNcam();
 		}
 
-	    private void changeActiveMode( MainController.Mode mode )
-	    {
-	        mainController.ActiveMode = mode;
-	    }
-				
-		// Center
-		//
-		//
-		private void editTranslation(IMenuButton button)
-	    {
-			// make toggle buttons using secondary menu switch of
-			OnSecondaryMenuVisibility.Invoke(false);
+        private void editWidget3D(IMenuButton button)
+        {
+            mainController.buttonTranslationClicked(button.Toggled);
+        }
 
-			centerMenu.animateActive( ((Button)button).gameObject );
-			mainController.buttonTranslationClicked( button.Toggled );
+        private void editLinkToCamera(IMenuButton button)
+        {
+            mainController.toggleObjectLinkCamera(button.Toggled);
+            UI.OnUIChanged.Invoke();
+        }
+
+        private void editPointToMove(IMenuButton button)
+        {
+            mainController.togglePointToMove(button.Toggled);
+            UI.OnUIChanged.Invoke();
+        }
+
+        private void pointToMoveCamera(IMenuButton button)
+        {
+            mainController.togglePointToMoveCamera();
+        }
+
+        // Center
+        //
+        //
+        private void editTranslation(IMenuButton button)
+	    {
+            UI.OnUIChanged.Invoke();
+            centerMenu.animateActive( ((Button)button).gameObject );
+            editWidget3D(button);
 	    }
 	
 		private void editRotation(IMenuButton button)
@@ -158,46 +168,69 @@ namespace vpet
 	        if (mainController.getCurrentSelection() != null)   
 	            mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
 	    }
-	
-		private void editLightColor(IMenuButton button)
+
+        //!
+        //! click on light color edit
+        //! @param      button      button sent the request
+        //!	
+        private void editLightColor(IMenuButton button)
 	    {
 			centerMenu.animateActive(((Button)button).gameObject);
-	        mainController.buttonLightColorClicked(button.Toggled);
+            lightSettingsWidget.setSliderType(LightSettingsWidget.SliderType.COLOR);
+            mainController.buttonLightColorClicked(button.Toggled);
 	    }
-	
-		private void editLightAngle(IMenuButton button)
+
+        //!
+        //! click on light angle edit
+        //! @param      button      button sent the request
+        //!	
+        private void editLightAngle(IMenuButton button)
 	    {
 			centerMenu.animateActive(((Button)button).gameObject);
-	        mainController.buttonLightAngleClicked(button.Toggled);
+            lightSettingsWidget.setSliderType(LightSettingsWidget.SliderType.ANGLE);
+            mainController.buttonLightAngleClicked(button.Toggled);
 	    }
-	
-		private void editLightIntensity(IMenuButton button)
+
+        //!
+        //! click on light intensity edit
+        //! @param      button      button sent the request
+        //!	
+        private void editLightIntensity(IMenuButton button)
 	    {
 			centerMenu.animateActive(((Button)button).gameObject);
 	        mainController.buttonLightIntensityClicked(button.Toggled);
-	
-	        //lightSettingsWidget.setSliderType(LightSettingsWidget.SliderType.INTENSITY);
-	        //mainController.toogleLightEditing();
-	    }
-	
-		private void editAnimation(IMenuButton button)
+            lightSettingsWidget.setSliderType(LightSettingsWidget.SliderType.INTENSITY);
+        }
+
+        //!
+        //! click on light range edit
+        //! @param      button      button sent the request
+        //!	
+        private void editLightRange(IMenuButton button)
+        {
+            centerMenu.animateActive(((Button)button).gameObject);
+            lightSettingsWidget.setSliderType(LightSettingsWidget.SliderType.RANGE);
+            mainController.buttonLightRangeClicked (button.Toggled);
+        }
+
+        //!
+        //! click on animation edit
+        //! @param      button      button sent the request
+        //!	
+        private void editAnimation(IMenuButton button)
 	    {
             centerMenu.animateActive(((Button)button).gameObject);
             mainController.buttonAnimationEditClicked(button.Toggled);
-            if (button.Toggled)
-                animationController.activate();
-            else
-                animationController.deactivate();
-            animationController.editingPosition = true;
-
         }
 
+        //!
+        //! click on animation delete
+        //!	
         private void animationDelete()
 	    {
 	        animationController.deleteAnimation();
 	        //  deleteKeyframe(int.Parse(mainController.getCurrentSelection().name));
 	        // animationController.smoothKeyframeTangents(int.Parse(mainController.getCurrentSelection().name));
-	
 	    }
 	
 	

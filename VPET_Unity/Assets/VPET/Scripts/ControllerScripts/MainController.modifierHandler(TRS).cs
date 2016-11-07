@@ -47,7 +47,6 @@ namespace vpet
 	    public void handleModifier(Transform modifier){
 	        Debug.Log("Hit modifier " + modifier.name + "!");
 	        modifier.parent.GetComponent<Modifier>().isUsed();
-	        serverAdapter.sendLock(currentSelection, true);
 	        if (activeMode != Mode.animationEditing)
 	        {
 	            currentSelection.GetComponent<SceneObject>().setKinematic(true);
@@ -164,7 +163,6 @@ namespace vpet
 	    //! reset modifiers and push changes to server if neccessary
 	    //!
 	    public void resetModifiers(){
-	        serverAdapter.sendLock(currentSelection, false);
 	        //reset transparency
 	        translateModifier.GetComponent<Modifier>().resetColors();
 	        rotationModifier.GetComponent<Modifier>().resetColors();
@@ -202,6 +200,19 @@ namespace vpet
 	        rotationModifier.GetComponent<Modifier>().setVisible(false);
 	        scaleModifier.GetComponent<Modifier>().setVisible(false);
 	    }
-	
-}
+
+        private Vector3 getModifierScale()
+        {
+            if (Camera.main.orthographic)
+            {
+                return Vector3.one * Camera.main.orthographicSize / 4f;
+            }
+            else
+            {
+                return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15) * (Camera.main.fieldOfView / 30);
+            }
+        }
+
+
+    }
 }

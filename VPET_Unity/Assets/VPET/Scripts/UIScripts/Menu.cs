@@ -34,11 +34,13 @@ namespace vpet
 {
 	public enum layouts { SPLASH, DEFAULT, PERSPECTIVES, MODES, FOV, EDIT, SCOUT, TRANSFORM, OBJECT, LIGHT, LIGHTSPOT, LIGHTDIR, LIGHTPOINT, ANIMATION, TRANSLATION }
 
-	//!
-	//! This class represents a general menu with variable amount of buttons (maximum 10).
-	//! To create a menu you need to inherit from this class
-	//!
-	abstract public class Menu : MonoBehaviour // , System.Collections.IEnumerable
+    public class MenuBoolEvent : UnityEvent<bool> { }
+
+    //!
+    //! This class represents a general menu with variable amount of buttons (maximum 10).
+    //! To create a menu you need to inherit from this class
+    //!
+    abstract public class Menu : MonoBehaviour // , System.Collections.IEnumerable
 	{
 		
 	    //! 
@@ -53,10 +55,14 @@ namespace vpet
 	    //! This is the current active layout
 	    //!
 	    public layouts currentLayout = layouts.DEFAULT;
-	    //!
-	    //! Reference to the button beeing active and on active position currently.
-	    //!
-	    protected GameObject activeButton;
+        //! 
+        //! Use this to restore previous layou
+        //!
+        public layouts PreviousLayout = layouts.DEFAULT;
+        //!
+        //! Reference to the button beeing active and on active position currently.
+        //!
+        protected GameObject activeButton;
 		public GameObject ActiveButton
 		{
 			set{ activeButton = value; }
@@ -252,8 +258,9 @@ namespace vpet
 	    {	        
 	        if (layoutDict.ContainsKey(layout))
 	        {
-				print("switchLayout " + layout.ToString());
-	            currentLayout = layout;
+				// print("switchLayout " + layout.ToString());
+                PreviousLayout = currentLayout;
+                currentLayout = layout;
 	
 	            if (activeButton)
 	            {

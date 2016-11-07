@@ -196,25 +196,25 @@ namespace vpet
         private Tango.TangoApplication tangoApplication;
 #endif
 
+        private bool hasUpdatedProjectionMatrix = false;
+
         //!
         //! the available states (modes) of the app
         //!
         public enum Mode {
-            translationMode,
-            rotationMode,
-            scaleMode,
-            objectLinkCamera,
-            pointShootTranslation,
-            pointToMoveMode,
-            oneForAllMode,
-            lightSettingsMode,
-            objectMenuMode,
-            lightMenuMode,
-            addMode,
-            idle,
-            animationEditing,
-            test,
-            scoutMode };
+            translationMode,            // show/use translation modifier
+            rotationMode,               // show/use rotation modifier
+            scaleMode,                  // show/use scale modifier
+            objectLinkCamera,           // deactivate kinematic and parent to camera
+            pointToMoveMode,            // click on ground to move object
+            lightSettingsMode,          // show/use light settings widget (intensity, color)
+            objectMenuMode,             // show centre menu (object or animation icons)
+            lightMenuMode,              // show centre menu (light icons depending on light type)
+            addMode,                    // muldtiple selection TODO: not implemented yet
+            idle,                       // no selection and no action
+            animationEditing            // set animation editing, show translation manipulator
+            // scoutMode
+            };
 
 
 		//!
@@ -391,6 +391,7 @@ namespace vpet
         public void setTangoActive(bool isActive)
         {
 #if USE_TANGO
+
             if (tangoApplication)
             {
                 tangoApplication.m_enableMotionTracking = isActive;

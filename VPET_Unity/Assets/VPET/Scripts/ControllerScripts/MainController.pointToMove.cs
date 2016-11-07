@@ -32,68 +32,19 @@ using System.Collections;
 //!
 namespace vpet
 {
-	public partial class MainController : MonoBehaviour {
-	
+	public partial class MainController : MonoBehaviour
+    {
 	    //!
 	    //! should point to move be applied to camera
 	    //!
 	    bool cameraPointMove = false;
 	
 	    //!
-	    //! receiving function for GUI
-	    //!
-	    public void togglePointToMove()
-	    {
-            if (activeMode != Mode.pointToMoveMode)
-            {
-                serverAdapter.sendLock(currentSelection, true);
-                activeMode = Mode.pointToMoveMode;
-            }
-            else
-            {
-                buttonTranslationClicked(true);
-            }
-            /*
-	        if (activeMode == Mode.pointToMoveMode)
-	        {
-	            serverAdapter.sendLock(currentSelection, false);
-	            activeMode = Mode.translationMode;
-	            openMenu();
-	        }
-	        else 
-	        {
-	            serverAdapter.sendLock(currentSelection, true);
-	            activeMode = Mode.pointToMoveMode;
-	        }
-            */
-        }
-
-        //!
-        //! receiving function for GUI, special case for moving the camera
-        //!
-        public void togglePointToMoveCamera()
-	    {
-	        cameraPointMove = !cameraPointMove;
-	        if (activeMode == Mode.pointToMoveMode)
-	        {
-	            if (currentSelection)
-	            {
-	                serverAdapter.sendLock(currentSelection, false);
-	            }
-	            activeMode = Mode.idle;
-	        }
-	        else if(activeMode != Mode.pointShootTranslation)
-	        {
-	            activeMode = Mode.pointToMoveMode;
-	        }
-	    }
-	
-	    //!
 	    //! show the pointToMove widget at the specific place (but place it on top of the groundPlane)
 	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
 	    public void showPointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode || activeMode == Mode.pointShootTranslation)){
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode )){
 	            pointToMoveModifier.transform.position = pos + new Vector3(0, 0.01f, 0);
 	            pointToMoveModifier.GetComponent<Renderer>().enabled = true;
 	        }
@@ -104,7 +55,7 @@ namespace vpet
 	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
 	    public void movePointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode || activeMode == Mode.pointShootTranslation)){
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
 	            pointToMoveModifier.transform.position = pos + new Vector3(0, 0.01f, 0);
 	        }
 	    }
@@ -114,7 +65,7 @@ namespace vpet
 	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
 	    public void hidePointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode || activeMode == Mode.pointShootTranslation)){
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
 	            if (cameraPointMove){
 	                //use camera as target for the translation
 	                Camera.main.GetComponent<MoveCamera>().smoothTranslate(pos + new Vector3(0, Camera.main.transform.position.y, 0));
@@ -135,5 +86,5 @@ namespace vpet
 	            pointToMoveModifier.GetComponent<Renderer>().enabled = false;
 	        }
 	    }
-}
+    }
 }

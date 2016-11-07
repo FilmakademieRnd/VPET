@@ -47,11 +47,7 @@ namespace vpet
 		//! Cached reference to main controller.
 		//!
 		private MainController mainController;
-		public MainController MainControllerXXX
-		{
-	        get { return mainController;  }
-			set{ mainController = value;}
-		}
+
 		//!
 		//! time stamp buffer for long GUI click recognition
 		//!
@@ -120,28 +116,27 @@ namespace vpet
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
 
 
-			// declare touch input
-			#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
+            // declare touch input
+            // #if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
 			touchInput = gameObject.AddComponent<TouchInput>();
 			mainController.TouchInputActive = true;
-			//touchInput.InputAdapter = this;
-			#endif
-	
-	
-			// declare mouse input
-			#if UNITY_EDITOR
-			mouseInput = gameObject.AddComponent<MouseInput>();
-			mainController.MouseInputActive = true;
-			//mouseInput.InputAdapter = this;
-			#endif
-	
-		}
-	
-	
-		//!
-		//! Use this for initialization
-		//!
-		void Start ()
+#endif
+
+
+            // declare mouse input
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+            mouseInput = gameObject.AddComponent<MouseInput>();
+            mainController.MouseInputActive = true;
+#endif
+
+        }
+
+
+        //!
+        //! Use this for initialization
+        //!
+        void Start ()
 		{
 			groundPlane = GameObject.Find("GroundPlane").GetComponent<Collider>();
 			undoRedoController = GameObject.Find ("UndoRedoController").GetComponent<UndoRedoController> ();
@@ -183,18 +178,8 @@ namespace vpet
 	
 			if (!pointerOnGUI())
 			{
-				//oneForAll mode
-				if (mainController.ActiveMode == MainController.Mode.oneForAllMode)
-				{
-					mainController.rotationCollider.gameObject.transform.position = mainController.getSelectionPosition();
-					mainController.rotationCollider.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, mainController.getSelectionPosition()) / 100);
-					hitPositionBuffer = objectRaycast(pos, mainController.rotationCollider);
-					return;
-				}
-	
 				//pointToMove active
-				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode ||
-					mainController.ActiveMode == MainController.Mode.pointShootTranslation)
+				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 				{
 					mainController.showPointToMoveIdentifier(objectRaycast(pos, groundPlane));
 					return;
@@ -263,20 +248,11 @@ namespace vpet
 				
 			if (!pause)
 			{ //pause is active when avaoiding double interactions
-	
 				if (!pointerOnGUI())
 				{
-	
-					//oneForAll mode
-					if (mainController.ActiveMode == MainController.Mode.oneForAllMode){
-						undoRedoController.addAction();
-						hitPositionBuffer = nullVector;
-						return;
-					}
-	
+
 					//pointToMove active
-					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode || 
-						mainController.ActiveMode == MainController.Mode.pointShootTranslation)
+					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
 						mainController.hidePointToMoveIdentifier(objectRaycast(pos, groundPlane));
 						return;
@@ -355,23 +331,10 @@ namespace vpet
 	
 			if (!pointerOnGUI())
 			{
-				if (!pause)
+                if (!pause)
 				{
-					//oneForAll mode
-					if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-					{
-						Vector3 newHitPosition = objectRaycast(pos, mainController.rotationCollider);
-						if (newHitPosition != nullVector && hitPositionBuffer != nullVector)
-						{
-							mainController.rotateSelection(hitPositionBuffer, newHitPosition);
-						}
-						hitPositionBuffer = newHitPosition;
-						return;
-					}
-	
 					//pointToMove active
-					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode || 
-						mainController.ActiveMode == MainController.Mode.pointShootTranslation)
+					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
 						mainController.movePointToMoveIdentifier(objectRaycast(pos, groundPlane));
 						return;
@@ -386,10 +349,6 @@ namespace vpet
 						if (pointerOnModifier){
 							//Pointer is down on modifier
 							Vector3 newHitPosition = objectRaycast(pos, mainController.helperCollider);
-	
-	
-							// print( "hitPositionBuffer " + hitPositionBuffer + " newHitPosition " + newHitPosition );
-	
 	
 							if ( newHitPosition != nullVector && hitPositionBuffer != nullVector )
 							{
@@ -432,32 +391,19 @@ namespace vpet
 		//! dual touch started (called by Mouse or Touch Input)
 		//! @param      pos     screen position of pointer
 		//!
-		public void twoPointerStarted(Vector3 pos){
-	
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = objectRaycast(pos, mainController.planeCollider);
-			}
-			else {
-				camMovePos = pos;
-			}
+		public void twoPointerStarted(Vector3 pos)
+        {
+			camMovePos = pos;
 		}
 	
 		//!
 		//! dual touch ended (called by Mouse or Touch Input)
 		//! @param      pos     screen position of pointer
 		//!
-		public void twoPointerEnded(Vector3 pos) {
-	
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = nullVector;
-				undoRedoController.addAction();
-			}
-			else {
-				camMovePos = Vector3.zero;
-				undoRedoController.addAction();
-			}
+		public void twoPointerEnded(Vector3 pos)
+        {
+			camMovePos = Vector3.zero;
+			undoRedoController.addAction();
 
 			// save the camera offset to restore it next time the app is started
 			mainController.saveCameraOffset();
@@ -467,61 +413,37 @@ namespace vpet
 		//! dual touch down & moving (called by Mouse or Touch Input)
 		//! @param      pos     screen position of second pointer
 		//!
-		public void twoPointerDrag(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				Vector3 newHitPosition = objectRaycast(pos, mainController.planeCollider);
-				if (hitPositionBuffer != nullVector && newHitPosition != nullVector)
-				{                    
-                    mainController.translateSelection(hitPositionBuffer - newHitPosition);
-                    hitPositionBuffer = newHitPosition;
-				}
-			}
-			else {                
-                mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
-            }
+		public void twoPointerDrag(Vector3 pos)
+        {
+            mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
 		}
 	
 		//!
 		//! pinch to zoom gesture (called by Mouse or Touch Input)
 		//! @param      delta     delta distance between fingers since last frame
 		//!
-		public void pinchToZoom(float delta) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode)
-			{
-				mainController.scaleSelectionUniform(delta);
-			}
-	
+		public void pinchToZoom(float delta)
+        {
+			mainController.scaleSelectionUniform(delta);
 		}
 	
 		//!
 		//! triple touch started (called by Mouse or Touch Input)
 		//! @param      pos     screen position of third pointer
 		//!
-		public void threePointerStarted(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = objectRaycast(pos, mainController.planeCollider);
-			}
-			else {
-				camMovePos = new Vector3(0, 0, pos.y);
-			}
+		public void threePointerStarted(Vector3 pos)
+        {
+    		camMovePos = new Vector3(0, 0, pos.y);
 		}
 	
 		//!
 		//! triple touch ended (called by Mouse or Touch Input)
 		//! @param      pos     screen position of third pointer
 		//!
-		public void threePointerEnded(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				hitPositionBuffer = nullVector;
-				undoRedoController.addAction();
-			}
-			else {
-				camMovePos = Vector3.zero;
-				undoRedoController.addAction();
-			}
+		public void threePointerEnded(Vector3 pos)
+        {
+			camMovePos = Vector3.zero;
+			undoRedoController.addAction();
 
 			// save the camera offset to restore it next time the app is started
 			mainController.saveCameraOffset();
@@ -531,28 +453,21 @@ namespace vpet
 		//! triple touch down & moving (called by Mouse or Touch Input)
 		//! @param      pos     screen position of third pointer
 		//!
-		public void threePointerDrag(Vector3 pos) {
-			if (mainController.ActiveMode == MainController.Mode.oneForAllMode) 
-			{
-				Vector3 newHitPosition = objectRaycast(pos, mainController.planeCollider);
-				if (hitPositionBuffer != nullVector && newHitPosition != nullVector) 
-				{
-					mainController.moveSelectionAwayFromCamera((newHitPosition - hitPositionBuffer).y);
-					hitPositionBuffer = newHitPosition;
-				}
-			}
-			else {
-				if (Camera.main.orthographic == false)
-				{
-					mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed );
-				}
-				else
-				{
-					Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) / 100f);
-				}
-			}
+		public void threePointerDrag(Vector3 pos)
+        {
+            if (Camera.main.orthographic == false)
+            {
+                mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed);
+            }
+            else
+            {
+                Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) / 100f);
+                foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
+                {
+                    cam.orthographicSize = Camera.main.orthographicSize;
+                }
+            }
 		}
-	
 	
 		//!
 		//! execute a raycast through the current position on a specific Unity layer (& ignore other layers)
@@ -583,24 +498,14 @@ namespace vpet
 		private Vector3 objectRaycast(Vector3 pos, Collider target) {
 			Ray ray = Camera.main.ScreenPointToRay(pos);
 			RaycastHit hit;
-	
-			// print("ray " + ray);
-	
-			// if (target.Raycast(ray, out hit, 100.0f))
-	
-	
-	
-	
+		
 			if ( target.Raycast( ray, out hit, 100000f ) )
 			{
-				// print(hit.point + " + " + hit.distance);
 				//raycast was executed and hit an object
 				return hit.point;
 			}
 			else {
-				// print("nullvector " + nullVector);
 				return nullVector;
-				//return new Vector3(1,2,3);
 			}
 		}
 	
@@ -610,16 +515,23 @@ namespace vpet
 		//!
 		private bool pointerOnGUI()
 		{
-			if (EventSystem.current.IsPointerOverGameObject()) return true;
-			foreach (Touch touch in Input.touches)
-			{
-				int pointerID = touch.fingerId;
-				if (EventSystem.current.IsPointerOverGameObject(pointerID))
-				{
-					// at least on touch is over a canvas UI
-					return true;
-				}
-			}
+            if ( Input.touchCount > 0 )
+            {
+                foreach (Touch touch in Input.touches)
+                {
+                    int pointerID = touch.fingerId;
+                    if (EventSystem.current.IsPointerOverGameObject(pointerID))
+                    {
+                        // at least on touch is over a canvas UI
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (EventSystem.current.IsPointerOverGameObject()) return true;
+            }
+
 			return false;
 		}
 	}

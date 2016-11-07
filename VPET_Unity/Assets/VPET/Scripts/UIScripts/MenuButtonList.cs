@@ -54,6 +54,7 @@ namespace vpet
 		public bool Toggled
 		{
 			get { return false; }
+            set { }
 		}
 
 		private List<Sprite> spritesActive = new List<Sprite>();

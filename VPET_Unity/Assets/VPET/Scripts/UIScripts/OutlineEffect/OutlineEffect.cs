@@ -42,7 +42,14 @@ public class OutlineEffect : MonoBehaviour
     public float lineIntensity = 1f;
 
     public Color lineColor0 = new Color(1f, .8f, .3f);
-    public bool flipY = false;
+    private bool flipY = false;
+    public bool FlipY
+    {
+        set { flipY = value;
+            UpdateMaterialsPublicProperties(); 
+        }
+    }
+
     public bool darkOutlines = false;
     public float alphaCutoff = .5f;
 
@@ -208,14 +215,6 @@ public class OutlineEffect : MonoBehaviour
         }
     }
 
-    // Call this when source camera has been changed.
-    public void UpdateFromSource()
-    {
-        renderTexture.width = sourceCamera.pixelWidth;
-        renderTexture.height = sourceCamera.pixelHeight;
-
-        UpdateOutlineCameraFromSource();
-    }
 
     void UpdateOutlineCameraFromSource()
     {

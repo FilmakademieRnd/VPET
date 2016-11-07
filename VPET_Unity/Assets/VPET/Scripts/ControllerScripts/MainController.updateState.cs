@@ -37,9 +37,8 @@ namespace vpet
 	    // cache old state
 	    private Mode oldState = Mode.idle;
 	    private Transform oldSelection = null;
-	    private Transform backupSelection = null;
 		public Transform oldParent = null;
-	
+
 	    //!
 		//! Update is called once per frame
 		//!
@@ -48,29 +47,24 @@ namespace vpet
 	        //position modifiers if neccessary
 	        if (currentSelection)
 	        {
-	            if (activeMode == Mode.translationMode || (activeMode == Mode.animationEditing && animationController.editingPosition == true))
+	            if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
 	            {
-	
 	                translateModifier.transform.position = currentSelection.position;
 	                //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
 	
-	                translateModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15)*(Camera.main.fieldOfView/30);
-	                translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
-	                if(activeMode == Mode.animationEditing)
-	                {
-	                    translateModifier.GetComponent<Modifier>().setVisible(true);
-	                }
+                    translateModifier.transform.localScale = getModifierScale();
+                    translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 	            }
 	            else if (activeMode == Mode.rotationMode)
 	            {
 	                rotationModifier.transform.position = currentSelection.position;
-	                rotationModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15) * (Camera.main.fieldOfView / 30);
+	                rotationModifier.transform.localScale = getModifierScale() ;
 	            }
 	            else if (activeMode == Mode.scaleMode)
 	            {
 	                scaleModifier.transform.position = currentSelection.position;
 	                scaleModifier.transform.rotation = currentSelection.rotation;
-	                scaleModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15) * (Camera.main.fieldOfView / 30);
+	                scaleModifier.transform.localScale = getModifierScale();
 	            }
 	        }
 	
@@ -78,24 +72,35 @@ namespace vpet
 	        if (oldState != activeMode || currentSelection != oldSelection)
 	        {
 	            print(oldState.ToString() + " >>>>> " + activeMode );
-	
-	            //properly disable old mode
-	            switch (oldState) {
+
+                if (hasUpdatedProjectionMatrix)
+                {
+                    UpdateProjectionMatrixSecondaryCameras();
+                    hasUpdatedProjectionMatrix = false;
+                }
+
+                // unlock if active mode is none editing mode
+                //if (activeMode!=Mode.translationMode && activeMode!=Mode.rotationMode && activeMode != Mode.scaleMode && activeMode != Mode.objectLinkCamera && activeMode != Mode.animationEditing && activeMode != Mode.pointToMoveMode && activeMode != Mode.lightSettingsMode)
+                if ( activeMode != oldState)
+                {
+                    serverAdapter.sendLock(currentSelection, false);
+                }
+
+                //properly disable old mode
+                switch (oldState) {
 	                case (Mode.idle):
 	                    break;
 	                case (Mode.translationMode):
 	                    translateModifier.GetComponent<Modifier>().setVisible(false);
-	                    if (activeMode != Mode.pointToMoveMode && activeMode != Mode.objectLinkCamera)
-	                    {
-	                        ui.drawSecondaryMenu(layouts.EDIT);
-	                    }
-	                    break;
+                        if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode )
+                            ui.drawSecondaryMenu(layouts.EDIT);
+                        break;
 	                case (Mode.rotationMode):
 	                    rotationModifier.GetComponent<Modifier>().setVisible(false);
-	                    break;
+                        break;
 	                case (Mode.scaleMode):
 	                    scaleModifier.GetComponent<Modifier>().setVisible(false);
-	                    break;
+                        break;
 	                case (Mode.objectLinkCamera):
                         if (currentSelection)
                         {
@@ -104,52 +109,30 @@ namespace vpet
                                 currentSelection.GetComponent<SceneObject>().isDirectionalLight)
                             {
                                 currentSelection.parent = oldParent;
-                                //undoRedoController.addAction();
                             }
                             else
                             {
                                 currentSelection.GetComponent<SceneObject>().setKinematic(false);
                                 currentSelection.parent = oldParent;
-                                //undoRedoController.addAction();
                             }
                         }
-	                    if (activeMode != Mode.pointToMoveMode && activeMode != Mode.translationMode)
-	                    {
-	                        ui.drawSecondaryMenu(layouts.EDIT);
-	                    }
-	                    break;
+                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
+                        break;
 	                case (Mode.pointToMoveMode):
-	                    if (backupSelection)
-	                    {
-	                        currentSelection = backupSelection;
-	                        backupSelection = null;
-	                    }
-	                    if (activeMode != Mode.translationMode && activeMode != Mode.objectLinkCamera)
-	                    {
-	                        ui.drawSecondaryMenu(layouts.EDIT);
-	                    }
-	                    break;
-	                case (Mode.oneForAllMode):
-	                    if (currentSelection){
-	                        currentSelection.GetComponent<SceneObject>().setKinematic(false);
-	                    }
-	                    break;
+                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
+                        break;
 	                case (Mode.objectMenuMode):
-	                    // ui.hideCenterMenu();
 	                    break;
 	                case (Mode.lightMenuMode):
-	                    //ui.hideCenterMenu();
 	                    break;
 	                case (Mode.animationEditing):
-	                    break;
+                        animationController.deactivate();
+                        hideModifiers();
+                        break;
 	                case (Mode.lightSettingsMode):
-	                    //if (currentSelection && activeMode != Mode.idle) currentSelection.GetComponent<SceneObject>().hideLightVisualization(false);
 	                    ui.hideLightSettingsWidget();
-	                    // if (currentSelection) ui.hideCenterMenu();
-	                    break;
+                        break;
 	                case (Mode.addMode):
-	                    break;
-	                case (Mode.scoutMode):
 	                    break;
 	                default:
 	                    break;
@@ -161,24 +144,25 @@ namespace vpet
 	                    ui.hideCenterMenu();
 	                    break;
 	                case (Mode.translationMode):
-	                    translateModifier.GetComponent<Modifier>().setVisible(true);
+                        serverAdapter.sendLock(currentSelection, true);
+                        translateModifier.GetComponent<Modifier>().setVisible(true);
 	                    ui.drawSecondaryMenu(layouts.TRANSLATION);
 	                    break;
 	                case (Mode.rotationMode):
-	                    rotationModifier.GetComponent<Modifier>().setVisible(true);
+                        serverAdapter.sendLock(currentSelection, true);
+                        rotationModifier.GetComponent<Modifier>().setVisible(true);
 	                    break;
 	                case (Mode.scaleMode):
-	                    scaleModifier.GetComponent<Modifier>().setVisible(true);
-	                    break;
+                        scaleModifier.GetComponent<Modifier>().setVisible(true);
+                        serverAdapter.sendLock(currentSelection, true);
+                        break;
 	                case (Mode.objectLinkCamera):
 	                    if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
 	                        currentSelection.GetComponent<SceneObject>().isPointLight ||
 	                        currentSelection.GetComponent<SceneObject>().isDirectionalLight)
 	                    {
-	                        backupSelection = currentSelection;
-                            oldParent = currentSelection.parent; //.parent;
+                            oldParent = currentSelection.parent;
 	                        currentSelection.parent = Camera.main.transform;
-                            //currentSelection.parent.parent = Camera.main.transform;
                         }
                         else
 	                    {
@@ -186,33 +170,25 @@ namespace vpet
 							oldParent = currentSelection.parent;
 	                        currentSelection.parent = Camera.main.transform;
 	                    }
-	                    break;
+                        serverAdapter.sendLock(currentSelection, true);
+                        break;
 	                case (Mode.pointToMoveMode):
-	                    
-	                    break;
-	                case (Mode.oneForAllMode):
-	                    axisLocker = new Vector3(1, 1, 1);
-	                    if (currentSelection){
-	                        currentSelection.GetComponent<SceneObject>().setKinematic(true);
-	                        planeCollider.gameObject.transform.position = currentSelection.position;
-	                        planeCollider.gameObject.transform.rotation = Camera.main.transform.rotation;
-	                        rotationCollider.gameObject.transform.position = currentSelection.position;
-	                    }
-	                    break;
+                        serverAdapter.sendLock(currentSelection, true);
+                        break;
 	                case (Mode.objectMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT )
 	                    {
 	                        if (ui.LayoutUI == layouts.ANIMATION)
 	                        {
 	                            ui.drawCenterMenu(layouts.ANIMATION);
+                                ui.drawSecondaryMenu(layouts.ANIMATION);
 	                        }
 	                        else
 	                        {
 	                            ui.drawCenterMenu(layouts.OBJECT);
 	                        }
-	                        // ui.drawObjectModificationMenu(AnimationData.Data.getAnimationClips(currentSelection.gameObject) != null, currentSelectionisKinematic());
-	                    }
-	                    break;
+                        }
+                        break;
 	                case (Mode.lightMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT)
 	                    {
@@ -232,20 +208,15 @@ namespace vpet
                         {
                             currentSelection.GetComponent<SceneObject>().hideLightVisualization(true);
                         }
-	                    //ui.drawColorIntensityPicker();
 	                    ui.drawLightSettingsWidget();
-	                    break;
+                        serverAdapter.sendLock(currentSelection, true);
+                        break;
 	                case (Mode.animationEditing):
-	                    if (currentSelection)
-	                    {
-	                        ui.drawCenterMenu(layouts.ANIMATION);
-	                        animationController.updateTimelineKeys();
-	                    }
-	                    break;
+                        animationController.activate();
+                        translateModifier.GetComponent<Modifier>().setVisible(true);
+                        serverAdapter.sendLock(currentSelection, true);
+                        break;
 	                case (Mode.addMode):
-	                    break;
-	                case (Mode.scoutMode):
-	                    ui.hideCenterMenu();
 	                    break;
 	                default:
 	                    break;
