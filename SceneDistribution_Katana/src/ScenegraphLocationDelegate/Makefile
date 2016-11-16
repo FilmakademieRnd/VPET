@@ -2,7 +2,7 @@
 OBJDIR = ./out
 
 # Scenegraph Location Delegate Plugins
-OUTFILENAME=OpenRLScenegraphLocationDelegatePlugins.so
+OUTFILENAME=SceneDistributorScenegraphLocationDelegatePlugins.so
 OUTFILEPATH = $(OBJDIR)/$(OUTFILENAME)
 PLUGIN_RELATIVE_PATH=../Render
 PLUGIN_SRC = $(KATANA_HOME)/plugin_apis/src
@@ -40,6 +40,7 @@ INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
 # Third Party libraries
 INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
 INCLUDES += -I$(PLUGIN_RELATIVE_PATH)/include
+INCLUDES += -I$(GLM)
 
 # Object files and flags
 OBJS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(SOURCES))
@@ -62,7 +63,7 @@ RPATH_FLAGS += -Wl,--rpath=\$$ORIGIN
 all: $(OUTFILEPATH)
 
 $(OUTFILEPATH): $(OBJS)
-	@echo "  Compiling OpenRL Scenegraph Location Delegate Plugins..."
+	@echo "  Compiling SceneDistributor Scenegraph Location Delegate Plugins..."
 	$(CXX) $(CXXFLAGS) $(RPATH_FLAGS)  $(OBJS)  $(LIBPATH) $(LIBS) -shared -o $(OUTFILEPATH) -Wl,-soname,$(OUTFILENAME)
 
 
@@ -72,5 +73,5 @@ $(OBJDIR)/%.o: %.cpp
 
 
 clean:
-	@echo "  Cleaning OpenRL Scenegraph Location Delegate Plugins"
+	@echo "  Cleaning SceneDistributor Scenegraph Location Delegate Plugins"
 	@rm -rf $(OBJDIR)

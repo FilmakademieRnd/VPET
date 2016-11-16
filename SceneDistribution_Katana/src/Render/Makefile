@@ -11,6 +11,8 @@ SOURCES +=  src/SceneIterator.cpp
 
 INCLUDES = -Iinclude
 INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
+INCLUDES += -I$(GLM)
+
 
 # Third Party libraries
 ifdef ZMQ_HOME
@@ -112,7 +114,7 @@ CXXFLAGS = -Wall -pipe -m64 -fPIC -DPIC -lpthread
 all: $(OUTFILEPATH)
 
 $(OUTFILEPATH): $(OBJS)
-	@echo "  Compiling OpenRL Render plugin..."
+	@echo "  Compiling SceneDistributor Render plugin..."
 	$(CXX) $(CXXFLAGS) $(OBJS)  $(LIBPATH) $(LIBS) -shared -o $(OUTFILEPATH) -Wl,-soname,$(OUTFILENAME)
 
 
@@ -122,5 +124,5 @@ $(OBJDIR)/%.o: %.cpp
 
 
 clean:
-	@echo "  Cleaning OpenRL Render plugin"
+	@echo "  Cleaning SceneDistributor Render plugin"
 	@rm -rf $(OBJDIR)
