@@ -65,6 +65,7 @@ namespace vpet
         protected GameObject activeButton;
 		public GameObject ActiveButton
 		{
+            get { return activeButton;  }
 			set{ activeButton = value; }
 		}
 	    //!
@@ -96,6 +97,8 @@ namespace vpet
         private float targetDelta = 0;
 
 		public bool isOpen = false;
+
+        public Vector2 offset = Vector2.zero;
 
 		//!
         //! Called when object is created before start
@@ -145,7 +148,7 @@ namespace vpet
 			buttons.Clear();
 			layoutDict.Clear();
 			currentLayout = layouts.DEFAULT;
-			GameObject activeButton = null;
+			activeButton = null;
 		}
 
 
@@ -251,6 +254,11 @@ namespace vpet
 	        }
 	    }
 
+        public IMenuButton GetButton( int idx)
+        {
+            return buttons.Count >= idx ? buttons[idx].GetComponent<IMenuButton>() : null;
+        }
+
 	    //!
 	    //! Change the current button layout. Hide all buttons and set layout. Next call to method show will set buttons defined in new layout to visible.
 	    //!
@@ -287,11 +295,12 @@ namespace vpet
                 g.SetActive(true);
             }
 
-            if (currentDelta != 1)
+            arrange();
+
+            if (1==1 || currentDelta < 1)
             {
-                currentDelta = 0;
+                // currentDelta = 0;
                 targetDelta = 1;
-                arrange();
                 animationIncrement = animationSpeed; // * Time.deltaTime;
                 animate = true;
             }
@@ -305,9 +314,9 @@ namespace vpet
         //!
         public void hide()
 	    {
-            if (currentDelta != 0)
+            if (1 == 1 || currentDelta > 0)
             {
-                currentDelta = 1;
+                // currentDelta = 1;
                 targetDelta = 0;
                 animationIncrement = -animationSpeed; // * Time.deltaTime;
                 animate = true;
@@ -325,9 +334,17 @@ namespace vpet
             foreach (GameObject button in ButtonsActive())
             {
                 Color matColor = button.GetComponent<Image>().color;
-				matColor.a = currentDelta; // Mathf.Min(button.GetComponent<MenuButton>().maxTransparency, currentDelta);
+                matColor.a = currentDelta; 
                 button.GetComponent<Image>().color = matColor;
 
+                foreach ( MaskableGraphic m in button.transform.GetComponentsInChildren<MaskableGraphic>() )
+                {
+                    Color _color = m.color;
+                    _color.a = currentDelta;
+                    m.color = _color;
+                }
+
+                /*
                 // fade all text children (eg. animation layer index)
                 Text[] textChilds = button.GetComponentsInChildren<Text>();
                 foreach(Text text in textChilds)
@@ -336,6 +353,7 @@ namespace vpet
                     textColor.a = currentDelta;
                     text.color = textColor;
                 }
+                */
             }
 
         }
@@ -345,6 +363,7 @@ namespace vpet
         //!
         protected virtual void animatedDrawFinishOut()
         {
+            print("animatedDrawFinishOut");
             foreach (GameObject g in Buttons())
             {
                 if (g != activeButton)
@@ -357,13 +376,14 @@ namespace vpet
         //!
         protected virtual void animatedDrawFinishIn()
         {
+            print("animatedDrawFinishIn");
         }
 
         //! 
         //! move button to active position  (need to be overwritten)
         //! @param      button      currently active button, to be moved
         //!
-		public virtual void animateActive(GameObject button) {}
+        public virtual void animateActive(GameObject button) {}
 	
 	    //!
 	    //! move the center of the menu relative to the last position (need to be overwritten)

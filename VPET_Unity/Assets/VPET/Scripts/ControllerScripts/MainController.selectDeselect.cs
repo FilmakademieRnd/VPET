@@ -125,7 +125,7 @@ namespace vpet
 	        {
 	            if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
 	            {
-                    if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera))
+                    if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode  || activeMode == Mode.animationEditing || activeMode == Mode.lightSettingsMode))
                     {
                         activeMode = Mode.lightMenuMode;
                     }

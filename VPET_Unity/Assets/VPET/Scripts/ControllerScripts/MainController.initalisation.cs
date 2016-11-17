@@ -230,6 +230,11 @@ namespace vpet
             BACK,
 			NCAM };
 
+        //!
+        //! available edit paramters
+        //!
+        public enum Parameter { X, Y, Z, INTENSITY, ANGLE };
+
         [HideInInspector]
         //!
         //! currently active mode

@@ -63,7 +63,13 @@ namespace vpet
 	    private Sprite EditMode_AnnotationsRead_sel;
 	    private Sprite EditMode_AnnotationsWrite_nrm;
 	    private Sprite EditMode_AnnotationsWrite_sel;
-	    private Sprite EditMode_GravityOn_nrm;
+        private Sprite EditMode_AxisX_nrm;
+        private Sprite EditMode_AxisX_sel;
+        private Sprite EditMode_AxisY_nrm;
+        private Sprite EditMode_AxisY_sel;
+        private Sprite EditMode_AxisZ_nrm;
+        private Sprite EditMode_AxisZ_sel;
+        private Sprite EditMode_GravityOn_nrm;
 	    private Sprite EditMode_GravityOn_sel;
 	    private Sprite EditMode_LightColour_nrm;
 	    private Sprite EditMode_LightColour_sel;

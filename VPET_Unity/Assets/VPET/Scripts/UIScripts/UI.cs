@@ -38,7 +38,8 @@ namespace vpet
 	public partial class UI : MonoBehaviour
 	{
         //!
-        //! Event to propagate UI-changes. Register functions here which need to be called to update elements (button visibility e.g.)
+        //! Event to propagate UI-changes. Register functions here which need to be called to update elements (button visibility e.g.). This gets called
+        //! e.g. menus open
         //!
         [HideInInspector]
         public static UnityEvent OnUIChanged = new UnityEvent();
@@ -54,19 +55,24 @@ namespace vpet
 	    private MainMenu mainMenu;
 
 	    //!
-	    //! Scout Menu displayed at bottom.
+	    //! Second Menu displayed at bottom.
 	    //!
 	    private SecondaryMenu secondaryMenu;
 	
 	    //!
-	    //! Scout Menu displayed at bottom.
+	    //! Center Menu displayed at bottom.
 	    //!
 	    private CenterMenu centerMenu;
-	
-	    //!
-	    //! Cached reference to the main controller.
-	    //!
-	    private MainController mainController;
+
+        //!
+        //! Parameter Menu displayed on left side.
+        //!
+        private SubMenu parameterMenu;
+
+        //!
+        //! Cached reference to the main controller.
+        //!
+        private MainController mainController;
 
         //!
         //! Cached reference to the Tango controller.
@@ -140,6 +146,9 @@ namespace vpet
 
         private RoundProgressBar progressWidget = null;
 
+
+        private RangeSlider rangeSlider;
+
 	    void Awake()
 	    {
 	        // read icons from resouces and assign to class properties
@@ -196,17 +205,19 @@ namespace vpet
 			{
 				print("Fix Me");
 			}
-	
 
-	        // initialize light settings widget
-	        GameObject ciLightSettingsObject = new GameObject("ciLightSettingsObject");
-	        ciLightSettingsObject.AddComponent<RectTransform>();
-	        ciLightSettingsObject.transform.SetParent( canvas, false);
-	        // ciLightSettingsObject.transform.localPosition = new Vector3(0, -canvasHeight/2+UI.ButtonOffset, 0);
-	        lightSettingsWidget = ciLightSettingsObject.AddComponent<LightSettingsWidget>();
-	
-	        //initalize main Menu
-	        GameObject mainMenuObject = new GameObject("mainMenuObject");
+
+            // get range slider
+            rangeSlider = canvas.GetComponentInChildren<RangeSlider>(true);
+            if (rangeSlider == null) Debug.LogError(string.Format("{0}: Cant Find Component in Canvas: RangeSlider.", this.GetType()));
+
+            // get light settings widget
+            lightSettingsWidget = canvas.GetComponentInChildren<LightSettingsWidget>(true);
+            if (lightSettingsWidget == null) Debug.LogError(string.Format("{0}: Cant Find Component in Canvas: LightSettingsWidget.", this.GetType()));
+
+
+            //initalize main Menu
+            GameObject mainMenuObject = new GameObject("mainMenuObject");
 	        mainMenuObject.transform.SetParent(this.transform, false);
 	        mainMenu = mainMenuObject.AddComponent<MainMenu>();
 	
@@ -219,9 +230,14 @@ namespace vpet
 	        GameObject centerMenuObj = new GameObject("centerMenuObject");
 	        centerMenuObj.transform.SetParent(this.transform, false);
 	        centerMenu = centerMenuObj.AddComponent<CenterMenu>();
-	
-			// initalize ConfigWidget
-			GameObject refObject = GameObject.Find("GUI/Canvas/ConfigWidget");
+
+            //initalize paramter Menu
+            GameObject paramterMenuObj = new GameObject("paramterMenuObj");
+            paramterMenuObj.transform.SetParent(this.transform, false);
+            parameterMenu = paramterMenuObj.AddComponent<SubMenu>();
+
+            // initalize ConfigWidget
+            GameObject refObject = GameObject.Find("GUI/Canvas/ConfigWidget");
 			if (refObject == null)
 			{
 				Debug.LogWarning(string.Format("{0}: No GUI/Canvas/ConfigWidget Object found. Load From Resource.", this.GetType()));
@@ -307,8 +323,33 @@ namespace vpet
 	        setupMainMenu();
 	        setupSecondaryMenu();
 	        setupCenterMenu();
+            setupParameterMenu();
 		}
-	
+
+        public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f )
+        {
+            if (centerMenu.ActiveButton != null && centerMenu.ActiveButton.GetComponent<Button>() != null)
+            {
+                Sprite buttonSprite = centerMenu.ActiveButton.GetComponent<Button>().spriteState.disabledSprite;
+                rangeSlider.CenterSprite = buttonSprite;
+            }
+
+            // 
+            rangeSlider.Callback = callback;
+            rangeSlider.Value = initValue;
+            rangeSlider.Show();
+        }
+
+        public void updateRangeSlider( float v )
+        {
+            rangeSlider.Value = v;
+        }
+
+        public void hideRangeSlider()
+        {
+            rangeSlider.Hide();
+        }
+
 		public void drawMainMenuButton( bool doOpen = false)
 		{
 			mainMenuButton.SetActive(true);
@@ -318,7 +359,6 @@ namespace vpet
                 // HACK because above dont work
                 mainMenu.show();
                 mainMenuButton.GetComponent<MenuButtonToggle>().Toggled = true;
-
             }
         }
 	
@@ -493,12 +533,27 @@ namespace vpet
 		{
 			secondaryMenu.hide();
 		}
-	
 
-  
-	
-	
-	    /*
+        public void drawParameterMenu(layouts layout)
+        {
+            // reset parmater menu and set first button toggled
+            parameterMenu.ActiveButton = null;
+            parameterMenu.reset();
+            IMenuButton button = parameterMenu.GetButton(0);
+            if (button != null) button.Toggled = true;
+
+
+            parameterMenu.switchLayout(layout);
+            parameterMenu.offset = new Vector2(-VPETSettings.Instance.canvasHalfWidth + UI.ButtonOffset, parameterMenu.ActiveButtonCount * UI.ButtonOffset / 2f);
+            parameterMenu.show();
+        }
+
+        public  void hideParameterMenu()
+        {
+            parameterMenu.hide();
+        }
+
+        /*
 	    //!
 	    //! Display the object modification menu with an intial animation.
 	    //! @param      isKinematic     is the objects kinematic state true or false (needed to visualize the kinematic button acordingly)
@@ -554,20 +609,21 @@ namespace vpet
 	        activeMenu.animatedDraw();
 	    }
 	    */
-	
-	
-	
 
-	    //!
-	    //! Display the light parameters modification menu.
-	    //!
-	    public void drawLightSettingsWidget()
+
+        //!
+        //! Display the light parameters modification menu.
+        //!
+        public void drawLightSettingsWidget()
 	    {
 	        lightSettingsWidget.gameObject.SetActive(true);
-	        lightSettingsWidget.show( mainController.getCurrentSelection().GetComponent<SceneObject>() );
+            if ( lightSettingsWidget.GetSliderType() == LightSettingsWidget.SliderType.COLOR )
+            {
+                hideParameterMenu();
+                hideRangeSlider();
+            }
+            lightSettingsWidget.show( mainController.getCurrentSelection().GetComponent<SceneObject>() );
 	    }
-
-	
 
 	    //!
 	    //! Hide the light parameters modification menu.
@@ -578,20 +634,6 @@ namespace vpet
 	        lightSettingsWidget.gameObject.SetActive(false);
 	    }
 
-	
-		/*
-	    //!
-	    //! Display the light parameters modification menu.
-	    //!
-	    public void drawColorIntensityPicker()
-	    {
-	        // forceHideActiveMenu();
-	        ciPickerMenu.active = true;
-	    }
-		*/
-	
-	
-	
 	
 	    /*
 	    //!

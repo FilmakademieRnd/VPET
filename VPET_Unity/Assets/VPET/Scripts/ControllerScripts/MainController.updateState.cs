@@ -94,12 +94,18 @@ namespace vpet
 	                    translateModifier.GetComponent<Modifier>().setVisible(false);
                         if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode )
                             ui.drawSecondaryMenu(layouts.EDIT);
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
                         break;
 	                case (Mode.rotationMode):
 	                    rotationModifier.GetComponent<Modifier>().setVisible(false);
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
                         break;
 	                case (Mode.scaleMode):
 	                    scaleModifier.GetComponent<Modifier>().setVisible(false);
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
                         break;
 	                case (Mode.objectLinkCamera):
                         if (currentSelection)
@@ -131,6 +137,8 @@ namespace vpet
                         break;
 	                case (Mode.lightSettingsMode):
 	                    ui.hideLightSettingsWidget();
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
                         break;
 	                case (Mode.addMode):
 	                    break;
@@ -147,14 +155,20 @@ namespace vpet
                         serverAdapter.sendLock(currentSelection, true);
                         translateModifier.GetComponent<Modifier>().setVisible(true);
 	                    ui.drawSecondaryMenu(layouts.TRANSLATION);
-	                    break;
+                        ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX" );
+                        ui.drawParameterMenu(layouts.TRANSFORM);
+                        break;
 	                case (Mode.rotationMode):
                         serverAdapter.sendLock(currentSelection, true);
                         rotationModifier.GetComponent<Modifier>().setVisible(true);
-	                    break;
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "RotateX");
+                        ui.drawParameterMenu(layouts.TRANSFORM);
+                        break;
 	                case (Mode.scaleMode):
                         scaleModifier.GetComponent<Modifier>().setVisible(true);
                         serverAdapter.sendLock(currentSelection, true);
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "ScaleX");
+                        ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.objectLinkCamera):
 	                    if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
@@ -192,23 +206,30 @@ namespace vpet
 	                case (Mode.lightMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT)
 	                    {
+                            ui.drawCenterMenu(layouts.LIGHT);
+                            /*
 	                        if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
 	                            ui.drawCenterMenu(layouts.LIGHTDIR);
-	                            //ui.drawDirectionLightModificationMenu();
 	                        else if (currentSelection.GetComponent<SceneObject>().isPointLight)
 	                            ui.drawCenterMenu(layouts.LIGHTPOINT);
-	                            //ui.drawPointLightModificationMenu();
 	                        else if (currentSelection.GetComponent<SceneObject>().isSpotLight)
 	                            ui.drawCenterMenu(layouts.LIGHTSPOT);
-	                            //ui.drawSpotLightModificationMenu();
-	                    }
-	                    break;
+                            */
+                        }
+                        break;
 	                case (Mode.lightSettingsMode):
                         if (currentSelection)
                         {
                             currentSelection.GetComponent<SceneObject>().hideLightVisualization(true);
                         }
-	                    ui.drawLightSettingsWidget();
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>().setLightIntensity, currentSelection.GetComponent<SceneObject>().getLightIntensity());
+                        if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
+                            ui.drawParameterMenu(layouts.LIGHTDIR);
+                        else if (currentSelection.GetComponent<SceneObject>().isPointLight)
+                            ui.drawParameterMenu(layouts.LIGHTPOINT);
+                        else if (currentSelection.GetComponent<SceneObject>().isSpotLight)
+                            ui.drawParameterMenu(layouts.LIGHTSPOT);
+                        ui.drawLightSettingsWidget();
                         serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.animationEditing):

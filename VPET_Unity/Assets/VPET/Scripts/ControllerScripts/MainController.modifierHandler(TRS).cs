@@ -149,13 +149,17 @@ namespace vpet
 	            if (modifier.name == "xScale"){
 	                axisLocker = new Vector3(1, 0, 0);
 	            }
-	            if (modifier.name == "yScale"){
+	            else if (modifier.name == "yScale"){
 	                axisLocker = new Vector3(0, 1, 0);
 	            }
-	            if (modifier.name == "zScale"){
+	            else if (modifier.name == "zScale"){
 	                planeCollider.gameObject.transform.Rotate(90, 0, 0);
 	                axisLocker = new Vector3(0, 0, 1);
 	            }
+                else
+                {
+                    axisLocker = Vector3.one;
+                }
 	        }
 	    }
 	

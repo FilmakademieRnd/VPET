@@ -26,6 +26,7 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 */
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
@@ -33,170 +34,144 @@ using System;
 
 namespace vpet
 {
-	public delegate void CallbackFloat( float v );
-	
-	public class RangeSlider : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
-	{
-	
-	    private Sprite[] sprites;
-	
-	    private int size = 20;
-	
-	    private float currentValue = 0f;
-	    public float Value
-	    {
-	        set { currentValue = value;
-	            text.text = ((int)(currentValue * precision) / precision).ToString();
-	            updateSprites();
-	        }
-	    }
-	    public float velocity = 0f;
-	
-	    private float sensitivity = 1f;
-	    public float Sensitivity
-	    {
-	        set { sensitivity = value; }
-	    }
-	
-	    public  int numDigits = 4;
-	    public int numDecimals = 2;
-	
-	    private Image[] digits;
-	
-	    private Image[] decimals;
-	
-	    private bool isActive = false;
-	    public bool IsActive
-	    {
-	        get { return isActive;  }
-	    }
-	
-	    private CallbackFloat callback;
-	    public CallbackFloat Callback
-	    {
-	        set { callback = value; }
-	    }
-	
-	    private float minValue = 0.01f;
-	    public float MinValue
-	    {
-	        set { minValue = value;  }
-	    }
-	
-	    private float maxValue = float.MaxValue;
-	    public float MaxValue
-	    {
-	        set { maxValue = value; }
-	    }
-	    
-	
-	    private Text text;
-	
-	    private float precision = 100;
-	
-	
-	    void Awake()
-	    {
-	        sprites = Resources.LoadAll<Sprite>("VPET/Images/numbers-sprite-100");
-	
-	        // get text component
-	        if (this.transform.FindChild("Text") != null ) text = this.transform.FindChild("Text").GetComponent<Text>();
-	        if (text == null) Debug.LogError(string.Format("{0}: Cant get Component: Text.", this.GetType()));
-	
-	
-	        // create image objects
-	        digits = new Image[numDigits];
-	        for (int i = numDigits - 1; i >= 0; --i)
-	        {
-	            GameObject obj = new GameObject("int_"+i.ToString());
-	            obj.transform.parent = this.transform;
-	            obj.transform.localScale = Vector3.one;
-	            obj.transform.localPosition = new Vector3(-size * (i + 1), 0, 0);
-	            RectTransform rectTrans = obj.AddComponent<RectTransform>();
-	            rectTrans.sizeDelta = new Vector2(size, size);
-	            digits[i] = obj.gameObject.AddComponent<Image>();
-	            digits[i].sprite = sprites[0];
-	        }
-	        decimals = new Image[numDecimals];
-	        for (int i = 0; i <numDecimals; i++)
-	        {
-	            GameObject obj = new GameObject("dec_" + i.ToString());
-	            obj.transform.parent = this.transform;
-	            obj.transform.localScale = Vector3.one;
-	            obj.transform.localPosition = new Vector3(size * (i+1), 0, 0);
-	            RectTransform rectTrans =  obj.AddComponent<RectTransform>();
-	            rectTrans.sizeDelta = new Vector2(size, size);
-	            decimals[i] = obj.gameObject.AddComponent<Image>();
-	            decimals[i].sprite = sprites[0];
-	        }
-	
-	    }
-		
-		// Update is called once per frame
-		void Update ()
-	    {
-		    if ( velocity != 0 )
-	        {
-	
-	            currentValue += velocity * Time.deltaTime * sensitivity ;
-	
-	
-	            currentValue = Mathf.Clamp(currentValue, minValue, maxValue);
-	
-	            if ( Mathf.Abs(velocity) < 0.01f ) velocity = 0f;
-	
-	            text.text = ((int)(currentValue*precision)/precision).ToString();
-	
-	
-	            updateSprites();
-	
-	            if (callback != null) callback(currentValue);
-	
-	
-	        }
-	    }
-	
-	    private void updateSprites()
-	    {
-	        float intValue = Mathf.Floor(currentValue);
-	        float frac = (currentValue - intValue) * Mathf.Pow(10, numDecimals);
-	
-	        for (int i = numDigits - 1; i >= 0; --i)
-	        {
-	            int modNumber = (int)(intValue / Mathf.Pow(10, i)) % 10;
-	            digits[i].sprite = sprites[modNumber];
-	        }
-	
-	        for (int i = 0; i < numDecimals; i++)
-	        {
-	            int modNumber = (int)(frac / Mathf.Pow(10, numDecimals-1-i)) % 10;
-	            decimals[i].sprite = sprites[modNumber];
-	        }
-	
-	    }
-	
-	
-	    // DRAG
-	    public void OnBeginDrag(PointerEventData eventData)
-	    {
-	        // Debug.Log("BEGIN DRAG");
-	        isActive = true;
-	
-	    }
-	
-	    public void OnDrag(PointerEventData data)
-	    {
-	        // Debug.Log("ON DRAG delta: " + data.delta.ToString());
-	        velocity = data.position.x- data.pressPosition.x;
-	    }
-	
-	    public void OnEndDrag(PointerEventData eventData)
-	    {
-	        // Debug.Log("END DRAG");
-	        velocity = 0;
-	        isActive = false;
-	    }
-	
-	
-}
+
+    public class RangeSlider : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    {
+        public class OnValueChangedEvent : UnityEvent<float> { };
+
+        public enum SliderDirection { VERTICAL, HORIZONTAL };
+
+        public OnValueChangedEvent OnValueChanged = new OnValueChangedEvent();
+
+
+        public Text ValueField = null;
+
+        public SliderDirection sliderDirection = SliderDirection.VERTICAL;
+
+        private float currentValue = 0f;
+        public float Value
+        {
+            get { return currentValue;  }
+            set
+            {
+                currentValue = value;
+                ValueField.text = String.Format("{0:##0.#}", currentValue); 
+                // onValueChange();
+            }
+        }
+        public float velocity = 0f;
+
+        public float Sensitivity = 1f;
+
+
+        private float minValue = float.MinValue;
+        public float MinValue
+        {
+            set { minValue = value; }
+        }
+
+        private float maxValue = float.MaxValue;
+        public float MaxValue
+        {
+            set { maxValue = value; }
+        }
+
+        public Sprite CenterSprite
+        {
+            get { return transform.GetComponent<Image>().sprite; }
+            set { transform.GetComponent<Image>().sprite = value; }
+        }
+
+
+        private UnityAction<float> callback = null;
+        public UnityAction<float> Callback
+        {
+            set { callback = value; }
+        }
+
+        void Awake()
+        {
+
+        }
+
+        void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (velocity != 0)
+            {
+                currentValue += velocity * Time.deltaTime * Sensitivity;
+                currentValue = Mathf.Clamp(currentValue, minValue, maxValue);
+
+                onValueChange();
+
+                if (Mathf.Abs(velocity) < 10f) velocity = 0f;
+            }
+        }
+
+        public void IncreaseValue( float v )
+        {
+            Value = currentValue + v;
+        }
+
+        private void onValueChange()
+        {
+            ValueField.text = String.Format("{0:##0.#}", currentValue);
+            // invoke
+            if ( callback != null )callback(currentValue);
+        }
+
+        public void Show()
+        {
+            transform.parent.gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            transform.parent.gameObject.SetActive(false);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            velocity = 0;
+            //ValueField.gameObject.SetActive(true);
+        }
+
+
+        // DRAG
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            // Debug.Log("BEGIN DRAG");
+            ValueField.transform.parent.gameObject.SetActive(true);
+        }
+
+        public void OnDrag(PointerEventData data)
+        {
+            // Debug.Log("ON DRAG delta: " + data.delta.ToString());
+            if (sliderDirection == SliderDirection.HORIZONTAL)
+            {
+                velocity = data.position.x - data.pressPosition.x;
+            }
+            else
+            {
+                velocity = data.position.y - data.pressPosition.y;
+            }
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            // Debug.Log("END DRAG");
+            ValueField.transform.parent.gameObject.SetActive(false);
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            velocity = 0;
+           // ValueField.gameObject.SetActive(false);
+        }
+    }
 }

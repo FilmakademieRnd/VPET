@@ -78,12 +78,28 @@ namespace vpet
                 openMenu();
             }
         }
-	
-	    //!
-	    //! click on the light intensity button
-	    //! @param      active      state that the button dows no have (on or off)
-	    //!
-	    public void buttonLightIntensityClicked(bool active)
+
+        //!
+        //! click on the light intensity button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonLightSettingsClicked(bool active)
+        {
+            if (active)
+            {
+                activeMode = Mode.lightSettingsMode;
+            }
+            else
+            {
+                openMenu();
+            }
+        }
+
+        //!
+        //! click on the light intensity button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonLightIntensityClicked(bool active)
 	    {
 	        if (active)
 	        {

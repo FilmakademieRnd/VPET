@@ -234,16 +234,22 @@ namespace vpet
             IMenuButton buttonTrans = Elements.MenuButtonToggle();
             buttonTrans.AddAction(EditMode_Translate_sel, EditMode_Translate_nrm, () => editTranslation(buttonTrans));
             centerMenu.addButton(buttonTrans, layouts.OBJECT);
+            centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHT);
+            /*
             centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHTDIR);
             centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHTSPOT);
             centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHTPOINT);
+            */
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
             UI.OnUIChanged.AddListener(() => { buttonRot.Toggled = mainController.ActiveMode == MainController.Mode.rotationMode; });
             centerMenu.addButton(buttonRot, layouts.OBJECT);
+            centerMenu.addButtonToLayout(buttonRot, layouts.LIGHT);
+            /*
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTDIR);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTSPOT);
+            */
             // scale
             IMenuButton buttonScl = Elements.MenuButtonToggle();
             buttonScl.AddAction(EditMode_Scale_sel, EditMode_Scale_nrm, () => editScale(buttonScl));
@@ -263,9 +269,18 @@ namespace vpet
             // light color
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
             buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 
+            centerMenu.addButton(buttonLightCol, layouts.LIGHT);
+            /*
             centerMenu.addButton(buttonLightCol, layouts.LIGHTDIR);
             centerMenu.addButtonToLayout(buttonLightCol, layouts.LIGHTSPOT);
             centerMenu.addButtonToLayout(buttonLightCol, layouts.LIGHTPOINT);
+            */
+            // light settings
+            IMenuButton buttonLightSet = Elements.MenuButtonToggle();
+            buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightAngle(buttonLightSet));
+            centerMenu.addButton(buttonLightSet, layouts.LIGHT);
+
+            /*
             // angle
             IMenuButton buttonLightAng = Elements.MenuButtonToggle();
 			buttonLightAng.AddAction(EditMode_LightConeAngle_sel, EditMode_LightConeAngle_nrm, () => editLightAngle(buttonLightAng));
@@ -276,8 +291,9 @@ namespace vpet
 			centerMenu.addButton( buttonLightInt, layouts.LIGHTDIR );
 			centerMenu.addButtonToLayout( buttonLightInt, layouts.LIGHTSPOT );
 			centerMenu.addButtonToLayout( buttonLightInt, layouts.LIGHTPOINT );
-			// cue add
-			IMenuButton buttonAniCueAdd = Elements.MenuButton();
+            */
+            // cue add
+            IMenuButton buttonAniCueAdd = Elements.MenuButton();
 			buttonAniCueAdd.AddAction(AnimationMode_CueAdd_sel, AnimationMode_CueAdd_nrm, () => animationAddCueMenu( buttonAniCueAdd ) );
 			centerMenu.addButton( buttonAniCueAdd, layouts.ANIMATION );
 			// cue remove
@@ -294,5 +310,31 @@ namespace vpet
             centerMenu.addButton(buttonAniRem, layouts.ANIMATION);
         }
 
-}
+
+        private void setupParameterMenu()
+        {
+            // transform
+            IMenuButton buttonTransX = Elements.MenuButtonToggle();
+            buttonTransX.AddAction(EditMode_AxisX_sel, EditMode_AxisX_nrm, () => parameterButtonHandle(buttonTransX, 0));
+            IMenuButton buttonTransY = Elements.MenuButtonToggle();
+            buttonTransY.AddAction(EditMode_AxisY_sel, EditMode_AxisY_nrm, () => parameterButtonHandle(buttonTransY, 1));
+            IMenuButton buttonTransZ = Elements.MenuButtonToggle();
+            buttonTransZ.AddAction(EditMode_AxisZ_sel, EditMode_AxisZ_nrm, () => parameterButtonHandle(buttonTransZ, 2));
+            // light settings
+            IMenuButton buttonLightIntensity = Elements.MenuButtonToggle();
+            buttonLightIntensity.AddAction(EditMode_LightIntensity_sel, EditMode_LightIntensity_nrm, () => parameterButtonHandle(buttonLightIntensity, 0));
+            IMenuButton buttonLightAngle = Elements.MenuButtonToggle();
+            buttonLightAngle.AddAction(EditMode_LightConeAngle_sel, EditMode_LightConeAngle_nrm, () => parameterButtonHandle(buttonLightAngle, 1));
+            // TODO: add range
+            // add buttons
+            parameterMenu.DirToExpand = SubMenu.direction.BOTTOM;
+            parameterMenu.addButton(buttonTransX, layouts.TRANSFORM);
+            parameterMenu.addButton(buttonTransY, layouts.TRANSFORM);
+            parameterMenu.addButton(buttonTransZ, layouts.TRANSFORM);
+            parameterMenu.addButton(buttonLightIntensity, layouts.LIGHTDIR);
+            parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTPOINT);
+            parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTSPOT);
+            parameterMenu.addButton(buttonLightAngle, layouts.LIGHTSPOT);
+        }
+    }
 }

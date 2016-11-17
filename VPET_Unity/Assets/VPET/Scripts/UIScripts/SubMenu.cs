@@ -45,9 +45,9 @@ namespace vpet
 		protected override void arrange()
 		{
 			int i = 0;
-			foreach (GameObject button in ButtonsActive())
-			{
-				button.GetComponent<RectTransform>().localPosition = getButtonPosition(i);
+            foreach (GameObject button in ButtonsActive())
+            {
+                button.GetComponent<RectTransform>().localPosition = getButtonPosition(i) + offset;
 				i++;
 			}
 		}

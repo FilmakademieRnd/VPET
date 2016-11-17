@@ -34,148 +34,52 @@ namespace vpet
 
         private ColorWheel colorWheel;
 
-        private RangeSlider slider;
-
-        private RangeSlider intensitySlider;
-
-        private RangeSlider rangeSlider;
-
-        private RangeSlider angleSlider;
-
         private SceneObject currentLight;
 
         private SliderType sliderType;
-
-
 
 
         public enum SliderType { INTENSITY, RANGE, ANGLE, COLOR };
 
         void Awake()
         {
-            // create range sliders
-            // slider
-            GameObject rangeSliderPrefab = Resources.Load<GameObject>("VPET/Prefabs/RangeTemplate");
-            if (rangeSliderPrefab == null) Debug.LogError(string.Format("{0}: Cannot load: RangeTemplate.", this.GetType()));
+            // get color wheel
+            colorWheel = transform.GetComponentInChildren<ColorWheel>();
+            if (colorWheel == null) Debug.LogWarning(string.Format("{0}: Cant Find Component in Canvas: ColorWheel.", this.GetType()));
             else
             {
-                // intensity
-                GameObject sliderInstance = Instantiate(rangeSliderPrefab);
-                sliderInstance.name = rangeSliderPrefab.name;
-                sliderInstance.transform.SetParent(this.transform, false);
-                sliderInstance.transform.localPosition = new Vector3(0, (-VPETSettings.Instance.canvasHalfHeight + 2 * UI.ButtonOffset) * VPETSettings.Instance.canvasAspectScaleFactor, 0);
-                sliderInstance.transform.localScale = Vector3.one;
-                slider = sliderInstance.GetComponent<RangeSlider>();
-
-                /*
-	            // range
-	            sliderInstance = Instantiate(rangeSliderPrefab);
-	            sliderInstance.name = rangeSliderPrefab.name + "_range";
-	            sliderInstance.transform.parent = this.transform;
-	            sliderInstance.transform.localPosition = new Vector3(100, 0, 0);
-	            sliderInstance.transform.localScale = Vector3.one;
-	            rangeSlider = sliderInstance.GetComponent<RangeSlider>();
-	            rangeSlider.Callback = this.updateRange;
-	
-	            // angle
-	            sliderInstance = Instantiate(rangeSliderPrefab);
-	            sliderInstance.name = rangeSliderPrefab.name + "_angle";
-	            sliderInstance.transform.parent = this.transform;
-	            sliderInstance.transform.localPosition = new Vector3(400, 0, 0);
-	            sliderInstance.transform.localScale = Vector3.one;
-	            angleSlider = sliderInstance.GetComponent<RangeSlider>();
-	            angleSlider.MaxValue = 179f;
-	            angleSlider.Callback = this.updateAngle;
-	            */
-            }
-
-            // color wheel
-            GameObject colorWheelPrefab = Resources.Load<GameObject>("VPET/ColorWheelTemplate");
-            if (colorWheelPrefab == null) Debug.LogError(string.Format("{0}: Cannot load: ColorWheelTemplate.", this.GetType()));
-            else
-            {
-                GameObject colorWheelInstance = Instantiate(colorWheelPrefab);
-                colorWheelInstance.transform.SetParent(this.transform, false);
-                colorWheelInstance.transform.localPosition = new Vector3(-VPETSettings.Instance.canvasHalfWidth + 250, (-VPETSettings.Instance.canvasHalfHeight + 250) * VPETSettings.Instance.canvasAspectScaleFactor, 0);
-                colorWheelInstance.transform.localScale = 4 * Vector3.one;
-                colorWheel = colorWheelInstance.GetComponent<ColorWheel>();
                 colorWheel.Callback = this.updateColor;
             }
-
         }
 
-
-
-        void Start()
-        {
-            hide();
-        }
-
-        public void setSliderType(SliderType type)
+        public void SetSliderType(SliderType type)
         {
             sliderType = type;
         }
 
+        public SliderType GetSliderType()
+        {
+            return sliderType;
+        }
 
         public void hide()
         {
             colorWheel.gameObject.SetActive(false);
-            slider.gameObject.SetActive(false);
-            /*
-	        intensitySlider.gameObject.SetActive(false);
-	        rangeSlider.gameObject.SetActive(false);
-	        angleSlider.gameObject.SetActive(false);
-	        */
         }
 
         public void show(SceneObject light)
         {
             currentLight = light;
 
-            switch (sliderType)
+            if (sliderType == SliderType.COLOR)
             {
-                case SliderType.INTENSITY:
-                    slider.MaxValue = float.MaxValue;
-                    slider.Sensitivity = VPETSettings.Instance.lightIntensityFactor / 20f;
-                    slider.Value = currentLight.getLightIntensity();
-                    slider.Callback = this.updateIntensity;
-                    slider.gameObject.SetActive(true);
-                    break;
-                case SliderType.RANGE:
-                    slider.MaxValue = float.MaxValue;
-                    slider.Sensitivity = 0.5f;
-                    slider.Value = currentLight.getLightRange();
-                    slider.Callback = this.updateRange;
-                    slider.gameObject.SetActive(true);
-                    break;
-                case SliderType.ANGLE:
-                    slider.MaxValue = 179f;
-                    slider.Sensitivity = 0.5f;
-                    slider.Value = currentLight.getLightAngle();
-                    slider.Callback = this.updateAngle;
-                    slider.gameObject.SetActive(true);
-                    break;
-                case SliderType.COLOR:
-                    colorWheel.gameObject.SetActive(true);
-                    colorWheel.Value = currentLight.getLightColor();
-                    break;
+                colorWheel.gameObject.SetActive(true);
+                colorWheel.Value = currentLight.getLightColor();
             }
-
-
-            /*
-	        intensitySlider.gameObject.SetActive(true);
-	        intensitySlider.Value = currentLight.getLightIntensity();
-	        if ( currentLight.isSpotLight  || currentLight.isPointLight )
-	        {
-	            rangeSlider.gameObject.SetActive(true);
-	            rangeSlider.Value = currentLight.getLightRange();
-	        }
-	        if ( currentLight.isSpotLight )
-	        {
-	            angleSlider.gameObject.SetActive(true);
-	            angleSlider.Value = currentLight.getLightAngle();
-	        }
-	        */
+            else
+            {
+                colorWheel.gameObject.SetActive(false);
+            }
         }
 
         private void updateColor(Color color)

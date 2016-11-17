@@ -111,6 +111,9 @@ namespace vpet
 	    //!
 	    public void addAction()
 	    {
+            return;
+
+
 			ArrayList actionList = new ArrayList();
 			foreach(Transform obj in editableObjects) 
 			{

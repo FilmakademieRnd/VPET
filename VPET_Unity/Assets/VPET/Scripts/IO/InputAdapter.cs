@@ -393,7 +393,10 @@ namespace vpet
 		//!
 		public void twoPointerStarted(Vector3 pos)
         {
-			camMovePos = pos;
+            if (!pointerOnGUI())
+            {
+                camMovePos = pos;
+            }
 		}
 	
 		//!
@@ -402,11 +405,14 @@ namespace vpet
 		//!
 		public void twoPointerEnded(Vector3 pos)
         {
-			camMovePos = Vector3.zero;
-			undoRedoController.addAction();
+            if (!pointerOnGUI())
+            {
+                camMovePos = Vector3.zero;
+                undoRedoController.addAction();
 
-			// save the camera offset to restore it next time the app is started
-			mainController.saveCameraOffset();
+                // save the camera offset to restore it next time the app is started
+                mainController.saveCameraOffset();
+            }
 		}
 	
 		//!
@@ -415,7 +421,10 @@ namespace vpet
 		//!
 		public void twoPointerDrag(Vector3 pos)
         {
-            mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
+            if (!pointerOnGUI())
+            {
+                mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
+            }
 		}
 	
 		//!

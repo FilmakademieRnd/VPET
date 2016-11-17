@@ -50,7 +50,6 @@ namespace vpet
         //!
         //! Dump scene file name
         //!
-        [Config]
         public string sceneFileName = "SanMiguel7_nightlow";
         //!
         //! Shall we load Textures ?

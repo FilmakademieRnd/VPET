@@ -402,23 +402,10 @@ namespace vpet
 			AnimationSerializer asScript =  target.gameObject.AddComponent<AnimationSerializer>();
 
 			asScript.loadData();
-			animationController.setStartEndTimeline( asScript.timeStart, asScript.timeEnd );
-
-
-			updateAnimationCurves();
-
+            updateAnimationCurves();
+            animationController.setStartEndTimeline( asScript.timeStart, asScript.timeEnd );
 		}
 
-		//!
-		//! Use this for delayed initalization
-		//!
-		void StartXXX()
-		{
-			//Initalize animation loading if animation available
-			target.gameObject.AddComponent<AnimationSerializer>();
-			target.gameObject.GetComponent<AnimationSerializer>().loadData();
-			updateAnimationCurves();
-		}
 
 		//!
 		//! Update is called once per frame
@@ -828,12 +815,29 @@ namespace vpet
 			target.transform.position = pos;
 		}
 
+        public float TranslateX
+        {
+            get{ return target.transform.position.x; }
+            set{ target.transform.position = new Vector3(value, target.transform.position.y, target.transform.position.z); }
+        }
 
-		//!
-		//! scale the object immediately
-		//! @param    scl    local scale to send the object to
-		//!
-		public void scale( Vector3 scl )
+        public float TranslateY
+        {
+            get { return target.transform.position.y; }
+            set { target.transform.position = new Vector3(target.transform.position.x, value, target.transform.position.z); }
+        }
+
+        public float TranslateZ
+        {
+            get { return target.transform.position.z; }
+            set { target.transform.position = new Vector3(target.transform.position.x, target.transform.position.y, value); }
+        }
+
+        //!
+        //! scale the object immediately
+        //! @param    scl    local scale to send the object to
+        //!
+        public void scale( Vector3 scl )
 		{
 			target.transform.localScale = scl;
 
@@ -845,12 +849,53 @@ namespace vpet
 		}
 
 
-		//!
-		//! set the kinematic parameter of the object
-		//! @param      set     new value for kinematic
-		//! @param      send    should this modification be published to the server     
-		//!
-		public void setKinematic(bool set, bool send = true)
+        public float ScaleX
+        {
+            get { return target.transform.localScale.x; }
+            set { target.transform.localScale = new Vector3(value, target.transform.localScale.y, target.transform.localScale.z); }
+        }
+
+        public float ScaleY
+        {
+            get { return target.transform.localScale.y; }
+            set { target.transform.localScale = new Vector3(target.transform.localScale.x, value, target.transform.localScale.z); }
+        }
+
+        public float ScaleZ
+        {
+            get { return target.transform.localScale.z; }
+            set { target.transform.localScale = new Vector3(target.transform.localScale.x, target.transform.localScale.y, value); }
+        }
+
+
+
+
+        public float RotateX
+        {
+            get { return target.transform.localRotation.eulerAngles.x; }
+            set { target.transform.localRotation = Quaternion.Euler(value, target.transform.localRotation.eulerAngles.y, target.transform.localRotation.eulerAngles.z); }
+        }
+
+        public float RotateY
+        {
+            get { return target.transform.localRotation.eulerAngles.y; }
+            set { target.transform.localRotation = Quaternion.Euler(target.transform.localRotation.eulerAngles.x, value, target.transform.localRotation.eulerAngles.z); }
+        }
+
+        public float RotateZ
+        {
+            get { return target.transform.localRotation.eulerAngles.z; }
+            set { target.transform.localRotation = Quaternion.Euler(target.transform.localRotation.eulerAngles.x, target.transform.localRotation.eulerAngles.y, value); }
+        }
+
+
+
+        //!
+        //! set the kinematic parameter of the object
+        //! @param      set     new value for kinematic
+        //! @param      send    should this modification be published to the server     
+        //!
+        public void setKinematic(bool set, bool send = true)
 		{
 			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
 			{

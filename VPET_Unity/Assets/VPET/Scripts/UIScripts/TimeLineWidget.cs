@@ -26,6 +26,7 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 */
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -81,14 +82,12 @@ namespace vpet
 	    //!
 	    AnimationClip clip;
 	
-	    // TODO: use events
-	    private CallbackFloat callback;
+	    private UnityAction<float> callback;
 	
-	    public CallbackFloat Callback
+	    public UnityAction<float> Callback
 	    {
 	        set { callback = value; }
 	    }
-	
 	
 	    //!
 	    //! current time of the animation
@@ -105,8 +104,8 @@ namespace vpet
 	    private float startTime = -10;
 	    public float StartTime
 	    {
+            get { return startTime; }
 	        set { startTime = value;
-	            m_a1 = startTime * 25;
 	            startFrameDisplay.text = Mathf.RoundToInt(startTime * 25).ToString();
 	        }
 	    }
@@ -117,32 +116,30 @@ namespace vpet
 	    private float endTime = 5;
 	    public float EndTime
 	    {
+            get { return endTime; }
 	        set {
 	            endTime = value;
-	            m_b1 = endTime * 25;
 	            endFrameDisplay.text = Mathf.RoundToInt(endTime * 25).ToString();
 	        }
 	    }
-	
-	
 	
 	    //!
 	    //! is the currently edited animation looped
 	    //!
 	    public bool isLooping = false;
 	
-	
-		// mapping start end values
-	    float m_a1 = 0; // start time in frames
-	    float m_b1 = 1; // end time in frames
-	    float m_a2 = 0; // timeline start position global
-		float m_b2 = 1; // timeline end position global
-		float m_a3 = 0; // timeline start position local
-		float m_b3 = 1; // timeline end position local
-	
-	
-	
-	    void Awake()
+
+        private float startTimeDragInit = 0;
+        private float endTimeDragInit = 1;
+        private float timeDragStart = 0;
+        private float dragVelocity = 0;
+        private float pinchInitDistance = 0;
+        private float widthPinchStart = 1;
+
+
+        private bool doPinch = false;
+
+        void Awake()
 	    {
 	        frameList = new List<GameObject>();
 	        frameContainer = this.GetComponent<RectTransform>();
@@ -166,15 +163,15 @@ namespace vpet
 	        // get text component
 	        currentFrameDisplay = redLine.GetChild(0).GetComponent<Text>();
 	        if (currentFrameDisplay == null) Debug.LogError(string.Format("{0}: Cant Find Text component below RedLine.", this.GetType()));
-
 	    }
 	
 	    void Start()
 	    {
 
-			initMappingValues();
+            startFrameDisplay.text = Mathf.RoundToInt(startTime * 25).ToString();
+            endFrameDisplay.text = Mathf.RoundToInt(endTime * 25).ToString();
 
-	        /*
+            /* debug
 	        Keyframe[] keys = new Keyframe[3];
 	        keys[0] = new Keyframe(-10, -1);
 	        keys[1] = new Keyframe(2, 0);
@@ -182,31 +179,17 @@ namespace vpet
 	        AnimationCurve testCurve = new AnimationCurve(keys);
 	        updateFrames(testCurve);
 	        */
-	
-	        /*
+
+            /* debug
 	        addFrame(-15f);
 	        addFrame(-10f);
 	        addFrame(0f);
 	        addFrame(5f);
 	        */
-	
-	        setTime(2f);
+
+            setTime(2f);
+
 	    }
-	
-		public void initMappingValues()
-		{
-			m_a1 = startTime * 25;
-			m_b1 = endTime * 25;
-			m_a2 = ( frameContainer.position.x- frameContainer.sizeDelta.x * VPETSettings.Instance.canvasScaleFactor /2 ) ; 
-			m_b2 = m_a2 + frameContainer.sizeDelta.x * VPETSettings.Instance.canvasScaleFactor; 
-			m_a3 = -frameContainer.sizeDelta.x / 2;
-			m_b3 = frameContainer.sizeDelta.x  / 2;
-
-			startFrameDisplay.text = Mathf.RoundToInt( startTime*25 ).ToString();
-			endFrameDisplay.text = Mathf.RoundToInt( endTime * 25).ToString();
-
-			// print("a1: " + m_a1 + "b1: " + m_b1 + "a2: " + m_a2 + "b2: " + m_b2 + "a3: " + m_a3 + "b3: " + m_b3);
-		}
 
 	    //!
 	    //! add a frame representing image to the timeline
@@ -217,7 +200,6 @@ namespace vpet
 	        GameObject img = GameObject.Instantiate<GameObject>(keyframeImagePrefab);
 	        img.transform.SetParent(frameContainer, false);
 	        img.transform.SetAsFirstSibling();
-	        img.GetComponent<RectTransform>().localPosition = new Vector3( _map(time * 25, startTime*25, endTime*25, -frameContainer.sizeDelta.x/2, frameContainer.sizeDelta.x/2), 0, 0);
 	        img.GetComponent<KeyFrame>().currentTime = time;
             img.GetComponent<KeyFrame>().SetLayerId(layer);
 
@@ -243,17 +225,17 @@ namespace vpet
 	        return (x * (b2 - a2) - a1 * b2 + a2 * b1) / (b1 - a1);
 	    }
 	
-	    
 	    private float mapToTimelinePosition( float x)
 	    {
-	        return (x * (m_b3 - m_a3) - m_a1 * m_b3 + m_a3 * m_b1) / (m_b1 - m_a1);
+            return _map(x, startTime, endTime, -frameContainer.sizeDelta.x / 2f, frameContainer.sizeDelta.x / 2f);
 	    }
 	
 	    private float mapToCurrentTime( float x )
 	    {
-	        return (x * (m_b1 - m_a1) - m_a2 * m_b1 + m_a1 * m_b2) / (m_b2 - m_a2);
-	    }
-	
+            return _map(x, -frameContainer.sizeDelta.x / 2f, frameContainer.sizeDelta.x / 2f, startTime, endTime );
+        }
+
+
 	    //!
 	    //! set the current time (of the animation) in the timeline
 	    //! @param      time        current time at the red line of the timeline
@@ -261,8 +243,7 @@ namespace vpet
 	    public void setTime(float time)
 	    {
 	        currentTime = time;
-	        // redLine.localPosition = new Vector3(_map( Mathf.Clamp(time, startTime, endTime)  * 25, startTime * 25, endTime * 25, -frameContainer.sizeDelta.x / 2, frameContainer.sizeDelta.x / 2), 0, 0);
-			redLine.localPosition = new Vector3( mapToTimelinePosition(currentTime*25), 0, 0);
+            redLine.localPosition = new Vector3( mapToTimelinePosition(currentTime), 0, 0);
 	        currentFrameDisplay.text = Mathf.RoundToInt(time * 25) + " f";
 	    }
 	
@@ -271,7 +252,7 @@ namespace vpet
 	    //! will add/remove frames if neccessary
 	    //! @param      curve       animation curve for which to display the timeline
 	    //!
-	    public void updateFrames(AnimationCurve curve, int layer)
+	    public void UpdateFrames(AnimationCurve curve, int layer)
 	    {
 	        // clip = associatedClip;
 	        for (int i = 0; i < curve.keys.Length; i++)
@@ -289,10 +270,28 @@ namespace vpet
 	            if ( !exists )
 	                addFrame(curve.keys[i].time, layer);
 	        }
-	
+
+            UpdateFrames();
+
 	    }
 
-	    public void clearFrames()
+        //!
+        //! updates position of the displayed frames. will show or hide keyframes according to [start,end]. E.g. called after timeline visible range changed
+        //!
+        public void UpdateFrames()
+        {
+            foreach (GameObject img in frameList)
+            {
+                float _time = img.GetComponent<KeyFrame>().currentTime;
+                if (_time < startTime || _time > endTime)
+                    img.SetActive(false);
+                else
+                    img.SetActive(true);
+                img.GetComponent<RectTransform>().localPosition = new Vector3(mapToTimelinePosition(_time ), 0, 0);
+            }
+        }
+
+        public void clearFrames()
 	    {
 	        foreach (GameObject g in frameList)
 	        {
@@ -301,29 +300,84 @@ namespace vpet
 	        frameList.Clear();
 	    }
 	
-	
 	    // DRAG
 	    public void OnBeginDrag(PointerEventData data)
 	    {
-	        //Debug.Log("BEGIN DRAG");
-	    }
-	
-	    public void OnDrag(PointerEventData data)
+           //  Debug.Log("BEGIN DRAG TIMELINE");
+
+            startTimeDragInit = startTime;
+            endTimeDragInit = endTime;
+            timeDragStart = mapToCurrentTime(frameContainer.InverseTransformPoint(data.position).x);
+
+            if (Input.touchCount > 1 ) // start drag or pinch timeline
+            {
+                pinchInitDistance = Mathf.Abs(Input.GetTouch(0).position.x - Input.GetTouch(1).position.x);
+            }
+            else if (Input.GetKey(KeyCode.LeftAlt) )
+            {
+                pinchInitDistance = Input.mousePosition.x;
+            }
+        }
+
+        public void OnDrag(PointerEventData data)
 	    {
-	        // setTime( mapToCurrentTime(data.position.x - Screen.width / 2) / 25f );
-	        if (callback != null)
-	        {
-				callback( Mathf.Clamp( mapToCurrentTime(data.position.x) / 25f, startTime, endTime ) );
-	        }
-	        else
-	        {
-				setTime( Mathf.Clamp( mapToCurrentTime(data.position.x) / 25f, startTime, endTime ) );
-	        }
+            // Debug.Log("DRAG TIMELINE");
+            if (Input.touchCount > 1 ) // drag or pinch timeline
+            {
+                if ( Mathf.Abs(Mathf.Abs(Input.GetTouch(0).position.x - Input.GetTouch(1).position.x) - pinchInitDistance) > 20 ) // pinch
+                {
+                    float pinchFactor = 1 + (Mathf.Abs(Input.GetTouch(0).position.x - Input.GetTouch(1).position.x) - pinchInitDistance) / Screen.width * 2f; ;
+                    float widthPrev = endTimeDragInit - startTimeDragInit;
+                    float widthDeltaHalf = (widthPrev * pinchFactor - widthPrev);
+                    StartTime = startTimeDragInit + widthDeltaHalf;
+                    EndTime = endTimeDragInit - widthDeltaHalf;
+                }
+                else // move
+                {
+                    float timeOffset = timeDragStart - _map(frameContainer.InverseTransformPoint(data.position).x, -frameContainer.sizeDelta.x / 2f, frameContainer.sizeDelta.x / 2f, startTimeDragInit, endTimeDragInit);
+                    StartTime = startTimeDragInit + timeOffset;
+                    EndTime = endTimeDragInit + timeOffset;
+                }
+
+                UpdateFrames();
+
+            }
+            else if (Input.GetKey(KeyCode.LeftAlt))
+            {
+                if ( Input.GetKey( KeyCode.LeftControl )) // pinch
+                {
+                    // normalized distance
+                    float pinchFactor = 1f + (Input.mousePosition.x - pinchInitDistance) / Screen.width * 2f; 
+                    float widthPrev = endTimeDragInit - startTimeDragInit;
+                    float widthDeltaHalf = (widthPrev * pinchFactor - widthPrev) / 2f;
+                    StartTime = startTimeDragInit + widthDeltaHalf;
+                    EndTime = endTimeDragInit - widthDeltaHalf;
+                }
+                else // move
+                {
+                    float timeOffset = timeDragStart - _map(frameContainer.InverseTransformPoint(data.position).x, -frameContainer.sizeDelta.x / 2f, frameContainer.sizeDelta.x / 2f, startTimeDragInit, endTimeDragInit);
+                    StartTime = startTimeDragInit + timeOffset;
+                    EndTime = endTimeDragInit + timeOffset;
+                }
+                
+                UpdateFrames();
+            }
+            else // move time cursor
+            {
+                if (callback != null)
+                {
+                    callback( mapToCurrentTime(frameContainer.InverseTransformPoint(data.position).x ) );
+                }
+                else
+                {
+                    setTime(mapToCurrentTime(frameContainer.InverseTransformPoint(data.position).x));
+                }
+            }
 	    }
 	
 	    public void OnEndDrag(PointerEventData data)
 	    {
-	        //Debug.Log("END DRAG");
+	        // Debug.Log("END DRAG TIMELINE");
 	    }
 	
 	

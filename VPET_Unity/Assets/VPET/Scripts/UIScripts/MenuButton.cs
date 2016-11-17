@@ -84,7 +84,7 @@ namespace vpet
 		public override void OnPointerClick (PointerEventData eventData)
 		{
             // set active button at menu
-            menu.ActiveButton = this.gameObject;
+            if ( menu) menu.ActiveButton = this.gameObject;
 
 			// call base
 			base.OnPointerClick (eventData);

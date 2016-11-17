@@ -26,6 +26,7 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 */
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -40,10 +41,9 @@ namespace vpet
 	
 	    public float currentTime = 0f;
 	
-	    // TODO: use events
-	    private CallbackFloat callback;
+	    private UnityAction<float> callback;
 	
-	    public CallbackFloat Callback
+	    public UnityAction<float> Callback
 	    {
 	        set { callback = value; }
 	    }

@@ -73,12 +73,12 @@ namespace vpet
 	    //!
 	    //! 
 	    //!
-	    private float timeLineStart = 0;
+	    private float timeLineStartInit = 0;
 	
 	    //!
 	    //! 
 	    //!
-	    private float timeLineEnd = 5;
+	    private float timeLineEndInit = 5;
 	
 	    //!
 	    //! is the position of the sceneObject currently edited
@@ -123,7 +123,7 @@ namespace vpet
 	    //!
 	    //! is dragging of the timeline currently active
 	    //!
-	    private bool dragging = false;
+	    // private bool dragging = false;
 	
 	    //!
 	    //! timeline shown to navigate within an animation
@@ -200,9 +200,6 @@ namespace vpet
 	        // assign callback for frame changes on timeline (on user drag)
 	        timeLine.Callback = this.setTime;
 	
-			// listen to ui changes to adjust mapping values 
-			UI.OnUIChanged.AddListener( timeLine.initMappingValues );
-
 	        //cache reference to keyframe Sphere container
 	        frameSphereContainer = GameObject.Find("FrameSphereContainer");
 	
@@ -244,9 +241,8 @@ namespace vpet
 	
 	    void Start()
 	    {
-	        timeLine.StartTime = timeLineStart;
-	        timeLine.EndTime = timeLineEnd;
-	        timeLine.setTime(currentAnimationTime);
+	        timeLine.StartTime = timeLineStartInit;
+	        timeLine.EndTime = currentAnimationTime = timeLineEndInit;
 	    }
 	
 	
@@ -256,12 +252,9 @@ namespace vpet
 	    void Update()
 	    {
 	
-	        if (playing && !dragging)
+	        if (playing ) // && !dragging)
 	        {
-	            currentAnimationTime += Time.deltaTime;
-	            if (currentAnimationTime > timeLineEnd) currentAnimationTime = timeLineStart;
-	
-	            timeChanged();
+	            setTime( currentAnimationTime + Time.deltaTime );
 	        }
 	
 	        /*
@@ -306,7 +299,7 @@ namespace vpet
 	
 	    private void setTime(float x)
 	    {
-	        currentAnimationTime = Mathf.Clamp(x, timeLineStart, timeLineEnd);
+	        currentAnimationTime = Mathf.Clamp(x, timeLine.StartTime, timeLine.EndTime );
 	        timeChanged();
 	    }
 	
@@ -315,7 +308,6 @@ namespace vpet
 	    {
 	        if (animationTarget != null)
 	        {
-	            print("Set Key Value");
 	            // TODO: cheesy
 	            currentAnimationTime = timeLine.CurrentTime;
 	            animationTarget.GetComponent<SceneObject>().setKeyframe();
@@ -330,7 +322,6 @@ namespace vpet
 	    //!
 	    private void updateLine()
 	    {
-	        print("updateLine");
 	        if (animData.getAnimationClips(animationTarget) != null)
 	        {
 	            foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
@@ -406,8 +397,6 @@ namespace vpet
 	    //!
 	    public void updateTimelineKeys()
 	    {
-	        print("updateTimelineKeys");
-	
 	        // clear
 	        timeLine.clearFrames();
 	        // add
@@ -417,7 +406,7 @@ namespace vpet
 	            {
 	                foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
 	                {
-	                    timeLine.updateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
+	                    timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
 	                }
 	            }
 	        }
@@ -432,10 +421,10 @@ namespace vpet
 	    //!
 	    public void setStartEndTimeline(float s, float e)
 	    {
-	        timeLineStart = Mathf.Min(timeLineStart, s);
-	        timeLineEnd = Mathf.Max(e, timeLineEnd);
-	        currentAnimationTime = timeLineStart;
-	    }
+	        timeLine.StartTime = s;
+	        timeLine.EndTime =  e > 0f ? e : 5;
+            setTime(timeLine.StartTime);
+        }
 	
 
             
@@ -520,7 +509,7 @@ namespace vpet
 	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.y", rotYcurve);
 	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.z", rotZcurve);
 	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.w", rotWcurve);
-	
+
 	            animatedObjects.Add(animationTarget.GetComponent<SceneObject>());
 	        }
 	
@@ -619,7 +608,7 @@ namespace vpet
 	    //!
 	    public void previousKeyframe()
 	    {
-	        float newTime = timeLineStart;
+            float newTime = timeLine.StartTime; ;
 	
 	        foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
 	        {
@@ -644,7 +633,7 @@ namespace vpet
 	
 	    public void nextKeyframe()
 	    {
-	        float newTime = timeLineEnd;
+	        float newTime = timeLine.EndTime;
 	
 	        foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
 	        {
@@ -667,7 +656,7 @@ namespace vpet
 	    }
 	
 	
-	
+	    /*
 	    //!
 	    //! starts timeline drag (shifts the time on the timeline)
 	    //!
@@ -690,6 +679,7 @@ namespace vpet
 	        initialDragPositionX = 0;
 	        dragArea.SetActive(false);
 	    }
+        */
 	
 	    //!
 	    //! calculate an array of interpolated waypoints of a Hermit curve defined by two keyframes

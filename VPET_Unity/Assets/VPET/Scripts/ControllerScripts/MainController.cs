@@ -27,7 +27,7 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
+using System.Reflection;
 
 //!
 //! INFO: the mainController class is separeted into different files
@@ -35,12 +35,12 @@ using System.Collections;
 //!
 namespace vpet
 {
-	public class GravityChangeEvent : UnityEvent<bool> { }
-	public class VPETBoolEvent : UnityEvent<bool> { }
+	// public class GravityChangeEvent : UnityEvent<bool> { }
+	// public class VPETBoolEvent : UnityEvent<bool> { }
 
-	public partial class MainController : MonoBehaviour {
+	public partial class MainController : MonoBehaviour
+    {
 	
-
 
 		/*
 	    //!
@@ -507,5 +507,45 @@ namespace vpet
             return false;
         }
 
+        //!
+        //! Receive changes from range slider
+        //!
+        public void setTransformValue( float v )
+        {
+            print("got value:  " + v);
+
+            // check buttons 
+
+        }
+
+        private void propagateParameterValue( float v )
+        {
+            ui.updateRangeSlider(v);
+        }
+
+        //!
+        //! wire method and set as callback 
+        //! @param
+        //!
+        public void ConnectRangeSlider( UnityEngine.Object obj, string prop )
+        {
+            PropertyInfo info = obj.GetType().GetProperty(prop);
+            UnityAction<float> act = (UnityAction <float>) UnityAction.CreateDelegate( typeof(UnityAction<float>), obj, info.GetSetMethod());
+            ui.drawRangeSlider(act, (float)info.GetValue(obj, null));
+        }
+
+        //!
+        //! wire method and set as callback 
+        //! @param
+        //!
+        public void ConnectRangeSlider(UnityAction<float> act, float initValue)
+        {
+            ui.drawRangeSlider(act, initValue );
+        }
+
+        // connect slider and property when:
+        //      draw range slider
+        //      parameter button pressed
+        //      slection changed
     }
 }
