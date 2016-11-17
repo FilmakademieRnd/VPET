@@ -50,7 +50,7 @@ CXXFLAGS = -Wall -pipe -m64 -fPIC -DPIC
 all: $(OUTFILEPATH)
 
 $(OUTFILEPATH): $(OBJS)
-	@echo "  Compiling OpenRL RendererInfo plugin..."
+	@echo "  Compiling SceneDistributor RendererInfo plugin..."
 	$(CXX) $(CXXFLAGS) $(OBJS) $(LIBPATH) $(LIBS) -shared -o $(OUTFILEPATH)
 
 $(OBJDIR)/%.o: %.cpp
@@ -58,5 +58,5 @@ $(OBJDIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@echo "  Cleaning OpenRL RendererInfo plugin"
+	@echo "  Cleaning SceneDistributor RendererInfo plugin"
 	@rm -rf $(OBJDIR)

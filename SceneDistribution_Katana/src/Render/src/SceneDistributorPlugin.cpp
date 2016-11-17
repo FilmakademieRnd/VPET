@@ -290,24 +290,20 @@ static void* server(void *scene)
 		char* messageStart;
 		int responseLength = 0;
         socket->recv(&message);
-        std::string msgString(static_cast<char*>(message.data()));
+
+        std::string msgString;
+        const char* msgPointer = static_cast<const char*>(message.data());
+        if ( msgPointer == NULL )
+        {
+             std::cout << "[INFO SceneDistributorPlugin.server] Error msgPointer is NULL" << std::endl;
+        }
+        else
+        {
+            msgString = std::string( static_cast<char*>(message.data()), message.size() );
+        }
 
         // std::cout << msgString << std::endl;
-
-        if (msgString == "start")
-		{
-           /*
-		  std::cout << "preparing initial message" << std::endl;
-		  std::ostringstream msgStream;
-		  msgStream << objPack->size();
-		  messageStart = responseMessageContent = (char*)malloc(msgStream.str().size()+1);
-		  std::strcpy(responseMessageContent, msgStream.str().c_str());
-		  responseLength = msgStream.str().size()+1;
-		  std::cout << msgStream.str() << std::endl;
-		  std::cout << "prepared initial message" << std::endl;
-          */
-		}
-        else if (msgString == "objec")
+        if (msgString == "objec")
 		{
             std::cout << "[INFO SceneDistributorPlugin.server] Got Objcts Request" << std::endl;
             std::cout << "[INFO SceneDistributorPlugin.server] Object count " << sharedState->objPackList.size() << std::endl;
