@@ -685,6 +685,7 @@ namespace vpet
 			if (isSpotLight || isPointLight || isDirectionalLight) 
 			{
 				sourceLight.color = initialLightColor;
+                sourceLight.intensity = initialLightIntensity;
 				lightGeo.GetComponent<Renderer>().material.color = initialLightColor;
 				serverAdapter.sendLightColor(target, sourceLight, exposure );
 				serverAdapter.sendLightIntensity(target, sourceLight, exposure);

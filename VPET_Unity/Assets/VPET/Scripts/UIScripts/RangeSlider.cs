@@ -94,7 +94,7 @@ namespace vpet
 
         void Start()
         {
-
+            transform.parent.localPosition = new Vector3(VPETSettings.Instance.canvasHalfWidth - UI.ButtonOffset, 0, 0);
         }
 
         // Update is called once per frame

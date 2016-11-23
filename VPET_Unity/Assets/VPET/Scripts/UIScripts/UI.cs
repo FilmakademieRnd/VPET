@@ -128,6 +128,7 @@ namespace vpet
 	
 	    // public static int ButtonOffset = (int)(UI.SpriteSize.x + UI.SpriteSize.x / 5);
 	    public static int ButtonOffset = (int)(UI.SpriteSize.x+ UI.SpriteSize.x/4f);
+        public static int ButtonBorderOffset = ButtonOffset;
 	
 	    private LightSettingsWidget lightSettingsWidget;
 	
@@ -326,6 +327,8 @@ namespace vpet
 
         public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f )
         {
+            
+
             if (centerMenu.ActiveButton != null && centerMenu.ActiveButton.GetComponent<Button>() != null)
             {
                 Sprite buttonSprite = centerMenu.ActiveButton.GetComponent<Button>().spriteState.disabledSprite;
@@ -542,7 +545,8 @@ namespace vpet
 
 
             parameterMenu.switchLayout(layout);
-            parameterMenu.offset = new Vector2(-VPETSettings.Instance.canvasHalfWidth + UI.ButtonOffset, parameterMenu.ActiveButtonCount * UI.ButtonOffset / 2f);
+            float _adjustOddCount = (parameterMenu.ActiveButtonCount % 2) * UI.ButtonOffset / 2f;
+            parameterMenu.offset = new Vector2(-VPETSettings.Instance.canvasHalfWidth + UI.ButtonOffset, parameterMenu.ActiveButtonCount * UI.ButtonOffset / 2f + _adjustOddCount);
             parameterMenu.show();
         }
 

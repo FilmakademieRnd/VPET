@@ -46,8 +46,9 @@ namespace vpet
         //!
         //! position to which activated buttons are moved
         //!
-        protected Vector3 activePosition = new Vector3(Screen.height / 16 + 10.0f, Screen.height - (Screen.height / 16 + 10.0f), 0.0f);
-	
+        // protected Vector3 activePosition = new Vector3(Screen.height / 16 + 10.0f, Screen.height - (Screen.height / 16 + 10.0f), 0.0f);
+        protected Vector3 activePosition = new Vector3(-VPETSettings.Instance.canvasHalfWidth + UI.ButtonOffset, (VPETSettings.Instance.canvasHalfHeight - UI.ButtonOffset) * VPETSettings.Instance.canvasAspectScaleFactor, 0.0f);
+
 
         public MenuButtonToggle GravityButton;
 
@@ -82,7 +83,7 @@ namespace vpet
 	    {
 	        activeButton = button;
 			// set directly an skip animation
-	        activeButton.GetComponent<RectTransform>().position = activePosition;
+	        activeButton.GetComponent<RectTransform>().localPosition = activePosition;
 	        
 			// hide all except of active button
 			foreach (GameObject g in Buttons())
