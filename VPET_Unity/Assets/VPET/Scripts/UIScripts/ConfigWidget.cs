@@ -11,17 +11,15 @@ under grant agreement no 610005.
 http://dreamspaceproject.eu/
 
 This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free Software
-Foundation; version 2.1 of the License.
+the terms of the MIT License as published by the Open Source Initiative.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+FOR A PARTICULAR PURPOSE. See the MIT License for more details.
 
-You should have received a copy of the GNU Lesser General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place - Suite 330, Boston, MA 02111-1307, USA, or go to
-http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+You should have received a copy of the MIT License along with
+this program; if not go to
+https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
 using UnityEngine;
@@ -71,8 +69,7 @@ namespace vpet
 		//!
 		//! 
 		//!
-		[HideInInspector]
-		public float ambientLight = 0.1f;
+		private float ambientLight = 0.1f;
 
 #if USE_TANGO﻿
         [HideInInspector]
@@ -275,6 +272,7 @@ namespace vpet
 				ambientIntensitySlider.value = ambientLight;
                 Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/AI_SliderValue").GetComponent<Text>();
                 sliderValueText.text = ambientLight.ToString("f1");
+                ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
 
 #if USE_TANGO﻿
@@ -287,30 +285,6 @@ namespace vpet
             }
 #endif
 
-/*
------------------------------------------------------------------------------
-This source file is part of VPET - Virtual Production Editing Tool
-http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/VPET
-
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
-
-This project has been realized in the scope of the EU funded project Dreamspace
-under grant agreement no 610005.
-http://dreamspaceproject.eu/
-
-This program is free software; you can redistribute it and/or modify it under
-the terms of the MIT License as published by the Open Source Initiative.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the MIT License for more details.
-
-You should have received a copy of the MIT License along with
-this program; if not go to
-https://opensource.org/licenses/MIT
------------------------------------------------------------------------------
-*/
         }
 
 
@@ -338,7 +312,7 @@ https://opensource.org/licenses/MIT
 			// Ambient intensity
 			if ( ambientIntensitySlider )
 			{
-				ambientLight = ambientIntensitySlider.value;                
+				ambientLight = ambientIntensitySlider.value;
             }
 
 #if USE_TANGO﻿

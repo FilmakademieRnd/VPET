@@ -256,11 +256,14 @@ namespace vpet
             IMenuButton buttonReset = Elements.MenuButton();
 			buttonReset.AddAction(EditMode_Reset_sel, EditMode_Reset_nrm, call: () => objectReset() );
 			centerMenu.addButton( buttonReset, layouts.OBJECT );
-			centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTDIR );
+            centerMenu.addButtonToLayout(buttonReset, layouts.LIGHT);
+            /*
+            centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTDIR );
 			centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTSPOT );
 			centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTPOINT );
-	        // graviy/kinematic on off
-			IMenuButton buttonKin = Elements.MenuButtonToggle();
+            */
+            // graviy/kinematic on off
+            IMenuButton buttonKin = Elements.MenuButtonToggle();
 			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic() );
             UI.OnUIChanged.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );

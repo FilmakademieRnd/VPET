@@ -447,6 +447,7 @@ namespace vpet
 		public void setAmbientIntensity( float v )
 		{
 			RenderSettings.ambientIntensity = v;
+            RenderSettings.ambientLight = new Color(v, v, v, 1f);
 		}
 
 
