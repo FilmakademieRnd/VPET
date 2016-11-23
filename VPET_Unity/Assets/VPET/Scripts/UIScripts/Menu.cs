@@ -374,7 +374,7 @@ namespace vpet
         //!
         protected virtual void animatedDrawFinishIn()
         {
-            print("animatedDrawFinishIn");
+            //  print("animatedDrawFinishIn");
         }
 
         //! 

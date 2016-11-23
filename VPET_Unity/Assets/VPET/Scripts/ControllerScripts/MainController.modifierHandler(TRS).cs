@@ -45,7 +45,7 @@ namespace vpet
 	    public void handleModifier(Transform modifier){
 	        Debug.Log("Hit modifier " + modifier.name + "!");
 	        modifier.parent.GetComponent<Modifier>().isUsed();
-	        if (activeMode != Mode.animationEditing)
+	        if  ( ui.LayoutUI != layouts.ANIMATION ) //  (activeMode != Mode.animationEditing)
 	        {
 	            currentSelection.GetComponent<SceneObject>().setKinematic(true);
 	        }
@@ -171,7 +171,7 @@ namespace vpet
 	        scaleModifier.GetComponent<Modifier>().resetColors();
 	        ignoreDrag = false;
 	        initialScaleDistance = float.NaN;
-	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && !animationController.editingPosition) currentSelection.GetComponent<SceneObject>().setKinematic(false);
+	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) currentSelection.GetComponent<SceneObject>().setKinematic(false);
 	
 	        //add modification to undo/redo stack
 	        if (activeMode == Mode.translationMode)

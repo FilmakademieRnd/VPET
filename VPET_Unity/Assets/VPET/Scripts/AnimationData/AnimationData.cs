@@ -201,14 +201,16 @@ namespace vpet
 	    {
 	        if(!_animationClips.ContainsKey(obj))
 	            _animationClips.Add(obj, new List<AnimationClip>());
-	         
-	        _animationClips[obj].Add(clip);
-	    }
-	
-	    //!
-	    //! Remove all AnimationClips of a GameObject and delete the associated XML representation
-	    //!
-	    public void removeAnimationClips(GameObject obj)
+
+            _animationClips[obj].Add(clip);
+
+            _animationCurves.Add(clip, new List<AnimationCurve>());
+        }
+
+        //!
+        //! Remove all AnimationClips of a GameObject and delete the associated XML representation
+        //!
+        public void removeAnimationClips(GameObject obj)
 	    {
 	        if (_animationClips.ContainsKey(obj))
 	        {

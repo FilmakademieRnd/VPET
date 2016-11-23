@@ -541,9 +541,14 @@ namespace vpet
             ui.drawRangeSlider(act, initValue );
         }
 
-        // connect slider and property when:
-        //      draw range slider
-        //      parameter button pressed
-        //      slection changed
+        public void SliderValueChanged( float x)
+        {
+            // set keyframe
+            if ( ui.LayoutUI == layouts.ANIMATION )
+            {
+                animationController.setKeyFrame();
+            }
+        }
+
     }
 }

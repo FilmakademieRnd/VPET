@@ -208,6 +208,8 @@ namespace vpet
             // get range slider
             rangeSlider = canvas.GetComponentInChildren<RangeSlider>(true);
             if (rangeSlider == null) Debug.LogError(string.Format("{0}: Cant Find Component in Canvas: RangeSlider.", this.GetType()));
+            rangeSlider.OnValueChanged.AddListener(onRangeSliderChanged);
+
 
             // get light settings widget
             lightSettingsWidget = canvas.GetComponentInChildren<LightSettingsWidget>(true);
@@ -326,14 +328,16 @@ namespace vpet
 
         public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f )
         {
+            // get icon
             if (centerMenu.ActiveButton != null && centerMenu.ActiveButton.GetComponent<Button>() != null)
             {
                 Sprite buttonSprite = centerMenu.ActiveButton.GetComponent<Button>().spriteState.disabledSprite;
                 rangeSlider.CenterSprite = buttonSprite;
             }
 
-            // 
+            // connect slider with current callback
             rangeSlider.Callback = callback;
+            // show it
             rangeSlider.Value = initValue;
             rangeSlider.Show();
         }
@@ -346,6 +350,12 @@ namespace vpet
         public void hideRangeSlider()
         {
             rangeSlider.Hide();
+        }
+
+        private void onRangeSliderChanged( float v )
+        {
+            // pass it to controller to trigger set key
+            mainController.SliderValueChanged(v);
         }
 
 		public void drawMainMenuButton( bool doOpen = false)

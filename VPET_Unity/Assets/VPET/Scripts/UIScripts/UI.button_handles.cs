@@ -69,6 +69,13 @@ namespace vpet
                         // force re-draw center menu because it won't be re-drawn in state machine if mode doesn't change
                         drawCenterMenu(layout);
                     }
+
+                    // activate animcontroller when something is selected
+                    if ( layout == layouts.ANIMATION )
+                    {
+                        animationController.activate();
+                    }
+
                 }
             }
             else if (layout == layouts.SCOUT)

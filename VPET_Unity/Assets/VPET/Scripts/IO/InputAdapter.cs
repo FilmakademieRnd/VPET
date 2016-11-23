@@ -261,26 +261,28 @@ namespace vpet
 						mainController.ActiveMode == MainController.Mode.scaleMode ||
 						mainController.ActiveMode == MainController.Mode.animationEditing))
 					{
-	
 						//selection mode is active
 						GameObject hitObject = cameraRaycast(pos,defaultLayermask);
-						if (hitObject) {
+						if (hitObject)
+                        {
 							//Object was hit
 							mainController.handleSelection(hitObject.transform);
 							hitObject = null;
 						}
 					}
-					else {
+					else
+                    {
 						//editing mode is active
 						if (pointerOnModifier)
 						{
 							pointerOnModifier = false;
 							mainController.resetModifiers();
 							hitPositionBuffer = nullVector;
-	
-							if (mainController.AnimationController.isActive)
-							{
-								mainController.AnimationController.setKeyFrame();
+
+                            if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
+                            // if (mainController.AnimationController.IsActive)				
+                            {
+                                mainController.AnimationController.setKeyFrame();
 							}
 						}
 					}

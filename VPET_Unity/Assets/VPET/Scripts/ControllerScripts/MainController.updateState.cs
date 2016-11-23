@@ -84,6 +84,13 @@ namespace vpet
                     serverAdapter.sendLock(currentSelection, false);
                 }
 
+                animationController.deactivate();
+
+                if ( ui.LayoutUI == layouts.ANIMATION )
+                {
+                    animationController.activate();
+                }
+
                 //properly disable old mode
                 switch (oldState) {
 	                case (Mode.idle):
@@ -129,10 +136,6 @@ namespace vpet
 	                    break;
 	                case (Mode.lightMenuMode):
 	                    break;
-	                case (Mode.animationEditing):
-                        animationController.deactivate();
-                        hideModifiers();
-                        break;
 	                case (Mode.lightSettingsMode):
 	                    ui.hideLightSettingsWidget();
                         ui.hideRangeSlider();
@@ -152,7 +155,7 @@ namespace vpet
 	                case (Mode.translationMode):
                         serverAdapter.sendLock(currentSelection, true);
                         translateModifier.GetComponent<Modifier>().setVisible(true);
-	                    ui.drawSecondaryMenu(layouts.TRANSLATION);
+                        if ( ui.LayoutUI != layouts.ANIMATION)  ui.drawSecondaryMenu(layouts.TRANSLATION);
                         ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX" );
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
@@ -228,11 +231,6 @@ namespace vpet
                         else if (currentSelection.GetComponent<SceneObject>().isSpotLight)
                             ui.drawParameterMenu(layouts.LIGHTSPOT);
                         ui.drawLightSettingsWidget();
-                        serverAdapter.sendLock(currentSelection, true);
-                        break;
-	                case (Mode.animationEditing):
-                        animationController.activate();
-                        translateModifier.GetComponent<Modifier>().setVisible(true);
                         serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.addMode):

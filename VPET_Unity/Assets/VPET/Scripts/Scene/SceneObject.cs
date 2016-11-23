@@ -398,10 +398,8 @@ namespace vpet
 
 			//Initalize animation loading if animation available
 			AnimationSerializer asScript =  target.gameObject.AddComponent<AnimationSerializer>();
-
 			asScript.loadData();
             updateAnimationCurves();
-            animationController.setStartEndTimeline( asScript.timeStart, asScript.timeEnd );
 		}
 
 
@@ -866,7 +864,25 @@ namespace vpet
         }
 
 
+        public float RotateQuatX
+        {
+            get { return target.transform.localRotation.x; } 
+        }
 
+        public float RotateQuatY
+        {
+            get { return target.transform.localRotation.y; }
+        }
+
+        public float RotateQuatZ
+        {
+            get { return target.transform.localRotation.z; }
+        }
+
+        public float RotateQuatW
+        {
+            get { return target.transform.localRotation.w; }
+        }
 
         public float RotateX
         {
@@ -895,6 +911,7 @@ namespace vpet
         //!
         public void setKinematic(bool set, bool send = true)
 		{
+            print("setKinematic " + set);
 			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
@@ -1050,42 +1067,39 @@ namespace vpet
 	    //!
 	    public void setAnimationState(float time)
 	    {
-	        if ( !animationLooping )
-	        {
-	            this.transform.localPosition = new Vector3( transCurves[0].Evaluate( time ),
-	                                                  transCurves[1].Evaluate( time ),
-	                                                  transCurves[2].Evaluate( time ) );
-	
-	            /*
-	            this.transform.localRotation = new Quaternion( rotationCurves[0].Evaluate( time ),
-	                                                  rotationCurves[1].Evaluate( time ),
-	                                                  rotationCurves[2].Evaluate( time ),
-	                                                  rotationCurves[3].Evaluate( time ) );
-	             */
-	        }
-	        else
-	        {
-	            this.transform.localPosition = new Vector3( transCurves[0].Evaluate( time % animationDuration ),
-	                                                  transCurves[1].Evaluate( time % animationDuration ),
-	                                                  transCurves[2].Evaluate( time % animationDuration ) );
-	
-	            /*
-	            this.transform.localRotation = new Quaternion( rotationCurves[0].Evaluate( time ),
-	                                                  rotationCurves[1].Evaluate( time  % animationDuration ),
-	                                                  rotationCurves[2].Evaluate( time  % animationDuration ),
-	                                                  rotationCurves[3].Evaluate( time % animationDuration ) );
-	             */
-	        }
-	
-	
-	    }
-	
-	    //!
-	    //! update the animation curves
-	    //! recalculate the position of the sceneObject based on the current animation curve & time
-	    //! normally called after the animation curve has changed
-	    //!
-	    public void updateAnimationCurves()
+            // print("setAnimationState at time: " + time);
+
+            float _time = animationLooping ? time % animationDuration : time;
+
+            if ( transCurves[0] != null )
+            {
+                this.transform.localPosition = new Vector3(transCurves[0].Evaluate(_time),
+                                                      transCurves[1].Evaluate(_time),
+                                                      transCurves[2].Evaluate(_time));
+            }
+
+            if (rotationCurves[0] != null)
+            {
+                this.transform.localRotation = new Quaternion(rotationCurves[0].Evaluate(_time),
+                                                          rotationCurves[1].Evaluate(_time),
+                                                          rotationCurves[2].Evaluate(_time),
+                                                          rotationCurves[3].Evaluate(_time));
+            }
+
+            if (scaleCurves[0] != null)
+            {
+                this.transform.localScale = new Vector3(scaleCurves[0].Evaluate(_time),
+                                                      scaleCurves[1].Evaluate(_time),
+                                                      scaleCurves[2].Evaluate(_time));
+            }
+
+        }
+
+        //!
+        //! update the animation curves
+        //! normally called after the animation curve has changed
+        //!
+        public void updateAnimationCurves()
 	    {
 	        if (animData.getAnimationClips(target.gameObject) != null)
 	        {
@@ -1097,9 +1111,13 @@ namespace vpet
 	            rotationCurves[1] = animData.getAnimationCurve( animData.getAnimationClips( target.gameObject )[0], "m_LocalRotation.y" );
 	            rotationCurves[2] = animData.getAnimationCurve( animData.getAnimationClips( target.gameObject )[0], "m_LocalRotation.z" );
 	            rotationCurves[3] = animData.getAnimationCurve( animData.getAnimationClips( target.gameObject )[0], "m_LocalRotation.w" );
-	
-	            
-	            animationDuration = animData.getAnimationClips(target.gameObject)[0].length;
+
+                scaleCurves[0] = animData.getAnimationCurve(animData.getAnimationClips(target.gameObject)[0], "m_LocalScale.x");
+                scaleCurves[1] = animData.getAnimationCurve(animData.getAnimationClips(target.gameObject)[0], "m_LocalScale.y");
+                scaleCurves[2] = animData.getAnimationCurve(animData.getAnimationClips(target.gameObject)[0], "m_LocalScale.z");
+
+                // TODO: fix one length for all curves
+                animationDuration = animData.getAnimationClips(target.gameObject)[0].length;
 	            setAnimationState(animationController.currentAnimationTime);
 	        }
 	    }

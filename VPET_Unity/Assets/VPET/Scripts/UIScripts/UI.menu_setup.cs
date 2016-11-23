@@ -298,10 +298,18 @@ namespace vpet
 			IMenuButton buttonAniCueRem = Elements.MenuButton();
 			buttonAniCueRem.AddAction(AnimationMode_CueDelete_sel, AnimationMode_CueDelete_nrm); // 10
 			centerMenu.addButton( buttonAniCueRem, layouts.ANIMATION );
+            // translate
+            buttonTrans.AddAction(EditMode_Translate_sel, EditMode_Translate_nrm, () => editTranslation(buttonTrans));
+            centerMenu.addButtonToLayout(buttonTrans, layouts.ANIMATION);
+            // rotate
+            buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
+            centerMenu.addButtonToLayout(buttonRot, layouts.ANIMATION);
+            // scale
+            centerMenu.addButtonToLayout(buttonScl, layouts.ANIMATION);
             // edit animation
-            IMenuButton buttonAniEdi = Elements.MenuButtonToggle();
-            buttonAniEdi.AddAction(AnimationMode_KeyframeTranslate_sel, AnimationMode_KeyframeTranslate_nrm, () => editAnimation(buttonAniEdi));
-            centerMenu.addButton(buttonAniEdi, layouts.ANIMATION);
+            //IMenuButton buttonAniEdi = Elements.MenuButtonToggle();
+            //buttonAniEdi.AddAction(AnimationMode_KeyframeTranslate_sel, AnimationMode_KeyframeTranslate_nrm, () => editAnimation(buttonAniEdi));
+            //centerMenu.addButton(buttonAniEdi, layouts.ANIMATION);
             // delete animation
             IMenuButton buttonAniRem = Elements.MenuButton();
             buttonAniRem.AddAction(AnimationMode_DeleteKeyframe_sel, AnimationMode_DeleteKeyframe_nrm, call: () => animationDelete());

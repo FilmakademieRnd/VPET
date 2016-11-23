@@ -31,7 +31,7 @@ using UnityEngine.UI;
 
 namespace vpet
 {
-	public class TimeLineWidget : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+	public class TimeLineWidget : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 	{
 	    //!
 	    //! width of the timeline (is adjusted based on the screen resolution and DPI)
@@ -297,11 +297,23 @@ namespace vpet
 	        }
 	        frameList.Clear();
 	    }
-	
-	    // DRAG
-	    public void OnBeginDrag(PointerEventData data)
+
+        public void OnPointerClick(PointerEventData data)
+        {
+            if (callback != null)
+            {
+                callback(mapToCurrentTime(frameContainer.InverseTransformPoint(data.position).x));
+            }
+            else
+            {
+                setTime(mapToCurrentTime(frameContainer.InverseTransformPoint(data.position).x));
+            }
+        }
+
+        // DRAG
+        public void OnBeginDrag(PointerEventData data)
 	    {
-           //  Debug.Log("BEGIN DRAG TIMELINE");
+            // Debug.Log("BEGIN DRAG TIMELINE " + data.position);
 
             startTimeDragInit = startTime;
             endTimeDragInit = endTime;
@@ -381,13 +393,15 @@ namespace vpet
 	
 	    private void setTimeFromGlobalPositionX(float x)
 	    {
+            float _x = frameContainer.InverseTransformPoint(new Vector3(x, frameContainer.position.y, frameContainer.position.z) ).x;
+
 	        if (callback != null)
 	        {
-	            callback(mapToCurrentTime(x) / 25f);
+	            callback(mapToCurrentTime(_x));
 	        }
 	        else
 	        {
-	            setTime(mapToCurrentTime(x) / 25f);
+	            setTime(mapToCurrentTime(_x));
 	        }
 	    }
 	

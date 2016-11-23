@@ -46,23 +46,17 @@ namespace vpet
 	    //!
 	    //! observed properties of animation curves
 	    //!
-	    private string[] observedProperties = new string[3]  { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z" };
-	
-	    //!
-	    //! shall animation data be saved on app close
-	    //!
-	    public bool Save_Data_to_XML = true;
+	    private string[] observedProperties = new string[10]  { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z", "m_LocalRotation.x", "m_LocalRotation.y", "m_LocalRotation.z", "m_LocalRotation.w",  "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z" };
+
+        //!
+        //! shall animation data be saved on app close
+        //!
+        public bool Save_Data_to_XML = true;
 	    
 	    //!
 	    //! reference to Animation data loaded from XML
 	    //!
 	    private XML_AnimationData _animationData = null;
-	
-	
-	    public float timeStart = 0f;
-	
-	
-	    public float timeEnd = 0f;
 	
 	    //!
 	    //! Getter and Setter for the XML Data if animations have been loaded
@@ -105,12 +99,6 @@ namespace vpet
 	                    {
 	                        XMLkey.data = new Keyframe(XMLkey.t, XMLkey.v, XMLkey.inT, XMLkey.outT);
 	                        XMLcurve.data.AddKey(XMLkey.data);
-	
-	
-	                        timeStart = Mathf.Min( timeStart, XMLkey.t );
-	                        timeEnd = Mathf.Max( XMLkey.t, timeEnd );
-	
-	
 	                    }
 	                    XMLcurve.data.postWrapMode = AnimationData.StringToWrapMode(XMLcurve.postWM);
 	                    XMLcurve.data.preWrapMode = AnimationData.StringToWrapMode(XMLcurve.preWM);
@@ -146,13 +134,16 @@ namespace vpet
 	            XML_AnimationClip XMLclip = new XML_AnimationClip(gameObject.name+"_Amimation");
 	            foreach (string property in observedProperties)
 	            {
-	                List<XML_KeyFrame> XMLkeys = new List<XML_KeyFrame>();
-	                foreach (Keyframe key in AnimationData.Data.getAnimationCurve(clip, property).keys)
-	                {
-	                    XMLkeys.Add(new XML_KeyFrame(key.inTangent, key.outTangent, key.time, key.value, key.tangentMode));
-	                }
-	                XML_AnimationCurve XMLcurve = new XML_AnimationCurve(XMLkeys, AnimationData.WrapModeToString(AnimationData.Data.getAnimationCurve(clip, property).postWrapMode), AnimationData.WrapModeToString(AnimationData.Data.getAnimationCurve(clip, property).preWrapMode), "UnityEngine.Transform", property);
-	                XMLclip.XML_AnimationCurves.Add(XMLcurve);
+                    if (AnimationData.Data.getAnimationCurve(clip, property) != null)
+                    {
+                        List<XML_KeyFrame> XMLkeys = new List<XML_KeyFrame>();
+                        foreach (Keyframe key in AnimationData.Data.getAnimationCurve(clip, property).keys)
+                        {
+                            XMLkeys.Add(new XML_KeyFrame(key.inTangent, key.outTangent, key.time, key.value, key.tangentMode));
+                        }
+                        XML_AnimationCurve XMLcurve = new XML_AnimationCurve(XMLkeys, AnimationData.WrapModeToString(AnimationData.Data.getAnimationCurve(clip, property).postWrapMode), AnimationData.WrapModeToString(AnimationData.Data.getAnimationCurve(clip, property).preWrapMode), "UnityEngine.Transform", property);
+                        XMLclip.XML_AnimationCurves.Add(XMLcurve);
+                    }
 	            }
 	            XMLclipList.Add(XMLclip);
 	        }

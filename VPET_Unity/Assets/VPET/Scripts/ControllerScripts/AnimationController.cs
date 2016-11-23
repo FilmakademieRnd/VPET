@@ -22,10 +22,13 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine.Events;
+using System;
 
 //!
 //! class managing animation editing tasks
@@ -40,17 +43,25 @@ namespace vpet
         public List<SceneObject> layerObjects = new List<SceneObject>();
     }
 
-	public class AnimationController : MonoBehaviour {
+	public class AnimationController : MonoBehaviour
+    {
+
+        // private delegate float FieldFloatDelegate();
+        
 	
 	    //!
 	    //! is animation editing currently active
 	    //!
-	    public bool isActive = false;
-	
-	    //!
-	    //! is animation currently playing
-	    //!
-	    private bool playing = false;
+        private bool isActive = false;
+        public bool IsActive
+        {
+            get { return isActive; }
+            set { isActive = value; }
+        }
+        //!
+        //! is animation currently playing
+        //!
+        private bool playing = false;
 	
 	    //!
 	    //! system time when the animation was at frame 0
@@ -178,13 +189,17 @@ namespace vpet
 	
 	
 	    private GameObject keySpherePrefab;
-	
-	
-	
-	    //!
-	    //! Use this for initialization
-	    //!
-	    void Awake()
+
+        private string[] animationProperties = new string[] { };
+
+        private PropertyInfo[] animationFields;
+
+        private System.Object animationInstance;
+
+        //!
+        //! Use this for initialization
+        //!
+        void Awake()
 	    {
 	        //cache reference to main Controller
 	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
@@ -300,32 +315,99 @@ namespace vpet
 	        currentAnimationTime = Mathf.Clamp(x, timeLine.StartTime, timeLine.EndTime );
 	        timeChanged();
 	    }
-	
-	
-	    public void setKeyFrame()
-	    {
-	        if (animationTarget != null)
-	        {
-	            // TODO: cheesy
-	            currentAnimationTime = timeLine.CurrentTime;
-	            animationTarget.GetComponent<SceneObject>().setKeyframe();
+
+        public void setKeyFrame()
+        {
+            print("setKeyFrame");
+
+            currentAnimationTime = timeLine.CurrentTime;
+
+            if (animationTarget != null)
+            {
+                AnimationClip clip = initAnimationClip();
+
+
+                // add animation curves if not there already
+                if (animData.getAnimationCurve(clip, animationProperties[0]) == null )
+                {
+                    foreach (string prop in animationProperties)
+                    {
+                        // add property curve
+                        AnimationCurve _curve = new AnimationCurve();
+
+                        //add curve to runtime data representation
+                        animData.addAnimationCurve(clip, typeof(Transform), prop, _curve);
+                    }
+                }
+
+
+                for ( int n=0; n<animationProperties.Length; n++)
+                {
+                    // named property in curve
+                    string prop = animationProperties[n];
+                    // property delegate
+                    PropertyInfo field = animationFields[n];
+
+
+                    // get or create curve
+                    AnimationCurve _curve = animData.getAnimationCurve(clip, prop);
+                    if ( _curve == null )
+                    {
+                        _curve = new AnimationCurve();
+                    }
+
+                    // add or move keyframe
+                    bool movedSuccessfully = false;
+                    int keyIndex = -1;
+                    Keyframe key = new Keyframe(currentAnimationTime, (float)field.GetValue(animationInstance, null) );
+                    for (int i = 0; i < _curve.length; i++)
+                    {
+                        if (Mathf.Abs(_curve.keys[i].time - currentAnimationTime) < 0.04)
+                        {
+                            _curve.MoveKey(i, key);
+                            keyIndex = i;
+                            movedSuccessfully = true;
+                        }
+                    }
+                    if (!movedSuccessfully)
+                    {
+                        keyIndex = _curve.AddKey(key);
+                        movedSuccessfully = false;
+                    }
+                    if (_curve.keys.Length > 1)
+                    {
+                        if (keyIndex == 0) _curve.SmoothTangents(1, 0);
+                        if (keyIndex == _curve.keys.Length - 1) _curve.SmoothTangents(_curve.keys.Length - 2, 0);
+                    }
+                    _curve.SmoothTangents(keyIndex, 0);
+
+                    // update animation data
+                    animData.changeAnimationCurve( clip, typeof(Transform), prop, _curve);
+
+                }
+
+                // TODO: cheesy
+                // animationTarget.GetComponent<SceneObject>().setKeyframe();
+                animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
                 updateTimelineKeys();
-	            updateLine();
-	        }
-	    }
-	
-	
-	    //!
-	    //! updates the rendered line (animation path)
-	    //!
-	    private void updateLine()
+                updateLine();
+            }
+        }
+
+
+        //!
+        //! updates the rendered line (animation path)
+        //!
+        private void updateLine()
 	    {
-	        if (animData.getAnimationClips(animationTarget) != null)
+	        if (animData.getAnimationClips(animationTarget) != null )
 	        {
 	            foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
 	            {
-	                //! AnimationCurves for X, Y and Z Translation of this clip
-	                AnimationCurve transXcurve = animData.getAnimationCurve(clip, "m_LocalPosition.x");
+                    if (animData.getAnimationCurve(clip, "m_LocalPosition.x") == null)
+                        continue;
+                    //! AnimationCurves for X, Y and Z Translation of this clip
+                    AnimationCurve transXcurve = animData.getAnimationCurve(clip, "m_LocalPosition.x");
 	                AnimationCurve transYcurve = animData.getAnimationCurve(clip, "m_LocalPosition.y");
 	                AnimationCurve transZcurve = animData.getAnimationCurve(clip, "m_LocalPosition.z");
 	
@@ -400,13 +482,24 @@ namespace vpet
 	        // add
 	        if (animationTarget != null && animData.getAnimationClips(animationTarget) != null)
 	        {
-	            foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
-	            {
-	                foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
-	                {
-	                    timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
-	                }
-	            }
+                foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
+                {
+                    if (animationProperties.Length > 1)
+                    {
+                        foreach (string prop in animationProperties)
+                        {
+                            AnimationCurve animCurve = animData.getAnimationCurve(clip, prop);
+                            timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
+                        }
+                    }
+                    else
+                    {
+                        foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
+                        {
+                            timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
+                        }
+                    }
+                }
 	        }
 
             timeLine.setTime(currentAnimationTime);
@@ -417,123 +510,125 @@ namespace vpet
 	    //!
 	    //! extend start/end
 	    //!
-	    public void setStartEndTimeline(float s, float e)
+	    private  void setStartEndTimeline(float s, float e)
 	    {
 	        timeLine.StartTime = s;
 	        timeLine.EndTime =  e > 0f ? e : 5;
-            setTime(timeLine.StartTime);
+            // setTime(timeLine.StartTime);
         }
-	
 
-            
-        //!
-	    //! activates animation editing for the currently selected object
-	    //!
-	    public void activate()
-	    {
+        private void setStartEndTimeline()
+        {
+            float timeStart = 0, timeEnd = 4f;
+            if (animationTarget != null && animData.getAnimationClips(animationTarget) != null)
+            {
+                foreach (AnimationClip _clip in animData.getAnimationClips(animationTarget))
+                {
+                    foreach (AnimationCurve _curve in animData.getAnimationCurves(_clip))
+                    {
+                        if (_curve.length > 0)
+                        {
+                            timeStart = Mathf.Min(timeStart, _curve[0].time);
+                            timeEnd = Mathf.Max(_curve[_curve.length - 1].time, timeEnd);
+                        }
+                    }
+                }
+            }
+            setStartEndTimeline(timeStart, timeEnd);
+        }
 
-            // Debug.Log("mainController.getCurrentSelection()", mainController.getCurrentSelection().gameObject);
+        public void activate()
+        {
+            if (mainController.getCurrentSelection() == null) return;
+
+            animationTarget = mainController.getCurrentSelection().gameObject;
 
             isActive = true;
-	
-	        mainController.ActiveMode = MainController.Mode.animationEditing;
-	        animationTarget = mainController.getCurrentSelection().gameObject;
-	
-	        animationTarget.GetComponent<SceneObject>().setKinematic(true, false);
-	        animationTarget.layer = 13; //noPhysics layer
-	
-	        //no animation available yet for this object -> create animation
-	        if (doCreateClip && animData.getAnimationClips(animationTarget) == null)
-	        {
-	            if (!animationTarget.GetComponent<AnimationSerializer>())
-	            {
-	                animationTarget.AddComponent<AnimationSerializer>();
-	            }
-	
-	
-	            //create initial animation translation
-	            AnimationClip clip = new AnimationClip();
-	            AnimationCurve transXcurve = new AnimationCurve();
-	            AnimationCurve transYcurve = new AnimationCurve();
-	            AnimationCurve transZcurve = new AnimationCurve();
-	
-	            // create keys at current time
-	            transXcurve.AddKey(new Keyframe(0, animationTarget.transform.position.x, -1, 1));
-	            transYcurve.AddKey(new Keyframe(0, animationTarget.transform.position.y, -1, 1));
-	            transZcurve.AddKey(new Keyframe(0, animationTarget.transform.position.z, -1, 1));
-	
-	
-	            /*
-	            transXcurve.AddKey(new Keyframe(1, animationTarget.transform.position.x + 1, 1, -1));
-	            transYcurve.AddKey(new Keyframe(1, animationTarget.transform.position.y + 1, 1, -1));
-	            transZcurve.AddKey(new Keyframe(1, animationTarget.transform.position.z + 1, 1, -1));
-	            */
-	
-	            // timeline.GetComponent<TimelineScript>().updateFrames(transXcurve,clip);
-	            // timeLine.updateFrames(transXcurve);
-	
-	            //add animation to runtime data representation
-	            animData.addAnimationClip(animationTarget, clip);
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalPosition.x", transXcurve);
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalPosition.y", transYcurve);
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalPosition.z", transZcurve);
-	
-	
-	            //create initial animation Rotation curve
-	            AnimationCurve rotXcurve = new AnimationCurve();
-	            AnimationCurve rotYcurve = new AnimationCurve();
-	            AnimationCurve rotZcurve = new AnimationCurve();
-	            AnimationCurve rotWcurve = new AnimationCurve();
-	
-	            // create keys at current time
-	            rotXcurve.AddKey(new Keyframe(0, animationTarget.transform.rotation.x, -1, 1));
-	            rotYcurve.AddKey(new Keyframe(0, animationTarget.transform.rotation.y, -1, 1));
-	            rotZcurve.AddKey(new Keyframe(0, animationTarget.transform.rotation.z, -1, 1));
-	            rotWcurve.AddKey(new Keyframe(0, animationTarget.transform.rotation.w, -1, 1));
-	
-	            /*
-	            rotXcurve.AddKey( new Keyframe( 1, animationTarget.transform.rotation.x, -1, 1 ) );
-	            rotYcurve.AddKey( new Keyframe( 1, animationTarget.transform.rotation.y, -1, 1 ) );
-	            rotZcurve.AddKey( new Keyframe( 1, animationTarget.transform.rotation.z, -1, 1 ) );
-	            rotWcurve.AddKey( new Keyframe( 1, animationTarget.transform.rotation.w, -1, 1 ) );
-	            */
-	
-	            // timeline.GetComponent<TimelineScript>().updateFrames( transXcurve, clip );
-	            // timeLine.updateFrames( transXcurve );
-	
-	
-	            //add animation to runtime data representation
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.x", rotXcurve);
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.y", rotYcurve);
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.z", rotZcurve);
-	            animData.addAnimationCurve(clip, typeof(Transform), "m_LocalRotation.w", rotWcurve);
 
-	            animatedObjects.Add(animationTarget.GetComponent<SceneObject>());
-	        }
-	
-	        animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
-	
-	
-	        lineRenderer.SetVertexCount(0);
-	        lineRenderer.enabled = true;
-	
-	        updateLine();
-	
-	        updateTimelineKeys();
-	
-	    }
-	
-	    //!
-	    //! deactivates animation editing
-	    //!
-	    public void deactivate()
+            animationTarget.GetComponent<SceneObject>().setKinematic(true, false);
+
+            animationTarget.layer = 13; //noPhysics layer
+
+            switch (mainController.ActiveMode)
+            {
+                case MainController.Mode.translationMode:
+                    animationProperties = new string[] { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z" };
+                    animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateX")  ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateY") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateZ") };
+                    animationInstance = animationTarget.GetComponent<SceneObject>();
+                    break;
+                case MainController.Mode.rotationMode:
+                    animationProperties = new string[] { "m_LocalRotation.x", "m_LocalRotation.y", "m_LocalRotation.z", "m_LocalRotation.w" };
+                    animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatX")  ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatY") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatZ") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatW") };
+                    animationInstance = animationTarget.GetComponent<SceneObject>();
+                    break;
+                case MainController.Mode.scaleMode:
+                    animationProperties = new string[] { "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z" };
+                    animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleX")  ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleX") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleZ") };
+                    animationInstance = animationTarget.GetComponent<SceneObject>();
+                    break;
+            }
+
+            print("Activate Animation in Mode: " + mainController.ActiveMode);
+
+
+            setStartEndTimeline();
+
+
+            animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
+
+            lineRenderer.SetVertexCount(0);
+            lineRenderer.enabled = true;
+
+            updateLine();
+
+            updateTimelineKeys();
+
+
+        }
+
+        private AnimationClip initAnimationClip()
+        {
+            if (!animationTarget.GetComponent<AnimationSerializer>())
+            {
+                animationTarget.AddComponent<AnimationSerializer>();
+            }
+
+            AnimationClip clip;
+
+            //no animation available yet for this object -> create animation
+            if (animData.getAnimationClips(animationTarget) == null)
+            {
+                clip = new AnimationClip();
+                animData.addAnimationClip(animationTarget, clip);
+                animatedObjects.Add(animationTarget.GetComponent<SceneObject>());
+            }
+            else
+            {
+                clip = animData.getAnimationClips(animationTarget)[0];
+            }
+
+            return clip;
+        }
+
+        //!
+        //! deactivates animation editing
+        //!
+        public void deactivate()
 	    {
-	        //animationTarget.GetComponent<SceneObject>().setKinematic(false, false);
-	        //animationTarget.layer = 0;
-	        isActive = false;
-	        //animationTarget.GetComponent<SceneObject>().selected = false;
-	
-	        //timeline.gameObject.SetActive(false);
+            if (animationTarget == null) return;
+
+            animationProperties = new string[] { };
+
+            //animationTarget.GetComponent<SceneObject>().setKinematic(false, false);
+            animationTarget.layer = 0;
+            isActive = false;
 	
 	        lineRenderer.SetVertexCount(0);
 	        lineRenderer.enabled = false;
@@ -543,6 +638,9 @@ namespace vpet
 	        }
 	        keyframeSpheres.Clear();
 	        animationTarget = null;
+
+            timeLine.clearFrames();
+
 	    }
 	
 	    //!
@@ -563,8 +661,6 @@ namespace vpet
 	            playing = false;
 	        }
 	    }
-	
-
 	
 	    //!
 	    //! 
@@ -606,21 +702,42 @@ namespace vpet
 	    //!
 	    public void previousKeyframe()
 	    {
+            if (animationTarget == null || animData.getAnimationClips(animationTarget) == null) return;
+
             float newTime = timeLine.StartTime; ;
 	
 	        foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
 	        {
-	            foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
-	            {
-	                for (int i = 0; i < animCurve.keys.Length; i++)
-	                {
-	                    if ( animCurve.keys[i].time < currentAnimationTime && animCurve.keys[i].time > newTime )
-	                    {
-	                        newTime = animCurve.keys[i].time;
-	                    }
-	                }
-	            }
+                if (animationProperties.Length > 0)
+                {
+                    foreach (string prop in animationProperties)
+                    {
+                        AnimationCurve animCurve = animData.getAnimationCurve(clip, prop);
+                        for (int i = 0; i < animCurve.keys.Length; i++)
+                        {
+                            if (animCurve.keys[i].time < currentAnimationTime && animCurve.keys[i].time > newTime)
+                            {
+                                newTime = animCurve.keys[i].time;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
+                    {
+                        for (int i = 0; i < animCurve.keys.Length; i++)
+                        {
+                            if (animCurve.keys[i].time < currentAnimationTime && animCurve.keys[i].time > newTime)
+                            {
+                                newTime = animCurve.keys[i].time;
+                            }
+                        }
+                    }
+                }
 	        }
+
+
 	
 	        currentAnimationTime = newTime;
 	
@@ -631,21 +748,41 @@ namespace vpet
 	
 	    public void nextKeyframe()
 	    {
-	        float newTime = timeLine.EndTime;
+            if (animationTarget == null || animData.getAnimationClips(animationTarget) == null) return;
+
+            float newTime = timeLine.EndTime;
 	
 	        foreach (AnimationClip clip in animData.getAnimationClips(animationTarget))
 	        {
-	            foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
-	            {
-	                for (int i = 0; i < animCurve.keys.Length; i++)
-	                {
-	                    if (animCurve.keys[i].time > currentAnimationTime && animCurve.keys[i].time < newTime)
-	                    {
-	                        newTime = animCurve.keys[i].time;
-	                    }
-	                }
-	            }
-	        }
+                if (animationProperties.Length > 0)
+                {
+                    foreach (string prop in animationProperties)
+                    {
+                        AnimationCurve animCurve = animData.getAnimationCurve(clip, prop);
+                        for (int i = 0; i < animCurve.keys.Length; i++)
+                        {
+                            if (animCurve.keys[i].time > currentAnimationTime && animCurve.keys[i].time < newTime)
+                            {
+                                newTime = animCurve.keys[i].time;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
+                    {
+                        for (int i = 0; i < animCurve.keys.Length; i++)
+                        {
+                            if (animCurve.keys[i].time > currentAnimationTime && animCurve.keys[i].time < newTime)
+                            {
+                                newTime = animCurve.keys[i].time;
+                            }
+                        }
+                    }
+                }
+
+            }
 	
 	        currentAnimationTime = newTime;
 	
@@ -711,6 +848,7 @@ namespace vpet
 	        return outPointArray;
 	    }
 	
+        /*
 	    //!
 	    //! starts the tracking of the currently selected sceneObject's keyframe
 	    //!
@@ -721,7 +859,9 @@ namespace vpet
             if ( animationTarget )
     	        animationTarget.GetComponent<SceneObject>().setKeyframe();
 	    }
-	
+	    */
+
+        
 	    //!
 	    //! updates the curves applied on the current animation target
 	    //!
