@@ -313,12 +313,12 @@ namespace vpet
 	    private void setTime(float x)
 	    {
 	        currentAnimationTime = Mathf.Clamp(x, timeLine.StartTime, timeLine.EndTime );
+            if (currentAnimationTime == timeLine.EndTime) currentAnimationTime = timeLine.StartTime;
 	        timeChanged();
 	    }
 
         public void setKeyFrame()
         {
-            print("setKeyFrame");
 
             currentAnimationTime = timeLine.CurrentTime;
 
@@ -489,14 +489,16 @@ namespace vpet
                         foreach (string prop in animationProperties)
                         {
                             AnimationCurve animCurve = animData.getAnimationCurve(clip, prop);
-                            timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
+                            if ( animCurve != null)
+                               timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
                         }
                     }
                     else
                     {
                         foreach (AnimationCurve animCurve in animData.getAnimationCurves(clip))
                         {
-                            timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
+                            if (animCurve != null)
+                                timeLine.UpdateFrames(animCurve, animationTarget.GetComponent<SceneObject>().animationLayer);
                         }
                     }
                 }
@@ -537,7 +539,7 @@ namespace vpet
             setStartEndTimeline(timeStart, timeEnd);
         }
 
-        public void activate()
+        public void activate( bool updateTimeLine = true )
         {
             if (mainController.getCurrentSelection() == null) return;
 
@@ -569,7 +571,7 @@ namespace vpet
                 case MainController.Mode.scaleMode:
                     animationProperties = new string[] { "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z" };
                     animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleX")  ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleX") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleY") ,
                                                          animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleZ") };
                     animationInstance = animationTarget.GetComponent<SceneObject>();
                     break;
@@ -578,7 +580,7 @@ namespace vpet
             print("Activate Animation in Mode: " + mainController.ActiveMode);
 
 
-            setStartEndTimeline();
+            if ( updateTimeLine )        setStartEndTimeline();
 
 
             animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
@@ -963,8 +965,9 @@ namespace vpet
 	        }
 	        
 	        animatedObjects.Remove(mainController.getCurrentSelection().GetComponent<SceneObject>());
-	        //animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
-	    }
+	        animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
+            deactivate();
+        }
 	
 		/*
 	    //!

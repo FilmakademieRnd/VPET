@@ -912,7 +912,6 @@ namespace vpet
         //!
         public void setKinematic(bool set, bool send = true)
 		{
-            print("setKinematic " + set);
 			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;

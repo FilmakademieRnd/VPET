@@ -144,7 +144,7 @@ namespace vpet
         public void OnBeginDrag(PointerEventData eventData)
         {
             // Debug.Log("BEGIN DRAG");
-            ValueField.transform.parent.gameObject.SetActive(true);
+           // ValueField.transform.parent.gameObject.SetActive(true);
         }
 
         public void OnDrag(PointerEventData data)
@@ -163,7 +163,7 @@ namespace vpet
         public void OnEndDrag(PointerEventData eventData)
         {
             // Debug.Log("END DRAG");
-            ValueField.transform.parent.gameObject.SetActive(false);
+            //ValueField.transform.parent.gameObject.SetActive(false);
         }
 
         public void OnPointerUp(PointerEventData eventData)

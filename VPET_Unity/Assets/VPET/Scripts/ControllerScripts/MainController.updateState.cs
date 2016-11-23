@@ -88,7 +88,7 @@ namespace vpet
 
                 if ( ui.LayoutUI == layouts.ANIMATION )
                 {
-                    animationController.activate();
+                    animationController.activate( currentSelection != oldSelection);
                 }
 
                 //properly disable old mode
@@ -97,7 +97,7 @@ namespace vpet
 	                    break;
 	                case (Mode.translationMode):
 	                    translateModifier.GetComponent<Modifier>().setVisible(false);
-                        if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode )
+                        if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode && ui.LayoutUI != layouts.ANIMATION )
                             ui.drawSecondaryMenu(layouts.EDIT);
                         ui.hideRangeSlider();
                         ui.hideParameterMenu();
@@ -207,7 +207,15 @@ namespace vpet
 	                case (Mode.lightMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT)
 	                    {
-                            ui.drawCenterMenu(layouts.LIGHT);
+                            if (ui.LayoutUI == layouts.ANIMATION)
+                            {
+                                ui.drawCenterMenu(layouts.ANIMATION);
+                                ui.drawSecondaryMenu(layouts.ANIMATION);
+                            }
+                            else
+                            {
+                                ui.drawCenterMenu(layouts.LIGHT);
+                            }
                             /*
 	                        if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
 	                            ui.drawCenterMenu(layouts.LIGHTDIR);
