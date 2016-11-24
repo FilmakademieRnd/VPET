@@ -279,7 +279,7 @@ namespace vpet
                 Camera.main.transform.rotation = camObject.transform.rotation; // cameraPositions[camPrefabPosition];
 
                 // callibrate 
-                // cameraAdapter.calibrate(Camera.main.transform.eulerAngles.y);
+                cameraAdapter.calibrate(camObject.transform.rotation);
 
                 // set camera properties
                 CameraObject camScript = camObject.GetComponent<CameraObject>();
@@ -506,40 +506,31 @@ namespace vpet
             return false;
         }
 
-        //!
-        //! Receive changes from range slider
-        //!
-        public void setTransformValue( float v )
+
+        public void UpdateRangeSliderValue()
         {
-            print("got value:  " + v);
-
-            // check buttons 
-
-        }
-
-        private void propagateParameterValue( float v )
-        {
-            ui.updateRangeSlider(v);
+            ui.updateRangeSlider((float)rangeSliderInfo.GetValue(rangeSliderInfoObj, null));
         }
 
         //!
         //! wire method and set as callback 
         //! @param
         //!
-        public void ConnectRangeSlider( UnityEngine.Object obj, string prop )
+        public void ConnectRangeSlider( UnityEngine.Object obj, string prop, float sensitivity = 0.1f )
         {
-            PropertyInfo info = obj.GetType().GetProperty(prop);
-            UnityAction<float> act = (UnityAction <float>) UnityAction.CreateDelegate( typeof(UnityAction<float>), obj, info.GetSetMethod());
-            ui.drawRangeSlider(act, (float)info.GetValue(obj, null));
+            rangeSliderInfoObj = obj;
+            rangeSliderInfo = rangeSliderInfoObj.GetType().GetProperty(prop);
+            UnityAction<float> act = (UnityAction <float>) UnityAction.CreateDelegate( typeof(UnityAction<float>), rangeSliderInfoObj, rangeSliderInfo.GetSetMethod());
+            ui.drawRangeSlider(act, (float)rangeSliderInfo.GetValue(rangeSliderInfoObj, null), sensitivity);
         }
 
         //!
         //! wire method and set as callback 
         //! @param
         //!
-        public void ConnectRangeSlider(UnityAction<float> act, float initValue)
+        public void ConnectRangeSlider(UnityAction<float> act, float initValue, float sensitivity = 0.1f)
         {
-            ui.drawRangeSlider(act, initValue );
+            ui.drawRangeSlider(act, initValue, sensitivity);
         }
 
         public void SliderValueChanged( float x)

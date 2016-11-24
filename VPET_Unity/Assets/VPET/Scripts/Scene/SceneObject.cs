@@ -942,6 +942,13 @@ namespace vpet
 			}
 		}
 
+
+        public float LightIntensity
+        {
+            get { return getLightIntensity(); }
+            set { setLightIntensity(value);  }
+        }
+
 		//!
 		//! set the light intensity of this object, if it is a light
 		//! @param      intensity     new intensity of the light  

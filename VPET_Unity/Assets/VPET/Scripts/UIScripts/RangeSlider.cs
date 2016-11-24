@@ -113,7 +113,8 @@ namespace vpet
 
         public void IncreaseValue( float v )
         {
-            Value = currentValue + v;
+            Value = currentValue + Sensitivity * v;
+            onValueChange();
         }
 
         private void onValueChange()
@@ -144,7 +145,7 @@ namespace vpet
         public void OnBeginDrag(PointerEventData eventData)
         {
             // Debug.Log("BEGIN DRAG");
-           // ValueField.transform.parent.gameObject.SetActive(true);
+            //ValueField.transform.parent.gameObject.SetActive(true);
         }
 
         public void OnDrag(PointerEventData data)
@@ -169,7 +170,6 @@ namespace vpet
         public void OnPointerUp(PointerEventData eventData)
         {
             velocity = 0;
-            OnValueChanged.Invoke(currentValue);
            // ValueField.gameObject.SetActive(false);
         }
     }

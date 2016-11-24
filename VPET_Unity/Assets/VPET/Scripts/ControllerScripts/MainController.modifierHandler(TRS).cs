@@ -164,7 +164,11 @@ namespace vpet
 	    //!
 	    //! reset modifiers and push changes to server if neccessary
 	    //!
-	    public void resetModifiers(){
+	    public void resetModifiers()
+        {
+            // propagate value
+            UpdateRangeSliderValue();
+
 	        //reset transparency
 	        translateModifier.GetComponent<Modifier>().resetColors();
 	        rotationModifier.GetComponent<Modifier>().resetColors();

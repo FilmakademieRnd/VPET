@@ -28,6 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using System.Reflection;
 
 
 //!
@@ -195,6 +196,10 @@ namespace vpet
 #endif
 
         private bool hasUpdatedProjectionMatrix = false;
+
+        private PropertyInfo rangeSliderInfo;
+
+        private System.Object rangeSliderInfoObj;
 
         //!
         //! the available states (modes) of the app
