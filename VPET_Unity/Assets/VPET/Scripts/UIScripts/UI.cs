@@ -209,6 +209,7 @@ namespace vpet
             // get range slider
             rangeSlider = canvas.GetComponentInChildren<RangeSlider>(true);
             if (rangeSlider == null) Debug.LogError(string.Format("{0}: Cant Find Component in Canvas: RangeSlider.", this.GetType()));
+            rangeSlider.OnValueChanged.AddListener(onRangeSliderChanged);
 
             // get light settings widget
             lightSettingsWidget = canvas.GetComponentInChildren<LightSettingsWidget>(true);
@@ -350,7 +351,13 @@ namespace vpet
             rangeSlider.Hide();
         }
 
-		public void drawMainMenuButton( bool doOpen = false)
+        private void onRangeSliderChanged(float v)
+        {
+            // pass it to controller to trigger set key
+            mainController.SliderValueChanged(v);
+        }
+
+        public void drawMainMenuButton( bool doOpen = false)
 		{
 			mainMenuButton.SetActive(true);
 			if ( doOpen && !mainMenuButton.GetComponent<IMenuButton>().Toggled )

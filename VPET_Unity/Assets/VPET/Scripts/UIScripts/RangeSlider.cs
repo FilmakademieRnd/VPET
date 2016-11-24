@@ -170,7 +170,8 @@ namespace vpet
         public void OnPointerUp(PointerEventData eventData)
         {
             velocity = 0;
-           // ValueField.gameObject.SetActive(false);
+            OnValueChanged.Invoke(currentValue);
+            // ValueField.gameObject.SetActive(false);
         }
     }
 }
