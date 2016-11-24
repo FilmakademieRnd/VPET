@@ -26,7 +26,6 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using UnityEngine.Events;
 using System.Reflection;
-using UnityStandardAssets.ImageEffects;
 
 //!
 //! INFO: the mainController class is separeted into different files
@@ -292,9 +291,9 @@ namespace vpet
                     UpdatePropertiesSecondaryCameras();
                 }
                 // set properties for DOF component from CameraObject
-                Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
-                Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
-                Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
+                //Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
+                //Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
+                //Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
             }
             camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
 	    }

@@ -87,9 +87,10 @@ namespace vpet
 
             UI.OnUIChanged.Invoke();
             secondaryMenu.show();
+            hideRangeSlider();
         }
 
-	    private void quitApplication()
+        private void quitApplication()
 	    {
 	        // TODO: clean quit through main controller
 	        Application.Quit();
@@ -144,6 +145,14 @@ namespace vpet
         private void pointToMoveCamera(IMenuButton button)
         {
             mainController.togglePointToMoveCamera();
+        }
+
+        private void cameraFov(IMenuButton button)
+        {
+            if (button.Toggled)
+                mainController.ConnectRangeSlider(mainController.setCamParamFov, Camera.main.fieldOfView.vFovToLens());
+            else
+                hideRangeSlider();
         }
 
         // Center
