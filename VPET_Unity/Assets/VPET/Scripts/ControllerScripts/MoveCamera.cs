@@ -182,6 +182,7 @@ namespace vpet
 
         private Vector3 newPosition = Vector3.zero;
 
+        private Quaternion newRotation = Quaternion.identity;
 
 
         void Awake()
@@ -268,7 +269,6 @@ namespace vpet
                     childrotationBuffer = this.transform.GetChild(1).rotation;
                 }
 
-                Quaternion newRotation = Quaternion.identity;
 #if !UNITY_EDITOR
 #if (UNITY_ANDROID || UNITY_IOS)
 #if USE_TANGO
@@ -287,7 +287,6 @@ namespace vpet
                     {
                         rotationOffset = rotationFirst * Quaternion.Inverse(newRotation);
                         positionOffset = positionFirst - newPosition;
-
                         firstApplyTransform = true;
                     }
                     //grab sensor reading on current platform
@@ -438,7 +437,21 @@ namespace vpet
             mainController.setTangoActive(set);
 
         }
+        
+        public void calibrate( Quaternion targetRotation )
+        {
+            if (doApplyRotation)
+            {
+                rotationOffset = targetRotation * Quaternion.Inverse(newRotation);
+            }
+            else
+            {
+                rotationFirst = targetRotation * Quaternion.Inverse(newRotation) * newRotation;
+            }
+        }
 
+
+        /*
         //!
         //! Calibrates the camera and enables a user to define a custom null direction (divergent to the magnitic north).
         //! The new null direction will be the tablet rotation at execution time.
@@ -467,6 +480,7 @@ namespace vpet
                 rotationCompensation.y = 180 + (angleY - rotationCompensation.y % 360);
             }
         }
+        */
 
     }
 }

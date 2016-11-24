@@ -264,7 +264,6 @@ namespace vpet
                 GameObject tangoScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_label");
                 //tangoScaleLabelUI.transform.localPosition = new Vector3(-105.0f, 530.0f, 0.0f);
                 GameObject startButton = GameObject.Find("GUI/Canvas/ConfigWidget/Start_button");
-                startButton.transform.localPosition = new Vector3(0f, -670f, 0.0f);
                 GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_Value");
                 sliderValueText.gameObject.SetActive(true);
                 tangoScaleLabelUI.gameObject.SetActive(true);
@@ -325,10 +324,9 @@ namespace vpet
             setupParameterMenu();
 		}
 
-        public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f )
+        public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f, float sensitivity=0.1f )
         {
             
-
             if (centerMenu.ActiveButton != null && centerMenu.ActiveButton.GetComponent<Button>() != null)
             {
                 Sprite buttonSprite = centerMenu.ActiveButton.GetComponent<Button>().spriteState.disabledSprite;
@@ -338,6 +336,7 @@ namespace vpet
             // 
             rangeSlider.Callback = callback;
             rangeSlider.Value = initValue;
+            rangeSlider.Sensitivity = sensitivity;
             rangeSlider.Show();
         }
 

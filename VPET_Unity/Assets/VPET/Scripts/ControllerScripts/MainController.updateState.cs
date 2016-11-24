@@ -153,19 +153,19 @@ namespace vpet
                         serverAdapter.sendLock(currentSelection, true);
                         translateModifier.GetComponent<Modifier>().setVisible(true);
 	                    ui.drawSecondaryMenu(layouts.TRANSLATION);
-                        ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX" );
+                        ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX", 0.02f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.rotationMode):
                         serverAdapter.sendLock(currentSelection, true);
                         rotationModifier.GetComponent<Modifier>().setVisible(true);
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "RotateX");
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "RotateX", 1f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.scaleMode):
                         scaleModifier.GetComponent<Modifier>().setVisible(true);
                         serverAdapter.sendLock(currentSelection, true);
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "ScaleX");
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "ScaleX", 0.02f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.objectLinkCamera):
@@ -220,7 +220,8 @@ namespace vpet
                         {
                             currentSelection.GetComponent<SceneObject>().hideLightVisualization(true);
                         }
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>().setLightIntensity, currentSelection.GetComponent<SceneObject>().getLightIntensity());
+                        // ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "LightIntensity", 1f);
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>().setLightIntensity, currentSelection.GetComponent<SceneObject>().getLightIntensity(), 1f);
                         if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
                             ui.drawParameterMenu(layouts.LIGHTDIR);
                         else if (currentSelection.GetComponent<SceneObject>().isPointLight)
