@@ -184,6 +184,12 @@ namespace vpet
 
         private Quaternion newRotation = Quaternion.identity;
 
+        //! set / get camera field of view (vertical)
+        public float Fov
+        {
+            set { this.GetComponent<Camera>().fieldOfView = value; }
+            get { return this.GetComponent<Camera>().fieldOfView; }
+        }
 
         void Awake()
         {

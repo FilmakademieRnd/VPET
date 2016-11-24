@@ -323,7 +323,9 @@ namespace vpet
 	        setupSecondaryMenu();
 	        setupCenterMenu();
             setupParameterMenu();
-		}
+            // initialize camera slider widget
+            setupCameraSlider();
+        }
 
         public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f, float sensitivity=0.1f )
         {

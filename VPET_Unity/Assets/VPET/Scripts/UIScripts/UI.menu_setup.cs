@@ -115,14 +115,36 @@ namespace vpet
 			IMenuButton buttonPre = Elements.MenuButton();
 			buttonPre.AddAction(PerspectiveMenu_External_sel, PerspectiveMenu_External_nrm, call: () => predefinedCamera() ); 
 			secondaryMenu.addButton( buttonPre, layouts.PERSPECTIVES);
-	        // aperture
-			IMenuButton buttonApert = Elements.MenuButton();
-			buttonApert.AddAction(ScoutMode_Aperture_sel, ScoutMode_Aperture_nrm); //
-			secondaryMenu.addButton( buttonApert, layouts.SCOUT);
-			// cam settings
-			IMenuButton buttonCam = Elements.MenuButton();
-			buttonCam.AddAction(ScoutMode_CamSettings_sel, ScoutMode_CamSettings_nrm); //
-			secondaryMenu.addButton( buttonCam, layouts.SCOUT);
+
+
+
+            // scouting
+            // depth of field toggle
+            IMenuButton buttonDOF = Elements.MenuButtonToggle();
+            buttonDOF.AddAction(ScoutMode_DOF_sel, ScoutMode_DOF_nrm, call: () => mainController.toggleDOF()); // toggle DOF component
+            secondaryMenu.addButton(buttonDOF, layouts.SCOUT);
+            // focus visualizer toggle
+            IMenuButton buttonVisualize = Elements.MenuButtonToggle();
+            buttonVisualize.AddAction(ScoutMode_Visualizer_sel, ScoutMode_Visualizer_nrm, call: () => mainController.toggleVisualizer()); // toggle visualize focus
+            secondaryMenu.addButton(buttonVisualize, layouts.SCOUT);
+            // field of view / lens
+            IMenuButton buttonFov = Elements.MenuButtonList();
+            buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.LENS)); // field of view slider
+            buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.FOV)); // field of view slider
+            secondaryMenu.addButton(buttonFov, layouts.SCOUT);
+            // focus
+            IMenuButton buttonFocus = Elements.MenuButtonList();
+            buttonFocus.AddAction(ScoutMode_Focus_sel, ScoutMode_Focus_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.FOCDIST)); // focal distance slider
+            buttonFocus.AddAction(ScoutMode_Focus_sel, ScoutMode_Focus_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.FOCSIZE)); // focal size slider
+            secondaryMenu.addButton(buttonFocus, layouts.SCOUT);
+            // aperture
+            IMenuButton buttonApert = Elements.MenuButton();
+            buttonApert.AddAction(ScoutMode_Aperture_sel, ScoutMode_Aperture_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.APERTURE)); // aperture slider
+            secondaryMenu.addButton(buttonApert, layouts.SCOUT);
+            // cam settings
+            IMenuButton buttonCam = Elements.MenuButton();
+            buttonCam.AddAction(ScoutMode_CamSettings_sel, ScoutMode_CamSettings_nrm); //
+            secondaryMenu.addButton(buttonCam, layouts.SCOUT);
 			// fov
 			IMenuButton buttonFov = Elements.MenuButton();
 			buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm); //

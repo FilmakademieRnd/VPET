@@ -26,6 +26,7 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using UnityEngine.Events;
 using System.Reflection;
+using UnityStandardAssets.ImageEffects;
 
 //!
 //! INFO: the mainController class is separeted into different files
@@ -285,13 +286,17 @@ namespace vpet
                 CameraObject camScript = camObject.GetComponent<CameraObject>();
                 if (camScript != null)
                 {
-                    Camera.main.fieldOfView = camScript.fov;
+                    Camera.main.fieldOfView = camScript.fov.hFovToVFov(); // convert horizontal fov from Katana to vertical
                     Camera.main.nearClipPlane = camScript.near;
                     Camera.main.farClipPlane = camScript.far;
                     UpdatePropertiesSecondaryCameras();
                 }
-                camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
+                // set properties for DOF component from CameraObject
+                Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
+                Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
+                Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
             }
+            camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
 	    }
 	
 	    //!

@@ -32,19 +32,31 @@ namespace vpet
 {
 	public class CameraObject : MonoBehaviour 
 	{
-	    //!
-	    //! none
-	    //!
-	    public float fov = 70f;
-	    //!
-	    //! none
-	    //!
-	    public float near = 0.1f;
-	    //!
-	    //! none
-	    //!
-	    public float far = 100000f;
-	
-		
-}
+        //! enum listing the usable camera parameters (used by UI, Controller)
+        public enum CameraParameter { FOV, LENS, APERTURE, FOCDIST, FOCSIZE };
+        //!
+        //! field of view (horizonal value from Katana)
+        //!
+        public float fov = 70f;
+        //!
+        //! near plane
+        //!
+        public float near = 0.1f;
+        //!
+        //! far plane
+        //!
+        public float far = 100000f;
+        //!
+        //! focus distance (in world space, meter)
+        //!
+        public float focDist = 1.7f;
+        //!
+        //! focus size
+        //!
+        public float focSize = 0.3f;
+        //!
+        //! aperture
+        //!
+        public float aperture = 0.5f;
+    }
 }
