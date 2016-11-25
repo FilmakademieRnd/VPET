@@ -303,6 +303,8 @@ namespace vpet
                     transform.rotation = rotationOffset * newRotation;
 #else
                     transform.rotation = rotationOffset * newRotation;
+                    // HACK: to block roll
+                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
                     //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
 #if USE_TANGO
                     cameraParent.position += rotationOffset * (newPosition - oldPosition);
