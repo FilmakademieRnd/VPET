@@ -185,7 +185,7 @@ namespace vpet
         //! layer list
         //!
         //private List<int> animationLayers;
-        AnimationLayer[] animationLayers = new AnimationLayer[6];
+        AnimationLayer[] animationLayers = new AnimationLayer[3];
 	
 	
 	    private GameObject keySpherePrefab;
@@ -661,6 +661,11 @@ namespace vpet
 	        else
 	        {
 	            playing = false;
+                // stop all layers
+                foreach ( AnimationLayer animLayer in animationLayers )
+                {
+                    animLayer.isPlaying = false;
+                }
 	        }
 	    }
 	
@@ -893,26 +898,36 @@ namespace vpet
         {
             SceneObject selectedObject = mainController.getCurrentSelection().GetComponent<SceneObject>();
             int oldLayerIdx = selectedObject.animationLayer;
-            if (oldLayerIdx < 0) {
-                if (animatedObjects.Contains(selectedObject))
-                    animatedObjects.Remove(selectedObject);
-            }
-            else if (animationLayers[oldLayerIdx].layerObjects.Contains(selectedObject))
-                animationLayers[oldLayerIdx].layerObjects.Remove(selectedObject);
 
-            if (layerIdx < 0)
-            {
-                animatedObjects.Add(selectedObject);
-                selectedObject.animationLayer = layerIdx;
-            }
-            else if (layerIdx < animationLayers.Length)
-            {
-                animationLayers[layerIdx].layerObjects.Add(selectedObject);
-                selectedObject.animationLayer = layerIdx;
-            }
+            // remove from default playlist
+            if (animatedObjects.Contains(selectedObject))
+                animatedObjects.Remove(selectedObject);
+
+            // remove from previous layer if was assigned
+            if ( oldLayerIdx>0 &&  animationLayers[oldLayerIdx].layerObjects.Contains(selectedObject))
+                animationLayers[oldLayerIdx].layerObjects.Remove(selectedObject);
+            
+            // add to new layer
+            animationLayers[layerIdx].layerObjects.Add(selectedObject);
+            selectedObject.animationLayer = layerIdx;
 
             updateTimelineKeys();
         }
+
+        public void removeSelectedObjectFromLayer( int layerIdx )
+        {
+            SceneObject selectedObject = mainController.getCurrentSelection().GetComponent<SceneObject>();
+
+            // remove from previous layer if was assigned
+            if (animationLayers[layerIdx].layerObjects.Contains(selectedObject))
+                animationLayers[layerIdx].layerObjects.Remove(selectedObject);
+
+
+            selectedObject.animationLayer = -1;
+            animatedObjects.Add(selectedObject);
+
+        }
+
 
         //!
         //! play animation layer
@@ -921,6 +936,7 @@ namespace vpet
         {
             if (layerIdx < animationLayers.Length)
             {
+                print("Animation Layer Playback: " + layerIdx);
                 animationLayers[layerIdx].offset = -currentAnimationTime;
                 animationLayers[layerIdx].currentAnimationTime = 0.0f;
                 animationLayers[layerIdx].isPlaying = true;
@@ -947,6 +963,19 @@ namespace vpet
                     layerObject.setAnimationState(0.0f);
             }
         }
+
+        public bool IsCurrentSelectionOnLayer(int layerIdx )
+        {
+            if ( mainController.getCurrentSelection() != null )
+            {
+                return mainController.getCurrentSelection().GetComponent<SceneObject>().animationLayer == layerIdx;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
 	    //!
 	    //! delete the animation attached to the currently selected object

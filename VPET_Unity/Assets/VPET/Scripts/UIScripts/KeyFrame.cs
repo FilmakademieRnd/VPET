@@ -84,7 +84,7 @@ namespace vpet
 
         public void SetLayerId(int layerId)
         {
-            if (layerId >= 0)
+            if (layerId > 0)
             {
                 string layerIdString = layerId.ToString();
                 Transform layerIdTransform = transform.FindChild("LayerId");

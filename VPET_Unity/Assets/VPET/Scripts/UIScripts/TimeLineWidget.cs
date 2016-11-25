@@ -266,7 +266,7 @@ namespace vpet
 	                }
 	            }
 	            if ( !exists )
-	                addFrame(curve.keys[i].time, layer);
+	                addFrame(curve.keys[i].time, layer+1);
 	        }
 
             UpdateFrames();

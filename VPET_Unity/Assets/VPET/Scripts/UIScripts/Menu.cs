@@ -32,7 +32,7 @@ namespace vpet
 {
 	public enum layouts { SPLASH, DEFAULT, PERSPECTIVES, MODES, FOV, EDIT, SCOUT, TRANSFORM, OBJECT, LIGHT, LIGHTSPOT, LIGHTDIR, LIGHTPOINT, ANIMATION, TRANSLATION }
 
-    public class MenuBoolEvent : UnityEvent<bool> { }
+    // public class MenuBoolEvent : UnityEvent<bool> { }
 
     //!
     //! This class represents a general menu with variable amount of buttons (maximum 10).
@@ -40,7 +40,9 @@ namespace vpet
     //!
     abstract public class Menu : MonoBehaviour // , System.Collections.IEnumerable
 	{
-		
+
+        public UnityEvent OnMenuOpen = new UnityEvent();
+
 	    //! 
 	    //! Array containing references to all Buttons in this Menu.
 	    //!
@@ -288,6 +290,8 @@ namespace vpet
 	    //!
 	    public void show()
 	    {
+            print("Show " + gameObject.name);
+
             foreach (GameObject g in ButtonsActive())
             {
                 g.SetActive(true);
@@ -304,7 +308,7 @@ namespace vpet
             }
 
 			isOpen = true;
-
+            OnMenuOpen.Invoke();
         }
 
         //!
@@ -312,6 +316,7 @@ namespace vpet
         //!
         public void hide()
 	    {
+            print("Hide " + gameObject.name);
             if (1 == 1 || currentDelta > 0)
             {
                 // currentDelta = 1;
@@ -320,6 +325,15 @@ namespace vpet
                 animate = true;
             }
 			isOpen = false;
+
+            foreach ( SubMenu subMenu in transform.GetComponentsInChildren<SubMenu>(true) )
+            {
+                if (subMenu.gameObject != this.gameObject)
+                {
+                    subMenu.hide();
+                }
+            }
+
         }
 			
 
@@ -357,11 +371,10 @@ namespace vpet
         }
 
         //!
-        //! called when animation is finish and currentDelta is zero (can be overwritten). by default this will hide buttons 
+        //! called when animation is finish and currentDelta is zero (can be overwritten). by default this will hide buttons except of activebutton
         //!
         protected virtual void animatedDrawFinishOut()
         {
-            print("animatedDrawFinishOut");
             foreach (GameObject g in Buttons())
             {
                 if (g != activeButton)

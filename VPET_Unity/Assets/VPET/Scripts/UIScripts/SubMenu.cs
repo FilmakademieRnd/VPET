@@ -70,6 +70,16 @@ namespace vpet
 			}
 			return new Vector2( UI.ButtonOffset + index * UI.ButtonOffset, 0);
 		}
-	
-	}
+
+        //!
+        //! override called when animation is finish and currentDelta is zero 
+        //! hide also active button
+        //!
+        protected override void animatedDrawFinishOut()
+        {
+            activeButton = null;
+            base.animatedDrawFinishOut();
+        }
+
+    }
 }

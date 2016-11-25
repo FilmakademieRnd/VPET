@@ -156,18 +156,21 @@ namespace vpet
                         serverAdapter.sendLock(currentSelection, true);
                         translateModifier.GetComponent<Modifier>().setVisible(true);
                         if ( ui.LayoutUI != layouts.ANIMATION)  ui.drawSecondaryMenu(layouts.TRANSLATION);
+                        ui.resetRangeSlider();
                         ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX", 0.02f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.rotationMode):
                         serverAdapter.sendLock(currentSelection, true);
                         rotationModifier.GetComponent<Modifier>().setVisible(true);
+                        ui.resetRangeSlider();
                         ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "RotateX", 1f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.scaleMode):
                         scaleModifier.GetComponent<Modifier>().setVisible(true);
                         serverAdapter.sendLock(currentSelection, true);
+                        ui.resetRangeSlider();
                         ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "ScaleX", 0.02f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;

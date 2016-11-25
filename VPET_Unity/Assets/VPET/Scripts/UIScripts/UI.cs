@@ -325,6 +325,14 @@ namespace vpet
             setupParameterMenu();
         }
 
+
+        public void resetRangeSlider()
+        {
+            rangeSlider.Value = 0;
+            rangeSlider.MinValue = float.MinValue;
+            rangeSlider.MaxValue = float.MaxValue;
+        }
+
         public void drawRangeSlider( UnityAction<float> callback, float initValue = 0f, float sensitivity=0.1f )
         {
             
@@ -332,6 +340,12 @@ namespace vpet
             {
                 Sprite buttonSprite = centerMenu.ActiveButton.GetComponent<Button>().spriteState.disabledSprite;
                 rangeSlider.CenterSprite = buttonSprite;
+            }
+            else if (secondaryMenu.ActiveButton != null && secondaryMenu.ActiveButton.GetComponent<Button>() != null)
+            {
+                Sprite buttonSprite = secondaryMenu.ActiveButton.GetComponent<Button>().spriteState.disabledSprite;
+                rangeSlider.CenterSprite = buttonSprite;
+
             }
 
             // 

@@ -200,45 +200,6 @@ namespace vpet
             secondaryMenu.addButton( buttonClickMove, layouts.TRANSLATION);
 	    }
 
-        private void animationFireCueMenu(IMenuButton button)
-        {
-            GameObject obj = ((Button)button).gameObject;
-
-            SubMenu subMenu = ((Button)button).gameObject.GetComponent<SubMenu>();
-
-            if (subMenu == null)
-            {
-                subMenu = ((Button)button).gameObject.AddComponent<SubMenu>();
-                subMenu.DirToExpand = SubMenu.direction.TOP;
-
-                GameObject buttonTextPrefab = Resources.Load<GameObject>("VPET/Prefabs/ButtonText");
-                // add animation layer buttons
-                for (int i = 0; i < 2; ++i) {
-                    int layerIndex = i;
-                    vpet.IMenuButton animLayerButton = vpet.Elements.MenuButton();
-                    animLayerButton.AddAction(AnimationMode_CueFire_sel, AnimationMode_CueFire_nrm, () => mainController.AnimationController.playAnimationLayer(layerIndex));
-                    subMenu.addButton(animLayerButton);
-                    GameObject buttonTextObj = GameObject.Instantiate(buttonTextPrefab);
-                    GameObject buttonObj = ((Button)animLayerButton).gameObject;
-                    buttonTextObj.transform.parent = buttonObj.transform;
-                    buttonTextObj.transform.localScale = new Vector3(1, 1, 1);
-                    buttonTextObj.transform.localPosition = new Vector3(0,0,0);
-                    Text text = buttonTextObj.GetComponent<Text>();
-                    if (text != null)
-                        text.text = i.ToString();
-                }
-            }
-
-            if (!subMenu.isOpen)
-            {
-                subMenu.show();
-            }
-            else
-            {
-                subMenu.hide();
-            }
-
-        }
 	
 	    private void setupCenterMenu()
 	    {
@@ -309,6 +270,7 @@ namespace vpet
             */
             // cue add
             IMenuButton buttonAniCueAdd = Elements.MenuButton();
+            ((Button)buttonAniCueAdd).name = "AddCueMenu";
 			buttonAniCueAdd.AddAction(AnimationMode_CueAdd_sel, AnimationMode_CueAdd_nrm, () => animationAddCueMenu( buttonAniCueAdd ) );
 			centerMenu.addButton( buttonAniCueAdd, layouts.ANIMATION );
 			// cue remove

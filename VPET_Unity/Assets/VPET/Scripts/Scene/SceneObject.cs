@@ -398,9 +398,14 @@ namespace vpet
 
 			//Initalize animation loading if animation available
 			AnimationSerializer asScript =  target.gameObject.AddComponent<AnimationSerializer>();
-			asScript.loadData();
-            updateAnimationCurves();
-		}
+			if ( asScript.loadData() )
+            {
+                //register the object in the animation Controller
+                GameObject.Find("AnimationController").GetComponent<AnimationController>().registerAnimatedObject(gameObject.GetComponent<SceneObject>());
+                gameObject.GetComponent<SceneObject>().setKinematic(true, false);
+                updateAnimationCurves();
+            }
+        }
 
 
 		//!

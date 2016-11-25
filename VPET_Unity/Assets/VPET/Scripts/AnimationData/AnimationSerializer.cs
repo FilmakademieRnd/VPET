@@ -77,14 +77,14 @@ namespace vpet
 	    //!
 	    //! Loads Animation Data from File if they have been saved before
 	    //!
-	    public void loadData()
+	    public bool loadData()
 	    {
 	        if (Load_Data_from_XML)
 	        {
 	            XML_Data = AnimationData.Load(name);
 	
 	            if (XML_Data == null)
-	                return;
+	                return false;
 	
 	            foreach (XML_AnimationClip XMLclip in XML_Data.XML_AnimationClips)
 	            {
@@ -107,11 +107,9 @@ namespace vpet
 	                }
 	            }
 	
-	            //register the object in the animation Controller
-	            GameObject.Find("AnimationController").GetComponent<AnimationController>().registerAnimatedObject(gameObject.GetComponent<SceneObject>());
-	
-	            gameObject.GetComponent<SceneObject>().setKinematic(true, false);
+                return true;
 	        }
+            return false;
 	    }
 	
 	    //!

@@ -264,29 +264,36 @@ namespace vpet
 
 			SubMenu subMenu = ((Button)button).gameObject.GetComponent<SubMenu>();
 
-			if (subMenu == null)
+            SceneObject sceneObject = mainController.getCurrentSelection().GetComponent<SceneObject>();
+
+            if (subMenu == null)
 			{
-				subMenu = ((Button)button).gameObject.AddComponent<SubMenu>();
+                subMenu = ((Button)button).gameObject.AddComponent<SubMenu>();
 				subMenu.DirToExpand = SubMenu.direction.RIGHT;
 
                 GameObject buttonTextPrefab = Resources.Load<GameObject>("VPET/Prefabs/ButtonText");
                 // add animation layer buttons
-                for (int i = -1; i < 2; ++i)
+                for (int i = 1; i < 4; ++i)
                 {
                     // add animation layer button
-                    int layerIndex = i;
-                    vpet.IMenuButton animLayerButton = vpet.Elements.MenuButton();
-                    animLayerButton.AddAction(AnimationMode_CueFire_sel, AnimationMode_CueFire_nrm, () => animationLayerAddCurrentObject(subMenu, layerIndex));
+                    int layerIndex = i-1;
+                    vpet.IMenuButton animLayerButton = vpet.Elements.MenuButtonToggle();
+                    // get toggle state
+                    animLayerButton.Toggled = sceneObject.animationLayer == layerIndex;
+                    animLayerButton.AddAction(AnimationMode_CueFire_sel, AnimationMode_CueFire_nrm, () => animationLayerToggleCurrentObject(animLayerButton, subMenu, layerIndex));
+                    // subMenu.OnMenuOpen.AddListener( () => { print("Check for layer " + layerIndex); animLayerButton.Toggled = animationController.IsCurrentSelectionOnLayer(layerIndex); } );
+                    UI.OnUIChanged.AddListener(() => { print("Check for layer " + layerIndex); animLayerButton.Toggled = animationController.IsCurrentSelectionOnLayer(layerIndex); });
                     subMenu.addButton(animLayerButton);
 
                     // add animation layer id on top (text object) 
                     GameObject buttonTextObj = GameObject.Instantiate(buttonTextPrefab);
                     GameObject buttonObj = ((Button)animLayerButton).gameObject;
+                    buttonObj.name = "CueAddButton_" + i.ToString();
                     buttonTextObj.transform.parent = buttonObj.transform;
                     buttonTextObj.transform.localScale = new Vector3(1, 1, 1);
                     buttonTextObj.transform.localPosition = new Vector3(0, 0, 0);
                     Text text = buttonTextObj.GetComponent<Text>();
-                    if (text != null && i >= 0)
+                    if (text != null)
                         text.text = i.ToString();
                 }
 
@@ -298,7 +305,7 @@ namespace vpet
 			}
 			else
 			{
-				subMenu.hide();
+                subMenu.hide();
 			}
 		}
 
@@ -308,6 +315,66 @@ namespace vpet
             animationController.addSelectedObjectToLayer(layerIdx);
             subMenu.hide();
 		}
+
+        private void animationLayerToggleCurrentObject( IMenuButton button, SubMenu subMenu, int layerIdx)
+        {
+            if ( button.Toggled )
+            {
+                print("Add " + mainController.getCurrentSelection().gameObject + " to animation layer " + layerIdx);
+                animationController.addSelectedObjectToLayer(layerIdx);
+            }
+            else
+            {
+                print("Remove " + mainController.getCurrentSelection().gameObject + " from animation layer " + layerIdx);
+                animationController.removeSelectedObjectFromLayer(layerIdx);
+            }
+        }
+
+
+
+
+        private void animationFireCueMenu(IMenuButton button)
+        {
+            GameObject obj = ((Button)button).gameObject;
+
+            SubMenu subMenu = ((Button)button).gameObject.GetComponent<SubMenu>();
+
+            if (subMenu == null)
+            {
+                subMenu = ((Button)button).gameObject.AddComponent<SubMenu>();
+                subMenu.DirToExpand = SubMenu.direction.TOP;
+
+                GameObject buttonTextPrefab = Resources.Load<GameObject>("VPET/Prefabs/ButtonText");
+                // add animation layer buttons
+                for (int i = 1; i < 4; ++i)
+                {
+                    int layerIndex = i - 1;
+                    vpet.IMenuButton animLayerButton = vpet.Elements.MenuButton();
+                    animLayerButton.AddAction(AnimationMode_CueFire_sel, AnimationMode_CueFire_nrm, () => mainController.AnimationController.playAnimationLayer(layerIndex));
+                    subMenu.addButton(animLayerButton);
+                    GameObject buttonTextObj = GameObject.Instantiate(buttonTextPrefab);
+                    GameObject buttonObj = ((Button)animLayerButton).gameObject;
+                    buttonTextObj.transform.parent = buttonObj.transform;
+                    buttonTextObj.transform.localScale = new Vector3(1, 1, 1);
+                    buttonTextObj.transform.localPosition = new Vector3(0, 0, 0);
+                    Text text = buttonTextObj.GetComponent<Text>();
+                    if (text != null)
+                        text.text = i.ToString();
+                }
+            }
+
+            if (!subMenu.isOpen)
+            {
+                subMenu.show();
+            }
+            else
+            {
+                subMenu.hide();
+            }
+
+        }
+
+
 
         private void parameterButtonHandle(IMenuButton button, int idx )
         {
