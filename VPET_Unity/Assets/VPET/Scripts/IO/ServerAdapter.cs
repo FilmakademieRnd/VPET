@@ -371,8 +371,7 @@ namespace vpet
 	        Vector3 rot = obj.localRotation.eulerAngles;
 	        Vector3 scl = obj.transform.localScale;
 	
-	        // HACK to diable
-	        if ( 1==0 && !deactivatePublish )
+	        if ( !deactivatePublish )
 	        {
 	
 	            string sendMessage = id + "|" + this.getPathString( obj, scene ) +
@@ -423,7 +422,14 @@ namespace vpet
 	    {
 	        if (!deactivatePublish)
 	        {
-				if (!onlyToClientsWithoutPhysics) sendMessageQueue.Add(id + "|" + "t" + "|" + this.getPathString(obj, scene) + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z);
+
+
+                // HACK:
+                onlyToClientsWithoutPhysics = false;
+
+
+
+                if (!onlyToClientsWithoutPhysics) sendMessageQueue.Add(id + "|" + "t" + "|" + this.getPathString(obj, scene) + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z);
 				else sendMessageQueue.Add(id + "|" + "t" + "|" + this.getPathString(obj, scene) + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z + "|physics");
 	        }
 	        if (!deactivatePublishKatana)
@@ -453,7 +459,14 @@ namespace vpet
 	    {
 	        if (!deactivatePublish)
 	        {
-				if (!onlyToClientsWithoutPhysics) sendMessageQueue.Add(id + "|" + "r" + "|" + this.getPathString(obj, scene) + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w);
+
+
+                // HACK:
+                onlyToClientsWithoutPhysics = false;
+
+
+
+                if (!onlyToClientsWithoutPhysics) sendMessageQueue.Add(id + "|" + "r" + "|" + this.getPathString(obj, scene) + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w);
 				else sendMessageQueue.Add(id + "|" + "r" + "|" + this.getPathString(obj, scene) + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w + "|physics");
 	        }
 			if (!deactivatePublishKatana)
@@ -660,44 +673,44 @@ namespace vpet
 	    public void parseTransformation(string message)
 	    {
 	        string[] splitMessage = message.Split('|');
-	        if (splitMessage.Length > 1)
-	        {
-	
-	            if ( splitMessage[2] == "cam" )
-	            {
-	                if (!camObject.GetComponent<Renderer>().enabled) camObject.GetComponent<Renderer>().enabled = true;
-	                lastNcamReceivedTime = Time.time;
-	                switch (splitMessage[1])
-	                {
-	                    case "t":
-	                        if (splitMessage.Length == 6)
-	                            if (receiveNcam) Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-	                            else camObject.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-	                        break;
-	                    case "r":
-	                        if (splitMessage.Length == 7)
-	                        {
-	                            Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-	                            Vector3 rot = quat.eulerAngles;
-	
-	                            if (receiveNcam) Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
-	                            else camObject.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
-	                        }
-	                        break;
-	                    case "f":
-	                        if (splitMessage.Length == 4)
-	                            if (receiveNcam) Camera.main.fieldOfView = float.Parse(splitMessage[3]);
-	                        break;
-	                    default:
-	                        break;
-	                }
-	            }
-	            else
-	            {
-	                Transform obj = getOjectFromString( splitMessage[2] );
-	                // print( message + " " + currentlyLockedObject  + " " + obj + "endl" );
-	
-	                if ( obj && obj != currentlyLockedObject && splitMessage[0] != id )
+            if (splitMessage.Length > 1)
+            {
+
+                if (splitMessage[2] == "cam")
+                {
+                    if (!camObject.GetComponent<Renderer>().enabled) camObject.GetComponent<Renderer>().enabled = true;
+                    lastNcamReceivedTime = Time.time;
+                    switch (splitMessage[1])
+                    {
+                        case "t":
+                            if (splitMessage.Length == 6)
+                                if (receiveNcam) Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+                                else camObject.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+                            break;
+                        case "r":
+                            if (splitMessage.Length == 7)
+                            {
+                                Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                Vector3 rot = quat.eulerAngles;
+
+                                if (receiveNcam) Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
+                                else camObject.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
+                            }
+                            break;
+                        case "f":
+                            if (splitMessage.Length == 4)
+                                if (receiveNcam) Camera.main.fieldOfView = float.Parse(splitMessage[3]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    Transform obj = getOjectFromString(splitMessage[2]);
+                    //print( message + " " + currentlyLockedObject  + " " + obj + "endl" );
+
+                    if ( obj && obj != currentlyLockedObject && splitMessage[0] != id )
 	                {
 	                    switch ( splitMessage[1] )
 	                    {

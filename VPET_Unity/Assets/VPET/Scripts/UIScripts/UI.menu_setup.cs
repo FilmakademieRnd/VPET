@@ -275,9 +275,9 @@ namespace vpet
 			buttonAniCueAdd.AddAction(AnimationMode_CueAdd_sel, AnimationMode_CueAdd_nrm, () => animationAddCueMenu( buttonAniCueAdd ) );
 			centerMenu.addButton( buttonAniCueAdd, layouts.ANIMATION );
 			// cue remove
-			IMenuButton buttonAniCueRem = Elements.MenuButton();
-			buttonAniCueRem.AddAction(AnimationMode_CueDelete_sel, AnimationMode_CueDelete_nrm); // 10
-			centerMenu.addButton( buttonAniCueRem, layouts.ANIMATION );
+			//IMenuButton buttonAniCueRem = Elements.MenuButton();
+			//buttonAniCueRem.AddAction(AnimationMode_CueDelete_sel, AnimationMode_CueDelete_nrm); // 10
+			//centerMenu.addButton( buttonAniCueRem, layouts.ANIMATION );
             // translate
             buttonTrans.AddAction(EditMode_Translate_sel, EditMode_Translate_nrm, () => editTranslation(buttonTrans));
             centerMenu.addButtonToLayout(buttonTrans, layouts.ANIMATION);
