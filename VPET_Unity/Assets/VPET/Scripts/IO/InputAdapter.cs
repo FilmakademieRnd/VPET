@@ -410,6 +410,12 @@ namespace vpet
                 camMovePos = Vector3.zero;
                 undoRedoController.addAction();
 
+                // HACK: to key in linktocamera mode
+                //
+                //if (mainController.ActiveMode == MainController.Mode.objectLinkCamera && mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
+                //    mainController.AnimationController.setKeyFrame();
+
+
                 // save the camera offset to restore it next time the app is started
                 mainController.saveCameraOffset();
             }
@@ -454,8 +460,14 @@ namespace vpet
 			camMovePos = Vector3.zero;
 			undoRedoController.addAction();
 
-			// save the camera offset to restore it next time the app is started
-			mainController.saveCameraOffset();
+            // HACK: to key in linktocamera mode
+            //
+            //if ( mainController.ActiveMode == MainController.Mode.objectLinkCamera && mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
+            //    mainController.AnimationController.setKeyFrame();
+
+
+            // save the camera offset to restore it next time the app is started
+            mainController.saveCameraOffset();
 		}
 	
 		//!

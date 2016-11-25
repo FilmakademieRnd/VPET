@@ -301,6 +301,8 @@ namespace vpet
                     transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation;
 #elif UNITY_STANDALONE_WIN
                     transform.rotation = rotationOffset * newRotation;
+                    // HACK: to block roll
+                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
 #else
                     transform.rotation = rotationOffset * newRotation;
                     // HACK: to block roll

@@ -189,15 +189,15 @@ namespace vpet
 			//buttonTrans.AddAction(EditMode_Translate3DWidget_sel, EditMode_Translate3DWidget_nrm, () => editWidget3D(buttonTrans) ); // 
 			//secondaryMenu.addButton( buttonTrans, layouts.TRANSLATION);
 			// attach to cam
-			IMenuButton buttonAttachCam = Elements.MenuButtonToggle();
-			buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm,() => editLinkToCamera(buttonAttachCam)); // 
-            UI.OnUIChanged.AddListener(() => { buttonAttachCam.Toggled = (mainController.ActiveMode == MainController.Mode.objectLinkCamera); }); // register ui changes
-			secondaryMenu.addButton( buttonAttachCam, layouts.TRANSLATION);
+			//IMenuButton buttonAttachCam = Elements.MenuButtonToggle();
+			//buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm,() => editLinkToCamera(buttonAttachCam)); // 
+            //UI.OnUIChanged.AddListener(() => { buttonAttachCam.Toggled = (mainController.ActiveMode == MainController.Mode.objectLinkCamera); }); // register ui changes
+			//secondaryMenu.addButton( buttonAttachCam, layouts.TRANSLATION);
 			// click to move
-			IMenuButton buttonClickMove = Elements.MenuButtonToggle();
-			buttonClickMove.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, () => editPointToMove(buttonClickMove) ); // 
-            UI.OnUIChanged.AddListener(() => { buttonClickMove.Toggled = (mainController.ActiveMode == MainController.Mode.pointToMoveMode); }); // register ui changes
-            secondaryMenu.addButton( buttonClickMove, layouts.TRANSLATION);
+			//IMenuButton buttonClickMove = Elements.MenuButtonToggle();
+			//buttonClickMove.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, () => editPointToMove(buttonClickMove) ); // 
+            //UI.OnUIChanged.AddListener(() => { buttonClickMove.Toggled = (mainController.ActiveMode == MainController.Mode.pointToMoveMode); }); // register ui changes
+            //secondaryMenu.addButton( buttonClickMove, layouts.TRANSLATION);
 	    }
 
 	
@@ -240,7 +240,8 @@ namespace vpet
             // graviy/kinematic on off
             IMenuButton buttonKin = Elements.MenuButtonToggle();
 			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic() );
-            UI.OnUIChanged.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
+            UI.OnUIChanged.AddListener(() => { buttonKin.Toggled = mainController.HasGravityOn(); });  // register for ui changes 
+            centerMenu.OnMenuOpen.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );
             // light color
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
@@ -310,12 +311,26 @@ namespace vpet
             buttonLightIntensity.AddAction(EditMode_LightIntensity_sel, EditMode_LightIntensity_nrm, () => parameterButtonHandle(buttonLightIntensity, 0));
             IMenuButton buttonLightAngle = Elements.MenuButtonToggle();
             buttonLightAngle.AddAction(EditMode_LightConeAngle_sel, EditMode_LightConeAngle_nrm, () => parameterButtonHandle(buttonLightAngle, 1));
+            // attach to cam
+            IMenuButton buttonAttachCam = Elements.MenuButtonToggle();
+            buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm, () => editLinkToCamera(buttonAttachCam)); // 
+            UI.OnUIChanged.AddListener(() => { buttonAttachCam.Toggled = (mainController.ActiveMode == MainController.Mode.objectLinkCamera); }); // register ui changes
+            // click to move
+            IMenuButton buttonClickMove = Elements.MenuButtonToggle();
+            buttonClickMove.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, () => editPointToMove(buttonClickMove)); // 
+            UI.OnUIChanged.AddListener(() => { buttonClickMove.Toggled = (mainController.ActiveMode == MainController.Mode.pointToMoveMode); }); // register ui changes
+
             // TODO: add range
             // add buttons
             parameterMenu.DirToExpand = SubMenu.direction.BOTTOM;
             parameterMenu.addButton(buttonTransX, layouts.TRANSFORM);
             parameterMenu.addButton(buttonTransY, layouts.TRANSFORM);
             parameterMenu.addButton(buttonTransZ, layouts.TRANSFORM);
+            parameterMenu.addButton(buttonTransX, layouts.TRANSLATION);
+            parameterMenu.addButton(buttonTransY, layouts.TRANSLATION);
+            parameterMenu.addButton(buttonTransZ, layouts.TRANSLATION);
+            parameterMenu.addButton(buttonAttachCam, layouts.TRANSLATION);
+            parameterMenu.addButton(buttonClickMove, layouts.TRANSLATION);
             parameterMenu.addButton(buttonLightIntensity, layouts.LIGHTDIR);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTPOINT);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTSPOT);

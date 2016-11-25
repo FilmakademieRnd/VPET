@@ -290,7 +290,7 @@ namespace vpet
 	    //!
 	    public void show()
 	    {
-            print("Show " + gameObject.name);
+            // print("Show " + gameObject.name);
 
             foreach (GameObject g in ButtonsActive())
             {
@@ -316,7 +316,7 @@ namespace vpet
         //!
         public void hide()
 	    {
-            print("Hide " + gameObject.name);
+            // print("Hide " + gameObject.name);
             if (1 == 1 || currentDelta > 0)
             {
                 // currentDelta = 1;

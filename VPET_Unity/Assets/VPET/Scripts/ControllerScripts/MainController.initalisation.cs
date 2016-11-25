@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Reflection;
-
+// using UnityEngine.Rendering;
 
 //!
 //! MainController part handling initalization of MainController
@@ -200,6 +200,9 @@ namespace vpet
         private PropertyInfo rangeSliderInfo;
 
         private System.Object rangeSliderInfoObj;
+
+        //private CommandBuffer[] bufBeforeForwardOpaque;
+        //private CommandBuffer[] bufBeforeGBuffer;
 
         //!
         //! the available states (modes) of the app
@@ -452,6 +455,12 @@ namespace vpet
             // Here all starts
             SplashWidget splashWidget = ui.drawSplashWidget();
             splashWidget.OnFinishEvent.AddListener(this.splashFinished);
+
+
+            // HACK store command buffers
+            // to restore them when disabling AR mode on Tango
+            //bufBeforeForwardOpaque = Camera.main.GetCommandBuffers(CameraEvent.BeforeForwardOpaque);
+            //bufBeforeGBuffer = Camera.main.GetCommandBuffers(CameraEvent.BeforeGBuffer);
 
         }
     }

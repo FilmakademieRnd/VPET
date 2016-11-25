@@ -41,12 +41,10 @@ namespace vpet
         {
             if ( firstActivation )
             {
-                print("firstActivation");
                 firstActivation = false;
             }
             else
             {
-                print("Not firstActivation");
                 // assign command buffer
                 Camera camera = transform.GetComponent<Camera>();
                 buf = VideoOverlayProvider.CreateARScreenCommandBuffer();

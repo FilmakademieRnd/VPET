@@ -554,13 +554,21 @@ namespace vpet
 				target.position = Vector3.Lerp(target.position, targetTranslation, Time.deltaTime * translationDamping);
 				if (Vector3.Distance(target.position, targetTranslation) < 0.0001f)
 				{
-					target.position = targetTranslation;
+                    target.position = targetTranslation;
+                    // HACK: to key pointToMove
+                    //
+                    //if ( mainController.UIAdapter.LayoutUI == layouts.ANIMATION )
+                     //   animationController.setKeyFrame();
 					smoothTranslationActive = false;
 				}
 				if ((Time.time - smoothTranslateTime) > 3.0f)
 				{
 					smoothTranslationActive = false;
-					undoRedoController.addAction();
+                    // HACK: to key pointToMove
+                    //
+                    //if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
+                    //    animationController.setKeyFrame();
+                    undoRedoController.addAction();
 				}
 			}
 		}
@@ -819,20 +827,20 @@ namespace vpet
 
         public float TranslateX
         {
-            get{ return target.transform.position.x; }
-            set{ target.transform.position = new Vector3(value, target.transform.position.y, target.transform.position.z); }
+            get{ return target.transform.localPosition.x; }
+            set{ target.transform.localPosition = new Vector3(value, target.transform.localPosition.y, target.transform.localPosition.z); }
         }
 
         public float TranslateY
         {
-            get { return target.transform.position.y; }
-            set { target.transform.position = new Vector3(target.transform.position.x, value, target.transform.position.z); }
+            get { return target.transform.localPosition.y; }
+            set { target.transform.localPosition = new Vector3(target.transform.localPosition.x, value, target.transform.localPosition.z); }
         }
 
         public float TranslateZ
         {
-            get { return target.transform.position.z; }
-            set { target.transform.position = new Vector3(target.transform.position.x, target.transform.position.y, value); }
+            get { return target.transform.localPosition.z; }
+            set { target.transform.localPosition = new Vector3(target.transform.localPosition.x, target.transform.localPosition.y, value); }
         }
 
         //!

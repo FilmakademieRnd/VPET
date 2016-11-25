@@ -132,12 +132,14 @@ namespace vpet
 
         private void editLinkToCamera(IMenuButton button)
         {
+            parameterMenu.reset();
             mainController.toggleObjectLinkCamera(button.Toggled);
             UI.OnUIChanged.Invoke();
         }
 
         private void editPointToMove(IMenuButton button)
         {
+            parameterMenu.reset();
             mainController.togglePointToMove(button.Toggled);
             UI.OnUIChanged.Invoke();
         }
@@ -380,6 +382,10 @@ namespace vpet
         {
             parameterMenu.reset();
             button.Toggled = true;
+
+            // if point to move or link to camera mode switch to translation
+            if (mainController.ActiveMode == MainController.Mode.pointToMoveMode || mainController.ActiveMode == MainController.Mode.objectLinkCamera)
+                mainController.ActiveMode = MainController.Mode.translationMode;
 
             rangeSlider.MinValue = float.MinValue;
             rangeSlider.MaxValue = float.MaxValue;

@@ -59,9 +59,8 @@ namespace vpet
 	    }
 	
 	    //!
-	    //! show the pointToMove widget at the specific place (but place it on top of the groundPlane)
-	    //! @param      pos     new position of the pointToMove widget, y should always be 0
 	    //!
+        //!
 	    public void hidePointToMoveIdentifier(Vector3 pos){
 	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
 	            if (cameraPointMove){
@@ -71,15 +70,33 @@ namespace vpet
 	            }
 	            else
 	            {
-	                //use currently selected Object as target for the translation
-	                if (currentSelection.GetComponent<SceneObject>())
-	                {
-	                    currentSelection.GetComponent<SceneObject>().smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
-	                }
-	                else
-	                {
-	                    currentSelection.GetChild(0).GetComponent<SceneObject>().smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
-	                }
+                    //use currently selected Object as target for the translation
+                    if (currentSelection.GetComponent<SceneObject>())
+                    {
+                        // HACK to animate in pointTOMove mode
+                        if (ui.LayoutUI == layouts.ANIMATION)
+                        {
+                            currentSelection.GetComponent<SceneObject>().translate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            animationController.setKeyFrame();
+                        }
+                        else
+                        {
+                            currentSelection.GetComponent<SceneObject>().smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
+                        }
+                    }
+                    else // TODO: what is this for?
+                    {
+                        // HACK to animate in pointTOMove mode
+                        if (ui.LayoutUI == layouts.ANIMATION)
+                        {
+                            currentSelection.GetChild(0).GetComponent<SceneObject>().translate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            animationController.setKeyFrame();
+                        }
+                        else
+                        {
+                            currentSelection.GetChild(0).GetComponent<SceneObject>().smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
+                        }
+                    }
 	            }
 	            pointToMoveModifier.GetComponent<Renderer>().enabled = false;
 	        }

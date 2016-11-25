@@ -65,11 +65,11 @@ namespace vpet
 	                scaleModifier.transform.localScale = getModifierScale();
 	            }
 	        }
-	
-	        //state machine
-	        if (oldState != activeMode || currentSelection != oldSelection)
-	        {
-	            print(oldState.ToString() + " >>>>> " + activeMode );
+
+            //state machine
+            if (oldState != activeMode || currentSelection != oldSelection)
+            {
+                print(oldState.ToString() + " >>>>> " + activeMode);
 
                 if (hasUpdatedProjectionMatrix)
                 {
@@ -79,28 +79,29 @@ namespace vpet
 
                 // unlock if active mode is none editing mode
                 //if (activeMode!=Mode.translationMode && activeMode!=Mode.rotationMode && activeMode != Mode.scaleMode && activeMode != Mode.objectLinkCamera && activeMode != Mode.animationEditing && activeMode != Mode.pointToMoveMode && activeMode != Mode.lightSettingsMode)
-                if ( activeMode != oldState)
+                if (activeMode != oldState)
                 {
                     serverAdapter.sendLock(currentSelection, false);
                 }
 
                 animationController.deactivate();
 
-                if ( ui.LayoutUI == layouts.ANIMATION )
+                if (ui.LayoutUI == layouts.ANIMATION)
                 {
-                    animationController.activate( currentSelection != oldSelection);
+                    animationController.activate(currentSelection != oldSelection);
                 }
 
                 //properly disable old mode
                 switch (oldState) {
-	                case (Mode.idle):
-	                    break;
-	                case (Mode.translationMode):
-	                    translateModifier.GetComponent<Modifier>().setVisible(false);
-                        if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode && ui.LayoutUI != layouts.ANIMATION )
-                            ui.drawSecondaryMenu(layouts.EDIT);
+                    case (Mode.idle):
+                        break;
+                    case (Mode.translationMode):
+                        translateModifier.GetComponent<Modifier>().setVisible(false);
+                        //if ( activeMode != Mode.objectLinkCamera && activeMode != Mode.pointToMoveMode && ui.LayoutUI != layouts.ANIMATION )
+                        //   ui.drawSecondaryMenu(layouts.EDIT);
                         ui.hideRangeSlider();
-                        ui.hideParameterMenu();
+                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode)
+                            ui.hideParameterMenu();
                         break;
 	                case (Mode.rotationMode):
 	                    rotationModifier.GetComponent<Modifier>().setVisible(false);
@@ -123,14 +124,21 @@ namespace vpet
                             }
                             else
                             {
-                                currentSelection.GetComponent<SceneObject>().setKinematic(false);
+                                //if (ui.LayoutUI != layouts.ANIMATION)
+                                //    currentSelection.GetComponent<SceneObject>().setKinematic(false);
                                 currentSelection.parent = oldParent;
                             }
+                            //if (ui.LayoutUI == layouts.ANIMATION)
+                            //    animationController.setKeyFrame();
                         }
-                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
+                        //if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
+                        if (activeMode != Mode.objectLinkCamera &&  activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode)
+                            ui.hideParameterMenu();
                         break;
 	                case (Mode.pointToMoveMode):
-                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
+                        if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode)
+                            ui.hideParameterMenu();
+                        //if (activeMode != Mode.objectLinkCamera && activeMode != Mode.translationMode && activeMode != Mode.pointToMoveMode) ui.drawSecondaryMenu(layouts.EDIT);
                         break;
 	                case (Mode.objectMenuMode):
 	                    break;
@@ -158,7 +166,7 @@ namespace vpet
                         if ( ui.LayoutUI != layouts.ANIMATION)  ui.drawSecondaryMenu(layouts.TRANSLATION);
                         ui.resetRangeSlider();
                         ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX", 0.02f);
-                        ui.drawParameterMenu(layouts.TRANSFORM);
+                        ui.drawParameterMenu(layouts.TRANSLATION);
                         break;
 	                case (Mode.rotationMode):
                         serverAdapter.sendLock(currentSelection, true);
@@ -184,13 +192,17 @@ namespace vpet
                         }
                         else
 	                    {
-	                        currentSelection.GetComponent<SceneObject>().setKinematic(true);
+ 	                        currentSelection.GetComponent<SceneObject>().setKinematic(true);
 							oldParent = currentSelection.parent;
 	                        currentSelection.parent = Camera.main.transform;
 	                    }
+                        ui.hideRangeSlider();
+                        // ui.drawParameterMenu(layouts.TRANSLATION);
                         serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.pointToMoveMode):
+                        ui.hideRangeSlider();
+                        // ui.drawParameterMenu(layouts.TRANSLATION);
                         serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.objectMenuMode):

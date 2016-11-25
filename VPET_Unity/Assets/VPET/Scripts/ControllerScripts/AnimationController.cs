@@ -326,6 +326,7 @@ namespace vpet
             {
                 AnimationClip clip = initAnimationClip();
 
+                
 
                 // add animation curves if not there already
                 if (animData.getAnimationCurve(clip, animationProperties[0]) == null )
@@ -537,6 +538,10 @@ namespace vpet
                 }
             }
             setStartEndTimeline(timeStart, timeEnd);
+            // triger set time to clamp to [start,end]
+            setTime(currentAnimationTime);
+
+            
         }
 
         public void activate( bool updateTimeLine = true )
@@ -553,7 +558,7 @@ namespace vpet
 
             switch (mainController.ActiveMode)
             {
-                case MainController.Mode.translationMode:
+                case MainController.Mode.translationMode: case MainController.Mode.pointToMoveMode: case MainController.Mode.objectLinkCamera:
                     animationProperties = new string[] { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z" };
                     animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateX")  ,
                                                          animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateY") ,
@@ -580,7 +585,7 @@ namespace vpet
             print("Activate Animation in Mode: " + mainController.ActiveMode);
 
 
-            if ( updateTimeLine )        setStartEndTimeline();
+            if ( updateTimeLine ) setStartEndTimeline();
 
 
             animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
@@ -657,17 +662,19 @@ namespace vpet
 	            mainController.hideModifiers();
 	            playing = true;
 	            systemTimeOffset = Time.time - currentAnimationTime;
+                // mainController.liveMode = true;
 	        }
 	        else
 	        {
-	            playing = false;
+                // mainController.liveMode = false;
+                playing = false;
                 // stop all layers
                 foreach ( AnimationLayer animLayer in animationLayers )
                 {
                     animLayer.isPlaying = false;
                 }
-	        }
-	    }
+            }
+        }
 	
 	    //!
 	    //! 
