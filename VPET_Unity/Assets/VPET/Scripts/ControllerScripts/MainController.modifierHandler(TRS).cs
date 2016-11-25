@@ -156,7 +156,7 @@ namespace vpet
 	            }
                 else
                 {
-                    axisLocker = Vector3.one;
+                    axisLocker = Vector3.one*0.05f; // HACK until we have new modifier
                 }
 	        }
 	    }
