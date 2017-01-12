@@ -344,8 +344,9 @@ namespace vpet
             if (subMenu == null)
             {
                 subMenu = ((Button)button).gameObject.AddComponent<SubMenu>();
-                subMenu.DirToExpand = SubMenu.direction.TOP;
-
+                subMenu.DirToExpand = SubMenu.direction.LEFT;
+                subMenu.offset = new Vector2(UI.ButtonOffset, UI.ButtonOffset);
+                
                 GameObject buttonTextPrefab = Resources.Load<GameObject>("VPET/Prefabs/ButtonText");
                 // add animation layer buttons
                 for (int i = 1; i < 4; ++i)

@@ -95,7 +95,7 @@ namespace vpet
 	    public float canvasScaleFactor = 1f;
 	    public float canvasAspectScaleFactor = 1f;
 		public float canvasScale = 1f;
-	    public float lightIntensityFactor = 50;
+        public float lightIntensityFactor = 1; // liveview 50;
 	
 	    // Explicit static constructor to tell C# compiler
 	    // not to mark type as beforefieldinit

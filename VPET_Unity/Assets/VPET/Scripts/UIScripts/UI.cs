@@ -218,7 +218,7 @@ namespace vpet
 
             //initalize main Menu
             GameObject mainMenuObject = new GameObject("mainMenuObject");
-	        mainMenuObject.transform.SetParent(this.transform, false);
+	        mainMenuObject.transform.SetParent(this.transform.parent, false);
 	        mainMenu = mainMenuObject.AddComponent<MainMenu>();
 	
 	        //initalize secondary Menu
@@ -312,7 +312,7 @@ namespace vpet
 			IMenuButton iMainMenuButton = Elements.MenuButtonToggle();
 			mainMenuButton = ((Button)iMainMenuButton).gameObject;
 			mainMenuButton.name = "MainMenuButton";
-			mainMenuButton.transform.SetParent(this.transform, false);
+			mainMenuButton.transform.SetParent( this.transform.parent, false);
 			mainMenuButton.GetComponent<RectTransform>().localPosition = new Vector2( VPETSettings.Instance.canvasHalfWidth - UI.ButtonOffset, ( VPETSettings.Instance.canvasHalfHeight - UI.ButtonOffset) * VPETSettings.Instance.canvasAspectScaleFactor );
 			iMainMenuButton.AddAction(GeneralMenu_Main_sel, GeneralMenu_Main_nrm, () => mainMenuToggle());
 			mainMenuButton.SetActive(false);

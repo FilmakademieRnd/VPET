@@ -508,7 +508,10 @@ namespace vpet
 	        }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
-	            lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
+                // TODO: use are lights when supported in unity
+                lightComponent.type = LightType.Spot;
+                lightComponent.spotAngle = 120;
+                //lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
 	            lightComponent.range = 200;
 	        }
 	        else

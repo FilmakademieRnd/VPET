@@ -176,7 +176,6 @@ namespace vpet
 			IMenuButton buttonPlay = Elements.MenuButtonToggle();
 			buttonPlay.AddAction(AnimationMode_Pause_sel, AnimationMode_Play_nrm, () => mainController.AnimationController.togglePlayPause() ); 
 			secondaryMenu.addButton( buttonPlay, layouts.ANIMATION);
-			
             // fire cue
             IMenuButton buttonPlayCue = Elements.MenuButtonToggle();
             //buttonPlayCue.AddAction(AnimationMode_CueFire_sel, AnimationMode_CueFire_nrm, () => mainController.AnimationController.playAnimationLayer()); // 20
