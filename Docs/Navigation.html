@@ -6,12 +6,15 @@
 <style type="text/css">
 <!--
 body,td,th {
+	font-family:Arial;
 	color: #FFF;	
 }
 div.nav_l1 {
+	font-family:Arial;
 	font-size: 26px;	
 }
 div.nav_l2 {
+	font-family:Arial;
 	font-size: 22px;	
 }
 
@@ -55,7 +58,7 @@ h1 {
 function changeColor(elem)
 {
 // reset all values
-for (i = 1; i < 5; i++) {
+for (i = 1; i < 6; i++) {
     TD_Element = "NavEl"+[i];
 	cell = document.getElementById(TD_Element);
 	cell.style.backgroundColor = '#464d56';
@@ -96,6 +99,13 @@ elem.style.backgroundColor = '#55a9d7';
   </tr>
   <tr>
     <td id="NavEl4" onclick="changeColor(this)">
+    	<div class="nav_l1">
+        <img src="Images/Spacer.png" width="10" height="1" />
+        <a href="Tutorials.html" target="mainFrame">
+        Tutorials</a></div></td>
+  </tr> 
+  <tr>
+    <td id="NavEl5" onclick="changeColor(this)">
     	<div class="nav_l1">
         <img src="Images/Spacer.png" width="10" height="1" />
         <a href="License.html" target="mainFrame">
