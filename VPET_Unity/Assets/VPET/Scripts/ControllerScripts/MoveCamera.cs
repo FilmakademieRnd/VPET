@@ -167,6 +167,12 @@ namespace vpet
         //! 
         //!
         public bool doApplyRotation = true;
+
+        //!
+        //! Lenovo Phab 2 needs flipped axis
+        //!
+        public bool TangoBuild4LenovoPhab2 = false;
+
 #if USE_TANGO
         private Transform tangoTransform;
 #endif
@@ -302,7 +308,10 @@ namespace vpet
 #elif UNITY_STANDALONE_WIN
                     transform.rotation = rotationOffset * newRotation;
 #else
-                    transform.rotation = rotationOffset * newRotation;
+                    if (TangoBuild4LenovoPhab2)
+                        transform.rotation = rotationOffset * new Quaternion (-newRotation.y, newRotation.x, newRotation.z, newRotation.w) ;
+                    else
+                        transform.rotation = rotationOffset * newRotation;
                     // HACK: to block roll
                     transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
                     //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
