@@ -75,7 +75,7 @@ namespace vpet
         //!
         //! Cached reference to the Tango controller.
         //!
-#if USE_TANGO﻿
+#if USE_TANGO
         private TangoController tangoController;
 #endif
 
@@ -195,7 +195,7 @@ namespace vpet
 		        //cache reference to animation Controller
 		        animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 
-#if USE_TANGO﻿
+#if USE_TANGO
                 //cache reference to tango Controller
                 tangoController = GameObject.Find("Tango").GetComponent<TangoController>();
 #endif
@@ -258,7 +258,7 @@ namespace vpet
 			// Ambient light listener
 			configWidget.AmbientChangedEvent.AddListener( mainController.setAmbientIntensity );
 
-#if USE_TANGO﻿
+#if USE_TANGO
                 // Show Tango Scale UI objects
                 GameObject tangoScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_slider");                
                 // tangoScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
@@ -274,7 +274,7 @@ namespace vpet
 #endif
 
 
-			/*
+            /*
 	        //initalize undo buttons
 	        undoButton = Instantiate(GameObject.Find("ButtonTemplate"));
 	        undoButton.transform.SetParent(this.transform,false);
@@ -307,9 +307,9 @@ namespace vpet
 	        // temp hide it
 	        redoButton.GetComponent<Image>().enabled = false;
 			*/
-	
-	        //initalise mainMenu button
-			IMenuButton iMainMenuButton = Elements.MenuButtonToggle();
+
+            //initalise mainMenu button
+            IMenuButton iMainMenuButton = Elements.MenuButtonToggle();
 			mainMenuButton = ((Button)iMainMenuButton).gameObject;
 			mainMenuButton.name = "MainMenuButton";
 			mainMenuButton.transform.SetParent( this.transform.parent, false);

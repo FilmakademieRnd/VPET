@@ -23,7 +23,7 @@ https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
 
-#if USE_TANGO﻿
+#if USE_TANGO
 using UnityEngine;
 using System.Collections;
 using Tango;

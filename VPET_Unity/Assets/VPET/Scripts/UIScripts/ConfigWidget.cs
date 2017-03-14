@@ -33,7 +33,7 @@ namespace vpet
 	public class AmbientIntensityChangedEvent : UnityEvent<float> {}
 	public class VisibilityChangeEvent: UnityEvent<bool> {}
 
-#if USE_TANGO﻿
+#if USE_TANGO
     public class TangoScaleIntensityChangedEvent : UnityEvent<float> { }
 #endif
 
@@ -41,8 +41,8 @@ namespace vpet
 	{
 	    public ConfigEvent SubmitEvent = new ConfigEvent();
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
-	
-#if USE_TANGO﻿
+
+#if USE_TANGO
         public TangoScaleIntensityChangedEvent TangoScaleChangedEvent = new TangoScaleIntensityChangedEvent();
 #endif
 
@@ -71,7 +71,7 @@ namespace vpet
 		//!
 		private float ambientLight = 0.1f;
 
-#if USE_TANGO﻿
+#if USE_TANGO
         [HideInInspector]
         public float tangoScale = 1.0f;
         private Slider tangoScaleSlider;
@@ -151,6 +151,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: AR_toggle.", this.GetType()));
             else
             {
+
 #if USE_TANGO
                 arToggle = childWidget.GetComponent<Toggle>();
                 if (arToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
@@ -198,7 +199,7 @@ namespace vpet
 				}
 			}
 
-#if USE_TANGO﻿
+#if USE_TANGO
             // Tango scale
             childWidget = this.transform.FindChild("TangoScale_slider");
             if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tango_Scale.", this.GetType()));
@@ -275,7 +276,7 @@ namespace vpet
                 ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
 
-#if USE_TANGO﻿
+#if USE_TANGO
             // Tango Scale
             if (tangoScaleSlider)
             {
@@ -315,7 +316,7 @@ namespace vpet
 				ambientLight = ambientIntensitySlider.value;
             }
 
-#if USE_TANGO﻿
+#if USE_TANGO
             // Tango Scale
             if (tangoScaleSlider) {
                 tangoScale = tangoScaleSlider.value;
@@ -367,7 +368,7 @@ namespace vpet
             AmbientChangedEvent.Invoke( v );
 		}
 
-#if USE_TANGO﻿
+#if USE_TANGO
         private void OnTangoScaleChanged(float v)
         {
             tangoScale = v;            
