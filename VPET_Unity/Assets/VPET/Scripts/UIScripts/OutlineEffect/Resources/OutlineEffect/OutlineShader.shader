@@ -1,4 +1,6 @@
-﻿/*
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+/*
 -----------------------------------------------------------------------------
 This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
@@ -59,7 +61,7 @@ Shader "Hidden/OutlineEffect"
 			v2f vert(appdata_img v)
 			{
 			   	v2f o;
-				o.position = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.position = UnityObjectToClipPos(v.vertex);
 				o.uv = v.texcoord;
 				
 			   	return o;

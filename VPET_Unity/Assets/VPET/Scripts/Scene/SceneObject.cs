@@ -366,7 +366,7 @@ namespace vpet
 					LightIcon iconScript = lightTarget.FindChild("LightQuad").GetComponent<LightIcon>();
 					iconScript.TargetCollider = col;
 
-					iconScript.TargetScale = target.localScale;
+                    iconScript.TargetScale = target.lossyScale; // target.localScale;
 
 				}
 				else

@@ -501,7 +501,7 @@ namespace vpet
 		private GameObject cameraRaycast(Vector3 pos, int layerMask = 1) {
 			Ray ray = Camera.main.GetComponent<Camera>().ScreenPointToRay(pos);
 			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, 1000.0f, layerMask)) {
+			if (Physics.Raycast(ray, out hit, 10000.0f, layerMask)) {
 				//raycast was executed and hit an object
 				return hit.collider.gameObject;
 			}
