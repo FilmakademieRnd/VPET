@@ -307,28 +307,28 @@ namespace vpet
                 {
                     nodeTypeBinary =  BitConverter.GetBytes((int)NodeType.GEO);
                     SceneNodeGeo nodeGeo = (SceneNodeGeo)Convert.ChangeType(node, typeof(SceneNodeGeo));
-                    nodeBinary = SceneDistribution.StructureToByteArray<SceneNodeGeo>(nodeGeo);
+                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeGeo>(nodeGeo);
                 }
                 else if (node.GetType() == typeof(SceneNodeLight))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.LIGHT);
                     SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType(node, typeof(SceneNodeLight));
-                    nodeBinary = SceneDistribution.StructureToByteArray<SceneNodeLight>(nodeLight);
+                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeLight>(nodeLight);
                 }
                 else if (node.GetType() == typeof(SceneNodeCam))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.CAMERA);
                     SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType(node, typeof(SceneNodeCam));
-                    nodeBinary = SceneDistribution.StructureToByteArray<SceneNodeCam>(nodeCam);
+                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeCam>(nodeCam);
                 }
                 else
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GROUP);
-                    nodeBinary = SceneDistribution.StructureToByteArray<SceneNode>(node);
+                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNode>(node);
                 }
                 // concate arrays
-                nodesByteData = SceneDistribution.Concat<byte>(nodesByteData, nodeTypeBinary);
-                nodesByteData = SceneDistribution.Concat<byte>(nodesByteData, nodeBinary);
+                nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeTypeBinary);
+                nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeBinary);
             }
         }
 
@@ -366,7 +366,7 @@ namespace vpet
                 dstIdx += objPack.uvSize*2 * SceneDataHandler.size_float;
 
                 // concate
-                objectsByteData = SceneDistribution.Concat<byte>(objectsByteData, objByteData);
+                objectsByteData = SceneDataHandler.Concat<byte>(objectsByteData, objByteData);
 
             }
         }
@@ -395,7 +395,7 @@ namespace vpet
                 dstIdx += texPack.colorMapDataSize;
 
                 // concate
-                texturesByteData = SceneDistribution.Concat<byte>(texturesByteData, texByteData);
+                texturesByteData = SceneDataHandler.Concat<byte>(texturesByteData, texByteData);
             }
         }
 
@@ -446,45 +446,6 @@ namespace vpet
             serverThread.Abort();
         }
 
-
-        public static byte[] StructureToByteArray<T>(T obj)
-        {
-            IntPtr ptr = IntPtr.Zero;
-            try
-            {
-                int size = Marshal.SizeOf(typeof(T));
-                ptr = Marshal.AllocHGlobal(size);
-                Marshal.StructureToPtr(obj, ptr, true);
-                byte[] bytes = new byte[size];
-                Marshal.Copy(ptr, bytes, 0, size);
-                return bytes;
-            }
-            finally
-            {
-                if (ptr != IntPtr.Zero)
-                    Marshal.FreeHGlobal(ptr);
-            }
-        }
-
-
-        public static T[] Concat<T>(T[] first, params T[][] arrays)
-        {
-            int length = first.Length;
-            foreach (T[] array in arrays)
-            {
-                length += array.Length;
-            }
-            T[] result = new T[length];
-
-            length = first.Length;
-            Array.Copy(first, 0, result, 0, first.Length);
-            foreach (T[] array in arrays)
-            {
-                Array.Copy(array, 0, result, length, array.Length);
-                length += array.Length;
-            }
-            return result;
-        }
 
     }
 }

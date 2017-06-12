@@ -137,19 +137,19 @@ namespace vpet
                 switch (nodeType)
                 {
                     case NodeType.GROUP:
-                        SceneNode sceneNode = Receiver.ByteArrayToStructure<SceneNode>(m_nodesByteData, ref dataIdx);
+                        SceneNode sceneNode = SceneDataHandler.ByteArrayToStructure<SceneNode>(m_nodesByteData, ref dataIdx);
                         node = sceneNode;
                         break;
                     case NodeType.GEO:
-                        SceneNodeGeo sceneNodeGeo = Receiver.ByteArrayToStructure<SceneNodeGeo>(m_nodesByteData, ref dataIdx);
+                        SceneNodeGeo sceneNodeGeo = SceneDataHandler.ByteArrayToStructure<SceneNodeGeo>(m_nodesByteData, ref dataIdx);
                         node = sceneNodeGeo;
                         break;
                     case NodeType.LIGHT:
-                        SceneNodeLight sceneNodeLight = Receiver.ByteArrayToStructure<SceneNodeLight>(m_nodesByteData, ref dataIdx);
+                        SceneNodeLight sceneNodeLight = SceneDataHandler.ByteArrayToStructure<SceneNodeLight>(m_nodesByteData, ref dataIdx);
                         node = sceneNodeLight;
                         break;
                     case NodeType.CAMERA:
-                        SceneNodeCam sceneNodeCamera = Receiver.ByteArrayToStructure<SceneNodeCam>(m_nodesByteData, ref dataIdx);
+                        SceneNodeCam sceneNodeCamera = SceneDataHandler.ByteArrayToStructure<SceneNodeCam>(m_nodesByteData, ref dataIdx);
                         node = sceneNodeCamera;
                         break;
                 }
@@ -270,5 +270,67 @@ namespace vpet
 
         }
 
+
+        public static byte[] StructureToByteArray<T>(T obj)
+        {
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                int size = Marshal.SizeOf(typeof(T));
+                ptr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr(obj, ptr, true);
+                byte[] bytes = new byte[size];
+                Marshal.Copy(ptr, bytes, 0, size);
+                return bytes;
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                    Marshal.FreeHGlobal(ptr);
+            }
+        }
+
+
+        public static T[] Concat<T>(T[] first, params T[][] arrays)
+        {
+            int length = first.Length;
+            foreach (T[] array in arrays)
+            {
+                length += array.Length;
+            }
+            T[] result = new T[length];
+
+            length = first.Length;
+            Array.Copy(first, 0, result, 0, first.Length);
+            foreach (T[] array in arrays)
+            {
+                Array.Copy(array, 0, result, length, array.Length);
+                length += array.Length;
+            }
+            return result;
+        }
+
+
+        public static T ByteArrayToStructure<T>(byte[] bytearray, ref int offset)
+        {
+            IntPtr i = IntPtr.Zero;
+            try
+            {
+                int len = Marshal.SizeOf(typeof(T));
+                i = Marshal.AllocHGlobal(len);
+                Marshal.Copy(bytearray, offset, i, len);
+                object obj = (SceneNode)Marshal.PtrToStructure(i, typeof(T));
+                offset += len;
+                return (T)obj;
+            }
+            finally
+            {
+                if (i != IntPtr.Zero)
+                    Marshal.FreeHGlobal(i);
+            }
+        }
     }
+
+
+
 }
