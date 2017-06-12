@@ -48,7 +48,7 @@ namespace vpet
         //!
         //! Dump scene file name
         //!
-        public string sceneFileName = "SanMiguel7_nightenv";
+        public string sceneFileName = "VpetDemo";
         //!
         //! Shall we load Textures ?
         //!

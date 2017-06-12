@@ -45,7 +45,8 @@ namespace vpet
 	public class ServerAdapterProgressEvent : UnityEvent<float, string> { }
 
 
-	public class ServerAdapter : MonoBehaviour
+
+    public class ServerAdapter : MonoBehaviour
 	{
 
 
@@ -199,6 +200,8 @@ namespace vpet
 
         private int listenerRestartCount = 0;
 
+        private bool m_sceneTransferDirty = false;
+
         void Awake()
 	    {
 	        receiveObjectQueue = new List<SceneObjectKatana>();
@@ -308,29 +311,16 @@ namespace vpet
 	    void Update () 
 	    {
 	        // if we received new objects build them
-			if ( receiveObjectQueue.Count > 0)
+			if ( m_sceneTransferDirty )
 	        {
-	            int count = 0;
-	            for ( int i = 0; i < receiveObjectQueue.Count; i++ )
-	            {
-	
-	                try
-	                {
-	                    print( "sceneLoader.createSceneGraph " );
-	                    sceneLoader.createSceneGraph( receiveObjectQueue[i] );
+                m_sceneTransferDirty = false;
+                print( "sceneLoader.createSceneGraph" );
+	            sceneLoader.createSceneGraph( );
 	                    
-	                    // HACK
-	                    mainController.repositionCamera();
-	                    // Camera.main.GetComponent<MoveCamera>().calibrate();
+	            // HACK
+	            mainController.repositionCamera();
+	            // Camera.main.GetComponent<MoveCamera>().calibrate();
 	
-	                }
-	                catch (IndexOutOfRangeException e)
-	                {
-	                    print( "Exception: " + e.ToString() );
-	                }
-	                count++;
-	            }
-	            receiveObjectQueue.RemoveRange( 0, count );
 	        }
 	
 	        if (!deactivateReceive)
@@ -910,22 +900,33 @@ namespace vpet
 	    //!
 	    public void sendKatana()
 	    {
-	        
 	        //create NetMQ context
 	        NetMQContext ctx = NetMQContext.Create();
 	
 	        NetMQ.Sockets.PushSocket katanaSender = ctx.CreatePushSocket();
-	        katanaSender.Connect( "tcp://" + VPETSettings.Instance.serverIP + ":5555" ); 
-	        while (isRunning)
-	        {
-	            if (katanaSendMessageQueue.Count > 0)
-	            {
-	                // Debug.Log("Katana: " + katanaSendMessageQueue[0] as string);
-	                katanaSender.Send(katanaSendMessageQueue[0] as string);
-	                katanaSendMessageQueue.RemoveAt(0);
-	            }
-	        }
-	
+            katanaSender.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5555");
+
+            //using (NetMQ.Poller poller = new NetMQ.Poller(katanaSender))
+            //{
+                while (isRunning)
+                {
+
+
+                    if (katanaSendMessageQueue.Count > 0)
+                    {
+                        // Debug.Log("Katana: " + katanaSendMessageQueue[0] as string);
+                        try
+                        {
+                            katanaSender.Send(katanaSendMessageQueue[0] as string, true); // TODO: note added true argument to not wait
+                        }
+                        catch
+                        {
+                            Debug.Log("Failed katanaSenMessage");
+                        }
+                        katanaSendMessageQueue.RemoveAt(0);
+                    }
+                }
+            //}
 	        katanaSender.Disconnect( "tcp://" + VPETSettings.Instance.serverIP + ":5555" );
 	        katanaSender.Close();
 	        
@@ -951,65 +952,62 @@ namespace vpet
 	        print("Server set up.");
 	
 	
-	        SceneObjectKatana sceneObjectKatana = new SceneObjectKatana();
 	        bool success = false;
-	
-	        if ( VPETSettings.Instance.doLoadTextures)
+
+            byte[] byteStream;
+
+            // Textures
+            if ( VPETSettings.Instance.doLoadTextures)
 	        {
 	            print("textu");
-	            sceneReceiver.Send("textu");
-	            byte[] byteStreamTextures = sceneReceiver.Receive() as byte[];
-	            print("byteStreamTextures size: " + byteStreamTextures.Length);
-	            success = sceneObjectKatana.parseTexture(byteStreamTextures);
-	            print("Texture Count: " + sceneObjectKatana.rawTextureList.Count);
-	            if ( doWriteScene )
-	            {
-	                writeBinary( byteStreamTextures, "textu" );
-	            }
+	            sceneReceiver.Send("textures");
+	            byteStream = sceneReceiver.Receive() as byte[];
+	            print("byteStreamTextures size: " + byteStream.Length);
+                sceneLoader.SceneDataHandler.TexturesByteData = byteStream;
 
+                if ( doWriteScene )
+	            {
+	                writeBinary(byteStream, "textu" );
+	            }
                 OnProgress(0.33f, "..Received Texture..");
             }
 
-
+            // Objects
             print( "objec" );
-	        sceneReceiver.Send( "objec" );
-	        byte[] byteStreamObjects = sceneReceiver.Receive() as byte[];
-	        print( "byteStreamObjects size: " + byteStreamObjects.Length );
-	        success = sceneObjectKatana.parseObject( byteStreamObjects );
-	        print( "Object Count: " + sceneObjectKatana.rawVertexList.Count );
+	        sceneReceiver.Send( "objects" );
+            byteStream = sceneReceiver.Receive() as byte[];
+	        print( "byteStreamObjects size: " + byteStream.Length );
+            sceneLoader.SceneDataHandler.ObjectsByteData = byteStream;
+
 	        if ( doWriteScene )
 	        {
-	            writeBinary( byteStreamObjects, "objec" );
+	            writeBinary(byteStream, "objec" );
 	        }
-
 			OnProgress( 0.80f, "..Received Objects..");
 
+            // Nodes
 	        print( "nodes" );
 	        sceneReceiver.Send( "nodes" );
-	        byte[] byteStreamNodes = sceneReceiver.Receive() as byte[];
-	        print( "byteStreamNodess size: " + byteStreamNodes.Length );
-            success = sceneObjectKatana.parseNode( byteStreamNodes );
-	        print( "Node count: " + sceneObjectKatana.rawNodeList.Count );
-	        if ( doWriteScene )
+	        byteStream = sceneReceiver.Receive() as byte[];
+	        print( "byteStreamNodess size: " + byteStream.Length );
+            sceneLoader.SceneDataHandler.NodesByteData = byteStream;
+
+            if ( doWriteScene )
 	        {
-	            writeBinary( byteStreamNodes, "nodes" );
+	            writeBinary(byteStream, "nodes" );
 	        }
-
-
             OnProgress(0.9f, "..Received Nodes..");
 
 
-
-            if ( success )
-	        {
-	            receiveObjectQueue.Add( sceneObjectKatana );
-	        }
+            
 	
 	
 	        sceneReceiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5565");
 	        sceneReceiver.Close();
 	
 	        print( "done receive scene" );
+
+            m_sceneTransferDirty = true;
 
             OnProgress(1.0f, "..Building Scene..");
 

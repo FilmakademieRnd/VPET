@@ -331,14 +331,8 @@ namespace vpet
 			//generate colliding volumes
 			if(generateBoxCollider)
 			{
-
-
 				//calculate bounds
-				//target.position = new Vector3(-3000,-3000,-3000);
-				//target.localScale = new Vector3(1, 1, 1);
 				bounds = new Bounds( Vector3.zero, Vector3.zero );
-				//set rotation to 0
-				// this.transform.rotation = Quaternion.Euler(Vector3.zero);
 
 
 				bool hasBounds = false;
@@ -358,15 +352,20 @@ namespace vpet
 
 				BoxCollider col = this.gameObject.AddComponent<BoxCollider>();
 
-				if (sourceLight)
-				{
-					// BoxCollider col_lightquad = lightTarget.FindChild("LightQuad").GetComponent<BoxCollider>();
-					// col.size = col_lightquad.size;
-					// col.center = col_lightquad.center;
-					LightIcon iconScript = lightTarget.FindChild("LightQuad").GetComponent<LightIcon>();
-					iconScript.TargetCollider = col;
+                // TODO: temporary
+                col.isTrigger = true; // not interacting
 
-                    iconScript.TargetScale = target.lossyScale; // target.localScale;
+
+
+                if (sourceLight)
+				{
+                    // BoxCollider col_lightquad = lightTarget.FindChild("LightQuad").GetComponent<BoxCollider>();
+                    // col.size = col_lightquad.size;
+                    // col.center = col_lightquad.center;
+                    col.isTrigger = true; // not interacting
+                    LightIcon iconScript = lightTarget.FindChild("LightQuad").GetComponent<LightIcon>();
+					iconScript.TargetCollider = col;
+                    iconScript.TargetScale = target.lossyScale; // target.localScale;  
 
 				}
 				else
@@ -384,13 +383,15 @@ namespace vpet
 			}
 			if ( !isDirectionalLight && !isPointLight && !isSpotLight && this.name != "camera" )
 			{
-				this.gameObject.AddComponent<Rigidbody>();
+
+                
+                this.gameObject.AddComponent<Rigidbody>();
 				this.gameObject.GetComponent<Rigidbody>().mass = 100.0f;
 				this.gameObject.GetComponent<Rigidbody>().drag = 2.5f;
+                
 
-
-
-				// this.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                // TODO: temporary
+				this.gameObject.GetComponent<Rigidbody>().useGravity = false;
 
 
 

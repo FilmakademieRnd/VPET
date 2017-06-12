@@ -247,7 +247,7 @@ namespace vpet
                             currentSelection.GetComponent<SceneObject>().hideLightVisualization(true);
                         }
                         // ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "LightIntensity", 1f);
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>().setLightIntensity, currentSelection.GetComponent<SceneObject>().getLightIntensity(), 1f);
+                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>().setLightIntensity, currentSelection.GetComponent<SceneObject>().getLightIntensity(), 0.01f);
                         if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
                             ui.drawParameterMenu(layouts.LIGHTDIR);
                         else if (currentSelection.GetComponent<SceneObject>().isPointLight)

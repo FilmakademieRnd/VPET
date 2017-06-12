@@ -285,7 +285,7 @@ namespace vpet
                 CameraObject camScript = camObject.GetComponent<CameraObject>();
                 if (camScript != null)
                 {
-                    Camera.main.fieldOfView = camScript.fov.hFovToVFov(); // convert horizontal fov from Katana to vertical
+                    Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
                     Camera.main.nearClipPlane = camScript.near;
                     Camera.main.farClipPlane = camScript.far;
                     UpdatePropertiesSecondaryCameras();
@@ -295,7 +295,11 @@ namespace vpet
                 //Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
                 //Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
             }
-            camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
+
+            if (sceneAdapter.SceneCameraList.Count == 0)
+                camPrefabPosition = 0;
+            else
+                camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
 	    }
 	
 	    //!

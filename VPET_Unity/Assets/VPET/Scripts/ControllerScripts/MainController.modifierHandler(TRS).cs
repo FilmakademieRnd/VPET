@@ -43,7 +43,7 @@ namespace vpet
 	    //! @param      modifier        link to currently active modifier
 	    //!
 	    public void handleModifier(Transform modifier){
-	        Debug.Log("Hit modifier " + modifier.name + "!");
+	        // Debug.Log("Hit modifier " + modifier.name + "!");
 	        modifier.parent.GetComponent<Modifier>().isUsed();
 	        if  ( ui.LayoutUI != layouts.ANIMATION ) //  (activeMode != Mode.animationEditing)
 	        {

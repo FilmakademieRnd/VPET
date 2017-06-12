@@ -26,6 +26,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 //!
 //! Script creating the scene received from the server (providing XML3D) within Unity 
@@ -36,6 +37,12 @@ namespace vpet
 
 	public class SceneLoader : MonoBehaviour 
 	{
+        public Texture2D tmpTex;
+
+
+
+
+
 	    //!
 	    //! name of the parent gameobject, all objects go underneath it
 	    //!
@@ -56,6 +63,17 @@ namespace vpet
 
         private List<GameObject> geometryPassiveList = new List<GameObject>();
 
+        private SceneDataHandler sceneDataHandler;
+        public SceneDataHandler SceneDataHandler
+        {
+            get { return sceneDataHandler; }
+        }
+
+        void Awake()
+        {
+            sceneDataHandler = new SceneDataHandler();
+        }
+
         void Start()
 	    {
 	        // create scene parent if not there
@@ -64,14 +82,13 @@ namespace vpet
 	        {
 	            scnPrtGO = new GameObject( sceneParent );
 	        }
-	
-	        scnRoot = scnPrtGO.transform.FindChild("root").gameObject;
+
+            scnRoot = scnPrtGO.transform.FindChild("root").gameObject;
 	        if (scnRoot == null)
 	        {
 	            scnRoot = new GameObject("root");
 	            scnRoot.transform.parent = scnPrtGO.transform;
 	        }
-	
 	    }	
 
         public void ResetScene()
@@ -92,25 +109,19 @@ namespace vpet
             }            
         }
 
-        public void createSceneGraph( SceneObjectKatana scnObjKtn  )
+        public void createSceneGraph( )
 	    {
 	        // create textures
 	        if (VPETSettings.Instance.doLoadTextures )
 	        {
-	            createTextures(scnObjKtn);
+	            createTextures();
 	        }      
-	        scnObjKtn.rawTextureList.Clear();
 	
 	        // create meshes
-	        createMeshes(scnObjKtn);
-	        scnObjKtn.rawVertexList.Clear();
-	        scnObjKtn.rawIndexList.Clear();
-	        scnObjKtn.rawNormalList.Clear();
-	        scnObjKtn.rawUvList.Clear();
+	        createMeshes();
 	
 	        // iterate nodes
-	        createSceneGraphIter(scnObjKtn, scnRoot.transform, 0);
-	        scnObjKtn.rawNodeList.Clear();
+	        createSceneGraphIter(scnRoot.transform, 0);
 	
 	        // make editable        
 	        foreach ( GameObject g in sceneEditableObjects )
@@ -134,38 +145,29 @@ namespace vpet
 	         */
 	
 	
-	
 	    }
 	
 	
-	    private int createSceneGraphIter( SceneObjectKatana scnObjKtn, Transform parent, int idx  )
+	    private int createSceneGraphIter( Transform parent, int idx  )
 	    {
 	        GameObject obj = null; // = new GameObject( scnObjKtn.rawNodeList[idx].name );
 	        
-	        Node node = scnObjKtn.rawNodeList[idx];
+	        SceneNode node = sceneDataHandler.NodeList[idx];
 	
 	        
-	        if ( node.GetType() == typeof( NodeGeo ) )
+	        if ( node.GetType() == typeof(SceneNodeGeo) )
 	        {
-	            NodeGeo nodeGeo = (NodeGeo)Convert.ChangeType( node, typeof( NodeGeo ) );
+                SceneNodeGeo nodeGeo = (SceneNodeGeo)Convert.ChangeType( node, typeof(SceneNodeGeo) );
 	            obj = createObject( nodeGeo, parent );
 	        }
-	        else if ( node.GetType() == typeof( NodeLight ) )
+	        else if ( node.GetType() == typeof(SceneNodeLight) )
 	        {
-	            NodeLight nodeLight = (NodeLight)Convert.ChangeType( node, typeof( NodeLight ) );
-	            // HACK: remove and support skydomes
-	            if (nodeLight.name.ToLower() == "skydome")
-	            {
-	                print("Do Support SkyDome !");
-	            }
-	            else
-	            {
-	                obj = createLight(nodeLight, parent);
-	            }
+                SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType( node, typeof(SceneNodeLight) );
+                obj = createLight(nodeLight, parent);
 	        }
-	        else if ( node.GetType() == typeof( NodeCam ) )
+	        else if ( node.GetType() == typeof(SceneNodeCam) )
 	        {
-	            NodeCam nodeCam = (NodeCam)Convert.ChangeType( node, typeof( NodeCam ) );
+                SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType( node, typeof(SceneNodeCam) );
 	            obj = createCamera( nodeCam, parent );
 	        }
 	        else
@@ -178,43 +180,36 @@ namespace vpet
 	            sceneEditableObjects.Add( obj );
 	        }
 	
-	
-	
 	        int idxChild = idx;
 	
 	        for ( int k = 1; k <= node.childCount; k++ )
 	        {
-	            idxChild = createSceneGraphIter( scnObjKtn, obj.transform, idxChild+1 );
+	            idxChild = createSceneGraphIter( obj.transform, idxChild+1 );
 	        }
-	
-	
 	
 	        return idxChild;
 	    }
 	
 	
-	    private void createTextures( SceneObjectKatana scnObjKtn )
+	    private void createTextures()
 	    {
-	
-	
-	        foreach ( byte[] tex in scnObjKtn.rawTextureList )
+            foreach ( TexturePackage texPack in sceneDataHandler.TextureList )
 	        {
-	            //print( "text byte size: " + tex.Length );
-	            //GameObject obj = GameObject.CreatePrimitive( PrimitiveType.Plane );
-	            //Material mat = new Material( Shader.Find( "Standard" ) );
-	            Texture2D tex_2d = new Texture2D( 16, 16, TextureFormat.DXT5Crunched, false );
-	            tex_2d.LoadImage( tex );
-	            //mat.SetTexture( "_MainTex", tex_2d );
-	            //obj.GetComponent<Renderer>().material = mat;
-	            /*
-	            if ( tex_2d.width > 1000 || tex_2d.height > 1000)
-	            {
-	                tex_2d.Resize( 64, 64, TextureFormat.RGB24, false );
-	                //tex_2d.Apply();
-	            }
-	             */
-	            sceneTextureList.Add( tex_2d );
-	        }
+                if (sceneDataHandler.TextureBinaryType == '1')
+                {
+                    Texture2D tex_2d = new Texture2D(texPack.width, texPack.height, texPack.format, false);
+                    tex_2d.LoadRawTextureData(texPack.colorMapData);
+                    tex_2d.Apply();
+                    sceneTextureList.Add(tex_2d);
+                }
+                else
+                {
+                    Texture2D tex_2d = new Texture2D(16, 16, TextureFormat.DXT5Crunched, false);
+                    tex_2d.LoadImage(texPack.colorMapData);
+                    sceneTextureList.Add(tex_2d);
+                }
+
+            }
 	    }
 	
 	
@@ -222,9 +217,39 @@ namespace vpet
 		//! function ??
 	    //! @param  ??   ??
 	    //!    
-	    private void createMeshes( SceneObjectKatana scnObjKtn )
+	    private void createMeshes( )
 	    {
-	        for ( int k = 0; k<scnObjKtn.rawVertexList.Count; k++ )
+
+            foreach (ObjectPackage objPack in sceneDataHandler.ObjectList)
+            {
+                Vector3[] vertices = new Vector3[objPack.vSize];
+                Vector3[] normals = new Vector3[objPack.nSize];
+                Vector2[] uv = new Vector2[objPack.uvSize];
+
+
+                // TODO Handiness, see below!?
+                for (int i = 0; i < objPack.vSize; i++)
+                {
+                    Vector3 v = new Vector3(objPack.vertices[i * 3 + 0], objPack.vertices[i * 3 + 1], objPack.vertices[i * 3 + 2]);
+                    vertices[i] = v;
+                }
+
+                for (int i = 0; i < objPack.nSize; i++)
+                {
+                    Vector3 v = new Vector3(objPack.normals[i * 3 + 0], objPack.normals[i * 3 + 1], objPack.normals[i * 3 + 2]);
+                    normals[i] = v;
+                }
+
+                for (int i = 0; i < objPack.uvSize; i++)
+                {
+                    Vector2 v2 = new Vector2(objPack.uvs[i * 2 + 0], objPack.uvs[i * 2 + 1]);
+                    uv[i] = v2;
+                }
+
+                createSplitMesh(vertices, normals, uv, objPack.indices);
+            }
+            /*
+            for ( int k = 0; k<sceneDataHandler.ObjectList; k++ )
 	        {
 	
 	            // vertices
@@ -255,23 +280,9 @@ namespace vpet
 	            tris = scnObjKtn.rawIndexList[k];
 	
 	            //print( " verts length " + verts.Length );
-	            createSplitMesh( verts, norms, uvs, tris );
 	
-	        }
-	
-	        /*
-	        for( int i=0; i<sceneMeshList.Count; i++ )
-	        {
-	            foreach( Mesh m in sceneMeshList[i] )
-	            {
-	                GameObject obj = new GameObject();
-	                obj.AddComponent<MeshFilter>();
-	                obj.GetComponent<MeshFilter>().mesh = m;
-	                obj.AddComponent<MeshRenderer>();
-	            }
 	        }
 	        */
-	
 	    }
 	
 	
@@ -280,12 +291,12 @@ namespace vpet
 	    //! function create the object from mesh data
 	    //! @param  scnObjKtn   object which holds the data
 	    //!
-	    private GameObject createNode( Node node, Transform parentTransform )
+	    private GameObject createNode( SceneNode node, Transform parentTransform )
 	    {
 	        // Tranform
-	        Vector3 pos = new Vector3( -node.position[0], node.position[1], node.position[2] );
+	        Vector3 pos = new Vector3( node.position[0], node.position[1], node.position[2] );
 	        //print( "Position: " + pos );
-	        Quaternion rot = new Quaternion( node.rotation[0], -node.rotation[1], -node.rotation[2], -node.rotation[3] );
+	        Quaternion rot = new Quaternion( node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3] );
 	        // Vector3 euler = rot.eulerAngles;
 	        //print( "Euler: " + euler );
 	        //rot = new Quaternion();
@@ -297,7 +308,7 @@ namespace vpet
 	
 	        // set up object basics
 	        GameObject objMain = new GameObject();
-	        objMain.name = node.name;
+	        objMain.name = Encoding.ASCII.GetString( node.name);
 	
 	        //place object
 	        objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
@@ -305,9 +316,6 @@ namespace vpet
 	        objMain.transform.localRotation =   rot; //  Quaternion.identity;
 	        objMain.transform.localScale =    scl; // new Vector3( 1, 1, 1 );
 	        objMain.layer = 0;
-	
-	
-	
 	
 	        return objMain;
 	    }
@@ -332,7 +340,7 @@ namespace vpet
 	    //! function create the object from mesh data
 	    //! @param  scnObjKtn   object which holds the data
 	    //!
-	    private GameObject createObject( NodeGeo nodeGeo, Transform parentTransform )
+	    private GameObject createObject( SceneNodeGeo nodeGeo, Transform parentTransform )
 	    {
 	
 	        // Material
@@ -391,29 +399,13 @@ namespace vpet
             }
 
             // Tranform / convert handiness
-            Vector3 pos = new Vector3( -nodeGeo.position[0], nodeGeo.position[1], nodeGeo.position[2] );
+            Vector3 pos = new Vector3( nodeGeo.position[0], nodeGeo.position[1], nodeGeo.position[2] );
 	        //print( "Position: " + pos );
 	        // Rotation / convert handiness
-	        Quaternion rot = new Quaternion( -nodeGeo.rotation[0], nodeGeo.rotation[1], nodeGeo.rotation[2], nodeGeo.rotation[3] );
+	        Quaternion rot = new Quaternion( nodeGeo.rotation[0], nodeGeo.rotation[1], nodeGeo.rotation[2], nodeGeo.rotation[3] );
 	        //print("rot: " + rot.ToString());
 	
-	        //Quaternion rotTest = Quaternion.Euler(60f, -45f, -20f);
-	        //print("rotTest: " + rotTest.ToString());
-	        //rot = rotTest;
-	
-	        //Vector3 euler = rot.eulerAngles;
-	        //print( "Euler ("+nodeGeo.name+"): " + euler );
-	
-	        //euler = new Vector3(euler.z-180f, euler.x, -euler.y);
-	        //print("Euler (" + nodeGeo.name + "): " + euler);
-	
-	        // Quaternion rotY_180 = Quaternion.AngleAxis(180.0f, Vector3.up);
-	
-	
-	        // rot = Quaternion.Euler(euler.x, euler.y, euler.z); // * rotY_180;
-	
-	        //euler = rot.eulerAngles;
-	        //print("Euler (" + nodeGeo.name + "): " + euler);
+
 	
 	        // Scale
 	        Vector3 scl = new Vector3( nodeGeo.scale[0], nodeGeo.scale[1], nodeGeo.scale[2] );
@@ -422,7 +414,7 @@ namespace vpet
 	
 	        // set up object basics
 	        GameObject objMain = new GameObject();
-	        objMain.name = nodeGeo.name;
+	        objMain.name = Encoding.ASCII.GetString(nodeGeo.name);
 	
 	        // Add Material
 	        MeshRenderer meshRenderer = objMain.AddComponent<MeshRenderer>();
@@ -467,17 +459,17 @@ namespace vpet
 	    //! @param  node   object which holds the data
 	    //! @param  parentTransform   parent object
 	    //!
-	    private GameObject createLight( NodeLight nodeLight, Transform parentTransform )
+	    private GameObject createLight( SceneNodeLight nodeLight, Transform parentTransform )
 	    {	
 	
 	        // Tranform
-	        Vector3 pos = new Vector3( -nodeLight.position[0], nodeLight.position[1], nodeLight.position[2] );
-	        Quaternion rot = new Quaternion( -nodeLight.rotation[0], nodeLight.rotation[1], nodeLight.rotation[2], nodeLight.rotation[3] );
+	        Vector3 pos = new Vector3( nodeLight.position[0], nodeLight.position[1], nodeLight.position[2] );
+	        Quaternion rot = new Quaternion( nodeLight.rotation[0], nodeLight.rotation[1], nodeLight.rotation[2], nodeLight.rotation[3] );
 	        Vector3 scl = new Vector3( nodeLight.scale[0], nodeLight.scale[1], nodeLight.scale[2] );
 	
 	        // set up object basics
 	        GameObject objMain = new GameObject();
-	        objMain.name = nodeLight.name;
+	        objMain.name = Encoding.ASCII.GetString( nodeLight.name);
 	
 	        //place object
 			objMain.transform.SetParent(parentTransform, false );
@@ -504,7 +496,7 @@ namespace vpet
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
 	            lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-	            lightComponent.range = 200;
+	            lightComponent.range = nodeLight.range;
 	        }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
@@ -528,8 +520,13 @@ namespace vpet
 	
 	        // TODO: what for ??
 	        objMain.layer = 0;
-	
-	        return objMain;
+
+
+            print(_lightUberInstance.transform.localEulerAngles);
+            print(_lightUberInstance.transform.eulerAngles);
+
+
+            return objMain;
 	
 	    }
 	
@@ -538,16 +535,16 @@ namespace vpet
 	    //! @param  node   object which holds the data
 	    //! @param  parentTransform   parent object
 	    //!
-	    private GameObject createCamera( NodeCam nodeCam, Transform parentTransform )
+	    private GameObject createCamera(SceneNodeCam nodeCam, Transform parentTransform )
 	    {
 	        // Tranform
-	        Vector3 pos = new Vector3( -nodeCam.position[0], nodeCam.position[1], nodeCam.position[2] );
-	        Quaternion rot = new Quaternion( -nodeCam.rotation[0], nodeCam.rotation[1], nodeCam.rotation[2], nodeCam.rotation[3] );
+	        Vector3 pos = new Vector3( nodeCam.position[0], nodeCam.position[1], nodeCam.position[2] );
+	        Quaternion rot = new Quaternion( nodeCam.rotation[0], nodeCam.rotation[1], nodeCam.rotation[2], nodeCam.rotation[3] );
 	        Vector3 scl = new Vector3( nodeCam.scale[0], nodeCam.scale[1], nodeCam.scale[2] );
 	
 	        // set up object basics
 	        GameObject objMain = new GameObject();
-	        objMain.name = nodeCam.name;
+	        objMain.name =Encoding.ASCII.GetString(nodeCam.name);
 	
 	        // add camera data script and set values
 	        CameraObject camScript = objMain.AddComponent<CameraObject>();
@@ -560,8 +557,9 @@ namespace vpet
 	        objMain.transform.localPosition =  pos; 
 	        objMain.transform.localRotation =   rot; 
 	        objMain.transform.localScale =    scl; 
-	        // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
-	        objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+	        
+            // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
+	        //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
 	
 	        // TODO: what for ??
 	        objMain.layer = 0;
@@ -615,7 +613,7 @@ namespace vpet
 	        List<Mesh> meshList = new List<Mesh>();
 	
 	        // TODO: review
-	        // if more than 64K vertices, split the mesh in submeshs
+	        // if more than 65K vertices, split the mesh in submeshs
 	        if ( vertices.Length > 65000 )
 	        {
 	            // print( String.Format( "Split object: {0}", obj.name ) );
@@ -692,103 +690,9 @@ namespace vpet
 	        }
 	
 	        sceneMeshList.Add( meshList.ToArray() );
-	
 	    }
 	
 	
-	    //! function create mesh at the given gameobject and split if necessary
-	    //! @param  obj             gameobject to work on
-	    //! @param  vertices        
-	    //! @param  normals        
-	    //! @param  uvs        
-	    //! @param  triangles        
-	    //! @param  material        
-	    private void createSplitObject( GameObject obj, Vector3[] vertices, Vector3[] normals, Vector2[] uvs, int[] triangles, Material material )
-	    {
-	        // TODO: review
-	        // if more than 64K vertices, split the mesh in submeshs
-	        if ( vertices.Length > 65000 )
-	        {
-	            // print( String.Format( "Split object: {0}", obj.name ) );
-	            
-	            int triIndex = 0;
-	            int triIndexMax = triangles.Length-1;
-	            int triIndexOffset = 63000;
-	            int subObjCount = 0;
-	            
-	            while ( triIndex < triIndexMax )
-	            {
-	                subObjCount++;
-	                                        
-	                List<Vector3> subVertices = new List<Vector3>();
-	                List<Vector3> subNormals = new List<Vector3>();
-	                List<Vector2> subUVs = new List<Vector2>();
-	                List<int> subTriangles = new List<int>();
-	
-	                int[] mapVertexIndices = new int[vertices.Length];
-	                for ( int i = 0; i<mapVertexIndices.Length; i++ )
-	                {
-	                    mapVertexIndices[i] = -1;
-	                }
-	
-	                for ( int i = 0; i<triIndexOffset; i++ )
-	                {
-	                    int idx = triangles[triIndex + i];
-	                    if ( mapVertexIndices[idx] != -1 )
-	                    {
-	                        subTriangles.Add( mapVertexIndices[idx] );
-	                    }
-	                    else
-	                    {
-	                        subVertices.Add( vertices[idx] );
-	                        subNormals.Add( normals[idx] );
-	                        subUVs.Add( uvs[idx] );
-	                        subTriangles.Add( subVertices.Count-1 );
-	                        mapVertexIndices[idx] = subVertices.Count-1;
-	                    }
-	                }
-	                    
-	                GameObject subObj = new GameObject( obj.name+"_part"+subObjCount.ToString() );
-	
-	                // print( "create :" + subObj.name + " triIndex " + triIndex  + " triOffset " + triIndexOffset + " numVertices " + subVertices.Count);
-	
-	                subObj.AddComponent<MeshFilter>();
-	                Mesh mesh = subObj.GetComponent<MeshFilter>().mesh;
-	                mesh.Clear();
-	                mesh.vertices = subVertices.ToArray();                  
-	                mesh.normals = subNormals.ToArray();                    
-	                mesh.uv = subUVs.ToArray();
-	                mesh.triangles = subTriangles.ToArray();
-	                MeshRenderer meshRenderer = subObj.AddComponent<MeshRenderer>();
-	                meshRenderer.material = material;
-	                subObj.transform.parent = obj.transform;
-	
-	                triIndex += triIndexOffset;
-	
-	                if ( triIndex+triIndexOffset > triIndexMax )
-	                {
-	                    triIndexOffset = triIndexMax-triIndex+1;
-	                }
-	
-	            }
-	        }
-	        else
-	        {
-	            obj.AddComponent<MeshFilter>();
-	            Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
-	            mesh.Clear();
-	            mesh.vertices = vertices;
-	            mesh.normals = normals;           
-	            mesh.uv = uvs;
-	            mesh.triangles = triangles;
-	            MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
-	            meshRenderer.material = material;
-	            // mesh.RecalculateNormals();
-	            // mesh.RecalculateBounds();
-	        }
-	
-	    }
-
         public void HideGeometry()
         {
             if (geometryPassiveList.Count == 0 && scnRoot.transform.childCount > 0 )
