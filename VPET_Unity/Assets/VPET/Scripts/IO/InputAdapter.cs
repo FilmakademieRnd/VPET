@@ -82,7 +82,7 @@ namespace vpet
 		//!
 		//! multiply move forward
 		//!
-		public float forwardSpeed = 200f;
+		// private float forwardSpeed = 200f;
 	
 		//!
 		//! cached reference to the ground plane
@@ -214,6 +214,10 @@ namespace vpet
 							pause = true;
 							hitObject = null;
 						}
+                        else
+                        {
+                            mainController.handleSelection();
+                        }
 						//mainController.openMenu();
 					}
 				}
@@ -269,6 +273,10 @@ namespace vpet
 							mainController.handleSelection(hitObject.transform);
 							hitObject = null;
 						}
+                        else
+                        {
+                            mainController.handleSelection();
+                        }
 					}
 					else
                     {
@@ -429,7 +437,7 @@ namespace vpet
         {
             if (!pointerOnGUI())
             {
-                mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime) * forwardSpeed);
+                mainController.moveCameraObject(((camMovePos - pos) * Time.deltaTime)); //  * forwardSpeed);
             }
 		}
 	
@@ -478,7 +486,7 @@ namespace vpet
         {
             if (Camera.main.orthographic == false)
             {
-                mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime) * forwardSpeed);
+                mainController.moveCameraObject(((new Vector3(0, 0, pos.y) - camMovePos) * Time.deltaTime)); // * forwardSpeed);
             }
             else
             {
@@ -501,7 +509,7 @@ namespace vpet
 		private GameObject cameraRaycast(Vector3 pos, int layerMask = 1) {
 			Ray ray = Camera.main.GetComponent<Camera>().ScreenPointToRay(pos);
 			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, 10000.0f, layerMask)) {
+			if (Physics.Raycast(ray, out hit, 100000f, layerMask)) {
 				//raycast was executed and hit an object
 				return hit.collider.gameObject;
 			}

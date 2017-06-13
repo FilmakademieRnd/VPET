@@ -357,6 +357,7 @@ namespace vpet
 				}
 
 				BoxCollider col = this.gameObject.AddComponent<BoxCollider>();
+                col.isTrigger = true;
 
 				if (sourceLight)
 				{
@@ -390,7 +391,7 @@ namespace vpet
 
 
 
-				// this.gameObject.GetComponent<Rigidbody>().useGravity = false;
+				this.gameObject.GetComponent<Rigidbody>().useGravity = false;
 
 
 

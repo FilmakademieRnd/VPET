@@ -36,6 +36,19 @@ namespace vpet
         //! handles the case when a user points to any object on screen
         //! @param      sObject     Pointer to the object, selected by user
         //!
+        public void handleSelection()
+        {
+            if (currentSelection)
+            {
+                this.deselect();
+                activeMode = Mode.idle;
+            }
+        }
+
+        //!
+        //! handles the case when a user points to any object on screen
+        //! @param      sObject     Pointer to the object, selected by user
+        //!
         public void handleSelection(Transform sObject)
         {
             Debug.Log("Raycast selection: " + sObject.name);

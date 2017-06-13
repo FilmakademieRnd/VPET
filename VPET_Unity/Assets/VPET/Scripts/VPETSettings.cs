@@ -48,7 +48,7 @@ namespace vpet
         //!
         //! Dump scene file name
         //!
-        public string sceneFileName = "SanMiguel7_nightenv";
+        public string sceneFileName = "VpetDemo";
         //!
         //! Shall we load Textures ?
         //!
@@ -96,6 +96,8 @@ namespace vpet
 	    public float canvasAspectScaleFactor = 1f;
 		public float canvasScale = 1f;
         public float lightIntensityFactor = 1; // liveview 50;
+
+        public float sceneScale = 1f;
 	
 	    // Explicit static constructor to tell C# compiler
 	    // not to mark type as beforefieldinit

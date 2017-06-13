@@ -271,6 +271,7 @@ namespace vpet
                 tangoScaleSliderUI.gameObject.SetActive(true);
                 // Tango Scale Listener
                 configWidget.TangoScaleChangedEvent.AddListener( tangoController.setTangoScaleIntensity );
+                configWidget.OnSceneScaleChanged.AddListener(tangoController.scaleMovement);
 #endif
 
 
