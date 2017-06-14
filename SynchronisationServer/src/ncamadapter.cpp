@@ -38,16 +38,16 @@ NcamAdapter::NcamAdapter(QString ip, QString port, QString serverIP, zmq::contex
 void NcamAdapter::handlePacket( NcamSimpleClient* simpleClient )
 {
     bool lIsASuccess = false;
-    const Packets_t& lPackets = simpleClient->MapPackets(lIsASuccess);
+    const Packets_t* lPackets = simpleClient->MapPackets(lIsASuccess);
     if (lIsASuccess)
     {
         {
             NcDataStreamBase::PacketType_t lSearchedPacket = NcDataStreamBase::CameraTracking;
             NcDataStreamBase::PacketType_t lSearchedPacket2 = NcDataStreamBase::OpticalParameters;
-            auto lIter = lPackets.find(lSearchedPacket);
-            auto lIter2 = lPackets.find(lSearchedPacket2);
+            auto lIter = lPackets->find(lSearchedPacket);
+            auto lIter2 = lPackets->find(lSearchedPacket2);
             std::string message, message1, message2;
-            if (lIter !=lPackets.end())
+            if (lIter !=lPackets->end())
             {
                 const NcDataStreamCamTrack* lPacket = static_cast<const NcDataStreamCamTrack*> (lIter->second);
                 const NcDataStreamCamTrack::RigidTransfoPacket& packet = lPacket->GetData().mCamFromWorld;
@@ -66,7 +66,7 @@ void NcamAdapter::handlePacket( NcamSimpleClient* simpleClient )
                 zmq::message_t msgR((void*)message2.c_str(),message2.size(),NULL);
                 socket_->send(msgR);
             }
-            if(lIter2 !=lPackets.end())
+            if(lIter2 !=lPackets->end())
             {
                 const NcDataStreamOpticalParameters* lPacket = static_cast<const NcDataStreamOpticalParameters*> (lIter2->second);
                 message = QString("ncam ncam|f|cam|"+QString::number(float(*lPacket->GetData().mFovInDegrees))).toLatin1().data();

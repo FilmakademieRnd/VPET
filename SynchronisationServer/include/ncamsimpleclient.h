@@ -49,14 +49,19 @@ public:
      * @brief Default constructor.
      */
     NcamSimpleClient() :
-        NcDataStreamClientBase()
-    {
-    }
+        NcDataStreamClientBase(),
+      mDataBuffer(),
+      mSocket(nullptr)
+      {
+      mDataBuffer = Packets_t::CreatePackets();
+     }
     /**
      * @brief Default destructor.
      */
     virtual ~NcamSimpleClient()
     {
+        StopStreaming();
+        Packets_t::DestroyPackets(mDataBuffer);
     }
 
     /**
@@ -65,7 +70,7 @@ public:
      * @return The last packet read through the socket.
      * @warning No concurrent access allowed!
      */
-    Packets_t &MapPackets(bool &lSuccess)
+    Packets_t* &MapPackets(bool &lSuccess)
     {
         lSuccess = true;
         return mDataBuffer;
@@ -100,7 +105,7 @@ protected:
         // Disable Nagle's algorithm
         mSocket->setSocketOption( QAbstractSocket::LowDelayOption, true );
         // Connect to the server
-        mSocket->connectToHost( QString( GetIpAddress().c_str() ), GetPort() );
+        mSocket->connectToHost( QString( GetIpAddress() ), GetPort() );
 
         if( mSocket->waitForConnected( 1000 ) )
         {
@@ -172,7 +177,7 @@ protected:
     }
 
 protected:
-    Packets_t mDataBuffer; ///< Buffer of packets.
+    Packets_t* mDataBuffer; ///< Buffer of packets.
     QTcpSocket* mSocket;   ///< Socket object.
 
 protected:

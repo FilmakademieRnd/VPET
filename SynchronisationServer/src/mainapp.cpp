@@ -43,6 +43,7 @@ void MainApp::run()
     zeroMQHandlerThread->start();
     zeroMQHandler->requestStart();
 
+
     NcamAdapter* ncamAdapter = new NcamAdapter(ncamIP_, ncamPort_, ownIP_, context_);
     if(ncamIP_ != "" && ncamPort_ != "")
     {
@@ -52,6 +53,8 @@ void MainApp::run()
         ncamThread->start();
     }
 
+
+    /*
     RecordWriter* recordWriter = new RecordWriter( &messagesStorage, &m_mutex );
     QThread* writeThread = new QThread();
     recordWriter->moveToThread( writeThread );
@@ -63,4 +66,6 @@ void MainApp::run()
     transformationRecorder->moveToThread(recorderThread);
     QObject::connect( recorderThread, SIGNAL(started()), transformationRecorder, SLOT(run()));
     recorderThread->start();
+    */
+
 }
