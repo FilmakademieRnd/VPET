@@ -83,7 +83,7 @@ namespace vpet
 	            scnPrtGO = new GameObject( sceneParent );
 	        }
 
-            scnRoot = scnPrtGO.transform.FindChild("root").gameObject;
+            scnRoot = scnPrtGO.transform.Find("root").gameObject;
 	        if (scnRoot == null)
 	        {
 	            scnRoot = new GameObject("root");

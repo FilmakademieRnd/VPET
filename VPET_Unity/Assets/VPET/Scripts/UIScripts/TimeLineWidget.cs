@@ -151,11 +151,11 @@ namespace vpet
 	        if (redLine == null) Debug.LogError(string.Format("{0}: No RectTransform Component attached.", this.GetType()));
 	        
 	        // get text component
-	        startFrameDisplay = this.transform.FindChild("StartFrameNumber").GetComponent<Text>();
+	        startFrameDisplay = this.transform.Find("StartFrameNumber").GetComponent<Text>();
 	        if (startFrameDisplay == null) Debug.LogError(string.Format("{0}: Cant Find Text component: StartFrameNumber.", this.GetType()));
 	
 	        // get text component
-	        endFrameDisplay = this.transform.FindChild("EndFrameNumber").GetComponent<Text>();
+	        endFrameDisplay = this.transform.Find("EndFrameNumber").GetComponent<Text>();
 	        if (endFrameDisplay == null) Debug.LogError(string.Format("{0}: Cant Find Text component: EndFrameNumber.", this.GetType()));
 	
 	        // get text component

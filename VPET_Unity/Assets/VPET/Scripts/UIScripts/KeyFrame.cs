@@ -87,7 +87,7 @@ namespace vpet
             if (layerId > 0)
             {
                 string layerIdString = layerId.ToString();
-                Transform layerIdTransform = transform.FindChild("LayerId");
+                Transform layerIdTransform = transform.Find("LayerId");
                 if (layerIdTransform == null)
                     return;
 
