@@ -959,7 +959,7 @@ namespace vpet
             // Textures
             if ( VPETSettings.Instance.doLoadTextures)
 	        {
-	            print("textu");
+	            print("textures");
 	            sceneReceiver.Send("textures");
 	            byteStream = sceneReceiver.Receive() as byte[];
 	            print("byteStreamTextures size: " + byteStream.Length);
@@ -972,8 +972,9 @@ namespace vpet
                 OnProgress(0.33f, "..Received Texture..");
             }
 
+            
             // Objects
-            print( "objec" );
+            print( "objects" );
 	        sceneReceiver.Send( "objects" );
             byteStream = sceneReceiver.Receive() as byte[];
 	        print( "byteStreamObjects size: " + byteStream.Length );
@@ -984,6 +985,7 @@ namespace vpet
 	            writeBinary(byteStream, "objec" );
 	        }
 			OnProgress( 0.80f, "..Received Objects..");
+            
 
             // Nodes
 	        print( "nodes" );
@@ -999,8 +1001,6 @@ namespace vpet
             OnProgress(0.9f, "..Received Nodes..");
 
 
-            
-	
 	
 	        sceneReceiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5565");
 	        sceneReceiver.Close();
@@ -1030,42 +1030,29 @@ namespace vpet
 	
 	        if (VPETSettings.Instance.doLoadTextures )
 	        {
-	            print( "textu" );
 	            byte[] byteStreamTextures = loadBinary( "textu" );
 	            print( "byteStreamTextures size: " + byteStreamTextures.Length );
-	            success = sceneObjectKatana.parseTexture( byteStreamTextures );
-	            print( "Texture Count: " + sceneObjectKatana.rawTextureList.Count );
+                sceneLoader.SceneDataHandler.TexturesByteData = byteStreamTextures;
                 OnProgress(0.33f, "..Received Texture..");
             }
 
 
-            print( "objec" );
+            print("objects");
 	        byte[] byteStreamObjects = loadBinary( "objec" );
 	        print( "byteStreamObjects size: " + byteStreamObjects.Length );
-	        success = sceneObjectKatana.parseObject( byteStreamObjects );
-	        print( "Object Count: " + sceneObjectKatana.rawVertexList.Count );
+            sceneLoader.SceneDataHandler.ObjectsByteData = byteStreamObjects;
+            OnProgress( 0.80f, "..Received Objects..");
 
 
-			OnProgress( 0.80f, "..Received Objects..");
-
-
-	        print( "nodes" );
+            print( "nodes" );
 	        byte[] byteStreamNodes = loadBinary( "nodes" );
 	        print( "byteStreamNodess size: " + byteStreamNodes.Length );
-            success = sceneObjectKatana.parseNode( byteStreamNodes );
-            print( "Node count: " + sceneObjectKatana.rawNodeList.Count );
-
+            sceneLoader.SceneDataHandler.NodesByteData = byteStreamNodes;
             OnProgress(0.9f, "..Received Nodes..");
 
 
-
-
-            if ( success )
-	        {
-	            receiveObjectQueue.Add( sceneObjectKatana );
-	        }
-	
 	        print( "done load scene" );
+            m_sceneTransferDirty = true;
             OnProgress(1.0f, "..Building Scene..");
 
         }

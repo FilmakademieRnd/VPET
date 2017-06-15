@@ -101,7 +101,7 @@ namespace vpet
         private byte[] m_nodesByteData;
         public byte[] NodesByteData
         {
-            set { m_nodesByteData = value; convertNodesByteStream(); }
+            set { m_nodesByteData = value; convertNodesByteStream();  }
         }
         private byte[] m_objectsByteData;
         public byte[] ObjectsByteData
@@ -115,8 +115,8 @@ namespace vpet
         }
 
 
-        private char m_textureBinaryType = '0';
-        public char TextureBinaryType
+        private int m_textureBinaryType = 0;
+        public int TextureBinaryType
         {
             get { return m_textureBinaryType; }
         }
@@ -134,6 +134,7 @@ namespace vpet
                 dataIdx += size_int;
                 //checkEndian(ref sliceInt);
                 NodeType nodeType = (NodeType)numValues;
+
                 switch (nodeType)
                 {
                     case NodeType.GROUP:
@@ -168,14 +169,14 @@ namespace vpet
             m_textureList = new List<TexturePackage>();
 
             int dataIdx = 0;
-            m_textureBinaryType = BitConverter.ToChar(m_texturesByteData, dataIdx);
-            dataIdx += sizeof(char);
+            m_textureBinaryType = BitConverter.ToInt32(m_texturesByteData, dataIdx);
+            dataIdx += sizeof(int);
 
             while (dataIdx < m_texturesByteData.Length - 1)
             {
                 TexturePackage texPack = new TexturePackage();
-
-                if ( m_textureBinaryType == '1')
+                
+                if ( m_textureBinaryType == 1)
                 {
                     int intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
                     dataIdx += size_int;
@@ -187,7 +188,7 @@ namespace vpet
                     dataIdx += size_int;
                     texPack.format = (TextureFormat)intValue;
                 }
-
+                
                 // pixel data
                 int numValues = BitConverter.ToInt32(m_texturesByteData, dataIdx);
                 dataIdx += size_int;
@@ -196,14 +197,12 @@ namespace vpet
                 Buffer.BlockCopy(m_texturesByteData, dataIdx, texPack.colorMapData, 0, numValues);
                 dataIdx += numValues;
 
-
                 m_textureList.Add(texPack);
             }
 
             Array.Clear(m_texturesByteData, 0, m_texturesByteData.Length);
             m_texturesByteData = null;
             GC.Collect();
-
         }
 
         private void convertObjectsByteStream()
@@ -259,7 +258,7 @@ namespace vpet
                     objPack.uvs[i] = BitConverter.ToSingle(m_objectsByteData, dataIdx);
                     dataIdx += size_float;
                 }
-
+                
                 m_objectList.Add(objPack);
 
             }

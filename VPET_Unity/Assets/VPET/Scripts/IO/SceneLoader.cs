@@ -195,7 +195,7 @@ namespace vpet
 	    {
             foreach ( TexturePackage texPack in sceneDataHandler.TextureList )
 	        {
-                if (sceneDataHandler.TextureBinaryType == '1')
+                if (sceneDataHandler.TextureBinaryType == 1)
                 {
                     Texture2D tex_2d = new Texture2D(texPack.width, texPack.height, texPack.format, false);
                     tex_2d.LoadRawTextureData(texPack.colorMapData);
@@ -486,8 +486,10 @@ namespace vpet
 	        lightComponent.type = nodeLight.lightType;
 	        lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);            
             lightComponent.intensity = nodeLight.intensity / VPETSettings.Instance.lightIntensityFactor;
-            
-			print("Create Light: " + nodeLight.name + " of type: " + ((LightTypeKatana)(nodeLight.lightType)).ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos  );
+            lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
+            lightComponent.range = nodeLight.range;
+
+            print("Create Light: " + nodeLight.name + " of type: " + ((LightTypeKatana)(nodeLight.lightType)).ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos  );
 
             // Add light specific settings
             if (nodeLight.lightType == LightType.Directional)
@@ -495,16 +497,12 @@ namespace vpet
 	        }
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
-	            lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-	            lightComponent.range = nodeLight.range;
 	        }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
                 // TODO: use are lights when supported in unity
                 lightComponent.type = LightType.Spot;
                 lightComponent.spotAngle = 120;
-                //lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-	            lightComponent.range = 200;
 	        }
 	        else
 	        {
@@ -520,10 +518,6 @@ namespace vpet
 	
 	        // TODO: what for ??
 	        objMain.layer = 0;
-
-
-            print(_lightUberInstance.transform.localEulerAngles);
-            print(_lightUberInstance.transform.eulerAngles);
 
 
             return objMain;
