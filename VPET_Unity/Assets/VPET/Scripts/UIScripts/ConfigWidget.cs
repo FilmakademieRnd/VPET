@@ -32,6 +32,7 @@ namespace vpet
 	public class ConfigEvent : UnityEvent<ConfigWidget> { }
 	public class AmbientIntensityChangedEvent : UnityEvent<float> {}
 	public class VisibilityChangeEvent: UnityEvent<bool> {}
+    public class SceneScaleChangedEvent : UnityEvent<float> { }
 
 #if USE_TANGO
     public class TangoScaleIntensityChangedEvent : UnityEvent<float> { }
@@ -41,7 +42,7 @@ namespace vpet
 	{
 	    public ConfigEvent SubmitEvent = new ConfigEvent();
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
-
+        public SceneScaleChangedEvent OnSceneScaleChanged = new SceneScaleChangedEvent();
 #if USE_TANGO
         public TangoScaleIntensityChangedEvent TangoScaleChangedEvent = new TangoScaleIntensityChangedEvent();
 #endif
@@ -91,6 +92,8 @@ namespace vpet
         private Toggle gridToggle;
 
         private Toggle arToggle;
+
+        private Toggle cmToggle;
 
         private Slider ambientIntensitySlider;
 
@@ -143,6 +146,19 @@ namespace vpet
                 else
                 {
                     gridToggle.onValueChanged.AddListener(this.OnToggleGrid);
+                }
+            }
+
+            // Units toggle
+            childWidget = this.transform.FindChild("CM_toggle");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: CM_toggle.", this.GetType()));
+            else
+            {
+                cmToggle = childWidget.GetComponent<Toggle>();
+                if (cmToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                else
+                {
+                    cmToggle.onValueChanged.AddListener(this.OnToggleUnitsCm);
                 }
             }
 
@@ -343,11 +359,26 @@ namespace vpet
             VPETSettings.Instance.debugMsg = isOn;
         }
 
+
         private void OnToggleGrid(bool isOn)
         {
             drawGrid drawGrid = Camera.main.GetComponent<drawGrid>();
             if (drawGrid)
                 drawGrid.enabled = isOn;
+        }
+
+
+        private void OnToggleUnitsCm(bool isOn)
+        {
+            if ( isOn )
+            {
+                VPETSettings.Instance.sceneScale = 0.01f;
+            }
+            else
+            {
+                VPETSettings.Instance.sceneScale = 1f;
+            }
+            OnSceneScaleChanged.Invoke(VPETSettings.Instance.sceneScale);
         }
 
         private void OnToggleAr( bool isOn )

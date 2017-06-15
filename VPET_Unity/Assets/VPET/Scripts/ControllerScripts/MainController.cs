@@ -58,7 +58,7 @@ namespace vpet
 	    //!
 	    public void moveCameraObject(Vector3 translation)
 	    {
-	        Camera.main.transform.Translate(translation / 10000.0f);
+	        Camera.main.transform.Translate(translation * VPETSettings.Instance.sceneScale);
 	    }
 	
 	    //!
@@ -67,7 +67,7 @@ namespace vpet
 	    //!
 	    public void moveCameraParent( Vector3 translation )
 	    {
-	        cameraRig.Translate( translation / 10000.0f );
+	        cameraRig.Translate( translation * VPETSettings.Instance.sceneScale);
 	    }
 
         //!

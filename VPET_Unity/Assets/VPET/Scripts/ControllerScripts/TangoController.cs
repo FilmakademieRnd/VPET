@@ -38,7 +38,8 @@ namespace vpet
 	    private Quaternion m_tangoRotation; // Rotation from Pose Callback
 	    private Vector3 m_startPosition; // Start Position of the camera
 	
-	    private float m_movementScale = 1.0f;
+	    private float m_movementScale = 100.0f;
+        
 
         bool hasPose = false;
 
@@ -155,9 +156,16 @@ namespace vpet
 	        }
 	    }
 
-        public void setTangoScaleIntensity(float v) {
-            m_movementScale = v;
+        public void setTangoScaleIntensity(float v)
+        {
+            m_movementScale = 100f * VPETSettings.Instance.sceneScale * v;
         }
+
+        public void scaleMovement( float v )
+        {
+            m_movementScale *= v;
+        }
+
 	}
 }
 #endif
