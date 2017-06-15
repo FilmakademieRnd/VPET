@@ -100,7 +100,7 @@ namespace vpet
 	    void Awake()
 		{
             // Submit button
-            Transform childWidget = this.transform.FindChild("Start_button");
+            Transform childWidget = this.transform.Find("Start_button");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: Start_button.", this.GetType()));
             else
             {
@@ -114,7 +114,7 @@ namespace vpet
             }
 
 			// Textfield Server IP
-			childWidget = this.transform.FindChild("ServerIP_field");
+			childWidget = this.transform.Find("ServerIP_field");
 			if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ServerIP_field.", this.GetType()));
 			else
 			{
@@ -124,7 +124,7 @@ namespace vpet
 
 
 			// debug toggle
-            childWidget = this.transform.FindChild("Debug_toggle");
+            childWidget = this.transform.Find("Debug_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: Debug_toggle.", this.GetType()));
             else
             {
@@ -137,7 +137,7 @@ namespace vpet
             }
 
             // grid toggle
-            childWidget = this.transform.FindChild("Grid_toggle");
+            childWidget = this.transform.Find("Grid_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: Grid_toggle.", this.GetType()));
             else
             {
@@ -163,7 +163,7 @@ namespace vpet
             }
 
             // ar toggle
-            childWidget = this.transform.FindChild("AR_toggle");
+            childWidget = this.transform.Find("AR_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: AR_toggle.", this.GetType()));
             else
             {
@@ -181,7 +181,7 @@ namespace vpet
             }
 
             // Cache Load Local
-            childWidget = this.transform.FindChild("LoadCache_toggle");
+            childWidget = this.transform.Find("LoadCache_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: LoadCache_toggle.", this.GetType()));
             else
             {
@@ -192,7 +192,7 @@ namespace vpet
 
 
 			// Checkbox Load Texture
-			childWidget = this.transform.FindChild("LoadTextures_toggle");
+			childWidget = this.transform.Find("LoadTextures_toggle");
 			if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: LoadTextures_toggle.", this.GetType()));
 			else
 			{
@@ -202,7 +202,7 @@ namespace vpet
 
 
 			// ambient intensity
-			childWidget = this.transform.FindChild("Ambient_slider");
+			childWidget = this.transform.Find("Ambient_slider");
 			if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Ambient_slider.", this.GetType()));
 			else
 			{

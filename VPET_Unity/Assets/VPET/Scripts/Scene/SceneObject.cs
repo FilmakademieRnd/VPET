@@ -287,20 +287,20 @@ namespace vpet
 				if (sourceLight.type == LightType.Directional)
 				{
 					isDirectionalLight = true;
-					lightGeo = lightTarget.FindChild("Arrow");
+					lightGeo = lightTarget.Find("Arrow");
 				}
 				else if (sourceLight.type == LightType.Spot)
 				{
 					isSpotLight = true;
 					initialLightRange = sourceLight.range;
 					initialSpotAngle = sourceLight.spotAngle;
-					lightGeo = lightTarget.FindChild("Cone");
+					lightGeo = lightTarget.Find("Cone");
 				}
 				else if (sourceLight.type == LightType.Point)
 				{
 					isPointLight = true;
 					initialLightRange = sourceLight.range;
-					lightGeo = lightTarget.FindChild("Sphere");
+					lightGeo = lightTarget.Find("Sphere");
 				}
 
 
@@ -363,7 +363,7 @@ namespace vpet
                     // col.size = col_lightquad.size;
                     // col.center = col_lightquad.center;
                     col.isTrigger = true; // not interacting
-                    LightIcon iconScript = lightTarget.FindChild("LightQuad").GetComponent<LightIcon>();
+                    LightIcon iconScript = lightTarget.Find("LightQuad").GetComponent<LightIcon>();
 					iconScript.TargetCollider = col;
                     iconScript.TargetScale = target.lossyScale; // target.localScale;  
 
