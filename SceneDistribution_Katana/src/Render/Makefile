@@ -108,7 +108,7 @@ SOURCES += $(PLUGIN_SRC)/FnPluginManager/client/FnPluginManager.cpp
 # Object files and flags
 OBJS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(SOURCES))
 
-CXXFLAGS = -Wall -pipe -m64 -fPIC -DPIC -lpthread
+CXXFLAGS = -std=c++11 -Wall -pipe -m64 -fPIC -DPIC -lpthread
 
 # Targets:
 all: $(OUTFILEPATH)

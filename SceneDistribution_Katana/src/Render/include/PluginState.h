@@ -45,96 +45,65 @@ namespace Katana
 
     enum LightType { SPOT, DIRECTIONAL, POINT, AREA, NONE };
 
-    /*
-    struct MaterialPackage
-    {
-        float* color;
-        std::string colorMap;
-        unsigned char* colorMapData;
-        int colorMapDataSize;
-        float roughness;
-        MaterialPackage()
+#pragma pack(4)
+        struct Node
         {
-            color = new float[3];
-            color[0] =  color[1] = color[2] = 1.0;
-            colorMap = "";
-            roughness = 0.23;
-        }
-        ~MaterialPackage()
+                bool editable = false;
+                int childCount = 0;
+                float position[3] = { 1, 2, 3 };
+                float scale[3] = { 1, 2, 3 };
+                float rotation[4] = { 1, 2, 3, 4 };
+                char name[64] = { ' ' };
+        };
+
+        struct NodeGeo : Node
         {
-            delete color;
-            delete colorMapData;
-        }
-    };
-    */
-	struct Node
-	{
-        virtual ~Node() {}
-        std::string name;
-		float position[3];
-		float rotation[4];
-		float scale[3];
-        int childCount;
-        bool editable;
-	};
+                int geoId = -1;
+                int textureId = -1;
+                float roughness = 0.166f;
+                float color[3] = { 1,1,1 };
+        };
 
-	struct NodeGeo : Node
-	{
-        NodeGeo() :
-            geoId(-1),
-            textureId(-1) {}
-		int geoId;
-		int textureId;
-		float color[3];
-		float roughness;
-	};
+        struct NodeLight :  Node
+        {
 
-	struct NodeLight : Node
-	{
-        NodeLight():
-            type(SPOT),
-            intensity(1.0),
-            angle(60.0),
-            color {1.0,1.0,1.0},
-            exposure(3.0)
-        {}
-        int type;
-        float color[3];
-		float intensity;
-		float angle;
-        float exposure;
-	};
+                int type = SPOT;
+                float intensity = 1.0;
+                float angle = 60.0;
+                float range = 500.0;
+                float exposure = 3.0;
+                float color[3] = { 1.0,1.0,1.0 };
+        };
 
-	struct NodeCam : Node
-	{
-        NodeCam():
-            fov(70),
-            near(0.1),
-            far(1000)
-        {}
-        float fov;
-        float near;
-        float far;
-	};
+
+        struct NodeCam :  Node
+        {
+                float fov = 70;
+                float near = 1.0f;
+                float far = 1000;
+        };
+
+
 
 	struct ObjectPackage
 	{
-        ObjectPackage() :
+            ObjectPackage() :
             dagpath(""),
-            instanceId(""){}
-		std::string dagpath;
-        std::string instanceId;
-		std::vector<float> vertices;
-		std::vector<int> indices;
-		std::vector<float> normals;
-		std::vector<float> uvs;       
+            instanceId("")
+            {}
+            std::string dagpath;
+            std::string instanceId;
+            std::vector<float> vertices;
+            std::vector<int> indices;
+            std::vector<float> normals;
+            std::vector<float> uvs;
 	};
 
 	struct TexturePackage
-	{
-		std::string path;
-		int colorMapDataSize;
-		unsigned char* colorMapData;
+        {
+            std::string path;
+            int colorMapDataSize;
+            unsigned char* colorMapData;
 	};
 
 	struct SceneDistributorPluginState
@@ -142,7 +111,8 @@ namespace Katana
         SceneDistributorPluginState():
             numLights(0),
             numCameras(0),
-            numObjectNodes(0)
+            numObjectNodes(0),
+            textureBinaryType(0)
         {}
 
 		~SceneDistributorPluginState()
@@ -169,16 +139,18 @@ namespace Katana
 		}
 		
 		// Distribution Handling
-        LodMode lodMode;
-        std::string lodTag;
+            LodMode lodMode;
+            std::string lodTag;
 
-        // Data holder
-        std::vector<Node*> nodeList;
-        std::vector<ObjectPackage> objPackList;
-		std::vector<TexturePackage> texPackList;
+            // Data holder
+            std::vector<Node*> nodeList;
+            std::vector<NodeType> nodeTypeList;
+            std::vector<ObjectPackage> objPackList;
+            std::vector<TexturePackage> texPackList;
+            int textureBinaryType;
 
-        // Currently processed node
-        Node* node;
+            // Currently processed node
+            Node* node;
 
 		// Materials
 		FnAttribute::StringAttribute materialTerminalNamesAttr;
@@ -190,10 +162,10 @@ namespace Katana
 
 	};
 
-    const int sizeof_node = 3* sizeof(float) + 4* sizeof(float) + 3* sizeof(float) + sizeof(int)+ sizeof(bool);
-    const int sizeof_nodegeo = sizeof_node + sizeof(int) + sizeof(int) + 3* sizeof(float) + sizeof(float);
-    const int sizeof_nodelight = sizeof_node + sizeof(int) + 3* sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float);
-    const int sizeof_nodecam = sizeof_node + sizeof(float) + sizeof(float) + sizeof(float);
+    const int sizeof_node = sizeof(Node);
+    const int sizeof_nodegeo = sizeof(NodeGeo);
+    const int sizeof_nodelight = sizeof(NodeLight);
+    const int sizeof_nodecam = sizeof(NodeCam);
 
 }
 }

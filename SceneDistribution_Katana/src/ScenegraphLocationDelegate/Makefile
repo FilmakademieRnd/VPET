@@ -45,7 +45,7 @@ INCLUDES += -I$(GLM)
 # Object files and flags
 OBJS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(SOURCES))
 
-CXXFLAGS += -Wall -pipe -m64 -fPIC -DPIC
+CXXFLAGS +=  -std=c++11 -Wall -pipe -m64 -fPIC -DPIC
 
 
 # RPATH flags - These allow the plugin to find the right shared libraries
