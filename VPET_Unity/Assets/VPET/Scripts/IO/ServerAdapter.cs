@@ -963,12 +963,12 @@ namespace vpet
 	            sceneReceiver.Send("textures");
 	            byteStream = sceneReceiver.Receive() as byte[];
 	            print("byteStreamTextures size: " + byteStream.Length);
+                if (doWriteScene)
+                {
+                    writeBinary(byteStream, "textu");
+                }
                 sceneLoader.SceneDataHandler.TexturesByteData = byteStream;
 
-                if ( doWriteScene )
-	            {
-	                writeBinary(byteStream, "textu" );
-	            }
                 OnProgress(0.33f, "..Received Texture..");
             }
 
@@ -978,12 +978,12 @@ namespace vpet
 	        sceneReceiver.Send( "objects" );
             byteStream = sceneReceiver.Receive() as byte[];
 	        print( "byteStreamObjects size: " + byteStream.Length );
+            if (doWriteScene)
+            {
+                writeBinary(byteStream, "objec");
+            }
             sceneLoader.SceneDataHandler.ObjectsByteData = byteStream;
 
-	        if ( doWriteScene )
-	        {
-	            writeBinary(byteStream, "objec" );
-	        }
 			OnProgress( 0.80f, "..Received Objects..");
             
 
@@ -992,12 +992,12 @@ namespace vpet
 	        sceneReceiver.Send( "nodes" );
 	        byteStream = sceneReceiver.Receive() as byte[];
 	        print( "byteStreamNodess size: " + byteStream.Length );
+            if (doWriteScene)
+            {
+                writeBinary(byteStream, "nodes");
+            }
             sceneLoader.SceneDataHandler.NodesByteData = byteStream;
 
-            if ( doWriteScene )
-	        {
-	            writeBinary(byteStream, "nodes" );
-	        }
             OnProgress(0.9f, "..Received Nodes..");
 
 
