@@ -96,7 +96,7 @@ namespace vpet
 	    public float canvasAspectScaleFactor = 1f;
 		public float canvasScale = 1f;
         public float lightIntensityFactor = 1; // liveview 50;
-
+        public int textureBinaryType =1;
         public float sceneScale = 1f;
 	
 	    // Explicit static constructor to tell C# compiler

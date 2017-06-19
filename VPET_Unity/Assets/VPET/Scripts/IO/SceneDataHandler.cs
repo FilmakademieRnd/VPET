@@ -7,6 +7,13 @@ using UnityEngine;
 namespace vpet
 {
 
+    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
+    public class VpetHeader
+    {
+        public float lightIntensityFactor = 1.0f;
+        public int textureBinaryType = 1;
+    }
+
 
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNode

@@ -111,8 +111,12 @@ namespace vpet
 
         public void createSceneGraph( )
 	    {
-	        // create textures
-	        if (VPETSettings.Instance.doLoadTextures )
+
+            print("lightIntensityFactor : " + VPETSettings.Instance.lightIntensityFactor);
+            print("textureBinaryType : " + VPETSettings.Instance.textureBinaryType);
+
+            // create textures
+            if (VPETSettings.Instance.doLoadTextures )
 	        {
 	            createTextures();
 	        }      

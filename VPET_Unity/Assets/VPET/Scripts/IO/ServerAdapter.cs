@@ -951,10 +951,26 @@ namespace vpet
 	
 	        print("Server set up.");
 	
-	
-	        bool success = false;
 
             byte[] byteStream;
+
+            // HEader
+            print("header");
+            sceneReceiver.Send("header");
+            byteStream = sceneReceiver.Receive() as byte[];
+            print("byteStreamHeader size: " + byteStream.Length);
+            if (doWriteScene)
+            {
+                writeBinary(byteStream, "header");
+            }
+
+            int dataIdx = 0;
+            VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStream, dataIdx);
+            dataIdx += sizeof(float);
+            VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStream, dataIdx);
+            //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
+            //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
+            //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
 
             // Textures
             if ( VPETSettings.Instance.doLoadTextures)
@@ -1014,8 +1030,6 @@ namespace vpet
         }
 
 
-
-
         //!
         //! none
         //!
@@ -1025,10 +1039,18 @@ namespace vpet
 	
 			OnProgress( 0.1f, "Init Scene Receiver..");
 
-	        SceneObjectKatana sceneObjectKatana = new SceneObjectKatana();
-	        bool success = false;
-	
-	        if (VPETSettings.Instance.doLoadTextures )
+
+            // HEader
+            byte[] byteStreamHeader = loadBinary("header");
+            print("byteStreamHeader size: " + byteStreamHeader.Length);
+            int dataIdx = 0;
+            VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStreamHeader, ref dataIdx);
+            VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
+            VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
+
+
+            // Textures
+            if (VPETSettings.Instance.doLoadTextures )
 	        {
 	            byte[] byteStreamTextures = loadBinary( "textu" );
 	            print( "byteStreamTextures size: " + byteStreamTextures.Length );
@@ -1037,13 +1059,14 @@ namespace vpet
             }
 
 
+            // Objects
             print("objects");
 	        byte[] byteStreamObjects = loadBinary( "objec" );
 	        print( "byteStreamObjects size: " + byteStreamObjects.Length );
             sceneLoader.SceneDataHandler.ObjectsByteData = byteStreamObjects;
             OnProgress( 0.80f, "..Received Objects..");
 
-
+            // Nodes
             print( "nodes" );
 	        byte[] byteStreamNodes = loadBinary( "nodes" );
 	        print( "byteStreamNodess size: " + byteStreamNodes.Length );

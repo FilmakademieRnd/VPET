@@ -30,7 +30,7 @@ namespace vpet
         private byte[] objectsByteData;
         private byte[] texturesByteData;
 
-        private char textureBinaryType = '1'; // unity raw data
+        private int textureBinaryType = 1; // unity raw data
 
         private int lodLowLayer;
         private int lodHighLayer;
