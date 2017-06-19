@@ -44,7 +44,7 @@ INCLUDES += -I$(KATANA_HOME)/plugin_apis/include
 # Object files and flags
 OBJS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(SOURCES))
 
-CXXFLAGS = -Wall -pipe -m64 -fPIC -DPIC
+CXXFLAGS = -std=c++11 -Wall -pipe -m64 -fPIC -DPIC
 
 # Targets:
 all: $(OUTFILEPATH)

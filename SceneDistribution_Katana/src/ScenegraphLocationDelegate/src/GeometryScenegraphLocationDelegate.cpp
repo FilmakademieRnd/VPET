@@ -125,7 +125,10 @@ void* GeometryScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sg
 
     // create geo node
     Dreamspace::Katana::NodeGeo* nodeGeo =  new Dreamspace::Katana::NodeGeo();
-    
+
+
+    sharedState->nodeTypeList.push_back(Dreamspace::Katana::NodeType::GEO);
+
 
 	/*
 	std::string dagpath = // dagpath to referecnce
@@ -209,11 +212,6 @@ void* GeometryScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sg
         // Vertices / Points
         FnAttribute::FloatConstVector PData = PAttr.getNearestSample(0.0f);
 
-        // Get vertices
-        for (int i = 0; i < PData.size(); i++)
-        {
-            objPack.vertices.push_back(PData[i]);
-        }
 
         // Normal
         FnAttribute::FloatConstVector NData;
@@ -232,44 +230,133 @@ void* GeometryScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sg
         }
 
 
+        std::cout << "Point Count:" <<  PData.size()/3.0 << " Normal Count: " << NData.size()/3.0 << " Vertex Count: " << vertexListData.size() << std::endl;
+
         // std::cout << "Prepare Geo" << std::endl;
 
         // Get indices, normals, uvs
         // Iter over polygon indices, convert n-gons to triangles and store indices pointing to the vertex data
         // rebuild normal- and uv-data arrays to get one normal/uv per vertex (using the same indices)
         // TODO: split vertex at splited uv map
-        // Normal
-        std::vector<glm::vec3> normals(PData.size()/3.0, glm::vec3(0.0) );
-
-        // Uv
-        std::vector<glm::vec2 > uvs( PData.size()/3.0, glm::vec2(0.0) );
-
-        int numPolys = startIndexData.size() - 1;
-        for (int poly = 0; poly < numPolys; poly++)
+        if ( NAttr.isValid()) // assume defined edges including hard edge and therefor do not share vertices
         {
-            const int firstIndex = startIndexData[poly];
-            const int lastIndex = startIndexData[poly + 1] - 1;
 
-            for (int i = firstIndex+1; i < lastIndex; i++)
+            int numPolys = startIndexData.size() - 1;
+            for (int poly = 0; poly < numPolys; poly++)
             {
-                objPack.indices.push_back(vertexListData[firstIndex]);
-                objPack.indices.push_back(vertexListData[i]);
-                objPack.indices.push_back(vertexListData[i + 1]);
+                const int firstIndex = startIndexData[poly];
+                const int lastIndex = startIndexData[poly + 1] - 1;
 
-                if ( NAttr.isValid()) // get normals
+                for (int i = firstIndex+1; i < lastIndex; i++)
                 {
-                    // normals for every vertex
-                    // add values from face vertex normals and store per vertex id
-                    normals[vertexListData[firstIndex]] += glm::vec3( NData[firstIndex*3], NData[firstIndex*3+1], NData[firstIndex*3+2] );
-                    normals[vertexListData[i]] += glm::vec3( NData[i*3], NData[i*3+1], NData[i*3+2] );
-                    normals[vertexListData[i+1]] += glm::vec3( NData[(i+1)*3], NData[(i+1)*3+1], NData[(i+1)*3+2] );
-                }
-                else // calculate normals
-                {
+
                     // point indices
                     int pIdx1 = vertexListData[firstIndex]*3;
                     int pIdx2 = vertexListData[i]*3;
                     int pIdx3 = vertexListData[i+1]*3;
+
+                    // TODO: hardcoded handiness
+                    // point 1
+                    objPack.vertices.push_back(-PData[pIdx1]);
+                    objPack.vertices.push_back(PData[pIdx1+1]);
+                    objPack.vertices.push_back(PData[pIdx1+2]);
+                    // point 2
+                    objPack.vertices.push_back(-PData[pIdx2]);
+                    objPack.vertices.push_back(PData[pIdx2+1]);
+                    objPack.vertices.push_back(PData[pIdx2+2]);
+                    // point 3
+                    objPack.vertices.push_back(-PData[pIdx3]);
+                    objPack.vertices.push_back(PData[pIdx3+1]);
+                    objPack.vertices.push_back(PData[pIdx3+2]);
+
+                    // indices
+                    objPack.indices.push_back(objPack.vertices.size()/3-3);
+                    objPack.indices.push_back(objPack.vertices.size()/3-2);
+                    objPack.indices.push_back(objPack.vertices.size()/3-1);
+
+
+                    // normals for every vertex
+
+                    // TODO: hardcoded handiness
+                    // n1
+                    objPack.normals.push_back(-NData[firstIndex*3]);
+                    objPack.normals.push_back(NData[firstIndex*3+1]);
+                    objPack.normals.push_back(NData[firstIndex*3+2]);
+
+                    // n2
+                    objPack.normals.push_back(-NData[i*3]);
+                    objPack.normals.push_back(NData[i*3+1]);
+                    objPack.normals.push_back(NData[i*3+2]);
+
+                    // n3
+                    objPack.normals.push_back(-NData[(i+1)*3]);
+                    objPack.normals.push_back(NData[(i+1)*3+1]);
+                    objPack.normals.push_back(NData[(i+1)*3+2]);
+
+
+                    if ( indexedValueAttr.isValid() ) // get uvs
+                    {
+                        // same vor UVs but two values per index
+                        // use different index map (st.index)
+
+                        // uv1
+                        int uvIndex = uvIndexData[firstIndex];
+                        objPack.uvs.push_back(UVData[uvIndex*2]);
+                        objPack.uvs.push_back(UVData[uvIndex*2+1]);
+
+                        // uv2
+                        uvIndex = uvIndexData[i];
+                        objPack.uvs.push_back(UVData[uvIndex*2]);
+                        objPack.uvs.push_back(UVData[uvIndex*2+1]);
+
+                        // uv3
+                        uvIndex = uvIndexData[i+1];
+                        objPack.uvs.push_back(UVData[uvIndex*2]);
+                        objPack.uvs.push_back(UVData[uvIndex*2+1]);
+
+                    }
+                }
+            }
+
+        }
+        else // assume all edges soft and therefor share vertices
+        {
+
+            // Normal
+            std::vector<glm::vec3> normals(PData.size()/3.0, glm::vec3(0.0) );
+
+            // Uv
+            std::vector<glm::vec2 > uvs( PData.size()/3.0, glm::vec2(0.0) );
+
+            // Get vertices
+            for (int i = 0; i < PData.size()/3; i++)
+            {
+                // TODO: hardcoded handiness
+                objPack.vertices.push_back(-PData[i*3]);
+                objPack.vertices.push_back(PData[i*3+1]);
+                objPack.vertices.push_back(PData[i*3+2]);
+            }
+
+
+            int numPolys = startIndexData.size() - 1;
+            for (int poly = 0; poly < numPolys; poly++)
+            {
+                const int firstIndex = startIndexData[poly];
+                const int lastIndex = startIndexData[poly + 1] - 1;
+
+                for (int i = firstIndex+1; i < lastIndex; i++)
+                {
+
+                    // point indices
+                    int pIdx1 = vertexListData[firstIndex]*3;
+                    int pIdx2 = vertexListData[i]*3;
+                    int pIdx3 = vertexListData[i+1]*3;
+
+                    // indices
+                    objPack.indices.push_back(vertexListData[firstIndex]);
+                    objPack.indices.push_back(vertexListData[i]);
+                    objPack.indices.push_back(vertexListData[i + 1]);
+
 
                     // face normal
                     glm::vec3 a = glm::vec3( PData[pIdx2], PData[pIdx2+1], PData[pIdx2+2] ) - glm::vec3( PData[pIdx1], PData[pIdx1+1], PData[pIdx1+2] );
@@ -279,41 +366,49 @@ void* GeometryScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sg
                     normals[vertexListData[firstIndex]] += n;
                     normals[vertexListData[i]] += n;
                     normals[vertexListData[i+1]] += n;
-                }
 
-                if ( indexedValueAttr.isValid() ) // get uvs
-                {
-                    // same vor UVs but two values per index
-                    // use different index map (st.index)
-                    int uvIndex = uvIndexData[firstIndex];
 
-                    uvs[vertexListData[firstIndex]] = glm::vec2( UVData[uvIndex*2], UVData[uvIndex*2+1] );
+                    if ( indexedValueAttr.isValid() ) // get uvs
+                    {
+                        // same vor UVs but two values per index
+                        // use different index map (st.index)
+                        int uvIndex = uvIndexData[firstIndex];
 
-                    uvIndex = uvIndexData[i];
-                    uvs[vertexListData[i]] = glm::vec2( UVData[uvIndex*2], UVData[uvIndex*2+1] );
+                        uvs[vertexListData[firstIndex]] = glm::vec2( UVData[uvIndex*2], UVData[uvIndex*2+1] );
 
-                    uvIndex = uvIndexData[i+1];
-                    uvs[vertexListData[i+1]] = glm::vec2( UVData[uvIndex*2], UVData[uvIndex*2+1] );
+
+                        uvIndex = uvIndexData[i];
+                        uvs[vertexListData[i]] = glm::vec2( UVData[uvIndex*2], UVData[uvIndex*2+1] );
+
+                        uvIndex = uvIndexData[i+1];
+                        uvs[vertexListData[i+1]] = glm::vec2( UVData[uvIndex*2], UVData[uvIndex*2+1] );
+
+                    }
                 }
             }
+
+            // fill normals float array
+            for ( int i=0; i<normals.size(); i++ )
+            {
+                // TODO: hardcoded handiness
+                glm::vec3 n = glm::normalize(normals[i]);
+                objPack.normals.push_back(-n[0]);
+                objPack.normals.push_back(n[1]);
+                objPack.normals.push_back(n[2]);
+            }
+
+            // fill uvs float array
+            for ( int i=0; i<uvs.size(); i++ )
+            {
+                glm::vec2 uv = uvs[i];
+                objPack.uvs.push_back(uv[0]);
+                objPack.uvs.push_back(uv[1]);
+            }
+
         }
 
-        // fill normals float array
-        for ( int i=0; i<normals.size(); i++ )
-        {
-            glm::vec3 n = glm::normalize(normals[i]);
-            objPack.normals.push_back(n[0]);
-            objPack.normals.push_back(n[1]);
-            objPack.normals.push_back(n[2]);
-        }
 
-        // fill uvs float array
-        for ( int i=0; i<uvs.size(); i++ )
-        {
-            glm::vec2 uv = uvs[i];
-            objPack.uvs.push_back( uv[0] );
-            objPack.uvs.push_back(uv[1]);
-        }
+        std::cout << "Point Count:" <<  objPack.vertices.size()/3.0 << " Normal Count: " << objPack.normals.size()/3.0 << " Vertex Count: " << objPack.indices.size() << std::endl;
 
 
         // store the object package
@@ -332,6 +427,11 @@ void* GeometryScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sg
 
     // Material
     FnAttribute::GroupAttribute materialAttr = FnKat::RenderOutputUtils::getFlattenedMaterialAttr(sgMaterial, sharedState->materialTerminalNamesAttr);
+
+
+    //std::cout << "[INFO SceneDistributor.GeometryScenegraphLocationDelegate] Material:" << std::endl;
+    //std::cout << materialAttr.getXML() << std::endl;
+
     // Retrieve only changed and overridden attributes (i.e. no default values)
     FnAttribute::GroupAttribute groupAttr = materialAttr.getChildByName("parameters");
 
