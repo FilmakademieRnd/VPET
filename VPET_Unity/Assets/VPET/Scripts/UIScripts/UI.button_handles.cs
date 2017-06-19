@@ -402,7 +402,7 @@ namespace vpet
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateX", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightIntensity, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightIntensity(), 1f);
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightIntensity, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightIntensity(), 0.1f);
                         rangeSlider.MinValue = 0f;
                     }
                     break;
@@ -415,7 +415,7 @@ namespace vpet
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateY", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightAngle, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightAngle(), 1f);
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightAngle, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightAngle(), 0.1f);
                         rangeSlider.MinValue = 1f;
                         rangeSlider.MaxValue = 179f;
                     }
