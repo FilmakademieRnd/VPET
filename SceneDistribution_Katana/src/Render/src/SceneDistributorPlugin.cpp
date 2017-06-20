@@ -78,6 +78,33 @@ int SceneDistributorPlugin::start()
 
     FnKat::FnScenegraphIterator rootIterator = getRootIterator();
 
+
+    // get header values
+    FnAttribute::FloatAttribute lightIntensityAttr = rootIterator.getAttribute("sceneDistributorGlobalStatements.lightIntensityFactor");
+    if ( lightIntensityAttr.isValid())
+    {
+
+        _sharedState.vpetHeader.lightIntensityFactor = lightIntensityAttr.getValue(1.0, false);
+    }
+    else
+    {
+         std::cout << "[INFO SceneDistributor] ERROR Not found attribute: lightIntensityFactor" << std::endl;
+    }
+
+    FnAttribute::IntAttribute textureTypeAttr = rootIterator.getAttribute("sceneDistributorGlobalStatements.textureBinaryType");
+    if ( textureTypeAttr.isValid())
+    {
+
+        _sharedState.vpetHeader.textureBinaryType = textureTypeAttr.getValue(0, false);
+    }
+    else
+    {
+         std::cout << "[INFO SceneDistributor] ERROR Not found attribute: textureBinaryType" << std::endl;
+    }
+
+
+
+
     // Process render settings
     /*int width, height;
     FnKat::RenderOutputUtils::getRenderResolution(rootIterator, &width, &height);
@@ -302,9 +329,16 @@ static void* server(void *scene)
 
         std::cout << "[INFO SceneDistributorPlugin.server] Got request string: " << msgString << std::endl;
 
-        if (msgString == "objects")
+        if (msgString == "header")
+        {
+            std::cout << "[INFO SceneDistributorPlugin.server] Got Header Request" << std::endl;
+            responseLength =sizeof(VpetHeader);
+            messageStart = responseMessageContent = (char*)malloc(responseLength);
+            memcpy(responseMessageContent, (char*)&(sharedState->vpetHeader), sizeof(VpetHeader));
+        }
+        else if (msgString == "objects")
 		{
-            std::cout << "[INFO SceneDistributorPlugin.server] Got Objcts Request" << std::endl;
+            std::cout << "[INFO SceneDistributorPlugin.server] Got Objects Request" << std::endl;
             std::cout << "[INFO SceneDistributorPlugin.server] Object count " << sharedState->objPackList.size() << std::endl;
             responseLength = sizeof(int) * 4 * sharedState->objPackList.size();
             for (int i = 0; i < sharedState->objPackList.size(); i++)
