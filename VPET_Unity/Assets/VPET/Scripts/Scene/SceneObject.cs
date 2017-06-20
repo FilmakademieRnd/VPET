@@ -129,10 +129,15 @@ namespace vpet
 		//!
 		UndoRedoController undoRedoController;
 
-		//!
-		//! lock auto detect movement & rotation
-		//!
-		public bool locked = false;
+        //!
+        //! cached reference to sceneLoader
+        //!
+        SceneLoader sceneLoader;
+
+        //!
+        //! lock auto detect movement & rotation
+        //!
+        public bool locked = false;
 
 		//!
 		//! lock for one frame (to avoid resending of incoming messages)
@@ -315,9 +320,11 @@ namespace vpet
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
 			serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
 			undoRedoController = GameObject.Find ("UndoRedoController").GetComponent<UndoRedoController> ();
+            sceneLoader = GameObject.Find("SceneAdapter").GetComponent<SceneLoader>();
 
-			//cache Reference to animation data
-			animData = AnimationData.Data;
+
+            //cache Reference to animation data
+            animData = AnimationData.Data;
 
 			//update initial parameters
 			initialPosition = target.position;
@@ -339,15 +346,18 @@ namespace vpet
 				Renderer[] renderers = this.gameObject.GetComponentsInChildren<Renderer>();
 				foreach (Renderer render in renderers)
 				{
-					if (hasBounds)
-					{
-						bounds.Encapsulate(render.bounds);
-					}
-					else
-					{
-						bounds = render.bounds;
-						hasBounds = true;
-					}
+                    if (!sceneLoader.isEditable(render.gameObject) || render.gameObject == this.gameObject)
+                    {
+                        if (hasBounds)
+                        {
+                            bounds.Encapsulate(render.bounds);
+                        }
+                        else
+                        {
+                            bounds = render.bounds;
+                            hasBounds = true;
+                        }
+                    }
 				}
 
 				BoxCollider col = this.gameObject.AddComponent<BoxCollider>();
@@ -1236,5 +1246,22 @@ namespace vpet
 	
 	        updateAnimationCurves();
 	    }
-}
+
+
+        /*
+        private void OnDrawGizmos()
+        {
+            BoxCollider col = this.gameObject.GetComponent<BoxCollider>();
+            if (col != null)
+            {
+                Vector3 min = col.bounds.min;
+                Vector3 max = col.bounds.max;
+                //min =  transform.localToWorldMatrix * min;
+                //max = transform.localToWorldMatrix * max;
+                Gizmos.DrawWireSphere(min, 1f);
+                Gizmos.DrawWireSphere(max, 1f);
+            }
+        }
+        */
+    }
 }

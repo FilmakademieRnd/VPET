@@ -11,14 +11,13 @@ using System;
 namespace vpet
 {
 
-
-
     public class SceneDistribution : MonoBehaviour
     {
 
         public GameObject sceneRoot;
         public bool doDistribute = true;
         public string port = "5565";
+        public bool doGatherOnRequest = false;
 
         private List<SceneNode> nodeList;
         private List<ObjectPackage> objectList;
@@ -26,11 +25,14 @@ namespace vpet
         private Thread serverThread;
         private bool isRunning = false;
 
+        private byte[] headerByteData;
         private byte[] nodesByteData;
         private byte[] objectsByteData;
         private byte[] texturesByteData;
 
         private int textureBinaryType = 1; // unity raw data
+
+        private VpetHeader vpetHeader;
 
         private int lodLowLayer;
         private int lodHighLayer;
@@ -54,24 +56,11 @@ namespace vpet
         {
             if (doDistribute && sceneRoot != null)
             {
-                nodeList = new List<SceneNode>();
-                objectList = new List<ObjectPackage>();
-                textureList = new List<TexturePackage>();
+                vpetHeader = new VpetHeader();
+                vpetHeader.lightIntensityFactor = 1f;
+                vpetHeader.textureBinaryType = 1;
 
-                iterLocation(sceneRoot.transform);
-
-                Debug.Log(string.Format("{0}: Collected number nodes: {1}", this.GetType(), nodeList.Count));
-                Debug.Log(string.Format("{0}: Collected number objects: {1}", this.GetType(), objectList.Count));
-                Debug.Log(string.Format("{0}: Collected number textures: {1}", this.GetType(), textureList.Count));
-
-                // create byte arrays
-                getNodesByteArray();
-                getObjectsByteArray();
-                getTexturesByteArray();
-
-                Debug.Log(string.Format("{0}: NodeByteArray size: {1}", this.GetType(), nodesByteData.Length));
-                Debug.Log(string.Format("{0}: ObjectsByteArray size: {1}", this.GetType(), objectsByteData.Length));
-                Debug.Log(string.Format("{0}: TexturesByteArray size: {1}", this.GetType(), texturesByteData.Length));
+                gatherSceneData();
 
                 if (serverThread == null)
                 {
@@ -87,6 +76,62 @@ namespace vpet
                 }
             }
         }
+
+
+
+
+
+
+        private void dataServer()
+        {
+            NetMQContext ctx = NetMQContext.Create();
+
+            NetMQ.Sockets.ResponseSocket dataSender = ctx.CreateResponseSocket();
+            dataSender.Bind("tcp://*:5565");
+            Debug.Log("Enter while.. ");
+
+            while (isRunning)
+            {
+                string message = dataSender.ReceiveString();
+                print("Got request message: " + message);
+
+                // re-run scene iteration if true
+                if (doGatherOnRequest)
+                    gatherSceneData();
+
+                switch (message)
+                {
+                    case "header":
+                        print("Send Header.. ");
+                        dataSender.Send(headerByteData);
+                        print(string.Format(".. Nodes ({0} bytes) sent ", headerByteData.Length));
+                        break;
+                    case "nodes":
+                        print("Send Nodes.. ");
+                        dataSender.Send(nodesByteData);
+                        print(string.Format(".. Nodes ({0} bytes) sent ", nodesByteData.Length));
+                        break;
+                    case "objects":
+                        print("Send Objects.. ");
+                        dataSender.Send(objectsByteData);
+                        print(string.Format(".. Objects ({0} bytes) sent ", objectsByteData.Length));
+                        break;
+                    case "textures":
+                        print("Send Textures.. ");
+                        dataSender.Send(texturesByteData);
+                        print(string.Format(".. Textures ({0} bytes) sent ", texturesByteData.Length));
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            dataSender.Unbind("tcp://127.0.0.1:5565");
+            dataSender.Close();
+        }
+
+
 
         /*
         private bool hasLodLowChild( Transform t )
@@ -106,6 +151,31 @@ namespace vpet
         }
         */
 
+        private void gatherSceneData()
+        {
+            nodeList = new List<SceneNode>();
+            objectList = new List<ObjectPackage>();
+            textureList = new List<TexturePackage>();
+
+
+            iterLocation(sceneRoot.transform);
+
+            Debug.Log(string.Format("{0}: Collected number nodes: {1}", this.GetType(), nodeList.Count));
+            Debug.Log(string.Format("{0}: Collected number objects: {1}", this.GetType(), objectList.Count));
+            Debug.Log(string.Format("{0}: Collected number textures: {1}", this.GetType(), textureList.Count));
+
+            // create byte arrays
+            headerByteData = SceneDataHandler.StructureToByteArray<VpetHeader>(vpetHeader);
+            getNodesByteArray();
+            getObjectsByteArray();
+            getTexturesByteArray();
+
+            Debug.Log(string.Format("{0}: NodeByteArray size: {1}", this.GetType(), nodesByteData.Length));
+            Debug.Log(string.Format("{0}: ObjectsByteArray size: {1}", this.GetType(), objectsByteData.Length));
+            Debug.Log(string.Format("{0}: TexturesByteArray size: {1}", this.GetType(), texturesByteData.Length));
+
+        }
+
         private bool iterLocation(Transform location)
         {
             // check LOD and retur if not match
@@ -117,7 +187,32 @@ namespace vpet
 
             // print("Location: " + location);
 
-            if (location.GetComponent<MeshFilter>() != null)
+            if (location.GetComponent<Camera>() != null)
+            {
+                SceneNodeCam nodeCamera = new SceneNodeCam();
+
+                Camera camera = location.GetComponent<Camera>();
+                nodeCamera.fov = camera.fieldOfView;
+                nodeCamera.near = camera.nearClipPlane;
+                nodeCamera.far = camera.farClipPlane;
+
+                node = nodeCamera;
+            }
+            else if (location.GetComponent<Light>() != null)
+            {
+                SceneNodeLight nodeLight = new SceneNodeLight();
+
+                Light light = location.GetComponent<Light>();
+                nodeLight.intensity = light.intensity;
+                nodeLight.color = new float[3] { light.color.r, light.color.g, light.color.b };
+                nodeLight.lightType = light.type;
+                nodeLight.exposure = 0;
+                nodeLight.angle = light.spotAngle;
+                nodeLight.range = light.range;
+
+                node = nodeLight;
+            }
+            else if (location.GetComponent<MeshFilter>() != null)
             {
                 SceneNodeGeo nodeGeo = new SceneNodeGeo(); 
                 nodeGeo.geoId = processGeometry(location.GetComponent<MeshFilter>().sharedMesh);
@@ -150,31 +245,7 @@ namespace vpet
 
                 node = nodeGeo;
             }
-            else if (location.GetComponent<Light>() != null)
-            {
-                SceneNodeLight nodeLight = new SceneNodeLight();
 
-                Light light = location.GetComponent<Light>();
-                nodeLight.intensity = light.intensity;
-                nodeLight.color = new float[3] {light.color.r, light.color.g, light.color.b };
-                nodeLight.lightType = light.type;
-                nodeLight.exposure = 0;
-                nodeLight.angle = light.spotAngle;
-                nodeLight.range = light.range;
-
-                node = nodeLight;
-            }
-            else if (location.GetComponent<Camera>() != null)
-            {
-                SceneNodeCam nodeCamera = new SceneNodeCam();
-
-                Camera camera = location.GetComponent<Camera>();
-                nodeCamera.fov = camera.fieldOfView;
-                nodeCamera.near = camera.nearClipPlane;
-                nodeCamera.far = camera.farClipPlane;
-
-                node = nodeCamera;
-            }
 
             node.editable = (location.gameObject.tag == "editable");
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
@@ -194,6 +265,10 @@ namespace vpet
             {
                 foreach (Transform child in location)
                 {
+                    if (!child.gameObject.activeSelf)
+                    {
+                        continue;
+                    }
                     if (iterLocation(child))
                     {
                         childCounter++;
@@ -397,46 +472,6 @@ namespace vpet
                 // concate
                 texturesByteData = SceneDataHandler.Concat<byte>(texturesByteData, texByteData);
             }
-        }
-
-        private void dataServer()
-        {
-            NetMQContext ctx = NetMQContext.Create();
-
-            NetMQ.Sockets.ResponseSocket dataSender = ctx.CreateResponseSocket();
-            dataSender.Bind("tcp://*:5565");
-            Debug.Log("Enter while.. ");
-
-            while (isRunning)
-            {
-                string message = dataSender.ReceiveString();
-                print("Got request message: " + message);
-
-                switch (message)
-                {
-                    case "nodes":
-                        print("Send Nodes.. ");
-                        dataSender.Send(nodesByteData);
-                        print(string.Format(".. Nodes ({0} bytes) sent ", nodesByteData.Length));
-                        break;
-                    case "objects":
-                        print("Send Objects.. ");
-                        dataSender.Send(objectsByteData);
-                        print(string.Format(".. Objects ({0} bytes) sent ", objectsByteData.Length));
-                        break;
-                    case "textures":
-                        print("Send Textures.. ");
-                        dataSender.Send(texturesByteData);
-                        print(string.Format(".. Textures ({0} bytes) sent ", texturesByteData.Length));
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-
-            dataSender.Unbind("tcp://127.0.0.1:5565");
-            dataSender.Close();
         }
 
 

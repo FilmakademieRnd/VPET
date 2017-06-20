@@ -59,6 +59,10 @@ namespace vpet
         //! Shall we read the binary scene from cache
         //!
         public bool doLoadFromResource = false;
+
+
+        public bool isMaster = false;
+
         //!
         //! Value of scene ambient light
         //!

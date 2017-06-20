@@ -401,7 +401,10 @@ namespace vpet
 			katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightTransRotTemplate,
 				loc,
 				(-pos.x + " " + pos.y + " " + pos.z),
-				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
+                0,
+                0,
+                0,
+//				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
 				(scl.x + " " + scl.y + " " + scl.z) ));
 		}
 
@@ -514,7 +517,7 @@ namespace vpet
 			katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightIntensityColorTemplate,
 				loc,
 				lightType,
-				lightIntensity * VPETSettings.Instance.lightIntensityFactor,
+				lightIntensity / VPETSettings.Instance.lightIntensityFactor,
 				lightColor.r + " " + lightColor.g + " " + lightColor.b,
 				exposure,
 				coneAngle	));
@@ -914,7 +917,7 @@ namespace vpet
 
                     if (katanaSendMessageQueue.Count > 0)
                     {
-                        // Debug.Log("Katana: " + katanaSendMessageQueue[0] as string);
+                        // Debug.Log(katanaSendMessageQueue[0] as string);
                         try
                         {
                             katanaSender.Send(katanaSendMessageQueue[0] as string, true); // TODO: note added true argument to not wait
@@ -954,6 +957,7 @@ namespace vpet
 
             byte[] byteStream;
 
+            
             // HEader
             print("header");
             sceneReceiver.Send("header");
@@ -968,6 +972,8 @@ namespace vpet
             VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStream, dataIdx);
             dataIdx += sizeof(float);
             VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStream, dataIdx);
+            
+
             //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
             //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
             //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
@@ -1039,7 +1045,7 @@ namespace vpet
 	
 			OnProgress( 0.1f, "Init Scene Receiver..");
 
-
+            /*
             // HEader
             byte[] byteStreamHeader = loadBinary("header");
             print("byteStreamHeader size: " + byteStreamHeader.Length);
@@ -1047,7 +1053,7 @@ namespace vpet
             VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStreamHeader, ref dataIdx);
             VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
             VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
-
+            */
 
             // Textures
             if (VPETSettings.Instance.doLoadTextures )

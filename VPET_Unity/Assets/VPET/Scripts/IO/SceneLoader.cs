@@ -150,6 +150,16 @@ namespace vpet
 	
 	
 	    }
+
+        public bool isEditable(GameObject targetObj)
+        {
+            foreach( GameObject g in sceneEditableObjects)
+            {
+                if (g == targetObj)
+                    return true;
+            }
+            return false;
+        }
 	
 	
 	    private int createSceneGraphIter( Transform parent, int idx  )
@@ -489,7 +499,7 @@ namespace vpet
 	        Light lightComponent = _lightUberInstance.GetComponent<Light>();
 	        lightComponent.type = nodeLight.lightType;
 	        lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);            
-            lightComponent.intensity = nodeLight.intensity / VPETSettings.Instance.lightIntensityFactor;
+            lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
             lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
             lightComponent.range = nodeLight.range;
 
