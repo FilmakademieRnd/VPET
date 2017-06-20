@@ -497,6 +497,8 @@ namespace vpet
             
 			print("Create Light: " + nodeLight.name + " of type: " + ((LightTypeKatana)(nodeLight.lightType)).ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos  );
 
+            lightComponent.range = 1000 * VPETSettings.Instance.sceneScale;
+
             // Add light specific settings
             if (nodeLight.lightType == LightType.Directional)
 	        {
@@ -504,7 +506,6 @@ namespace vpet
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
 	            lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-	            lightComponent.range = 200;
 	        }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
@@ -512,7 +513,6 @@ namespace vpet
                 lightComponent.type = LightType.Spot;
                 lightComponent.spotAngle = 120;
                 //lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-	            lightComponent.range = 200;
 	        }
 	        else
 	        {
