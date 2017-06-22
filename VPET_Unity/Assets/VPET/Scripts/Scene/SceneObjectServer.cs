@@ -392,16 +392,12 @@ namespace vpet
 			}
 
 
-            // 
+            // get animator object to trigger mocap anims
             animatorObject = transform.GetComponent < AnimatorObject>();
             if (animatorObject == null )
                 animatorObject = transform.parent.GetComponent<AnimatorObject>();
 
 
-            if (animatorObject != null && animatorObject.modelGroup != null)
-            {
-
-            }
 
         }
 

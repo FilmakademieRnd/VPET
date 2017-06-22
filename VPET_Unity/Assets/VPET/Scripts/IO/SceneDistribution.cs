@@ -20,6 +20,11 @@ namespace vpet
         public bool doGatherOnRequest = false;
         public bool doAssignSceneObjects = false;
 
+        public string recordPath = "Records";
+        public string sceneName = "";
+        public string shotName = "";
+        public string takeName = "";
+
         private List<SceneNode> nodeList;
         private List<ObjectPackage> objectList;
         private List<TexturePackage> textureList;
@@ -316,7 +321,17 @@ namespace vpet
 				if (location.gameObject.tag == "editable")
 	            {
 	                SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
-	            }
+#if UNITY_EDITOR
+                    // add recorder
+                    if (sceneName != "" && shotName != "" && takeName != "")
+                    {
+                        UnityAnimationRecorder animRecorder = location.gameObject.AddComponent<UnityAnimationRecorder>();
+                        animRecorder.savePath = recordPath;
+                        animRecorder.fileName = String.Format("{0}_{1}_{2}_{3}", sceneName, shotName, takeName, location.name);
+                        animRecorder.showLogGUI = true;
+                    }
+#endif
+                }
                 else if (location.GetComponent<Light>() != null)
                 {
                     // Add light prefab
@@ -336,6 +351,40 @@ namespace vpet
                     location.GetComponent<Light>().enabled = false;
 
                     SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
+#if UNITY_EDITOR
+                    // add recorder
+                    if (sceneName != "" && shotName != "" && takeName != "")
+                    {
+                        UnityAnimationRecorder animRecorder = location.gameObject.AddComponent<UnityAnimationRecorder>();
+                        animRecorder.savePath = recordPath;
+                        animRecorder.fileName = String.Format("{0}_{1}_{2}_{3}", sceneName, shotName, takeName, location.name);
+                        animRecorder.showLogGUI = true;
+                    }
+#endif
+
+
+                }
+                else if (location.GetComponent<Camera>() != null)
+                {
+                    // add camera dummy mesh
+                    GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
+                    GameObject cameraInstance = Instantiate(cameraObject);
+                    cameraInstance.name = cameraObject.name;
+                    cameraInstance.transform.SetParent(location.transform, false);
+                    cameraInstance.transform.localScale = new Vector3(1, 1, 1);
+                    cameraInstance.transform.localPosition = new Vector3(0, 0, -0.5f);
+
+                    SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
+#if UNITY_EDITOR
+                    // add recorder
+                    if (sceneName != "" && shotName != "" && takeName != "")
+                    {
+                        UnityAnimationRecorder animRecorder = location.gameObject.AddComponent<UnityAnimationRecorder>();
+                        animRecorder.savePath = recordPath;
+                        animRecorder.fileName = String.Format("{0}_{1}_{2}_{3}", sceneName, shotName, takeName, location.name);
+                        animRecorder.showLogGUI = true;
+                    }
+#endif
 
                 }
             }

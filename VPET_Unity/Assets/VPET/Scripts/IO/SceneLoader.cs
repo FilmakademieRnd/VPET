@@ -178,6 +178,8 @@ namespace vpet
 	        {
                 SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType( node, typeof(SceneNodeCam) );
 	            obj = createCamera( nodeCam, parent );
+                // make the camera editable
+                nodeCam.editable = true;
 	        }
             else if (node.GetType() == typeof(SceneNodeMocap))
             {
@@ -193,13 +195,14 @@ namespace vpet
 	            obj = createNode( node, parent );
 	        }
 	
+            // add scene object to editable 
 	        if ( node.editable )
 	        {
 	            sceneEditableObjects.Add( obj );
 	        }
 	
+            // recursive call
 	        int idxChild = idx;
-	
 	        for ( int k = 1; k <= node.childCount; k++ )
 	        {
 	            idxChild = createSceneGraphIter( obj.transform, idxChild+1 );
@@ -590,8 +593,18 @@ namespace vpet
 	
 	        // add to list for later access as camera location
 	        sceneCameraList.Add( objMain );
-	
-	        return objMain;
+
+            // add camera dummy mesh
+            GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
+            GameObject cameraInstance = Instantiate(cameraObject);
+            cameraInstance.name = cameraObject.name;
+            cameraInstance.transform.SetParent(objMain.transform, false);
+            cameraInstance.transform.localScale = new Vector3(100, 100, 100) * VPETSettings.Instance.sceneScale;
+            cameraInstance.transform.localPosition = new Vector3(0, 0, -25f * VPETSettings.Instance.sceneScale);
+
+
+
+            return objMain;
 	    }
 	
 	

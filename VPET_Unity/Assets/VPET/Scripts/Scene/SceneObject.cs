@@ -389,12 +389,9 @@ namespace vpet
 					col.material.bounciness = 1.0f;
 				}
 
-				//target.position = initialPosition;
-				// target.localScale = initialScale;
-				// target.rotation = initialRotation;
 
 			}
-			if ( !isDirectionalLight && !isPointLight && !isSpotLight && this.name != "camera" )
+			if ( !isDirectionalLight && !isPointLight && !isSpotLight )//  && this.name != "camera" )
 			{
 
                 

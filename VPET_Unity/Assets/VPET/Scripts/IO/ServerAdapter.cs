@@ -221,7 +221,7 @@ namespace vpet
 	    void Start ()
 	    {
             id = Network.player.ipAddress.Split('.')[3];
-            id = "XXX";
+            // id = "XXX";
 
             if (GameObject.Find("MainController") != null )
     	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
@@ -566,7 +566,7 @@ namespace vpet
 
 	        if (!deactivatePublish)
 	        {
-				sendMessageQueue.Add(id + "|" + "i" + "|" + this.getPathString(obj, scene) + "|" + light.intensity/VPETSettings.Instance.lightIntensityFactor );
+				sendMessageQueue.Add(id + "|" + "i" + "|" + this.getPathString(obj, scene) + "|" + light.intensity );
 	        }
 	        if (!deactivatePublishKatana)
 	        {
