@@ -150,7 +150,7 @@ namespace vpet
             }
 
             // Units toggle
-            childWidget = this.transform.FindChild("CM_toggle");
+            childWidget = this.transform.Find("CM_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: CM_toggle.", this.GetType()));
             else
             {

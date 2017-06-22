@@ -333,7 +333,8 @@ namespace vpet
                 m_sceneTransferDirty = false;
                 print( "sceneLoader.createSceneGraph" );
 	            sceneLoader.createSceneGraph( );
-	                    
+
+                sendUpdateObjects();
 	            // HACK
 	            mainController.repositionCamera();
 	            // Camera.main.GetComponent<MoveCamera>().calibrate();
@@ -374,26 +375,26 @@ namespace vpet
 	    //! @param  newPosition     new absolute position of GameObject in world space
 	    public void sendTransform( Transform obj, bool onlyToClientsWithoutPhysics = false )
 	    {
-	        Vector3 pos = obj.transform.localPosition;
-	        Vector3 rot = obj.localRotation.eulerAngles;
-	        Vector3 scl = obj.transform.localScale;
+	        //Vector3 pos = obj.transform.localPosition;
+	        //Vector3 rot = obj.localRotation.eulerAngles;
+	        //Vector3 scl = obj.transform.localScale;
 	
-	        if ( !deactivatePublish )
-	        {
+	        //if ( !deactivatePublish )
+	        //{
 	
-	            string sendMessage = id + "|" + this.getPathString( obj, scene ) +
-	                                "|" + pos.x + "|" + pos.y + "|" + pos.z + 
-	                                "|" + rot.x + "|" + rot.y + "|" + rot.z +
-	                                "|" + scl.x + "|" + scl.y + "|" + scl.z;
+	        //    string sendMessage = id + "|" + this.getPathString( obj, scene ) +
+	        //                        "|" + pos.x + "|" + pos.y + "|" + pos.z + 
+	        //                        "|" + rot.x + "|" + rot.y + "|" + rot.z +
+	        //                        "|" + scl.x + "|" + scl.y + "|" + scl.z;
 	
-	            if (onlyToClientsWithoutPhysics)
-	            {
-	                sendMessage += "|physics";
-	            }
+	        //    if (onlyToClientsWithoutPhysics)
+	        //    {
+	        //        sendMessage += "|physics";
+	        //    }
 	
-	            sendMessageQueue.Add( sendMessage );
+	        //    sendMessageQueue.Add( sendMessage );
+	        //}
 	        }
-	    }
 	
 	
 		private void sendTransformKatana(string loc, Vector3 pos, Quaternion rot, Vector3 scl )
@@ -698,6 +699,13 @@ namespace vpet
 
 
 
+
+        //! function to be called to resend stored scene object attributes
+        public void sendUpdateObjects()
+        {
+            sendMessageQueue.Add(id + "|" + "udOb");
+        }
+
         //! function parsing received message and executing change
         //! @param  message         message string received by server
         public void parseTransformation(string message)
@@ -940,7 +948,7 @@ namespace vpet
 	        {
 	            if ( sendMessageQueue.Count > 0 )
 	            {
-	                // Debug.Log("Publisher: " + sendMessageQueue[0] as string);
+	                Debug.Log("Publisher: " + sendMessageQueue[0] as string);
 	                sender.Send("client " + sendMessageQueue[0] as string);
 	                sendMessageQueue.RemoveAt(0);
 	            }
