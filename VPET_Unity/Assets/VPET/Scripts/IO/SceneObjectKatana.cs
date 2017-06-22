@@ -30,7 +30,7 @@ using System.IO;
 using System.Collections.Generic;
 // using System.Runtime.InteropServices;
 
-public enum NodeType { GROUP, GEO, LIGHT, CAMERA }
+public enum NodeType { GROUP, GEO, LIGHT, CAMERA, MOCAP }
 
 /*
 namespace vpet

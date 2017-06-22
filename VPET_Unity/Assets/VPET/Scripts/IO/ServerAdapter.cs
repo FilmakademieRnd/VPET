@@ -44,8 +44,6 @@ namespace vpet
 
 	public class ServerAdapterProgressEvent : UnityEvent<float, string> { }
 
-
-
     public class ServerAdapter : MonoBehaviour
 	{
 
@@ -108,11 +106,15 @@ namespace vpet
 	    //! none
 	    //!
 	    public string sceneFileName = "tmp";
-	
-	    //!
-	    //! none
-	    //!
-	    private string persistentDataPath;
+        //!
+        //! none
+        //!
+        public bool doAutostartListener = false;
+
+        //!
+        //! none
+        //!
+        private string persistentDataPath;
 	    public string PersistentDataPath
 	    {
 	        set { persistentDataPath = value;  }
@@ -177,8 +179,9 @@ namespace vpet
 	    //!
 	    //! cached reference to main controller
 	    //!
-	    MainController mainController;
-	
+	    MainController mainController = null;
+
+
 	    //!
 	    //! none
 	    //!
@@ -205,6 +208,10 @@ namespace vpet
         void Awake()
 	    {
 	        receiveObjectQueue = new List<SceneObjectKatana>();
+            if (doAutostartListener)
+            {
+                VPETSettings.Instance.serverIP = "127.0.0.1";
+            }
 	    }
 	
 	
@@ -213,9 +220,11 @@ namespace vpet
 	    //!
 	    void Start ()
 	    {
-	        id = Network.player.ipAddress.Split('.')[3];
-	
-	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
+            id = Network.player.ipAddress.Split('.')[3];
+            id = "XXX";
+
+            if (GameObject.Find("MainController") != null )
+    	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
 	
 	        camObject = GameObject.Find("camera").transform;
 	
@@ -223,25 +232,39 @@ namespace vpet
 	
 	        print( "persistentDataPath: " + persistentDataPath );
 	
-	        scene = GameObject.Find( "Scene" ).transform;
+  	        scene = GameObject.Find( "Scene" ).transform;
 	
 	
 	        receiveMessageQueue = new ArrayList();
 	        sendMessageQueue = new ArrayList();
 	        katanaSendMessageQueue = new ArrayList();
-	
-	
-	        dreamspaceRoot = GameObject.Find("Scene").transform;
+
+
+            dreamspaceRoot = scene; // GameObject.Find("Scene").transform;
 	        if (dreamspaceRoot == null) Debug.LogError(string.Format("{0}: Cant Find: Scene.", this.GetType()));
-		
-	    }
-	
-	
-	    //!
-	    //! Init the sever adpater for receiving a scene
-	    //! This will check the IP, (re)start receiver thread, request progress state
-	    //!
-	    public void initServerAdapterTransfer()
+
+            if (doAutostartListener && !deactivateReceive && receiverThread == null)
+            {
+                receiverThread = new Thread(new ThreadStart(listener));
+                receiverThread.Start();
+                isRunning = true;
+            }
+
+            if (doAutostartListener && !deactivatePublish && senderThread == null)
+            {
+                senderThread = new Thread(new ThreadStart(publisher));
+                senderThread.Start();
+                isRunning = true;
+            }
+
+        }
+
+
+        //!
+        //! Init the sever adpater for receiving a scene
+        //! This will check the IP, (re)start receiver thread, request progress state
+        //!
+        public void initServerAdapterTransfer()
 	    {
 	
 	        if (!ipAdressFormat.IsMatch( VPETSettings.Instance.serverIP))
@@ -297,13 +320,7 @@ namespace vpet
             }
         }
 	
-	    //!
-	    //! Init the sever adpater for receiving a scene
-	    //! This will check the IP, (re)start listener thread and publisher thread, request progress state
-	    //!
-	    public void initServerAdapterRuntime()
-	    {
-	    }
+
 	    	
 	    //!
 		//! Update is called once per frame
@@ -401,10 +418,7 @@ namespace vpet
 			katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightTransRotTemplate,
 				loc,
 				(-pos.x + " " + pos.y + " " + pos.z),
-                0,
-                0,
-                0,
-//				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
+				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
 				(scl.x + " " + scl.y + " " + scl.z) ));
 		}
 
@@ -415,7 +429,6 @@ namespace vpet
 	    {
 	        if (!deactivatePublish)
 	        {
-
 
                 // HACK:
                 onlyToClientsWithoutPhysics = false;
@@ -549,9 +562,11 @@ namespace vpet
 	    //! @param  newIntensity    new intensity of light
 		public void sendLightIntensity(Transform obj, Light light, float exposure=3f )
 	    {
+            //print("intensit: " + light.intensity / VPETSettings.Instance.lightIntensityFactor + " epos: " + exposure);
+
 	        if (!deactivatePublish)
 	        {
-				sendMessageQueue.Add(id + "|" + "i" + "|" + this.getPathString(obj, scene) + "|" + light.intensity );
+				sendMessageQueue.Add(id + "|" + "i" + "|" + this.getPathString(obj, scene) + "|" + light.intensity/VPETSettings.Instance.lightIntensityFactor );
 	        }
 	        if (!deactivatePublishKatana)
 	        {
@@ -660,10 +675,32 @@ namespace vpet
                 currentlyLockedObject = null;
 	        }
 	    }
-	
-	    //! function parsing received message and executing change
-	    //! @param  message         message string received by server
-	    public void parseTransformation(string message)
+
+
+        public void sendAnimatorCommand(Transform obj, int cmd)
+        {
+            if (!deactivatePublish)
+            {
+                sendMessageQueue.Add(id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd);
+            }
+        }
+
+
+        public void sendColliderOffset(Transform obj, Vector3 offset )
+        {
+            if (!deactivatePublish)
+            {
+                sendMessageQueue.Add(id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z);
+            }
+        }
+
+
+
+
+
+        //! function parsing received message and executing change
+        //! @param  message         message string received by server
+        public void parseTransformation(string message)
 	    {
 	        string[] splitMessage = message.Split('|');
             if (splitMessage.Length > 1)
@@ -701,8 +738,6 @@ namespace vpet
                 else
                 {
                     Transform obj = getOjectFromString(splitMessage[2]);
-                    //print( message + " " + currentlyLockedObject  + " " + obj + "endl" );
-
                     if ( obj && obj != currentlyLockedObject && splitMessage[0] != id )
 	                {
 	                    switch ( splitMessage[1] )
@@ -792,7 +827,25 @@ namespace vpet
 										}
 										catch {}
 	                            break;
-	                        default:
+                            case "b": // move bbox/collider
+                                if (splitMessage.Length == 6)
+                                    try
+                                    {
+                                        obj.GetComponent<SceneObject>().colliderOffset( new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5])) );
+                                    }
+                                    catch { }
+                                break;
+                            case "m": // trigger mocap data
+                                if (splitMessage.Length == 4 && obj.GetComponent<SceneObjectServer>() != null)
+                                {
+                                    try
+                                    {
+                                        obj.GetComponent<SceneObjectServer>().AnimatorCommand(int.Parse(splitMessage[3]));
+                                    }
+                                    catch { }
+                                }
+                                break;
+                            default:
 	                            break;
 	                    }
 	                }
@@ -844,7 +897,7 @@ namespace vpet
 
             lastReceiveTime = currentTimeTime;
             
-            VPETSettings.Instance.msg = string.Format("Listener started");
+            Debug.Log("Listener connected: " + "tcp://" + VPETSettings.Instance.serverIP + ":5556");
 
             while (isRunning)
             {
@@ -852,7 +905,7 @@ namespace vpet
                 {
                     this.receiveMessageQueue.Add(receiver.ReceiveString(NetMQ.zmq.SendReceiveOptions.DontWait).Substring(7));
                     lastReceiveTime = currentTimeTime;
-
+                    // Debug.Log("Received sync message: " + receiveMessageQueue[receiveMessageQueue.Count-1]);
                 }
                 catch (AgainException ex)
                 {
@@ -887,7 +940,7 @@ namespace vpet
 	        {
 	            if ( sendMessageQueue.Count > 0 )
 	            {
-	                //  Debug.Log("Publisher: " + sendMessageQueue[0] as string);
+	                // Debug.Log("Publisher: " + sendMessageQueue[0] as string);
 	                sender.Send("client " + sendMessageQueue[0] as string);
 	                sendMessageQueue.RemoveAt(0);
 	            }
@@ -970,6 +1023,7 @@ namespace vpet
 
             int dataIdx = 0;
             VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStream, dataIdx);
+            print("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
             dataIdx += sizeof(float);
             VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStream, dataIdx);
             

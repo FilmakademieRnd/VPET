@@ -62,7 +62,15 @@ namespace vpet
                 if (mainController.getCurrentSelection() != null)
                 {
                     if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                    {
                         mainController.ActiveMode = MainController.Mode.lightMenuMode;
+                    }
+                    //else if (mainController.getCurrentSelection().GetComponent<SceneObject>().isMocapTrigger) // mocap trigger component at object
+                    //{
+                    //    mainController.ActiveMode = MainController.Mode.objectMenuMode;
+                    //    // force re-draw center menu because it won't be re-drawn in state machine if mode doesn't change
+                    //    drawCenterMenu(layouts.MOCAP);
+                    //}
                     else
                     {
                         mainController.ActiveMode = MainController.Mode.objectMenuMode;
@@ -184,6 +192,17 @@ namespace vpet
 	        if (mainController.getCurrentSelection() != null)   
 	            mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
 	    }
+
+        private void triggerMocap(IMenuButton button)
+        {
+            if (button.Toggled)
+                mainController.buttonAnimatorCmdClicked(1); //play
+            else
+                mainController.buttonAnimatorCmdClicked(2); // stop
+        }
+
+
+
 
         //!
         //! click on light color edit

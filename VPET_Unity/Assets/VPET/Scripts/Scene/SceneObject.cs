@@ -32,6 +32,9 @@ namespace vpet
 {
 	public class SceneObject : MonoBehaviour {
 
+
+        public bool isMocapTrigger = false;
+
 		//!
 		//! cached reference to animation controller
 		//!
@@ -602,7 +605,7 @@ namespace vpet
 		//!
 		public float getLightIntensity()
 		{
-			if (sourceLight != null) return sourceLight.intensity * VPETSettings.Instance.lightIntensityFactor;
+			if (sourceLight != null) return sourceLight.intensity / VPETSettings.Instance.lightIntensityFactor;
 			return 0f;
 		}
 
@@ -981,7 +984,7 @@ namespace vpet
 		{
 			if (isDirectionalLight || isPointLight || isSpotLight)
 			{
-				sourceLight.intensity = intensity / VPETSettings.Instance.lightIntensityFactor;
+				sourceLight.intensity = intensity * VPETSettings.Instance.lightIntensityFactor;
 				lastModifiedLightParameter = LightParameter.Intensity;
 				if (mainController.liveMode)
 				{
@@ -1247,6 +1250,15 @@ namespace vpet
 	        updateAnimationCurves();
 	    }
 
+
+        public void colliderOffset( Vector3 offset )
+        {
+            BoxCollider col = transform.GetComponent<BoxCollider>();
+            if (col != null)
+            {
+                col.center = offset;
+            }
+        }
 
         /*
         private void OnDrawGizmos()

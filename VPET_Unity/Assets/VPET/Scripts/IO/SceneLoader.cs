@@ -37,11 +37,6 @@ namespace vpet
 
 	public class SceneLoader : MonoBehaviour 
 	{
-        public Texture2D tmpTex;
-
-
-
-
 
 	    //!
 	    //! name of the parent gameobject, all objects go underneath it
@@ -184,8 +179,17 @@ namespace vpet
                 SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType( node, typeof(SceneNodeCam) );
 	            obj = createCamera( nodeCam, parent );
 	        }
-	        else
-	        {
+            else if (node.GetType() == typeof(SceneNodeMocap))
+            {
+                SceneNodeMocap nodeMocap = (SceneNodeMocap)Convert.ChangeType(node, typeof(SceneNodeMocap));
+                obj = createMocap(nodeMocap, parent);
+                
+                // HACK
+                SceneObject scnObj = obj.AddComponent<SceneObject>();
+                scnObj.isMocapTrigger = true;
+            }
+            else
+            {
 	            obj = createNode( node, parent );
 	        }
 	
@@ -333,6 +337,15 @@ namespace vpet
 	
 	        return objMain;
 	    }
+
+        //!
+        private GameObject createMocap(SceneNodeMocap node, Transform parentTransform)
+        {
+            // setup as node
+            GameObject objMain = createNode(node, parentTransform);
+            return objMain;
+        }
+
 
         //!
         //! function that determines if a texture has alpha
@@ -529,9 +542,12 @@ namespace vpet
 	        // add scene object for interactivity at the light quad
 			SceneObject sco = objMain.AddComponent<SceneObject>();
 			sco.exposure = nodeLight.exposure;
-	
-	        // TODO: what for ??
-	        objMain.layer = 0;
+
+            // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
+            // objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+
+            // TODO: what for ??
+            objMain.layer = 0;
 
 
             return objMain;
@@ -567,7 +583,7 @@ namespace vpet
 	        objMain.transform.localScale =    scl; 
 	        
             // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
-	        //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+	        // objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
 	
 	        // TODO: what for ??
 	        objMain.layer = 0;

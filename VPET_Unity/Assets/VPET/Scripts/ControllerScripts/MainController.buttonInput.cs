@@ -223,5 +223,11 @@ namespace vpet
             }
         }
 
+
+        public void buttonAnimatorCmdClicked(int cmd)
+        {
+            serverAdapter.sendAnimatorCommand(currentSelection.transform, cmd);
+        }
+
     }
 }

@@ -106,17 +106,20 @@ namespace vpet
 	
 	    private VPETSettings()
 		{
-			Transform canvas = GameObject.Find("GUI/Canvas").transform;
-			if (canvas == null) Debug.LogError(string.Format("{0}: Cant find Canvas.", this.GetType()));
-			CanvasScaler canvasScaler = canvas.GetComponent<CanvasScaler>();
-			canvasHalfWidth = (int)(canvasScaler.referenceResolution.x / 2);
-			canvasHalfHeight = (int)(canvasScaler.referenceResolution.y / 2);
-			float w = canvasScaler.referenceResolution.x;
-			float h = canvasScaler.referenceResolution.y;
-			float w2 = Screen.width;
-			float h2 = Screen.height;
-			canvasScaleFactor =  w2 / w;
-			canvasAspectScaleFactor = ( (w/h) / (w2/h2) );
+    		GameObject canvas = GameObject.Find("GUI/Canvas");
+            if (canvas == null) Debug.LogError(string.Format("{0}: Cant find Canvas.", this.GetType()));
+            else
+            {
+                CanvasScaler canvasScaler = canvas.GetComponent<CanvasScaler>();
+                canvasHalfWidth = (int)(canvasScaler.referenceResolution.x / 2);
+                canvasHalfHeight = (int)(canvasScaler.referenceResolution.y / 2);
+                float w = canvasScaler.referenceResolution.x;
+                float h = canvasScaler.referenceResolution.y;
+                float w2 = Screen.width;
+                float h2 = Screen.height;
+                canvasScaleFactor = w2 / w;
+                canvasAspectScaleFactor = ((w / h) / (w2 / h2));
+            }
 			}
 	
 	    public static VPETSettings Instance

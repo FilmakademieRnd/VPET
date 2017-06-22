@@ -31,6 +31,12 @@ namespace vpet
     };
 
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
+    public class SceneNodeMocap : SceneNode
+    {
+    };
+
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNodeGeo : SceneNode
     {
         public int geoId;
@@ -159,6 +165,10 @@ namespace vpet
                     case NodeType.CAMERA:
                         SceneNodeCam sceneNodeCamera = SceneDataHandler.ByteArrayToStructure<SceneNodeCam>(m_nodesByteData, ref dataIdx);
                         node = sceneNodeCamera;
+                        break;
+                    case NodeType.MOCAP:
+                        SceneNodeMocap sceneNodeMocap = SceneDataHandler.ByteArrayToStructure<SceneNodeMocap>(m_nodesByteData, ref dataIdx);
+                        node = sceneNodeMocap;
                         break;
                 }
 

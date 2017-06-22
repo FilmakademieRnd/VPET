@@ -213,7 +213,11 @@ namespace vpet
 	                            ui.drawCenterMenu(layouts.ANIMATION);
                                 ui.drawSecondaryMenu(layouts.ANIMATION);
 	                        }
-	                        else
+                            else if (currentSelection.GetComponent<SceneObject>().isMocapTrigger) // mocap trigger component at object
+                            {
+                                ui.drawCenterMenu(layouts.MOCAP);
+                            }
+                            else
 	                        {
 	                            ui.drawCenterMenu(layouts.OBJECT);
 	                        }

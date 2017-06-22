@@ -18,6 +18,7 @@ namespace vpet
         public bool doDistribute = true;
         public string port = "5565";
         public bool doGatherOnRequest = false;
+        public bool doAssignSceneObjects = false;
 
         private List<SceneNode> nodeList;
         private List<ObjectPackage> objectList;
@@ -76,9 +77,6 @@ namespace vpet
                 }
             }
         }
-
-
-
 
 
 
@@ -182,23 +180,11 @@ namespace vpet
             if (location.gameObject.layer != lodLowLayer && location.gameObject.layer != lodMixedLayer)
                 return false;
 
-
             SceneNode node = new SceneNode();
 
             // print("Location: " + location);
 
-            if (location.GetComponent<Camera>() != null)
-            {
-                SceneNodeCam nodeCamera = new SceneNodeCam();
-
-                Camera camera = location.GetComponent<Camera>();
-                nodeCamera.fov = camera.fieldOfView;
-                nodeCamera.near = camera.nearClipPlane;
-                nodeCamera.far = camera.farClipPlane;
-
-                node = nodeCamera;
-            }
-            else if (location.GetComponent<Light>() != null)
+            if (location.GetComponent<Light>() != null)
             {
                 SceneNodeLight nodeLight = new SceneNodeLight();
 
@@ -212,6 +198,16 @@ namespace vpet
 
                 node = nodeLight;
             }
+			else if (location.GetComponent<Camera>() != null)
+			{
+				SceneNodeCam nodeCamera = new SceneNodeCam();
+
+				Camera camera = location.GetComponent<Camera>();
+				nodeCamera.fov = camera.fieldOfView;
+				nodeCamera.near = camera.nearClipPlane;
+				nodeCamera.far = camera.farClipPlane;
+                node = nodeCamera;
+			}
             else if (location.GetComponent<MeshFilter>() != null)
             {
                 SceneNodeGeo nodeGeo = new SceneNodeGeo(); 
@@ -220,7 +216,7 @@ namespace vpet
                 if (location.GetComponent<Renderer>() != null && location.GetComponent<Renderer>().material != null)
                 {
                     Material mat = location.GetComponent<Renderer>().material;
-                    if (mat.color != null)
+					if (mat.HasProperty("_Color"))
                     {
                         nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
                     }
@@ -245,6 +241,44 @@ namespace vpet
 
                 node = nodeGeo;
             }
+            else if (location.GetComponent<SkinnedMeshRenderer>() != null)
+            {
+                SceneNodeGeo nodeGeo = new SceneNodeGeo();
+                nodeGeo.geoId = processGeometry(location.GetComponent<SkinnedMeshRenderer>().sharedMesh);
+
+                if (location.GetComponent<SkinnedMeshRenderer>().material != null)
+                {
+                    Material mat = location.GetComponent<SkinnedMeshRenderer>().material;
+                    if (mat.HasProperty("_Color"))
+                    {
+                        nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
+                    }
+
+                    if (mat.HasProperty("_Glossiness"))
+                        nodeGeo.roughness = mat.GetFloat("_Glossiness");
+
+                    if (mat.mainTexture != null)
+                    {
+                        Texture2D mainTex = (Texture2D)mat.mainTexture;
+                        nodeGeo.textureId = processTexture(mainTex);
+                    }
+                    else
+                    {
+                        nodeGeo.textureId = -1;
+                    }
+                }
+                else
+                {
+                    nodeGeo.textureId = -1;
+                }
+
+                node = nodeGeo;
+            }
+            else if ( location.parent.GetComponent<AnimatorObject>() != null )
+            {
+                SceneNodeMocap nodeMocap = new SceneNodeMocap();
+                node = nodeMocap;
+            }
 
 
             node.editable = (location.gameObject.tag == "editable");
@@ -253,7 +287,7 @@ namespace vpet
             node.rotation = new float[4] { location.localRotation.x, location.localRotation.y, location.localRotation.z, location.localRotation.w };
             node.name = Encoding.ASCII.GetBytes(location.name);
 
-            print("Added: " + location.name);
+            // print("Added: " + location.name);
             nodeList.Add(node);
 
 
@@ -276,6 +310,35 @@ namespace vpet
                 }
             }
             node.childCount = childCounter;
+
+			if (doAssignSceneObjects)
+			{
+				if (location.gameObject.tag == "editable")
+	            {
+	                SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
+	            }
+                else if (location.GetComponent<Light>() != null)
+                {
+                    // Add light prefab
+                    GameObject lightUber = Resources.Load<GameObject>("VPET/Prefabs/UberLight");
+                    GameObject _lightUberInstance = Instantiate(lightUber);
+                    _lightUberInstance.name = lightUber.name;
+                    _lightUberInstance.transform.SetParent(location, false);
+
+                    SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType(node, typeof(SceneNodeLight));
+                    Light lightComponent = _lightUberInstance.GetComponent<Light>();
+                    lightComponent.type = nodeLight.lightType;
+                    lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);
+                    lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
+                    lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
+                    lightComponent.range = nodeLight.range;
+
+                    location.GetComponent<Light>().enabled = false;
+
+                    SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
+
+                }
+            }
             return true;
         }
 
@@ -286,7 +349,6 @@ namespace vpet
             {
                 if (objectList[i].mesh == mesh)
                 {
-                    print("Mesh already processed. Return: " + i);
                     return i;
                 }
             }
@@ -349,7 +411,6 @@ namespace vpet
             {
                 if (textureList[i].texture == texture)
                 {
-                    print("Texture already processed. Return: " + i);
                     return i;
                 }
             }
@@ -395,6 +456,12 @@ namespace vpet
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.CAMERA);
                     SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType(node, typeof(SceneNodeCam));
                     nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeCam>(nodeCam);
+                }
+                else if (node.GetType() == typeof(SceneNodeMocap))
+                {
+                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.MOCAP);
+                    SceneNodeMocap nodeMocap = (SceneNodeMocap)Convert.ChangeType(node, typeof(SceneNodeMocap));
+                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeMocap>(nodeMocap);
                 }
                 else
                 {

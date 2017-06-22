@@ -207,50 +207,41 @@ namespace vpet
             buttonTrans.AddAction(EditMode_Translate_sel, EditMode_Translate_nrm, () => editTranslation(buttonTrans));
             centerMenu.addButton(buttonTrans, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHT);
-            /*
-            centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHTDIR);
-            centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHTSPOT);
-            centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHTPOINT);
-            */
+            centerMenu.addButtonToLayout(buttonTrans, layouts.MOCAP);
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
             UI.OnUIChanged.AddListener(() => { buttonRot.Toggled = mainController.ActiveMode == MainController.Mode.rotationMode; });
             centerMenu.addButton(buttonRot, layouts.OBJECT);
+            centerMenu.addButtonToLayout(buttonRot, layouts.MOCAP);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHT);
-            /*
-            centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTDIR);
-            centerMenu.addButtonToLayout(buttonRot, layouts.LIGHTSPOT);
-            */
             // scale
             IMenuButton buttonScl = Elements.MenuButtonToggle();
             buttonScl.AddAction(EditMode_Scale_sel, EditMode_Scale_nrm, () => editScale(buttonScl));
             centerMenu.addButton(buttonScl, layouts.OBJECT);
+            centerMenu.addButton(buttonScl, layouts.MOCAP);
             // reset
             IMenuButton buttonReset = Elements.MenuButton();
 			buttonReset.AddAction(EditMode_Reset_sel, EditMode_Reset_nrm, call: () => objectReset() );
 			centerMenu.addButton( buttonReset, layouts.OBJECT );
+            centerMenu.addButton(buttonReset, layouts.MOCAP);
             centerMenu.addButtonToLayout(buttonReset, layouts.LIGHT);
-            /*
-            centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTDIR );
-			centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTSPOT );
-			centerMenu.addButtonToLayout( buttonReset, layouts.LIGHTPOINT );
-            */
             // graviy/kinematic on off
             IMenuButton buttonKin = Elements.MenuButtonToggle();
 			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic() );
             UI.OnUIChanged.AddListener(() => { buttonKin.Toggled = mainController.HasGravityOn(); });  // register for ui changes 
             centerMenu.OnMenuOpen.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );
+            centerMenu.addButton(buttonKin, layouts.MOCAP);
+            // Mocap trigger
+            IMenuButton buttonMocap = Elements.MenuButtonToggle();
+            buttonMocap.AddAction(AnimationMode_Pause_sel, AnimationMode_Play_nrm, call: () => triggerMocap(buttonMocap));
+            buttonMocap.AddHoldAction(() => mainController.buttonAnimatorCmdClicked(0)); // reset/re-trigger mocap animation 
+            centerMenu.addButton(buttonMocap, layouts.MOCAP);
             // light color
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
             buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 
             centerMenu.addButton(buttonLightCol, layouts.LIGHT);
-            /*
-            centerMenu.addButton(buttonLightCol, layouts.LIGHTDIR);
-            centerMenu.addButtonToLayout(buttonLightCol, layouts.LIGHTSPOT);
-            centerMenu.addButtonToLayout(buttonLightCol, layouts.LIGHTPOINT);
-            */
             // light settings
             IMenuButton buttonLightSet = Elements.MenuButtonToggle();
             buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightAngle(buttonLightSet));
