@@ -715,7 +715,7 @@ namespace vpet
 			if (isSpotLight || isPointLight) 
 			{
 				sourceLight.range = initialLightRange;
-				// serverAdapter.sendLightRange(target, initialLightRange);
+				serverAdapter.sendLightRange(target, sourceLight);
 			}
 			if (isSpotLight) 
 			{
@@ -1003,7 +1003,7 @@ namespace vpet
 				lastModifiedLightParameter = LightParameter.Range;
 				if (mainController.liveMode)
 				{
-					// serverAdapter.sendLightRange(target, light.range);
+					serverAdapter.sendLightRange(target, sourceLight);
 				}
 			}
 		}
@@ -1083,7 +1083,7 @@ namespace vpet
 					undoRedoController.addAction();
 					break;
 				case (LightParameter.Range):
-					// serverAdapter.sendLightRange(target, sourceLight.range);
+					serverAdapter.sendLightRange(target, sourceLight);
 					undoRedoController.addAction();
 					break;
 				default:

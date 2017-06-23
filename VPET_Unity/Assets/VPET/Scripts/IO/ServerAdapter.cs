@@ -539,7 +539,7 @@ namespace vpet
 
 	    //! function to be called to send a light color change to server
 	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  newColor        new color of light
+	    //! @param  light        	light object
 		public void sendLightColor(Transform obj, Light light, float exposure=3f )
 	    {
 	        if (!deactivatePublish)
@@ -560,7 +560,7 @@ namespace vpet
 	
 	    //! function to be called to send a light intensity change to server
 	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  newIntensity    new intensity of light
+	    //! @param  light        	light object
 		public void sendLightIntensity(Transform obj, Light light, float exposure=3f )
 	    {
             //print("intensit: " + light.intensity / VPETSettings.Instance.lightIntensityFactor + " epos: " + exposure);
@@ -582,7 +582,7 @@ namespace vpet
 	
 	    //! function to be called to send a light cone angle change of a spotlight to server
 	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  newAngle        new cone angle of light
+	    //! @param  light        	light object
 		public void sendLightConeAngle(Transform obj, Light light, float exposure=3f )
 	    {
 	        if (!deactivatePublish)
@@ -600,40 +600,26 @@ namespace vpet
 	        }
 	    }
 	
-		/*
 	    //! function to be called to send a light range change of a spotlight or pointlight to server
 	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  newRange        new range of light
-	    public void sendLightRange(Transform obj, float newRange)
+	    //! @param  light        	light object
+	    public void sendLightRange(Transform obj,  Light light)
 	    {
 	        if (!deactivatePublish)
 	        {
-	            sendMessageQueue.Add(id + "|" + "d" + "|" + this.getPathString(obj, scene) + "|" + newRange);
-	        }
-	        if (!deactivatePublishKatana)
-	        {
-	            string lightType = "sphere";
-	            katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightRangeTemplate,
-	                                                     "_" + this.getPathString(obj, dreamspaceRoot, "_"),
-	                                                     "/" + this.getPathString(obj, dreamspaceRoot),
-	                                                     Mathf.Pow(2, 1.0f / newRange),
-	                                                     lightType));
+	            sendMessageQueue.Add(id + "|" + "d" + "|" + this.getPathString(obj, scene) + "|" + light.range);
 	        }
 	    }
-		*/
 	
 	    //! function to be called to send a scale change to server
 	    //! @param  obj             Transform of GameObject
 	    //! @param  newPosition     new relative scale of GameObject in object space
 	    public void sendFov(float fov, float left, float right, float bottom, float top)
 	    {
-	
 	        if (!deactivatePublishKatana)
 	        {
 	            katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTemplate, fov, left, right, bottom, top));
-	
 	        }
-	
 	    }
 	
 	    //! function to be called to send a kinematic on/off signal to server

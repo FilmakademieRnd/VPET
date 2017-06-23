@@ -222,6 +222,7 @@ namespace vpet
         private void editLightSettings(IMenuButton button)
         {
             centerMenu.animateActive(((Button)button).gameObject);
+            lightSettingsWidget.SetSliderType(LightSettingsWidget.SliderType.INTENSITY); // TODO: just something but not color
             mainController.buttonLightSettingsClicked(button.Toggled);
         }
 
@@ -434,9 +435,8 @@ namespace vpet
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateY", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightAngle, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightAngle(), 1f);
-                        rangeSlider.MinValue = 1f;
-                        rangeSlider.MaxValue = 179f;
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightRange, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightRange(), 10f*VPETSettings.Instance.sceneScale);
+                        rangeSlider.MinValue = 0.1f;
                     }
                     break;
                 case 2:
@@ -446,6 +446,12 @@ namespace vpet
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleZ", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateZ", 1f);
+                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
+                    {
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightAngle, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightAngle(), 1f);
+                        rangeSlider.MinValue = 1f;
+                        rangeSlider.MaxValue = 179f;
+                    }
                     break;
             }
         }

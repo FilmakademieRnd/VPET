@@ -244,7 +244,7 @@ namespace vpet
             centerMenu.addButton(buttonLightCol, layouts.LIGHT);
             // light settings
             IMenuButton buttonLightSet = Elements.MenuButtonToggle();
-            buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightAngle(buttonLightSet));
+            buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightSettings(buttonLightSet));
             centerMenu.addButton(buttonLightSet, layouts.LIGHT);
 
             /*
@@ -299,8 +299,10 @@ namespace vpet
             // light settings
             IMenuButton buttonLightIntensity = Elements.MenuButtonToggle();
             buttonLightIntensity.AddAction(EditMode_LightIntensity_sel, EditMode_LightIntensity_nrm, () => parameterButtonHandle(buttonLightIntensity, 0));
+            IMenuButton buttonLightRange = Elements.MenuButtonToggle();
+            buttonLightRange.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, () => parameterButtonHandle(buttonLightRange, 1));
             IMenuButton buttonLightAngle = Elements.MenuButtonToggle();
-            buttonLightAngle.AddAction(EditMode_LightConeAngle_sel, EditMode_LightConeAngle_nrm, () => parameterButtonHandle(buttonLightAngle, 1));
+            buttonLightAngle.AddAction(EditMode_LightConeAngle_sel, EditMode_LightConeAngle_nrm, () => parameterButtonHandle(buttonLightAngle, 2));
             // attach to cam
             IMenuButton buttonAttachCam = Elements.MenuButtonToggle();
             buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm, () => editLinkToCamera(buttonAttachCam)); // 
@@ -323,7 +325,9 @@ namespace vpet
             parameterMenu.addButton(buttonClickMove, layouts.TRANSLATION);
             parameterMenu.addButton(buttonLightIntensity, layouts.LIGHTDIR);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTPOINT);
+            parameterMenu.addButton(buttonLightRange, layouts.LIGHTPOINT);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTSPOT);
+            parameterMenu.addButtonToLayout(buttonLightRange, layouts.LIGHTSPOT);
             parameterMenu.addButton(buttonLightAngle, layouts.LIGHTSPOT);
         }
     }

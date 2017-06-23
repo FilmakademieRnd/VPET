@@ -717,7 +717,7 @@ namespace vpet
 			if (isSpotLight || isPointLight) 
 			{
 				sourceLight.range = initialLightRange;
-				// serverAdapter.sendLightRange(target, initialLightRange);
+				serverAdapter.sendLightRange(target, sourceLight);
 			}
 			if (isSpotLight) 
 			{

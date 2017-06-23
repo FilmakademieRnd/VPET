@@ -560,14 +560,14 @@ namespace vpet
             // reset parmater menu and set first button toggled
             parameterMenu.ActiveButton = null;
             parameterMenu.reset();
-            IMenuButton button = parameterMenu.GetButton(0);
-            if (button != null) button.Toggled = true;
-
+            // IMenuButton button = parameterMenu.GetButton(0);
 
             parameterMenu.switchLayout(layout);
             float _adjustOddCount = (parameterMenu.ActiveButtonCount % 2) * UI.ButtonOffset / 2f;
             parameterMenu.offset = new Vector2(-VPETSettings.Instance.canvasHalfWidth + UI.ButtonOffset, parameterMenu.ActiveButtonCount * UI.ButtonOffset / 2f + _adjustOddCount);
-            parameterMenu.show();
+
+			if ( parameterMenu.ActiveButtonCount > 1)
+	            parameterMenu.show();
         }
 
         public  void hideParameterMenu()
