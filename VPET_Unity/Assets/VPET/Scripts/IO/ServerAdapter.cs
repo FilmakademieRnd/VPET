@@ -1109,15 +1109,19 @@ namespace vpet
 	
 			OnProgress( 0.1f, "Init Scene Receiver..");
 
-            /*
+            
             // HEader
             byte[] byteStreamHeader = loadBinary("header");
             print("byteStreamHeader size: " + byteStreamHeader.Length);
             int dataIdx = 0;
-            VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStreamHeader, ref dataIdx);
-            VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
-            VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
-            */
+            VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStreamHeader, dataIdx);
+            print("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
+            dataIdx += sizeof(float);
+            VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStreamHeader, dataIdx);
+
+            OnProgress(0.15f, "..Received Header..");
+
+
 
             // Textures
             if (VPETSettings.Instance.doLoadTextures )
