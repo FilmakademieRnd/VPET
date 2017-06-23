@@ -421,7 +421,7 @@ namespace vpet
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateX", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightIntensity, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightIntensity(), 0.01f);
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightIntensity, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);
                         rangeSlider.MinValue = 0f;
                     }
                     break;

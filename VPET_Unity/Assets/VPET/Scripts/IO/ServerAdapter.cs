@@ -948,7 +948,7 @@ namespace vpet
 	        {
 	            if ( sendMessageQueue.Count > 0 )
 	            {
-	                Debug.Log("Publisher: " + sendMessageQueue[0] as string);
+	                // Debug.Log("Publisher: " + sendMessageQueue[0] as string);
 	                sender.Send("client " + sendMessageQueue[0] as string);
 	                sendMessageQueue.RemoveAt(0);
 	            }
@@ -1034,7 +1034,9 @@ namespace vpet
             print("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
             dataIdx += sizeof(float);
             VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStream, dataIdx);
-            
+
+            OnProgress(0.15f, "..Received Header..");
+
 
             //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
             //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
