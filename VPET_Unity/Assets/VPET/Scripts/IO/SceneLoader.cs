@@ -131,9 +131,12 @@ namespace vpet
 	                g.AddComponent<SceneObject>();
 	            }
 	        }
-	
-	
-	        /*
+
+
+            // set default orthographic size
+            Camera.main.orthographicSize = 1000 * VPETSettings.Instance.sceneScale;
+
+            /*
 	        Transform geoTransform = GameObject.Find( "geo" ).transform;
 	        if ( geoTransform != null )
 	        {
@@ -142,9 +145,9 @@ namespace vpet
 	            joystickScript.WorldTransform = geoTransform;        
 	        }
 	         */
-	
-	
-	    }
+
+
+        }
 
         public bool isEditable(GameObject targetObj)
         {
@@ -180,7 +183,7 @@ namespace vpet
 	            obj = createCamera( nodeCam, parent );
                 // make the camera editable
                 nodeCam.editable = true;
-	        }
+            }
             else if (node.GetType() == typeof(SceneNodeMocap))
             {
                 SceneNodeMocap nodeMocap = (SceneNodeMocap)Convert.ChangeType(node, typeof(SceneNodeMocap));
@@ -600,7 +603,7 @@ namespace vpet
             cameraInstance.name = cameraObject.name;
             cameraInstance.transform.SetParent(objMain.transform, false);
             cameraInstance.transform.localScale = new Vector3(100, 100, 100) * VPETSettings.Instance.sceneScale;
-            cameraInstance.transform.localPosition = new Vector3(0, 0, -25f * VPETSettings.Instance.sceneScale);
+            cameraInstance.transform.localPosition = new Vector3(0, 0, -50f * VPETSettings.Instance.sceneScale);
 
 
 

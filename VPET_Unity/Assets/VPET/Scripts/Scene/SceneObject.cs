@@ -366,8 +366,17 @@ namespace vpet
 				BoxCollider col = this.gameObject.AddComponent<BoxCollider>();
 
                 // TODO: temporary
-                col.isTrigger = true; // not interacting
+                if (transform.GetComponent<CameraObject>() != null)
+                {
+                   col.isTrigger = true; // not interacting
+                    this.gameObject.AddComponent<Rigidbody>();
+                    this.gameObject.GetComponent<Rigidbody>().mass = 100.0f;
+                    this.gameObject.GetComponent<Rigidbody>().drag = 2.5f;
 
+
+                    // TODO: temporary
+                    this.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                }
 
 
                 if (sourceLight)
@@ -391,7 +400,7 @@ namespace vpet
 
 
 			}
-			if ( !isDirectionalLight && !isPointLight && !isSpotLight )//  && this.name != "camera" )
+			if ( !isDirectionalLight && !isPointLight && !isSpotLight && this.name != "camera" && transform.GetComponent<CameraObject>() == null)
 			{
 
                 
@@ -401,7 +410,7 @@ namespace vpet
                 
 
                 // TODO: temporary
-				this.gameObject.GetComponent<Rigidbody>().useGravity = false;
+				this.gameObject.GetComponent<Rigidbody>().useGravity = true;
 
 
 
@@ -715,7 +724,7 @@ namespace vpet
 			if (isSpotLight || isPointLight) 
 			{
 				sourceLight.range = initialLightRange;
-				serverAdapter.sendLightRange(target, sourceLight);
+				// serverAdapter.sendLightRange(target, initialLightRange);
 			}
 			if (isSpotLight) 
 			{
@@ -1003,7 +1012,7 @@ namespace vpet
 				lastModifiedLightParameter = LightParameter.Range;
 				if (mainController.liveMode)
 				{
-					serverAdapter.sendLightRange(target, sourceLight);
+					// serverAdapter.sendLightRange(target, light.range);
 				}
 			}
 		}
@@ -1083,7 +1092,7 @@ namespace vpet
 					undoRedoController.addAction();
 					break;
 				case (LightParameter.Range):
-					serverAdapter.sendLightRange(target, sourceLight);
+					// serverAdapter.sendLightRange(target, sourceLight.range);
 					undoRedoController.addAction();
 					break;
 				default:
