@@ -379,6 +379,11 @@ namespace vpet
                 }
 
 
+                // col.isTrigger = true; // not interacting
+
+
+
+
                 if (sourceLight)
 				{
                     // BoxCollider col_lightquad = lightTarget.FindChild("LightQuad").GetComponent<BoxCollider>();

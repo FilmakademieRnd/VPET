@@ -59,7 +59,9 @@ namespace vpet
 	    //! template for camera fov
 	    //!
 	    public string camTemplate;
-	
+
+        public string camTransRotTemplate;
+
 	    //!
 		//! Use this for initialization
 		//!
@@ -79,6 +81,8 @@ namespace vpet
 	        camTemplate = binaryData.text;
 			binaryData = Resources.Load("VPET/TextTemplates/objTemplateQuat") as TextAsset;
 			objTemplateQuat = binaryData.text;
-	    }
+            binaryData = Resources.Load("VPET/TextTemplates/camTransRotTemplate") as TextAsset;
+            camTransRotTemplate = binaryData.text;
+        }
 }
 }

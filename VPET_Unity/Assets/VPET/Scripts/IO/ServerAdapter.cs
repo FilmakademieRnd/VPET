@@ -412,21 +412,39 @@ namespace vpet
 
 		private void sendTransformLightKatana(string loc, Vector3 pos, Quaternion rot, Vector3 scl )
 		{
-			float angle = 0;
+            Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
+            rot = rot * rotY180;
+            float angle = 0;
 			Vector3 axis = Vector3.zero;
 			rot.ToAngleAxis( out angle, out axis );
 
-			katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightTransRotTemplate,
+            katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightTransRotTemplate,
 				loc,
 				(-pos.x + " " + pos.y + " " + pos.z),
 				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
 				(scl.x + " " + scl.y + " " + scl.z) ));
 		}
 
-	    //! function to be called to send a translation change to server
-	    //! @param  obj             Transform of GameObject
-	    //! @param  newPosition     new absolute position of GameObject in world space
-	    public void sendTranslation(Transform obj, bool onlyToClientsWithoutPhysics = false)
+        private void sendTransformCameraKatana(string loc, Vector3 pos, Quaternion rot, Vector3 scl)
+        {
+            Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
+            rot = rot * rotY180;
+            float angle = 0;
+            Vector3 axis = Vector3.zero;
+            rot.ToAngleAxis(out angle, out axis);
+
+            katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTransRotTemplate,
+                loc,
+                (-pos.x + " " + pos.y + " " + pos.z),
+                (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
+                (scl.x + " " + scl.y + " " + scl.z)));
+        }
+
+
+        //! function to be called to send a translation change to server
+        //! @param  obj             Transform of GameObject
+        //! @param  newPosition     new absolute position of GameObject in world space
+        public void sendTranslation(Transform obj, bool onlyToClientsWithoutPhysics = false)
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -449,9 +467,16 @@ namespace vpet
 											obj.localScale);
 
 	            }
-	            else if (obj != Camera.main.transform)
-	            {
-					sendTransformKatana("/" + this.getPathString(obj, dreamspaceRoot),
+	            else if (obj.GetComponent<CameraObject>() != null)
+                {
+                    sendTransformCameraKatana("/" + this.getPathString(obj, dreamspaceRoot),
+                                            obj.localPosition,
+                                            obj.localRotation,
+                                            obj.localScale);
+                }
+                else if(obj != Camera.main.transform)
+                {
+                    sendTransformKatana("/" + this.getPathString(obj, dreamspaceRoot),
 						obj.localPosition,
 						obj.localRotation,
 						obj.localScale);
@@ -486,7 +511,14 @@ namespace vpet
 						obj.localScale);
 
 				}
-				else if (obj != Camera.main.transform)
+                else if (obj.GetComponent<CameraObject>() != null)
+                {
+                    sendTransformCameraKatana("/" + this.getPathString(obj, dreamspaceRoot),
+                                            obj.localPosition,
+                                            obj.localRotation,
+                                            obj.localScale);
+                }
+                else if (obj != Camera.main.transform)
 				{
 					sendTransformKatana("/" + this.getPathString(obj, dreamspaceRoot),
 						obj.localPosition,
