@@ -84,14 +84,34 @@ void buildLocation(FnKat::FnScenegraphIterator sgIterator, SceneDistributorPlugi
     */
 
     FnAttribute::GroupAttribute xformAttr = sgIterator.getAttribute("xform");
+
     if (xformAttr.isValid())
     {
       FnAttribute::DoubleAttribute matrixAttr = FnGeolibServices::FnXFormUtil::CalcTransformMatrixAtTime(xformAttr, 0.0f).first;
       FnAttribute::DoubleConstVector matrixData = matrixAttr.getNearestSample(0.0);
-      transform = glm::mat4(matrixData[ 0], matrixData[ 1], matrixData[ 2], matrixData[ 3],
-                       matrixData[ 4], matrixData[ 5], matrixData[ 6], matrixData[ 7],
-                       matrixData[ 8], matrixData[ 9], matrixData[10], matrixData[11],
-                       matrixData[12], matrixData[13], matrixData[14], matrixData[15]);
+//      transform = glm::mat4(matrixData[ 0], matrixData[ 1], matrixData[ 2], matrixData[ 3],
+//                       matrixData[ 4], matrixData[ 5], matrixData[ 6], matrixData[ 7],
+//                       matrixData[ 8], matrixData[ 9], matrixData[10], matrixData[11],
+//                       matrixData[12], matrixData[13], matrixData[14], matrixData[15]);
+
+      // TODO: Hardcoded handiness
+      if ( sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA || sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
+      {
+
+          transform = glm::mat4(matrixData[ 0], -matrixData[ 4], -matrixData[ 8], matrixData[ 3],
+                           -matrixData[ 1], matrixData[ 5], matrixData[ 9], matrixData[ 7],
+                           -matrixData[ 2], matrixData[ 6], matrixData[10], matrixData[11],
+                           -matrixData[12], matrixData[13], matrixData[14], matrixData[15]);
+      }
+      else
+      {
+          transform = glm::mat4(matrixData[ 0], -matrixData[ 4], -matrixData[ 8], matrixData[ 3],
+                           -matrixData[ 1], matrixData[ 5], matrixData[ 9], matrixData[ 7],
+                           -matrixData[ 2], matrixData[ 6], matrixData[10], matrixData[11],
+                           -matrixData[12], matrixData[13], matrixData[14], matrixData[15]);
+
+      }
+
     }
 
 
@@ -144,31 +164,31 @@ void buildLocation(FnKat::FnScenegraphIterator sgIterator, SceneDistributorPlugi
     }
 
 
+
+
+
     glm::vec3 skew, position, scale;
     glm::vec4 persp;
     glm::quat _rotation;
+    glm::quat rotation;
     glm::decompose(transform, scale, _rotation, position, skew, persp);
 
-    glm::quat rotation(_rotation.w, -_rotation.x, -_rotation.y, -_rotation.z);
-
-    // TODO: Hardcoded handiness
-    if ( sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA)
+    if ( sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA || sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
     {
-        glm::vec3 axisY(0.0f, 1.0f, 0.0f);
-        rotation = glm::rotate( rotation, 3.140f, axisY);
+        glm::vec3 axis (0, 1, 0);
+        float angle = 3.14;
+        rotation = glm::rotate(_rotation, angle, axis);
     }
-    else if ( sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
+    else
     {
-        glm::vec3 axisY(0.0f, 1.0f, 0.0f);
-        rotation = glm::rotate( rotation, 3.140f, axisY);
+        rotation = _rotation;
     }
-
 
     //std::cout << "pos: " << position[0] << " " << position[1] << " " << position[2] << std::endl;
     // std::cout << "rot: " << rotation[0] << " " << rotation[1] << " " << rotation[2] << " " << rotation[3] << std::endl;
 
     // TODO: Hardcoded handiness
-    sharedState->node->position[0] = -position[0];
+    sharedState->node->position[0] = position[0];
     sharedState->node->position[1] = position[1];
     sharedState->node->position[2] = position[2];
 
