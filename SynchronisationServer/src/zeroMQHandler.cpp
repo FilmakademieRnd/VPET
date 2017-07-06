@@ -28,10 +28,11 @@ https://opensource.org/licenses/MIT
 #include <QDebug>
 #include <iostream>
 
-ZeroMQHandler::ZeroMQHandler(QString ip , zmq::context_t* context)
+ZeroMQHandler::ZeroMQHandler(QString ip , zmq::context_t* context, zmq::message_t *message)
 {
     IPadress = ip;
     context_ = context;
+	message = &message_;
     _stop = false;
     _working =false;
 }
@@ -74,14 +75,31 @@ void ZeroMQHandler::run()
 
         // checks if process should be aborted
         mutex.lock();
-        bool stop = _stop;
-        mutex.unlock();
+		bool stop = _stop;
+		mutex.unlock();
 
-        zmq::message_t message;
+		socket_->recv(&message_);
 
-        socket_->recv(&message);
+		QString stringMessage = QString::fromStdString(std::string(static_cast<char*>(message_.data()), message_.size()));
+		QString key = stringMessage.section('|', 1, 2);
+		if (key == "udOb") {
+			foreach(const QString &objectState, objectStateMap) {
+				const QByteArray osByteArray = objectState.toLocal8Bit();
+				sender_->send(osByteArray.constData(), osByteArray.length());
+			}
+        }
+		else {
+            if(key.at(0) != 'l')
+				objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
+            sender_->send(message_);
+		}
 
-        sender_->send(message);
+#ifdef _DEBUG
+		// 4 Debug
+		std::cout << "Map Size: " << objectStateMap.size() << std::endl;
+		std::cout << key.toStdString() << " : " << std::endl;
+		std::cout << stringMessage.toStdString() << std::endl;
+#endif
 
         if (stop) {
             qDebug()<<"Stopping ZeroMQHandler in Thread "<<thread()->currentThreadId();
