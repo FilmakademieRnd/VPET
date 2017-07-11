@@ -60,13 +60,16 @@ void* LightScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sgIte
     Dreamspace::Katana::NodeLight* nodeLight =  new Dreamspace::Katana::NodeLight();
 
 
+    sharedState->nodeTypeList.push_back(Dreamspace::Katana::NodeType::LIGHT);
+
+
     // std::cout << "[INFO SceneDistributor.LightScenegraphLocationDelegate] Processing location: " << location << std::endl;
 
     // Light material
     FnAttribute::GroupAttribute materialAttr = FnKat::RenderOutputUtils::getFlattenedMaterialAttr(sgIterator, sharedState->materialTerminalNamesAttr);
 
-    // std::cout << "[INFO SceneDistributor.LightScenegraphLocationDelegate] Material:" << std::endl;
-    // std::cout << materialAttr.getXML() << std::endl;
+    //std::cout << "[INFO SceneDistributor.LightScenegraphLocationDelegate] Material:" << std::endl;
+    //std::cout << materialAttr.getXML() << std::endl;
 
     // Light attributes
     FnAttribute::GroupAttribute paramsAttr = materialAttr.getChildByName("parameters");

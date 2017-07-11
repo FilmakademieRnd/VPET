@@ -60,6 +60,8 @@ void* CameraScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sgIt
     // create camera node
     Dreamspace::Katana::NodeCam* nodeCam =  new Dreamspace::Katana::NodeCam();
 
+    sharedState->nodeTypeList.push_back(Dreamspace::Katana::NodeType::CAMERA);
+
 
     FnAttribute::GroupAttribute attributesGroup = sgIterator.getAttribute("geometry");
 

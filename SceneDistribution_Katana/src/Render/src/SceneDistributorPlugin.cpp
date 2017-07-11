@@ -38,6 +38,7 @@ https://opensource.org/licenses/MIT
 
 #include <sstream>
 
+#include <typeinfo>
 
 namespace Dreamspace
 {
@@ -71,9 +72,8 @@ int SceneDistributorPlugin::start()
 {
     // Setup network material terminal names
     std::vector<std::string> terminalNames;
-    // TODO: this should be openrlSurface and openrlLight
-    terminalNames.push_back("prmanSurface");
-    terminalNames.push_back("prmanLight");
+    //terminalNames.push_back("prmanSurface");
+    //terminalNames.push_back("prmanLight");
     _sharedState.materialTerminalNamesAttr = FnAttribute::StringAttribute(terminalNames);
 
     FnKat::FnScenegraphIterator rootIterator = getRootIterator();
@@ -300,8 +300,9 @@ static void* server(void *scene)
             msgString = std::string( static_cast<char*>(message.data()), message.size() );
         }
 
-        // std::cout << msgString << std::endl;
-        if (msgString == "objec")
+        std::cout << "[INFO SceneDistributorPlugin.server] Got request string: " << msgString << std::endl;
+
+        if (msgString == "objects")
 		{
             std::cout << "[INFO SceneDistributorPlugin.server] Got Objcts Request" << std::endl;
             std::cout << "[INFO SceneDistributorPlugin.server] Object count " << sharedState->objPackList.size() << std::endl;
@@ -314,12 +315,12 @@ static void* server(void *scene)
                 responseLength += sizeof(float) * sharedState->objPackList[i].uvs.size();
             }
 
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
+            messageStart = responseMessageContent = (char*)malloc(responseLength);
 
             for (int i = 0; i < sharedState->objPackList.size(); i++)
             {
                 // vSize
-                int numValues = sharedState->objPackList[i].vertices.size();
+                int numValues = sharedState->objPackList[i].vertices.size()/3.0;
                 memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
                 responseMessageContent += sizeof(int);
                 // vertices
@@ -333,14 +334,14 @@ static void* server(void *scene)
                 memcpy(responseMessageContent, &sharedState->objPackList[i].indices[0], sizeof(int) * sharedState->objPackList[i].indices.size());
                 responseMessageContent += sizeof(int) * sharedState->objPackList[i].indices.size();
                 // nSize
-                numValues = sharedState->objPackList[i].normals.size();
+                numValues = sharedState->objPackList[i].normals.size()/3.0;
                 memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
                 responseMessageContent += sizeof(int);
                 // normals
                 memcpy(responseMessageContent, &sharedState->objPackList[i].normals[0], sizeof(float) * sharedState->objPackList[i].normals.size());
                 responseMessageContent += sizeof(float) * sharedState->objPackList[i].normals.size();
                 // uSize
-                numValues = sharedState->objPackList[i].uvs.size();
+                numValues = sharedState->objPackList[i].uvs.size()/2.0;
                 memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
                 responseMessageContent += sizeof(int);
                 // uvs
@@ -348,133 +349,157 @@ static void* server(void *scene)
                 responseMessageContent += sizeof(float) * sharedState->objPackList[i].uvs.size();
             }
 
-		}
-        else if (msgString == "textu")
-		{
+        }
+        else if (msgString == "textures")
+        {
             std::cout << "[INFO SceneDistributorPlugin.server] Got Textures Request" << std::endl;
             std::cout << "[INFO SceneDistributorPlugin.server] Texture count " << sharedState->texPackList.size() << std::endl;
-            responseLength = sizeof(int)*sharedState->texPackList.size();
+
+            responseLength =  sizeof(int) + sizeof(int)*sharedState->texPackList.size();
             for (int i = 0; i < sharedState->texPackList.size(); i++)
             {
                 responseLength += sharedState->texPackList[i].colorMapDataSize;
             }
 
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
+            messageStart = responseMessageContent = (char*)malloc(responseLength);
+
+            // texture binary type (image data (0) or raw unity texture data (1))
+            int textureBinaryType = sharedState->textureBinaryType;
+            std::cout << " textureBinaryType: " << textureBinaryType << std::endl;
+            memcpy(responseMessageContent, (char*)&textureBinaryType, sizeof(int));
+            responseMessageContent += sizeof(int);
 
             for (int i = 0; i < sharedState->texPackList.size(); i++)
-			{
+            {
                 memcpy(responseMessageContent, (char*)&sharedState->texPackList[i].colorMapDataSize, sizeof(int));
                 responseMessageContent += sizeof(int);
                 memcpy(responseMessageContent, sharedState->texPackList[i].colorMapData, sharedState->texPackList[i].colorMapDataSize);
                 responseMessageContent += sharedState->texPackList[i].colorMapDataSize;
             }
-		}
-		else if (msgString == "nodes")
-		{
+        }
+        else if (msgString == "nodes")
+        {
 
             std::cout << "[INFO SceneDistributorPlugin.server] Got Nodes Request" << std::endl;
-            std::cout << "[INFO SceneDistributorPlugin.server] Node count " << sharedState->nodeList.size() << std::endl;
+            std::cout << "[INFO SceneDistributorPlugin.server] Node count " << sharedState->nodeList.size() << " Node Type count " << sharedState->nodeList.size() << std::endl;
 
             // set the size from type- and namelength
-            responseLength =  2 * sizeof(int) * sharedState->nodeList.size();
+            responseLength =  sizeof(NodeType) * sharedState->nodeList.size();
 
             // extend with sizeof node depending on node type
-			for (int i = 0; i < sharedState->nodeList.size(); i++)
-			{
+            for (int i = 0; i < sharedState->nodeList.size(); i++)
+            {
+
+                if ( sharedState->nodeTypeList[i] == NodeType::GEO)
+                    responseLength += sizeof_nodegeo;
+                else if ( sharedState->nodeTypeList[i] == NodeType::LIGHT)
+                    responseLength += sizeof_nodelight;
+                else if ( sharedState->nodeTypeList[i] == NodeType::CAMERA)
+                    responseLength += sizeof_nodecam;
+                else
+                    responseLength += sizeof_node;
+
+                /*
                 Node* node = sharedState->nodeList[i];
-
-                // name length
-                responseLength += node->name.size();
-
                 if (dynamic_cast<NodeGeo*>( node ))
-                    responseLength += sizeof_nodegeo; //(NodeGeo);
+                    responseLength += sizeof_nodegeo;
                 else if (dynamic_cast<NodeLight*>(node))
-                    responseLength += sizeof_nodelight; //sizeof(NodeLight);
+                    responseLength += sizeof_nodelight;
                 else if (dynamic_cast<NodeCam*>(node))
-                    responseLength += sizeof_nodecam; //sizeof(NodeCam);
-				else 
-                    responseLength += sizeof_node; //sizeof(Node);
-			}
+                    responseLength += sizeof_nodecam;
+                else
+                    responseLength += sizeof_node;
+
+                */
+            }
+
+
+
 
             // allocate memory for out byte stream
             messageStart = responseMessageContent = (char*)malloc(responseLength);
 
+
             // iterate over node list copy data to out byte stream
-			for (int i = 0; i < sharedState->nodeList.size(); i++)
-			{
+            for (int i = 0; i < sharedState->nodeList.size(); i++)
+            {
+                Node* node = sharedState->nodeList[i];
+
+
+                // First Copy node type
+                int nodeType = sharedState->nodeTypeList[i];
+                memcpy(responseMessageContent, (char*)&nodeType, sizeof(int));
+                responseMessageContent += sizeof(int);
+
+                // Copy specific node data
+                if (sharedState->nodeTypeList[i] == NodeType::GEO)
+                {
+                    memcpy(responseMessageContent, node, sizeof_nodegeo);
+                    responseMessageContent += sizeof_nodegeo;
+                }
+                else if (sharedState->nodeTypeList[i] == NodeType::LIGHT)
+                {
+                    memcpy(responseMessageContent, node, sizeof_nodelight);
+                    responseMessageContent += sizeof_nodelight;
+                }
+                else if (sharedState->nodeTypeList[i] == NodeType::CAMERA)
+                {
+                    memcpy(responseMessageContent, node, sizeof_nodecam);
+                    responseMessageContent += sizeof_nodecam;
+                }
+                else
+                {
+                    memcpy(responseMessageContent, node, sizeof_node);
+                    responseMessageContent += sizeof_node;
+                }
+
+                /*
                 Node* node = sharedState->nodeList[i];
                 NodeGeo* nodeGeo = dynamic_cast<NodeGeo*>(node);
                 NodeLight* nodeLight = dynamic_cast<NodeLight*>(node);
                 NodeCam* nodeCam = dynamic_cast<NodeCam*>(node);
 
                 // First Copy node type
-                int nodeType = GROUP;
+                int nodeType = NodeType::GROUP;
+
                 if ( nodeGeo )
-                    nodeType = GEO;
+                    nodeType = NodeType::GEO;
                 else if ( nodeLight )
-                    nodeType = LIGHT;
+                    nodeType = NodeType::LIGHT;
                 else if ( nodeCam )
-                    nodeType = CAMERA;
+                    nodeType = NodeType::CAMERA;
+
 
                 memcpy(responseMessageContent, (char*)&nodeType, sizeof(int));
                 responseMessageContent += sizeof(int);
 
-                // Copy basic node data ( group with name, transform, etc )
-                int nameLength = node->name.size();
-                memcpy(responseMessageContent, (char*)&nameLength, sizeof(int));
-                responseMessageContent += sizeof(int);
-                std::strcpy(responseMessageContent, node->name.c_str());
-                responseMessageContent += nameLength;
-                memcpy(responseMessageContent, (char*)node->position, 3 * sizeof(float));
-                responseMessageContent += 3*sizeof(float);
-                memcpy(responseMessageContent, (char*)node->rotation, 4 * sizeof(float));
-                responseMessageContent += 4*sizeof(float);
-                memcpy(responseMessageContent, (char*)node->scale, 3 * sizeof(float));
-                responseMessageContent += 3*sizeof(float);
-                memcpy(responseMessageContent, (char*)&node->childCount, sizeof(int));
-                responseMessageContent += sizeof(int);
-                memcpy(responseMessageContent, (char*)&node->editable, sizeof(bool));
-                responseMessageContent += sizeof(bool);
-
                 // Copy specific node data
-				if (nodeGeo)
-				{
-                    memcpy(responseMessageContent, (char*)&nodeGeo->geoId, sizeof(int));
-                    responseMessageContent += sizeof(int);
-                    memcpy(responseMessageContent, (char*)&nodeGeo->textureId, sizeof(int));
-                    responseMessageContent += sizeof(int);
-                    memcpy(responseMessageContent, (char*)nodeGeo->color, 3 * sizeof(float));
-                    responseMessageContent += 3*sizeof(float);
-                    memcpy(responseMessageContent, (char*)&nodeGeo->roughness, sizeof(float));
-                    responseMessageContent += sizeof(float);
-
-				}
-				else if (nodeLight)
-				{
-                    memcpy(responseMessageContent, (char*)&nodeLight->type, sizeof(int));
-                    responseMessageContent += sizeof(int);
-                    memcpy(responseMessageContent, (char*)nodeLight->color, 3 * sizeof(float));
-                    responseMessageContent += 3*sizeof(float);
-                    memcpy(responseMessageContent, (char*)&nodeLight->intensity, sizeof(float));
-                    responseMessageContent += sizeof(float);
-                    memcpy(responseMessageContent, (char*)&nodeLight->angle, sizeof(float));
-                    responseMessageContent += sizeof(float);
-                    memcpy(responseMessageContent, (char*)&nodeLight->exposure, sizeof(float));
-                    responseMessageContent += sizeof(float);
+                if (nodeGeo)
+                {
+                    memcpy(responseMessageContent, &nodeGeo, sizeof_nodegeo);
+                    responseMessageContent += sizeof_nodegeo;
                 }
-				else if (nodeCam)
-				{
-                    memcpy(responseMessageContent, (char*)&nodeCam->fov, sizeof(float));
-                    responseMessageContent += sizeof(float);
-                    memcpy(responseMessageContent, (char*)&nodeCam->near, sizeof(float));
-                    responseMessageContent += sizeof(float);
-                    memcpy(responseMessageContent, (char*)&nodeCam->far, sizeof(float));
-                    responseMessageContent += sizeof(float);
+                else if (nodeLight)
+                {
+                    memcpy(responseMessageContent, &nodeLight, sizeof_nodelight);
+                    responseMessageContent += sizeof_nodelight;
                 }
+                else if (nodeCam)
+                {
+                    memcpy(responseMessageContent, &nodeCam, sizeof_nodecam);
+                    responseMessageContent += sizeof_nodecam;
+                }
+                else
+                {
+                    memcpy(responseMessageContent, &node, sizeof_node);
+                    responseMessageContent += sizeof_node;
+                }
+                */
 
             }
 
-		}
+
+        }
 
         std::cout << "[INFO SceneDistributorPlugin.server] Send message length: " << responseLength << std::endl;
         zmq::message_t responseMessage((void*)messageStart, responseLength, NULL);
@@ -483,7 +508,7 @@ static void* server(void *scene)
     }
 
 
-	return 0;
+    return 0;
 }
 
 bool SceneDistributorPlugin::hasPendingDataUpdates() const
