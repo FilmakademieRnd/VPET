@@ -62,7 +62,7 @@ void RecordWriter::run()
 
             if ( forceWrite )
             {
-                numMessages = std::min( RECORDSIZE, numMessages );
+                numMessages = (RECORDSIZE < numMessages) ? RECORDSIZE : numMessages; //changed by theSeim
                 forceWrite = false;
             }
 

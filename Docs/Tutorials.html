@@ -40,6 +40,18 @@ a {text-decoration: none}
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/iv0dDoPE_0E" frameborder="0" allowfullscreen></iframe>
 	<h1>Katana + VPET Tutorial</h1>		
 	<iframe width="560" height="315" src="https://www.youtube.com/embed/z3BAYGiIeC8" frameborder="0" allowfullscreen></iframe>
+	<h1>How to export example data set for use in Katana</h1>
+	<p>The data set shows a Ranch and contains a Maya project including scene file, textures, exported scenegraph xml and Katana files. You can download it from here: <a href="#">VpetScene</a>	
+	</p>
+	<p>
+	<img src="images/vpetScene.png">
+	</p>
+	<p>After you unpacked the zip file open Maya and set the project to 'vpetScene'. Open 'vpetSceneExport.mb' and copy/paste the script 'exportVpetScene.py' from 'scripts/python' into Maya's script editor. You will find a few more details in the script but basically select the top node 'master' and run the script. This will write the scenegraph xml and alembic cachses to a subfolder within scenes.
+	</p>
+	<p>To start Katana navigate to the vpetScene root folder (where the bash script 'vpetKatana.sh' lives) and open 'vpetKatana.sh' in a text editor. Make sure the paths are set correctly and save the file, then run the script as bash. Now in Katana open vpetMasterScene and in the very top of the node graph you will find a node called 'RanchSceneXML'. Make sure the asset is pointing to the correct vpet.xml source file - either the one you just exported or the one which is included inside the package.	
+	</p>
+	<p>From here render the scene with Arnold or start distributing it to a VPET client. Have a look at the Katana+VPET Tutorial how to do this.
+	</p>
 	</td>
   </tr>
 </table>

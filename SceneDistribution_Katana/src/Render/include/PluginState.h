@@ -106,6 +106,15 @@ namespace Katana
             unsigned char* colorMapData;
 	};
 
+
+#pragma pack(4)
+        struct VpetHeader
+        {
+            float lightIntensityFactor = 1.0;
+            int textureBinaryType = 0;
+        };
+
+
 	struct SceneDistributorPluginState
 	{
         SceneDistributorPluginState():
@@ -143,6 +152,7 @@ namespace Katana
             std::string lodTag;
 
             // Data holder
+            VpetHeader vpetHeader;
             std::vector<Node*> nodeList;
             std::vector<NodeType> nodeTypeList;
             std::vector<ObjectPackage> objPackList;

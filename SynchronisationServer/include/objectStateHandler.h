@@ -22,35 +22,32 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
-#ifndef RECORDWRITER_H
-#define RECORDWRITER_H
+#ifndef OBJECTSTATEHANDLER_H
+#define OBJECTSTATEHANDLER_H
 
 #include <QObject>
 #include <QMutex>
-#include "transformationrecorder.h"
+#include <nzmqt/nzmqt.hpp>
 
-class RecordWriter : public QObject
+class ObjectStateHandler : public QObject
 {
     Q_OBJECT
-
-public:  
-    RecordWriter( QList<QStringList>* i_messagesStorage, QMutex* i_mutex );
-    bool forceWrite;
+public:
+    explicit ObjectStateHandler(zmq::message_t *message);
 
 private:
-    int RECORDSIZE;
-    QString filesrc;
-    int filecount;
-    QMutex* mutexmain;
-    QList<QStringList>* messagesStorage;
+    //protect access to _stop
+    QMutex mutex_;
 
+	//the pointer to last message
+	zmq::message_t *message_;
 
-signals:
+	//map of last states
+	QMap<QString, QString> objectStateMap_;
 
 public slots:
+    //execute operations
     void run();
-
-
 };
 
-#endif // RECORDWRITER_H
+#endif // ZEROMQHANDLER_H

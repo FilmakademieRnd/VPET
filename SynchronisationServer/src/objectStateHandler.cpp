@@ -22,35 +22,35 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
-#ifndef RECORDWRITER_H
-#define RECORDWRITER_H
+#include "objectStateHandler.h"
 
-#include <QObject>
-#include <QMutex>
-#include "transformationrecorder.h"
+#include <QThread>
+#include <QDebug>
+#include <iostream>
 
-class RecordWriter : public QObject
+ObjectStateHandler::ObjectStateHandler(zmq::message_t *message)
 {
-    Q_OBJECT
-
-public:  
-    RecordWriter( QList<QStringList>* i_messagesStorage, QMutex* i_mutex );
-    bool forceWrite;
-
-private:
-    int RECORDSIZE;
-    QString filesrc;
-    int filecount;
-    QMutex* mutexmain;
-    QList<QStringList>* messagesStorage;
+    
+}
 
 
-signals:
+void ObjectStateHandler::run()
+{
+   qDebug() << "Starting ObjectStateHandler in Thread " << thread()->currentThreadId();
 
-public slots:
-    void run();
+    while(true) {
+        mutex_.lock();
+		QString messageCopy = QString::fromStdString(std::string(static_cast<char*>(message_->data()), message_->size()));
+		mutex_.unlock();
+		
+		QString key = messageCopy.section('|', 2, 3);
+
+		mutex_.lock();
+		objectStateMap_.insert(key, messageCopy);
+		mutex_.unlock();
+    }
+
+    qDebug() << "ObjectStateHandler process stopped in Thread " << thread()->currentThreadId();
+}
 
 
-};
-
-#endif // RECORDWRITER_H

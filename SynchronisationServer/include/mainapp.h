@@ -51,6 +51,7 @@ private:
     QString ncamIP_;
     QString ncamPort_;
     zmq::context_t* context_;
+	zmq::message_t* updateMessage_;
     QMutex m_mutex;
     bool isRecording;
 
