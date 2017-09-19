@@ -35,10 +35,6 @@ namespace vpet
 
     public class ColorWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-
-
-        private int size = 20;
-
         private Color currentValue = Color.white;
 
         public Color Value
@@ -89,8 +85,8 @@ namespace vpet
             //Debug.Log("ON DRAG delta: " + data.position + " rcet position " + image.rectTransform.position + " anchor min " + image.rectTransform.anchorMin + " size delt " + image.rectTransform.sizeDelta);
 
             RectTransform imageTransform = image.rectTransform;
-            float x = (data.position.x - imageTransform.position.x) / imageTransform.sizeDelta.x;
-            float y = (data.position.y - imageTransform.position.y) / imageTransform.sizeDelta.y;
+            float x = (data.position.x - imageTransform.position.x) / Screen.width * 10f;
+            float y = (data.position.y - imageTransform.position.y) / Screen.width * 10f;
             float radius = Mathf.Sqrt(x * x + y * y);
 
             if (radius > 1f)
@@ -99,7 +95,7 @@ namespace vpet
                 x /= radius + .05f;
                 y /= radius + .05f;
             }
-
+            //Debug.Log("x:" + x + "y:" + y);
             callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));
         }
 

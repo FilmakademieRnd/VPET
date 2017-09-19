@@ -343,8 +343,9 @@ namespace vpet
                         if ((Time.time - lastUpdateTime) >= updateIntervall)
                         {
                             lastUpdateTime = Time.time;
-                            lastPosition = this.transform.GetChild(1).position;
-							serverAdapter.sendTranslation(this.transform.GetChild(1) );
+                            Transform child = this.transform.GetChild(1);
+                            lastPosition = child.position;
+							serverAdapter.sendTranslation(child );
                         }
                     }
                 }
@@ -398,6 +399,7 @@ namespace vpet
                     fpsText += " Msg:" + VPETSettings.Instance.msg;
                     accum = 0.0F;
                     frames = 0;
+                    timeleft = updateInterval;
                 }
             }
 
