@@ -63,7 +63,7 @@ namespace vpet
 	            } else if (Screen.orientation == ScreenOrientation.Portrait) {
 	                quatMult = new Quaternion(0f,0f,1f,0f);
 	            } else if (Screen.orientation == ScreenOrientation.PortraitUpsideDown) {
-	                quatMult = nwe Quaternion(0f,0f,0f,1f);
+	                quatMult = new Quaternion(0f,0f,0f,1f);
 	            }
 	            #endif
 	
