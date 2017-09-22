@@ -228,7 +228,11 @@ namespace vpet
                 }
                 else
                 {
+#if UNITY_IPHONE
+                    Texture2D tex_2d = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
+#else
                     Texture2D tex_2d = new Texture2D(16, 16, TextureFormat.DXT5Crunched, false);
+#endif
                     tex_2d.LoadImage(texPack.colorMapData);
                     sceneTextureList.Add(tex_2d);
                 }

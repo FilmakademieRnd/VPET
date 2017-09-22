@@ -56,15 +56,14 @@ namespace vpet
 	            gyro.enabled = true;
 	            
 	            #if UNITY_IPHONE
-	            camParent.transform.eulerAngles = Vector3(90,90,0);
 	            if (Screen.orientation == ScreenOrientation.LandscapeLeft) {
-	                quatMult = Quaternion(0,0,0.7071,0.7071);
+	                quatMult = new Quaternion(0f,0f,0.7071f,0.7071f);
 	            } else if (Screen.orientation == ScreenOrientation.LandscapeRight) {
-	                quatMult = Quaternion(0,0,-0.7071,0.7071);
+	                quatMult = new Quaternion(0f,0f,-0.7071f,0.7071f);
 	            } else if (Screen.orientation == ScreenOrientation.Portrait) {
-	                quatMult = Quaternion(0,0,1,0);
+	                quatMult = new Quaternion(0f,0f,1f,0f);
 	            } else if (Screen.orientation == ScreenOrientation.PortraitUpsideDown) {
-	                quatMult = Quaternion(0,0,0,1);
+	                quatMult = nwe Quaternion(0f,0f,0f,1f);
 	            }
 	            #endif
 	
