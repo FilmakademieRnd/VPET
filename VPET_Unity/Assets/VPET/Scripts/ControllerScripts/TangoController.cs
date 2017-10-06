@@ -156,7 +156,7 @@ namespace vpet
 	        }
 	    }
 
-        public void setTangoScaleIntensity(float v)
+        public void setTrackingScaleIntensity(float v)
         {
             m_movementScale = 100f * VPETSettings.Instance.sceneScale * v;
         }

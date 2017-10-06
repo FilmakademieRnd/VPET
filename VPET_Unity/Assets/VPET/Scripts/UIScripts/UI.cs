@@ -76,7 +76,9 @@ namespace vpet
         //! Cached reference to the Tango controller.
         //!
 #if USE_TANGO
-        private TangoController tangoController;
+        private TangoController trackingController;
+#elif USE_ARKIT
+        private ARKitController trackingController;
 #endif
 
         //!
@@ -196,8 +198,10 @@ namespace vpet
 		        animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 
 #if USE_TANGO
-                //cache reference to tango Controller
-                tangoController = GameObject.Find("Tango").GetComponent<TangoController>();
+                //cache reference to tracking Controller
+                trackingController = GameObject.Find("Tango").GetComponent<TangoController>();
+#elif USE_ARKIT
+                trackingController = GameObject.Find("ARKit").GetComponent<ARKitController>();
 #endif
             }
             catch
@@ -258,7 +262,7 @@ namespace vpet
 			// Ambient light listener
 			configWidget.AmbientChangedEvent.AddListener( mainController.setAmbientIntensity );
 
-#if USE_TANGO
+#if USE_TANGO || USE_ARKIT
                 // Show Tango Scale UI objects
                 GameObject tangoScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_slider");                
                 // tangoScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
@@ -270,8 +274,8 @@ namespace vpet
                 tangoScaleLabelUI.gameObject.SetActive(true);
                 tangoScaleSliderUI.gameObject.SetActive(true);
                 // Tango Scale Listener
-                configWidget.TangoScaleChangedEvent.AddListener( tangoController.setTangoScaleIntensity );
-                configWidget.OnSceneScaleChanged.AddListener(tangoController.scaleMovement);
+                configWidget.TrackingScaleChangedEvent.AddListener(trackingController.setTrackingScaleIntensity );
+                configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
 #endif
 
 

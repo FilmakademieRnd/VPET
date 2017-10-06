@@ -34,8 +34,8 @@ namespace vpet
 	public class VisibilityChangeEvent: UnityEvent<bool> {}
     public class SceneScaleChangedEvent : UnityEvent<float> { }
 
-#if USE_TANGO
-    public class TangoScaleIntensityChangedEvent : UnityEvent<float> { }
+#if USE_TANGO || USE_ARKIT
+    public class TrackingScaleIntensityChangedEvent : UnityEvent<float> { }
 #endif
 
     public class ConfigWidget: MonoBehaviour
@@ -43,8 +43,8 @@ namespace vpet
 	    public ConfigEvent SubmitEvent = new ConfigEvent();
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
         public SceneScaleChangedEvent OnSceneScaleChanged = new SceneScaleChangedEvent();
-#if USE_TANGO
-        public TangoScaleIntensityChangedEvent TangoScaleChangedEvent = new TangoScaleIntensityChangedEvent();
+#if USE_TANGO || USE_ARKIT
+        public TrackingScaleIntensityChangedEvent TrackingScaleChangedEvent = new TrackingScaleIntensityChangedEvent();
 #endif
 
         //!
@@ -72,10 +72,10 @@ namespace vpet
 		//!
 		private float ambientLight = 0.1f;
 
-#if USE_TANGO
+#if USE_TANGO || USE_ARKIT
         [HideInInspector]
-        public float tangoScale = 1.0f;
-        private Slider tangoScaleSlider;
+        public float trackingScale = 1.0f;
+        private Slider trackingScaleSlider;
 #endif
 
 
@@ -215,18 +215,18 @@ namespace vpet
 				}
 			}
 
-#if USE_TANGO
-            // Tango scale
-            childWidget = this.transform.FindChild("TangoScale_slider");
+#if USE_TANGO || USE_ARKIT
+            // tracking scale
+            childWidget = this.transform.Find("TangoScale_slider");
             if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tango_Scale.", this.GetType()));
             else
             {
-                tangoScaleSlider = childWidget.GetComponent<Slider>();
-                if (tangoScaleSlider == null) Debug.LogWarning(string.Format("{0}: Cant Component: Slider.", this.GetType()));
+                trackingScaleSlider = childWidget.GetComponent<Slider>();
+                if (trackingScaleSlider == null) Debug.LogWarning(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
                 {
-                    tangoScaleSlider.value = tangoScale;
-                    tangoScaleSlider.onValueChanged.AddListener(this.OnTangoScaleChanged);
+                    trackingScaleSlider.value = trackingScale;
+                    trackingScaleSlider.onValueChanged.AddListener(this.OnTrackingScaleChanged);
                 }
             }
 #endif
@@ -292,13 +292,13 @@ namespace vpet
                 ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
 
-#if USE_TANGO
+#if USE_TANGO || USE_ARKIT
             // Tango Scale
-            if (tangoScaleSlider)
+            if (trackingScaleSlider)
             {
-                tangoScaleSlider.value = tangoScale;
+                trackingScaleSlider.value = trackingScale;
                 Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_Value").GetComponent<Text>();            
-                sliderValueText.text = tangoScale.ToString("f1");
+                sliderValueText.text = trackingScale.ToString("f1");
             }
 #endif
 
@@ -332,10 +332,10 @@ namespace vpet
 				ambientLight = ambientIntensitySlider.value;
             }
 
-#if USE_TANGO
-            // Tango Scale
-            if (tangoScaleSlider) {
-                tangoScale = tangoScaleSlider.value;
+#if USE_TANGO || USE_ARKIT
+            // tracking Scale
+            if (trackingScaleSlider) {
+                trackingScale = trackingScaleSlider.value;
             }
 #endif
 
@@ -399,13 +399,13 @@ namespace vpet
             AmbientChangedEvent.Invoke( v );
 		}
 
-#if USE_TANGO
-        private void OnTangoScaleChanged(float v)
+#if USE_TANGO || USE_ARKIT
+        private void OnTrackingScaleChanged(float v)
         {
-            tangoScale = v;            
+            trackingScale = v;            
             Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_Value").GetComponent<Text>();            
             sliderValueText.text = v.ToString("n1");
-            TangoScaleChangedEvent.Invoke(v);
+            TrackingScaleChangedEvent.Invoke(v);
         }
 #endif
 

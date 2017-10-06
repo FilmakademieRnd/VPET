@@ -35,6 +35,10 @@ namespace vpet
 
     public class ColorWheel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+
+
+        private int size = 20;
+
         private Color currentValue = Color.white;
 
         public Color Value
@@ -95,7 +99,7 @@ namespace vpet
                 x /= radius + .05f;
                 y /= radius + .05f;
             }
-            //Debug.Log("x:" + x + "y:" + y);
+
             callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));
         }
 

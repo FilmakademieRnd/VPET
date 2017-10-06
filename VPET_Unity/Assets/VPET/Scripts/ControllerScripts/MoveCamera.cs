@@ -173,8 +173,8 @@ namespace vpet
         //!
         public bool TangoBuild4LenovoPhab2 = false;
 
-#if USE_TANGO
-        private Transform tangoTransform;
+#if USE_TANGO || USE_ARKIT
+        private Transform trackingTransform;
 #endif
         private Transform cameraParent;
         private GyroAdapter gyroAdapter;
@@ -245,8 +245,9 @@ namespace vpet
             if (mainController == null) Debug.LogError(string.Format("{0}: No MainController found.", this.GetType()));
 
 #if USE_TANGO
-            tangoTransform = GameObject.Find("Tango").transform;
-
+            trackingTransform = GameObject.Find("Tango").transform;
+#elif USE_ARKIT
+            trackingTransform = GameObject.Find("ARKit").transform;
 #else
             Camera.main.transform.parent.transform.Rotate(Vector3.right, 90);
 #endif
@@ -283,9 +284,9 @@ namespace vpet
 
 #if !UNITY_EDITOR
 #if (UNITY_ANDROID || UNITY_IOS)
-#if USE_TANGO
-                newRotation = tangoTransform.rotation;
-                newPosition = tangoTransform.position;
+#if USE_TANGO || USE_ARKIT
+                newRotation = trackingTransform.rotation;
+                newPosition = trackingTransform.position;
 #else
                 newRotation = gyroAdapter.Rotation;
 #endif
@@ -303,7 +304,7 @@ namespace vpet
                     }
                     //grab sensor reading on current platform
 #if !UNITY_EDITOR
-#if (UNITY_ANDROID || UNITY_IOS) && !USE_TANGO
+#if (UNITY_ANDROID) && !(USE_TANGO || UNITY_IOS)
                     transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation;
 #elif UNITY_STANDALONE_WIN
                     transform.rotation = rotationOffset * newRotation;
@@ -315,7 +316,7 @@ namespace vpet
                     // HACK: to block roll
                     transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
                     //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
-#if USE_TANGO
+#if USE_TANGO || USE_ARKIT
                     cameraParent.position += rotationOffset * (newPosition - oldPosition);
                 
 #endif
@@ -329,9 +330,9 @@ namespace vpet
                     firstApplyTransform = false;
                 }
 
-#if USE_TANGO
-                oldPosition = tangoTransform.position;
-                oldRotation = tangoTransform.rotation;
+#if USE_TANGO || USE_ARKIT
+                oldPosition = trackingTransform.position;
+                oldRotation = trackingTransform.rotation;
 #endif
                 //reset rotation of attached gameObjects and send update to server if neccessary 
                 if (this.transform.childCount > 1)
@@ -343,9 +344,8 @@ namespace vpet
                         if ((Time.time - lastUpdateTime) >= updateIntervall)
                         {
                             lastUpdateTime = Time.time;
-                            Transform child = this.transform.GetChild(1);
-                            lastPosition = child.position;
-							serverAdapter.sendTranslation(child );
+                            lastPosition = this.transform.GetChild(1).position;
+							serverAdapter.sendTranslation(this.transform.GetChild(1) );
                         }
                     }
                 }
@@ -399,7 +399,6 @@ namespace vpet
                     fpsText += " Msg:" + VPETSettings.Instance.msg;
                     accum = 0.0F;
                     frames = 0;
-                    timeleft = updateInterval;
                 }
             }
 
