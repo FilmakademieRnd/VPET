@@ -136,17 +136,13 @@ namespace vpet
             // set default orthographic size
             Camera.main.orthographicSize = 1000 * VPETSettings.Instance.sceneScale;
 
-            /*
-	        Transform geoTransform = GameObject.Find( "geo" ).transform;
-	        if ( geoTransform != null )
-	        {
-	            print( "Set geo transform" );
-	            JoystickInput joystickScript = GameObject.Find( "JoystickInput" ).gameObject.GetComponent<JoystickInput>();
-	            joystickScript.WorldTransform = geoTransform;        
-	        }
-	         */
-
-
+	        //Transform geoTransform = GameObject.Find( "Main Camera" ).transform;
+	        //if ( geoTransform != null )
+	        //{
+	        //    print( "Set geo transform" );
+	        //    JoystickInput joystickScript = GameObject.Find( "JoystickAdapter" ).gameObject.GetComponent<JoystickInput>();
+	        //    joystickScript.WorldTransform = geoTransform;        
+	        //}
         }
 
         public bool isEditable(GameObject targetObj)

@@ -74,7 +74,14 @@ namespace vpet
         //!
         //! Reference to server adapter to send out changes on execution
         //!
-        private ServerAdapter serverAdapter;
+        private ServerAdapter serverAdapter = null;
+
+
+        //!
+        //! Reference to server adapter to send out changes on execution
+        //!
+        private JoystickInput joystickAdapter = null;
+
 
         //!
         //! If a gameObject is attached to the camera, this value will hold the rotation of the object.
@@ -239,6 +246,11 @@ namespace vpet
             if (refObject != null) serverAdapter = refObject.GetComponent<ServerAdapter>();
             if (serverAdapter == null) Debug.LogError(string.Format("{0}: No ServerAdapter found.", this.GetType()));
 
+            // get joystick adapter
+            refObject = GameObject.Find("JoystickAdapter");
+            if (refObject != null) joystickAdapter = refObject.GetComponent<JoystickInput>();
+            if (joystickAdapter == null) Debug.LogError(string.Format("{0}: No JoystickInput found.", this.GetType()));
+
             // get mainController
             refObject = GameObject.Find("MainController");
             if (refObject != null) mainController = refObject.GetComponent<MainController>();
@@ -349,6 +361,8 @@ namespace vpet
                         }
                     }
                 }
+                if (joystickAdapter != null)
+                    cameraParent.position += joystickAdapter.getTranslation();
             }
 
             //smoothly "fly" the camera to a given position
@@ -397,8 +411,9 @@ namespace vpet
                     fpsText += " Renderpath:" + Camera.main.renderingPath;
                     fpsText += " ActualRenderpath:" + Camera.main.actualRenderingPath;
                     fpsText += " Msg:" + VPETSettings.Instance.msg;
-                    accum = 0.0F;
+                    accum = 0.0f;
                     frames = 0;
+                    timeleft = updateInterval;
                 }
             }
 
