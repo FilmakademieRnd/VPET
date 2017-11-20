@@ -168,7 +168,7 @@ namespace vpet
             else
             {
 
-#if USE_TANGO
+#if USE_TANGO || USE_ARKIT
                 arToggle = childWidget.GetComponent<Toggle>();
                 if (arToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else

@@ -468,8 +468,13 @@ namespace vpet
                 tangoApplication.m_enableVideoOverlay = true;
                 tangoApplication.m_videoOverlayUseTextureMethod = true;
                 TangoARScreen tangoArScreen = Camera.main.gameObject.GetComponent<TangoARScreen>();
-                if (tangoArScreen == null) tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
+                if (tangoArScreen == null) 
+                    tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
                 tangoArScreen.enabled = true;
+#elif USE_ARKIT
+                ARKitScreen arkitScreen = Camera.main.gameObject.GetComponent<ARKitScreen>();
+                if (arkitScreen == null) 
+                    arkitScreen = Camera.main.gameObject.AddComponent<ARKitScreen>();
 #endif
             }
             else
@@ -478,6 +483,8 @@ namespace vpet
                 Camera.main.gameObject.GetComponent<TangoARScreen>().enabled = false;
                 GameObject.Destroy(Camera.main.GetComponent<TangoARScreen>());
                 tangoApplication.m_enableVideoOverlay = false;
+#elif USE_ARKIT
+                GameObject.Destroy(Camera.main.GetComponent<ARKitScreen>());
 #endif
                 Camera.main.ResetProjectionMatrix();
                 sceneAdapter.ShowGeometry();

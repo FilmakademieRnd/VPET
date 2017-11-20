@@ -71,47 +71,12 @@ namespace vpet
 #endif
         }
 
-        // code example for AR camera feed 
-        //public void SetCamera(Camera newCamera)
-        //{
-        //    if (m_camera != null)
-        //    {
-        //        UnityARVideo oldARVideo = m_camera.gameObject.GetComponent<UnityARVideo>();
-        //        if (oldARVideo != null)
-        //        {
-        //            savedClearMaterial = oldARVideo.m_ClearMaterial;
-        //            Destroy(oldARVideo);
-        //        }
-        //    }
-        //    SetupNewCamera(newCamera);
-        //}
-
-        //private void SetupNewCamera(Camera newCamera)
-        //{
-        //    m_camera = newCamera;
-
-        //    if (m_camera != null)
-        //    {
-        //        UnityARVideo unityARVideo = m_camera.gameObject.GetComponent<UnityARVideo>();
-        //        if (unityARVideo != null)
-        //        {
-        //            savedClearMaterial = unityARVideo.m_ClearMaterial;
-        //            Destroy(unityARVideo);
-        //        }
-        //        unityARVideo = m_camera.gameObject.AddComponent<UnityARVideo>();
-        //        unityARVideo.m_ClearMaterial = savedClearMaterial;
-        //    }
-        //}
-
         // Update is called once per frame
         void Update()
         {
             Matrix4x4 matrix = m_session.GetCameraPose();
             transform.position = UnityARMatrixOps.GetPosition(matrix) * m_movementScale;
             transform.rotation = UnityARMatrixOps.GetRotation(matrix);
-            
-            // example code for AR
-            //m_camera.projectionMatrix = m_session.GetCameraProjection();
         }
 
         public void setTrackingScaleIntensity(float v)
