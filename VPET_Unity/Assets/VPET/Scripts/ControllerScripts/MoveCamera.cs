@@ -362,7 +362,7 @@ namespace vpet
                     }
                 }
                 if (joystickAdapter != null)
-                    cameraParent.position += joystickAdapter.getTranslation();
+                    cameraParent.position += rotationOffset * joystickAdapter.getTranslation();
             }
 
             //smoothly "fly" the camera to a given position
