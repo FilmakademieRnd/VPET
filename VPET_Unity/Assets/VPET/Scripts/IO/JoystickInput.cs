@@ -39,30 +39,10 @@ namespace vpet
 
         private float left, right, bottom, top;
 
-
-
-        private Transform worldTransform = null;
-        private SceneObject sceneObject = null;
-
         private ServerAdapter serverAdapter;
 
         private float x_axis = 0f;
         private float y_axis = 0f;
-
-        public Transform WorldTransform
-        {
-            set
-            {
-                worldTransform = value;
-                sceneObject = worldTransform.GetComponent<SceneObject>();
-
-                // HACK
-                if (sceneObject == null)
-                {
-                    sceneObject = worldTransform.gameObject.AddComponent<SceneObject>();
-                }
-            }
-        }
 
         public Vector3 getTranslation()
         {
