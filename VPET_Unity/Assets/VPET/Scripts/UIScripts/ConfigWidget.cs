@@ -217,8 +217,8 @@ namespace vpet
 
 #if USE_TANGO || USE_ARKIT
             // tracking scale
-            childWidget = this.transform.Find("TangoScale_slider");
-            if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tango_Scale.", this.GetType()));
+            childWidget = this.transform.Find("TrackingScale_slider");
+            if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tracking_Scale.", this.GetType()));
             else
             {
                 trackingScaleSlider = childWidget.GetComponent<Slider>();
@@ -293,11 +293,11 @@ namespace vpet
             }
 
 #if USE_TANGO || USE_ARKIT
-            // Tango Scale
+            // Tracking Scale
             if (trackingScaleSlider)
             {
                 trackingScaleSlider.value = trackingScale;
-                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_Value").GetComponent<Text>();            
+                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value").GetComponent<Text>();            
                 sliderValueText.text = trackingScale.ToString("f1");
             }
 #endif
@@ -403,7 +403,7 @@ namespace vpet
         private void OnTrackingScaleChanged(float v)
         {
             trackingScale = v;            
-            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_Value").GetComponent<Text>();            
+            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value").GetComponent<Text>();            
             sliderValueText.text = v.ToString("n1");
             TrackingScaleChangedEvent.Invoke(v);
         }

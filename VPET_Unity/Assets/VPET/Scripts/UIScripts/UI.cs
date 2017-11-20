@@ -263,17 +263,17 @@ namespace vpet
 			configWidget.AmbientChangedEvent.AddListener( mainController.setAmbientIntensity );
 
 #if USE_TANGO || USE_ARKIT
-                // Show Tango Scale UI objects
-                GameObject tangoScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_slider");                
-                // tangoScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
-                GameObject tangoScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_label");
-                //tangoScaleLabelUI.transform.localPosition = new Vector3(-105.0f, 530.0f, 0.0f);
+                // Show Tracking Scale UI objects
+                GameObject trackingScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_slider");                
+                // trackingScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
+                GameObject trackingScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_label");
+                //trackingScaleLabelUI.transform.localPosition = new Vector3(-105.0f, 530.0f, 0.0f);
                 GameObject startButton = GameObject.Find("GUI/Canvas/ConfigWidget/Start_button");
-                GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TangoScale_Value");
+                GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value");
                 sliderValueText.gameObject.SetActive(true);
-                tangoScaleLabelUI.gameObject.SetActive(true);
-                tangoScaleSliderUI.gameObject.SetActive(true);
-                // Tango Scale Listener
+                trackingScaleLabelUI.gameObject.SetActive(true);
+                trackingScaleSliderUI.gameObject.SetActive(true);
+                // tracking Scale Listener
                 configWidget.TrackingScaleChangedEvent.AddListener(trackingController.setTrackingScaleIntensity );
                 configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
 #endif
