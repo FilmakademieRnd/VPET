@@ -46,7 +46,13 @@ namespace vpet
 	    //! scale modifier initial distance between pointer origin
 	    //!
 	    float initialScaleDistance = float.NaN;
-	
+
+	    //!
+	    //! axis locker
+	    //!
+        public void setAxisLockerXYZ() {
+            axisLocker = new Vector3(1, 1, 1);
+        }
 	    //!
 	    //! translate currently selected object
 	    //! @param      translation     relative translation beeing applied on current selection

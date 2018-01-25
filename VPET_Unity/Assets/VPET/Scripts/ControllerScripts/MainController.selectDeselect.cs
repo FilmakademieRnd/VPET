@@ -109,7 +109,13 @@ namespace vpet
             }
         }
 
-
+        //! select an object from other script (joystick)
+        //! @param      sObject     Pointer to the object, selected by user
+        //!
+        public void callSelect(Transform sObject)
+        {
+            select(sObject);
+        }
         //!
         //! select an object
         //! @param      sObject     Pointer to the object, selected by user
@@ -152,6 +158,13 @@ namespace vpet
 	
 	    }
 	
+	    //! deselect an object from other script (joystick)
+        //! @param      sObject     Pointer to the object, selected by user
+        //!
+        public void callDeselect()
+        {
+            deselect();
+        }
 	    //!
 	    //! unselect an object or reset state
 	    //!

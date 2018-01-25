@@ -360,9 +360,27 @@ namespace vpet
 							serverAdapter.sendTranslation(this.transform.GetChild(1) );
                         }
                     }
+                }                
+                if (joystickAdapter != null && joystickAdapter.moveCameraActive)
+                {                    
+                    mainController.moveCameraObject(joystickAdapter.getTranslation());
+                }                
+                if (joystickAdapter != null && joystickAdapter.moveObjectActive)
+                {                 
+                    mainController.translateSelection(joystickAdapter.getTranslation());
+                }
+                if (joystickAdapter != null && joystickAdapter.rotateObjectActive)
+                {                    
+                    mainController.rotateSelection(new Vector3(0,0,0), joystickAdapter.getTranslation());
+                }
+                if (joystickAdapter != null && joystickAdapter.scaleObjectActive)
+                {                 
+                    mainController.scaleSelection(joystickAdapter.getTranslation().x/100);
                 }
                 if (joystickAdapter != null)
-                    cameraParent.position += rotationOffset * joystickAdapter.getTranslation();
+                {
+                    joystickAdapter.getButtonUpdates();
+                }
             }
 
             //smoothly "fly" the camera to a given position
