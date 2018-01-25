@@ -234,7 +234,7 @@ namespace vpet
 
             }
             // toggle predefined bookmarks
-            else if (Input.GetButtonDown("Button_Tip"))
+            else if (Input.GetButtonDown("R1"))
             {                
                 mainController.repositionCamera();
                 mainController.resetCameraOffset();
