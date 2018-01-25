@@ -240,7 +240,7 @@ namespace vpet
                 mainController.resetCameraOffset();
             }
 
-            // cycle through manipulation list                                                
+            // reset current selection                                          
             else if (Input.GetButtonDown("L1"))
             {
                 if (mainController.getCurrentSelection())
@@ -249,7 +249,7 @@ namespace vpet
                     mainController.resetSelectionRotation();
                     mainController.resetSelectionScale();
                 }
-            }           
+            }            
             // cycle through object list                                    
             else if (Input.GetAxis("Horizontal") != 0 && hasPressedDirectionalPad == false ||
                      Input.GetAxis("Vertical") != 0 && hasPressedDirectionalPad == false)
