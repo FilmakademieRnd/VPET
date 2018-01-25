@@ -48,10 +48,19 @@ namespace vpet
 	    private List<Texture2D> sceneTextureList = new List<Texture2D>();
 	    private List<Mesh[]> sceneMeshList = new List<Mesh[]>();
 	    private List<GameObject> sceneEditableObjects = new List<GameObject>();
-	    private GameObject scnRoot;
+        public List<GameObject> selectableLights = new List<GameObject>();
+        private GameObject scnRoot;
 	
 	    private List<GameObject> sceneCameraList = new List<GameObject>();
-	    public List<GameObject> SceneCameraList
+        public List<GameObject> sceneEditableObjectsList
+        {
+            get { return sceneEditableObjects; }
+        }
+        public List<GameObject> selectableLightsList
+        {
+            get { return selectableLights; }
+        }
+        public List<GameObject> SceneCameraList
 	    {
 	        get { return sceneCameraList;  }
 	    }
@@ -172,7 +181,8 @@ namespace vpet
 	        {
                 SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType( node, typeof(SceneNodeLight) );
                 obj = createLight(nodeLight, parent);
-	        }
+                selectableLights.Add(obj);
+            }
 	        else if ( node.GetType() == typeof(SceneNodeCam) )
 	        {
                 SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType( node, typeof(SceneNodeCam) );

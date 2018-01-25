@@ -72,7 +72,7 @@ namespace vpet
         //!
         public void initSelectionLists() {
             // object and lights lists                
-            List<GameObject> sceneEditableObjectsList = sceneLoader.sceneEditableObjects;
+            List<GameObject> sceneEditableObjectsList = sceneLoader.sceneEditableObjectsList;
             // create light list
             EditableLightList.Clear();
             foreach (GameObject g in sceneLoader.selectableLights)
