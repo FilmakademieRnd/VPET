@@ -22,6 +22,49 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
+
+
+/*
+Sample Mapping for XBox and GameVice Controller
+
+
+Command 		|		Windows Xbox  mapping 		| 	
+----------------|-----------------------------------|
+Fire0 			|Positive Button: joystick button 0	|
+Fire1 			|Positive Button: joystick button 1	|
+Fire2 			|Positive Button: joystick button 2	|
+Fire3 			|Positive Button: joystick button 3	|
+DPAD_H  		|DPad Axis, 6th axis 				|
+DPAD_V  		|DPad Axis, 7th axis				|
+LeftStick_X 	|Joystick Axis, X Axis				|
+LeftStick_Y 	|Joystick Axis, Y Axis, invert		|
+RightStick_Y 	|Joystick Axis, 5th axis, invert	|
+L1				|Key or Mouse Button,				|
+				|Positive Button: joystick button 4	|
+R1				|Key or Mouse Button,				|
+				|Positive Button: joystick button 5	|				
+				
+
+Command 		|		iOS GameVice mapping 		 						| 
+----------------|-----------------------------------------------------------|
+Fire0 			|Positive Button: joystick button 14, Axis: 14th 			|
+Fire1 			|Positive Button: joystick button 13, Axis: 13th 			|
+Fire2 			|Positive Button: joystick button 15, Axis: 15th 			|
+Fire3 			|Positive Button: joystick button 12, Axis: 12th 			|
+DPAD_H  		|Positive Button: joystick button 5, Axis: 5th   			|
+DPAD_H_neg 		|Positive Button: joystick button 7, Axis: 7th   			|
+DPAD_V  		|Positive Button: joystick button 4, Axis: 4th   			|
+DPAD_V_neg 		|Positive Button: joystick button 6, Axis: 6th   			|
+LeftStick_X 	|Joystick Axis, X Axis										|
+LeftStick_Y 	|Joystick Axis, Y Axis, invert								|
+RightStick_Y 	|Joystick Axis, 4th axis, invert							|
+L1				|Key or Mouse Button, Positive Button: joystick button 8	|
+R1				|Key or Mouse Button, Positive Button: joystick button 9	|
+R2				|Key or Mouse Button, Positive Button: joystick button 11	|
+				
+
+*/
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -237,9 +280,14 @@ namespace vpet
             else if (Input.GetButtonDown("R1"))
             {                
                 mainController.repositionCamera();
-                mainController.resetCameraOffset();
+                mainController.resetCameraOffset();                
             }
-
+            // disable tracking
+            else if (Input.GetAxis("R2") < 0)
+            {
+                mainController.toggleCameraRotation();
+                print("vh: OK!");
+            }
             // reset current selection                                          
             else if (Input.GetButtonDown("L1"))
             {
@@ -249,23 +297,36 @@ namespace vpet
                     mainController.resetSelectionRotation();
                     mainController.resetSelectionScale();
                 }
-            }            
+            }
             // cycle through object list                                    
-            else if (Input.GetAxis("Horizontal") != 0 && hasPressedDirectionalPad == false ||
-                     Input.GetAxis("Vertical") != 0 && hasPressedDirectionalPad == false)
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            else if (   Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
+                        Input.GetAxis("DPAD_V") != 0 && hasPressedDirectionalPad == false)
+#elif UNITY_IOS
+            else if (   Input.GetButtonDown("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
+                        Input.GetButtonDown("DPAD_H_neg") != 0 && hasPressedDirectionalPad == false ||
+                        input.GetButtonDown("DPAD_V") != 0 && hasPressedDirectionalPad == false ||
+                        input.GetButtonDown("DPAD_V_neg") != 0 && hasPressedDirectionalPad == false )
+#endif
             {
                 EditableObjects = EditableObjectsList;
-
-                if (Input.GetAxis("Horizontal") == 1 || Input.GetAxis("Vertical") == 1)
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+                if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
                     DPADdirection = 1;
+#elif UNITY_IOS
+                if (Input.GetButtonDown("DPAD_H") == 1 || Input.GetButtonDown("DPAD_V") == 1)
+                    DPADdirection = 1;
+#endif
                 else DPADdirection = -1;
-
                 hasPressedDirectionalPad = true;
                 int match = 0;
-                
-                if (Input.GetAxis("Vertical") != 0)
-                    EditableObjects = EditableLightList;                              
-
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+                if (Input.GetAxis("DPAD_V") != 0)
+                    EditableObjects = EditableLightList;
+#elif UNITY_IOS
+                if (Input.GetButtonDown("DPAD_V") != 0 || Input.GetButtonDown("DPAD_V_neg") != 0 )
+                    EditableObjects = EditableLightList;
+#endif
                 // test current selection
                 if (mainController.getCurrentSelection())
                 {                    
@@ -298,10 +359,13 @@ namespace vpet
                 }                
             }
             // Dpad reset 
-            else if (Input.GetAxis("Horizontal") == 0 && (Input.GetAxis("Vertical") == 0))
-            {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))            
                 hasPressedDirectionalPad = false;
-            }            
+#elif UNITY_IOS
+            else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))            
+                hasPressedDirectionalPad = false;
+#endif
         }
 
         //!
