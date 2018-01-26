@@ -43,6 +43,8 @@ L1				|Key or Mouse Button,				|
 				|Positive Button: joystick button 4	|
 R1				|Key or Mouse Button,				|
 				|Positive Button: joystick button 5	|				
+R2				|Joystick Axis, 3rd axis			|			
+
 				
 
 Command 		|		iOS GameVice mapping 		 						| 
