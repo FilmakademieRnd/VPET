@@ -87,6 +87,7 @@ namespace vpet
         public bool rotateObjectActive = false;
         public bool scaleObjectActive = false;
         private bool hasPressedDirectionalPad = false;
+        private bool hasPressedR2 = false;
         private int DPADdirection = 0;
 
         List<SceneObject> EditableObjectsList = new List<SceneObject>();
@@ -278,13 +279,14 @@ namespace vpet
             }
             // toggle predefined bookmarks
             else if (Input.GetButtonDown("R1"))
-            {                
+            {
                 mainController.repositionCamera();
-                mainController.resetCameraOffset();                
+                mainController.resetCameraOffset();
             }
             // disable tracking
-            else if (Input.GetAxis("R2") < 0)
+            else if (Input.GetAxis("R2") < 0 && !hasPressedR2)
             {
+                hasPressedR2 = true;
                 mainController.toggleCameraRotation();
                 print("vh: OK!");
             }
@@ -300,7 +302,7 @@ namespace vpet
             }
             // cycle through object list                                    
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            else if (   Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
+            else if (Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
                         Input.GetAxis("DPAD_V") != 0 && hasPressedDirectionalPad == false)
 #elif UNITY_IOS
             else if (   Input.GetButtonDown("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
@@ -329,7 +331,7 @@ namespace vpet
 #endif
                 // test current selection
                 if (mainController.getCurrentSelection())
-                {                    
+                {
                     currselTransform = mainController.getCurrentSelection().gameObject.GetComponent<SceneObject>();
                     // is current sel in objects? if not set manualy to object[0], happens when switching from assets to lights
                     match = 0;
@@ -339,16 +341,17 @@ namespace vpet
                         mainController.callDeselect();
                         mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
                     }
-                    }
-                else                                  
-                    mainController.callSelect(EditableObjects[0].GetComponent<Transform>());                
+                }
+                else
+                    mainController.callSelect(EditableObjects[0].GetComponent<Transform>());
 
                 match = 0;
                 match = EditableObjects.FindIndex(x => x == currselTransform);
 
-                if (match != -1) {
+                if (match != -1)
+                {
                     // Dpad right/up end reched start over
-                    if (match == EditableObjects.Count-1 && DPADdirection == 1)
+                    if (match == EditableObjects.Count - 1 && DPADdirection == 1)
                         match = -1;
                     // Dpad left/down first list entry reached
                     if (match == 0 && DPADdirection == -1)
@@ -356,12 +359,14 @@ namespace vpet
                     // all other cases
                     mainController.callDeselect();
                     mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
-                }                
+                }
             }
-            // Dpad reset 
+            // Dpad and R2 reset 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))            
+            else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))
                 hasPressedDirectionalPad = false;
+            if (Input.GetAxis("R2") == 0)
+                hasPressedR2 = false;
 #elif UNITY_IOS
             else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))            
                 hasPressedDirectionalPad = false;
