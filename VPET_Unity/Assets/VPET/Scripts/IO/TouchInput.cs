@@ -67,8 +67,7 @@ namespace vpet
 	    //!
 	    void Start()
 	    {
-	        inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();
-	
+	        inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();	
 	    }
 	
 	    //!
@@ -76,9 +75,9 @@ namespace vpet
 	    //!
 	    void Update()
 	    {
-	        if (!pause)
+			if (!pause)
 	        {
-	            if (Input.touchCount == 1)
+				if (Input.touchCount == 1)
 	            {
 	                //single touch gesture
 	                if (Input.GetTouch(0).phase == TouchPhase.Began)

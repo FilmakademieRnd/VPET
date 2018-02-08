@@ -26,6 +26,7 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using UnityEngine.Events;
 using System.Reflection;
+using UnityEngine.XR.iOS;
 
 //!
 //! INFO: the mainController class is separeted into different files
@@ -38,7 +39,12 @@ namespace vpet
 
 	public partial class MainController : MonoBehaviour
     {
-	
+		public bool arMode = false;
+
+#if USE_ARKIT
+		private GameObject m_anchorModifier = null;
+		private GameObject m_anchorPrefab = null;
+#endif
 
 		/*
 	    //!
@@ -229,7 +235,7 @@ namespace vpet
 	    //!
 	    public void toggleCameraRotation()
 	    {
-	        cameraAdapter.doApplyRotation =  !cameraAdapter.doApplyRotation; 
+	        cameraAdapter.doApplyRotation = !cameraAdapter.doApplyRotation; 
 	    }
 	
 	
@@ -270,36 +276,37 @@ namespace vpet
         //!
         public void repositionCamera()
 	    {
-			setPerspectiveCamera();
+			if (!arMode) 
+			{
+				setPerspectiveCamera();
+	            if (sceneAdapter.SceneCameraList.Count > 0)
+	            {
+						GameObject camObject = sceneAdapter.SceneCameraList [camPrefabPosition];
 
-            if (sceneAdapter.SceneCameraList.Count > 0)
-            {
-                GameObject camObject = sceneAdapter.SceneCameraList[camPrefabPosition];
-                Camera.main.transform.position = camObject.transform.position; // cameraPositions[camPrefabPosition];
-                Camera.main.transform.rotation = camObject.transform.rotation; // cameraPositions[camPrefabPosition];
+						Camera.main.transform.position = camObject.transform.position; // cameraPositions[camPrefabPosition];
+						Camera.main.transform.rotation = camObject.transform.rotation; // cameraPositions[camPrefabPosition];
 
-                // callibrate 
-                cameraAdapter.calibrate(camObject.transform.rotation);
+						// callibrate 
+						cameraAdapter.calibrate (camObject.transform.rotation);		
 
-                // set camera properties
-                CameraObject camScript = camObject.GetComponent<CameraObject>();
-                if (camScript != null)
-                {
-                    Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
-                    Camera.main.nearClipPlane = camScript.near;
-                    Camera.main.farClipPlane = camScript.far;
-                    UpdatePropertiesSecondaryCameras();
-                }
-                // set properties for DOF component from CameraObject
-                //Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
-                //Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
-                //Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
-            }
-
-            if (sceneAdapter.SceneCameraList.Count == 0)
-                camPrefabPosition = 0;
-            else
-                camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
+						// set camera properties
+						CameraObject camScript = camObject.GetComponent<CameraObject> ();
+						if (camScript != null) {
+							Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
+							Camera.main.nearClipPlane = camScript.near;
+							Camera.main.farClipPlane = camScript.far;
+							UpdatePropertiesSecondaryCameras ();
+						}
+						// set properties for DOF component from CameraObject
+						//Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
+						//Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
+						//Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
+					}
+					if (sceneAdapter.SceneCameraList.Count == 0)
+						camPrefabPosition = 0;
+					else
+						camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
+		      }
 	    }
 	
 	    //!
@@ -422,7 +429,7 @@ namespace vpet
         //! This triggers the server adapter to request a scene
         //! @param widget     source widget
         //!
-        public void configWidgetSubmit( ConfigWidget widget)
+        public void configWidgetSubmit(ConfigWidget widget)
 	    {
 
 			ui.hideConfigWidget();
@@ -430,6 +437,28 @@ namespace vpet
             ui.switchLayoutMainMenu(layouts.DEFAULT);
 
             ui.resetMainMenu();
+
+			TouchInput input = inputAdapter.GetComponent<TouchInput>();
+			if (input)
+				input.enabled = true;
+
+			GameObject arPlanes = GameObject.Find("ARPlanes");
+			if (arPlanes) {
+				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
+			}
+
+			// disable anchor visualisation
+			if (m_anchorModifier) {
+				m_anchorModifier.SetActive(false);
+				GameObject.Destroy(m_anchorModifier);
+				m_anchorModifier = null;
+			}
+
+			GameObject root = GameObject.Find("Scene");
+			if (root)
+			{
+				GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
+			}
 
             // request progress bar from UI and connect listener to server adapter
             RoundProgressBar progressWidget =  ui.drawProgressWidget();
@@ -449,7 +478,10 @@ namespace vpet
 	    public void sceneLoadCompleted()
 	    {
 			ui.hideProgressWidget();
-	    }
+			// call joystick adapter to init selection lists            
+            if (joystickAdapter != null)
+                joystickAdapter.initSelectionLists();
+		}
 
 		//
 		public void setAmbientIntensity( float v )
@@ -461,10 +493,25 @@ namespace vpet
 
         public void ToggleArMode(bool active)
         {
+			arMode = active;
+#if USE_ARKIT
+			GameObject root = GameObject.Find("Scene");
+			GameObject arPlanes = GameObject.Find("ARPlanes");
+			GameObject arKit = GameObject.Find("ARKit");
+			GameObject helper = GameObject.Find("SceneHelpers");
+			TouchInput input = inputAdapter.GetComponent<TouchInput>();
+
+			if (m_anchorPrefab == null)
+				m_anchorPrefab = Resources.Load ("VPET/Prefabs/AnchorModifier", typeof(GameObject)) as GameObject;
+
+			if (input)
+ 				input.enabled = !active;
+				
+#endif
             if (active)
             {
-                sceneAdapter.HideGeometry();
 #if USE_TANGO
+				sceneAdapter.HideGeometry();
                 tangoApplication.m_enableVideoOverlay = true;
                 tangoApplication.m_videoOverlayUseTextureMethod = true;
                 TangoARScreen tangoArScreen = Camera.main.gameObject.GetComponent<TangoARScreen>();
@@ -472,9 +519,45 @@ namespace vpet
                     tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
                 tangoArScreen.enabled = true;
 #elif USE_ARKIT
-                ARKitScreen arkitScreen = Camera.main.gameObject.GetComponent<ARKitScreen>();
+				// reset camera
+				resetCameraOffset();
+				// enable video background
+				ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
                 if (arkitScreen == null) 
-                    arkitScreen = Camera.main.gameObject.AddComponent<ARKitScreen>();
+					arkitScreen = Camera.main.gameObject.AddComponent<ARScreen>();
+				if (arKit)
+				{
+					ARKitController arController = arKit.GetComponent<ARKitController>();
+					if (arController)
+						arController.setARMode(true);
+				}
+				// enable plane alignment
+				if (root)
+				{
+					ARPlaneAlignment hitTest = root.GetComponent<ARPlaneAlignment>();
+					if (hitTest == null) {
+						hitTest = root.AddComponent<ARPlaneAlignment>();
+						hitTest.m_HitTransform = root.transform;
+					}
+				}
+				// enable plane visualisation
+				if (arPlanes)
+				{
+					ARPlane arPlaneComponent = arPlanes.GetComponent<ARPlane>();
+					if (arPlaneComponent == null) {
+						arPlaneComponent = arPlanes.AddComponent<ARPlane>();
+					}
+				}
+				// create anchor modifier
+				if (m_anchorModifier == null) 
+				{
+					m_anchorModifier = GameObject.Instantiate(m_anchorPrefab);
+					m_anchorModifier.transform.position = new Vector3(0f,0f,0f);
+					m_anchorModifier.transform.localScale = new Vector3(1f,1f,1f) * VPETSettings.Instance.trackingScale;
+					if (helper)
+						m_anchorModifier.transform.SetParent(helper.transform);
+				}
+				ui.hideConfigWidget();
 #endif
             }
             else
@@ -484,9 +567,33 @@ namespace vpet
                 GameObject.Destroy(Camera.main.GetComponent<TangoARScreen>());
                 tangoApplication.m_enableVideoOverlay = false;
 #elif USE_ARKIT
-                GameObject.Destroy(Camera.main.GetComponent<ARKitScreen>());
+				if (arKit)
+				{
+					ARKitController arController = arKit.GetComponent<ARKitController>();
+					if (arController)
+						arController.setARMode(false);
+				}
+				// destroy video background
+				GameObject.Destroy(Camera.main.GetComponent<ARScreen>());
+				if (root)
+				{
+					GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
+				}
+				// destroy plane visualisation
+				if (arPlanes)
+				{
+					GameObject.Destroy(arPlanes.GetComponent<ARPlane>());
+				}
+				// disable anchor visualisation
+				if (m_anchorModifier) {
+					m_anchorModifier.SetActive(false);
+					GameObject.Destroy(m_anchorModifier);
+					m_anchorModifier = null;
+				}
 #endif
+				// reset cameras to defaults
                 Camera.main.ResetProjectionMatrix();
+				repositionCamera();
                 sceneAdapter.ShowGeometry();
             }
 
@@ -548,7 +655,14 @@ namespace vpet
             ui.drawRangeSlider(act, initValue, sensitivity);
         }
 
-        public void SliderValueChanged( float x)
+		public void setTrackingScale( float v )
+		{
+			if (m_anchorModifier)
+				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
+			VPETSettings.Instance.trackingScale = v;
+		}
+
+        public void SliderValueChanged( float x )
         {
             // set keyframe
             if ( ui.LayoutUI == layouts.ANIMATION )

@@ -60,6 +60,11 @@ namespace vpet
 		[Config]
 		public float ambientLight = 0.1f;
 		//!
+		//! Value of AR tracking scale
+		//!
+		[Config]
+		public float trackingScale = 1f;
+		//!
 		//! Property to store camera offset in orthografic view
 		//!
 		[Config]

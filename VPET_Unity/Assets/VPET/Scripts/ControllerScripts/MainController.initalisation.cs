@@ -353,6 +353,8 @@ namespace vpet
                 joystickAdapter = refObject.AddComponent<JoystickInput>();
             }
 
+			// set properties
+			joystickAdapter.SceneLoader = sceneAdapter;
 
             // get InputAdapter adapter
             refObject = GameObject.Find("InputAdapter");

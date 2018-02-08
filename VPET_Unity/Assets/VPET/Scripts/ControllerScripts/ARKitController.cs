@@ -33,7 +33,8 @@ namespace vpet
 {
 	public class ARKitController : MonoBehaviour
 	{
-	    private float m_movementScale = 100.0f;
+		private bool m_arMode = false;
+		private float m_movementScale = 1f;
 
         //public Camera m_camera;
         private UnityARSessionNativeInterface m_session;
@@ -49,7 +50,8 @@ namespace vpet
         void Start()
         {
         // Initialize some variables
-            
+		m_arMode = false;
+		
         m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
             
 #if !UNITY_EDITOR
@@ -74,14 +76,19 @@ namespace vpet
         // Update is called once per frame
         void Update()
         {
+			//Debug.Log ("movementScale: " + VPETSettings.Instance.trackingScale.ToString());
             Matrix4x4 matrix = m_session.GetCameraPose();
-            transform.position = UnityARMatrixOps.GetPosition(matrix) * m_movementScale;
-            transform.rotation = UnityARMatrixOps.GetRotation(matrix);
+			transform.localPosition = UnityARMatrixOps.GetPosition (matrix) * VPETSettings.Instance.trackingScale * m_movementScale;
+            transform.localRotation = UnityARMatrixOps.GetRotation(matrix);
+
+			if (m_arMode)
+				Camera.main.projectionMatrix = m_session.GetCameraProjection ();   // for AR
         }
 
-        public void setTrackingScaleIntensity(float v)
+        public void setTrackingScaleIntensity( float v )
         {
-            m_movementScale = 100f * VPETSettings.Instance.sceneScale * v;
+			//m_movementScale = v;
+			//VPETSettings.Instance.trackingScale = v;  // SEIM: moved to main controller
         }
 
         public void scaleMovement( float v )
@@ -89,6 +96,10 @@ namespace vpet
             m_movementScale *= v;
         }
 
+		public void setARMode (bool v)
+		{
+			m_arMode = v;
+		}
 	}
 }
 #endif

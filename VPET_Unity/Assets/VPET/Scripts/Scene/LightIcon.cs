@@ -73,7 +73,7 @@ namespace vpet
             if (this.GetComponent<Renderer>())
             {
                 this.transform.rotation = Camera.main.transform.rotation;
-                this.transform.localScale = targetScale * (Vector3.Distance(this.transform.position, Camera.main.transform.position) / 20.0f) * (Camera.main.fieldOfView / 30);
+                this.transform.localScale = targetScale * (Vector3.Distance(this.transform.position, Camera.main.transform.position) / 30.0f) * (Camera.main.fieldOfView / 30.0f);
 
                 // set the same scale to the light's collider
                 if (targetCollider)

@@ -407,18 +407,15 @@ namespace vpet
 			}
 			if ( !isDirectionalLight && !isPointLight && !isSpotLight && this.name != "camera" && transform.GetComponent<CameraObject>() == null)
 			{
-
+				Rigidbody rigidbody = this.gameObject.AddComponent<Rigidbody>();
                 
-                this.gameObject.AddComponent<Rigidbody>();
-				this.gameObject.GetComponent<Rigidbody>().mass = 100.0f;
-				this.gameObject.GetComponent<Rigidbody>().drag = 2.5f;
+				rigidbody.mass = 100.0f;
+				rigidbody.drag = 2.5f;
                 
-
                 // TODO: temporary
-				this.gameObject.GetComponent<Rigidbody>().useGravity = true;
-
-
-
+				rigidbody.useGravity = true;
+				rigidbody.isKinematic = true;
+				this.GetComponent<SceneObject> ().lockKinematic = true;
 			}
 
 			//Initalize animation loading if animation available
@@ -953,11 +950,10 @@ namespace vpet
 			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
-				if (send) serverAdapter.sendKinematic(target, set);
+				if (send) 
+					serverAdapter.sendKinematic(target, set);
 				if (!set)
-				{
 					this.gameObject.GetComponent<Rigidbody>().WakeUp();
-				}
 			}
 		}
 

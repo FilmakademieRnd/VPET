@@ -48,18 +48,27 @@ namespace vpet
 	    private List<Texture2D> sceneTextureList = new List<Texture2D>();
 	    private List<Mesh[]> sceneMeshList = new List<Mesh[]>();
 	    private List<GameObject> sceneEditableObjects = new List<GameObject>();
+		public List<GameObject> selectableLights = new List<GameObject>();														  
 	    private GameObject scnRoot;
 	
 	    private List<GameObject> sceneCameraList = new List<GameObject>();
+		public List<GameObject> sceneEditableObjectsList
+        {
+            get { return sceneEditableObjects; }
+        }												
+		public List<GameObject> selectableLightsList
+        {
+            get { return selectableLights; }
+        } 
 	    public List<GameObject> SceneCameraList
 	    {
 	        get { return sceneCameraList;  }
 	    }
 
         private List<GameObject> geometryPassiveList = new List<GameObject>();
-
         private SceneDataHandler sceneDataHandler;
-        public SceneDataHandler SceneDataHandler
+        
+		public SceneDataHandler SceneDataHandler
         {
             get { return sceneDataHandler; }
         }
@@ -132,7 +141,6 @@ namespace vpet
 	            }
 	        }
 
-
             // set default orthographic size
             Camera.main.orthographicSize = 1000 * VPETSettings.Instance.sceneScale;
 
@@ -172,6 +180,7 @@ namespace vpet
 	        {
                 SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType( node, typeof(SceneNodeLight) );
                 obj = createLight(nodeLight, parent);
+				selectableLights.Add(obj);						  
 	        }
 	        else if ( node.GetType() == typeof(SceneNodeCam) )
 	        {
@@ -602,10 +611,8 @@ namespace vpet
             GameObject cameraInstance = Instantiate(cameraObject);
             cameraInstance.name = cameraObject.name;
             cameraInstance.transform.SetParent(objMain.transform, false);
-            cameraInstance.transform.localScale = new Vector3(100, 100, 100) * VPETSettings.Instance.sceneScale;
-            cameraInstance.transform.localPosition = new Vector3(0, 0, -50f * VPETSettings.Instance.sceneScale);
-
-
+            cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 2f;
+            cameraInstance.transform.localPosition = new Vector3(0, 0, -.5f * VPETSettings.Instance.sceneScale);
 
             return objMain;
 	    }
@@ -731,7 +738,6 @@ namespace vpet
 	
 	        sceneMeshList.Add( meshList.ToArray() );
 	    }
-	
 	
         public void HideGeometry()
         {

@@ -91,7 +91,9 @@ namespace vpet
             RectTransform imageTransform = image.rectTransform;
             float x = (data.position.x - imageTransform.position.x) / Screen.width * 10f;
             float y = (data.position.y - imageTransform.position.y) / Screen.width * 10f;
+
             float radius = Mathf.Sqrt(x * x + y * y);
+			//Debug.Log ("x: " + x.ToString () + " y: " + y.ToString ());
 
             if (radius > 1f)
             {

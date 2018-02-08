@@ -175,7 +175,9 @@ namespace vpet
 	        scaleModifier.GetComponent<Modifier>().resetColors();
 	        ignoreDrag = false;
 	        initialScaleDistance = float.NaN;
-	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) currentSelection.GetComponent<SceneObject>().setKinematic(false);
+	        
+			if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) 
+				currentSelection.GetComponent<SceneObject>().setKinematic(false);
 	
 	        //add modification to undo/redo stack
 	        if (activeMode == Mode.translationMode)

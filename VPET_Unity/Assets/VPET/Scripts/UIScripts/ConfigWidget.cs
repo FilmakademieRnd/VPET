@@ -30,12 +30,13 @@ using System.Collections;
 namespace vpet
 {
 	public class ConfigEvent : UnityEvent<ConfigWidget> { }
-	public class AmbientIntensityChangedEvent : UnityEvent<float> {}
-	public class VisibilityChangeEvent: UnityEvent<bool> {}
-    public class SceneScaleChangedEvent : UnityEvent<float> { }
+	public class AmbientIntensityChangedEvent : UnityEvent<float> { }
+	public class VisibilityChangeEvent: UnityEvent<bool> { }
+	public class SceneScaleChangedEvent : UnityEvent<float> { }
 
 #if USE_TANGO || USE_ARKIT
     public class TrackingScaleIntensityChangedEvent : UnityEvent<float> { }
+	public class ToggleARSwitchEvent : UnityEvent<bool> { }
 #endif
 
     public class ConfigWidget: MonoBehaviour
@@ -44,7 +45,8 @@ namespace vpet
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
         public SceneScaleChangedEvent OnSceneScaleChanged = new SceneScaleChangedEvent();
 #if USE_TANGO || USE_ARKIT
-        public TrackingScaleIntensityChangedEvent TrackingScaleChangedEvent = new TrackingScaleIntensityChangedEvent();
+		public TrackingScaleIntensityChangedEvent TrackingScaleChangedEvent = new TrackingScaleIntensityChangedEvent();
+		public ToggleARSwitchEvent ToggleAREvent = new ToggleARSwitchEvent();
 #endif
 
         //!
@@ -385,9 +387,17 @@ namespace vpet
         {
             if (arToggle)
             {
-                // TODO: temporary
-                MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
-                mainCtrl.ToggleArMode(isOn);
+//				if (isOn) {
+//					VPETSettings.Instance.trackingScale = 1f;
+//					OnTrackingScaleChanged (1f);
+//				} else {
+//					VPETSettings.Instance.trackingScale = 100f;
+//					OnTrackingScaleChanged (100f);
+//				}
+				
+                //MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
+                //mainCtrl.ToggleArMode(isOn);
+				ToggleAREvent.Invoke (isOn);
             }
         }
 
@@ -400,7 +410,7 @@ namespace vpet
 		}
 
 #if USE_TANGO || USE_ARKIT
-        private void OnTrackingScaleChanged(float v)
+        private void OnTrackingScaleChanged( float v )
         {
             trackingScale = v;            
             Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value").GetComponent<Text>();            
@@ -410,6 +420,5 @@ namespace vpet
 #endif
 
     }
-
-
+		
 }

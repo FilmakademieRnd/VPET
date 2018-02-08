@@ -270,7 +270,7 @@ namespace vpet
         //!
         void Update()
         {
-            //forward changes of the fov to the secondary (render in front) camera
+			//forward changes of the fov to the secondary (render in front) camera
             Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
             frontCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
 
@@ -310,34 +310,36 @@ namespace vpet
                 {
                     if (!firstApplyTransform)
                     {
-                        rotationOffset = rotationFirst * Quaternion.Inverse(newRotation);
-                        positionOffset = positionFirst - newPosition;
+						if (!mainController.arMode) {
+							calibrate (rotationFirst);
+							positionOffset = positionFirst - newPosition;
+						}
                         firstApplyTransform = true;
                     }
                     //grab sensor reading on current platform
 #if !UNITY_EDITOR
-#if (UNITY_ANDROID) && !(USE_TANGO || UNITY_IOS)
+	#if (UNITY_ANDROID) && !(USE_TANGO || UNITY_IOS)
                     transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation;
-#elif UNITY_STANDALONE_WIN
+	#elif UNITY_STANDALONE_WIN
                     transform.rotation = rotationOffset * newRotation;
-#else
+	#else
                     if (TangoBuild4LenovoPhab2)
                         transform.rotation = rotationOffset * new Quaternion (-newRotation.y, newRotation.x, newRotation.z, newRotation.w) ;
                     else
                         transform.rotation = rotationOffset * newRotation;
                     // HACK: to block roll
-                    transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
+					if (!mainController.arMode)
+                    	transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
                     //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
-#if USE_TANGO || USE_ARKIT
+		#if USE_TANGO || USE_ARKIT
                     cameraParent.position += rotationOffset * (newPosition - oldPosition);
-                
-#endif
-#endif
+		#endif
+	#endif
 #endif
                 }
                 else if (firstApplyTransform)
                 {
-                    rotationFirst = rotationOffset * newRotation;
+					rotationFirst = rotationOffset * newRotation; 
                     positionFirst = positionOffset + newPosition;
                     firstApplyTransform = false;
                 }
@@ -361,8 +363,23 @@ namespace vpet
                         }
                     }
                 }
-                if (joystickAdapter != null)
-                    cameraParent.position += rotationOffset * joystickAdapter.getTranslation();
+
+				if (joystickAdapter) 
+				{
+					if (joystickAdapter.moveCameraActive) {                    
+						mainController.moveCameraObject (joystickAdapter.getTranslation ());
+					}                
+					if (joystickAdapter.moveObjectActive) {                 
+						mainController.translateSelection (joystickAdapter.getTranslation ());
+					}
+					if (joystickAdapter.rotateObjectActive) {                    
+						mainController.rotateSelection (new Vector3 (0, 0, 0), joystickAdapter.getTranslation ());
+					}
+					if (joystickAdapter.scaleObjectActive) {                 
+						mainController.scaleSelection (joystickAdapter.getTranslation ().x / 100);
+					}
+					joystickAdapter.getButtonUpdates ();
+				}
             }
 
             //smoothly "fly" the camera to a given position

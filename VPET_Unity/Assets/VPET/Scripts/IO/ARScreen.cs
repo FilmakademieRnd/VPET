@@ -67,4 +67,21 @@ namespace vpet
         }
     }
 }
+
+#elif USE_ARKIT
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.XR.iOS;
+
+namespace vpet
+{
+	public class ARScreen : UnityARVideo
+	{
+		void Awake()
+		{
+			if (m_ClearMaterial == null)
+				m_ClearMaterial = Resources.Load ("VPET/Materials/YUVMaterial", typeof(Material)) as Material;
+		}
+	}
+}
 #endif

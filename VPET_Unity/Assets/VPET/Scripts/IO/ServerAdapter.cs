@@ -285,6 +285,8 @@ namespace vpet
 	        isRunning = true;
 	
 	
+#if !UNITY_EDITOR_OSX
+			// SEIM: to prevent osx crashes 
 	        //bind Threads to methods & start them
 	        if (!deactivateReceive && receiverThread == null )
 	        {
@@ -301,10 +303,11 @@ namespace vpet
 	            katanaSenderThread = new Thread(new ThreadStart(sendKatana));
 	            katanaSenderThread.Start();
 	        }
+#endif
 	
 	        if (VPETSettings.Instance.doLoadFromResource)
 	        {
-	            sceneReceiverThread = null;
+				sceneReceiverThread = null;
 	            sceneReceiverResource();
 	        }
 	        else
@@ -1003,7 +1006,7 @@ namespace vpet
                         }
                         catch
                         {
-                            Debug.Log("Failed katanaSenMessage");
+                            Debug.Log("Failed katanaSendMessage");
                         }
                         katanaSendMessageQueue.RemoveAt(0);
                     }
@@ -1011,7 +1014,6 @@ namespace vpet
             //}
 	        katanaSender.Disconnect( "tcp://" + VPETSettings.Instance.serverIP + ":5555" );
 	        katanaSender.Close();
-	        
 	    }
 	
 	    //!

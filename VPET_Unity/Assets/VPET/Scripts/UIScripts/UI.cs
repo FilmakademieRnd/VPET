@@ -268,14 +268,17 @@ namespace vpet
                 // trackingScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
                 GameObject trackingScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_label");
                 //trackingScaleLabelUI.transform.localPosition = new Vector3(-105.0f, 530.0f, 0.0f);
-                GameObject startButton = GameObject.Find("GUI/Canvas/ConfigWidget/Start_button");
+                //GameObject startButton = GameObject.Find("GUI/Canvas/ConfigWidget/Start_button");
                 GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value");
                 sliderValueText.gameObject.SetActive(true);
                 trackingScaleLabelUI.gameObject.SetActive(true);
                 trackingScaleSliderUI.gameObject.SetActive(true);
                 // tracking Scale Listener
-                configWidget.TrackingScaleChangedEvent.AddListener(trackingController.setTrackingScaleIntensity );
-                configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
+				configWidget.TrackingScaleChangedEvent.AddListener(trackingController.setTrackingScaleIntensity);
+				configWidget.TrackingScaleChangedEvent.AddListener(mainController.setTrackingScale);
+				configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
+				configWidget.ToggleAREvent.AddListener(mainController.ToggleArMode);
+				// add other ar managers here or change a global variable like VPET.Settings.sceneScale!
 #endif
 
 

@@ -49,7 +49,7 @@ namespace vpet
 	    //! Needed to capture scene state fastly.
 	    //! All changed parameters of each object in this array will be stored at each user driven modification of the scene.
 	    //!
-		ArrayList editableObjects;
+		public ArrayList editableObjects;
 	
 	    //!
 	    //! cached reference to the main controller
