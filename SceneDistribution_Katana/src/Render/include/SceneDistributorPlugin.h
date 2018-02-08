@@ -35,7 +35,7 @@ https://opensource.org/licenses/MIT
 
 #include <zmq.hpp>
 
-//#include <pthread.h>
+#include <pthread.h>
 
 
 namespace Dreamspace

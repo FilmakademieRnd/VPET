@@ -32,13 +32,13 @@ https://opensource.org/licenses/MIT
 
 namespace Dreamspace
 {
-namespace Katana
-{
-namespace SceneIterator
-{
-    void buildLocation(FnKat::FnScenegraphIterator sgIterator, SceneDistributorPluginState* sharedState);
-}
-}
+	namespace Katana
+	{
+		namespace SceneIterator
+		{
+			void buildLocation(FnKat::FnScenegraphIterator sgIterator, SceneDistributorPluginState* sharedState);
+		}
+	}
 }
 
 #endif

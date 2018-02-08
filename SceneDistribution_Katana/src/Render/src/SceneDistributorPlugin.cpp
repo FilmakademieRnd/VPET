@@ -33,11 +33,8 @@ https://opensource.org/licenses/MIT
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 #include <vector>
-
 #include <sstream>
-
 #include <typeinfo>
 
 namespace Dreamspace
@@ -293,6 +290,8 @@ int SceneDistributorPlugin::applyPendingDataUpdates()
         updateCamera();
     }*/
     // Re-render frame
+
+	return 0;
 }
 
 static void* server(void *scene)

@@ -25,7 +25,6 @@ https://opensource.org/licenses/MIT
 */
 
 #include "SceneDistributorInfoPlugin.h"
-
 #include <algorithm>
 
 namespace Dreamspace
