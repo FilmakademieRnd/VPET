@@ -12,6 +12,7 @@ namespace UnityEngine.XR.iOS
 		private Vector3 m_initVector;
 		private Quaternion m_initRotation = Quaternion.identity;
 
+		#if USE_ARKIT
         bool HitTestWithResultType (ARPoint point, ARHitTestResultType resultTypes)
         {
             List<ARHitTestResult> hitResults = UnityARSessionNativeInterface.GetARSessionNativeInterface ().HitTest (point, resultTypes);
@@ -30,6 +31,7 @@ namespace UnityEngine.XR.iOS
             }
             return false;
         }
+		#endif
 		
 		// Update is called once per frame
 		void Update () {

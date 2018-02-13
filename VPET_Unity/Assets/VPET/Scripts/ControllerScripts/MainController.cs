@@ -442,10 +442,12 @@ namespace vpet
 			if (input)
 				input.enabled = true;
 
+#if USE_ARKIT
 			GameObject arPlanes = GameObject.Find("ARPlanes");
 			if (arPlanes) {
 				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
 			}
+
 
 			// disable anchor visualisation
 			if (m_anchorModifier) {
@@ -453,6 +455,7 @@ namespace vpet
 				GameObject.Destroy(m_anchorModifier);
 				m_anchorModifier = null;
 			}
+#endif
 
 			GameObject root = GameObject.Find("Scene");
 			if (root)
@@ -654,13 +657,14 @@ namespace vpet
         {
             ui.drawRangeSlider(act, initValue, sensitivity);
         }
-
+#if USE_ARKIT
 		public void setTrackingScale( float v )
 		{
 			if (m_anchorModifier)
 				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
 			VPETSettings.Instance.trackingScale = v;
 		}
+#endif
 
         public void SliderValueChanged( float x )
         {

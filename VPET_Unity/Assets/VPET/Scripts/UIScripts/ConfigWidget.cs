@@ -383,6 +383,7 @@ namespace vpet
             OnSceneScaleChanged.Invoke(VPETSettings.Instance.sceneScale);
         }
 
+#if USE_ARKIT
         private void OnToggleAr( bool isOn )
         {
             if (arToggle)
@@ -400,6 +401,7 @@ namespace vpet
 				ToggleAREvent.Invoke (isOn);
             }
         }
+#endif
 
         private void OnAmbientChanged( float v )
 		{
