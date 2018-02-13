@@ -286,6 +286,8 @@ namespace vpet
 
             VPETSettings.Instance.sceneDumpFolderEmpty = false;
 
+            // Register plugins
+            VPETRegister.RegisterNodeParser();
 
             // get all adapters and add them if missing
             //	

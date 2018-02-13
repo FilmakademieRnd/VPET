@@ -191,7 +191,7 @@ namespace vpet
 	        set { sceneLoader = value;  }
 	    }
 	    
-	    List<SceneObjectKatana> receiveObjectQueue;
+	    //List<SceneObjectKatana> receiveObjectQueue;
 	
 	
 		public ServerAdapterProgressEvent OnProgressEvent = new ServerAdapterProgressEvent();
@@ -207,7 +207,7 @@ namespace vpet
 
         void Awake()
 	    {
-	        receiveObjectQueue = new List<SceneObjectKatana>();
+	        //receiveObjectQueue = new List<SceneObjectKatana>();
             if (doAutostartListener)
             {
                 VPETSettings.Instance.serverIP = "127.0.0.1";

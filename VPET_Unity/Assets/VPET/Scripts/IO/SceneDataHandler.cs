@@ -14,59 +14,6 @@ namespace vpet
         public int textureBinaryType = 1;
     }
 
-
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
-    public class SceneNode
-    {
-        public bool editable;
-        public int childCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] position;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] scale;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float[] rotation;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
-        public byte[] name;
-    };
-
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
-    public class SceneNodeMocap : SceneNode
-    {
-    };
-
-
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
-    public class SceneNodeGeo : SceneNode
-    {
-        public int geoId;
-        public int textureId;
-        public float roughness;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] color;
-    };
-
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
-    public class SceneNodeLight : SceneNode
-    {
-        public LightType lightType;
-        public float intensity;
-        public float angle;
-        public float range;
-        public float exposure;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] color;
-    };
-
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
-    public class SceneNodeCam : SceneNode
-    {
-        public float fov;
-        public float near;
-        public float far;
-    };
-
-
     public class ObjectPackage
     {
         public int vSize;
@@ -135,6 +82,26 @@ namespace vpet
         }
 
 
+        public delegate SceneNode NodeParserDelegate(NodeType n, ref byte[] b, ref int i);
+        public static List<NodeParserDelegate> nodeParserDelegateList = new List<NodeParserDelegate>();
+
+        public static void RegisterDelegate(NodeParserDelegate call)
+        {
+            if (!nodeParserDelegateList.Contains(call))
+                nodeParserDelegateList.Add(call);
+        }
+
+
+        //!
+        //! function to check and reverse the endian order ( assume message from server adapter is little endian )
+        //!
+        public static void checkEndian( ref byte[] dataNumber )
+        {
+            if ( !BitConverter.IsLittleEndian )
+                Array.Reverse( dataNumber );
+        }
+
+
         private void convertNodesByteStream()
         {
             m_nodeList = new List<SceneNode>();
@@ -148,28 +115,9 @@ namespace vpet
                 //checkEndian(ref sliceInt);
                 NodeType nodeType = (NodeType)numValues;
 
-                switch (nodeType)
+                foreach(NodeParserDelegate nodeParserDelegate in nodeParserDelegateList)
                 {
-                    case NodeType.GROUP:
-                        SceneNode sceneNode = SceneDataHandler.ByteArrayToStructure<SceneNode>(m_nodesByteData, ref dataIdx);
-                        node = sceneNode;
-                        break;
-                    case NodeType.GEO:
-                        SceneNodeGeo sceneNodeGeo = SceneDataHandler.ByteArrayToStructure<SceneNodeGeo>(m_nodesByteData, ref dataIdx);
-                        node = sceneNodeGeo;
-                        break;
-                    case NodeType.LIGHT:
-                        SceneNodeLight sceneNodeLight = SceneDataHandler.ByteArrayToStructure<SceneNodeLight>(m_nodesByteData, ref dataIdx);
-                        node = sceneNodeLight;
-                        break;
-                    case NodeType.CAMERA:
-                        SceneNodeCam sceneNodeCamera = SceneDataHandler.ByteArrayToStructure<SceneNodeCam>(m_nodesByteData, ref dataIdx);
-                        node = sceneNodeCamera;
-                        break;
-                    case NodeType.MOCAP:
-                        SceneNodeMocap sceneNodeMocap = SceneDataHandler.ByteArrayToStructure<SceneNodeMocap>(m_nodesByteData, ref dataIdx);
-                        node = sceneNodeMocap;
-                        break;
+                    node = nodeParserDelegate(nodeType, ref m_nodesByteData, ref dataIdx);
                 }
 
                 m_nodeList.Add(node);

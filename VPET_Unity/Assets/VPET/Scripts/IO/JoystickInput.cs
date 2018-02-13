@@ -366,6 +366,7 @@ namespace vpet
                     if (match == 0 && DPADdirection == -1)
                         match = EditableObjects.Count;
                     // all other cases
+                    // FIX: this seems to trigger deselect and re-select constantly!?
                     mainController.callDeselect();
                     mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
                 }
