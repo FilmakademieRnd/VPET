@@ -4,5 +4,7 @@
 #*.cpp text eol=lf
 #*.h text eol=lf
 
+*.pdf binary
+*.unitypackage binary
 *.jpg binary
 *.png binary
