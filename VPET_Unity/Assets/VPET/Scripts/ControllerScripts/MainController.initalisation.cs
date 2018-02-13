@@ -80,10 +80,6 @@ namespace vpet
         //!
         private SceneLoader sceneAdapter;
         //!
-        //! cached reference to undoRedoController
-        //!
-        private UndoRedoController undoRedoController;
-        //!
         //! cached reference to animation adapter
         //!
         private AnimationController animationController;
@@ -353,8 +349,11 @@ namespace vpet
                 joystickAdapter = refObject.AddComponent<JoystickInput>();
             }
 
+<<<<<<< HEAD
 			// set properties
 			joystickAdapter.SceneLoader = sceneAdapter;
+=======
+>>>>>>> stash_removeundoredo
 
             // get InputAdapter adapter
             refObject = GameObject.Find("InputAdapter");
@@ -442,7 +441,6 @@ namespace vpet
             //cache reference to keyframe Sphere container
             frameSphereContainer = GameObject.Find("FrameSphereContainer");
 
-            undoRedoController = GameObject.Find("UndoRedoController").GetComponent<UndoRedoController>();
             animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 
             camObject = GameObject.Find("camera");

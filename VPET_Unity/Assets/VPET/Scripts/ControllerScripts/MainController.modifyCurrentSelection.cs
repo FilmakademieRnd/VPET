@@ -181,7 +181,6 @@ namespace vpet
 	                currentSelection.gameObject.GetComponent<Rigidbody>().WakeUp();
 	            }
 	        }
-			undoRedoController.addAction();
 	    }
 	
 	    //!

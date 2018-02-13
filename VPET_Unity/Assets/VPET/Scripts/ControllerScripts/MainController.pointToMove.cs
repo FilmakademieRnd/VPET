@@ -66,7 +66,6 @@ namespace vpet
 	            if (cameraPointMove){
 	                //use camera as target for the translation
 	                Camera.main.GetComponent<MoveCamera>().smoothTranslate(pos + new Vector3(0, Camera.main.transform.position.y, 0));
-					undoRedoController.addAction();
 	            }
 	            else
 	            {

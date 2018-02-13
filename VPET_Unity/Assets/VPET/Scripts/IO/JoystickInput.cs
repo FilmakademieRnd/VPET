@@ -146,7 +146,6 @@ namespace vpet
                     else
                         mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = true;
                 }
-
             }
             // enter translation mode
             else if (Input.GetButtonDown("Fire3"))
@@ -303,7 +302,6 @@ namespace vpet
                     mainController.resetSelectionScale();
                 }
             }
-
             // cycle through object list                                    
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             else if (Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||

@@ -60,12 +60,6 @@ namespace vpet
 		//! camera movement buffer
 		//!
 		Vector3 camMovePos = Vector3.zero;
-	
-		//!
-		//! chached reference to the undeRedo controller
-		//!
-		private UndoRedoController undoRedoController;
-	
 		//!
 		//! is the finger or mouse currently on a modifier
 		//!
@@ -137,7 +131,6 @@ namespace vpet
         void Start ()
 		{
 			groundPlane = GameObject.Find("GroundPlane").GetComponent<Collider>();
-			undoRedoController = GameObject.Find ("UndoRedoController").GetComponent<UndoRedoController> ();
 	
 	    }
 	
@@ -243,7 +236,6 @@ namespace vpet
 				{
 					mainController.sendUpdateToServer();
 				}
-				undoRedoController.addAction();
 				editingLight = false;
 				return;
 			}
@@ -416,7 +408,6 @@ namespace vpet
             if (!pointerOnGUI())
             {
                 camMovePos = Vector3.zero;
-                undoRedoController.addAction();
 
                 // HACK: to key in linktocamera mode
                 //
@@ -466,7 +457,6 @@ namespace vpet
 		public void threePointerEnded(Vector3 pos)
         {
 			camMovePos = Vector3.zero;
-			undoRedoController.addAction();
 
             // HACK: to key in linktocamera mode
             //
