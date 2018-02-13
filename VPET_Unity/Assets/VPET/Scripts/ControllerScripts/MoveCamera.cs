@@ -248,7 +248,7 @@ namespace vpet
 
             // get joystick adapter
             refObject = GameObject.Find("JoystickAdapter");
-            if (refObject != null) joystickAdapter = refObject.GetComponent<JoystickInput>();
+            // if (refObject != null) joystickAdapter = refObject.GetComponent<JoystickInput>();
             if (joystickAdapter == null) Debug.LogError(string.Format("{0}: No JoystickInput found.", this.GetType()));
 
             // get mainController

@@ -1051,7 +1051,6 @@ namespace vpet
 				//serverAdapter.sendScale(target, target.transform.localScale);
 				serverAdapter.sendScale(target );
 
-				undoRedoController.addAction();
 			}
 			if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
 			{
@@ -1059,19 +1058,15 @@ namespace vpet
 				{
 				case (LightParameter.Intensity):
 					serverAdapter.sendLightIntensity(target, sourceLight, exposure);
-					undoRedoController.addAction();
 					break;
 				case (LightParameter.Color):
 					serverAdapter.sendLightColor(target, sourceLight, exposure );
-					undoRedoController.addAction();
 					break;
 				case (LightParameter.Angle):
 					serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
-					undoRedoController.addAction();
 					break;
 				case (LightParameter.Range):
 					// serverAdapter.sendLightRange(target, sourceLight.range);
-					undoRedoController.addAction();
 					break;
 				default:
 					break;

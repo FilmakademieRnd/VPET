@@ -177,19 +177,6 @@ namespace vpet
 	        initialScaleDistance = float.NaN;
 	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) currentSelection.GetComponent<SceneObject>().setKinematic(false);
 	
-	        //add modification to undo/redo stack
-	        if (activeMode == Mode.translationMode)
-	        {
-	            undoRedoController.addAction();
-	        }
-	        else if (activeMode == Mode.rotationMode)
-	        {
-	            undoRedoController.addAction();
-	        }
-	        else if (activeMode == Mode.scaleMode)
-	        {
-	            undoRedoController.addAction();
-	        }
 	
 	        //push changes to server
 	        if (!liveMode && activeMode != Mode.animationEditing){

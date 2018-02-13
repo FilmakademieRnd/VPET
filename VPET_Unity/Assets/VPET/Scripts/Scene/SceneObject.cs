@@ -127,11 +127,6 @@ namespace vpet
 		//! cached reference to serverAdapter
 		//!
 		ServerAdapter serverAdapter;
-		//!
-		//! cached reference to undoRedoController
-		//!
-		UndoRedoController undoRedoController;
-
         //!
         //! cached reference to sceneLoader
         //!
@@ -322,7 +317,6 @@ namespace vpet
 			animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
 			serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
-			undoRedoController = GameObject.Find ("UndoRedoController").GetComponent<UndoRedoController> ();
             sceneLoader = GameObject.Find("SceneAdapter").GetComponent<SceneLoader>();
 
 
@@ -593,7 +587,6 @@ namespace vpet
                     //
                     //if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
                     //    animationController.setKeyFrame();
-                    undoRedoController.addAction();
 				}
 			}
 		}
@@ -672,7 +665,6 @@ namespace vpet
 			target.rotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
 			serverAdapter.sendRotation(target );
-			undoRedoController.addAction();
 		}
 
 		//!
@@ -684,7 +676,6 @@ namespace vpet
 			//serverAdapter.sendTranslation(target, target.position);
 			serverAdapter.sendTranslation(target );
 
-			undoRedoController.addAction();
 		}
 
 		//!
@@ -693,7 +684,6 @@ namespace vpet
 		public void resetScale()
 		{
 			target.localScale = initialScale;
-			undoRedoController.addAction();
 			//serverAdapter.sendScale(target, target.localScale);
 			serverAdapter.sendScale(target );
 
@@ -1078,7 +1068,6 @@ namespace vpet
 				//serverAdapter.sendScale(target, target.transform.localScale);
 				serverAdapter.sendScale(target );
 
-				undoRedoController.addAction();
 			}
 			if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
 			{
@@ -1086,19 +1075,15 @@ namespace vpet
 				{
 				case (LightParameter.Intensity):
 					serverAdapter.sendLightIntensity(target, sourceLight, exposure);
-					undoRedoController.addAction();
 					break;
 				case (LightParameter.Color):
 					serverAdapter.sendLightColor(target, sourceLight, exposure );
-					undoRedoController.addAction();
 					break;
 				case (LightParameter.Angle):
 					serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
-					undoRedoController.addAction();
 					break;
 				case (LightParameter.Range):
 					// serverAdapter.sendLightRange(target, sourceLight.range);
-					undoRedoController.addAction();
 					break;
 				default:
 					break;

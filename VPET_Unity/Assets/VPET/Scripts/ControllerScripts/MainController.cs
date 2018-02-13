@@ -177,7 +177,6 @@ namespace vpet
 	    public void globalReset()
 	    {
 	        recursiveResetChilds(scene.transform);
-			undoRedoController.addAction();
 	    }
 	
 	    //!

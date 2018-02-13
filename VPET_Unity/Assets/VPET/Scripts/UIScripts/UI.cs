@@ -96,26 +96,6 @@ namespace vpet
 	    //!
 	    private bool mainMenuActive = false;
 	
-	    //!
-	    //! Reference to undo button.
-	    //!
-	    GameObject undoButton;
-	
-	    //!
-	    //! Is the undo button active? (Is there something to undo?)
-	    //!
-	    // private bool undoActive = false;
-	
-	    //!
-	    //! Reference to redo button.
-	    //!
-	    GameObject redoButton;
-
-        //!
-        //! Is the redo button active? (Is there something to redo?)
-        //!
-        // private bool redoActive = false;      
-
         private layouts layoutUI = layouts.EDIT;
 	
 	
@@ -278,40 +258,6 @@ namespace vpet
                 configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
 #endif
 
-
-            /*
-	        //initalize undo buttons
-	        undoButton = Instantiate(GameObject.Find("ButtonTemplate"));
-	        undoButton.transform.SetParent(this.transform,false);
-	        //undoButton.GetComponent<RectTransform>().sizeDelta = SpriteSize;
-	        undoButton.GetComponent<RectTransform>().position = new Vector2(Screen.height / 16 + 10, ((Screen.height / 3) * 2) - (Screen.height / 8 + 10));
-	        undoButton.GetComponent<Image>().sprite =   GeneralMenu_Undo_nrm;
-	        SpriteState undoSprites = new SpriteState();
-	        undoSprites.disabledSprite = GeneralMenu_Undo_nrm;
-	        undoSprites.highlightedSprite = GeneralMenu_Undo_nrm;
-	        undoSprites.pressedSprite = GeneralMenu_Undo_sel;
-	        undoButton.GetComponent<Button>().spriteState = undoSprites;
-	        undoButton.GetComponent<Button>().interactable = false;
-	        undoButton.GetComponent<Button>().onClick.AddListener(() => undoButtonClicked());
-	        // temp hide it
-	        undoButton.GetComponent<Image>().enabled = false;
-	
-	        //initalize redo buttons
-	        redoButton = Instantiate(GameObject.Find("ButtonTemplate"));
-	        redoButton.transform.SetParent(this.transform, false);
-	        //redoButton.GetComponent<RectTransform>().sizeDelta = SpriteSize;
-	        redoButton.GetComponent<RectTransform>().position = new Vector2(Screen.width - (Screen.height / 16 + 10), ((Screen.height / 3) * 2) - (Screen.height / 8 + 10));
-	        redoButton.GetComponent<Image>().sprite = GeneralMenu_Redo_nrm;
-	        SpriteState redoSprites = new SpriteState();
-	        redoSprites.disabledSprite = GeneralMenu_Redo_nrm;
-	        redoSprites.highlightedSprite = GeneralMenu_Redo_nrm;
-	        redoSprites.pressedSprite = GeneralMenu_Redo_sel;
-	        redoButton.GetComponent<Button>().spriteState = redoSprites;
-	        redoButton.GetComponent<Button>().interactable = false;
-	        redoButton.GetComponent<Button>().onClick.AddListener(() => redoButtonClicked());
-	        // temp hide it
-	        redoButton.GetComponent<Image>().enabled = false;
-			*/
 
             //initalise mainMenu button
             IMenuButton iMainMenuButton = Elements.MenuButtonToggle();
@@ -770,47 +716,4 @@ namespace vpet
 	    }
 		*/
 	
-		/*
-	    //!
-	    //! Receiving function for the undo button click event.
-	    //!
-	    private void undoButtonClicked()
-	    {
-	        if (undoActive) mainController.undoLastAction();
-	    }
-		*/
-	
-		/*
-	    //!
-	    //! Receiving function for the redo button click event.
-	    //!
-	    private void redoButtonClicked()
-	    {
-	        if (redoActive) mainController.redoLastAction();
-	    }
-		*/
-	
-	    /*
-	    //!
-	    //! Activate/Deactivate the undo button
-	    //! @param  set     new state of button
-	    //!
-	    public void setUndoActive(bool set)
-	    {
-	        undoButton.GetComponent<Button>().interactable = set;
-	        undoActive = set;
-	    }
-	    */
-	
-	        /*
-	    //!
-	    //! Activate/Deactivate the redo button
-	    //! @param  set     new state of button
-	    //!
-	    public void setRedoActive(bool set)
-	    {
-	        redoButton.GetComponent<Button>().interactable = set;
-	        redoActive = set;
-	    }
-	    */
 }}
