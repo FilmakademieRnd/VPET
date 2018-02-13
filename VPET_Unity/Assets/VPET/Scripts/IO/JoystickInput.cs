@@ -284,14 +284,17 @@ namespace vpet
             // disable tracking
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             else if (Input.GetAxis("R2") < 0 && !hasPressedR2)
-#elif UNITY_IOS
-			else if (Input.GetButtonDown("R2"))
-#endif
             {
                 hasPressedR2 = true;
                 mainController.toggleCameraRotation();
-                
             }
+#elif UNITY_IOS
+			else if (Input.GetButtonDown("R2"))
+            {
+                hasPressedR2 = true;
+                mainController.toggleCameraRotation();
+            }
+#endif
             // reset current selection                                          
 			else if (Input.GetButtonDown("L1"))
             {
@@ -317,12 +320,12 @@ namespace vpet
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
                     DPADdirection = 1;
-#elif UNITY_IOS
-				if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V") ) {
-                    DPADdirection = 1;
-				}
-#endif
                 else DPADdirection = -1;
+#elif UNITY_IOS
+				if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V") ) 
+                    DPADdirection = 1;
+                else DPADdirection = -1;				
+#endif
                 hasPressedDirectionalPad = true;
                 int match = 0;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
