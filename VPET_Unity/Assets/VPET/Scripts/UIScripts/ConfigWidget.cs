@@ -397,7 +397,9 @@ namespace vpet
 				
                 //MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
                 //mainCtrl.ToggleArMode(isOn);
+#if USE_ARKIT                
 				ToggleAREvent.Invoke (isOn);
+#endif
             }
         }
 

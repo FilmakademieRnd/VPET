@@ -115,6 +115,7 @@ namespace vpet
         public void initSelectionLists() {
             // object and lights lists                
             List<GameObject> sceneEditableObjectsList = sceneLoader.sceneEditableObjectsList;
+
             // create light list
             EditableLightList.Clear();
             foreach (GameObject g in sceneLoader.selectableLights)
@@ -129,6 +130,7 @@ namespace vpet
                 if (g.GetComponent<CameraObject>() == null && g.GetComponent<SceneObject>().IsLight == false)
                     EditableObjectsList.Add(g.GetComponent<SceneObject>());
             }            
+
         }
 
         //!
@@ -136,6 +138,7 @@ namespace vpet
         //!
         public void getButtonUpdates()
         {
+
             if (Input.GetButtonDown("Fire2"))
             {
                 // toggle gravity
@@ -348,7 +351,7 @@ namespace vpet
                         mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
                     }
                 }
-                else
+                else if (EditableObjects.Count > 0)
                     mainController.callSelect(EditableObjects[0].GetComponent<Transform>());
 
                 match = 0;

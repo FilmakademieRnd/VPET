@@ -1,3 +1,4 @@
+#if USE_ARKIT
 using System;
 using System.Collections.Generic;
 using vpet;
@@ -110,4 +111,4 @@ namespace UnityEngine.XR.iOS
 		}
 	}
 }
-
+#endif

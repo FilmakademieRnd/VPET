@@ -26,7 +26,9 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using UnityEngine.Events;
 using System.Reflection;
+#if USE_ARKIT
 using UnityEngine.XR.iOS;
+#endif
 
 //!
 //! INFO: the mainController class is separeted into different files
@@ -441,6 +443,7 @@ namespace vpet
 			if (input)
 				input.enabled = true;
 
+#if USE_ARKIT
 			GameObject arPlanes = GameObject.Find("ARPlanes");
 			if (arPlanes) {
 				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
@@ -458,6 +461,7 @@ namespace vpet
 			{
 				GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
 			}
+#endif
 
             // request progress bar from UI and connect listener to server adapter
             RoundProgressBar progressWidget =  ui.drawProgressWidget();
@@ -656,8 +660,10 @@ namespace vpet
 
 		public void setTrackingScale( float v )
 		{
+#if USE_ARKIT
 			if (m_anchorModifier)
 				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
+#endif
 			VPETSettings.Instance.trackingScale = v;
 		}
 
