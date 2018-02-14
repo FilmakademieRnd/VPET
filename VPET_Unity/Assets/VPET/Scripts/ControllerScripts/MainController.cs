@@ -26,7 +26,9 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using UnityEngine.Events;
 using System.Reflection;
+#if USE_ARKIT
 using UnityEngine.XR.iOS;
+#endif
 
 //!
 //! INFO: the mainController class is separeted into different files
@@ -443,11 +445,10 @@ namespace vpet
 				input.enabled = true;
 
 #if USE_ARKIT
-			GameObject arPlanes = GameObject.Find("ARPlanes");
+            GameObject arPlanes = GameObject.Find("ARPlanes");
 			if (arPlanes) {
 				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
 			}
-
 
 			// disable anchor visualisation
 			if (m_anchorModifier) {
@@ -455,14 +456,13 @@ namespace vpet
 				GameObject.Destroy(m_anchorModifier);
 				m_anchorModifier = null;
 			}
-#endif
 
 			GameObject root = GameObject.Find("Scene");
 			if (root)
 			{
 				GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
 			}
-
+#endif
             // request progress bar from UI and connect listener to server adapter
             RoundProgressBar progressWidget =  ui.drawProgressWidget();
 			// Connect set value to progress event
@@ -657,14 +657,15 @@ namespace vpet
         {
             ui.drawRangeSlider(act, initValue, sensitivity);
         }
-#if USE_ARKIT
+
 		public void setTrackingScale( float v )
 		{
-			if (m_anchorModifier)
+#if USE_ARKIT
+            if (m_anchorModifier)
 				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
+#endif
 			VPETSettings.Instance.trackingScale = v;
 		}
-#endif
 
         public void SliderValueChanged( float x )
         {
