@@ -9,12 +9,19 @@ namespace vpet
 	// Basic, Mocap
 	public enum NodeType { GROUP, GEO, LIGHT, CAMERA, MOCAP }
 
-
-	public class VPETRegister  
+	public static class VPETRegister  
 	{
 		public static void RegisterNodeParser()
 		{
 			SceneDataHandler.RegisterDelegate(NodeParserBasic.ParseNode);
+			SceneDataHandler.RegisterDelegate(NodeParserMocap.ParseNode);
 		}
+
+		public static void RegisterNodeBuilder()
+		{
+			SceneLoader.RegisterDelegate(NodeBuilderBasic.BuildNode);
+			SceneLoader.RegisterDelegate(NodeBuilderMocap.BuildNode);
+		}
+
 	}
 }

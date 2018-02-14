@@ -115,9 +115,13 @@ namespace vpet
                 //checkEndian(ref sliceInt);
                 NodeType nodeType = (NodeType)numValues;
 
+
+    			// process all registered parse callbacks
                 foreach(NodeParserDelegate nodeParserDelegate in nodeParserDelegateList)
                 {
-                    node = nodeParserDelegate(nodeType, ref m_nodesByteData, ref dataIdx);
+                    SceneNode _node = nodeParserDelegate(nodeType, ref m_nodesByteData, ref dataIdx);
+                    if (_node != null)
+                        node = _node;
                 }
 
                 m_nodeList.Add(node);

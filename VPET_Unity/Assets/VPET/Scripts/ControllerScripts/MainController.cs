@@ -280,9 +280,9 @@ namespace vpet
 			if (!arMode) 
 			{
 				setPerspectiveCamera();
-	            if (sceneAdapter.SceneCameraList.Count > 0)
+	            if (SceneLoader.SceneCameraList.Count > 0)
 	            {
-						GameObject camObject = sceneAdapter.SceneCameraList [camPrefabPosition];
+						GameObject camObject = SceneLoader.SceneCameraList [camPrefabPosition];
 
 						Camera.main.transform.position = camObject.transform.position; // cameraPositions[camPrefabPosition];
 						Camera.main.transform.rotation = camObject.transform.rotation; // cameraPositions[camPrefabPosition];
@@ -303,10 +303,10 @@ namespace vpet
 						//Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
 						//Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
 					}
-					if (sceneAdapter.SceneCameraList.Count == 0)
+					if (SceneLoader.SceneCameraList.Count == 0)
 						camPrefabPosition = 0;
 					else
-						camPrefabPosition = (camPrefabPosition + 1) % sceneAdapter.SceneCameraList.Count;
+						camPrefabPosition = (camPrefabPosition + 1) % SceneLoader.SceneCameraList.Count;
 		      }
 	    }
 	

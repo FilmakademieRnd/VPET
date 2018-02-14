@@ -118,7 +118,7 @@ namespace vpet
 
             // create light list
             EditableLightList.Clear();
-            foreach (GameObject g in sceneLoader.selectableLights)
+            foreach (GameObject g in SceneLoader.SelectableLights)
             {
                 if (g.GetComponent<SceneObject>() != null && g.GetComponent<SceneObject>().IsLight == true)
                     EditableLightList.Add(g.GetComponent<SceneObject>());
