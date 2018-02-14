@@ -23,5 +23,11 @@ namespace vpet
 			SceneLoader.RegisterDelegate(NodeBuilderMocap.BuildNode);
 		}
 
+		public static void RegisterObjectSender()
+		{
+			ServerAdapter.RegisterSender(ObjectSender.Instance);
+		}
+
+
 	}
 }

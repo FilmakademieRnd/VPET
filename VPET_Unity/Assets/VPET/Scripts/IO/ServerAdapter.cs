@@ -191,8 +191,6 @@ namespace vpet
 	        set { sceneLoader = value;  }
 	    }
 	    
-	    //List<SceneObjectKatana> receiveObjectQueue;
-	
 	
 		public ServerAdapterProgressEvent OnProgressEvent = new ServerAdapterProgressEvent();
 
@@ -205,6 +203,33 @@ namespace vpet
 
         private bool m_sceneTransferDirty = false;
 
+
+
+
+		private List<Thread> senderThreadList = new List<Thread>();
+
+
+
+
+        public static List<ObjectSender> objectSenderList = new List<ObjectSender>();
+
+        public static void RegisterSender(ObjectSender sender)
+        {
+            if (!objectSenderList.Contains(sender))
+                objectSenderList.Add(sender);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         void Awake()
 	    {
 	        //receiveObjectQueue = new List<SceneObjectKatana>();
@@ -214,6 +239,12 @@ namespace vpet
             }
 	    }
 	
+
+
+
+
+
+
 	
 	    //!
 	    //! Use this for initialization
@@ -243,6 +274,8 @@ namespace vpet
             dreamspaceRoot = scene; // GameObject.Find("Scene").transform;
 	        if (dreamspaceRoot == null) Debug.LogError(string.Format("{0}: Cant Find: Scene.", this.GetType()));
 
+
+			/* TODO: ??
             if (doAutostartListener && !deactivateReceive && receiverThread == null)
             {
                 receiverThread = new Thread(new ThreadStart(listener));
@@ -256,6 +289,8 @@ namespace vpet
                 senderThread.Start();
                 isRunning = true;
             }
+
+			*/
 
         }
 
@@ -293,15 +328,16 @@ namespace vpet
 	            receiverThread = new Thread(new ThreadStart(listener));
 	            receiverThread.Start();
 	        }
-	        if (!deactivatePublish && senderThread == null)
+	        if (!deactivatePublish)
             {
-	            senderThread = new Thread(new ThreadStart(publisher));
-	            senderThread.Start();
-	        }
-	        if (!deactivatePublishKatana && katanaSenderThread == null)
-            {
-	            katanaSenderThread = new Thread(new ThreadStart(sendKatana));
-	            katanaSenderThread.Start();
+				foreach( ObjectSender sender in  objectSenderList)
+				{
+					Thread _thread = new Thread(new ThreadStart(sender.Publisher));
+					_thread.Start();
+					if (!senderThreadList.Contains(_thread))
+						senderThreadList.Add(_thread);
+					sender.IsRunning = true;
+				}
 	        }
 #endif
 	
@@ -372,7 +408,25 @@ namespace vpet
             currentTimeTime = Time.time;
 
 		}
-	
+
+		public void SendObjectUpdate(Transform trn,  bool onlyToClientsWithoutPhysics = false)
+		{
+			if (trn.GetComponent<SceneObject>() != null)
+				SendObjectUpdate(trn.GetComponent<SceneObject>(),onlyToClientsWithoutPhysics);
+		}
+
+		public void SendObjectUpdate(SceneObject sobj,  bool onlyToClientsWithoutPhysics = false)
+		{
+			string dagPath = getPathString(sobj.transform, scene);
+
+			foreach(ObjectSender sender in objectSenderList)
+			{
+				sender.SendObject(id, sobj, dagPath);
+			}
+
+		}
+
+
 	    //! function to be called to send a translation change to server
 	    //! @param  obj             Transform of GameObject
 	    //! @param  newPosition     new absolute position of GameObject in world space
@@ -1224,12 +1278,21 @@ namespace vpet
 	        if ( receiverThread != null && receiverThread.IsAlive )
 	            receiverThread.Abort();
 	
-	        if (senderThread != null && senderThread.IsAlive )
-	            senderThread.Abort();
-	
-	        if ( katanaSenderThread != null && katanaSenderThread.IsAlive )
-	            katanaSenderThread.Abort();
-	
+			foreach(ObjectSender sender in objectSenderList)
+			{
+				sender.IsRunning = false;
+
+				// FIX: call sender stop here directly rayjer isrunning. This might prevent hang/crash after quit.
+
+			}
+
+
+			foreach (Thread _thread in senderThreadList)
+			{
+				if (_thread != null && _thread.IsAlive )
+					_thread.Abort();
+			}
+
 	        if ( sceneReceiverThread != null  && sceneReceiverThread.IsAlive )
 	            sceneReceiverThread.Abort();
 	    }

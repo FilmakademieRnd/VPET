@@ -461,9 +461,7 @@ namespace vpet
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendTranslation(target, target.position, !selected);
-							serverAdapter.sendTranslation(target, !selected );
-
-							serverAdapter.sendTransform( target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 							lastTranslationUpdateTime = Time.time;
 							translationUpdateDelayed = false;
@@ -476,9 +474,7 @@ namespace vpet
 					else if (translationUpdateDelayed) //update delayed, but object not moving
 					{
 						// serverAdapter.sendTranslation(target, target.position, !selected);
-						serverAdapter.sendTranslation(target, !selected );
-
-						serverAdapter.sendTransform( target, !selected );
+						serverAdapter.SendObjectUpdate(target, !selected );
 
 						lastTranslationUpdateTime = Time.time;
 						translationUpdateDelayed = false;
@@ -487,9 +483,8 @@ namespace vpet
 				else if (translationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendTranslation(target, target.position, !selected);
-					serverAdapter.sendTranslation(target, !selected );
+					serverAdapter.SendObjectUpdate(target, !selected );
 
-					serverAdapter.sendTransform( target, !selected );
 
 				}
 
@@ -501,9 +496,9 @@ namespace vpet
 						if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendRotation(target, target.rotation, !selected);
-							serverAdapter.sendRotation(target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
-							serverAdapter.sendTransform( target, !selected );
+
 
 							lastRotationUpdateTime = Time.time;
 							rotationUpdateDelayed = false;
@@ -516,10 +511,7 @@ namespace vpet
 					else if (rotationUpdateDelayed) //update delayed, but object not moving
 					{
 						//serverAdapter.sendRotation(target, target.rotation, !selected);
-						serverAdapter.sendRotation(target, !selected );
-
-
-						serverAdapter.sendTransform( target, !selected );
+						serverAdapter.SendObjectUpdate(target, !selected );
 
 						lastRotationUpdateTime = Time.time;
 						rotationUpdateDelayed = false;
@@ -528,9 +520,8 @@ namespace vpet
 				else if (rotationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendRotation(target, target.rotation, !selected);
-					serverAdapter.sendRotation(target, !selected );
+					serverAdapter.SendObjectUpdate(target, !selected );
 
-					serverAdapter.sendTransform( target, !selected );
 
 				}
 
@@ -661,7 +652,7 @@ namespace vpet
 		{
 			target.rotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
-			serverAdapter.sendRotation(target );
+			serverAdapter.SendObjectUpdate(target );
 		}
 
 		//!
@@ -671,7 +662,7 @@ namespace vpet
 		{
 			target.position = initialPosition;
 			//serverAdapter.sendTranslation(target, target.position);
-			serverAdapter.sendTranslation(target );
+			serverAdapter.SendObjectUpdate(target );
 
 		}
 
@@ -682,7 +673,7 @@ namespace vpet
 		{
 			target.localScale = initialScale;
 			//serverAdapter.sendScale(target, target.localScale);
-			serverAdapter.sendScale(target );
+			serverAdapter.SendObjectUpdate(target );
 
 		}
 
@@ -695,15 +686,15 @@ namespace vpet
 			serverAdapter.sendLock(this.transform, false);
 			target.rotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
-			serverAdapter.sendRotation(target );
+			serverAdapter.SendObjectUpdate(target );
 
 			target.position = initialPosition;
 			//serverAdapter.sendTranslation(target, target.position);
-			serverAdapter.sendTranslation(target );
+			serverAdapter.SendObjectUpdate(target );
 
 			target.localScale = initialScale;
 			//serverAdapter.sendScale(target, target.localScale);
-			serverAdapter.sendScale(target );
+			serverAdapter.SendObjectUpdate(target );
 
 			if (isSpotLight || isPointLight || isDirectionalLight) 
 			{
@@ -865,7 +856,7 @@ namespace vpet
 
 			// HACK
 			//serverAdapter.sendScale( target, target.localScale );
-			serverAdapter.sendScale(target );
+			serverAdapter.SendObjectUpdate(target );
 
 
 		}
@@ -1062,7 +1053,7 @@ namespace vpet
 			if (mainController.ActiveMode == MainController.Mode.scaleMode)
 			{
 				//serverAdapter.sendScale(target, target.transform.localScale);
-				serverAdapter.sendScale(target );
+				serverAdapter.SendObjectUpdate(target );
 
 			}
 			if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
