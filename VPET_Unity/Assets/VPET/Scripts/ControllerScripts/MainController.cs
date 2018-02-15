@@ -661,7 +661,7 @@ namespace vpet
 		public void setTrackingScale( float v )
 		{
 #if USE_ARKIT
-			if (m_anchorModifier)
+            if (m_anchorModifier)
 				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
 #endif
 			VPETSettings.Instance.trackingScale = v;

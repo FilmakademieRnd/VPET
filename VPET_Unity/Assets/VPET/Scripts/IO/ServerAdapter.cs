@@ -711,10 +711,10 @@ namespace vpet
                 }
             }
 
+			//AsyncIO.ForceDotNet.Force();   // SEIM: test!
+
             receiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
             receiver.Close();
-
-	        
 	    }
 		
 	

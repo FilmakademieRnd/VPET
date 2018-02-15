@@ -383,26 +383,18 @@ namespace vpet
             OnSceneScaleChanged.Invoke(VPETSettings.Instance.sceneScale);
         }
 
+#if USE_TANGO || USE_ARKIT
         private void OnToggleAr( bool isOn )
         {
             if (arToggle)
             {
-//				if (isOn) {
-//					VPETSettings.Instance.trackingScale = 1f;
-//					OnTrackingScaleChanged (1f);
-//				} else {
-//					VPETSettings.Instance.trackingScale = 100f;
-//					OnTrackingScaleChanged (100f);
-//				}
-				
                 //MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
                 //mainCtrl.ToggleArMode(isOn);
-#if USE_ARKIT                
 				ToggleAREvent.Invoke (isOn);
-#endif
+
             }
         }
-
+#endif
         private void OnAmbientChanged( float v )
 		{
 			ambientLight = v;
