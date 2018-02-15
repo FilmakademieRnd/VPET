@@ -377,7 +377,6 @@ namespace vpet
                 m_sceneTransferDirty = false;
                 print( "sceneLoader.createSceneGraph" );
 	            sceneLoader.createSceneGraph( );
-
                 sendUpdateObjects();
 	            // HACK
 	            mainController.repositionCamera();
@@ -414,6 +413,9 @@ namespace vpet
 
 		}
 
+
+
+
 		//!
 		//!
 		//!
@@ -439,6 +441,9 @@ namespace vpet
 		//!
 		public void SendObjectUpdate(SceneObject sobj, NodeType nodeType = NodeType.GROUP, params object[] args)
 		{
+			if (deactivatePublish)
+				return;
+
 			string dagPath = getPathString(sobj.transform, scene);
 
 			foreach(ObjectSender sender in objectSenderList)
@@ -448,282 +453,21 @@ namespace vpet
 
 		}
 
-
-	    //! function to be called to send a translation change to server
-	    //! @param  obj             Transform of GameObject
-	    //! @param  newPosition     new absolute position of GameObject in world space
-	    public void XXXsendTransform( Transform obj, bool onlyToClientsWithoutPhysics = false )
-	    {
-	        //Vector3 pos = obj.transform.localPosition;
-	        //Vector3 rot = obj.localRotation.eulerAngles;
-	        //Vector3 scl = obj.transform.localScale;
-	
-	        //if ( !deactivatePublish )
-	        //{
-	
-	        //    string sendMessage = id + "|" + this.getPathString( obj, scene ) +
-	        //                        "|" + pos.x + "|" + pos.y + "|" + pos.z + 
-	        //                        "|" + rot.x + "|" + rot.y + "|" + rot.z +
-	        //                        "|" + scl.x + "|" + scl.y + "|" + scl.z;
-	
-	        //    if (onlyToClientsWithoutPhysics)
-	        //    {
-	        //        sendMessage += "|physics";
-	        //    }
-	
-	        //    sendMessageQueue.Add( sendMessage );
-	        //}
-	        }
-	
-	
-		private void sendTransformKatana(string loc, Vector3 pos, Quaternion rot, Vector3 scl )
+		//!
+		//!
+		//!
+		public void SendObjectUpdate<T>(string msg)
 		{
-			float angle = 0;
-			Vector3 axis = Vector3.zero;
-			rot.ToAngleAxis( out angle, out axis );
+			if (deactivatePublish)
+				return;
 
-			katanaSendMessageQueue.Add(String.Format(katanaTemplates.objTemplateQuat,
-				loc,
-				(-pos.x + " " + pos.y + " " + pos.z),
-				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
-				(scl.x + " " + scl.y + " " + scl.z) ) );
-		}
-
-		private void sendTransformLightKatana(string loc, Vector3 pos, Quaternion rot, Vector3 scl )
-		{
-            Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
-            rot = rot * rotY180;
-            float angle = 0;
-			Vector3 axis = Vector3.zero;
-			rot.ToAngleAxis( out angle, out axis );
-
-            katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightTransRotTemplate,
-				loc,
-				(-pos.x + " " + pos.y + " " + pos.z),
-				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
-				(scl.x + " " + scl.y + " " + scl.z) ));
-		}
-
-        private void sendTransformCameraKatana(string loc, Vector3 pos, Quaternion rot, Vector3 scl)
-        {
-            Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
-            rot = rot * rotY180;
-            float angle = 0;
-            Vector3 axis = Vector3.zero;
-            rot.ToAngleAxis(out angle, out axis);
-
-            katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTransRotTemplate,
-                loc,
-                (-pos.x + " " + pos.y + " " + pos.z),
-                (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
-                (scl.x + " " + scl.y + " " + scl.z)));
-        }
-
-
-        //! function to be called to send a translation change to server
-        //! @param  obj             Transform of GameObject
-        //! @param  newPosition     new absolute position of GameObject in world space
-        public void XXXsendTranslation(Transform obj, bool onlyToClientsWithoutPhysics = false)
-	    {
-	        if (!deactivatePublish)
-	        {
-
-                // HACK:
-                onlyToClientsWithoutPhysics = false;
-
-
-
-                if (!onlyToClientsWithoutPhysics) sendMessageQueue.Add(id + "|" + "t" + "|" + this.getPathString(obj, scene) + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z);
-				else sendMessageQueue.Add(id + "|" + "t" + "|" + this.getPathString(obj, scene) + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z + "|physics");
-	        }
-	        if (!deactivatePublishKatana)
-	        {
-	            if ( obj.GetComponent<SceneObject>().IsLight )
-	            {
-					sendTransformLightKatana("/" + this.getPathString(obj, dreamspaceRoot),
-											obj.localPosition,
-											obj.localRotation,
-											obj.localScale);
-
-	            }
-	            else if (obj.GetComponent<CameraObject>() != null)
-                {
-                    sendTransformCameraKatana("/" + this.getPathString(obj, dreamspaceRoot),
-                                            obj.localPosition,
-                                            obj.localRotation,
-                                            obj.localScale);
-                }
-                else if(obj != Camera.main.transform)
-                {
-                    sendTransformKatana("/" + this.getPathString(obj, dreamspaceRoot),
-						obj.localPosition,
-						obj.localRotation,
-						obj.localScale);
-	            }
-	        }
-	    }
-
-		//! function to be called to send a rotation change to server
-	    //! @param  obj             Transform of GameObject
-	    //! @param  newPosition     new absolute rotation of GameObject in world space
-	    public void XXXsendRotation(Transform obj, bool onlyToClientsWithoutPhysics = false)
-	    {
-	        if (!deactivatePublish)
-	        {
-
-
-                // HACK:
-                onlyToClientsWithoutPhysics = false;
-
-
-
-                if (!onlyToClientsWithoutPhysics) sendMessageQueue.Add(id + "|" + "r" + "|" + this.getPathString(obj, scene) + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w);
-				else sendMessageQueue.Add(id + "|" + "r" + "|" + this.getPathString(obj, scene) + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w + "|physics");
-	        }
-			if (!deactivatePublishKatana)
+			foreach(ObjectSender sender in objectSenderList)
 			{
-				if ( obj.GetComponent<SceneObject>().IsLight )
-				{
-					sendTransformLightKatana("/" + this.getPathString(obj, dreamspaceRoot),
-						obj.localPosition,
-						obj.localRotation,
-						obj.localScale);
-
-				}
-                else if (obj.GetComponent<CameraObject>() != null)
-                {
-                    sendTransformCameraKatana("/" + this.getPathString(obj, dreamspaceRoot),
-                                            obj.localPosition,
-                                            obj.localRotation,
-                                            obj.localScale);
-                }
-                else if (obj != Camera.main.transform)
-				{
-					sendTransformKatana("/" + this.getPathString(obj, dreamspaceRoot),
-						obj.localPosition,
-						obj.localRotation,
-						obj.localScale);
-				}
+				if (sender.GetType() == typeof(T))
+					sender.SendObject(msg);
 			}
-	    }
 
-	    //! function to be called to send a scale change to server
-	    //! @param  obj             Transform of GameObject
-	    //! @param  newPosition     new relative scale of GameObject in object space
-	    public void XXXsendScale(Transform obj )
-	    {
-	        if (!deactivatePublish)
-	        {
-				sendMessageQueue.Add(id + "|" + "s" + "|" + this.getPathString(obj, scene) + "|" + obj.localScale.x + "|" + obj.localScale.y + "|" + obj.localScale.z);
-	        }
-			if (!deactivatePublishKatana)
-			{
-				if ( obj.GetComponent<SceneObject>().IsLight )
-				{
-					sendTransformLightKatana("/" + this.getPathString(obj, dreamspaceRoot),
-						obj.localPosition,
-						obj.localRotation,
-						obj.localScale);
-
-				}
-				else if (obj != Camera.main.transform)
-				{
-					sendTransformKatana("/" + this.getPathString(obj, dreamspaceRoot),
-						obj.localPosition,
-						obj.localRotation,
-						obj.localScale);
-				}
-			}
-	    }
-
-
-		private void sendLightParamsKatana( string loc, string lightType, Color lightColor, float lightIntensity, float coneAngle, float exposure )
-		{
-			katanaSendMessageQueue.Add(String.Format(katanaTemplates.lightIntensityColorTemplate,
-				loc,
-				lightType,
-				lightIntensity / VPETSettings.Instance.lightIntensityFactor,
-				lightColor.r + " " + lightColor.g + " " + lightColor.b,
-				exposure,
-				coneAngle	));
 		}
-
-	    //! function to be called to send a light color change to server
-	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  light        	light object
-		public void XXXsendLightColor(Transform obj, Light light, float exposure=3f )
-	    {
-	        if (!deactivatePublish)
-	        {
-				sendMessageQueue.Add(id + "|" + "c" + "|" + this.getPathString(obj, scene) + "|" + light.color.r + "|" + light.color.g + "|" + light.color.b);
-	        }
-
-	        if (!deactivatePublishKatana)
-	        {
-				sendLightParamsKatana( "/" + this.getPathString(obj, 
-								dreamspaceRoot), ((LightTypeKatana)(light.type)).ToString(),
-								light.color,
-								light.intensity,
-								light.spotAngle,
-								exposure);
-	        }
-	    }
-	
-	    //! function to be called to send a light intensity change to server
-	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  light        	light object
-		public void XXXsendLightIntensity(Transform obj, Light light, float exposure=3f )
-	    {
-            //print("intensit: " + light.intensity / VPETSettings.Instance.lightIntensityFactor + " epos: " + exposure);
-
-	        if (!deactivatePublish)
-	        {
-				sendMessageQueue.Add(id + "|" + "i" + "|" + this.getPathString(obj, scene) + "|" + light.intensity );
-	        }
-	        if (!deactivatePublishKatana)
-	        {
-				sendLightParamsKatana( "/" + this.getPathString(obj, 
-					dreamspaceRoot), ((LightTypeKatana)(light.type)).ToString(),
-					light.color,
-					light.intensity,
-					light.spotAngle,
-					exposure);
-	        }
-	    }
-	
-	    //! function to be called to send a light cone angle change of a spotlight to server
-	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  light        	light object
-		public void XXXsendLightConeAngle(Transform obj, Light light, float exposure=3f )
-	    {
-	        if (!deactivatePublish)
-	        {
-				sendMessageQueue.Add(id + "|" + "a" + "|" + this.getPathString(obj, scene) + "|" + light.spotAngle);
-	        }
-	        if (!deactivatePublishKatana)
-	        {
-				sendLightParamsKatana( "/" + this.getPathString(obj, 
-					dreamspaceRoot), ((LightTypeKatana)(light.type)).ToString(),
-					light.color,
-					light.intensity,
-					light.spotAngle,
-					exposure);
-	        }
-	    }
-	
-	    //! function to be called to send a light range change of a spotlight or pointlight to server
-	    //! @param  obj             Transform of GameObject (Light)
-	    //! @param  light        	light object
-	    public void XXXsendLightRange(Transform obj,  Light light)
-	    {
-	        if (!deactivatePublish)
-	        {
-	            sendMessageQueue.Add(id + "|" + "d" + "|" + this.getPathString(obj, scene) + "|" + light.range);
-	        }
-	    }
-	
-
-
 
 
 	    //! function to be called to send a scale change to server
@@ -737,21 +481,21 @@ namespace vpet
 	        }
 	    }
 	
+
+
 	    //! function to be called to send a kinematic on/off signal to server
 	    //! @param  obj             Transform of GameObject to be locked
 	    //! @param  on              should it be set to on or off
-	    public void XXXsendKinematic(Transform obj, bool on)
+	    public void sendKinematic(Transform obj, bool on)
 	    {
 	        if (!deactivatePublish)
 	        {
-	            sendMessageQueue.Add(id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on);
+	            // sendMessageQueue.Add(id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on);
 	        }
+ 			string msg = "client " + id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on;
+			SendObjectUpdate<ObjectSenderBasic>(msg);
 	    }
 
-
-
-
-	
 	    //! function to be called to send a lock signal to server
 	    //! @param  obj             Transform of GameObject to be locked
 	    //! @param  locked          should it be locked or unlocked
@@ -761,14 +505,16 @@ namespace vpet
 	        {
                 if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
                 {
-					SendObjectUpdate(currentlyLockedObject, NodeType.GROUP, false, "sendLock", false);
                     //sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false);
+					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
+ 					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Unlock object " + currentlyLockedObject.gameObject.name );
                 }
                 if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
                 {
-					SendObjectUpdate(obj, NodeType.GROUP, false, "sendLock", true);
                     //sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true);
+					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
+ 					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Lock object " + obj.gameObject.name);
                 }
                 currentlyLockedObject = obj;
@@ -777,8 +523,9 @@ namespace vpet
 	        {
                 if ( currentlyLockedObject != null && !deactivatePublish ) // unlock if locked
                 {
- 					SendObjectUpdate(obj, NodeType.GROUP, false, "sendLock", false);
                     // sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false);
+					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
+ 					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Unlock object " + obj.gameObject.name);
                 }
                 currentlyLockedObject = null;
@@ -791,34 +538,31 @@ namespace vpet
 
         public void sendAnimatorCommand(Transform obj, int cmd)
         {
-            if (!deactivatePublish)
-            {
-                sendMessageQueue.Add(id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd);
-            }
+			string msg = "client " + id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd;
+			SendObjectUpdate<ObjectSenderBasic>(msg);			
         }
 
 
         public void sendColliderOffset(Transform obj, Vector3 offset )
         {
-            if (!deactivatePublish)
-            {
-                sendMessageQueue.Add(id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z);
-            }
+			string msg = "client " + id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z;
+			SendObjectUpdate<ObjectSenderBasic>(msg);			
         }
-
-
-
-
-
-
-
 
 
         //! function to be called to resend stored scene object attributes
         public void sendUpdateObjects()
         {
-            sendMessageQueue.Add(id + "|" + "udOb");
+			SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "udOb");
         }
+
+
+
+
+
+
+
+
 
         //! function parsing received message and executing change
         //! @param  message         message string received by server

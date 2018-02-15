@@ -28,7 +28,13 @@ namespace vpet
 
 		protected List<string> sendMessageQueue = new List<string>(); 
 
+
 		public virtual void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args) {}
+
+		public void SendObject(string msg)
+		{
+			sendMessageQueue.Add(msg);	
+		}
 
 		public void SetTarget(string ip, string port)
 		{

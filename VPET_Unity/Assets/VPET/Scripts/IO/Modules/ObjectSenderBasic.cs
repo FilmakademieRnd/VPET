@@ -56,45 +56,19 @@ namespace vpet
 				}			
 				else // send transform
 				{
-					string msg = "transform";
-
-					// specila cases		
-					if (args.Length > 1)
-					{
-						msg = (string)args[1];
-					}
-
+	
 					Transform obj = sceneObject.transform;
 
-					if (msg == "sendKinematic")
-					{
-						if (args.Length > 2)
-						{
-							bool value  = (bool)args[2];
-							sendMessageQueue.Add("client " + id + "|" + "k" + "|" + dagPath + "|" + value);
-						}
-					}
-					else if (msg == "sendLock")
-					{
-						if (args.Length > 2)
-						{
-							bool value  = (bool)args[2];
-		                    sendMessageQueue.Add("client " +id + "|" + "l" + "|" + dagPath + "|" + value);					
-						}
-					}
-					else
-					{
-						string physicString = "";
-						if (onlyToClientsWithoutPhysics) 
-							physicString =  "|physics");
+					string physicString = "";
+					if (onlyToClientsWithoutPhysics) 
+						physicString =  "|physics";
 
-						// translate
-						sendMessageQueue.Add("client " + id + "|" + "t" + "|" + dagPath + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z + physicString);
-						// rotate
-						sendMessageQueue.Add("client " + id + "|" + "r" + "|" + dagPath + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w + physicString);
-						// scale
-						sendMessageQueue.Add("client " + id + "|" + "s" + "|" + dagPath + "|" + obj.localScale.x + "|" + obj.localScale.y + "|" + obj.localScale.z);
-					}
+					// translate
+					sendMessageQueue.Add("client " + id + "|" + "t" + "|" + dagPath + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z + physicString);
+					// rotate
+					sendMessageQueue.Add("client " + id + "|" + "r" + "|" + dagPath + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w + physicString);
+					// scale
+					sendMessageQueue.Add("client " + id + "|" + "s" + "|" + dagPath + "|" + obj.localScale.x + "|" + obj.localScale.y + "|" + obj.localScale.z);
 				}
 			}
 			else //light, camera if ( sobj.GetType() == typeof(SceneObjectLight) )
