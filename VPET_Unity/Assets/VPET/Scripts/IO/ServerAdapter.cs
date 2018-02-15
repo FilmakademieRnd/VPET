@@ -47,7 +47,6 @@ namespace vpet
     public class ServerAdapter : MonoBehaviour
 	{
 
-
         //!
         //! unique id of client instance
         //!
@@ -135,27 +134,11 @@ namespace vpet
 	    //! message queue for incoming messages
 	    //!
 	    ArrayList receiveMessageQueue;
-	    //!
-	    //! message queue for outgoing messages for tablet syncronizing server
-	    //!
-	    ArrayList sendMessageQueue;
-	    //!
-	    //! message queue for outgoing messages for katana server
-	    //!
-	    ArrayList katanaSendMessageQueue;
 	
 	    //!
 	    //! reference to thread receiving all object updates from tablet syncronizing server
 	    //!
 	    Thread receiverThread;
-	    //!
-	    //! reference to thread sending all object updates to katana server
-	    //!
-	    Thread katanaSenderThread;
-	    //!
-	    //! reference to thread sending all object updates to tablet syncronizing server
-	    //!
-	    Thread senderThread;
 	    //!
 	    //! reference to thread receiving the scene from Katana
 	    //!
@@ -203,16 +186,19 @@ namespace vpet
 
         private bool m_sceneTransferDirty = false;
 
-
-
-
+		//!
+		//!
+		//! 
 		private List<Thread> senderThreadList = new List<Thread>();
 
-
-
-
+		//!
+		//!
+		//! 
         public static List<ObjectSender> objectSenderList = new List<ObjectSender>();
 
+		//!
+		//! Register sender objects
+		//!
         public static void RegisterSender(ObjectSender sender)
         {
 			print("Register " + sender.GetType());
@@ -220,14 +206,6 @@ namespace vpet
             if (!objectSenderList.Contains(sender))
                 objectSenderList.Add(sender);
         }
-
-
-
-
-
-
-
-
 
 
 
@@ -242,12 +220,6 @@ namespace vpet
 	    }
 	
 
-
-
-
-
-
-	
 	    //!
 	    //! Use this for initialization
 	    //!
@@ -266,34 +238,13 @@ namespace vpet
 	        print( "persistentDataPath: " + persistentDataPath );
 	
   	        scene = GameObject.Find( "Scene" ).transform;
-	
-	
-	        receiveMessageQueue = new ArrayList();
-	        sendMessageQueue = new ArrayList();
-	        katanaSendMessageQueue = new ArrayList();
 
-
+			  
+			  
+			receiveMessageQueue = new ArrayList();			  
+	
             dreamspaceRoot = scene; // GameObject.Find("Scene").transform;
 	        if (dreamspaceRoot == null) Debug.LogError(string.Format("{0}: Cant Find: Scene.", this.GetType()));
-
-
-			/* TODO: ??
-            if (doAutostartListener && !deactivateReceive && receiverThread == null)
-            {
-                receiverThread = new Thread(new ThreadStart(listener));
-                receiverThread.Start();
-                isRunning = true;
-            }
-
-            if (doAutostartListener && !deactivatePublish && senderThread == null)
-            {
-                senderThread = new Thread(new ThreadStart(publisher));
-                senderThread.Start();
-                isRunning = true;
-            }
-
-			*/
-
         }
 
 
@@ -316,10 +267,6 @@ namespace vpet
 	
 	        // if (!ipAdressFormat.IsMatch(VPETSettings.Instance.katanaIP)) deactivatePublishKatana = true;
 	
-	        katanaTemplates = GameObject.Find("KatanaTemplates").GetComponent<KatanaTemplates>();
-	
-	
-	        isRunning = true;
 	
 	
 #if !UNITY_EDITOR_OSX
@@ -414,8 +361,6 @@ namespace vpet
 		}
 
 
-
-
 		//!
 		//!
 		//!
@@ -423,7 +368,6 @@ namespace vpet
 		{
 			SendObjectUpdate(trn, NodeType.GROUP, onlyToClientsWithoutPhysics);
 		}
-
 
 		//!
 		//!
@@ -477,21 +421,16 @@ namespace vpet
 	    {
 	        if (!deactivatePublishKatana)
 	        {
-	            katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTemplate, fov, left, right, bottom, top));
+	            // katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTemplate, fov, left, right, bottom, top));
 	        }
 	    }
 	
-
 
 	    //! function to be called to send a kinematic on/off signal to server
 	    //! @param  obj             Transform of GameObject to be locked
 	    //! @param  on              should it be set to on or off
 	    public void sendKinematic(Transform obj, bool on)
 	    {
-	        if (!deactivatePublish)
-	        {
-	            // sendMessageQueue.Add(id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on);
-	        }
  			string msg = "client " + id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on;
 			SendObjectUpdate<ObjectSenderBasic>(msg);
 	    }
@@ -505,14 +444,12 @@ namespace vpet
 	        {
                 if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
                 {
-                    //sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false);
 					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
  					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Unlock object " + currentlyLockedObject.gameObject.name );
                 }
                 if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
                 {
-                    //sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true);
 					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
  					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Lock object " + obj.gameObject.name);
@@ -523,7 +460,6 @@ namespace vpet
 	        {
                 if ( currentlyLockedObject != null && !deactivatePublish ) // unlock if locked
                 {
-                    // sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false);
 					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
  					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Unlock object " + obj.gameObject.name);
@@ -531,9 +467,6 @@ namespace vpet
                 currentlyLockedObject = null;
 	        }
 	    }
-
-
-
 
 
         public void sendAnimatorCommand(Transform obj, int cmd)
@@ -555,12 +488,6 @@ namespace vpet
         {
 			SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "udOb");
         }
-
-
-
-
-
-
 
 
 
@@ -949,8 +876,6 @@ namespace vpet
 
         }
 
-
-
         //!
         //! none
         //!
@@ -983,8 +908,6 @@ namespace vpet
 			OnProgressEvent.Invoke(progress, msg);
 		}
 
-
-
 	
 	    //!
 	    //! Unity build in function beeing called just before Application is closed
@@ -993,8 +916,7 @@ namespace vpet
 	    void OnApplicationQuit() 
 	    {
 	        Debug.Log(receiveMessageQueue.Count);
-	        Debug.Log(katanaSendMessageQueue.Count);
-	        Debug.Log(sendMessageQueue.Count);
+
 	        isRunning = false;
 	        if ( receiverThread != null && receiverThread.IsAlive )
 	            receiverThread.Abort();
