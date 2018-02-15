@@ -445,7 +445,7 @@ namespace vpet
 				input.enabled = true;
 
 #if USE_ARKIT
-            GameObject arPlanes = GameObject.Find("ARPlanes");
+			GameObject arPlanes = GameObject.Find("ARPlanes");
 			if (arPlanes) {
 				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
 			}
@@ -463,6 +463,7 @@ namespace vpet
 				GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
 			}
 #endif
+
             // request progress bar from UI and connect listener to server adapter
             RoundProgressBar progressWidget =  ui.drawProgressWidget();
 			// Connect set value to progress event

@@ -947,11 +947,11 @@ namespace vpet
                 }
             }
 
+			//AsyncIO.ForceDotNet.Force();   // SEIM: test!
+
             receiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
             receiver.Close();
-
-	        
-	    }
+		}
 	
 	    //!
 	    //! sender function, sending messages in sendMessageQueue to server (executed in separate thread)

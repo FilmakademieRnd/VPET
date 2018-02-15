@@ -285,7 +285,7 @@ namespace vpet
             // disable tracking
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             else if (Input.GetAxis("R2") < 0 && !hasPressedR2)
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
 			else if (Input.GetButtonDown("R2"))
 #endif
             {
@@ -308,7 +308,7 @@ namespace vpet
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             else if (Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
                         Input.GetAxis("DPAD_V") != 0 && hasPressedDirectionalPad == false)
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
 			else if (   (Input.GetButtonDown("DPAD_H")) ||
 						(Input.GetButtonDown("DPAD_H_neg")) ||
 						(Input.GetButtonDown("DPAD_V")) ||
@@ -319,7 +319,7 @@ namespace vpet
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
                     DPADdirection = 1;
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
 				if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V") ) {
                     DPADdirection = 1;
 				}
@@ -330,7 +330,7 @@ namespace vpet
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                 if (Input.GetAxis("DPAD_V") != 0)
                     EditableObjects = EditableLightList;
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
 				if (Input.GetButtonDown("DPAD_V") || Input.GetButtonDown("DPAD_V_neg") )
                     EditableObjects = EditableLightList;
 #endif

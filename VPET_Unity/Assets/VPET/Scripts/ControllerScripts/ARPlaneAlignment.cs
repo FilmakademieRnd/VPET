@@ -1,5 +1,4 @@
 #if USE_ARKIT
-
 using System;
 using System.Collections.Generic;
 using vpet;
