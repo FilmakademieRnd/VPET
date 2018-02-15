@@ -332,6 +332,7 @@ namespace vpet
             {
 				foreach( ObjectSender sender in  objectSenderList)
 				{
+					sender.SetTarget(VPETSettings.Instance.serverIP, "5557");
 					Thread _thread = new Thread(new ThreadStart(sender.Publisher));
 					_thread.Start();
 					if (!senderThreadList.Contains(_thread))
@@ -409,12 +410,18 @@ namespace vpet
 
 		}
 
+		//!
+		//!
+		//!
 		public void SendObjectUpdate(Transform trn,  bool onlyToClientsWithoutPhysics = false)
 		{
 			if (trn.GetComponent<SceneObject>() != null)
 				SendObjectUpdate(trn.GetComponent<SceneObject>(),onlyToClientsWithoutPhysics);
 		}
 
+		//!
+		//!
+		//!
 		public void SendObjectUpdate(SceneObject sobj,  bool onlyToClientsWithoutPhysics = false)
 		{
 			string dagPath = getPathString(sobj.transform, scene);
@@ -1006,69 +1013,7 @@ namespace vpet
 
 	        
 	    }
-	
-	    //!
-	    //! sender function, sending messages in sendMessageQueue to server (executed in separate thread)
-	    //!
-	    public void publisher()
-	    {
-	        
-	        //create NetMQ context
-	        NetMQContext ctx = NetMQContext.Create();
-	
-	        NetMQ.Sockets.PublisherSocket sender = ctx.CreatePublisherSocket();
-	        sender.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5557");
-	
-	        while (isRunning) 
-	        {
-	            if ( sendMessageQueue.Count > 0 )
-	            {
-	                // Debug.Log("Publisher: " + sendMessageQueue[0] as string);
-	                sender.Send("client " + sendMessageQueue[0] as string);
-	                sendMessageQueue.RemoveAt(0);
-	            }
-	        }
-	
-	        sender.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5557");
-	        sender.Close();
-	        
-	    }
-	
-	    //!
-	    //! sender function, sending messages in sendMessageQueue to katana server (executed in separate thread)
-	    //!
-	    public void sendKatana()
-	    {
-	        //create NetMQ context
-	        NetMQContext ctx = NetMQContext.Create();
-	
-	        NetMQ.Sockets.PushSocket katanaSender = ctx.CreatePushSocket();
-            katanaSender.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5555");
-
-            //using (NetMQ.Poller poller = new NetMQ.Poller(katanaSender))
-            //{
-                while (isRunning)
-                {
-
-
-                    if (katanaSendMessageQueue.Count > 0)
-                    {
-                        // Debug.Log(katanaSendMessageQueue[0] as string);
-                        try
-                        {
-                            katanaSender.Send(katanaSendMessageQueue[0] as string, true); // TODO: note added true argument to not wait
-                        }
-                        catch
-                        {
-                            Debug.Log("Failed katanaSendMessage");
-                        }
-                        katanaSendMessageQueue.RemoveAt(0);
-                    }
-                }
-            //}
-	        katanaSender.Disconnect( "tcp://" + VPETSettings.Instance.serverIP + ":5555" );
-	        katanaSender.Close();
-	    }
+		
 	
 	    //!
 	    //! receiver function, receiving the initial scene from the katana server (executed in separate thread)

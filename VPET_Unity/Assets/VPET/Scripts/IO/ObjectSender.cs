@@ -28,9 +28,19 @@ namespace vpet
 
 		public virtual void SendObject(string id, SceneObject sceneObject, string dagPath) {}
 
+		public void SetTarget(string ip, string port)
+		{
+			if (IP == null)
+				IP = ip;
+
+			if (Port == null)
+				Port = port;			
+		}
+
+
 		public void Publisher()
 		{
-				        
+
 	        //create NetMQ context
 	        NetMQContext ctx = NetMQContext.Create();
 	
