@@ -24,6 +24,8 @@ namespace vpet
 		protected string IP = null;
 		protected string Port = null;
 
+		protected NetMQ.Sockets.PublisherSocket sender = null;
+
 		protected List<string> sendMessageQueue = new List<string>(); 
 
 		public virtual void SendObject(string id, SceneObject sceneObject, string dagPath) {}
@@ -37,6 +39,11 @@ namespace vpet
 				Port = port;			
 		}
 
+		public void Finish()
+		{
+			IsRunning = false;
+			disconnectClose();
+		}
 
 		public void Publisher()
 		{
@@ -44,20 +51,30 @@ namespace vpet
 	        //create NetMQ context
 	        NetMQContext ctx = NetMQContext.Create();
 	
-	        NetMQ.Sockets.PublisherSocket sender = ctx.CreatePublisherSocket();
+	        sender = ctx.CreatePublisherSocket();
 	        sender.Connect("tcp://" + IP + ":" + Port);
 	
 	        while (IsRunning) 
 	        {
 	            if ( sendMessageQueue.Count > 0 )
 	            {
-	                sender.Send("client " + sendMessageQueue[0] as string);
+	                sender.Send(sendMessageQueue[0], true); // true not wait
 	                sendMessageQueue.RemoveAt(0);
 	            }
 	        }
-	
-	        sender.Disconnect("tcp://" + IP + ":" + Port);
-	        sender.Close();
+
+			disconnectClose();	
+		}
+
+		private void disconnectClose()
+		{
+			if (sender != null)
+			{
+				// TODO: check first if closed
+				sender.Disconnect("tcp://" + IP + ":" + Port);
+				sender.Close();
+				sender = null;
+			}
 		}
 
 	}

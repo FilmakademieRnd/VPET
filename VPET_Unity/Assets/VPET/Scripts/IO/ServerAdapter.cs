@@ -1223,15 +1223,13 @@ namespace vpet
 	        if ( receiverThread != null && receiverThread.IsAlive )
 	            receiverThread.Abort();
 	
+			// finish sender objects
 			foreach(ObjectSender sender in objectSenderList)
 			{
-				sender.IsRunning = false;
-
-				// FIX: call sender stop here directly rayjer isrunning. This might prevent hang/crash after quit.
-
+				sender.Finish();
 			}
 
-
+			// halt sender threads
 			foreach (Thread _thread in senderThreadList)
 			{
 				if (_thread != null && _thread.IsAlive )
