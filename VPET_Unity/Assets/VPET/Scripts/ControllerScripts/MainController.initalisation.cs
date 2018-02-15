@@ -289,6 +289,7 @@ namespace vpet
             // Register plugins
             VPETRegister.RegisterNodeParser();
             VPETRegister.RegisterNodeBuilder();
+            VPETRegister.RegisterObjectSender();
 
             // get all adapters and add them if missing
             //	

@@ -25,7 +25,8 @@ namespace vpet
 
 		public static void RegisterObjectSender()
 		{
-			ServerAdapter.RegisterSender(ObjectSender.Instance);
+			ServerAdapter.RegisterSender(ObjectSenderBasic.Instance);
+			ServerAdapter.RegisterSender(ObjectSenderKatana.Instance);
 		}
 
 

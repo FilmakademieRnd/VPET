@@ -215,6 +215,8 @@ namespace vpet
 
         public static void RegisterSender(ObjectSender sender)
         {
+			print("Register " + sender.GetType());
+
             if (!objectSenderList.Contains(sender))
                 objectSenderList.Add(sender);
         }
@@ -330,6 +332,8 @@ namespace vpet
 	        }
 	        if (!deactivatePublish)
             {
+				print("Set Sender Threads");
+				// create thread for all registered sender
 				foreach( ObjectSender sender in  objectSenderList)
 				{
 					sender.SetTarget(VPETSettings.Instance.serverIP, "5557");
@@ -413,22 +417,33 @@ namespace vpet
 		//!
 		//!
 		//!
-		public void SendObjectUpdate(Transform trn,  bool onlyToClientsWithoutPhysics = false)
+		public void SendObjectUpdate(Transform trn, bool onlyToClientsWithoutPhysics )
 		{
+			SendObjectUpdate(trn, NodeType.GROUP, onlyToClientsWithoutPhysics);
+		}
+
+
+		//!
+		//!
+		//!
+		public void SendObjectUpdate(Transform trn, NodeType nodeType = NodeType.GROUP, params object[] args)
+		{
+			// bool onlyToClientsWithoutPhysics = false,
+			
 			if (trn.GetComponent<SceneObject>() != null)
-				SendObjectUpdate(trn.GetComponent<SceneObject>(),onlyToClientsWithoutPhysics);
+				SendObjectUpdate(trn.GetComponent<SceneObject>(), nodeType, args);
 		}
 
 		//!
 		//!
 		//!
-		public void SendObjectUpdate(SceneObject sobj,  bool onlyToClientsWithoutPhysics = false)
+		public void SendObjectUpdate(SceneObject sobj, NodeType nodeType = NodeType.GROUP, params object[] args)
 		{
 			string dagPath = getPathString(sobj.transform, scene);
 
 			foreach(ObjectSender sender in objectSenderList)
 			{
-				sender.SendObject(id, sobj, dagPath);
+				sender.SendObject(id, sobj, dagPath, nodeType, args);
 			}
 
 		}
@@ -437,7 +452,7 @@ namespace vpet
 	    //! function to be called to send a translation change to server
 	    //! @param  obj             Transform of GameObject
 	    //! @param  newPosition     new absolute position of GameObject in world space
-	    public void sendTransform( Transform obj, bool onlyToClientsWithoutPhysics = false )
+	    public void XXXsendTransform( Transform obj, bool onlyToClientsWithoutPhysics = false )
 	    {
 	        //Vector3 pos = obj.transform.localPosition;
 	        //Vector3 rot = obj.localRotation.eulerAngles;
@@ -508,7 +523,7 @@ namespace vpet
         //! function to be called to send a translation change to server
         //! @param  obj             Transform of GameObject
         //! @param  newPosition     new absolute position of GameObject in world space
-        public void sendTranslation(Transform obj, bool onlyToClientsWithoutPhysics = false)
+        public void XXXsendTranslation(Transform obj, bool onlyToClientsWithoutPhysics = false)
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -551,7 +566,7 @@ namespace vpet
 		//! function to be called to send a rotation change to server
 	    //! @param  obj             Transform of GameObject
 	    //! @param  newPosition     new absolute rotation of GameObject in world space
-	    public void sendRotation(Transform obj, bool onlyToClientsWithoutPhysics = false)
+	    public void XXXsendRotation(Transform obj, bool onlyToClientsWithoutPhysics = false)
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -595,7 +610,7 @@ namespace vpet
 	    //! function to be called to send a scale change to server
 	    //! @param  obj             Transform of GameObject
 	    //! @param  newPosition     new relative scale of GameObject in object space
-	    public void sendScale(Transform obj )
+	    public void XXXsendScale(Transform obj )
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -636,7 +651,7 @@ namespace vpet
 	    //! function to be called to send a light color change to server
 	    //! @param  obj             Transform of GameObject (Light)
 	    //! @param  light        	light object
-		public void sendLightColor(Transform obj, Light light, float exposure=3f )
+		public void XXXsendLightColor(Transform obj, Light light, float exposure=3f )
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -657,7 +672,7 @@ namespace vpet
 	    //! function to be called to send a light intensity change to server
 	    //! @param  obj             Transform of GameObject (Light)
 	    //! @param  light        	light object
-		public void sendLightIntensity(Transform obj, Light light, float exposure=3f )
+		public void XXXsendLightIntensity(Transform obj, Light light, float exposure=3f )
 	    {
             //print("intensit: " + light.intensity / VPETSettings.Instance.lightIntensityFactor + " epos: " + exposure);
 
@@ -679,7 +694,7 @@ namespace vpet
 	    //! function to be called to send a light cone angle change of a spotlight to server
 	    //! @param  obj             Transform of GameObject (Light)
 	    //! @param  light        	light object
-		public void sendLightConeAngle(Transform obj, Light light, float exposure=3f )
+		public void XXXsendLightConeAngle(Transform obj, Light light, float exposure=3f )
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -699,7 +714,7 @@ namespace vpet
 	    //! function to be called to send a light range change of a spotlight or pointlight to server
 	    //! @param  obj             Transform of GameObject (Light)
 	    //! @param  light        	light object
-	    public void sendLightRange(Transform obj,  Light light)
+	    public void XXXsendLightRange(Transform obj,  Light light)
 	    {
 	        if (!deactivatePublish)
 	        {
@@ -707,6 +722,10 @@ namespace vpet
 	        }
 	    }
 	
+
+
+
+
 	    //! function to be called to send a scale change to server
 	    //! @param  obj             Transform of GameObject
 	    //! @param  newPosition     new relative scale of GameObject in object space
@@ -721,13 +740,17 @@ namespace vpet
 	    //! function to be called to send a kinematic on/off signal to server
 	    //! @param  obj             Transform of GameObject to be locked
 	    //! @param  on              should it be set to on or off
-	    public void sendKinematic(Transform obj, bool on)
+	    public void XXXsendKinematic(Transform obj, bool on)
 	    {
 	        if (!deactivatePublish)
 	        {
 	            sendMessageQueue.Add(id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on);
 	        }
 	    }
+
+
+
+
 	
 	    //! function to be called to send a lock signal to server
 	    //! @param  obj             Transform of GameObject to be locked
@@ -738,12 +761,14 @@ namespace vpet
 	        {
                 if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
                 {
-                    sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false);
+					SendObjectUpdate(currentlyLockedObject, NodeType.GROUP, false, "sendLock", false);
+                    //sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false);
                     // print("Unlock object " + currentlyLockedObject.gameObject.name );
                 }
                 if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
                 {
-                    sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true);
+					SendObjectUpdate(obj, NodeType.GROUP, false, "sendLock", true);
+                    //sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true);
                     // print("Lock object " + obj.gameObject.name);
                 }
                 currentlyLockedObject = obj;
@@ -752,12 +777,16 @@ namespace vpet
 	        {
                 if ( currentlyLockedObject != null && !deactivatePublish ) // unlock if locked
                 {
-                    sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false);
+ 					SendObjectUpdate(obj, NodeType.GROUP, false, "sendLock", false);
+                    // sendMessageQueue.Add(id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false);
                     // print("Unlock object " + obj.gameObject.name);
                 }
                 currentlyLockedObject = null;
 	        }
 	    }
+
+
+
 
 
         public void sendAnimatorCommand(Transform obj, int cmd)
@@ -776,6 +805,9 @@ namespace vpet
                 sendMessageQueue.Add(id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z);
             }
         }
+
+
+
 
 
 

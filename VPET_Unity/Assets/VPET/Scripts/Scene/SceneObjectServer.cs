@@ -439,9 +439,10 @@ namespace vpet
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendTranslation(target, target.position, !selected);
-							serverAdapter.sendTranslation(target, !selected );
+							//serverAdapter.sendTranslation(target, !selected );
 
-							serverAdapter.sendTransform( target, !selected );
+							//serverAdapter.sendTransform( target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 							lastTranslationUpdateTime = Time.time;
 							translationUpdateDelayed = false;
@@ -454,9 +455,10 @@ namespace vpet
 					else if (translationUpdateDelayed) //update delayed, but object not moving
 					{
 						// serverAdapter.sendTranslation(target, target.position, !selected);
-						serverAdapter.sendTranslation(target, !selected );
+						//serverAdapter.sendTranslation(target, !selected );
 
-						serverAdapter.sendTransform( target, !selected );
+						//serverAdapter.sendTransform( target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 						lastTranslationUpdateTime = Time.time;
 						translationUpdateDelayed = false;
@@ -465,9 +467,10 @@ namespace vpet
 				else if (translationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendTranslation(target, target.position, !selected);
-					serverAdapter.sendTranslation(target, !selected );
+					//serverAdapter.sendTranslation(target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
-					serverAdapter.sendTransform( target, !selected );
+					//serverAdapter.sendTransform( target, !selected );
 
 				}
 
@@ -479,9 +482,10 @@ namespace vpet
 						if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendRotation(target, target.rotation, !selected);
-							serverAdapter.sendRotation(target, !selected );
+							//serverAdapter.sendRotation(target, !selected );
 
-							serverAdapter.sendTransform( target, !selected );
+							//serverAdapter.sendTransform( target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 							lastRotationUpdateTime = Time.time;
 							rotationUpdateDelayed = false;
@@ -494,10 +498,11 @@ namespace vpet
 					else if (rotationUpdateDelayed) //update delayed, but object not moving
 					{
 						//serverAdapter.sendRotation(target, target.rotation, !selected);
-						serverAdapter.sendRotation(target, !selected );
+						//serverAdapter.sendRotation(target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 
-						serverAdapter.sendTransform( target, !selected );
+						//serverAdapter.sendTransform( target, !selected );
 
 						lastRotationUpdateTime = Time.time;
 						rotationUpdateDelayed = false;
@@ -506,9 +511,10 @@ namespace vpet
 				else if (rotationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendRotation(target, target.rotation, !selected);
-					serverAdapter.sendRotation(target, !selected );
+					//serverAdapter.sendRotation(target, !selected );
 
-					serverAdapter.sendTransform( target, !selected );
+					//serverAdapter.sendTransform( target, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 				}
 
@@ -660,7 +666,8 @@ namespace vpet
 		{
 			target.rotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
-			serverAdapter.sendRotation(target );
+			//serverAdapter.sendRotation(target );
+							serverAdapter.SendObjectUpdate(target);
 
 		}
 
@@ -671,7 +678,8 @@ namespace vpet
 		{
 			target.position = initialPosition;
 			//serverAdapter.sendTranslation(target, target.position);
-			serverAdapter.sendTranslation(target );
+			//serverAdapter.sendTranslation(target );
+							serverAdapter.SendObjectUpdate(target);
 
 		}
 
@@ -696,33 +704,40 @@ namespace vpet
 			serverAdapter.sendLock(this.transform, false);
 			target.rotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
-			serverAdapter.sendRotation(target );
+			//serverAdapter.sendRotation(target );
+							serverAdapter.SendObjectUpdate(target);
 
 			target.position = initialPosition;
 			//serverAdapter.sendTranslation(target, target.position);
-			serverAdapter.sendTranslation(target );
+			//serverAdapter.sendTranslation(target );
+							serverAdapter.SendObjectUpdate(target);
 
 			target.localScale = initialScale;
 			//serverAdapter.sendScale(target, target.localScale);
-			serverAdapter.sendScale(target );
+			//serverAdapter.sendScale(target );
+							serverAdapter.SendObjectUpdate(target);
 
 			if (isSpotLight || isPointLight || isDirectionalLight) 
 			{
 				sourceLight.color = initialLightColor;
                 sourceLight.intensity = initialLightIntensity;
 				lightGeo.GetComponent<Renderer>().material.color = initialLightColor;
-				serverAdapter.sendLightColor(target, sourceLight, exposure );
-				serverAdapter.sendLightIntensity(target, sourceLight, exposure);
+								serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+				//serverAdapter.sendLightColor(target, sourceLight, exposure );
+				//serverAdapter.sendLightIntensity(target, sourceLight, exposure);
 			}
 			if (isSpotLight || isPointLight) 
 			{
 				sourceLight.range = initialLightRange;
-				serverAdapter.sendLightRange(target, sourceLight);
+								serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+				//serverAdapter.sendLightRange(target, sourceLight);
 			}
 			if (isSpotLight) 
 			{
 				sourceLight.spotAngle = initialSpotAngle;
-				serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
+								serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+
+				//serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
 			}
 		}
 
@@ -866,8 +881,8 @@ namespace vpet
 
 			// HACK
 			//serverAdapter.sendScale( target, target.localScale );
-			serverAdapter.sendScale(target );
-
+			// serverAdapter.sendScale(target );
+			serverAdapter.SendObjectUpdate(target);
 
 		}
 
@@ -941,7 +956,8 @@ namespace vpet
 			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
-				if (send) serverAdapter.sendKinematic(target, set);
+				if (send) 
+					serverAdapter.SendObjectUpdate(target, NodeType.GROUP, false, "sendKinematic", set);
 				if (!set)
 				{
 					this.gameObject.GetComponent<Rigidbody>().WakeUp();

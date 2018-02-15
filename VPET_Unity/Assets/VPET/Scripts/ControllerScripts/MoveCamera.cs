@@ -359,7 +359,8 @@ namespace vpet
                         {
                             lastUpdateTime = Time.time;
                             lastPosition = this.transform.GetChild(1).position;
-							serverAdapter.sendTranslation(this.transform.GetChild(1) );
+							// serverAdapter.sendTranslation(this.transform.GetChild(1) );
+                            serverAdapter.SendObjectUpdate(this.transform.GetChild(1));
                         }
                     }
                 }

@@ -234,10 +234,12 @@ namespace vpet
                             targetSend.localPosition = target.localPosition; //targetSend.localRotation = target.localRotation; targetSend.localScale = target.localScale
 
 							// serverAdapter.sendTranslation(target, target.position, !selected);
-							serverAdapter.sendTranslation(targetSend, !selected );
+							//serverAdapter.sendTranslation(targetSend, !selected );
 
-							serverAdapter.sendTransform(targetSend, !selected );
-                            // update collider 
+							//serverAdapter.sendTransform(targetSend, !selected );
+                            							serverAdapter.SendObjectUpdate(target, !selected );
+
+							// update collider 
                             serverAdapter.sendColliderOffset(targetCollider, target.localPosition);
 
 							lastTranslationUpdateTime = Time.time;
@@ -253,9 +255,10 @@ namespace vpet
                         targetSend.localPosition = target.localPosition; //targetSend.localRotation = target.localRotation; targetSend.localScale = target.localScale
 
                         // serverAdapter.sendTranslation(target, target.position, !selected);
-                        serverAdapter.sendTranslation(targetSend, !selected );
+                        //serverAdapter.sendTranslation(targetSend, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
-						serverAdapter.sendTransform(targetSend, !selected );
+						//serverAdapter.sendTransform(targetSend, !selected );
                         // update collider 
                         serverAdapter.sendColliderOffset(targetCollider, target.localPosition);
 
@@ -268,9 +271,10 @@ namespace vpet
                     targetSend.localPosition = target.localPosition; //targetSend.localRotation = target.localRotation; targetSend.localScale = target.localScale
 
                     // serverAdapter.sendTranslation(target, target.position, !selected);
-                    serverAdapter.sendTranslation(targetSend, !selected );
+                    //serverAdapter.sendTranslation(targetSend, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
-					serverAdapter.sendTransform(targetSend, !selected );
+					//serverAdapter.sendTransform(targetSend, !selected );
                     // update collider 
                     serverAdapter.sendColliderOffset(targetCollider, target.localPosition);
 
@@ -284,9 +288,10 @@ namespace vpet
 						if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendRotation(target, target.rotation, !selected);
-							serverAdapter.sendRotation(targetSend, !selected );
+							//serverAdapter.sendRotation(targetSend, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
-							serverAdapter.sendTransform(targetSend, !selected );
+							//serverAdapter.sendTransform(targetSend, !selected );
 
 							lastRotationUpdateTime = Time.time;
 							rotationUpdateDelayed = false;
@@ -299,10 +304,11 @@ namespace vpet
 					else if (rotationUpdateDelayed) //update delayed, but object not moving
 					{
 						//serverAdapter.sendRotation(target, target.rotation, !selected);
-						serverAdapter.sendRotation(targetSend, !selected );
+						//serverAdapter.sendRotation(targetSend, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
 
-						serverAdapter.sendTransform(targetSend, !selected );
+						//serverAdapter.sendTransform(targetSend, !selected );
 
 						lastRotationUpdateTime = Time.time;
 						rotationUpdateDelayed = false;
@@ -311,9 +317,10 @@ namespace vpet
 				else if (rotationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendRotation(target, target.rotation, !selected);
-					serverAdapter.sendRotation(targetSend, !selected );
+					//serverAdapter.sendRotation(targetSend, !selected );
+							serverAdapter.SendObjectUpdate(target, !selected );
 
-					serverAdapter.sendTransform(targetSend, !selected );
+					//serverAdapter.sendTransform(targetSend, !selected );
 
 				}
 

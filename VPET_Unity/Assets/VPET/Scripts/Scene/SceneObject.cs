@@ -247,6 +247,10 @@ namespace vpet
 		private Transform lightGeo = null;
 
 		private Light sourceLight = null;
+		public Light SourceLight
+		{
+			get{return sourceLight;}
+		}
 
 		public float exposure = 3f;
 
@@ -701,8 +705,9 @@ namespace vpet
 				sourceLight.color = initialLightColor;
                 sourceLight.intensity = initialLightIntensity;
 				lightGeo.GetComponent<Renderer>().material.color = initialLightColor;
-				serverAdapter.sendLightColor(target, sourceLight, exposure );
-				serverAdapter.sendLightIntensity(target, sourceLight, exposure);
+				serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+				//serverAdapter.sendLightColor(target, sourceLight, exposure );
+				//serverAdapter.sendLightIntensity(target, sourceLight, exposure);
 			}
 			if (isSpotLight || isPointLight) 
 			{
@@ -712,7 +717,8 @@ namespace vpet
 			if (isSpotLight) 
 			{
 				sourceLight.spotAngle = initialSpotAngle;
-				serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
+				serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+				// serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
 			}
 		}
 
@@ -932,7 +938,7 @@ namespace vpet
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
 				if (send) 
-					serverAdapter.sendKinematic(target, set);
+					serverAdapter.SendObjectUpdate(target, NodeType.GROUP, false,  "sendKinematic", set);
 				if (!set)
 					this.gameObject.GetComponent<Rigidbody>().WakeUp();
 			}
@@ -952,7 +958,8 @@ namespace vpet
 				lastModifiedLightParameter = LightParameter.Color;
 				if (mainController.liveMode)
 				{
-					serverAdapter.sendLightColor(target, sourceLight, exposure );
+					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+					// serverAdapter.sendLightColor(target, sourceLight, exposure );
 				}
 			}
 		}
@@ -976,7 +983,8 @@ namespace vpet
 				lastModifiedLightParameter = LightParameter.Intensity;
 				if (mainController.liveMode)
 				{
-					serverAdapter.sendLightIntensity(target, sourceLight, exposure );
+					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+					// serverAdapter.sendLightIntensity(target, sourceLight, exposure );
 				}
 			}
 		}
@@ -1028,7 +1036,8 @@ namespace vpet
 				lastModifiedLightParameter = LightParameter.Angle;
 				if (mainController.liveMode)
 				{
-					serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
+					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+					//serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
 				}
 			}
 		}
@@ -1061,13 +1070,16 @@ namespace vpet
 				switch (lastModifiedLightParameter)
 				{
 				case (LightParameter.Intensity):
-					serverAdapter.sendLightIntensity(target, sourceLight, exposure);
+					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+					//serverAdapter.sendLightIntensity(target, sourceLight, exposure);
 					break;
 				case (LightParameter.Color):
-					serverAdapter.sendLightColor(target, sourceLight, exposure );
+					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+					//serverAdapter.sendLightColor(target, sourceLight, exposure );
 					break;
 				case (LightParameter.Angle):
-					serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
+					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
+					//serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
 					break;
 				case (LightParameter.Range):
 					// serverAdapter.sendLightRange(target, sourceLight.range);

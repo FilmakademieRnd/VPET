@@ -101,7 +101,8 @@ namespace vpet
 	            if (!currentSelection.transform.parent.transform.GetComponent<Light>()){
 	                currentSelection.transform.localScale = Vector3.Scale(currentSelection.transform.localScale, Vector3.one + (axisLocker * scale));
 	                if (liveMode){
-						serverAdapter.sendScale(currentSelection );
+						serverAdapter.SendObjectUpdate(currentSelection );
+						//serverAdapter.sendScale(currentSelection );
 	                }
 	            }
 	        }
@@ -120,7 +121,8 @@ namespace vpet
 	                currentSelection.transform.localScale = Vector3.Scale(currentSelection.transform.localScale, Vector3.one * scale );
 	                if (liveMode)
 	                {
-						serverAdapter.sendScale(currentSelection );
+						serverAdapter.SendObjectUpdate(currentSelection );
+						// serverAdapter.sendScale(currentSelection );
 	                }
 	            }
 	        }
@@ -175,8 +177,10 @@ namespace vpet
 	        if (!currentSelection.GetComponent<SceneObject>().isDirectionalLight && !currentSelection.GetComponent<SceneObject>().isSpotLight && !currentSelection.GetComponent<SceneObject>().isPointLight)
 	        {
 	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
-	            serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
-	            currentSelection.GetComponent<SceneObject>().lockKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
+	            // serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
+	            serverAdapter.SendObjectUpdate(currentSelection, NodeType.GROUP, "sendKinematic", !currentSelection.GetComponent<SceneObject>().lockKinematic);
+
+				currentSelection.GetComponent<SceneObject>().lockKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
 	            if (!currentSelection.GetComponent<SceneObject>().lockKinematic){
 	                currentSelection.gameObject.GetComponent<Rigidbody>().WakeUp();
 	            }

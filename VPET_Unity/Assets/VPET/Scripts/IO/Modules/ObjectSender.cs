@@ -10,7 +10,7 @@ namespace vpet
 		//!
 		//! Singleton pattern
 		//!
-		private static readonly ObjectSender instance = new ObjectSender();
+		protected static readonly ObjectSender instance = new ObjectSender();
 	    public static ObjectSender Instance
 	    {
 	        get
@@ -28,7 +28,7 @@ namespace vpet
 
 		protected List<string> sendMessageQueue = new List<string>(); 
 
-		public virtual void SendObject(string id, SceneObject sceneObject, string dagPath) {}
+		public virtual void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args) {}
 
 		public void SetTarget(string ip, string port)
 		{
@@ -58,6 +58,7 @@ namespace vpet
 	        {
 	            if ( sendMessageQueue.Count > 0 )
 	            {
+					//Debug.Log("Send: " + sendMessageQueue[0]);
 	                sender.Send(sendMessageQueue[0], true); // true not wait
 	                sendMessageQueue.RemoveAt(0);
 	            }
