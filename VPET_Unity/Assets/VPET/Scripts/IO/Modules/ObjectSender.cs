@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NetMQ;
+using NetMQ.Sockets;
 
 namespace vpet
 {
@@ -24,7 +25,7 @@ namespace vpet
 		protected string IP = null;
 		protected string Port = null;
 
-		protected NetMQ.Sockets.PublisherSocket sender = null;
+		protected PublisherSocket sender = null;
 
 		protected List<string> sendMessageQueue = new List<string>(); 
 
@@ -38,11 +39,8 @@ namespace vpet
 
 		public void SetTarget(string ip, string port)
 		{
-			if (IP == null)
-				IP = ip;
-
-			if (Port == null)
-				Port = port;			
+			if (IP == null)	IP = ip;
+			if (Port == null) Port = port;			
 		}
 
 		public void Finish()
@@ -53,11 +51,9 @@ namespace vpet
 
 		public void Publisher()
 		{
-
-	        //create NetMQ context
-	        NetMQContext ctx = NetMQContext.Create();
+			AsyncIO.ForceDotNet.Force();
 	
-	        sender = ctx.CreatePublisherSocket();
+	        sender = new PublisherSocket();
 	        sender.Connect("tcp://" + IP + ":" + Port);
 	
 	        while (IsRunning) 
@@ -65,7 +61,7 @@ namespace vpet
 	            if ( sendMessageQueue.Count > 0 )
 	            {
 					//Debug.Log("Send: " + sendMessageQueue[0]);
-	                sender.Send(sendMessageQueue[0], true); // true not wait
+	                sender.SendFrame(sendMessageQueue[0], true); // true not wait
 	                sendMessageQueue.RemoveAt(0);
 	            }
 	        }
@@ -80,8 +76,10 @@ namespace vpet
 				// TODO: check first if closed
 				sender.Disconnect("tcp://" + IP + ":" + Port);
 				sender.Close();
+				// sender.Dispose();
 				sender = null;
 			}
+			//NetMQConfig.Cleanup();
 		}
 
 	}

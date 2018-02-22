@@ -28,7 +28,7 @@ namespace vpet
 		ObjectSenderKatana()
 		{	
 			// override port
-			IP = "5555";
+			Port = "5555";
 
 			// load templates
 			// TODO: could be hard coded in this class

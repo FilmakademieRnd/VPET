@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Text.RegularExpressions;
 using NetMQ;
+using NetMQ.Sockets;
 
 using System.Collections.Generic;
 
@@ -677,44 +678,39 @@ namespace vpet
 	    //!
 	    public void listener() 
 	    {
-
-            //create NetMQ context
-            NetMQContext ctx = NetMQContext.Create();
-
-            NetMQ.Sockets.SubscriberSocket receiver = ctx.CreateSubscriberSocket();
-            receiver.Subscribe("client");
-            receiver.Subscribe("ncam");
-            receiver.Subscribe("record");
-
-            receiver.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
-
-            lastReceiveTime = currentTimeTime;
-            
-            Debug.Log("Listener connected: " + "tcp://" + VPETSettings.Instance.serverIP + ":5556");
-
-            while (isRunning)
+            AsyncIO.ForceDotNet.Force();
+            using (var receiver = new SubscriberSocket())
             {
-                try
+                receiver.Subscribe("client");
+                receiver.Subscribe("ncam");
+                receiver.Subscribe("record");
+
+                receiver.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
+
+                lastReceiveTime = currentTimeTime;
+
+                Debug.Log("Listener connected: " + "tcp://" + VPETSettings.Instance.serverIP + ":5556");
+                string input;
+                while (isRunning)
                 {
-                    this.receiveMessageQueue.Add(receiver.ReceiveString(NetMQ.zmq.SendReceiveOptions.DontWait).Substring(7));
-                    lastReceiveTime = currentTimeTime;
-                    // Debug.Log("Received sync message: " + receiveMessageQueue[receiveMessageQueue.Count-1]);
-                }
-                catch (AgainException ex)
-                {
-                    listenerRestartCount = Mathf.Min(int.MaxValue, listenerRestartCount+1);
-                    // VPETSettings.Instance.msg = string.Format("Exception in Listener: {0}", listenerRestartCount);
-                    if (currentTimeTime - lastReceiveTime > receiveTimeout)
-                    {
-                        // break;
+                    if (receiver.TryReceiveFrameString(out input)) {
+                        this.receiveMessageQueue.Add (input.Substring (7));
+                        lastReceiveTime = currentTimeTime;
+                    } else {
+                        listenerRestartCount = Mathf.Min(int.MaxValue, listenerRestartCount+1);
+                        // VPETSettings.Instance.msg = string.Format("Exception in Listener: {0}", listenerRestartCount);
+                        if (currentTimeTime - lastReceiveTime > receiveTimeout)
+                        {
+                            // break;
+                        }
                     }
                 }
+
+                receiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
+                receiver.Close();
+                receiver.Dispose();
             }
-
-			//AsyncIO.ForceDotNet.Force();   // SEIM: test!
-
-            receiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
-            receiver.Close();
+            //NetMQConfig.Cleanup();
 	    }
 		
 	
@@ -724,96 +720,92 @@ namespace vpet
 	    public void sceneReceiver()
 	    {
 	        
-	        //create NetMQ context
-	        NetMQContext ctx = NetMQContext.Create();
-	
-	        print("Trying to receive scene.");
-
-			OnProgress( 0.1f, "Init Scene Receiver..");
-
-
-	        NetMQ.Sockets.RequestSocket sceneReceiver = ctx.CreateRequestSocket();
-	        sceneReceiver.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5565");
-	
-	        print("Server set up.");
-	
-
-            byte[] byteStream;
-
-            
-            // HEader
-            print("header");
-            sceneReceiver.Send("header");
-            byteStream = sceneReceiver.Receive() as byte[];
-            print("byteStreamHeader size: " + byteStream.Length);
-            if (doWriteScene)
+            AsyncIO.ForceDotNet.Force();
+            using (var sceneReceiver = new RequestSocket())
             {
-                writeBinary(byteStream, "header");
-            }
+                print ("Trying to receive scene.");
 
-            int dataIdx = 0;
-            VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStream, dataIdx);
-            print("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
-            dataIdx += sizeof(float);
-            VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStream, dataIdx);
+                OnProgress (0.1f, "Init Scene Receiver..");
 
-            OnProgress(0.15f, "..Received Header..");
+                sceneReceiver.Connect ("tcp://" + VPETSettings.Instance.serverIP + ":5565");
+        
+                print ("Server set up.");
+        
 
+                byte[] byteStream;
 
-            //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
-            //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
-            //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
-
-            // Textures
-            if ( VPETSettings.Instance.doLoadTextures)
-	        {
-	            print("textures");
-	            sceneReceiver.Send("textures");
-	            byteStream = sceneReceiver.Receive() as byte[];
-	            print("byteStreamTextures size: " + byteStream.Length);
-                if (doWriteScene)
-                {
-                    writeBinary(byteStream, "textu");
+                
+                // HEader
+                print ("header");
+                sceneReceiver.SendFrame("header");
+                byteStream = sceneReceiver.ReceiveFrameBytes();
+                print ("byteStreamHeader size: " + byteStream.Length);
+                if (doWriteScene) {
+                    writeBinary (byteStream, "header");
                 }
-                sceneLoader.SceneDataHandler.TexturesByteData = byteStream;
 
-                OnProgress(0.33f, "..Received Texture..");
+                int dataIdx = 0;
+                VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle (byteStream, dataIdx);
+                print ("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
+                dataIdx += sizeof(float);
+                VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32 (byteStream, dataIdx);
+
+                OnProgress (0.15f, "..Received Header..");
+
+
+                //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
+                //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
+                //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
+
+                // Textures
+                if (VPETSettings.Instance.doLoadTextures) {
+                    print ("textures");
+                    sceneReceiver.SendFrame("textures");
+                    byteStream = sceneReceiver.ReceiveFrameBytes();
+                    print ("byteStreamTextures size: " + byteStream.Length);
+                    if (doWriteScene) {
+                        writeBinary (byteStream, "textu");
+                    }
+                    sceneLoader.SceneDataHandler.TexturesByteData = byteStream;
+
+                    OnProgress (0.33f, "..Received Texture..");
+                }
+
+                
+                // Objects
+                print ("objects");
+                sceneReceiver.SendFrame("objects");
+                byteStream = sceneReceiver.ReceiveFrameBytes();
+                print ("byteStreamObjects size: " + byteStream.Length);
+                if (doWriteScene) {
+                    writeBinary (byteStream, "objec");
+                }
+                sceneLoader.SceneDataHandler.ObjectsByteData = byteStream;
+
+                OnProgress (0.80f, "..Received Objects..");
+                
+
+                // Nodes
+                print ("nodes");
+                sceneReceiver.SendFrame("nodes");
+                byteStream = sceneReceiver.ReceiveFrameBytes();
+                print ("byteStreamNodess size: " + byteStream.Length);
+                if (doWriteScene) {
+                    writeBinary (byteStream, "nodes");
+                }
+                sceneLoader.SceneDataHandler.NodesByteData = byteStream;
+
+                OnProgress (0.9f, "..Received Nodes..");
+
+
+        
+                sceneReceiver.Disconnect ("tcp://" + VPETSettings.Instance.serverIP + ":5565");
+                sceneReceiver.Close();
+                sceneReceiver.Dispose();
             }
-
-            
-            // Objects
-            print( "objects" );
-	        sceneReceiver.Send( "objects" );
-            byteStream = sceneReceiver.Receive() as byte[];
-	        print( "byteStreamObjects size: " + byteStream.Length );
-            if (doWriteScene)
-            {
-                writeBinary(byteStream, "objec");
-            }
-            sceneLoader.SceneDataHandler.ObjectsByteData = byteStream;
-
-			OnProgress( 0.80f, "..Received Objects..");
-            
-
-            // Nodes
-	        print( "nodes" );
-	        sceneReceiver.Send( "nodes" );
-	        byteStream = sceneReceiver.Receive() as byte[];
-	        print( "byteStreamNodess size: " + byteStream.Length );
-            if (doWriteScene)
-            {
-                writeBinary(byteStream, "nodes");
-            }
-            sceneLoader.SceneDataHandler.NodesByteData = byteStream;
-
-            OnProgress(0.9f, "..Received Nodes..");
-
-
-	
-	        sceneReceiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5565");
-	        sceneReceiver.Close();
-	
-	        print( "done receive scene" );
+            //NetMQConfig.Cleanup();
+    
+            print( "done receive scene" );
 
             m_sceneTransferDirty = true;
 
@@ -918,6 +910,7 @@ namespace vpet
 	        Debug.Log(receiveMessageQueue.Count);
 
 	        isRunning = false;
+            //NetMQConfig.Cleanup();
 	        if ( receiverThread != null && receiverThread.IsAlive )
 	            receiverThread.Abort();
 	

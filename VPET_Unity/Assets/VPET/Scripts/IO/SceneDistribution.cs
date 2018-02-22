@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using NetMQ;
+using NetMQ.Sockets;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System;
@@ -87,51 +88,51 @@ namespace vpet
 
         private void dataServer()
         {
-            NetMQContext ctx = NetMQContext.Create();
+            AsyncIO.ForceDotNet.Force();
+            using (var dataSender = new ResponseSocket ()) {
+                dataSender.Bind ("tcp://*:5565");
+                Debug.Log ("Enter while.. ");
 
-            NetMQ.Sockets.ResponseSocket dataSender = ctx.CreateResponseSocket();
-            dataSender.Bind("tcp://*:5565");
-            Debug.Log("Enter while.. ");
+                while (isRunning) {
+                    string message = dataSender.ReceiveFrameString ();
+                    print ("Got request message: " + message);
 
-            while (isRunning)
-            {
-                string message = dataSender.ReceiveString();
-                print("Got request message: " + message);
+                    // re-run scene iteration if true
+                    if (doGatherOnRequest)
+                        gatherSceneData ();
 
-                // re-run scene iteration if true
-                if (doGatherOnRequest)
-                    gatherSceneData();
-
-                switch (message)
-                {
+                    switch (message) {
                     case "header":
-                        print("Send Header.. ");
-                        dataSender.Send(headerByteData);
-                        print(string.Format(".. Nodes ({0} bytes) sent ", headerByteData.Length));
+                        print ("Send Header.. ");
+                        dataSender.SendFrame (headerByteData);
+                        print (string.Format (".. Nodes ({0} bytes) sent ", headerByteData.Length));
                         break;
                     case "nodes":
-                        print("Send Nodes.. ");
-                        dataSender.Send(nodesByteData);
-                        print(string.Format(".. Nodes ({0} bytes) sent ", nodesByteData.Length));
+                        print ("Send Nodes.. ");
+                        dataSender.SendFrame (nodesByteData);
+                        print (string.Format (".. Nodes ({0} bytes) sent ", nodesByteData.Length));
                         break;
                     case "objects":
-                        print("Send Objects.. ");
-                        dataSender.Send(objectsByteData);
-                        print(string.Format(".. Objects ({0} bytes) sent ", objectsByteData.Length));
+                        print ("Send Objects.. ");
+                        dataSender.SendFrame (objectsByteData);
+                        print (string.Format (".. Objects ({0} bytes) sent ", objectsByteData.Length));
                         break;
                     case "textures":
-                        print("Send Textures.. ");
-                        dataSender.Send(texturesByteData);
-                        print(string.Format(".. Textures ({0} bytes) sent ", texturesByteData.Length));
+                        print ("Send Textures.. ");
+                        dataSender.SendFrame (texturesByteData);
+                        print (string.Format (".. Textures ({0} bytes) sent ", texturesByteData.Length));
                         break;
                     default:
                         break;
+                    }
+
                 }
 
+                dataSender.Unbind ("tcp://127.0.0.1:5565");
+                dataSender.Close();
+                dataSender.Dispose();
             }
-
-            dataSender.Unbind("tcp://127.0.0.1:5565");
-            dataSender.Close();
+            //NetMQConfig.Cleanup();
         }
 
 
@@ -594,6 +595,7 @@ namespace vpet
         private void OnApplicationQuit()
         {
             isRunning = false;
+            //NetMQConfig.Cleanup();
             serverThread.Abort();
         }
 
