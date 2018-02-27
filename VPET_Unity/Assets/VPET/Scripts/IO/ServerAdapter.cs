@@ -277,10 +277,10 @@ namespace vpet
 	        {
 	            receiverThread = new Thread(new ThreadStart(listener));
 	            receiverThread.Start();
+				isRunning = true;
 	        }
 	        if (!deactivatePublish)
             {
-				print("Set Sender Threads");
 				// create thread for all registered sender
 				foreach( ObjectSender sender in  objectSenderList)
 				{
@@ -693,7 +693,8 @@ namespace vpet
                 string input;
                 while (isRunning)
                 {
-                    if (receiver.TryReceiveFrameString(out input)) {
+                    if (receiver.TryReceiveFrameString(out input)) 
+					{
                         this.receiveMessageQueue.Add (input.Substring (7));
                         lastReceiveTime = currentTimeTime;
                     } else {
