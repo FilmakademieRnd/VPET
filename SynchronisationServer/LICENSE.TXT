@@ -19,7 +19,7 @@ https://opensource.org/licenses/MIT
 Syncronisation Server sourcecode AND binaries incorporate the following resources (linked dynamically):
 
 ZeroMQ 				- LGPLv3 (http://zeromq.org/area:licensing)
-Qt              		- LGPL (http://qt.nokia.com)
+Qt              	- LGPL (http://qt.nokia.com)
 
 
 
