@@ -33,7 +33,7 @@ class ZeroMQHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit ZeroMQHandler(QString IPAdress = "", zmq::context_t* context = NULL, zmq::message_t* = NULL);
+    explicit ZeroMQHandler(QString IPAdress = "", zmq::context_t* context = NULL);
 
     //request this process to start working
     void requestStart();
@@ -60,12 +60,6 @@ private:
 
     //server IP
     QString IPadress;
-
-	//map of last states
-	QMap<QString, QString> objectStateMap;
-
-	// the last message
-	zmq::message_t message_;
 
 signals:
     //signal emitted when process requests to work
