@@ -76,7 +76,7 @@ namespace vpet
 				// TODO: check first if closed
 				sender.Disconnect("tcp://" + IP + ":" + Port);
 				sender.Close();
-				// sender.Dispose();
+				sender.Dispose();
 				sender = null;
 			}
 			//NetMQConfig.Cleanup();

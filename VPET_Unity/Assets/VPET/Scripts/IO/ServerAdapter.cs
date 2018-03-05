@@ -908,11 +908,10 @@ namespace vpet
 	    //!
 	    void OnApplicationQuit() 
 	    {
-	        Debug.Log(receiveMessageQueue.Count);
+	        Debug.Log("receiveMessageQueue.Count :" + receiveMessageQueue.Count);
 
 	        isRunning = false;
-            //NetMQConfig.Cleanup();
-	        if ( receiverThread != null && receiverThread.IsAlive )
+            if ( receiverThread != null && receiverThread.IsAlive )
 	            receiverThread.Abort();
 	
 			// finish sender objects
@@ -930,7 +929,10 @@ namespace vpet
 
 	        if ( sceneReceiverThread != null  && sceneReceiverThread.IsAlive )
 	            sceneReceiverThread.Abort();
-	    }
-	
-	
-}}
+
+            // final clean up after disposing ALL sockets
+            NetMQConfig.Cleanup();
+        }
+
+    }
+}
