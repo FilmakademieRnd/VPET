@@ -161,19 +161,21 @@ namespace vpet
 	
 	    //!
 	    //! get the position of the current selection if something is selected
-	    //! @return      absolut position of selection, if nothing selected (0,0,0)
+	    //! @return absolut position of selection, if nothing selected (0,0,0)
 	    //!
 	    public Vector3 getSelectionPosition()
 	    {
-	        if(currentSelection) return currentSelection.position;
-	        return Vector3.zero;
+	        if(currentSelection)
+                return currentSelection.position;
+            else
+	            return Vector3.zero;
 	    }
-	
-	    //!
-	    //! unselect the given object if it is selected (is currentSelection)
-	    //! @param      obj     obj to check against
-	    //!
-	    public void unselectIfSelected(Transform obj)
+
+        //!
+        //! unselect the given object if it is selected (is currentSelection)
+        //! @param      obj     obj to check against
+        //!
+        public void unselectIfSelected(Transform obj)
 	    {
 	        if (currentSelection == obj)
 	            activeMode = Mode.idle;

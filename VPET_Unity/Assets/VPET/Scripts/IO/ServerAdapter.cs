@@ -285,7 +285,7 @@ namespace vpet
 	        isRunning = true;
 	
 	
-#if !UNITY_EDITOR_OSX
+//#if !UNITY_EDITOR_OSX
 			// SEIM: to prevent osx crashes 
 	        //bind Threads to methods & start them
 	        if (!deactivateReceive && receiverThread == null )
@@ -303,7 +303,7 @@ namespace vpet
 	            katanaSenderThread = new Thread(new ThreadStart(sendKatana));
 	            katanaSenderThread.Start();
 	        }
-#endif
+//#endif
 	
 	        if (VPETSettings.Instance.doLoadFromResource)
 	        {

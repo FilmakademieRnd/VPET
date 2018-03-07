@@ -53,14 +53,11 @@ namespace vpet
 	            //translation modifier
 	            translateModifier.GetComponent<Modifier>().makeTransparent();
 	            modifier.GetComponent<Renderer>().material.color = new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f);
-	            planeCollider.gameObject.transform.position = currentSelection.position;
-	            helperCollider = planeCollider;
 
 				// HACK for orthographic view
 				if ( Camera.main.orthographic )
 				{
 					// same orientation as camera 
-					planeCollider.gameObject.transform.rotation = Camera.main.transform.rotation;
 					if (modifier.name == "X-Axis"){
 						axisLocker = new Vector3(1, 0, 0);
 					}
@@ -90,28 +87,28 @@ namespace vpet
 				else
 				{
 		            if (modifier.name == "X-Axis"){
-		                planeCollider.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-		                axisLocker = new Vector3(1, 0, 0);
+		                helperPlane = new Plane(transform.forward, currentSelection.position);
+                        axisLocker = new Vector3(1, 0, 0);
 		            }
 		            else if (modifier.name == "Y-Axis"){
-		                planeCollider.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-		                axisLocker = new Vector3(0, 1, 0);
+		                helperPlane = new Plane(transform.right, currentSelection.position);
+                        axisLocker = new Vector3(0, 1, 0);
 		            }
 		            else if (modifier.name == "Z-Axis"){
-		                planeCollider.gameObject.transform.rotation = Quaternion.Euler(90, 0, 0);
-		                axisLocker = new Vector3(0, 0, 1);
+		                helperPlane = new Plane(transform.up, currentSelection.position);
+                        axisLocker = new Vector3(0, 0, 1);
 		            }
 		            else if (modifier.name == "XYAxis"){
-		                planeCollider.gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+                        helperPlane = new Plane(transform.forward, currentSelection.position);
 		                axisLocker = new Vector3(1, 1, 0);
 		            }
 		            else if (modifier.name == "YZAxis"){
-		                planeCollider.gameObject.transform.rotation = Quaternion.Euler(0, -90, 0);
-		                axisLocker = new Vector3(0, 1, 1);
+                        helperPlane = new Plane(transform.right, currentSelection.position);
+                        axisLocker = new Vector3(0, 1, 1);
 		            }
 		            else if (modifier.name == "XZAxis"){
-		                planeCollider.gameObject.transform.rotation = Quaternion.Euler(90, 0, 0);
-		                axisLocker = new Vector3(1, 0, 1);
+                        helperPlane = new Plane(transform.up, currentSelection.position);
+                        axisLocker = new Vector3(1, 0, 1);
 		            }
 		            else if (modifier.name == "MoveToFloorQuad"){
 		                currentSelection.GetComponent<SceneObject>().moveToFloor();
@@ -125,14 +122,14 @@ namespace vpet
 	            //rotation modifier
 	            rotationModifier.GetComponent<Modifier>().makeTransparent();
 	            modifier.GetComponent<Renderer>().material.color = new Color(modifier.GetComponent<Renderer>().material.color.r, modifier.GetComponent<Renderer>().material.color.g, modifier.GetComponent<Renderer>().material.color.b, 1.0f);
-	            rotationCollider.gameObject.transform.position = currentSelection.position;
-	            rotationCollider.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 100);
-	            helperCollider = rotationCollider;
-	            if (modifier.name == "xRotationModifier"){
-	                axisLocker = new Vector3(1, 0, 0);
+
+                helperPlane = new Plane(transform.forward, currentSelection.position);
+            
+                if (modifier.name == "xRotationModifier"){
+	                axisLocker = new Vector3(-1, 0, 0);
 	            }
 	            else if (modifier.name == "yRotationModifier"){
-	                axisLocker = new Vector3(0, 1, 0);
+	                axisLocker = new Vector3(0, -1, 0);
 	            }
 	            else if (modifier.name == "zRotationModifier"){
 	                axisLocker = new Vector3(0, 0, 1);
@@ -142,21 +139,22 @@ namespace vpet
 	            //scale modifier
 	            scaleModifier.GetComponent<Modifier>().makeTransparent();
 	            modifier.GetComponent<ModifierComponent>().setColor(new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f));
-	            planeCollider.gameObject.transform.position = currentSelection.position;
-	            planeCollider.gameObject.transform.rotation = currentSelection.rotation;
 	            if (modifier.name == "xScale"){
-	                axisLocker = new Vector3(1, 0, 0);
+                    helperPlane = new Plane(transform.forward, currentSelection.position);
+                    axisLocker = new Vector3(1, 0, 0);
 	            }
 	            else if (modifier.name == "yScale"){
-	                axisLocker = new Vector3(0, 1, 0);
+                    helperPlane = new Plane(transform.right, currentSelection.position);
+                    axisLocker = new Vector3(0, 1, 0);
 	            }
 	            else if (modifier.name == "zScale"){
-	                planeCollider.gameObject.transform.Rotate(90, 0, 0);
-	                axisLocker = new Vector3(0, 0, 1);
+                    helperPlane = new Plane(transform.up, currentSelection.position);
+	                axisLocker = new Vector3(0, 0, -1);
 	            }
                 else
                 {
-                    axisLocker = Vector3.one*0.05f; // HACK until we have new modifier
+                    helperPlane = new Plane(Camera.main.transform.up, currentSelection.position);
+                    axisLocker = Vector3.one; 
                 }
 	        }
 	    }

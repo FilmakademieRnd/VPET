@@ -45,11 +45,6 @@ namespace vpet
 		//! Cached reference to main controller.
 		//!
 		private MainController mainController;
-
-		//!
-		//! time stamp buffer for long GUI click recognition
-		//!
-		float lastTime = float.NaN;
 	
 		//!
 		//! null Vector alternative
@@ -74,6 +69,7 @@ namespace vpet
 		//! last screen position a raycast hit an object on
 		//!
 		private Vector3 hitPositionBuffer = nullVector;
+
 		//!
 		//! pause the triggering of events (avoids double executions)
 		//!
@@ -148,31 +144,6 @@ namespace vpet
 	    public void singlePointerStarted(Vector3 pos){
 
 			pointerDown = true;
-			//light editing mode
-			/*
-	        if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
-	        {
-	            if (mainController.isOnLightSettingsPicker(pos))
-	            {
-	                mainController.updateLight(pos);
-	                editingLight = true;
-	                return;
-	            }
-	            else if (!pointerOnGUI())
-				{
-					//selection mode is active
-					GameObject hitObject = cameraRaycast(pos,defaultLayermask);
-					if (hitObject) {
-						//Object was hit
-						mainController.handleSelection(hitObject.transform);
-						hitObject = null;
-	                    pause = true;
-					}
-					//mainController.openMenu();
-					return;
-				}
-			}
-	        */
 	
 			if (!pointerOnGUI())
 			{
@@ -198,8 +169,9 @@ namespace vpet
 						{
 							//modifier was hit
 							mainController.handleModifier(hitObject.transform);
-							hitPositionBuffer = objectRaycast(pos, mainController.helperCollider);
-							pointerOnModifier = true;
+                            //hitPositionBuffer = objectRaycast(pos, mainController.helperCollider);
+                            Vector3 hitPositionBuffer = planeRaycast(pos, mainController.helperPlane);
+                            pointerOnModifier = true;
 						}
 						hitObject = null;
 					}
@@ -218,7 +190,6 @@ namespace vpet
                         {
                             mainController.handleSelection();
                         }
-						//mainController.openMenu();
 					}
 				}
 			}
@@ -302,7 +273,6 @@ namespace vpet
 			}
 	
 			//reset variables
-			lastTime = float.NaN;
 			pointerOnModifier = false;
 		}
 	
@@ -310,33 +280,7 @@ namespace vpet
 		//! single pointer down & moving (drag) (called by Mouse or Touch Input)
 		//! @param      pos     screen position of pointer
 		//!
-		public void singlePointerDrag(Vector3 pos) {
-			//light editing mode
-			/*
-	        if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
-	        {
-	            if (mainController.isOnLightSettingsPicker(pos))
-	            {
-	                mainController.updateLight(pos);
-	                return;
-	            }
-	        }
-	        */
-	
-			//GUI creation mode
-			//if (pos.y < 30 && !menuInteraction &&
-			//    (mainController.activeMode == MainController.Mode.idle || 
-			//    mainController.activeMode == MainController.Mode.lightMenuMode || 
-			//    mainController.activeMode == MainController.Mode.objectMenuMode))
-			//{
-			//    menuInteraction = true;
-			//}
-			//was dragging menu
-			/*if (menuInteraction) {
-	            mainController.dragMenu(new Vector3(Screen.width,Screen.height,0) - pos);
-	            return;
-	        }*/
-	
+		public void singlePointerDrag(Vector3 pos) {	
 			if (!pointerOnGUI())
 			{
                 if (!pause)
@@ -355,10 +299,11 @@ namespace vpet
 						mainController.ActiveMode == MainController.Mode.animationEditing)
 					{
 						if (pointerOnModifier){
-							//Pointer is down on modifier
-							Vector3 newHitPosition = objectRaycast(pos, mainController.helperCollider);
-	
-							if ( newHitPosition != nullVector && hitPositionBuffer != nullVector )
+                            //Pointer is down on modifier
+                            //hitPositionBuffer = objectRaycast(pos, mainController.helperCollider);
+                            Vector3 newHitPosition = planeRaycast(pos, mainController.helperPlane);
+
+                            if ( newHitPosition != nullVector && hitPositionBuffer != nullVector )
 							{
 								mainController.pointerDrag( hitPositionBuffer, newHitPosition );
 							}
@@ -366,32 +311,6 @@ namespace vpet
 						}
 					}
 				}
-			}
-			else if (!float.IsNaN(lastTime)) {
-				if (Time.time - lastTime > 1.0f)
-				{
-					// TODO: check was this did
-					/*
-	                switch (mainController.getGuiElementId(pos)){
-	                    case 0: //translation
-	                        mainController.resetSelectionPosition();
-	                        break;
-	                    case 1: //rotation
-	                        mainController.resetSelectionRotation();
-	                        break;
-	                    case 2: //scale
-	                        mainController.resetSelectionScale();
-	                        break;
-	                    default:
-	                        break;
-	                   
-	                }
-	                */
-					lastTime = float.NaN;
-				}
-			}
-			else if (float.IsNaN(lastTime)){
-				lastTime = Time.time;
 			}
 		}
 	
@@ -524,7 +443,8 @@ namespace vpet
 		//! @param      target      collider of the gameObject to raycast against
 		//! @return     3D position on the object where the ray hit (nullVector if object was not hit)
 		//!
-		private Vector3 objectRaycast(Vector3 pos, Collider target) {
+		private Vector3 objectRaycast(Vector3 pos, Collider target)
+        {
 			Ray ray = Camera.main.ScreenPointToRay(pos);
 			RaycastHit hit;
 		
@@ -537,6 +457,17 @@ namespace vpet
 				return nullVector;
 			}
 		}
+
+        private Vector3 planeRaycast(Vector3 pos, Plane target)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(pos);
+
+            float distance = 0.0f;
+            if (target.Raycast(ray, out distance))
+                return ray.GetPoint(distance);
+            else
+                return nullVector;
+        }
 	
 		//!
 		//! is any pointer currently over a GUI element
