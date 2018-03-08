@@ -38,11 +38,6 @@ namespace vpet
 	    Vector3 axisLocker = new Vector3(0, 0, 0);
 	
 	    //!
-	    //! rotation axis of current selection
-	    //!
-	    Vector3 rotationAxis;
-	
-	    //!
 	    //! scale modifier initial distance between pointer origin
 	    //!
 	    float initialScaleDistance = float.NaN;
@@ -60,19 +55,17 @@ namespace vpet
 	    public void translateSelection(Vector3 translation){
 	        if (currentSelection)
 	        {
-	            Vector3 finalTranslation;
-	            finalTranslation = currentSelection.position + new Vector3(translation.x * axisLocker.x, translation.y * axisLocker.y, translation.z * axisLocker.z);
+	            Vector3 finalTranslation = currentSelection.position + Vector3.Scale(translation, axisLocker);
 
-				// print("translation.x: " + translation.x + " finalTranslation.x: " + finalTranslation.x);
-
-	            if (currentSelection.GetComponent<SceneObject>())
-	            {
-	                currentSelection.GetComponent<SceneObject>().translate(finalTranslation);
-	            }
-	            else if (currentSelection.GetComponent<KeyframeScript>())
-	            {
-	                currentSelection.transform.position = finalTranslation;
-	                currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
+                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
+                if (sceneObject)
+                    sceneObject.translate(finalTranslation);
+	            else {
+                    KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
+                    if (keyframeScript) {
+                        currentSelection.transform.position = finalTranslation;
+                        currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
+                    }
 	            }
 	        }
 	    }
@@ -84,12 +77,11 @@ namespace vpet
 	    //!
 	    public void rotateSelection(Vector3 begin, Vector3 end){
 	        if (currentSelection){
-	            //begin and end are on a sphere around the position of the current selection
-	            Vector3 v1 = begin - currentSelection.position;
-	            Vector3 v2 = end - currentSelection.position;
-	            rotationAxis = Vector3.Scale(Vector3.Cross(v1, v2), axisLocker);
-	            currentSelection.GetComponent<SceneObject>().setArcBallRotation(Vector3.Angle(v1, v2) * 10, rotationAxis);
-	        }
+                Vector3 rotationAxis = Vector3.Scale(Vector3.Cross(begin, end), axisLocker);
+                Quaternion rotation = Quaternion.AngleAxis((begin - end).sqrMagnitude, rotationAxis);
+
+                currentSelection.GetComponent<SceneObject>().transform.rotation *= rotation;
+            }
 	    }
 	
 	    //!
@@ -99,20 +91,36 @@ namespace vpet
 	    public void scaleSelection(float scale){
 	        if (currentSelection){
 	            if (!currentSelection.transform.parent.transform.GetComponent<Light>()){
-	                currentSelection.transform.localScale = Vector3.Scale(currentSelection.transform.localScale, Vector3.one + (axisLocker * scale));
+	                currentSelection.transform.localScale += (axisLocker * scale);
 	                if (liveMode){
-						serverAdapter.SendObjectUpdate(currentSelection );
-						//serverAdapter.sendScale(currentSelection );
+						serverAdapter.SendObjectUpdate(currentSelection);
 	                }
 	            }
 	        }
 	    }
-	
-	    //!
-	    //! scale currently selected object uniform on all 3 axis
-	    //! @param      scale     new scale of object
-	    //!
-	    public void scaleSelectionUniform(float scale)
+
+        //!
+        //! scale currently selected object
+        //! @param      scale     new scale of object
+        //!
+        public void scaleSelection(Vector3 scale)
+        {
+            if (currentSelection) {
+                if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1)
+                    scale = Vector3.one * scale.x;
+                if (!currentSelection.transform.parent.transform.GetComponent<Light>()) {
+                    currentSelection.transform.localScale += Vector3.Scale(scale, axisLocker) / 1000f;
+                    if (liveMode)
+                        serverAdapter.SendObjectUpdate(currentSelection);
+                }
+            }
+        }
+
+        //!
+        //! scale currently selected object uniform on all 3 axis
+        //! @param      scale     new scale of object
+        //!
+        public void scaleSelectionUniform(float scale)
 	    {
 	        if (currentSelection)
 	        {
@@ -159,13 +167,8 @@ namespace vpet
 	            }
 	            
 	            if (activeMode == Mode.scaleMode){
-	                if (float.IsNaN(initialScaleDistance)){
-	                    initialScaleDistance = Vector3.Distance(currentSelection.transform.position, begin);
-	                }
-	                else{
-	                    this.scaleSelection((Vector3.Distance(currentSelection.transform.position, end) / Vector3.Distance(currentSelection.transform.position, begin)) - 1);
-	                }
-	                return;
+                    this.scaleSelection(end - begin);
+                    return;
 	            }
 	        }
 	    }

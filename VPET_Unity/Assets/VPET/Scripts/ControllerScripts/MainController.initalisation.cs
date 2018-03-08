@@ -160,20 +160,9 @@ namespace vpet
 
         [HideInInspector]
         //!
-        //! cache references to plane collider
+        //! cache references to active transform plane
         //!
-        public Collider planeCollider;
-        [HideInInspector]
-        //!
-        //! cache references to rotation collider
-        //!
-        public Collider rotationCollider;
-        [HideInInspector]
-        //!
-        //! cache references to active colider
-        //! collider type is swaped according to current state
-        //!
-        public Collider helperCollider;
+        public Plane helperPlane;
 
         //!
         //! currently selected Object (if none = null)
@@ -433,12 +422,7 @@ namespace vpet
             rotationModifier = GameObject.Find("RotationModifier");
             scaleModifier = GameObject.Find("ScaleModifier");
             pointToMoveModifier = GameObject.Find("PointToMoveModifier");
-
-
-            planeCollider = GameObject.Find("TranslationQuad").GetComponent<Collider>();
-            rotationCollider = GameObject.Find("RotationSphere").GetComponent<Collider>();
-            helperCollider = planeCollider;
-
+            
             //cache reference to keyframe Sphere container
             frameSphereContainer = GameObject.Find("FrameSphereContainer");
 
@@ -450,7 +434,6 @@ namespace vpet
             print("Camera Rig is: " + cameraRig);
 
             currentSelection = null;
-
 
             // Set ambient light
             setAmbientIntensity(VPETSettings.Instance.ambientLight);

@@ -37,12 +37,13 @@ void MainApp::run()
 {
     //create Thread to receive zeroMQ messages from tablets
     QThread* zeroMQHandlerThread = new QThread();
-    ZeroMQHandler* zeroMQHandler = new ZeroMQHandler(ownIP_, context_, updateMessage_);
+    ZeroMQHandler* zeroMQHandler = new ZeroMQHandler(ownIP_, context_);
     zeroMQHandler->moveToThread(zeroMQHandlerThread);
     QObject::connect( zeroMQHandlerThread, SIGNAL(started()), zeroMQHandler, SLOT(run()));
     zeroMQHandlerThread->start();
     zeroMQHandler->requestStart();
 
+    /*
     NcamAdapter* ncamAdapter = new NcamAdapter(ncamIP_, ncamPort_, ownIP_, context_);
     if(ncamIP_ != "" && ncamPort_ != "")
     {
@@ -51,16 +52,20 @@ void MainApp::run()
         QObject::connect( ncamThread, SIGNAL(started()), ncamAdapter, SLOT(run()));
         ncamThread->start();
     }
+    */
 
-    //RecordWriter* recordWriter = new RecordWriter( &messagesStorage, &m_mutex );
-    //QThread* writeThread = new QThread();
-    //recordWriter->moveToThread( writeThread );
-    //QObject::connect( writeThread, SIGNAL( started() ), recordWriter, SLOT( run() ) );
-    //writeThread->start();
+    /*
+    RecordWriter* recordWriter = new RecordWriter( &messagesStorage, &m_mutex );
+    QThread* writeThread = new QThread();
+    recordWriter->moveToThread( writeThread );
+    QObject::connect( writeThread, SIGNAL( started() ), recordWriter, SLOT( run() ) );
+    writeThread->start();
 
-    //QThread* recorderThread = new QThread();
-    //TransformationRecorder* transformationRecorder = new TransformationRecorder(ownIP_, context_, &messagesStorage, &m_mutex, ncamAdapter );//, recordWriter);
-    //transformationRecorder->moveToThread(recorderThread);
-    //QObject::connect( recorderThread, SIGNAL(started()), transformationRecorder, SLOT(run()));
-    //recorderThread->start();
+    QThread* recorderThread = new QThread();
+    TransformationRecorder* transformationRecorder = new TransformationRecorder(ownIP_, context_, &messagesStorage, &m_mutex, ncamAdapter );//, recordWriter);
+    transformationRecorder->moveToThread(recorderThread);
+    QObject::connect( recorderThread, SIGNAL(started()), transformationRecorder, SLOT(run()));
+    recorderThread->start();
+    */
+
 }

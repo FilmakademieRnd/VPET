@@ -270,7 +270,7 @@ namespace vpet
 	
 	
 	
-#if !UNITY_EDITOR_OSX
+//#if !UNITY_EDITOR_OSX
 			// SEIM: to prevent osx crashes 
 	        //bind Threads to methods & start them
 	        if (!deactivateReceive && receiverThread == null )
@@ -292,7 +292,7 @@ namespace vpet
 					sender.IsRunning = true;
 				}
 	        }
-#endif
+//#endif
 	
 	        if (VPETSettings.Instance.doLoadFromResource)
 	        {
