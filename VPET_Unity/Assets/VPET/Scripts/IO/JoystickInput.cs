@@ -113,9 +113,6 @@ namespace vpet
         //! called by main controller once scene has been loaded to fill lists with appropriate items
         //!
         public void initSelectionLists() {
-            // object and lights lists                
-            List<GameObject> sceneEditableObjectsList = sceneLoader.sceneEditableObjectsList;
-
             // create light list
             EditableLightList.Clear();
             foreach (GameObject g in SceneLoader.SelectableLights)
@@ -125,12 +122,11 @@ namespace vpet
             }
             // sceneEditableObjects contains cameras and lights, we need to sort those out and build a new list
             EditableObjectsList.Clear();
-            foreach (GameObject g in sceneEditableObjectsList)
+            foreach (GameObject g in SceneLoader.SceneEditableObjects)
             {
                 if (g.GetComponent<CameraObject>() == null && g.GetComponent<SceneObject>().IsLight == false)
                     EditableObjectsList.Add(g.GetComponent<SceneObject>());
             }            
-
         }
 
         //!
@@ -138,7 +134,6 @@ namespace vpet
         //!
         public void getButtonUpdates()
         {
-
             if (Input.GetButtonDown("Fire2"))
             {
                 // toggle gravity
@@ -149,6 +144,7 @@ namespace vpet
                     else
                         mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = true;
                 }
+
             }
             // enter translation mode
             else if (Input.GetButtonDown("Fire3"))
@@ -289,11 +285,12 @@ namespace vpet
             else if (Input.GetAxis("R2") < 0 && !hasPressedR2)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
 			else if (Input.GetButtonDown("R2"))
+#endif
             {
                 hasPressedR2 = true;
                 mainController.toggleCameraRotation();
+                
             }
-#endif
             // reset current selection                                          
 			else if (Input.GetButtonDown("L1"))
             {
@@ -304,6 +301,7 @@ namespace vpet
                     mainController.resetSelectionScale();
                 }
             }
+
             // cycle through object list                                    
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             else if (Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
@@ -322,8 +320,9 @@ namespace vpet
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
 				if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V") ) {
                     DPADdirection = 1;
-                else DPADdirection = -1;				
+				}
 #endif
+                else DPADdirection = -1;
                 hasPressedDirectionalPad = true;
                 int match = 0;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
@@ -346,7 +345,7 @@ namespace vpet
                         mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
                     }
                 }
-                else if (EditableObjects.Count > 0)
+                else
                     mainController.callSelect(EditableObjects[0].GetComponent<Transform>());
 
                 match = 0;
@@ -361,7 +360,6 @@ namespace vpet
                     if (match == 0 && DPADdirection == -1)
                         match = EditableObjects.Count;
                     // all other cases
-                    // FIX: this seems to trigger deselect and re-select constantly!?
                     mainController.callDeselect();
                     mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
                 }

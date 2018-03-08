@@ -367,10 +367,11 @@ namespace vpet
 
 				if (joystickAdapter) 
 				{
-					if (joystickAdapter.moveCameraActive) {                    
-						mainController.moveCameraObject (joystickAdapter.getTranslation ());
-					}                
-					if (joystickAdapter.moveObjectActive) {                 
+                    if (joystickAdapter.moveCameraActive)
+                    {
+                        mainController.moveCameraObject(joystickAdapter.getTranslation()); // SEIM: introduces mysterious camera drift
+                    }
+                    if (joystickAdapter.moveObjectActive) {                 
 						mainController.translateSelection (joystickAdapter.getTranslation ());
 					}
 					if (joystickAdapter.rotateObjectActive) {                    

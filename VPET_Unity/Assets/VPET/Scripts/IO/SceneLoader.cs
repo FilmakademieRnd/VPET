@@ -58,25 +58,11 @@ namespace vpet
 	    
 		public static List<Texture2D> SceneTextureList = new List<Texture2D>();
 		public static List<Mesh[]> SceneMeshList = new List<Mesh[]>();
-	    
-		private List<GameObject> sceneEditableObjects = new List<GameObject>();
-	
-	
+        public static List<GameObject> SceneEditableObjects = new List<GameObject>();
 		public static List<GameObject> SelectableLights = new List<GameObject>();														  
-	
-	
-	    private GameObject scnRoot;
-	
-
 	    public static List<GameObject> SceneCameraList = new List<GameObject>();
 
-		public List<GameObject> sceneEditableObjectsList
-        {
-            get { return sceneEditableObjects; }
-        }												
-
-
-
+        private GameObject scnRoot;												
 
         private List<GameObject> geometryPassiveList = new List<GameObject>();
         private SceneDataHandler sceneDataHandler;
@@ -130,7 +116,7 @@ namespace vpet
 
         public void ResetScene()
         {
-            sceneEditableObjects.Clear();
+            SceneEditableObjects.Clear();
             SceneTextureList.Clear();
             SceneMeshList.Clear();
             SceneCameraList.Clear();
@@ -165,7 +151,7 @@ namespace vpet
 	        createSceneGraphIter(scnRoot.transform, 0);
 	
 	        // make editable        
-	        foreach ( GameObject g in sceneEditableObjects )
+	        foreach ( GameObject g in SceneEditableObjects )
 	        {
 	            SceneObject sobj = g.GetComponent<SceneObject>();
 	            if ( sobj == null )
@@ -188,7 +174,7 @@ namespace vpet
 
         public bool isEditable(GameObject targetObj)
         {
-            foreach( GameObject g in sceneEditableObjects)
+            foreach( GameObject g in SceneEditableObjects)
             {
                 if (g == targetObj)
                     return true;
@@ -214,7 +200,7 @@ namespace vpet
             // add scene object to editable 
 	        if ( node.editable )
 	        {
-	            sceneEditableObjects.Add( obj );
+	            SceneEditableObjects.Add( obj );
 	        }
 	
             // recursive call

@@ -60,5 +60,5 @@ namespace vpet
             AssetDatabase.ExportPackage(content, "VPET.unitypackage", ExportPackageOptions.Interactive | ExportPackageOptions.Recurse); // | ExportPackageOptions.IncludeDependencies);
 	        Debug.Log("Done export VPET.unitypackage.");
 	    }
-	
-}}
+	}
+}
