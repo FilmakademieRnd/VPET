@@ -281,7 +281,7 @@ namespace vpet
                 mainController.resetCameraOffset();
             }
             // disable tracking
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE
             else if (Input.GetAxis("R2") < 0 && !hasPressedR2)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
 			else if (Input.GetButtonDown("R2"))
@@ -303,7 +303,7 @@ namespace vpet
             }
 
             // cycle through object list                                    
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE
             else if (Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
                         Input.GetAxis("DPAD_V") != 0 && hasPressedDirectionalPad == false)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
@@ -314,7 +314,7 @@ namespace vpet
 #endif
             {
                 EditableObjects = EditableObjectsList;
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
                     DPADdirection = 1;
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
@@ -325,7 +325,7 @@ namespace vpet
                 else DPADdirection = -1;
                 hasPressedDirectionalPad = true;
                 int match = 0;
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_V") != 0)
                     EditableObjects = EditableLightList;
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
@@ -365,7 +365,7 @@ namespace vpet
                 }
 			}
             // Dpad and R2 reset 
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE
             else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))
                 hasPressedDirectionalPad = false;
             if (Input.GetAxis("R2") == 0)
