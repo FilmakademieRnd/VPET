@@ -137,6 +137,10 @@ namespace vpet
 		//!
 		Quaternion camPreviousRotation = Quaternion.identity;
         //!
+        //! cache references to TRS group
+        //!
+        private GameObject trsGroup;
+        //!
         //! cache references to translation modifier
         //!
         private GameObject translateModifier;
@@ -418,6 +422,7 @@ namespace vpet
             ui = GameObject.Find("UI").GetComponent<UI>();
             scene = GameObject.Find("Scene");
 
+            trsGroup = GameObject.Find("Modifiers");
             translateModifier = GameObject.Find("TranslateModifier");
             rotationModifier = GameObject.Find("RotationModifier");
             scaleModifier = GameObject.Find("ScaleModifier");

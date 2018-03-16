@@ -45,24 +45,30 @@ namespace vpet
 	        //position modifiers if neccessary
 	        if (currentSelection)
 	        {
-	            if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
+                Vector3 modifierScele = getModifierScale();
+                if (lineRenderer)
+                    lineRenderer.widthMultiplier = modifierScele.magnitude / 100f;
+
+                if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
 	            {
 	                translateModifier.transform.position = currentSelection.position;
-	                //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
-	
-                    translateModifier.transform.localScale = getModifierScale();
+                    //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
+                    translateModifier.transform.rotation = currentSelection.rotation;
+
+                    translateModifier.transform.localScale = modifierScele;
                     translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 	            }
 	            else if (activeMode == Mode.rotationMode)
 	            {
 	                rotationModifier.transform.position = currentSelection.position;
-	                rotationModifier.transform.localScale = getModifierScale() ;
+                    rotationModifier.transform.rotation = currentSelection.rotation;
+                    rotationModifier.transform.localScale = modifierScele;
 	            }
 	            else if (activeMode == Mode.scaleMode)
 	            {
 	                scaleModifier.transform.position = currentSelection.position;
 	                scaleModifier.transform.rotation = currentSelection.rotation;
-	                scaleModifier.transform.localScale = getModifierScale();
+	                scaleModifier.transform.localScale = modifierScele;
 	            }
 	        }
 

@@ -48,7 +48,7 @@ namespace vpet
 		private GameObject m_anchorPrefab = null;
 #endif
 
-		/*
+        /*
 	    //!
 	    //! check if screen position is on an active GUI element & get id of the button at screen position
 	    //! @param      pos     position on screen (z is always 0)
@@ -59,21 +59,21 @@ namespace vpet
 	        return ui.getButtonId(new Vector2(pos.x, Screen.height - pos.y)); ;
 	    }
 		*/
-	
-	    //!
-	    //! move the camera relative to last position
-	    //! @param      translation     new position relative to old one
-	    //!
-	    public void moveCameraObject(Vector3 translation)
-	    {
-	        Camera.main.transform.Translate(translation * VPETSettings.Instance.sceneScale);
-	    }
-	
-	    //!
-	    //! move the camera's relative to last position
-	    //! @param      translation     new position relative to old one
-	    //!
-	    public void moveCameraParent( Vector3 translation )
+
+        //!
+        //! move the camera relative to last position
+        //! @param      translation     new position relative to old one
+        //!
+        public void moveCameraObject(Vector3 translation)
+        {
+            Camera.main.transform.Translate(translation * VPETSettings.Instance.sceneScale);
+        }
+
+        //!
+        //! move the camera's relative to last position
+        //! @param      translation     new position relative to old one
+        //!
+        public void moveCameraParent( Vector3 translation )
 	    {
 	        cameraRig.Translate( translation * VPETSettings.Instance.sceneScale);
 	    }

@@ -48,14 +48,15 @@ namespace vpet
 		public void setAxisLockerXYZ() {
 			axisLocker = new Vector3(1, 1, 1);
 		}
-	    //!
+	    
+        //!
 	    //! translate currently selected object
 	    //! @param      translation     relative translation beeing applied on current selection
 	    //!
 	    public void translateSelection(Vector3 translation){
 	        if (currentSelection)
 	        {
-	            Vector3 finalTranslation = currentSelection.position + Vector3.Scale(translation, axisLocker);
+	            Vector3 finalTranslation = Vector3.Scale(translation, axisLocker);
 
                 SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
                 if (sceneObject)
@@ -69,18 +70,51 @@ namespace vpet
 	            }
 	        }
 	    }
-	
-	    //!
-	    //! rotate currently selected object
-	    //! @param      begin       last position on rotation sphere
-	    //! @param      end         current position on rotation sphere
-	    //!
-	    public void rotateSelection(Vector3 begin, Vector3 end){
-	        if (currentSelection){
-                Vector3 rotationAxis = Vector3.Scale(Vector3.Cross(begin, end), axisLocker);
-                Quaternion rotation = Quaternion.AngleAxis((begin - end).sqrMagnitude, rotationAxis);
 
-                currentSelection.GetComponent<SceneObject>().transform.rotation *= rotation;
+        public void translateSelection(Vector3 begin, Vector3 end)
+        {
+            if (currentSelection)
+            {
+                Vector3 finalTranslation =  initRotation * Vector3.Scale(inverseInitRotation * (end-begin), axisLocker) + initPosition;
+                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
+
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, currentSelection.position);
+                lineRenderer.SetPosition(1, currentSelection.position + initRotation * axisLocker * 10000);
+
+                if (sceneObject)
+                    sceneObject.translate(finalTranslation);
+                else
+                {
+                    KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
+                    if (keyframeScript)
+                    {
+                        currentSelection.transform.position = finalTranslation;
+                        currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
+                    }
+                }
+            }
+        }
+
+        //!
+        //! rotate currently selected object
+        //! @param      begin       last position on rotation sphere
+        //! @param      end         current position on rotation sphere
+        //!
+        public void rotateSelection(Vector3 begin, Vector3 end){
+	        if (currentSelection){
+                Vector3 v1 = (currentSelection.position - begin).normalized;
+                Vector3 v2 = (currentSelection.position - end).normalized;
+                float angle = Vector3.SignedAngle(v1, v2, Vector3.up);
+                Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);
+
+                lineRenderer.positionCount = 4;
+                lineRenderer.SetPosition(0, currentSelection.position);
+                lineRenderer.SetPosition(1, begin);
+                lineRenderer.SetPosition(2, currentSelection.position);
+                lineRenderer.SetPosition(3, end);
+
+                currentSelection.GetComponent<SceneObject>().transform.rotation = initRotation * rotation;
             }
 	    }
 	
@@ -106,10 +140,16 @@ namespace vpet
         public void scaleSelection(Vector3 scale)
         {
             if (currentSelection) {
-                if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1)
+                if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1) {
                     scale = Vector3.one * scale.x;
+                }
+                else {
+                    lineRenderer.positionCount = 2;
+                    lineRenderer.SetPosition(0, currentSelection.position);
+                    lineRenderer.SetPosition(1, currentSelection.position + axisLocker * 10000);
+                }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>()) {
-                    currentSelection.transform.localScale += Vector3.Scale(scale, axisLocker) / 1000f;
+                    currentSelection.transform.localScale = Vector3.Scale(scale, inverseInitRotation * axisLocker) / 1000f * VPETSettings.Instance.sceneScale + initScale;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection);
                 }
@@ -145,19 +185,19 @@ namespace vpet
 	            this.translateSelection((currentSelection.position - Camera.main.transform.position).normalized * distanceDelta * 5);
 	        }
 	    }
-	
-	    //!
-	    //! this is the place where the actual modification is executed
-	    //! @param      begin       last point on modifier helper
-	    //! @param      end         current point on modifier helper
-	    //!
-	    public void pointerDrag(Vector3 begin, Vector3 end)
-	    {        
-	        if (!ignoreDrag){
+
+        //!
+        //! this is the place where the actual modification is executed
+        //! @param      begin       last point on modifier helper
+        //! @param      end         current point on modifier helper
+        //!
+        public void pointerDrag(Vector3 begin, Vector3 end)
+	    {
+            if (!ignoreDrag){
 	            if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
 	            {
 	                //begin & end are on a plane already properly adjusted to fit the currently selected axis
-	                this.translateSelection(end - begin);
+	                this.translateSelection(begin, end);
 	                return;
 	            }
 	            
@@ -172,11 +212,12 @@ namespace vpet
 	            }
 	        }
 	    }
-	
-	    //!
-	    //! make current selection receive forces (gravitation etc.) or not
-	    //!
-	    public void toggleLockSelectionKinematic(){
+
+
+        //!
+        //! make current selection receive forces (gravitation etc.) or not
+        //!
+        public void toggleLockSelectionKinematic(){
 	        if (!currentSelection.GetComponent<SceneObject>().isDirectionalLight && !currentSelection.GetComponent<SceneObject>().isSpotLight && !currentSelection.GetComponent<SceneObject>().isPointLight)
 	        {
 	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;

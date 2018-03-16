@@ -192,9 +192,7 @@ namespace vpet
         private Vector3 positionFirst = Vector3.zero;
         private Vector3 oldPosition = Vector3.zero;
         private Quaternion oldRotation = Quaternion.identity;
-
         private Vector3 newPosition = Vector3.zero;
-
         private Quaternion newRotation = Quaternion.identity;
 
         //! set / get camera field of view (vertical)
@@ -210,7 +208,6 @@ namespace vpet
             cameraParent = this.transform.parent;
         }
 
-
         //!
         //! Use this for initialization
         //!
@@ -223,8 +220,8 @@ namespace vpet
 #elif (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
 	        // SensorHelper.ActivateRotation();
 #endif
-        //sync renderInFront camera to mainCamera
-        Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
+            //sync renderInFront camera to mainCamera
+            Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
             if (frontCamera)
             {
                 frontCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
@@ -367,9 +364,10 @@ namespace vpet
 
 				if (joystickAdapter) 
 				{
-                    if (joystickAdapter.moveCameraActive)
-                    {
-                        mainController.moveCameraObject(joystickAdapter.getTranslation()); // SEIM: introduces mysterious camera drift
+                    if (joystickAdapter.moveCameraActive) {
+                        Vector3 trans = joystickAdapter.getTranslation();       
+                        if (trans.magnitude > 0.01f)          // SEIM: to prenvent mysterious camera drift
+                            mainController.moveCameraObject(trans); 
                     }
                     if (joystickAdapter.moveObjectActive) {                 
 						mainController.translateSelection (joystickAdapter.getTranslation ());
@@ -435,7 +433,6 @@ namespace vpet
                     timeleft = updateInterval;
                 }
             }
-
         }
 
         public void resetCameraOffset()

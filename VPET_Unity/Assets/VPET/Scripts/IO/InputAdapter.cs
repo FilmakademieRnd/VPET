@@ -63,11 +63,10 @@ namespace vpet
 		//! last screen position a raycast hit an object on
 		//!
 		private Vector3 hitPositionBuffer = nullVector;
-
-		//!
-		//! pause the triggering of events (avoids double executions)
-		//!
-		public bool pause = false;
+        //!
+        //! pause the triggering of events (avoids double executions)
+        //!
+        public bool pause = false;
 	
 		//!
 		//! multiply move forward
@@ -163,7 +162,7 @@ namespace vpet
 							//modifier was hit
 							mainController.handleModifier(hitObject.transform);
                             //hitPositionBuffer = objectRaycast(pos, mainController.helperCollider);
-                            Vector3 hitPositionBuffer = planeRaycast(pos, mainController.helperPlane);
+                            hitPositionBuffer = planeRaycast(pos, mainController.helperPlane);
                             pointerOnModifier = true;
 						}
 						hitObject = null;
@@ -299,18 +298,19 @@ namespace vpet
 							{
 								mainController.pointerDrag( hitPositionBuffer, newHitPosition );
 							}
-							hitPositionBuffer = newHitPosition;
+							//hitPositionBuffer = newHitPosition;
 						}
 					}
 				}
 			}
 		}
-	
-		//!
-		//! dual touch started (called by Mouse or Touch Input)
-		//! @param      pos     screen position of pointer
-		//!
-		public void twoPointerStarted(Vector3 pos)
+
+
+        //!
+        //! dual touch started (called by Mouse or Touch Input)
+        //! @param      pos     screen position of pointer
+        //!
+        public void twoPointerStarted(Vector3 pos)
         {
             if (!pointerOnGUI())
             {
