@@ -89,7 +89,7 @@ namespace vpet
                 {
                     if (activeMode == Mode.addMode)
                     {
-                        print("TODO: Add mode!");
+                        Debug.Log("TODO: Add mode!");
                     }
                     else
                     {
@@ -126,7 +126,7 @@ namespace vpet
             //cache current selection
             currentSelection = sObject;
 
-            print("Select " + currentSelection );
+            Debug.Log("Select " + currentSelection );
 
             //show selection
             sObject.gameObject.GetComponent<SceneObject>().selected = true;
@@ -170,7 +170,8 @@ namespace vpet
 	    {
 			if (!currentSelection)
 				return;
-            print("Deselect " + currentSelection);
+
+            Debug.Log("Deselect " + currentSelection);
 
             // make sure its not more locked
             serverAdapter.sendLock(currentSelection, false);

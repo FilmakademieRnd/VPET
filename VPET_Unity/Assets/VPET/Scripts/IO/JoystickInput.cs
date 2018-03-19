@@ -117,8 +117,9 @@ namespace vpet
             EditableLightList.Clear();
             foreach (GameObject g in SceneLoader.SelectableLights)
             {
-                if (g.GetComponent<SceneObject>() != null && g.GetComponent<SceneObject>().IsLight == true)
-                    EditableLightList.Add(g.GetComponent<SceneObject>());
+                if (g)
+                    if (g.GetComponent<SceneObject>() != null && g.GetComponent<SceneObject>().IsLight == true)
+                        EditableLightList.Add(g.GetComponent<SceneObject>());
             }
             // sceneEditableObjects contains cameras and lights, we need to sort those out and build a new list
             EditableObjectsList.Clear();
