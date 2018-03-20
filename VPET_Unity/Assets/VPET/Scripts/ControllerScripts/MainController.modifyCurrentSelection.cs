@@ -222,7 +222,7 @@ namespace vpet
 	        {
 	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
 	            // serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
-	            serverAdapter.SendObjectUpdate(currentSelection, NodeType.GROUP, "sendKinematic", !currentSelection.GetComponent<SceneObject>().lockKinematic);
+	            serverAdapter.SendObjectUpdate(currentSelection, NodeType.GROUP, false, "sendKinematic", !currentSelection.GetComponent<SceneObject>().lockKinematic);
 
 				currentSelection.GetComponent<SceneObject>().lockKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
 	            if (!currentSelection.GetComponent<SceneObject>().lockKinematic){
