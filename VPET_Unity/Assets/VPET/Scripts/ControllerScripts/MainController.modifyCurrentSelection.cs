@@ -221,8 +221,7 @@ namespace vpet
 	        if (!currentSelection.GetComponent<SceneObject>().isDirectionalLight && !currentSelection.GetComponent<SceneObject>().isSpotLight && !currentSelection.GetComponent<SceneObject>().isPointLight)
 	        {
 	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
-	            // serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
-	            serverAdapter.SendObjectUpdate(currentSelection, NodeType.GROUP, false, "sendKinematic", !currentSelection.GetComponent<SceneObject>().lockKinematic);
+	            serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
 
 				currentSelection.GetComponent<SceneObject>().lockKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
 	            if (!currentSelection.GetComponent<SceneObject>().lockKinematic){
