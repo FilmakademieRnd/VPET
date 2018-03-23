@@ -445,25 +445,7 @@ namespace vpet
 			if (input)
 				input.enabled = true;
 
-#if USE_ARKIT
-			GameObject arPlanes = GameObject.Find("ARPlanes");
-			if (arPlanes) {
-				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
-			}
-
-			// disable anchor visualisation
-			if (m_anchorModifier) {
-				m_anchorModifier.SetActive(false);
-				GameObject.Destroy(m_anchorModifier);
-				m_anchorModifier = null;
-			}
-
-			GameObject root = GameObject.Find("Scene");
-			if (root)
-			{
-				GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
-			}
-#endif
+			hideARWidgets();
 
             // request progress bar from UI and connect listener to server adapter
             RoundProgressBar progressWidget =  ui.drawProgressWidget();
@@ -474,6 +456,32 @@ namespace vpet
 
             // init server adapter
             serverAdapter.initServerAdapterTransfer();
+		}
+
+		//!
+		//! hide all AR related widgets like ARPlanes and the anchor
+		//!
+		public void hideARWidgets()
+		{
+			#if USE_ARKIT
+			GameObject arPlanes = GameObject.Find("ARPlanes");
+			if (arPlanes) {
+			GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
+			}
+
+			// disable anchor visualisation
+			if (m_anchorModifier) {
+			m_anchorModifier.SetActive(false);
+			GameObject.Destroy(m_anchorModifier);
+			m_anchorModifier = null;
+			}
+
+			GameObject root = GameObject.Find("Scene");
+			if (root)
+			{
+			GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
+			}
+			#endif
 		}
 		
 	    //!

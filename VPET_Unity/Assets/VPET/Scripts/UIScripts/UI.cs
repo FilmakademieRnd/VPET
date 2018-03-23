@@ -51,23 +51,17 @@ namespace vpet
 	    //! Linear Menu displayed in the top right corner.
 	    //!
 	    private MainMenu mainMenu;
-        public MainMenu MainMenu
-        {
-            get { return mainMenu; }
-        }
-        //!
-        //! Second Menu displayed at bottom.
-        //!
-        private SecondaryMenu secondaryMenu;
+
+	    //!
+	    //! Second Menu displayed at bottom.
+	    //!
+	    private SecondaryMenu secondaryMenu;
 	
 	    //!
 	    //! Center Menu displayed at bottom.
 	    //!
 	    private CenterMenu centerMenu;
-        public CenterMenu CenterMenu
-        {
-            get { return centerMenu; }
-        }
+
         //!
         //! Parameter Menu displayed on left side.
         //!
@@ -414,6 +408,7 @@ namespace vpet
 
         public ConfigWidget drawConfigWidget()
 	    {
+			mainController.hideARWidgets();
             // get radial menu
             // get ProgressWidget
             GameObject radialrefObject = GameObject.Find("GUI/Canvas/ProgressWidget");
