@@ -25,7 +25,6 @@ https://opensource.org/licenses/MIT
 /*
 Sample Mapping for XBox and GameVice Controller
 
-
 Command 		|		Windows Xbox  mapping 		| 	
 ----------------|-----------------------------------|
 Fire0 			|Positive Button: joystick button 0	|
@@ -36,9 +35,11 @@ DPAD_H  		|DPad Axis, 6th axis 				|
 DPAD_V  		|DPad Axis, 7th axis				|
 LeftStick_X 	|Joystick Axis, X Axis				|
 LeftStick_Y 	|Joystick Axis, Y Axis, invert		|
+RightStick_X 	|Joystick Axis, 4th axis            |
 RightStick_Y 	|Joystick Axis, 5th axis, invert	|
 L1				|Key or Mouse Button,				|
 				|Positive Button: joystick button 4	|
+L2				|Joystick Axis, 3rd axis			|			
 R1				|Key or Mouse Button,				|
 				|Positive Button: joystick button 5	|				
 R2				|Joystick Axis, 3rd axis			|			
@@ -57,6 +58,7 @@ DPAD_V  		|Positive Button: joystick button 4, Axis: 4th   			|
 DPAD_V_neg 		|Positive Button: joystick button 6, Axis: 6th   			|
 LeftStick_X 	|Joystick Axis, X Axis										|
 LeftStick_Y 	|Joystick Axis, Y Axis, invert								|
+RightStick_X 	|Joystick Axis, 3th axis        							|
 RightStick_Y 	|Joystick Axis, 4th axis, invert							|
 L1				|Key or Mouse Button, Positive Button: joystick button 8	|
 R1				|Key or Mouse Button, Positive Button: joystick button 9	|
@@ -65,7 +67,9 @@ R2				|Key or Mouse Button, Positive Button: joystick button 11	|
 */
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;								 
+using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 //!
 //! script receiving input from one or two (vcs) joystick
@@ -84,6 +88,7 @@ namespace vpet
         public bool scaleObjectActive = false;
 		private bool hasPressedDirectionalPad = false;
         private bool hasPressedR2 = false;
+        private bool hasPressedL2 = false;
         private int DPADdirection = 0;
 
         List<SceneObject> EditableObjectsList = new List<SceneObject>();
@@ -135,15 +140,17 @@ namespace vpet
         //!
         public void getButtonUpdates()
         {
-            if (Input.GetButtonDown("Fire2"))
+            if (Input.GetButtonDown("L1"))
             {
                 // toggle gravity
-                if (moveObjectActive && mainController.getCurrentSelection())
+                if (mainController.getCurrentSelection())
                 {
-                    if (mainController.HasGravityOn())
-                        mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = false;
-                    else
-                        mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = true;
+                    if (mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().enabled)
+                        mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    //if (mainController.HasGravityOn())
+                    //    mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = false;
+                    //else
+                    //    mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = true;
                 }
 
             }
@@ -276,7 +283,7 @@ namespace vpet
 
             }
             // toggle predefined bookmarks
-            else if (Input.GetButtonDown("R1"))
+            else if (Input.GetButtonDown("R1") && !mainController.arMode)
             {
                 mainController.repositionCamera();
                 mainController.resetCameraOffset();
@@ -289,11 +296,10 @@ namespace vpet
 #endif
             {
                 hasPressedR2 = true;
-                mainController.toggleCameraRotation();
-                
+                mainController.UIAdapter.MainMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
             // reset current selection                                          
-			else if (Input.GetButtonDown("L1"))
+			else if (Input.GetButtonDown("Fire2"))
             {
                 if (mainController.getCurrentSelection())
                 {
@@ -301,6 +307,16 @@ namespace vpet
                     mainController.resetSelectionRotation();
                     mainController.resetSelectionScale();
                 }
+            }
+            // cycle through edit modes
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
+			else if (Input.GetButtonDown("L2"))
+#endif
+            {
+                hasPressedL2 = true;
+                mainController.UIAdapter.MainMenu.transform.GetChild(1).GetComponent<MenuButtonList>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
 
             // cycle through object list                                    
@@ -367,12 +383,14 @@ namespace vpet
 			}
             // Dpad and R2 reset 
 #if UNITY_EDITOR || UNITY_STANDALONE
-            else if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))
+            if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))
                 hasPressedDirectionalPad = false;
             if (Input.GetAxis("R2") == 0)
                 hasPressedR2 = false;
-#endif		
-	
+            if (Input.GetAxis("L2") == 0)
+                hasPressedL2 = false;
+#endif
+
         }
 
         //!
@@ -386,6 +404,13 @@ namespace vpet
             x_axis = Input.GetAxis("LeftStick_X") * speed;  // mapped to Joystick 1 X Axis
             z_axis = Input.GetAxis("LeftStick_Y") * speed;  // mapped to Joystick 1 Y Axis (inverted)
             y_axis = Input.GetAxis("RightStick_Y") * speed; // mapped to Joystick 1 5th Axis (inverted)
+
+            if (scaleObjectActive && Input.GetAxis("RightStick_X") != 0.0f)
+            {
+                x_axis = Input.GetAxis("RightStick_X") * speed;
+                y_axis = x_axis;
+                z_axis = x_axis;
+            }
 
             Vector3 pos = Vector3.zero;
             pos = new Vector3(x_axis, y_axis, z_axis);           

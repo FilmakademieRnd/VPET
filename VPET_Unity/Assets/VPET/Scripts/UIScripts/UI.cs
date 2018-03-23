@@ -51,17 +51,23 @@ namespace vpet
 	    //! Linear Menu displayed in the top right corner.
 	    //!
 	    private MainMenu mainMenu;
-
-	    //!
-	    //! Second Menu displayed at bottom.
-	    //!
-	    private SecondaryMenu secondaryMenu;
+        public MainMenu MainMenu
+        {
+            get { return mainMenu; }
+        }
+        //!
+        //! Second Menu displayed at bottom.
+        //!
+        private SecondaryMenu secondaryMenu;
 	
 	    //!
 	    //! Center Menu displayed at bottom.
 	    //!
 	    private CenterMenu centerMenu;
-
+        public CenterMenu CenterMenu
+        {
+            get { return centerMenu; }
+        }
         //!
         //! Parameter Menu displayed on left side.
         //!
