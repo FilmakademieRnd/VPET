@@ -409,6 +409,7 @@ namespace vpet
 
         public ConfigWidget drawConfigWidget()
 	    {
+			mainController.hideARWidgets();
             // get radial menu
             // get ProgressWidget
             GameObject radialrefObject = GameObject.Find("GUI/Canvas/ProgressWidget");

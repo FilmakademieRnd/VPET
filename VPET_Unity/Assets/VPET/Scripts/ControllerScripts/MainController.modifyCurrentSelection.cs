@@ -72,6 +72,30 @@ namespace vpet
 	            }
 	        }
 	    }
+        //!
+        //! translate currently selected object
+        //! @param      translation     absolute translation beeing applied on current selection
+        //!
+        public void translateSelectionAbsolute(Vector3 translation)
+        {
+            if (currentSelection)
+            {
+                Vector3 finalTranslation = currentSelection.position + Vector3.Scale(translation, axisLocker);
+
+                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
+                if (sceneObject)
+                    sceneObject.translate(finalTranslation);
+                else
+                {
+                    KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
+                    if (keyframeScript)
+                    {
+                        currentSelection.transform.position = finalTranslation;
+                        currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
+                    }
+                }
+            }
+        }
 
         public void translateSelection(Vector3 begin, Vector3 end)
         {
@@ -109,26 +133,36 @@ namespace vpet
                 Vector3 v2 = (currentSelection.position - end).normalized;
                 float angle = Vector3.SignedAngle(v1, v2, helperPlane.normal);
                 Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);
-
+                
                 lineRenderer.positionCount = 4;
                 lineRenderer.SetPosition(0, currentSelection.position);
                 lineRenderer.SetPosition(1, begin);
                 lineRenderer.SetPosition(2, currentSelection.position);
-                lineRenderer.SetPosition(3, end);
+                lineRenderer.SetPosition(3, end);                
 
                 currentSelection.GetComponent<SceneObject>().transform.rotation = initRotation * rotation;
             }
 	    }
-	
-	    //!
-	    //! scale currently selected object
-	    //! @param      scale     new scale of object
-	    //!
-	    public void scaleSelection(float scale){
+
+        //!
+        //! rotate currently selected object
+        //! @param      begin       last position on rotation sphere
+        //! @param      end         current position on rotation sphere
+        //!
+        public void rotateSelectionJoystick(Vector3 end)
+        {
+            if (currentSelection)            
+                currentSelection.GetComponent<SceneObject>().transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
+        }
+        //!
+        //! scale currently selected object via joystick
+        //! @param      scale     new scale of object
+        //!
+        public void scaleSelection(float scale){
 	        if (currentSelection){
 	            if (!currentSelection.transform.parent.transform.GetComponent<Light>()){
-	                currentSelection.transform.localScale += (axisLocker * scale);
-	                if (liveMode){
+                    currentSelection.transform.localScale += (axisLocker * scale);                    
+                    if (liveMode){
 						serverAdapter.SendObjectUpdate(currentSelection);
 	                }
 	            }
@@ -152,6 +186,24 @@ namespace vpet
                 }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>()) {
                     currentSelection.transform.localScale = Vector3.Scale(scale, inverseInitRotation * axisLocker) / 1000f * VPETSettings.Instance.sceneScale + initScale;
+                    if (liveMode)
+                        serverAdapter.SendObjectUpdate(currentSelection);
+                }
+            }
+        }
+        //!
+        //! scale currently selected object with joystick input
+        //! @param      scale     new scale of object
+        //!
+        public void scaleSelectionJoystick(Vector3 scale)
+        {
+            if (currentSelection)
+            {
+                // if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1)
+                //    scale = Vector3.one * scale.x;
+                if (!currentSelection.transform.parent.transform.GetComponent<Light>())
+                {
+                    currentSelection.transform.localScale += Vector3.Scale(scale, axisLocker) / 1000f;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection);
                 }
@@ -223,8 +275,7 @@ namespace vpet
 	        if (!currentSelection.GetComponent<SceneObject>().isDirectionalLight && !currentSelection.GetComponent<SceneObject>().isSpotLight && !currentSelection.GetComponent<SceneObject>().isPointLight)
 	        {
 	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
-	            // serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
-	            serverAdapter.SendObjectUpdate(currentSelection, NodeType.GROUP, "sendKinematic", !currentSelection.GetComponent<SceneObject>().lockKinematic);
+	            serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
 
 				currentSelection.GetComponent<SceneObject>().lockKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
 	            if (!currentSelection.GetComponent<SceneObject>().lockKinematic){

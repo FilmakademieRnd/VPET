@@ -959,7 +959,7 @@ namespace vpet
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
 				if (send) 
-					serverAdapter.SendObjectUpdate(target, NodeType.GROUP, false, "sendKinematic", set);
+					serverAdapter.sendKinematic(target, set);
 				if (!set)
 				{
 					this.gameObject.GetComponent<Rigidbody>().WakeUp();

@@ -939,8 +939,8 @@ namespace vpet
 			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
-				if (send) 
-					serverAdapter.SendObjectUpdate(target, NodeType.GROUP, false,  "sendKinematic", set);
+				if (send)
+					serverAdapter.sendKinematic(target, set);
 				if (!set)
 					this.gameObject.GetComponent<Rigidbody>().WakeUp();
 			}

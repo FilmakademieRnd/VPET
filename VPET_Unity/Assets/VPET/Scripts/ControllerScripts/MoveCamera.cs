@@ -366,21 +366,21 @@ namespace vpet
 
 				if (joystickAdapter) 
 				{
-                    if (joystickAdapter.moveCameraActive) {
-                        Vector3 trans = joystickAdapter.getTranslation();       
-                        if (trans.magnitude > 0.01f)          // SEIM: to prenvent mysterious camera drift
-                            mainController.moveCameraObject(trans); 
+                    Vector3 val = joystickAdapter.getTranslation();
+                    if (val.magnitude > 0.01)                    
+                    {
+                        if (joystickAdapter.moveCameraActive && !mainController.arMode)
+                            mainController.moveCameraObject(val); 
+                        if (joystickAdapter.moveObjectActive)
+                            mainController.translateSelectionAbsolute(val);
+                        if (joystickAdapter.rotateObjectActive)
+                            mainController.rotateSelectionJoystick(val);
+                        if (joystickAdapter.scaleObjectActive)
+                            mainController.scaleSelectionJoystick(val);
+                        if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
+                            mainController.AnimationController.setKeyFrame();
                     }
-                    if (joystickAdapter.moveObjectActive) {                 
-						mainController.translateSelection (joystickAdapter.getTranslation ());
-					}
-					if (joystickAdapter.rotateObjectActive) {                    
-						mainController.rotateSelection (new Vector3 (0, 0, 0), joystickAdapter.getTranslation ());
-					}
-					if (joystickAdapter.scaleObjectActive) {                 
-						mainController.scaleSelection (joystickAdapter.getTranslation ().x / 100);
-					}
-					joystickAdapter.getButtonUpdates ();
+                    joystickAdapter.getButtonUpdates ();
 				}
             }
 
