@@ -4,11 +4,13 @@ This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
 http://github.com/FilmakademieRnd/VPET
 
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
+Copyright (c) 2018 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-This project has been realized in the scope of the EU funded project Dreamspace
-under grant agreement no 610005.
+This project has been initiated in the scope of the EU funded project 
+Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
 http://dreamspaceproject.eu/
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the MIT License as published by the Open Source Initiative.
@@ -364,21 +366,21 @@ namespace vpet
 
 				if (joystickAdapter) 
 				{
-                    if (joystickAdapter.moveCameraActive) {
-                        Vector3 trans = joystickAdapter.getTranslation();       
-                        if (trans.magnitude > 0.01f)          // SEIM: to prenvent mysterious camera drift
-                            mainController.moveCameraObject(trans); 
+                    Vector3 val = joystickAdapter.getTranslation();
+                    if (val.magnitude > 0.01)                    
+                    {
+                        if (joystickAdapter.moveCameraActive && !mainController.arMode)
+                            mainController.moveCameraObject(val); 
+                        if (joystickAdapter.moveObjectActive)
+                            mainController.translateSelectionAbsolute(val);
+                        if (joystickAdapter.rotateObjectActive)
+                            mainController.rotateSelectionJoystick(val);
+                        if (joystickAdapter.scaleObjectActive)
+                            mainController.scaleSelectionJoystick(val);
+                        if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
+                            mainController.AnimationController.setKeyFrame();
                     }
-                    if (joystickAdapter.moveObjectActive) {                 
-						mainController.translateSelection (joystickAdapter.getTranslation ());
-					}
-					if (joystickAdapter.rotateObjectActive) {                    
-						mainController.rotateSelection (new Vector3 (0, 0, 0), joystickAdapter.getTranslation ());
-					}
-					if (joystickAdapter.scaleObjectActive) {                 
-						mainController.scaleSelection (joystickAdapter.getTranslation ().x / 100);
-					}
-					joystickAdapter.getButtonUpdates ();
+                    joystickAdapter.getButtonUpdates ();
 				}
             }
 

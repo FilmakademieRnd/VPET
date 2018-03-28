@@ -1,25 +1,37 @@
-VPET - Virtual Production Editing Tool
-vpet.research.animationsinstitut.de
-https://github.com/FilmakademieRnd/VPET
+Scene Distribution and Syncronisation Server
 
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation 
+The VPET components Scene Distribution and Synchronization Server are intended
+for research and development purposes only. Commercial use of any kind is not 
+permitted.
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the MIT License as published by the Open Source Initiative.
+There is no support by Filmakademie. Since the Scene Distribution and 
+Synchronization Server are available for free, Filmakademie shall only be 
+liable for intent and gross negligence; warranty is limited to malice. Scene 
+Distribution and Synchronization Server may under no circumstances be used for 
+racist, sexual or any illegal purposes. In all non-commercial productions, 
+scientific publications, prototypical non-commercial software tools, etc. 
+using the Scene Distribution and/or Synchronization Server Filmakademie has 
+to be named as follows: “VPET-Virtual Production Editing Tool by Filmakademie 
+Baden-Württemberg, Animationsinstitut (http://research.animationsinstitut.de)“.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the MIT License for more details.
+In case a company or individual would like to use the Scene Distribution and/or 
+Synchronization Server in a commercial surrounding or for commercial purposes, 
+software based on these components or any part thereof, the company/individual 
+will have to contact Filmakademie (research<at>filmakademie.de).
 
-You should have received a copy of the MIT License along with
-this program; if not go to
-https://opensource.org/licenses/MIT
+Scene Distribution and Synchronization Server sourcecode AND binaries 
+incorporate the following resources (linked dynamically):
 
-
-Scene Distribution Katana sourcecode AND binaries incorporate the following resources (linked dynamically):
-
-ZeroMQ 				- LGPLv3 (http://zeromq.org/area:licensing)
-OpenGL Math (GLM)		- The Happy Bunny License and MIT License (http://glm.g-truc.net/copying.txt)
+Scene Distribution:
+ZeroMQ 				- LGPLv3
+					  http://zeromq.org/area:licensing
+OpenGL Math (GLM)	- The Happy Bunny License and MIT License 
+					  http://glm.g-truc.net/copying.txt
+GLEW 				- is originally derived from the EXTGL project by Lev 
+					  Povalahev. The source code is licensed under the 
+					  Modified BSD License, the Mesa 3-D License (MIT) 
+					  and the Khronos License (MIT).
+					  https://github.com/nigels-com/glew
 
 
 

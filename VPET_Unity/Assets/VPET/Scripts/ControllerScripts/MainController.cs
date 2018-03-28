@@ -4,11 +4,13 @@ This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
 http://github.com/FilmakademieRnd/VPET
 
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
+Copyright (c) 2018 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-This project has been realized in the scope of the EU funded project Dreamspace
-under grant agreement no 610005.
+This project has been initiated in the scope of the EU funded project 
+Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
 http://dreamspaceproject.eu/
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the MIT License as published by the Open Source Initiative.
@@ -445,25 +447,7 @@ namespace vpet
 			if (input)
 				input.enabled = true;
 
-#if USE_ARKIT
-			GameObject arPlanes = GameObject.Find("ARPlanes");
-			if (arPlanes) {
-				GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
-			}
-
-			// disable anchor visualisation
-			if (m_anchorModifier) {
-				m_anchorModifier.SetActive(false);
-				GameObject.Destroy(m_anchorModifier);
-				m_anchorModifier = null;
-			}
-
-			GameObject root = GameObject.Find("Scene");
-			if (root)
-			{
-				GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
-			}
-#endif
+			hideARWidgets();
 
             // request progress bar from UI and connect listener to server adapter
             RoundProgressBar progressWidget =  ui.drawProgressWidget();
@@ -474,6 +458,32 @@ namespace vpet
 
             // init server adapter
             serverAdapter.initServerAdapterTransfer();
+		}
+
+		//!
+		//! hide all AR related widgets like ARPlanes and the anchor
+		//!
+		public void hideARWidgets()
+		{
+			#if USE_ARKIT
+			GameObject arPlanes = GameObject.Find("ARPlanes");
+			if (arPlanes) {
+			GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
+			}
+
+			// disable anchor visualisation
+			if (m_anchorModifier) {
+			m_anchorModifier.SetActive(false);
+			GameObject.Destroy(m_anchorModifier);
+			m_anchorModifier = null;
+			}
+
+			GameObject root = GameObject.Find("Scene");
+			if (root)
+			{
+			GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
+			}
+			#endif
 		}
 		
 	    //!

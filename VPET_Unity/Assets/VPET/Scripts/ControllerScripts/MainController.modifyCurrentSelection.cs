@@ -4,11 +4,13 @@ This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
 http://github.com/FilmakademieRnd/VPET
 
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
+Copyright (c) 2018 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-This project has been realized in the scope of the EU funded project Dreamspace
-under grant agreement no 610005.
+This project has been initiated in the scope of the EU funded project 
+Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
 http://dreamspaceproject.eu/
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the MIT License as published by the Open Source Initiative.
@@ -70,6 +72,30 @@ namespace vpet
 	            }
 	        }
 	    }
+        //!
+        //! translate currently selected object
+        //! @param      translation     absolute translation beeing applied on current selection
+        //!
+        public void translateSelectionAbsolute(Vector3 translation)
+        {
+            if (currentSelection)
+            {
+                Vector3 finalTranslation = currentSelection.position + Vector3.Scale(translation, axisLocker);
+
+                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
+                if (sceneObject)
+                    sceneObject.translate(finalTranslation);
+                else
+                {
+                    KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
+                    if (keyframeScript)
+                    {
+                        currentSelection.transform.position = finalTranslation;
+                        currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
+                    }
+                }
+            }
+        }
 
         public void translateSelection(Vector3 begin, Vector3 end)
         {
@@ -105,28 +131,38 @@ namespace vpet
 	        if (currentSelection){
                 Vector3 v1 = (currentSelection.position - begin).normalized;
                 Vector3 v2 = (currentSelection.position - end).normalized;
-                float angle = Vector3.SignedAngle(v1, v2, Vector3.up);
+                float angle = Vector3.SignedAngle(v1, v2, helperPlane.normal);
                 Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);
-
+                
                 lineRenderer.positionCount = 4;
                 lineRenderer.SetPosition(0, currentSelection.position);
                 lineRenderer.SetPosition(1, begin);
                 lineRenderer.SetPosition(2, currentSelection.position);
-                lineRenderer.SetPosition(3, end);
+                lineRenderer.SetPosition(3, end);                
 
                 currentSelection.GetComponent<SceneObject>().transform.rotation = initRotation * rotation;
             }
 	    }
-	
-	    //!
-	    //! scale currently selected object
-	    //! @param      scale     new scale of object
-	    //!
-	    public void scaleSelection(float scale){
+
+        //!
+        //! rotate currently selected object
+        //! @param      begin       last position on rotation sphere
+        //! @param      end         current position on rotation sphere
+        //!
+        public void rotateSelectionJoystick(Vector3 end)
+        {
+            if (currentSelection)            
+                currentSelection.GetComponent<SceneObject>().transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
+        }
+        //!
+        //! scale currently selected object via joystick
+        //! @param      scale     new scale of object
+        //!
+        public void scaleSelection(float scale){
 	        if (currentSelection){
 	            if (!currentSelection.transform.parent.transform.GetComponent<Light>()){
-	                currentSelection.transform.localScale += (axisLocker * scale);
-	                if (liveMode){
+                    currentSelection.transform.localScale += (axisLocker * scale);                    
+                    if (liveMode){
 						serverAdapter.SendObjectUpdate(currentSelection);
 	                }
 	            }
@@ -150,6 +186,24 @@ namespace vpet
                 }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>()) {
                     currentSelection.transform.localScale = Vector3.Scale(scale, inverseInitRotation * axisLocker) / 1000f * VPETSettings.Instance.sceneScale + initScale;
+                    if (liveMode)
+                        serverAdapter.SendObjectUpdate(currentSelection);
+                }
+            }
+        }
+        //!
+        //! scale currently selected object with joystick input
+        //! @param      scale     new scale of object
+        //!
+        public void scaleSelectionJoystick(Vector3 scale)
+        {
+            if (currentSelection)
+            {
+                // if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1)
+                //    scale = Vector3.one * scale.x;
+                if (!currentSelection.transform.parent.transform.GetComponent<Light>())
+                {
+                    currentSelection.transform.localScale += Vector3.Scale(scale, axisLocker) / 1000f;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection);
                 }

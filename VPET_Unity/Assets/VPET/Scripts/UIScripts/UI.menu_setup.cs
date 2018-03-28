@@ -4,11 +4,13 @@ This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
 http://github.com/FilmakademieRnd/VPET
 
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
+Copyright (c) 2018 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-This project has been realized in the scope of the EU funded project Dreamspace
-under grant agreement no 610005.
+This project has been initiated in the scope of the EU funded project 
+Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
 http://dreamspaceproject.eu/
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the MIT License as published by the Open Source Initiative.
@@ -130,8 +132,17 @@ namespace vpet
             //buttonFocus.AddAction(ScoutMode_Focus_sel, ScoutMode_Focus_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.FOCSIZE)); // focal size slider
             //secondaryMenu.addButton(buttonFocus, layouts.SCOUT);
             // field of view / lens
-            IMenuButton buttonFov = Elements.MenuButtonToggle();
-            buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => cameraFov(buttonFov)); // field of view slider
+            IMenuButton buttonFov;
+            if (!mainController.arMode)
+            {
+                buttonFov = Elements.MenuButtonToggle();
+                buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => cameraFov(buttonFov)); // field of view slider            
+            }
+            else
+            {
+                buttonFov = Elements.MenuButton();
+                buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm); // field of view slider            
+            }
             secondaryMenu.addButton(buttonFov, layouts.SCOUT);
             // aperture
             IMenuButton buttonApert = Elements.MenuButton();
@@ -149,13 +160,23 @@ namespace vpet
 			IMenuButton buttonScout = Elements.MenuButton();
 			buttonScout.AddAction(ScoutMode_Snapshot_sel, ScoutMode_Snapshot_nrm); // 15
 			secondaryMenu.addButton( buttonScout, layouts.SCOUT);
-			// click to move
-			IMenuButton buttonClickMoveCam = Elements.MenuButtonToggle();
-			buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => pointToMoveCamera(buttonClickMoveCam) ); // 
-			secondaryMenu.addButton( buttonClickMoveCam, layouts.SCOUT);
-	        // animation mode buttons
-			// previous key
-			IMenuButton buttonKeyPrev = Elements.MenuButton();
+            // click to move
+            IMenuButton buttonClickMoveCam;
+            if (!mainController.arMode)
+            {
+                buttonClickMoveCam = Elements.MenuButtonToggle();
+                buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => pointToMoveCamera(buttonClickMoveCam)); // 
+            }
+            else
+            {
+                buttonClickMoveCam = Elements.MenuButton();
+                buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm); // 
+
+            }
+            secondaryMenu.addButton(buttonClickMoveCam, layouts.SCOUT);
+            // animation mode buttons
+            // previous key
+            IMenuButton buttonKeyPrev = Elements.MenuButton();
 			buttonKeyPrev.AddAction(AnimationMode_JumpToPreviousKeyframe_sel, AnimationMode_JumpToPreviousKeyframe_nrm, call: () => mainController.AnimationController.previousKeyframe() ); // 
 			secondaryMenu.addButton( buttonKeyPrev, layouts.ANIMATION);
 			// add timeline // 

@@ -4,11 +4,13 @@ This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
 http://github.com/FilmakademieRnd/VPET
 
-Copyright (c) 2016 Filmakademie Baden-Wuerttemberg, Institute of Animation
+Copyright (c) 2018 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-This project has been realized in the scope of the EU funded project Dreamspace
-under grant agreement no 610005.
+This project has been initiated in the scope of the EU funded project 
+Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
 http://dreamspaceproject.eu/
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the MIT License as published by the Open Source Initiative.
@@ -51,17 +53,23 @@ namespace vpet
 	    //! Linear Menu displayed in the top right corner.
 	    //!
 	    private MainMenu mainMenu;
-
-	    //!
-	    //! Second Menu displayed at bottom.
-	    //!
-	    private SecondaryMenu secondaryMenu;
+        public MainMenu MainMenu
+        {
+            get { return mainMenu; }
+        }
+        //!
+        //! Second Menu displayed at bottom.
+        //!
+        private SecondaryMenu secondaryMenu;
 	
 	    //!
 	    //! Center Menu displayed at bottom.
 	    //!
 	    private CenterMenu centerMenu;
-
+        public CenterMenu CenterMenu
+        {
+            get { return centerMenu; }
+        }
         //!
         //! Parameter Menu displayed on left side.
         //!
@@ -254,7 +262,6 @@ namespace vpet
                 trackingScaleLabelUI.gameObject.SetActive(true);
                 trackingScaleSliderUI.gameObject.SetActive(true);
                 // tracking Scale Listener
-				configWidget.TrackingScaleChangedEvent.AddListener(trackingController.setTrackingScaleIntensity);
 				configWidget.TrackingScaleChangedEvent.AddListener(mainController.setTrackingScale);
 				configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
 				configWidget.ToggleAREvent.AddListener(mainController.ToggleArMode);
@@ -408,6 +415,7 @@ namespace vpet
 
         public ConfigWidget drawConfigWidget()
 	    {
+			mainController.hideARWidgets();
             // get radial menu
             // get ProgressWidget
             GameObject radialrefObject = GameObject.Find("GUI/Canvas/ProgressWidget");
