@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NetMQ;
 using NetMQ.Sockets;
-
+using System.Threading;
 namespace vpet
 {
 	public class ObjectSender
@@ -84,6 +84,7 @@ namespace vpet
 			Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
 	        while (IsRunning) 
 	        {
+				Thread.Sleep (10);
 	            if ( sendMessageQueue.Count > 0 )
 	            {
 					// Debug.Log("Send: " + sendMessageQueue[0]);
