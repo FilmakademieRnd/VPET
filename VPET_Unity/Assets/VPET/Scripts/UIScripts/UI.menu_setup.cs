@@ -75,8 +75,11 @@ namespace vpet
 	    //!
 	    //! Sets up all buttons for the secondary menu.
 	    //!
-	    private void setupSecondaryMenu()
+	    public void setupSecondaryMenu()
 	    {
+			//empty menu
+			secondaryMenu.clear();
+
 			// add empty layout for edit mode
 			secondaryMenu.addLayout(layouts.EDIT);
 

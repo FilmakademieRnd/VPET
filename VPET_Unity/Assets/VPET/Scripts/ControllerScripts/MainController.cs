@@ -509,6 +509,7 @@ namespace vpet
         public void ToggleArMode(bool active)
         {
 			arMode = active;
+			ui.setupSecondaryMenu ();
 #if USE_ARKIT
 			GameObject root = GameObject.Find("Scene");
 			GameObject arPlanes = GameObject.Find("ARPlanes");
