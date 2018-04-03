@@ -45,7 +45,7 @@ namespace vpet
 	    //!
 	    //! stores the last position of the modifiers to be able to detect weather it moved.
 	    //!
-	    Vector3 lastPosition;
+	    private Vector3 lastPosition;
 	
 	    //!
 	    //! Use this for initialization
@@ -56,7 +56,6 @@ namespace vpet
 	        lastPosition = this.transform.position;
 		}
 	
-		/*
 	    //!
 	    //! Update is called once per frame
 	    //!
@@ -68,7 +67,6 @@ namespace vpet
 	            lastPosition = this.transform.position;
 	        }
 		}
-		*/
 
 	    //!
 	    //! hides or showes all parts of this modifier (beeing present as childs of this container gameObject)
@@ -119,57 +117,66 @@ namespace vpet
 	    {
 	        if (this.name == "TranslateModifier")
 	        {
-	            if (Camera.main.transform.position.x > this.transform.position.x)
+                Vector3 camPos = Camera.main.transform.position;
+
+                Transform c0, c1, c2, c3, c4, c5, c6, c7, c8;
+                c0 = this.transform.GetChild(0);
+                c1 = this.transform.GetChild(1);
+                c2 = this.transform.GetChild(2);
+                c3 = this.transform.GetChild(3);
+                c4 = this.transform.GetChild(4);
+                c5 = this.transform.GetChild(5);
+                c6 = this.transform.GetChild(6);
+                c7 = this.transform.GetChild(7);
+                c8 = this.transform.GetChild(8);
+
+                float shift = 0f;
+
+                if (camPos.x > this.transform.position.x)
 	            {
-	                this.transform.GetChild(0).rotation = Quaternion.Euler(0, 180, 0);
-	                this.transform.GetChild(3).localPosition = new Vector3(0.5f, this.transform.GetChild(3).localPosition.y, this.transform.GetChild(3).localPosition.z);
-	                this.transform.GetChild(4).localPosition = new Vector3(0.5f, this.transform.GetChild(4).localPosition.y, this.transform.GetChild(4).localPosition.z);
-	                this.transform.GetChild(7).localPosition = new Vector3(0.5f, this.transform.GetChild(7).localPosition.y, this.transform.GetChild(7).localPosition.z);
-	                this.transform.GetChild(8).localPosition = new Vector3(0.5f, this.transform.GetChild(8).localPosition.y, this.transform.GetChild(8).localPosition.z);
+                    c0.localRotation = Quaternion.Euler(0, 180, 0);
+                    shift = 0.5f;
 	            }
 	            else
 	            {
-	                this.transform.GetChild(0).rotation = Quaternion.Euler(0, 0, 0);
-	                this.transform.GetChild(3).localPosition = new Vector3(-0.5f, this.transform.GetChild(3).localPosition.y, this.transform.GetChild(3).localPosition.z);
-	                this.transform.GetChild(4).localPosition = new Vector3(-0.5f, this.transform.GetChild(4).localPosition.y, this.transform.GetChild(4).localPosition.z);
-	                this.transform.GetChild(7).localPosition = new Vector3(-0.5f, this.transform.GetChild(7).localPosition.y, this.transform.GetChild(7).localPosition.z);
-	                this.transform.GetChild(8).localPosition = new Vector3(-0.5f, this.transform.GetChild(8).localPosition.y, this.transform.GetChild(8).localPosition.z);
+                    c0.localRotation = Quaternion.Euler(0, 0, 0);
+                    shift = -0.5f;
 	            }
-	
-	            if (Camera.main.transform.position.y > this.transform.position.y)
+                c3.localPosition = new Vector3(shift, c3.localPosition.y, c3.localPosition.z);
+                c4.localPosition = new Vector3(shift, c4.localPosition.y, c4.localPosition.z);
+                c7.localPosition = new Vector3(shift, c7.localPosition.y, c7.localPosition.z);
+                c8.localPosition = new Vector3(shift, c8.localPosition.y, c8.localPosition.z);
+
+                if (camPos.y > this.transform.position.y)
 	            {
-	                this.transform.GetChild(1).rotation = Quaternion.Euler(0, 0, 0);
-	                this.transform.GetChild(3).localPosition = new Vector3(this.transform.GetChild(3).localPosition.x, 0.5f, this.transform.GetChild(3).localPosition.z);
-	                this.transform.GetChild(4).localPosition = new Vector3(this.transform.GetChild(4).localPosition.x, 0.5f, this.transform.GetChild(4).localPosition.z);
-	                this.transform.GetChild(5).localPosition = new Vector3(this.transform.GetChild(5).localPosition.x, 0.5f, this.transform.GetChild(5).localPosition.z);
-	                this.transform.GetChild(6).localPosition = new Vector3(this.transform.GetChild(6).localPosition.x, 0.5f, this.transform.GetChild(6).localPosition.z);
-	            }
+                    c1.localRotation = Quaternion.Euler(0, 0, 0);
+                    shift = 0.5f;
+                }
 	            else
 	            {
-	                this.transform.GetChild(1).rotation = Quaternion.Euler(180, 0, 0);
-	                this.transform.GetChild(3).localPosition = new Vector3(this.transform.GetChild(3).localPosition.x, -0.5f, this.transform.GetChild(3).localPosition.z);
-	                this.transform.GetChild(4).localPosition = new Vector3(this.transform.GetChild(4).localPosition.x, -0.5f, this.transform.GetChild(4).localPosition.z);
-	                this.transform.GetChild(5).localPosition = new Vector3(this.transform.GetChild(5).localPosition.x, -0.5f, this.transform.GetChild(5).localPosition.z);
-	                this.transform.GetChild(6).localPosition = new Vector3(this.transform.GetChild(6).localPosition.x, -0.5f, this.transform.GetChild(6).localPosition.z);
+                    c1.localRotation = Quaternion.Euler(180, 0, 0);
+                    shift = -0.5f;
 	            }
-	
-	            if (Camera.main.transform.position.z > this.transform.position.z)
+                c3.localPosition = new Vector3(c3.localPosition.x, shift, c3.localPosition.z);
+                c4.localPosition = new Vector3(c4.localPosition.x, shift, c4.localPosition.z);
+                c5.localPosition = new Vector3(c5.localPosition.x, shift, c5.localPosition.z);
+                c6.localPosition = new Vector3(c6.localPosition.x, shift, c6.localPosition.z);
+
+                if (camPos.z > this.transform.position.z)
 	            {
-	                this.transform.GetChild(2).rotation = Quaternion.Euler(0, 0, 0);
-	                this.transform.GetChild(5).localPosition = new Vector3(this.transform.GetChild(5).localPosition.x, this.transform.GetChild(5).localPosition.y, 0.5f);
-	                this.transform.GetChild(6).localPosition = new Vector3(this.transform.GetChild(6).localPosition.x, this.transform.GetChild(6).localPosition.y, 0.5f);
-	                this.transform.GetChild(7).localPosition = new Vector3(this.transform.GetChild(7).localPosition.x, this.transform.GetChild(7).localPosition.y, 0.5f);
-	                this.transform.GetChild(8).localPosition = new Vector3(this.transform.GetChild(8).localPosition.x, this.transform.GetChild(8).localPosition.y, 0.5f);
-	            }
-	            else
+                    c2.localRotation = Quaternion.Euler(0, 0, 0);
+                    shift = 0.5f;
+                }
+                else
 	            {
-	                this.transform.GetChild(2).rotation = Quaternion.Euler(0, 180, 0);
-	                this.transform.GetChild(5).localPosition = new Vector3(this.transform.GetChild(5).localPosition.x, this.transform.GetChild(5).localPosition.y, -0.5f);
-	                this.transform.GetChild(6).localPosition = new Vector3(this.transform.GetChild(6).localPosition.x, this.transform.GetChild(6).localPosition.y, -0.5f);
-	                this.transform.GetChild(7).localPosition = new Vector3(this.transform.GetChild(7).localPosition.x, this.transform.GetChild(7).localPosition.y, -0.5f);
-	                this.transform.GetChild(8).localPosition = new Vector3(this.transform.GetChild(8).localPosition.x, this.transform.GetChild(8).localPosition.y, -0.5f);
-	            }
-	        }
+	                c2.localRotation = Quaternion.Euler(0, 180, 0);
+                    shift = -0.5f;
+                }
+                c5.localPosition = new Vector3(c5.localPosition.x, c5.localPosition.y, shift);
+                c6.localPosition = new Vector3(c6.localPosition.x, c6.localPosition.y, shift);
+                c7.localPosition = new Vector3(c7.localPosition.x, c7.localPosition.y, shift);
+                c8.localPosition = new Vector3(c8.localPosition.x, c8.localPosition.y, shift);
+            }
 	    }
 }
 }
