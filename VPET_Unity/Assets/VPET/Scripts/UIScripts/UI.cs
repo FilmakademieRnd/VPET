@@ -252,12 +252,12 @@ namespace vpet
 
 #if USE_TANGO || USE_ARKIT
                 // Show Tracking Scale UI objects
-                GameObject trackingScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_slider");                
+                GameObject trackingScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_slider");                
                 // trackingScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
-                GameObject trackingScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_label");
+                GameObject trackingScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_label");
                 //trackingScaleLabelUI.transform.localPosition = new Vector3(-105.0f, 530.0f, 0.0f);
                 //GameObject startButton = GameObject.Find("GUI/Canvas/ConfigWidget/Start_button");
-                GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value");
+                GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_Value");
                 sliderValueText.gameObject.SetActive(true);
                 trackingScaleLabelUI.gameObject.SetActive(true);
                 trackingScaleSliderUI.gameObject.SetActive(true);

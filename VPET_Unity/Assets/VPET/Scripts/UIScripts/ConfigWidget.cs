@@ -206,7 +206,7 @@ namespace vpet
 
 
 			// ambient intensity
-			childWidget = this.transform.Find("Ambient_slider");
+			childWidget = this.transform.Find("AI_Slider").Find("Ambient_slider");
 			if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Ambient_slider.", this.GetType()));
 			else
 			{
@@ -221,7 +221,7 @@ namespace vpet
 
 #if USE_TANGO || USE_ARKIT
             // tracking scale
-            childWidget = this.transform.Find("TrackingScale_slider");
+            childWidget = this.transform.Find("TS_Slider").Find("TrackingScale_slider");
             if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tracking_Scale.", this.GetType()));
             else
             {
@@ -291,7 +291,7 @@ namespace vpet
 			if ( ambientIntensitySlider )
 			{
 				ambientIntensitySlider.value = ambientLight;
-                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/AI_SliderValue").GetComponent<Text>();
+                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/AI_Slider/AI_SliderValue").GetComponent<Text>();
                 sliderValueText.text = ambientLight.ToString("f1");
                 ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
@@ -301,7 +301,7 @@ namespace vpet
             if (trackingScaleSlider)
             {
                 trackingScaleSlider.value = trackingScale;
-                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value").GetComponent<Text>();            
+                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_Value").GetComponent<Text>();            
                 sliderValueText.text = trackingScale.ToString("f1");
             }
 #endif
@@ -400,7 +400,7 @@ namespace vpet
         private void OnAmbientChanged( float v )
 		{
 			ambientLight = v;
-            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/AI_SliderValue").GetComponent<Text>();
+            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/AI_Slider/AI_SliderValue").GetComponent<Text>();
             sliderValueText.text = v.ToString("n1");
             AmbientChangedEvent.Invoke( v );
 		}
@@ -409,12 +409,12 @@ namespace vpet
         private void OnTrackingScaleChanged( float v )
         {
             trackingScale = v;            
-            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TrackingScale_Value").GetComponent<Text>();            
+            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_Value").GetComponent<Text>();            
             sliderValueText.text = v.ToString("n1");
             TrackingScaleChangedEvent.Invoke(v);
         }
 #endif
 
     }
-		
+
 }
