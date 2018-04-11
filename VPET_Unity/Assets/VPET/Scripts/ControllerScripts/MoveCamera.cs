@@ -440,8 +440,24 @@ namespace vpet
         public void resetCameraOffset()
         {
             rotationOffset = Quaternion.identity;
-            cameraParent.position = newPosition;
+			cameraParent.position = newPosition;
         }
+
+		public void globalCameraReset()
+		{
+			lastPosition = Vector3.zero;
+			rotationOffset = Quaternion.identity;
+			rotationFirst = Quaternion.identity;
+			positionOffset = Vector3.zero;
+			positionFirst = Vector3.zero;
+			oldPosition = Vector3.zero;
+			oldRotation = Quaternion.identity;
+			newPosition = Vector3.zero;
+			newRotation = Quaternion.identity;
+
+			GameObject scene = GameObject.Find("Scene");
+			scene.transform.position = Vector3.zero;
+		}
 
         //!
         //! initalize a smooth translation of the camera to a given point

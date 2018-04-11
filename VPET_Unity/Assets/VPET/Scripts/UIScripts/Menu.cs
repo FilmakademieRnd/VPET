@@ -149,6 +149,7 @@ namespace vpet
 			}
 			buttons.Clear();
 			layoutDict.Clear();
+            addLayout(layouts.DEFAULT);
 			currentLayout = layouts.DEFAULT;
 			activeButton = null;
 		}
@@ -292,7 +293,7 @@ namespace vpet
 	    //!
 	    public void show()
 	    {
-            // print("Show " + gameObject.name);
+            // print("Show " + gameObject.name + " with layout " + currentLayout);
 
             foreach (GameObject g in ButtonsActive())
             {
