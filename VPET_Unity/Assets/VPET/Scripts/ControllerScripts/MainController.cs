@@ -460,37 +460,39 @@ namespace vpet
             serverAdapter.initServerAdapterTransfer();
 		}
 
-		//!
-		//! hide all AR related widgets like ARPlanes and the anchor
-		//!
-		public void hideARWidgets()
-		{
-			#if USE_ARKIT
-			GameObject arPlanes = GameObject.Find("ARPlanes");
-			if (arPlanes) {
-			GameObject.Destroy(arPlanes.GetComponent<ARPlane> ());
-			}
+        //!
+        //! hide all AR related widgets like ARPlanes and the anchor
+        //!
+        public void hideARWidgets()
+        {
+#if USE_ARKIT
+            GameObject arPlanes = GameObject.Find("ARPlanes");
+            if (arPlanes)
+            {
+                GameObject.Destroy(arPlanes.GetComponent<ARPlane>());
+            }
 
-			// disable anchor visualisation
-			if (m_anchorModifier) {
-			m_anchorModifier.SetActive(false);
-			GameObject.Destroy(m_anchorModifier);
-			m_anchorModifier = null;
-			}
+            // disable anchor visualisation
+            if (m_anchorModifier)
+            {
+                m_anchorModifier.SetActive(false);
+                GameObject.Destroy(m_anchorModifier);
+                m_anchorModifier = null;
+            }
 
-			GameObject root = GameObject.Find("Scene");
-			if (root)
-			{
-			GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
-			}
-			#endif
-		}
-		
-	    //!
-	    //! Handle after the scene has been transfered and loaded into the engine
-	    //! @param widget     source widget
-	    //!
-	    public void sceneLoadCompleted()
+            GameObject root = GameObject.Find("Scene");
+            if (root)
+            {
+                GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
+            }
+#endif
+        }
+
+        //!
+        //! Handle after the scene has been transfered and loaded into the engine
+        //! @param widget     source widget
+        //!
+        public void sceneLoadCompleted()
 	    {
 			ui.hideProgressWidget();
 			// call joystick adapter to init selection lists            
