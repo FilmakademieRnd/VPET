@@ -505,7 +505,6 @@ namespace vpet
             RenderSettings.ambientLight = new Color(v, v, v, 1f);
 		}
 
-
         public void ToggleArMode(bool active)
         {
 			arMode = active;
@@ -516,6 +515,9 @@ namespace vpet
 			GameObject arKit = GameObject.Find("ARKit");
 			GameObject helper = GameObject.Find("SceneHelpers");
 			TouchInput input = inputAdapter.GetComponent<TouchInput>();
+			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
+			GameObject rootScene = SceneLoader.scnRoot;
+
 
 			if (m_anchorPrefab == null)
 				m_anchorPrefab = Resources.Load ("VPET/Prefabs/AnchorModifier", typeof(GameObject)) as GameObject;
@@ -536,7 +538,13 @@ namespace vpet
                 tangoArScreen.enabled = true;
 #elif USE_ARKIT
 				// reset camera
+				cameraAdapter.globalCameraReset();
 				resetCameraOffset();
+				Camera.main.transform.position = Vector3.zero;
+				Camera.main.transform.rotation = Quaternion.identity;
+				Camera.main.fieldOfView = 60;
+				Camera.main.nearClipPlane = 0.1f;
+				Camera.main.farClipPlane = 100000;
 				// enable video background
 				ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
                 if (arkitScreen == null) 
@@ -574,6 +582,10 @@ namespace vpet
 						m_anchorModifier.transform.SetParent(helper.transform);
 				}
 				ui.hideConfigWidget();
+
+				//hide scene while placing AR anchor
+				rootScene.SetActive(false);
+				arConfigWidget.SetActive(true);
 #endif
             }
             else

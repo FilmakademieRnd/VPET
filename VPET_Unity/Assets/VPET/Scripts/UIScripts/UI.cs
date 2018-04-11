@@ -412,9 +412,18 @@ namespace vpet
             // splashWidget.Hide();
         }
 
+		public void acceptARConfig()
+		{
+			drawConfigWidget ();
+		}
 
         public ConfigWidget drawConfigWidget()
 	    {
+			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
+			GameObject rootScene = SceneLoader.scnRoot;
+			arConfigWidget.SetActive(false);
+			rootScene.SetActive(true);
+
 			mainController.hideARWidgets();
             // get radial menu
             // get ProgressWidget

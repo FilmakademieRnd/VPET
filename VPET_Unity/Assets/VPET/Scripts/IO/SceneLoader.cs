@@ -51,7 +51,7 @@ namespace vpet
 		public static List<GameObject> SelectableLights = new List<GameObject>();														  
 	    public static List<GameObject> SceneCameraList = new List<GameObject>();
 
-        private GameObject scnRoot;												
+		public static GameObject scnRoot;												
 
         private List<GameObject> geometryPassiveList = new List<GameObject>();
         private SceneDataHandler sceneDataHandler;
