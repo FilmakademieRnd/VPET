@@ -47,9 +47,9 @@ namespace vpet
 	        //position modifiers if neccessary
 	        if (currentSelection)
 	        {
-                Vector3 modifierScele = getModifierScale();
+                Vector3 modifierScale = getModifierScale();
                 if (lineRenderer)
-                    lineRenderer.widthMultiplier = modifierScele.magnitude / 100f;
+                    lineRenderer.widthMultiplier = modifierScale.magnitude / 100f;
 
                 if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
 	            {
@@ -57,20 +57,20 @@ namespace vpet
                     //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
                     translateModifier.transform.rotation = currentSelection.rotation;
 
-                    translateModifier.transform.localScale = modifierScele;
+                    translateModifier.transform.localScale = modifierScale;
                     translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 	            }
 	            else if (activeMode == Mode.rotationMode)
 	            {
 	                rotationModifier.transform.position = currentSelection.position;
                     rotationModifier.transform.rotation = currentSelection.rotation;
-                    rotationModifier.transform.localScale = modifierScele;
+                    rotationModifier.transform.localScale = modifierScale;
 	            }
 	            else if (activeMode == Mode.scaleMode)
 	            {
 	                scaleModifier.transform.position = currentSelection.position;
 	                scaleModifier.transform.rotation = currentSelection.rotation;
-	                scaleModifier.transform.localScale = modifierScele;
+	                scaleModifier.transform.localScale = modifierScale;
 	            }
 	        }
 

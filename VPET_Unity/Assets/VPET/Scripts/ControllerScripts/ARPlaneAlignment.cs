@@ -28,6 +28,7 @@ https://opensource.org/licenses/MIT
 #if USE_ARKIT
 using System;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using vpet;
 
 namespace UnityEngine.XR.iOS
@@ -39,6 +40,12 @@ namespace UnityEngine.XR.iOS
 		public LayerMask collisionLayer = 22;  //ARKitPlane layer
 		private Vector3 m_initVector;
 		private Quaternion m_initRotation = Quaternion.identity;
+        private GameObject m_arModifier;
+
+        private void Start()
+        {
+            m_arModifier = GameObject.Find("Scene/Helpers/ARModifier");
+        }
 
         bool HitTestWithResultType (ARPoint point, ARHitTestResultType resultTypes)
         {
@@ -46,7 +53,15 @@ namespace UnityEngine.XR.iOS
             if (hitResults.Count > 0) {
                 foreach (var hitResult in hitResults) {
 					m_HitTransform.position = UnityARMatrixOps.GetPosition (hitResult.worldTransform) * VPETSettings.Instance.trackingScale;
-					if (m_initRotation == Quaternion.identity) {
+                    if (m_arModifier)
+                    {
+                        if (m_arModifier.activeSelf)
+                        {
+                            Vector3 scale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, m_HitTransform.position) / 15) * (Camera.main.fieldOfView / 30) * 2.0f;
+                            m_arModifier.transform.localScale = scale;
+                        }
+                    }
+                    if (m_initRotation == Quaternion.identity) {
 						m_HitTransform.rotation = UnityARMatrixOps.GetRotation (hitResult.worldTransform);
 						m_initRotation = m_HitTransform.rotation;
 					}
@@ -76,8 +91,22 @@ namespace UnityEngine.XR.iOS
 #else
 			if (Input.touchCount > 0 && m_HitTransform != null)
 			{
+                if (m_arModifier)
+                {
+                    if (!m_arModifier.activeSelf)
+                        m_arModifier.SetActive(true);
+                }
 				var touch = Input.GetTouch(0);
 				Ray ray = Camera.main.ScreenPointToRay (touch.position);
+				foreach (Touch inputTouch in Input.touches)
+				{
+					int pointerID = inputTouch.fingerId;
+					if (EventSystem.current.IsPointerOverGameObject(pointerID))
+					{
+						// at least on touch is over a canvas UI
+						return;
+					}
+				}
 				if (Input.touchCount > 1) 
 				{
 					var touch1 = Input.GetTouch(1);
@@ -124,6 +153,7 @@ namespace UnityEngine.XR.iOS
 	                    }
 				}
 			}
+
 #endif
 
 		}

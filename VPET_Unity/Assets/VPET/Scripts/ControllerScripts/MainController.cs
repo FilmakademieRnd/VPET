@@ -579,10 +579,13 @@ namespace vpet
 				{
 					m_anchorModifier = GameObject.Instantiate(m_anchorPrefab);
 					m_anchorModifier.transform.position = new Vector3(0f,0f,0f);
-					m_anchorModifier.transform.localScale = new Vector3(1f,1f,1f) * VPETSettings.Instance.trackingScale;
+					//m_anchorModifier.transform.localScale = new Vector3(1f,1f,1f) * VPETSettings.Instance.trackingScale;
+					m_anchorModifier.SetActive(false);
+					m_anchorModifier.name = "ARModifier";
 					if (helper)
 						m_anchorModifier.transform.SetParent(helper.transform);
 				}
+
 				ui.hideConfigWidget();
 
 				//hide scene while placing AR anchor
@@ -690,6 +693,7 @@ namespace vpet
 #if USE_ARKIT
             if (m_anchorModifier)
 				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
+			//Camera.main.transform.position /= v;
 #endif
 			VPETSettings.Instance.trackingScale = v;
 		}
