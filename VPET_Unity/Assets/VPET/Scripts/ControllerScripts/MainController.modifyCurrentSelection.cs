@@ -104,9 +104,16 @@ namespace vpet
                 Vector3 finalTranslation =  initRotation * Vector3.Scale(inverseInitRotation * (end-begin), axisLocker) + initPosition;
                 SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
 
-                lineRenderer.positionCount = 2;
-                lineRenderer.SetPosition(0, currentSelection.position);
-                lineRenderer.SetPosition(1, currentSelection.position + initRotation * axisLocker * 10000);
+                if (axisLocker != new Vector3(0, 1, 1) &&
+                    axisLocker != new Vector3(1, 0, 1) &&
+                    axisLocker != new Vector3(1, 1, 0))
+                {
+                    lineRenderer.positionCount = 2;
+                    lineRenderer.SetPosition(0, currentSelection.position);
+                    lineRenderer.SetPosition(1, currentSelection.position + initRotation * axisLocker * 10000);
+                }
+                else
+                    lineRenderer.positionCount = 0;
 
                 if (sceneObject)
                     sceneObject.translate(finalTranslation);

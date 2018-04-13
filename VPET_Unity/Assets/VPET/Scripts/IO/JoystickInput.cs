@@ -195,7 +195,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.callDeselect();
+                    mainController.handleSelection();
                     mainController.buttonTranslationClicked(false);
                 }
 
@@ -238,7 +238,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.callDeselect();
+                    mainController.handleSelection();
                     mainController.buttonRotationClicked(false);
                 }
             }
@@ -280,7 +280,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.callDeselect();
+                    mainController.handleSelection();
                     mainController.buttonScaleClicked(false);
                 }
 
@@ -361,7 +361,7 @@ namespace vpet
                     match = EditableObjects.FindIndex(x => x == currselTransform);
                     if (match == -1)
                     {
-                        mainController.callDeselect();
+                        mainController.handleSelection();
                         mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
                     }
                 }
@@ -380,7 +380,7 @@ namespace vpet
                     if (match == 0 && DPADdirection == -1)
                         match = EditableObjects.Count;
                     // all other cases
-                    mainController.callDeselect();
+                    mainController.handleSelection();
                     mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
                 }
 			}
