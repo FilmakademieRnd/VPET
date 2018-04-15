@@ -312,7 +312,7 @@ namespace vpet
                 }
             }
             // cycle through edit modes
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
             else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
 			else if (Input.GetButtonDown("L2"))
