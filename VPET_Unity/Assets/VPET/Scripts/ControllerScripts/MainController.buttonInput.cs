@@ -196,16 +196,16 @@ namespace vpet
         //!
         //! receiving function for GUI, special case for moving the camera
         //!
-        public void togglePointToMoveCamera()
+        public void togglePointToMoveCamera(bool active)
         {
-            cameraPointMove = !cameraPointMove;
-            if (activeMode == Mode.pointToMoveMode)
+            cameraPointMove = active;
+            if (active)
             {
-                activeMode = Mode.idle;
+                activeMode = Mode.pointToMoveMode;
             }
             else
             {
-                activeMode = Mode.pointToMoveMode;
+                activeMode = Mode.idle;
             }
         }
 

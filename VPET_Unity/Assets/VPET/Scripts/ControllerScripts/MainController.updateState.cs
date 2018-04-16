@@ -79,7 +79,8 @@ namespace vpet
             {
                 print(oldState.ToString() + " >>>>> " + activeMode);
 
-                if (currentSelection == null)
+                // TODO: review (and remove) this statement
+                if (currentSelection == null && !cameraPointMove)
                     activeMode = Mode.idle;
 
                 if (hasUpdatedProjectionMatrix)

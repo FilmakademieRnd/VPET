@@ -169,6 +169,7 @@ namespace vpet
             {
                 buttonClickMoveCam = Elements.MenuButtonToggle();
                 buttonClickMoveCam.AddAction(EditMode_TranslateClickToMove_sel, EditMode_TranslateClickToMove_nrm, call: () => pointToMoveCamera(buttonClickMoveCam)); // 
+                UI.OnUIChanged.AddListener(() => { buttonClickMoveCam.Toggled = (mainController.ActiveMode == MainController.Mode.pointToMoveMode); } );  // register for ui changes 
             }
             else
             {

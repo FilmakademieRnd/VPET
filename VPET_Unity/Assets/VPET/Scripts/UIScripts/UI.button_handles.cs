@@ -59,6 +59,13 @@ namespace vpet
 	    {
             if (layout == layouts.EDIT || layout == layouts.ANIMATION )
             {
+                // switch of point to move camera
+                // to generic switch off all tools which might be active through secondary menu
+                if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
+                {
+                    mainController.togglePointToMoveCamera(false);
+                }
+
                 layoutUI = layout;
                 secondaryMenu.switchLayout(layout);
                 if (mainController.getCurrentSelection() != null)
@@ -156,7 +163,7 @@ namespace vpet
 
         private void pointToMoveCamera(IMenuButton button)
         {
-            mainController.togglePointToMoveCamera();
+            mainController.togglePointToMoveCamera(button.Toggled);
         }
 
         private void cameraFov(IMenuButton button)
