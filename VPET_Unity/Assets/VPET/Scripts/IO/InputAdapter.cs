@@ -43,6 +43,11 @@ namespace vpet
 		//! Cached reference to main controller.
 		//!
 		private MainController mainController;
+
+        //!
+        //! Cached reference to main controller.
+        //!
+        private HelpScreen helpMenu;
 	
 		//!
 		//! null Vector alternative
@@ -99,7 +104,7 @@ namespace vpet
 		{
 	
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
-
+            helpMenu = GameObject.Find("GUI/Canvas/HelpScreen").GetComponent<HelpScreen>();
 
             // declare touch input
             // #if (UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_WIN) && !UNITY_EDITOR
@@ -135,6 +140,11 @@ namespace vpet
 
 			pointerDown = true;
 	
+            if (mainController.helpActive)
+            {
+                helpMenu.initPos(pos);
+                return;
+            }
 			if (!pointerOnGUI())
 			{
 				//pointToMove active
@@ -198,6 +208,12 @@ namespace vpet
 	
 			pointerDown = false;
 	
+            if (mainController.helpActive)
+            {
+                helpMenu.startSnap();
+                return;
+            }
+
 			if (mainController.ActiveMode == MainController.Mode.lightSettingsMode && editingLight)
 			{
 				if (!mainController.liveMode)
@@ -269,7 +285,12 @@ namespace vpet
 		//! single pointer down & moving (drag) (called by Mouse or Touch Input)
 		//! @param      pos     screen position of pointer
 		//!
-		public void singlePointerDrag(Vector3 pos) {	
+		public void singlePointerDrag(Vector3 pos) {
+            if(mainController.helpActive)
+            {
+                helpMenu.moveMenu(pos);
+                return;
+            }
 			if (!pointerOnGUI())
 			{
                 if (!pause)

@@ -76,6 +76,11 @@ namespace vpet
         private SubMenu parameterMenu;
 
         //!
+        //!
+        //!
+        private GameObject helpContext;
+
+        //!
         //! Cached reference to the main controller.
         //!
         private MainController mainController;
@@ -222,6 +227,8 @@ namespace vpet
 	        GameObject centerMenuObj = new GameObject("centerMenuObject");
 	        centerMenuObj.transform.SetParent(this.transform, false);
 	        centerMenu = centerMenuObj.AddComponent<CenterMenu>();
+
+            helpContext = GameObject.Find("GUI/Canvas/HelpScreen");
 
             //initalize paramter Menu
             GameObject paramterMenuObj = new GameObject("paramterMenuObj");

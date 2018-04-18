@@ -113,6 +113,8 @@ namespace vpet
         private Sprite GeneralMenu_Redo_sel;
         private Sprite GeneralMenu_Settings_nrm;
         private Sprite GeneralMenu_Settings_sel;
+        private Sprite GeneralMenu_Help_nrm;
+        private Sprite GeneralMenu_Help_sel;
         private Sprite GeneralMenu_Undo_nrm;
         private Sprite GeneralMenu_Undo_sel;
         private Sprite ModeMenu_AnimationMode_nrm;

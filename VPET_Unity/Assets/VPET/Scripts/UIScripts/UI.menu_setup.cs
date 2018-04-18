@@ -61,7 +61,12 @@ namespace vpet
             buttonConfig.AddAction(GeneralMenu_Settings_sel, GeneralMenu_Settings_nrm, () => hideConfigWidget()); // untoggle action
             UI.OnUIChanged.AddListener(() => { buttonConfig.Toggled = (configWidget.gameObject.activeSelf == true); } );  // register for ui changes 
             mainMenu.addButton( buttonConfig);
-			mainMenu.addButtonToLayout( buttonConfig, layouts.SPLASH);
+            mainMenu.addButtonToLayout(buttonConfig, layouts.SPLASH);
+            //help
+            IMenuButton buttonHelp = Elements.MenuButton();
+            buttonHelp.AddAction(GeneralMenu_Help_sel, GeneralMenu_Help_nrm, call: () => openHelp()); // switch off
+            mainMenu.addButton(buttonHelp);
+            mainMenu.addButtonToLayout(buttonHelp, layouts.SPLASH);
 			// quit
 			IMenuButton buttonQuit = Elements.MenuButton();
 			buttonQuit.AddAction(GeneralMenu_OnOff_sel, GeneralMenu_OnOff_nrm, call: () => quitApplication() ); // switch off

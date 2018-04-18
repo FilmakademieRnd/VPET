@@ -112,6 +112,22 @@ namespace vpet
 	        // TODO: clean quit through main controller
 	        Application.Quit();
 	    }
+
+        private void openHelp()
+        {
+            mainController.helpActive = true;
+            helpContext.SetActive(true);
+            mainMenu.gameObject.SetActive(false);
+            mainMenuButton.SetActive(false);
+        }
+
+        public void closeHelp()
+        {
+            mainController.helpActive = false;
+            helpContext.SetActive(false);
+            mainMenu.gameObject.SetActive(true);
+            mainMenuButton.SetActive(true);
+        }
 	
 	
 	    // Secondary
