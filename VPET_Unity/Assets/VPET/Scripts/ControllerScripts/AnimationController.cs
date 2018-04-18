@@ -248,7 +248,7 @@ namespace vpet
 	        lineRenderer = gameObject.AddComponent<LineRenderer>();
 	        lineRenderer.material = Resources.Load<Material>("VPET/Materials/LineRendererMaterial");
 	        lineRenderer.SetColors(lineColor, lineColor);
-	        lineRenderer.SetWidth(0.02f, 0.02f);
+            lineRenderer.SetWidth(2f*VPETSettings.Instance.sceneScale, 2f*VPETSettings.Instance.sceneScale);
 	        lineRenderer.useWorldSpace = true;
 	        lineRenderer.SetVertexCount(0);
 	    }
@@ -259,7 +259,6 @@ namespace vpet
 	        timeLine.StartTime = timeLineStartInit;
 	        timeLine.EndTime = currentAnimationTime = timeLineEndInit;
 	    }
-	
 	
 	    //!
 	    //! Update is called once per frame

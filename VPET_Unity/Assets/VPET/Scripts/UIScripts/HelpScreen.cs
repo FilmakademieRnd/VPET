@@ -72,7 +72,7 @@ namespace vpet
                     targetDrag = new Vector3(Mathf.Floor(helpScreens.localPosition.x / 1750) * 1750, helpScreens.localPosition.y, 0);
                 }
                 if (targetDrag.x > 0) targetDrag = new Vector3(0, helpScreens.localPosition.y, 0);
-                if (targetDrag.x < -10500) targetDrag = new Vector3(-10500, helpScreens.localPosition.y, 0);
+                if (targetDrag.x < -12250) targetDrag = new Vector3(-12250, helpScreens.localPosition.y, 0);
                 smoothDragActive = true;
             }
         }
