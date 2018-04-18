@@ -40,6 +40,10 @@ namespace vpet
 {
     public partial class MainController : MonoBehaviour
     {
+        //!
+        //! is the help menu currently displayed
+        //!
+        public bool helpActive;
 
         //!
         //! are changes reported to server immediatelly (while dragging)
@@ -419,6 +423,7 @@ namespace vpet
         void Start()
         {
             activeMode = Mode.idle;
+            helpActive = false;
 
             //find & attach cached GameObjects
             ui = GameObject.Find("UI").GetComponent<UI>();
