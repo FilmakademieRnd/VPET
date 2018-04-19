@@ -289,7 +289,6 @@ namespace vpet
             else if (Input.GetButtonDown("R1") && !mainController.arMode)
             {
                 mainController.repositionCamera();
-                mainController.resetCameraOffset();
             }
             // disable tracking
 #if UNITY_EDITOR || UNITY_STANDALONE
