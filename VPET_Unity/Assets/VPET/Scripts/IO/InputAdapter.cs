@@ -286,7 +286,7 @@ namespace vpet
 		//! @param      pos     screen position of pointer
 		//!
 		public void singlePointerDrag(Vector3 pos) {
-            if(mainController.helpActive)
+            if(mainController.helpActive && pos.x < 4000f) //Fix for iPad (TaskManager swipe up will generate huge pos value)
             {
                 helpMenu.moveMenu(pos);
                 return;

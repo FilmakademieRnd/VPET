@@ -33,7 +33,7 @@ namespace vpet
             if (smoothDragActive)
             {
                 helpScreens.localPosition = Vector3.Lerp(helpScreens.localPosition, targetDrag, Time.deltaTime * dragDamping);
-                if (Vector3.Distance(helpScreens.localPosition, targetDrag) < 0.2f)
+                if (Mathf.Abs(helpScreens.localPosition.x-targetDrag.x) < 0.2f)
                 {
                     helpScreens.localPosition = targetDrag;
                     smoothDragActive = false;

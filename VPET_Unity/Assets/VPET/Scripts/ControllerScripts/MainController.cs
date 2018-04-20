@@ -43,7 +43,7 @@ namespace vpet
 
 	public partial class MainController : MonoBehaviour
     {
-		public bool arMode = false;
+		public bool arMode;
 
 #if USE_ARKIT
 		private GameObject m_anchorModifier = null;
