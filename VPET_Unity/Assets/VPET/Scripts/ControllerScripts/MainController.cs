@@ -585,9 +585,7 @@ namespace vpet
 					if (helper)
 						m_anchorModifier.transform.SetParent(helper.transform);
 				}
-
-				ui.hideConfigWidget();
-
+                ui.hideConfigWidget();
 				//hide scene while placing AR anchor
 				rootScene.SetActive(false);
 				arConfigWidget.SetActive(true);

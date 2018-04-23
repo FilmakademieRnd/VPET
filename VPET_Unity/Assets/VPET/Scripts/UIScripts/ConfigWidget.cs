@@ -60,7 +60,7 @@ namespace vpet
 	    //! Do we load scene from dump file
 	    //!
 	    [HideInInspector]
-	    public bool doLoadFromResource = true;
+	    public bool doLoadFromResource;
 	    //!
 	    //! Dump scene file name
 	    //!
@@ -103,6 +103,7 @@ namespace vpet
 
 	    void Awake()
 		{
+            doLoadFromResource = true;
             // Submit button
             Transform childWidget = this.transform.Find("Start_button");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: Start_button.", this.GetType()));
@@ -344,10 +345,10 @@ namespace vpet
 #endif
 
             // Checkbox Load Local
-            if (loadCacheToggle != null)
-            {
-                doLoadFromResource = loadCacheToggle.isOn;
-            }
+            //if (loadCacheToggle != null)
+            //{
+            //    doLoadFromResource = loadCacheToggle.isOn;
+            //}
 	
 	    }
 	

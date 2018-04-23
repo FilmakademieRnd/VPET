@@ -46,7 +46,7 @@ namespace vpet
         //! Do we load scene from dump file
         //!
         [Config]
-        public bool doLoadFromResource = false;
+        public bool doLoadFromResource = true;
         //!
         //! Dump scene file name
         //!

@@ -145,7 +145,10 @@ namespace vpet
 		{
 			for (int i=0; i<buttons.Count; i++ )
 			{
-				GameObject.Destroy( buttons[i] );
+                if (buttons[i].name != "TimeLine") // Hack to let TimeLine in Scene
+                    GameObject.Destroy(buttons[i]);
+                else
+                    buttons[i].SetActive(false);
 			}
 			buttons.Clear();
 			layoutDict.Clear();
@@ -282,7 +285,7 @@ namespace vpet
 	            // hide all buttons
 				foreach (GameObject g in Buttons())
 				{
-					g.SetActive(false);
+					    g.SetActive(false);
 				}	       
 
 			}
