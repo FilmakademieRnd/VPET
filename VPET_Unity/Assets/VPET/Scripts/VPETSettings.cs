@@ -114,7 +114,7 @@ namespace vpet
 	    private VPETSettings()
 		{
     		GameObject canvas = GameObject.Find("GUI/Canvas");
-            if (canvas == null) Debug.LogError(string.Format("{0}: Cant find Canvas.", this.GetType()));
+            if (canvas == null) Debug.Log(string.Format("{0}: Cant find Canvas.", this.GetType()));
             else
             {
                 CanvasScaler canvasScaler = canvas.GetComponent<CanvasScaler>();

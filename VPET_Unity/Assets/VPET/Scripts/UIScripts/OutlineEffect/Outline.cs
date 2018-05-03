@@ -47,9 +47,12 @@ public class Outline : MonoBehaviour
 
     void OnEnable()
     {
-        if (outlineEffect == null)
-            outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
-        outlineEffect.AddOutline(this);
+        if (Camera.main.transform.childCount > 0)
+        {
+            if (outlineEffect == null)
+                outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
+            outlineEffect.AddOutline(this);
+        }
     }
 
     void OnDisable()
