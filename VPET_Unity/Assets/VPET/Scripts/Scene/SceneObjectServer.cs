@@ -470,7 +470,8 @@ namespace vpet
 				{
 					// serverAdapter.sendTranslation(target, target.position, !selected);
 					//serverAdapter.sendTranslation(target, !selected );
-							serverAdapter.SendObjectUpdate(target, !selected );
+                    if(serverAdapter)
+						serverAdapter.SendObjectUpdate(target, !selected );
 
 					//serverAdapter.sendTransform( target, !selected );
 
