@@ -121,6 +121,10 @@ namespace vpet
 			IMenuButton buttonNcam = Elements.MenuButtonToggle();
 			buttonNcam.AddAction(PerspectiveMenu_PrincipalCam_sel, PerspectiveMenu_PrincipalCam_nrm, call: () => ncamCamera() );  
 			secondaryMenu.addButton( buttonNcam, layouts.PERSPECTIVES);
+            // cam publish
+            IMenuButton buttonPubCam = Elements.MenuButtonToggle();
+            buttonPubCam.AddAction(PerspectiveMenu_PubCam_sel, PerspectiveMenu_PubCam_nrm, call: () => pubCam());
+            secondaryMenu.addButton(buttonPubCam, layouts.PERSPECTIVES);
 			// predefined
 			IMenuButton buttonPre = Elements.MenuButton();
 			buttonPre.AddAction(PerspectiveMenu_External_sel, PerspectiveMenu_External_nrm, call: () => predefinedCamera() ); 

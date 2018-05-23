@@ -234,6 +234,14 @@ namespace vpet
 			}
 			*/
 		}
+
+        //!
+        //! turn on/off own camera position and rotation publishing
+        //!
+        public void togglePubCam()
+        {
+            serverAdapter.publishCam = !serverAdapter.publishCam;
+        }
 	
 	    //!
 	    //! toggle ignore rotation

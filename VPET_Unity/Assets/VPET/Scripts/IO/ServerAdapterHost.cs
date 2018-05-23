@@ -66,7 +66,7 @@ namespace vpet
 	    //!
 	    //! enable/disable receiving of ncam data
 	    //!
-		public bool receiveNcam = false;
+		public bool receiveNcam = true;
 	
 	    //!
 	    //! timeout for receiving messages (on seconds)
@@ -514,11 +514,19 @@ namespace vpet
                         case "r":
                             if (splitMessage.Length == 7)
                             {
-                                Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-                                Vector3 rot = quat.eulerAngles;
+                                if (splitMessage[0].StartsWith("client", StringComparison.CurrentCulture))
+                                    Camera.main.transform.rotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                else
+                                {
+                                    Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                    Vector3 rot = quat.eulerAngles;
 
-                                if (receiveNcam) Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
-                                else camObject.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
+                                    if (receiveNcam)
+                                    {
+                                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
+                                    }
+                                    else camObject.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
+                                }
                             }
                             break;
                         case "f":

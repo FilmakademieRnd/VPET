@@ -158,6 +158,12 @@ namespace vpet
 			mainController.toggleNcam();
 		}
 
+        private void pubCam()
+        {
+            secondaryMenu.reset();
+            mainController.togglePubCam();
+        }
+
         private void editWidget3D(IMenuButton button)
         {
             mainController.buttonTranslationClicked(button.Toggled);

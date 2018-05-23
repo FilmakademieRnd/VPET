@@ -66,6 +66,12 @@ namespace vpet
 	    //! enable/disable receiving of ncam data
 	    //!
 		public bool receiveNcam = false;
+
+        [HideInInspector]
+        //!
+        //! enable/disable publising the own camera position/rotation/fov (like ncam)
+        //!
+        public bool publishCam = false;
 	
 	    //!
 	    //! timeout for receiving messages (on seconds)
@@ -229,7 +235,9 @@ namespace vpet
 	    void Start ()
 	    {
             id = Network.player.ipAddress.Split('.')[3];
-            // id = "XXX";
+
+            //register cam sending function
+            InvokeRepeating("sendCam", 0.0f, 0.04f);
 
             if (GameObject.Find("MainController") != null )
     	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
@@ -348,7 +356,6 @@ namespace vpet
 	            }
 	            receiveMessageQueue.RemoveRange(0, count);
 	        }
-	
 	        if (camObject!=null && camObject.GetComponent<Renderer>().enabled && (Time.time-lastNcamReceivedTime) > 10)
 	        {
 	            camObject.GetComponent<Renderer>().enabled = false;
@@ -358,6 +365,24 @@ namespace vpet
 
 		}
 
+        //!
+        //! sends current main camera position, called every x milliseconds
+        //!
+        void sendCam()
+        {
+            if (publishCam)
+            {
+                string msg = "client " + id + "|" + "r|cam|" + Camera.main.transform.rotation.x + "|" +
+                                                               Camera.main.transform.rotation.y + "|" +
+                                                               Camera.main.transform.rotation.z + "|" +
+                                                               Camera.main.transform.rotation.w;
+                SendObjectUpdate<ObjectSenderBasic>(msg);
+                msg = "client " + id + "|" + "t|cam|" + Camera.main.transform.position.x + "|" +
+                                                        Camera.main.transform.position.y + "|" +
+                                                        Camera.main.transform.position.z;
+                SendObjectUpdate<ObjectSenderBasic>(msg);
+            }
+        }
 
 		//!
 		//!

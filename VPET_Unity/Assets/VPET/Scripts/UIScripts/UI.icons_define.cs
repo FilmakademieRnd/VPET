@@ -143,6 +143,8 @@ namespace vpet
         private Sprite PerspectiveMenu_OrthographicTop_sel;
         private Sprite PerspectiveMenu_PrincipalCam_nrm;
         private Sprite PerspectiveMenu_PrincipalCam_sel;
+        private Sprite PerspectiveMenu_PubCam_nrm;
+        private Sprite PerspectiveMenu_PubCam_sel;
         private Sprite PerspectiveMenu_Snapshot_nrm;
         private Sprite PerspectiveMenu_Snapshot_sel;
         private Sprite PerspectiveMenu_Tango_nrm;
