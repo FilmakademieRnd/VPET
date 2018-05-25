@@ -60,6 +60,8 @@ namespace vpet
 
         private Image image = null;
 
+        public bool UseMaterial = false;
+
 
         private bool isActive = false;
         public bool IsActive
@@ -88,7 +90,7 @@ namespace vpet
 
         public void OnDrag(PointerEventData data)
         {
-            //Debug.Log("ON DRAG delta: " + data.position + " rcet position " + image.rectTransform.position + " anchor min " + image.rectTransform.anchorMin + " size delt " + image.rectTransform.sizeDelta);
+            // Debug.Log("ON DRAG delta: " + data.position + " rcet position " + image.rectTransform.position + " anchor min " + image.rectTransform.anchorMin + " size delt " + image.rectTransform.sizeDelta);
 
             RectTransform imageTransform = image.rectTransform;
             float x = (data.position.x - imageTransform.position.x) / Screen.width * 10f;
@@ -104,7 +106,14 @@ namespace vpet
                 y /= radius + .05f;
             }
 
-            callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));
+            if (UseMaterial)
+            {
+                //callback(((Texture2D)image.material.GetTexture("_textureY")).GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));
+            }
+            else
+            {
+                callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));                
+            }
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -112,6 +121,7 @@ namespace vpet
             // Debug.Log("END DRAG");
             isActive = false;
         }
+
 
     }
 }

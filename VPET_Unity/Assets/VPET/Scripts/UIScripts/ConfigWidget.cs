@@ -38,6 +38,7 @@ namespace vpet
 
 #if USE_TANGO || USE_ARKIT
     public class TrackingScaleIntensityChangedEvent : UnityEvent<float> { }
+    public class ARColorChangedEvent: UnityEvent<Color> {}
 	public class ToggleARSwitchEvent : UnityEvent<bool> { }
 #endif
 
@@ -49,6 +50,11 @@ namespace vpet
 #if USE_TANGO || USE_ARKIT
 		public TrackingScaleIntensityChangedEvent TrackingScaleChangedEvent = new TrackingScaleIntensityChangedEvent();
 		public ToggleARSwitchEvent ToggleAREvent = new ToggleARSwitchEvent();
+		public TrackingScaleIntensityChangedEvent KeyDepthChangedEvent = new TrackingScaleIntensityChangedEvent();
+        public ARColorChangedEvent KeyColorChangedEvent = new ARColorChangedEvent();
+        public TrackingScaleIntensityChangedEvent KeyRadiusChangedEvent = new TrackingScaleIntensityChangedEvent();
+        public TrackingScaleIntensityChangedEvent KeyThresholdChangedEvent = new TrackingScaleIntensityChangedEvent();
+		public ToggleARSwitchEvent ToggleARKeyEvent = new ToggleARSwitchEvent();
 #endif
 
         //!
@@ -96,6 +102,12 @@ namespace vpet
         private Toggle gridToggle;
 
         private Toggle arToggle;
+
+        private Toggle keyToggle;
+
+        private InputField arDepthField;
+
+        private ColorWheel arColorWheel;
 
         private Toggle cmToggle;
 
@@ -184,6 +196,101 @@ namespace vpet
                 childWidget.gameObject.SetActive(false);
 #endif
             }
+
+            // ar key toggle
+            childWidget = this.transform.Find("ARKey_toggle");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKey_toggle.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                keyToggle = childWidget.GetComponent<Toggle>();
+                if (keyToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                else
+                {
+                    keyToggle.onValueChanged.AddListener(this.OnToggleArKey);
+                }
+
+#else
+                childWidget.gameObject.SetActive(false);
+#endif
+            }
+
+            // ar video color wheel
+            //childWidget =  GameObject.Find("GUI/Canvas/ARVideoPlane").transform;
+            childWidget = GameObject.Find("GUI/Canvas/ARKeyWidget/ARColorWheel").transform;
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ColorWheel.", this.GetType()));
+            //if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARVideoPlane.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                arColorWheel = childWidget.GetComponent<ColorWheel>();
+                if (arColorWheel == null) Debug.LogError(string.Format("{0}: Cant Component: ColorWheel.", this.GetType()));
+                else
+                {
+                    arColorWheel.Callback = this.OnKeyColorChanged;
+                }
+#endif
+            }
+
+            // ar video radius slider
+            childWidget = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyRadiusSlider/KeyRadius_Slider").transform;
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: KeyRadiusSlider.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                Slider _slider = childWidget.GetComponent<Slider>();
+                if (_slider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
+                else
+                {
+                    _slider.onValueChanged.AddListener( this.OnKeyRadiusChanged);
+                }
+#endif
+            }
+
+            // ar video threshold slider
+            childWidget = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyThresholdSlider/KeyThreshold_Slider").transform;
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: KeyThresholdSlider.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                Slider _slider = childWidget.GetComponent<Slider>();
+                if (_slider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
+                else
+                {
+                    _slider.onValueChanged.AddListener( this.OnKeyThresholdChanged);
+                }
+#endif
+            }
+
+
+            /* 
+            // AR depth field
+            childWidget = this.transform.Find("ARDepth_field");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARDepth_field.", this.GetType()));
+            else
+            {
+                arDepthField = childWidget.GetComponent<InputField>();
+                if (arDepthField == null) Debug.LogError(string.Format("{0}: Cant Component: Input Field.", this.GetType()));
+                else
+                {
+                    arDepthField.onValueChanged.AddListener(this.OnDepthChanged);
+
+                    // AR color wheel
+                    Transform colorWheelWidget = this.transform.Find("ARColorWheel");
+                    if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ColorWheel.", this.GetType()));
+                    else
+                    {
+                        arColorWheel = colorWheelWidget.GetComponent<ColorWheel>();
+                        if (arColorWheel == null) Debug.LogError(string.Format("{0}: Cant Component: Color Wheel.", this.GetType()));
+                        else
+                        {
+                            arColorWheel.Callback = this.OnKeyColorChanged;
+                        }
+                    }
+
+                }
+            }
+            */
 
             // Cache Load Local
             childWidget = this.transform.Find("LoadCache_toggle");
@@ -389,15 +496,81 @@ namespace vpet
 #if USE_TANGO || USE_ARKIT
         private void OnToggleAr( bool isOn )
         {
+            // show/hide ar key toggle
+            keyToggle.gameObject.SetActive(isOn);
+ 
+
             if (arToggle)
             {
                 //MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
                 //mainCtrl.ToggleArMode(isOn);
 				ToggleAREvent.Invoke (isOn);
 
+                // make sure state is correct to toggle button
+                OnToggleArKey(keyToggle.isOn);
             }
         }
+
+
+        private void OnToggleArKey( bool isOn )
+        {
+            // show/hide depth field and color wheel and pick color button
+            //arDepthField.gameObject.SetActive(isOn);
+            //arColorWheel.gameObject.SetActive(isOn);
+            transform.Find("ARKeyPick_button").gameObject.SetActive(isOn);
+            GameObject.Find("GUI/Canvas/ARVideoPlane").gameObject.SetActive(isOn);
+
+
+            // hide color pick button
+            if (!arToggle.isOn)
+            {
+                transform.Find("ARKeyPick_button").gameObject.SetActive(false);
+       			GameObject.Find("GUI/Canvas/ARVideoPlane").gameObject.SetActive(false);
+
+            }
+ 
+
+            if (keyToggle)
+            {
+				ToggleARKeyEvent.Invoke (isOn);
+            }
+        }
+
+        private void OnDepthChanged(string v)
+        {
+            try
+            {
+                float vFloat = float.Parse(v);
+                KeyDepthChangedEvent.Invoke(vFloat);            
+            }
+            catch (System.Exception)
+            {
+                
+                // throw;
+            }
+        }
+
+        private void OnKeyColorChanged(Color c)
+        {
+            KeyColorChangedEvent.Invoke(c);
+        }
+
+        private void OnKeyRadiusChanged(float v)
+        {
+            Text sliderValueText = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyRadiusSlider/KeyRadius_Value").GetComponent<Text>();
+            sliderValueText.text = v.ToString("n1");
+            KeyRadiusChangedEvent.Invoke(v);
+        }
+
+        private void OnKeyThresholdChanged(float v)
+        {
+            Text sliderValueText = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyThresholdSlider/KeyThreshold_Value").GetComponent<Text>();
+            sliderValueText.text = v.ToString("n1");
+            KeyThresholdChangedEvent.Invoke(v);
+        }
+
 #endif
+
         private void OnAmbientChanged( float v )
 		{
 			ambientLight = v;

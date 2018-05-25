@@ -272,6 +272,13 @@ namespace vpet
 				configWidget.TrackingScaleChangedEvent.AddListener(mainController.setTrackingScale);
 				configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
 				configWidget.ToggleAREvent.AddListener(mainController.ToggleArMode);
+				// ar key connects
+				configWidget.KeyDepthChangedEvent.AddListener(mainController.setARKeyDepth);
+				configWidget.KeyColorChangedEvent.AddListener(mainController.setARKeyColor);	
+				configWidget.KeyRadiusChangedEvent.AddListener(mainController.setARKeyRadius);	
+				configWidget.KeyThresholdChangedEvent.AddListener(mainController.setARKeyThreshold);	
+				configWidget.ToggleARKeyEvent.AddListener(mainController.ToggleARKeyMode);
+
 				// add other ar managers here or change a global variable like VPET.Settings.sceneScale!
 #endif
 
@@ -424,14 +431,29 @@ namespace vpet
 			drawConfigWidget ();
 		}
 
+		public void requestKeyConfig()
+		{
+			hideConfigWidget();
+			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
+			arKeyWidget.SetActive(true);			
+		}
+
+		public void acceptKeyConfig()
+		{
+			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
+			arKeyWidget.SetActive(false);
+			drawConfigWidget();
+		}
+
         public ConfigWidget drawConfigWidget()
 	    {
+			// TODO: next 5 lines should be in acceptARConfig !?!
 			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
 			GameObject rootScene = SceneLoader.scnRoot;
 			arConfigWidget.SetActive(false);
 			rootScene.SetActive(true);
-
 			mainController.hideARWidgets();
+
             // get radial menu
             // get ProgressWidget
             GameObject radialrefObject = GameObject.Find("GUI/Canvas/ProgressWidget");

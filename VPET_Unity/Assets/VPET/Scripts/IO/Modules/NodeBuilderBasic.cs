@@ -345,6 +345,7 @@ namespace vpet
             // add camera dummy mesh
             GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
             GameObject cameraInstance = GameObject.Instantiate(cameraObject);
+            cameraInstance.SetActive(false);
             cameraInstance.name = cameraObject.name;
             cameraInstance.transform.SetParent(objMain.transform, false);
             cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 2f;

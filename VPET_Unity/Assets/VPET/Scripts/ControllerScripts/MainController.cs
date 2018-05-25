@@ -528,7 +528,6 @@ namespace vpet
 			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
 			GameObject rootScene = SceneLoader.scnRoot;
 
-
 			if (m_anchorPrefab == null)
 				m_anchorPrefab = Resources.Load ("VPET/Prefabs/AnchorModifier", typeof(GameObject)) as GameObject;
 
@@ -547,6 +546,7 @@ namespace vpet
                     tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
                 tangoArScreen.enabled = true;
 #elif USE_ARKIT
+
 				// reset camera
 				cameraAdapter.globalCameraReset();
 				resetCameraOffset();
@@ -556,15 +556,20 @@ namespace vpet
 				Camera.main.nearClipPlane = 0.1f;
 				Camera.main.farClipPlane = 100000;
 				// enable video background
+
 				ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
                 if (arkitScreen == null) 
 					arkitScreen = Camera.main.gameObject.AddComponent<ARScreen>();
+				
+				
 				if (arKit)
 				{
 					ARKitController arController = arKit.GetComponent<ARKitController>();
 					if (arController)
 						arController.setARMode(true);
 				}
+				
+
 				// enable plane alignment
 				if (root)
 				{
@@ -598,6 +603,7 @@ namespace vpet
 				rootScene.SetActive(false);
 				arConfigWidget.SetActive(true);
 #endif
+
             }
             else
             {
@@ -637,7 +643,24 @@ namespace vpet
             }
 
             hasUpdatedProjectionMatrix = true;
+
         }
+
+		public void ToggleARKeyMode(bool active)
+		{
+			ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
+            if (arkitScreen == null) 
+				return;
+
+			Shader shader = Shader.Find("VPET/ARCameraShader");
+			if (active)
+				shader = Shader.Find("VPET/ARCameraShaderChromaKey");
+
+			if (shader)
+				arkitScreen.m_ClearMaterial.shader = shader;
+
+
+		}
         
         public void UpdateProjectionMatrixSecondaryCameras()
         {
@@ -712,6 +735,39 @@ namespace vpet
                 animationController.setKeyFrame();
             }
         }
+
+		public void setARKeyDepth(float v)
+		{
+
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Depth", v);
+            }
+		}
+
+		public void setARKeyColor(Color c)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetColor("_KeyColor", c);
+            }			
+		}
+
+		public void setARKeyRadius(float v)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Radius", v);
+            }						
+		}
+
+		public void setARKeyThreshold(float v)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Threshold", v);
+            }						
+		}
 
     }
 }
