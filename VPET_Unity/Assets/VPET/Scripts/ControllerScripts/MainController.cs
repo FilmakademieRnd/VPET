@@ -646,6 +646,7 @@ namespace vpet
 
         }
 
+#if USE_ARKIT
 		public void ToggleARKeyMode(bool active)
 		{
 			ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
@@ -658,10 +659,9 @@ namespace vpet
 
 			if (shader)
 				arkitScreen.m_ClearMaterial.shader = shader;
-
-
 		}
-        
+#endif
+
         public void UpdateProjectionMatrixSecondaryCameras()
         {
             foreach( Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>() )
@@ -736,9 +736,9 @@ namespace vpet
             }
         }
 
+#if USE_ARKIT
 		public void setARKeyDepth(float v)
 		{
-
             if (Camera.main.GetComponent<ARScreen>() != null)
             {
                 Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Depth", v);
@@ -768,6 +768,7 @@ namespace vpet
                 Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Threshold", v);
             }						
 		}
+#endif
 
     }
 }
