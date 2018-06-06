@@ -231,7 +231,6 @@ namespace vpet
 	    //!
 	    void Start ()
 	    {
-            id = Network.player.ipAddress.Split('.')[3];
             id = "XXX";
 
             if (GameObject.Find("MainController") != null )

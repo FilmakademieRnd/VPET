@@ -29,6 +29,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Text.RegularExpressions;
@@ -234,7 +235,26 @@ namespace vpet
 	    //!
 	    void Start ()
 	    {
-            id = Network.player.ipAddress.Split('.')[3];
+            //reads the network name of the device
+            var hostName = Dns.GetHostName();
+
+            //necessary to fix a bug on iOS where it does not
+            //properly retrieve the _local_  network device name 
+            if(!hostName.Contains(".local"))
+                hostName = hostName+".local";
+
+            var host = Dns.GetHostEntry(hostName);
+            id = "000";
+
+            //Take first ip adress of local network
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    id = ip.ToString().Split('.')[3];
+                    break;
+                }
+            }
 
             //register cam sending function
             InvokeRepeating("sendCam", 0.0f, 0.04f);
