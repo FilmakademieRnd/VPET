@@ -918,14 +918,15 @@ namespace vpet
 	        Debug.Log("receiveMessageQueue.Count :" + receiveMessageQueue.Count);
 
 	        isRunning = false;
-            if ( receiverThread != null && receiverThread.IsAlive )
-	            receiverThread.Abort();
-	
-			// finish sender objects
-			foreach(ObjectSender sender in objectSenderList)
-			{
-				sender.Finish();
-			}
+
+            // finish sender objects
+            foreach (ObjectSender sender in objectSenderList)
+            {
+                sender.Finish();
+            }
+
+            // final clean up after disposing ALL sockets
+            NetMQConfig.Cleanup();
 
 			// halt sender threads
 			foreach (Thread _thread in senderThreadList)
@@ -934,11 +935,17 @@ namespace vpet
 					_thread.Abort();
 			}
 
+            // halt scene receiver thread
 	        if ( sceneReceiverThread != null  && sceneReceiverThread.IsAlive )
 	            sceneReceiverThread.Abort();
 
-            // final clean up after disposing ALL sockets
-            NetMQConfig.Cleanup();
+            // halt receiver thread
+            if (receiverThread != null && receiverThread.IsAlive)
+            {
+                receiverThread.Join();
+                receiverThread.Abort();
+            }
+
         }
 
     }
