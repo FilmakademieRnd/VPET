@@ -238,21 +238,15 @@ namespace vpet
             //reads the network name of the device
             var hostName = Dns.GetHostName();
 
-            //necessary to fix a bug on iOS where it does not
-            //properly retrieve the _local_  network device name 
-            if(!hostName.Contains(".local"))
-                hostName = hostName+".local";
-
             var host = Dns.GetHostEntry(hostName);
             id = "000";
 
-            //Take first ip adress of local network
+            //Take last ip adress of local network (which is local wlan ip address)
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
                     id = ip.ToString().Split('.')[3];
-                    break;
                 }
             }
 
