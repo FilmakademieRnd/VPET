@@ -277,8 +277,8 @@ namespace vpet
 				configWidget.KeyColorChangedEvent.AddListener(mainController.setARKeyColor);	
 				configWidget.KeyRadiusChangedEvent.AddListener(mainController.setARKeyRadius);	
 				configWidget.KeyThresholdChangedEvent.AddListener(mainController.setARKeyThreshold);	
+                configWidget.ToggleARMatteEvent.AddListener(mainController.ToggleARMatteMode);
 				configWidget.ToggleARKeyEvent.AddListener(mainController.ToggleARKeyMode);
-
 				// add other ar managers here or change a global variable like VPET.Settings.sceneScale!
 #endif
 
@@ -442,6 +442,8 @@ namespace vpet
 		{
 			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
 			arKeyWidget.SetActive(false);
+            // save values to preferences
+            VPETSettings.mapValuesToPreferences(configWidget);
 			drawConfigWidget();
 		}
 
@@ -465,6 +467,9 @@ namespace vpet
            // copy values from global settings to config widget
             VPETSettings.mapValuesToObject( configWidget );
 
+            // map values from preferences to config widget
+            VPETSettings.mapValuesFromPreferences(configWidget);
+
 			configWidget.Show();           
             configWidget.initConfigWidget();
             UI.OnUIChanged.Invoke();
@@ -481,6 +486,9 @@ namespace vpet
 
 			// save global settings in preferences
 			VPETSettings.mapValuesToPreferences();
+
+            // save config widget settings to prferences
+            VPETSettings.mapValuesToPreferences(configWidget);
 
             UI.OnUIChanged.Invoke();
         }

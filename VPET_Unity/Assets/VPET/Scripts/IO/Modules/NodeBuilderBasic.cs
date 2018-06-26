@@ -110,41 +110,59 @@ namespace vpet
 	    //!
 	    public static GameObject CreateObject( SceneNodeGeo nodeGeo, Transform parentTransform )
 	    {
-	
-	        // Material
-	        Material mat = new Material( Shader.Find( "Standard" ) );
-	        //available parameters in this physically based shader:
-	        // _Color                   diffuse color (color including alpha)
-	        // _MainTex                 diffuse texture (2D texture)
-	        // _Cutoff                  alpha cutoff
-	        // _Glossiness              smoothness of surface
-	        // _Metallic                matallic look of the material
-	        // _MetallicGlossMap        metallic texture (2D texture)
-	        // _BumpScale               scale of the bump map (float)
-	        // _BumpMap                 bumpmap (2D texture)
-	        // _Parallax                scale of height map
-	        // _ParallaxMap             height map (2D texture)
-	        // _OcclusionStrength       scale of occlusion
-	        // _OcclusionMap            occlusionMap (2D texture)
-	        // _EmissionColor           color of emission (color without alpha)
-	        // _EmissionMap             emission strength map (2D texture)
-	        // _DetailMask              detail mask (2D texture)
-	        // _DetailAlbedoMap         detail diffuse texture (2D texture)
-	        // _DetailNormalMapScale    scale of detail normal map (float)
-	        // _DetailAlbedoMap         detail normal map (2D texture)
-	        // _UVSec                   UV Set for secondary textures (float)
-	        // _Mode                    rendering mode (float) 0 -> Opaque , 1 -> Cutout , 2 -> Transparent
-	        // _SrcBlend                source blend mode (enum is UnityEngine.Rendering.BlendMode)
-	        // _DstBlend                destination blend mode (enum is UnityEngine.Rendering.BlendMode)
-	        // test texture
-	        // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
-	        // Texture2D texture = www.texture;
-	        // meshRenderer.material.SetTexture("_MainTex",texture);
-	
-	        // Material Properties
-	        mat.color = new Color( nodeGeo.color[0], nodeGeo.color[1], nodeGeo.color[2] );
-	        mat.SetFloat( "_Glossiness", nodeGeo.roughness );
-	
+
+            // Material
+            Material mat;
+            //available parameters in this physically based shader:
+            // _Color                   diffuse color (color including alpha)
+            // _MainTex                 diffuse texture (2D texture)
+            // _Cutoff                  alpha cutoff
+            // _Glossiness              smoothness of surface
+            // _Metallic                matallic look of the material
+            // _MetallicGlossMap        metallic texture (2D texture)
+            // _BumpScale               scale of the bump map (float)
+            // _BumpMap                 bumpmap (2D texture)
+            // _Parallax                scale of height map
+            // _ParallaxMap             height map (2D texture)
+            // _OcclusionStrength       scale of occlusion
+            // _OcclusionMap            occlusionMap (2D texture)
+            // _EmissionColor           color of emission (color without alpha)
+            // _EmissionMap             emission strength map (2D texture)
+            // _DetailMask              detail mask (2D texture)
+            // _DetailAlbedoMap         detail diffuse texture (2D texture)
+            // _DetailNormalMapScale    scale of detail normal map (float)
+            // _DetailAlbedoMap         detail normal map (2D texture)
+            // _UVSec                   UV Set for secondary textures (float)
+            // _Mode                    rendering mode (float) 0 -> Opaque , 1 -> Cutout , 2 -> Transparent
+            // _SrcBlend                source blend mode (enum is UnityEngine.Rendering.BlendMode)
+            // _DstBlend                destination blend mode (enum is UnityEngine.Rendering.BlendMode)
+            // test texture
+            // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
+            // Texture2D texture = www.texture;
+            // meshRenderer.material.SetTexture("_MainTex",texture);
+
+#if TRUNK
+            // load spacial shader if needed
+            if (nodeGeo.materialId > -1 && nodeGeo.materialId < SceneLoader.SceneMaterialList.Count)
+            {
+                mat = SceneLoader.SceneMaterialList[nodeGeo.materialId];
+            }
+            else
+            {
+                mat = new Material( Shader.Find( "Standard" ) );
+            }
+#else
+            mat = new Material( Shader.Find( "Standard" ) );
+#endif
+
+            // Material Properties
+            mat.color = new Color( nodeGeo.color[0], nodeGeo.color[1], nodeGeo.color[2] );
+            if (mat.HasProperty("_Glossiness"))
+                mat.SetFloat( "_Glossiness", nodeGeo.roughness );
+
+            // set rendering mode
+            //mat.SetFloat("_Mode", 1);
+
 	        // Texture
 	        if (nodeGeo.textureId > -1 && nodeGeo.textureId < SceneLoader.SceneTextureList.Count)
 	        {
@@ -155,14 +173,14 @@ namespace vpet
                 // set materials render mode to fate to senable alpha blending
                 if (Textures.hasAlpha(texRef))
                 {
-                    mat.SetFloat("_Mode", 2);
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    mat.SetInt("_ZWrite", 0);
-                    mat.DisableKeyword("_ALPHATEST_ON");
-                    mat.EnableKeyword("_ALPHABLEND_ON");
+                    mat.SetFloat("_Mode", 1);
+                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                    mat.SetInt("_ZWrite", 1);
+                    mat.EnableKeyword("_ALPHATEST_ON");
+                    mat.DisableKeyword("_ALPHABLEND_ON");
                     mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.renderQueue = 3000;
+                    mat.renderQueue = 2450;
                 }
             }
 

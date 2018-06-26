@@ -51,10 +51,11 @@ namespace vpet
 		public TrackingScaleIntensityChangedEvent TrackingScaleChangedEvent = new TrackingScaleIntensityChangedEvent();
 		public ToggleARSwitchEvent ToggleAREvent = new ToggleARSwitchEvent();
 		public TrackingScaleIntensityChangedEvent KeyDepthChangedEvent = new TrackingScaleIntensityChangedEvent();
-        public ARColorChangedEvent KeyColorChangedEvent = new ARColorChangedEvent();
+        public ARColorChangedEvent KeyColorChangedEvent  = new ARColorChangedEvent();
         public TrackingScaleIntensityChangedEvent KeyRadiusChangedEvent = new TrackingScaleIntensityChangedEvent();
         public TrackingScaleIntensityChangedEvent KeyThresholdChangedEvent = new TrackingScaleIntensityChangedEvent();
 		public ToggleARSwitchEvent ToggleARKeyEvent = new ToggleARSwitchEvent();
+        public ToggleARSwitchEvent ToggleARMatteEvent = new ToggleARSwitchEvent();
 #endif
 
         //!
@@ -105,9 +106,20 @@ namespace vpet
 
         private Toggle keyToggle;
 
+        private Toggle matteToggle;
+
         private InputField arDepthField;
 
         private ColorWheel arColorWheel;
+
+        [Config]
+        private Color arkeyColor = Color.green;
+
+        [Config]
+        private float arkeyThreshold = 0.1f;
+
+        [Config]
+        private float arkeyRadius = 0.22f;
 
         private Toggle cmToggle;
 
@@ -197,6 +209,7 @@ namespace vpet
 #endif
             }
 
+
             // ar key toggle
             childWidget = this.transform.Find("ARKey_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKey_toggle.", this.GetType()));
@@ -215,11 +228,29 @@ namespace vpet
 #endif
             }
 
+
+            // ar key toggle
+            childWidget = this.transform.Find("ARMatte_toggle");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARMatte_toggle.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                matteToggle = childWidget.GetComponent<Toggle>();
+                if (matteToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                else
+                {
+                    matteToggle.onValueChanged.AddListener(this.OnToggleMatte);
+                }
+
+#else
+                childWidget.gameObject.SetActive(false);
+#endif
+            }
+
+
             // ar video color wheel
-            //childWidget =  GameObject.Find("GUI/Canvas/ARVideoPlane").transform;
-            childWidget = GameObject.Find("GUI/Canvas/ARKeyWidget/ARColorWheel").transform;
-            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ColorWheel.", this.GetType()));
-            //if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARVideoPlane.", this.GetType()));
+            childWidget = this.transform.Find("../ARKeyWidget/ARColorWheel");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorWheel.", this.GetType()));
             else
             {
 #if USE_TANGO || USE_ARKIT
@@ -233,7 +264,7 @@ namespace vpet
             }
 
             // ar video radius slider
-            childWidget = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyRadiusSlider/KeyRadius_Slider").transform;
+            childWidget = this.transform.Find("../ARKeyWidget/KeyRadiusSlider/KeyRadius_Slider");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: KeyRadiusSlider.", this.GetType()));
             else
             {
@@ -248,7 +279,7 @@ namespace vpet
             }
 
             // ar video threshold slider
-            childWidget = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyThresholdSlider/KeyThreshold_Slider").transform;
+            childWidget = this.transform.Find("../ARKeyWidget/KeyThresholdSlider/KeyThreshold_Slider");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: KeyThresholdSlider.", this.GetType()));
             else
             {
@@ -314,7 +345,7 @@ namespace vpet
 
 
 			// ambient intensity
-			childWidget = this.transform.Find("AI_Slider").Find("Ambient_slider");
+			childWidget = this.transform.Find("AI_Slider/Ambient_slider");
 			if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Ambient_slider.", this.GetType()));
 			else
 			{
@@ -329,7 +360,7 @@ namespace vpet
 
 #if USE_TANGO || USE_ARKIT
             // tracking scale
-            childWidget = this.transform.Find("TS_Slider").Find("TrackingScale_slider");
+            childWidget = this.transform.Find("TS_Slider/TrackingScale_slider");
             if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tracking_Scale.", this.GetType()));
             else
             {
@@ -413,6 +444,8 @@ namespace vpet
                 sliderValueText.text = trackingScale.ToString("f1");
             }
 #endif
+
+            // arkey settings
 
         }
 
@@ -498,7 +531,8 @@ namespace vpet
         {
             // show/hide ar key toggle
             keyToggle.gameObject.SetActive(isOn);
- 
+
+            matteToggle.gameObject.SetActive(isOn);
 
             if (arToggle)
             {
@@ -536,6 +570,13 @@ namespace vpet
             }
         }
 
+        private void OnToggleMatte(bool isOn)
+        {
+            print("onToggleMatte");
+            ToggleARMatteEvent.Invoke(isOn);
+
+        }
+
         private void OnDepthChanged(string v)
         {
             try
@@ -552,11 +593,13 @@ namespace vpet
 
         private void OnKeyColorChanged(Color c)
         {
+            arkeyColor = c;
             KeyColorChangedEvent.Invoke(c);
         }
 
         private void OnKeyRadiusChanged(float v)
         {
+            arkeyRadius = v;
             Text sliderValueText = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyRadiusSlider/KeyRadius_Value").GetComponent<Text>();
             sliderValueText.text = v.ToString("n1");
             KeyRadiusChangedEvent.Invoke(v);
@@ -564,6 +607,7 @@ namespace vpet
 
         private void OnKeyThresholdChanged(float v)
         {
+            arkeyThreshold = v;
             Text sliderValueText = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyThresholdSlider/KeyThreshold_Value").GetComponent<Text>();
             sliderValueText.text = v.ToString("n1");
             KeyThresholdChangedEvent.Invoke(v);

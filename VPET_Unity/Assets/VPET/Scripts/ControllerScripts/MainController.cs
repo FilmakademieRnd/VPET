@@ -43,6 +43,16 @@ namespace vpet
 
 	public partial class MainController : MonoBehaviour
     {
+
+
+        public Material matteMaterial;
+
+
+
+        public GameObject arCoverSphere;
+
+
+
 		public bool arMode;
 
 #if USE_ARKIT
@@ -662,6 +672,43 @@ namespace vpet
 		}
 #endif
 
+
+
+#if USE_ARKIT
+        public void ToggleARMatteMode(bool active)
+        {
+            
+            ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
+            if (arkitScreen == null)
+                return;
+
+            if (arCoverSphere != null)
+                arCoverSphere.SetActive(active);
+
+            if (active)
+            {
+                if (matteMaterial != null)
+                {
+                    matteMaterial.SetTexture("_textureY", arkitScreen.m_ClearMaterial.GetTexture("_textureY"));
+                    matteMaterial.SetTexture("_textureCbCr", arkitScreen.m_ClearMaterial.GetTexture("_textureCbCr"));
+                    matteMaterial.SetMatrix("_DisplayTransform", arkitScreen.m_ClearMaterial.GetMatrix("_DisplayTransform"));
+                }
+            }
+            else
+            {
+                if (matteMaterial != null)
+                {
+                    matteMaterial.SetTexture("_textureY", null);
+                    matteMaterial.SetTexture("_textureCbCr", null);
+                    // matteMaterial.SetMatrix("_DisplayTransform", arkitScreen.m_ClearMaterial.GetMatrix("_DisplayTransform"));
+                }
+            }
+
+
+        }
+#endif
+
+
         public void UpdateProjectionMatrixSecondaryCameras()
         {
             foreach( Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>() )
@@ -750,7 +797,10 @@ namespace vpet
             if (Camera.main.GetComponent<ARScreen>() != null)
             {
                 Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetColor("_KeyColor", c);
-            }			
+            }	
+
+            if (matteMaterial)
+                matteMaterial.SetColor("_KeyColor", c);
 		}
 
 		public void setARKeyRadius(float v)
@@ -759,6 +809,8 @@ namespace vpet
             {
                 Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Radius", v);
             }						
+            if (matteMaterial)
+                matteMaterial.SetFloat("_Radius", v);
 		}
 
 		public void setARKeyThreshold(float v)
@@ -767,6 +819,8 @@ namespace vpet
             {
                 Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Threshold", v);
             }						
+            if (matteMaterial)
+                matteMaterial.SetFloat("_Threshold", v);
 		}
 #endif
 

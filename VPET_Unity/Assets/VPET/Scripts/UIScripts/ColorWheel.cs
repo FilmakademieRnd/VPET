@@ -39,7 +39,6 @@ namespace vpet
     {
 
 
-        private int size = 20;
 
         private Color currentValue = Color.white;
 

@@ -34,33 +34,35 @@ using System.Collections.Generic;
 //!
 namespace vpet
 {
-	
-	public class SceneLoader : MonoBehaviour 
-	{
-	    //!
-	    //! name of the parent gameobject, all objects go underneath it
-	    //!
-	    public string sceneParent = "Scene";
-	
-	
-	    private GameObject scnPrtGO;
-	    
-		public static List<Texture2D> SceneTextureList = new List<Texture2D>();
-		public static List<Mesh[]> SceneMeshList = new List<Mesh[]>();
-        public static List<GameObject> SceneEditableObjects = new List<GameObject>();
-		public static List<GameObject> SelectableLights = new List<GameObject>();														  
-	    public static List<GameObject> SceneCameraList = new List<GameObject>();
 
-		public static GameObject scnRoot;												
+    public class SceneLoader : MonoBehaviour
+    {
+        //!
+        //! name of the parent gameobject, all objects go underneath it
+        //!
+        public string sceneParent = "Scene";
+
+
+        private GameObject scnPrtGO;
+#if TRUNK
+        public static List<Material> SceneMaterialList = new List<Material>();
+#endif
+        public static List<Texture2D> SceneTextureList = new List<Texture2D>();
+        public static List<Mesh[]> SceneMeshList = new List<Mesh[]>();
+        public static List<GameObject> SceneEditableObjects = new List<GameObject>();
+        public static List<GameObject> SelectableLights = new List<GameObject>();
+        public static List<GameObject> SceneCameraList = new List<GameObject>();
+
+        public static GameObject scnRoot;
 
         private List<GameObject> geometryPassiveList = new List<GameObject>();
         private SceneDataHandler sceneDataHandler;
-        
-		public SceneDataHandler SceneDataHandler
+
+        public SceneDataHandler SceneDataHandler
         {
             get { return sceneDataHandler; }
         }
-	
+
         public delegate GameObject NodeBuilderDelegate(ref SceneNode n, Transform t, GameObject o);
         public static List<NodeBuilderDelegate> nodeBuilderDelegateList = new List<NodeBuilderDelegate>();
 
@@ -77,25 +79,28 @@ namespace vpet
         }
 
         void Start()
-	    {
-	        // create scene parent if not there
-	        scnPrtGO = GameObject.Find( sceneParent );
-	        if ( scnPrtGO == null )
-	        {
-	            scnPrtGO = new GameObject( sceneParent );
-	        }
+        {
+            // create scene parent if not there
+            scnPrtGO = GameObject.Find(sceneParent);
+            if (scnPrtGO == null)
+            {
+                scnPrtGO = new GameObject(sceneParent);
+            }
 
             scnRoot = scnPrtGO.transform.Find("root").gameObject;
-	        if (scnRoot == null)
-	        {
-	            scnRoot = new GameObject("root");
-	            scnRoot.transform.parent = scnPrtGO.transform;
-	        }
-	    }	
+            if (scnRoot == null)
+            {
+                scnRoot = new GameObject("root");
+                scnRoot.transform.parent = scnPrtGO.transform;
+            }
+        }
 
         public void ResetScene()
         {
             SceneEditableObjects.Clear();
+#if TRUNK
+            SceneMaterialList.Clear();
+#endif
             SceneTextureList.Clear();
             SceneMeshList.Clear();
             SceneCameraList.Clear();
@@ -117,6 +122,9 @@ namespace vpet
             print("lightIntensityFactor : " + VPETSettings.Instance.lightIntensityFactor);
             print("textureBinaryType : " + VPETSettings.Instance.textureBinaryType);
 
+#if TRUNK
+            createMaterials();
+#endif
             // create textures
             if (VPETSettings.Instance.doLoadTextures )
 	        {
@@ -191,9 +199,29 @@ namespace vpet
 	
 	        return idxChild;
 	    }
-	
-	
-	    private void createTextures()
+
+#if TRUNK
+        private void createMaterials()
+        {
+            foreach(MaterialPackage matPack in sceneDataHandler.MaterialList)
+            {
+                if (matPack.type > 0 )
+                {
+                    Material mat = Resources.Load ( string.Format("VPET/Materials/{0}", matPack.name), typeof(Material)) as Material;
+                    if (mat)
+                        SceneMaterialList.Add(mat);
+                    else
+                    {
+                        Debug.LogWarning(string.Format("[{0} createMaterials]: Cant find Resource: {1}. Create Standard.", this.GetType(), matPack.name));
+                        SceneMaterialList.Add(new Material( Shader.Find( "Standard" ) ));
+                    }
+                }
+            }
+        }
+    
+#endif
+
+        private void createTextures()
 	    {
             foreach ( TexturePackage texPack in sceneDataHandler.TextureList )
 	        {

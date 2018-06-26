@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEngine;
 
 namespace vpet
@@ -63,6 +64,12 @@ namespace vpet
         public byte[] colorMapData;
     };
 
+    public class MaterialPackage
+    {
+        public int type; // 0=standard, 1=load by name, >2=material definitions 
+        public string name;
+    };
+
     public class SceneDataHandler
     {
         public static int size_int = sizeof(int);
@@ -83,6 +90,11 @@ namespace vpet
         {
             get { return m_textureList; }
         }
+        private List<MaterialPackage> m_materialList;
+        public List<MaterialPackage> MaterialList
+        {
+            get { return m_materialList; }
+        }
 
         private byte[] m_nodesByteData;
         public byte[] NodesByteData
@@ -100,6 +112,11 @@ namespace vpet
             set { m_texturesByteData = value; convertTexturesByteStream(); }
         }
 
+        private byte[] m_materialsByteData;
+        public byte[] MaterialsByteData
+        {
+            set { m_materialsByteData = value; convertMaterialsByteStream(); }
+        }
 
         private int m_textureBinaryType = 0;
         public int TextureBinaryType
@@ -155,6 +172,41 @@ namespace vpet
 
             Array.Clear(m_nodesByteData, 0, m_nodesByteData.Length);
             m_nodesByteData = null;
+            GC.Collect();
+
+        }
+
+        private void convertMaterialsByteStream()
+        {
+            m_materialList = new List<MaterialPackage>();
+
+            
+            int dataIdx = 0;
+            while (dataIdx < m_materialsByteData.Length - 1)
+            {
+
+                MaterialPackage matPack = new MaterialPackage();
+
+                // get type
+                int intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
+                dataIdx += size_int;
+                matPack.type = intValue;
+
+                // get material name length
+                intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
+                dataIdx += size_int;
+
+                // get material name
+                byte[] nameByte = new byte[intValue];
+                Buffer.BlockCopy(m_materialsByteData, dataIdx, nameByte, 0, intValue);
+                dataIdx += intValue;
+                matPack.name = Encoding.ASCII.GetString(nameByte);
+
+                m_materialList.Add(matPack);
+            }
+            
+            Array.Clear(m_materialsByteData, 0, m_materialsByteData.Length);
+            m_materialsByteData = null;
             GC.Collect();
 
         }

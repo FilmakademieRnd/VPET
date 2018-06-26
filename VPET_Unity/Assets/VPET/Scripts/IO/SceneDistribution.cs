@@ -62,7 +62,10 @@ namespace vpet
         private byte[] nodesByteData;
         private byte[] objectsByteData;
         private byte[] texturesByteData;
-
+#if TRUNK
+        private List<MaterialPackage> materialList;
+        private byte[] materialsByteData;
+#endif
         private int textureBinaryType = 1; // unity raw data
 
         private VpetHeader vpetHeader;
@@ -148,7 +151,14 @@ namespace vpet
                         dataSender.SendFrame (texturesByteData);
                         print (string.Format (".. Textures ({0} bytes) sent ", texturesByteData.Length));
                         break;
-                    default:
+#if TRUNK
+                        case "materials":
+                        print("Send Materials.. ");
+                        dataSender.SendFrame(materialsByteData);
+                        print(string.Format(".. Materials ({0} bytes) sent ", materialsByteData.Length));
+                        break;
+#endif
+                        default:
                         break;
                     }
 
@@ -186,24 +196,32 @@ namespace vpet
             nodeList = new List<SceneNode>();
             objectList = new List<ObjectPackage>();
             textureList = new List<TexturePackage>();
-
+#if TRUNK
+            materialList = new List<MaterialPackage>();
+#endif
 
             iterLocation(sceneRoot.transform);
 
             Debug.Log(string.Format("{0}: Collected number nodes: {1}", this.GetType(), nodeList.Count));
             Debug.Log(string.Format("{0}: Collected number objects: {1}", this.GetType(), objectList.Count));
             Debug.Log(string.Format("{0}: Collected number textures: {1}", this.GetType(), textureList.Count));
-
+#if TRUNK
+            Debug.Log(string.Format("{0}: Collected number materials: {1}", this.GetType(), materialList.Count));
+#endif
             // create byte arrays
             headerByteData = SceneDataHandler.StructureToByteArray<VpetHeader>(vpetHeader);
             getNodesByteArray();
             getObjectsByteArray();
             getTexturesByteArray();
-
+#if TRUNK
+            getMaterialsByteArray();
+#endif
             Debug.Log(string.Format("{0}: NodeByteArray size: {1}", this.GetType(), nodesByteData.Length));
             Debug.Log(string.Format("{0}: ObjectsByteArray size: {1}", this.GetType(), objectsByteData.Length));
             Debug.Log(string.Format("{0}: TexturesByteArray size: {1}", this.GetType(), texturesByteData.Length));
-
+#if TRUNK
+            Debug.Log(string.Format("{0}: MaterialsByteArray size: {1}", this.GetType(), materialsByteData.Length));
+#endif
         }
 
         private bool iterLocation(Transform location)
@@ -248,6 +266,11 @@ namespace vpet
                 if (location.GetComponent<Renderer>() != null && location.GetComponent<Renderer>().material != null)
                 {
                     Material mat = location.GetComponent<Renderer>().material;
+#if TRUNK
+                    // if materials's shader is not standard, add this material to material package. 
+                    // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
+                    nodeGeo.materialId = processMaterial(location.GetComponent<Renderer>().sharedMaterial);
+#endif
 					if (mat.HasProperty("_Color"))
                     {
                         nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
@@ -281,6 +304,7 @@ namespace vpet
                 if (location.GetComponent<SkinnedMeshRenderer>().material != null)
                 {
                     Material mat = location.GetComponent<SkinnedMeshRenderer>().material;
+
                     if (mat.HasProperty("_Color"))
                     {
                         nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
@@ -508,6 +532,40 @@ namespace vpet
             return textureList.Count - 1;
         }
 
+#if TRUNK
+        private int processMaterial(Material mat)
+        {
+            if (mat == null || mat.shader == null)
+                return -1;
+
+            if (mat.shader.name == "Standard")
+                return -1;
+
+            string matName = mat.name.Replace("(Instance)", "").Trim();
+
+            for (int i = 0; i < materialList.Count; i++)
+            {
+                if (materialList[i].name == matName)
+                {
+                    return i;
+                }
+            }
+
+            MaterialPackage matPack = new MaterialPackage();
+            if (mat.shader.name == "Standard")
+            {
+                matPack.type = 0;
+            }
+            else
+            {
+                matPack.type = 1;
+            }
+            matPack.name = matName;
+
+            materialList.Add(matPack);
+            return materialList.Count - 1;
+        }
+#endif
 
         private void getNodesByteArray()
         {
@@ -618,6 +676,35 @@ namespace vpet
             }
         }
 
+#if TRUNK
+        private void getMaterialsByteArray()
+        {
+            materialsByteData = new byte[0];
+
+            foreach (MaterialPackage matPack in materialList)
+            {
+                byte[] matByteData = new byte[SceneDataHandler.size_int + SceneDataHandler.size_int + matPack.name.Length];
+                int dstIdx = 0;
+
+                // type
+                Buffer.BlockCopy(BitConverter.GetBytes(matPack.type), 0, matByteData, dstIdx, SceneDataHandler.size_int);
+                dstIdx += SceneDataHandler.size_int;
+
+                // name length
+                Buffer.BlockCopy(BitConverter.GetBytes(matPack.name.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
+                dstIdx += SceneDataHandler.size_int;
+
+                // name
+                byte[] nameByte = Encoding.ASCII.GetBytes(matPack.name);
+                Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.name.Length);
+                dstIdx += matPack.name.Length;
+
+                // concate
+                materialsByteData = SceneDataHandler.Concat<byte>(materialsByteData, matByteData);
+
+            }
+        }
+#endif
 
         private void OnApplicationQuit()
         {
