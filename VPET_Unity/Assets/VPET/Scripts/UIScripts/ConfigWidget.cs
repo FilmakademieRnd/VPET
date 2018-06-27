@@ -121,6 +121,10 @@ namespace vpet
         [Config]
         private float arkeyRadius = 0.22f;
 
+        private Slider arkeyRadiusSlider;
+
+        private Slider arkeyThresholdSlider;
+
         private Toggle cmToggle;
 
         private Slider ambientIntensitySlider;
@@ -269,11 +273,11 @@ namespace vpet
             else
             {
 #if USE_TANGO || USE_ARKIT
-                Slider _slider = childWidget.GetComponent<Slider>();
-                if (_slider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
+                arkeyRadiusSlider = childWidget.GetComponent<Slider>();
+                if (arkeyRadiusSlider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
                 {
-                    _slider.onValueChanged.AddListener( this.OnKeyRadiusChanged);
+                    arkeyRadiusSlider.onValueChanged.AddListener( this.OnKeyRadiusChanged);
                 }
 #endif
             }
@@ -284,11 +288,11 @@ namespace vpet
             else
             {
 #if USE_TANGO || USE_ARKIT
-                Slider _slider = childWidget.GetComponent<Slider>();
-                if (_slider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
+                arkeyThresholdSlider = childWidget.GetComponent<Slider>();
+                if (arkeyThresholdSlider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
                 {
-                    _slider.onValueChanged.AddListener( this.OnKeyThresholdChanged);
+                    arkeyThresholdSlider.onValueChanged.AddListener( this.OnKeyThresholdChanged);
                 }
 #endif
             }
@@ -406,6 +410,9 @@ namespace vpet
             gameObject.SetActive(false);
         }
 	
+        //!
+        //! Assign values to UI elements
+        //!
 	    void initUIValues()
 	    {
 	        // Textfield Server IP
@@ -430,8 +437,7 @@ namespace vpet
 			if ( ambientIntensitySlider )
 			{
 				ambientIntensitySlider.value = ambientLight;
-                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/AI_Slider/AI_SliderValue").GetComponent<Text>();
-                sliderValueText.text = ambientLight.ToString("f1");
+                ambientIntensitySlider.transform.parent.Find("AI_SliderValue").GetComponent<Text>().text = ambientLight.ToString("f1");
                 ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
 
@@ -440,15 +446,26 @@ namespace vpet
             if (trackingScaleSlider)
             {
                 trackingScaleSlider.value = trackingScale;
-                Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_Value").GetComponent<Text>();            
-                sliderValueText.text = trackingScale.ToString("f1");
+                trackingScaleSlider.transform.parent.Find("TrackingScale_Value").GetComponent<Text>().text = trackingScale.ToString("f1");
+            }
+
+            // arkey settings
+            if (arkeyRadiusSlider)
+            {
+                arkeyRadiusSlider.value = arkeyRadius;
+                arkeyRadiusSlider.transform.parent.Find("KeyRadius_Value").GetComponent<Text>().text = arkeyRadius.ToString("f1");
+
+            }
+
+            if (arkeyThresholdSlider)
+            {
+                arkeyThresholdSlider.value = arkeyThreshold;
+                arkeyThresholdSlider.transform.parent.Find("KeyThreshold_Value").GetComponent<Text>().text = arkeyThreshold.ToString("f1");
+
             }
 #endif
 
-            // arkey settings
-
         }
-
 
         void readUIValues()
 	    {

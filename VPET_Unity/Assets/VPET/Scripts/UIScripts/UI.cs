@@ -464,7 +464,7 @@ namespace vpet
                 radialrefObject.gameObject.SetActive(false);
             }
 
-           // copy values from global settings to config widget
+            // copy values from global settings to config widget TODO: load it directly, see next line
             VPETSettings.mapValuesToObject( configWidget );
 
             // map values from preferences to config widget
@@ -481,10 +481,10 @@ namespace vpet
 			// must be first
 			configWidget.Hide();
 
-			// copy values from config widget to global settings
+            // copy values from config widget to global settings TODO: obsolete!?
 			VPETSettings.mapValuesFromObject( configWidget );
 
-			// save global settings in preferences
+            // save global settings in preferences TODO: save it directly, see next line
 			VPETSettings.mapValuesToPreferences();
 
             // save config widget settings to prferences
