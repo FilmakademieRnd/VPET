@@ -320,6 +320,9 @@ namespace vpet
                 serverAdapter = refObject.AddComponent<ServerAdapter>();
             }
 
+            // copy cache name to settings
+            VPETSettings.Instance.sceneFileName = serverAdapter.sceneFileName;
+
             // set properties
             serverAdapter.SceneLoader = sceneAdapter;
 

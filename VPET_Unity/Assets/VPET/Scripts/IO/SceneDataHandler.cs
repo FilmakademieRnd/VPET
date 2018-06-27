@@ -96,16 +96,24 @@ namespace vpet
             get { return m_materialList; }
         }
 
+        private byte[] m_headerByteData;
+        public byte[] HeaderByteData
+        {
+            set { m_headerByteData = value; convertHeaderByteStream(); }
+        }
+
         private byte[] m_nodesByteData;
         public byte[] NodesByteData
         {
             set { m_nodesByteData = value; convertNodesByteStream();  }
         }
+
         private byte[] m_objectsByteData;
         public byte[] ObjectsByteData
         {
             set { m_objectsByteData = value; convertObjectsByteStream(); }
         }
+
         private byte[] m_texturesByteData;
         public byte[] TexturesByteData
         {
@@ -115,7 +123,7 @@ namespace vpet
         private byte[] m_materialsByteData;
         public byte[] MaterialsByteData
         {
-            set { m_materialsByteData = value; convertMaterialsByteStream(); }
+            set { m_materialsByteData = value;  convertMaterialsByteStream(); }
         }
 
         private int m_textureBinaryType = 0;
@@ -144,6 +152,19 @@ namespace vpet
                 Array.Reverse( dataNumber );
         }
 
+
+        private void convertHeaderByteStream()
+        {
+
+            int dataIdx = 0;
+            VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(m_headerByteData, dataIdx);
+            dataIdx += sizeof(float);
+            VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(m_headerByteData, dataIdx);
+
+            //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
+            //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
+            //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
+        }
 
         private void convertNodesByteStream()
         {
@@ -180,7 +201,6 @@ namespace vpet
         {
             m_materialList = new List<MaterialPackage>();
 
-            
             int dataIdx = 0;
             while (dataIdx < m_materialsByteData.Length - 1)
             {
@@ -204,7 +224,7 @@ namespace vpet
 
                 m_materialList.Add(matPack);
             }
-            
+
             Array.Clear(m_materialsByteData, 0, m_materialsByteData.Length);
             m_materialsByteData = null;
             GC.Collect();

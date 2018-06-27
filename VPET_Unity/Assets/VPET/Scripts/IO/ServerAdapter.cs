@@ -785,19 +785,9 @@ namespace vpet
                 {
                     writeBinary(byteStream, "header");
                 }
-
-                int dataIdx = 0;
-                VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStream, dataIdx);
-                print("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
-                dataIdx += sizeof(float);
-                VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStream, dataIdx);
-
+                sceneLoader.SceneDataHandler.HeaderByteData = byteStream;
                 OnProgress(0.15f, "..Received Header..");
 
-
-                //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
-                //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
-                //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
 
 #if TRUNK
                 // Materials
@@ -821,7 +811,7 @@ namespace vpet
                     byteStream = sceneReceiver.ReceiveFrameBytes();
                     print ("byteStreamTextures size: " + byteStream.Length);
                     if (doWriteScene) {
-                        writeBinary (byteStream, "textu");
+                        writeBinary (byteStream, "textures");
                     }
                     sceneLoader.SceneDataHandler.TexturesByteData = byteStream;
 
@@ -835,7 +825,7 @@ namespace vpet
                 byteStream = sceneReceiver.ReceiveFrameBytes();
                 print ("byteStreamObjects size: " + byteStream.Length);
                 if (doWriteScene) {
-                    writeBinary (byteStream, "objec");
+                    writeBinary (byteStream, "objects");
                 }
                 sceneLoader.SceneDataHandler.ObjectsByteData = byteStream;
 
@@ -881,23 +871,25 @@ namespace vpet
 			OnProgress( 0.1f, "Init Scene Receiver..");
 
             
-            // HEader
+            // Header
             byte[] byteStreamHeader = loadBinary("header");
             print("byteStreamHeader size: " + byteStreamHeader.Length);
-            int dataIdx = 0;
-            VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(byteStreamHeader, dataIdx);
-            print("VPETSettings.Instance.lightIntensityFactor " + VPETSettings.Instance.lightIntensityFactor);
-            dataIdx += sizeof(float);
-            VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(byteStreamHeader, dataIdx);
-
+            sceneLoader.SceneDataHandler.HeaderByteData = byteStreamHeader;
             OnProgress(0.15f, "..Received Header..");
 
+#if TRUNK
+            // Materials
+            byte[] byteStreamMaterial = loadBinary("materials");
+            print("byteStreamMaterial size: " + byteStreamMaterial.Length);
+            sceneLoader.SceneDataHandler.MaterialsByteData = byteStreamMaterial;
+            OnProgress(0.20f, "..Received Materials..");
+#endif              
 
 
             // Textures
             if (VPETSettings.Instance.doLoadTextures )
 	        {
-	            byte[] byteStreamTextures = loadBinary( "textu" );
+	            byte[] byteStreamTextures = loadBinary( "textures" );
 	            print( "byteStreamTextures size: " + byteStreamTextures.Length );
                 sceneLoader.SceneDataHandler.TexturesByteData = byteStreamTextures;
                 OnProgress(0.33f, "..Received Texture..");
@@ -906,7 +898,7 @@ namespace vpet
 
             // Objects
             print("objects");
-	        byte[] byteStreamObjects = loadBinary( "objec" );
+	        byte[] byteStreamObjects = loadBinary( "objects" );
 	        print( "byteStreamObjects size: " + byteStreamObjects.Length );
             sceneLoader.SceneDataHandler.ObjectsByteData = byteStreamObjects;
             OnProgress( 0.80f, "..Received Objects..");
