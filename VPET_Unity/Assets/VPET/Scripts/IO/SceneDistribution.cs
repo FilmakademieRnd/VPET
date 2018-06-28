@@ -33,20 +33,25 @@ using NetMQ.Sockets;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System;
-
+using System.IO;
 
 namespace vpet
 {
 
     public class SceneDistribution : MonoBehaviour
     {
-
+        [Header("Scene")]
         public GameObject sceneRoot;
         public bool doDistribute = true;
         public string port = "5565";
         public bool doGatherOnRequest = false;
         public bool doAssignSceneObjects = false;
 
+        [Header("Cache File")]
+        public bool WriteCacheFile = false;
+        public string sceneFileName;
+
+        [Header("Recording")]
         public string recordPath = "Records";
         public string sceneName = "";
         public string shotName = "";
@@ -97,6 +102,18 @@ namespace vpet
                 vpetHeader.textureBinaryType = 1;
 
                 gatherSceneData();
+
+                // write binary to file
+                if (WriteCacheFile && sceneFileName != "")
+                {
+                    writeBinary(headerByteData, "header");
+                    writeBinary(nodesByteData, "nodes");
+                    writeBinary(objectsByteData, "objects");
+                    writeBinary(texturesByteData, "textures");
+#if TRUNK
+                    writeBinary(materialsByteData, "materials");
+#endif
+                }
 
                 if (serverThread == null)
                 {
@@ -216,6 +233,7 @@ namespace vpet
 #if TRUNK
             getMaterialsByteArray();
 #endif
+            Debug.Log(string.Format("{0}: HeaderByteArray size: {1}", this.GetType(), headerByteData.Length));
             Debug.Log(string.Format("{0}: NodeByteArray size: {1}", this.GetType(), nodesByteData.Length));
             Debug.Log(string.Format("{0}: ObjectsByteArray size: {1}", this.GetType(), objectsByteData.Length));
             Debug.Log(string.Format("{0}: TexturesByteArray size: {1}", this.GetType(), texturesByteData.Length));
@@ -260,12 +278,13 @@ namespace vpet
 			}
             else if (location.GetComponent<MeshFilter>() != null)
             {
+                
                 SceneNodeGeo nodeGeo = new SceneNodeGeo(); 
                 nodeGeo.geoId = processGeometry(location.GetComponent<MeshFilter>().sharedMesh);
 
-                if (location.GetComponent<Renderer>() != null && location.GetComponent<Renderer>().material != null)
+                if (location.GetComponent<Renderer>() != null && location.GetComponent<Renderer>().sharedMaterial != null)
                 {
-                    Material mat = location.GetComponent<Renderer>().material;
+                    Material mat = location.GetComponent<Renderer>().sharedMaterial; 
 #if TRUNK
                     // if materials's shader is not standard, add this material to material package. 
                     // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
@@ -538,29 +557,36 @@ namespace vpet
             if (mat == null || mat.shader == null)
                 return -1;
 
-            if (mat.shader.name == "Standard")
-                return -1;
-
-            string matName = mat.name.Replace("(Instance)", "").Trim();
-
+            // already stored ?
             for (int i = 0; i < materialList.Count; i++)
             {
-                if (materialList[i].name == matName)
+                if (materialList[i].mat.GetInstanceID() == mat.GetInstanceID()) 
                 {
                     return i;
                 }
             }
 
+            // create
             MaterialPackage matPack = new MaterialPackage();
-            if (mat.shader.name == "Standard")
+            matPack.mat = mat;
+            matPack.name = mat.name;
+
+            // if material within Resources/VPET than use load material
+            string matName = mat.name.Replace("(Instance)", "").Trim();
+            Material _mat = Resources.Load(string.Format("VPET/Materials/{0}", matName), typeof(Material)) as Material;
+            if (_mat)
             {
-                matPack.type = 0;
+                print("mat tyoe" + 1+ " material " + mat.name);
+                matPack.type = 1;
+                matPack.src = matName;
             }
             else
             {
-                matPack.type = 1;
+                print("mat tyoe" + 2 + " shader " + mat.shader.name);
+                matPack.type = 2;
+                matPack.src = mat.shader.name;
             }
-            matPack.name = matName;
+
 
             materialList.Add(matPack);
             return materialList.Count - 1;
@@ -683,7 +709,7 @@ namespace vpet
 
             foreach (MaterialPackage matPack in materialList)
             {
-                byte[] matByteData = new byte[SceneDataHandler.size_int + SceneDataHandler.size_int + matPack.name.Length];
+                byte[] matByteData = new byte[SceneDataHandler.size_int + SceneDataHandler.size_int + matPack.name.Length + SceneDataHandler.size_int + matPack.src.Length];
                 int dstIdx = 0;
 
                 // type
@@ -699,12 +725,31 @@ namespace vpet
                 Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.name.Length);
                 dstIdx += matPack.name.Length;
 
+                // src length
+                Buffer.BlockCopy(BitConverter.GetBytes(matPack.src.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
+                dstIdx += SceneDataHandler.size_int;
+
+                // src
+                nameByte = Encoding.ASCII.GetBytes(matPack.src);
+                Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.src.Length);
+                dstIdx += matPack.src.Length;
+
                 // concate
                 materialsByteData = SceneDataHandler.Concat<byte>(materialsByteData, matByteData);
 
             }
         }
 #endif
+
+
+        private void writeBinary(byte[] data, string dataname)
+        {
+            string filesrc = "Assets/Resources/VPET/SceneDumps/" + sceneFileName + "_" + dataname + ".bytes"; ;
+            print("Write binary data: " + filesrc);
+            BinaryWriter writer = new BinaryWriter(File.Open(filesrc, FileMode.Create));
+            writer.Write(data);
+            writer.Close();
+        }
 
         private void OnApplicationQuit()
         {

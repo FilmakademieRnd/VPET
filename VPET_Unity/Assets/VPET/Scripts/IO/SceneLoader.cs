@@ -119,8 +119,11 @@ namespace vpet
         public void createSceneGraph( )
 	    {
 
-            print("lightIntensityFactor : " + VPETSettings.Instance.lightIntensityFactor);
-            print("textureBinaryType : " + VPETSettings.Instance.textureBinaryType);
+#if TRUNK
+            print(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneDataHandler.ObjectList.Count, sceneDataHandler.TextureList.Count, sceneDataHandler.MaterialList.Count, sceneDataHandler.NodeList.Count));
+#else
+            print(string.Format("Build scene from: {0} objects, {1} textures, {2} nodes", sceneDataHandler.ObjectList.Count, sceneDataHandler.TextureList.Count, sceneDataHandler.NodeList.Count));
+#endif
 
 #if TRUNK
             createMaterials();
@@ -205,20 +208,27 @@ namespace vpet
         {
             foreach(MaterialPackage matPack in sceneDataHandler.MaterialList)
             {
-                if (matPack.type > 0 )
+                if (matPack.type == 1 )
                 {
-                    Material mat = Resources.Load ( string.Format("VPET/Materials/{0}", matPack.name), typeof(Material)) as Material;
+                    Material mat = Resources.Load ( string.Format("VPET/Materials/{0}", matPack.src), typeof(Material)) as Material;
                     if (mat)
                         SceneMaterialList.Add(mat);
                     else
                     {
-                        Debug.LogWarning(string.Format("[{0} createMaterials]: Cant find Resource: {1}. Create Standard.", this.GetType(), matPack.name));
-                        SceneMaterialList.Add(new Material( Shader.Find( "Standard" ) ));
+                        Debug.LogWarning(string.Format("[{0} createMaterials]: Cant find Resource: {1}. Create Standard.", this.GetType(), matPack.src));
+                        Material _mat = new Material(Shader.Find("Standard"));
+                        _mat.name = matPack.name;
+                        SceneMaterialList.Add(_mat);
                     }
+                }
+                else if(matPack.type == 2)
+                {
+                    Material mat = new Material(Shader.Find(matPack.src));
+                    mat.name = matPack.name;
+                    SceneMaterialList.Add(mat);
                 }
             }
         }
-    
 #endif
 
         private void createTextures()

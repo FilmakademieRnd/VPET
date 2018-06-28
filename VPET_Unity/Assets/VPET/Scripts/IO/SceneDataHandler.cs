@@ -66,8 +66,10 @@ namespace vpet
 
     public class MaterialPackage
     {
-        public int type; // 0=standard, 1=load by name, >2=material definitions 
+        public int type; // 0=standard, 1=load by name, 2=new with shader by name,  3=new with shader from source, 4= .. 
         public string name;
+        public string src;
+        public Material mat;
     };
 
     public class SceneDataHandler
@@ -221,6 +223,17 @@ namespace vpet
                 Buffer.BlockCopy(m_materialsByteData, dataIdx, nameByte, 0, intValue);
                 dataIdx += intValue;
                 matPack.name = Encoding.ASCII.GetString(nameByte);
+
+
+                // get material src length
+                intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
+                dataIdx += size_int;
+
+                // get material src
+                nameByte = new byte[intValue];
+                Buffer.BlockCopy(m_materialsByteData, dataIdx, nameByte, 0, intValue);
+                dataIdx += intValue;
+                matPack.src = Encoding.ASCII.GetString(nameByte);
 
                 m_materialList.Add(matPack);
             }
