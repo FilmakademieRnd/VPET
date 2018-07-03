@@ -46,7 +46,7 @@ namespace vpet
         //! Do we load scene from dump file
         //!
         [Config]
-        public bool doLoadFromResource = false;
+        public bool doLoadFromResource = true;
         //!
         //! Dump scene file name
         //!
@@ -114,7 +114,7 @@ namespace vpet
 	    private VPETSettings()
 		{
     		GameObject canvas = GameObject.Find("GUI/Canvas");
-            if (canvas == null) Debug.LogError(string.Format("{0}: Cant find Canvas.", this.GetType()));
+            if (canvas == null) Debug.Log(string.Format("{0}: Cant find Canvas.", this.GetType()));
             else
             {
                 CanvasScaler canvasScaler = canvas.GetComponent<CanvasScaler>();
@@ -255,69 +255,97 @@ namespace vpet
 	            }
 	        }
 	    }
-	
-		public static void mapValuesFromPreferences()
+
+        public static void mapValuesFromPreferences()
+        {
+            VPETSettings.Instance.msg = "Load User Preferences.";
+            mapValuesFromPreferences(Instance);
+        }
+
+		public static void mapValuesFromPreferences(object target)
 		{
-			VPETSettings.Instance.msg = "Load User Preferences.";
-			FieldInfo[] fis = Instance.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+            string prefix = string.Format("{0}.", target.GetType().Name);
+            FieldInfo[] fis = target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 			foreach (FieldInfo info in fis)
 			{
-				if (info.GetCustomAttributes(typeof(ConfigAttribute), false).Length > 0 && PlayerPrefs.HasKey( info.Name ) )
+                if (info.GetCustomAttributes(typeof(ConfigAttribute), false).Length > 0 && PlayerPrefs.HasKey( prefix + info.Name ) )
 				{
-					if ( info.GetValue(Instance).GetType() == typeof(float) )
+                    if ( info.GetValue(target).GetType() == typeof(float) )
 					{
-						info.SetValue( Instance, PlayerPrefs.GetFloat( info.Name ) );
+                        info.SetValue( target, PlayerPrefs.GetFloat( prefix + info.Name ) );
 					}
-					else if ( info.GetValue(Instance).GetType() == typeof(int) )
+                    else if ( info.GetValue(target).GetType() == typeof(int) )
 					{
-						info.SetValue( Instance, PlayerPrefs.GetInt(info.Name) );
+                        info.SetValue( target, PlayerPrefs.GetInt(prefix + info.Name) );
 					}
-					else if ( info.GetValue(Instance).GetType() == typeof(bool))
+                    else if ( info.GetValue(target).GetType() == typeof(bool))
 					{
-						info.SetValue( Instance, Convert.ToBoolean( PlayerPrefs.GetInt(info.Name) ) );
+                        info.SetValue( target, Convert.ToBoolean( PlayerPrefs.GetInt(prefix + info.Name) ) );
 					}
-					else if ( info.GetValue(Instance).GetType() == typeof(Vector3))
+                    else if ( info.GetValue(target).GetType() == typeof(Vector3))
 					{
-						info.SetValue( Instance, DeserializeVector3( PlayerPrefs.GetString(info.Name) ) );
+                        info.SetValue( target, DeserializeVector3( PlayerPrefs.GetString(prefix + info.Name) ) );
 					}
-					else 
+                    else if (info.GetValue(target).GetType() == typeof(Vector4))
+                    {
+                        info.SetValue(target, DeserializeVector4(PlayerPrefs.GetString(prefix + info.Name)));
+                    }
+                    else if (info.GetValue(target).GetType() == typeof(Color))
+                    {
+                        info.SetValue(target, (Color)DeserializeVector4(PlayerPrefs.GetString(prefix + info.Name)));
+                    }
+                    else 
 					{
-						info.SetValue( Instance, PlayerPrefs.GetString( info.Name ) );
+                        info.SetValue( target, PlayerPrefs.GetString( prefix +  info.Name ) );
 					}
 				}
 			}
 		}
 
-		public static void mapValuesToPreferences()
+        public static void mapValuesToPreferences()
+        {
+            VPETSettings.Instance.msg = "Save User Preferences.";
+            mapValuesToPreferences(Instance);
+        }
+
+		public static void mapValuesToPreferences(object source)
 		{
-			FieldInfo[] fis = Instance.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+            string prefix = string.Format("{0}.", source.GetType().Name);
+            FieldInfo[] fis = source.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 			foreach (FieldInfo info in fis)
 			{
 				if (info.GetCustomAttributes(typeof(ConfigAttribute), false).Length > 0)
 				{
-					if ( info.GetValue(Instance).GetType() == typeof(float) )
+                    if ( info.GetValue(source).GetType() == typeof(float) )
 					{
-						PlayerPrefs.SetFloat( info.Name, (float)info.GetValue(Instance) ) ;
+                        PlayerPrefs.SetFloat( prefix + info.Name, (float)info.GetValue(source) ) ;
 					}
-					else if ( info.GetValue(Instance).GetType() == typeof(int) )
+                    else if ( info.GetValue(source).GetType() == typeof(int) )
 					{
-						PlayerPrefs.SetInt( info.Name, (int)info.GetValue(Instance) );
+                        PlayerPrefs.SetInt( prefix + info.Name, (int)info.GetValue(source) );
 					}
-					else if (  info.GetValue(Instance).GetType() == typeof(bool) )
+                    else if (  info.GetValue(source).GetType() == typeof(bool) )
 					{
-						PlayerPrefs.SetInt( info.Name, Convert.ToInt32( (bool)info.GetValue(Instance) ) );
+                        PlayerPrefs.SetInt( prefix + info.Name, Convert.ToInt32( (bool)info.GetValue(source) ) );
 					}
-					else if ( info.GetValue(Instance).GetType() == typeof(Vector3))
+                    else if ( info.GetValue(source).GetType() == typeof(Vector3))
 					{
-						PlayerPrefs.SetString( info.Name, SerializeVector3( (Vector3)info.GetValue(Instance) ) );
+                        PlayerPrefs.SetString( prefix + info.Name, SerializeVector3( (Vector3)info.GetValue(source) ) );
 					}
+                    else if (info.GetValue(source).GetType() == typeof(Vector4))
+                    {
+                        PlayerPrefs.SetString(prefix + info.Name, SerializeVector4((Vector4)info.GetValue(source)));
+                    }
+                    else if (info.GetValue(source).GetType() == typeof(Color))
+                    {
+                        PlayerPrefs.SetString(prefix + info.Name, SerializeVector4((Color)info.GetValue(source)));
+                    }
 					else 
 					{
-						PlayerPrefs.SetString( info.Name, (string)info.GetValue(Instance) );
+                        PlayerPrefs.SetString( prefix + info.Name, (string)info.GetValue(source) );
 					}
 				}
 			}
-			VPETSettings.Instance.msg = "Save User Preferences.";
 			PlayerPrefs.Save();
 		}
 	
@@ -347,10 +375,28 @@ namespace vpet
 			}
 		}
 
+        public static string SerializeVector4(Vector4 vec)
+        {
+            return String.Format("{0} {1} {2} {3}", vec.x, vec.y, vec.z, vec.w);
+        }
+
+        public static Vector4 DeserializeVector4(string vecString)
+        {
+            string[] parts = vecString.Split(' ');
+            try
+            {
+                return new Vector4(float.Parse(parts[0]), float.Parse(parts[1]), float.Parse(parts[2]), float.Parse(parts[3]));
+            }
+            catch
+            {
+                return Vector4.zero;
+            }
+        }
 
 }
 
-    internal class ConfigAttribute : Attribute
+    public class ConfigAttribute : Attribute
     {
     }
+
 }

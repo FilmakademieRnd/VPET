@@ -47,7 +47,7 @@ namespace vpet
                 textureFormat == TextureFormat.DXT5 ||
                 textureFormat == TextureFormat.PVRTC_RGBA2 ||
                 textureFormat == TextureFormat.PVRTC_RGBA4 ||
-                textureFormat == TextureFormat.ATC_RGBA8);
+                textureFormat == TextureFormat.ETC2_RGBA8);
         }
 	
 

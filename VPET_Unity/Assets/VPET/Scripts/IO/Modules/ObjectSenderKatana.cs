@@ -29,6 +29,9 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine;
+using NetMQ;
+using NetMQ.Sockets;
+using System.Threading;
 
 
 namespace vpet
@@ -51,7 +54,44 @@ namespace vpet
 		private string camTransRotTemplate = "";
 		private string lightIntensityColorTemplate = "";
 
-		ObjectSenderKatana()
+        protected PushSocket sender = null;
+
+        public override void Publisher()
+        {
+            AsyncIO.ForceDotNet.Force();
+
+            sender = new PushSocket();
+            sender.Connect("tcp://" + IP + ":" + Port);
+            Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
+            while (IsRunning)
+            {
+                Thread.Sleep(1);
+                if (sendMessageQueue.Count > 0)
+                {
+                    // Debug.Log("Send: " + sendMessageQueue[0]);
+                    sender.SendFrame(sendMessageQueue[0], false); // true not wait
+                    sendMessageQueue.RemoveAt(0);
+                }
+            }
+
+            // disconnectClose();	
+        }
+
+        protected override void disconnectClose()
+        {
+            if (sender != null)
+            {
+                // TODO: check first if closed
+                sender.Disconnect("tcp://" + IP + ":" + Port);
+                sender.Close();
+                sender.Dispose();
+                sender = null;
+            }
+            //NetMQConfig.Cleanup();
+        }
+
+
+        ObjectSenderKatana()
 		{	
 			// override port
 			Port = "5555";
@@ -76,6 +116,9 @@ namespace vpet
 
 		public override void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args)
 		{
+            // HACK check missing '/' upstream
+            dagPath = "/" + dagPath;
+
 	        if ( sceneObject.GetType() == typeof(SceneObject) )
 			{
 				if (nodeType == NodeType.LIGHT)

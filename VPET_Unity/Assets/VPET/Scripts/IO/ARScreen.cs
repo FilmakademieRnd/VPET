@@ -83,6 +83,11 @@ namespace vpet
 		{
 			if (m_ClearMaterial == null)
 				m_ClearMaterial = Resources.Load ("VPET/Materials/YUVMaterial", typeof(Material)) as Material;
+#if UNITY_EDITOR
+            	// assign temp texture in eitor mode
+				SetYTexure((Texture2D)m_ClearMaterial.GetTexture("_textureY"));
+				SetUVTexure((Texture2D)m_ClearMaterial.GetTexture("_textureCbCr"));
+#endif
 		}
 	}
 }

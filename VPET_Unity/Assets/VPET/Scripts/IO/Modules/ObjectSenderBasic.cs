@@ -27,6 +27,10 @@ https://opensource.org/licenses/MIT
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NetMQ;
+using NetMQ.Sockets;
+using System.Threading;
+
 
 namespace vpet
 {
@@ -41,8 +45,44 @@ namespace vpet
 	        }
 	    }
 
+        protected PublisherSocket sender = null;
 
-		public override void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args)
+        public override void Publisher()
+        {
+            AsyncIO.ForceDotNet.Force();
+
+            sender = new PublisherSocket();
+            sender.Connect("tcp://" + IP + ":" + Port);
+            Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
+            while (IsRunning)
+            {
+                Thread.Sleep(1);
+                if (sendMessageQueue.Count > 0)
+                {
+                    // Debug.Log("Send: " + sendMessageQueue[0]);
+                    sender.SendFrame(sendMessageQueue[0], false); // true not wait
+                    sendMessageQueue.RemoveAt(0);
+                }
+            }
+
+            // disconnectClose();	
+        }
+
+        protected override void disconnectClose()
+        {
+            if (sender != null)
+            {
+                // TODO: check first if closed
+                sender.Disconnect("tcp://" + IP + ":" + Port);
+                sender.Close();
+                sender.Dispose();
+                sender = null;
+            }
+            //NetMQConfig.Cleanup();
+        }
+
+
+        public override void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args)
 		{
 			bool onlyToClientsWithoutPhysics = false;
 

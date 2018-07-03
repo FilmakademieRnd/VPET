@@ -424,6 +424,7 @@ namespace vpet
         {
             activeMode = Mode.idle;
             helpActive = false;
+            arMode = false;
 
             //find & attach cached GameObjects
             ui = GameObject.Find("UI").GetComponent<UI>();

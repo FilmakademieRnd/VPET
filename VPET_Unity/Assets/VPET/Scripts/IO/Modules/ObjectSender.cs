@@ -51,7 +51,6 @@ namespace vpet
 		protected string IP = null;
 		protected string Port = null;
 
-		protected PublisherSocket sender = null;
 
 		protected List<string> sendMessageQueue = new List<string>(); 
 
@@ -75,38 +74,12 @@ namespace vpet
 			disconnectClose();
 		}
 
-		public void Publisher()
+		public virtual void Publisher()
 		{
-			AsyncIO.ForceDotNet.Force();
-	
-	        sender = new PublisherSocket();
-	        sender.Connect("tcp://" + IP + ":" + Port);
-			Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
-	        while (IsRunning) 
-	        {
-				Thread.Sleep (10);
-	            if ( sendMessageQueue.Count > 0 )
-	            {
-					// Debug.Log("Send: " + sendMessageQueue[0]);
-	                sender.SendFrame(sendMessageQueue[0], false); // true not wait
-	                sendMessageQueue.RemoveAt(0);
-	            }
-	        }
-
-			// disconnectClose();	
 		}
 
-		private void disconnectClose()
+		protected virtual void disconnectClose()
 		{
-			if (sender != null)
-			{
-				// TODO: check first if closed
-				sender.Disconnect("tcp://" + IP + ":" + Port);
-				sender.Close();
-				sender.Dispose();
-				sender = null;
-			}
-			//NetMQConfig.Cleanup();
 		}
 
 	}

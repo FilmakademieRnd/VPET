@@ -43,7 +43,17 @@ namespace vpet
 
 	public partial class MainController : MonoBehaviour
     {
-		public bool arMode = false;
+
+
+        public Material matteMaterial;
+
+
+
+        public GameObject arCoverSphere;
+
+
+
+		public bool arMode;
 
 #if USE_ARKIT
 		private GameObject m_anchorModifier = null;
@@ -234,6 +244,14 @@ namespace vpet
 			}
 			*/
 		}
+
+        //!
+        //! turn on/off own camera position and rotation publishing
+        //!
+        public void togglePubCam()
+        {
+            serverAdapter.publishCam = !serverAdapter.publishCam;
+        }
 	
 	    //!
 	    //! toggle ignore rotation
@@ -520,7 +538,6 @@ namespace vpet
 			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
 			GameObject rootScene = SceneLoader.scnRoot;
 
-
 			if (m_anchorPrefab == null)
 				m_anchorPrefab = Resources.Load ("VPET/Prefabs/AnchorModifier", typeof(GameObject)) as GameObject;
 
@@ -539,6 +556,7 @@ namespace vpet
                     tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
                 tangoArScreen.enabled = true;
 #elif USE_ARKIT
+
 				// reset camera
 				cameraAdapter.globalCameraReset();
 				resetCameraOffset();
@@ -548,15 +566,20 @@ namespace vpet
 				Camera.main.nearClipPlane = 0.1f;
 				Camera.main.farClipPlane = 100000;
 				// enable video background
+
 				ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
                 if (arkitScreen == null) 
 					arkitScreen = Camera.main.gameObject.AddComponent<ARScreen>();
+				
+				
 				if (arKit)
 				{
 					ARKitController arController = arKit.GetComponent<ARKitController>();
 					if (arController)
 						arController.setARMode(true);
 				}
+				
+
 				// enable plane alignment
 				if (root)
 				{
@@ -585,13 +608,12 @@ namespace vpet
 					if (helper)
 						m_anchorModifier.transform.SetParent(helper.transform);
 				}
-
-				ui.hideConfigWidget();
-
+                ui.hideConfigWidget();
 				//hide scene while placing AR anchor
 				rootScene.SetActive(false);
 				arConfigWidget.SetActive(true);
 #endif
+
             }
             else
             {
@@ -631,8 +653,62 @@ namespace vpet
             }
 
             hasUpdatedProjectionMatrix = true;
+
         }
-        
+
+#if USE_ARKIT
+		public void ToggleARKeyMode(bool active)
+		{
+			ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
+            if (arkitScreen == null) 
+				return;
+
+			Shader shader = Shader.Find("VPET/ARCameraShader");
+			if (active)
+				shader = Shader.Find("VPET/ARCameraShaderChromaKey");
+
+			if (shader)
+				arkitScreen.m_ClearMaterial.shader = shader;
+		}
+#endif
+
+
+
+#if USE_ARKIT
+        public void ToggleARMatteMode(bool active)
+        {
+            
+            ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
+            if (arkitScreen == null)
+                return;
+
+            if (arCoverSphere != null)
+                arCoverSphere.SetActive(active);
+
+            if (active)
+            {
+                if (matteMaterial != null)
+                {
+                    matteMaterial.SetTexture("_textureY", arkitScreen.m_ClearMaterial.GetTexture("_textureY"));
+                    matteMaterial.SetTexture("_textureCbCr", arkitScreen.m_ClearMaterial.GetTexture("_textureCbCr"));
+                    matteMaterial.SetMatrix("_DisplayTransform", arkitScreen.m_ClearMaterial.GetMatrix("_DisplayTransform"));
+                }
+            }
+            else
+            {
+                if (matteMaterial != null)
+                {
+                    matteMaterial.SetTexture("_textureY", null);
+                    matteMaterial.SetTexture("_textureCbCr", null);
+                    // matteMaterial.SetMatrix("_DisplayTransform", arkitScreen.m_ClearMaterial.GetMatrix("_DisplayTransform"));
+                }
+            }
+
+
+        }
+#endif
+
+
         public void UpdateProjectionMatrixSecondaryCameras()
         {
             foreach( Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>() )
@@ -706,6 +782,47 @@ namespace vpet
                 animationController.setKeyFrame();
             }
         }
+
+#if USE_ARKIT
+		public void setARKeyDepth(float v)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Depth", v);
+            }
+		}
+
+		public void setARKeyColor(Color c)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetColor("_KeyColor", c);
+            }	
+
+            if (matteMaterial)
+                matteMaterial.SetColor("_KeyColor", c);
+		}
+
+		public void setARKeyRadius(float v)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Radius", v);
+            }						
+            if (matteMaterial)
+                matteMaterial.SetFloat("_Radius", v);
+		}
+
+		public void setARKeyThreshold(float v)
+		{
+            if (Camera.main.GetComponent<ARScreen>() != null)
+            {
+                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Threshold", v);
+            }						
+            if (matteMaterial)
+                matteMaterial.SetFloat("_Threshold", v);
+		}
+#endif
 
     }
 }
