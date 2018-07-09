@@ -10,6 +10,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += \
+    ../src/objectStateHandler.cpp \
     ../src/zeroMQHandler.cpp \
     ../src/transformationrecorder.cpp \
     ../src/recordWriter.cpp \
@@ -25,7 +26,8 @@ HEADERS += \
     ../include/printer.h \
     ../include/ncamsimpleclient.h \
     ../include/ncamadapter.h \
-    ../include/mainapp.h
+    ../include/mainapp.h \
+    ../include/objectStateHandler.h
 
 INCLUDEPATH += ../include \
             ../zeromq-4.2.3/include \
