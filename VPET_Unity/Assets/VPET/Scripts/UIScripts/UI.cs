@@ -107,7 +107,7 @@ namespace vpet
 	    //!
 	    //! Is the main menu button active?
 	    //!
-	    private bool mainMenuActive = false;
+	    // private bool mainMenuActive = false;
 	
         private layouts layoutUI = layouts.EDIT;
 	

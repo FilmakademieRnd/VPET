@@ -39,8 +39,8 @@ namespace vpet
 	public class ObjectSenderKatana: ObjectSender
 	{
 
-		protected static readonly ObjectSenderKatana instance = new ObjectSenderKatana();
-	    public static ObjectSender Instance
+		protected static readonly new ObjectSenderKatana instance = new ObjectSenderKatana();
+	    public static new ObjectSender Instance
 	    {
 	        get
 	        {

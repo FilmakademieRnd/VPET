@@ -41,10 +41,8 @@ namespace vpet
 			{
 			case CameraObject.CameraParameter.LENS:
 				return cameraAdapter.Fov.vFovToLens();
-				break;
 			case CameraObject.CameraParameter.FOV:
 				return cameraAdapter.Fov;
-				break;
 			//case CameraObject.CameraParameter.APERTURE:
 			//	return cameraAdapter.Aperture;
 			//	break;

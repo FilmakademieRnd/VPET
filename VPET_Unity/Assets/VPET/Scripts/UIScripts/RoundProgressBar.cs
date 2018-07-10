@@ -71,10 +71,6 @@ namespace vpet
 	    //!
 		private bool animated				= true;
 	    //!
-	    //! current animation value, will increase by animationSpeed and clamped betweem 0 and 1 by default
-	    //!
-		private float animation				= 0f;
-	    //!
 	    //! amount the animation value is increased per second 
 	    //!
 		public float animationSpeed		= 100f;

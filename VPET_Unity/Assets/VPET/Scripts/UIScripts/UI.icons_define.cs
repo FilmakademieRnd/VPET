@@ -24,6 +24,8 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
+#pragma warning disable 0649
+
 using UnityEngine;
 using System.Collections;
 

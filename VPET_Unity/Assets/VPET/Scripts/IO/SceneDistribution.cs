@@ -390,7 +390,6 @@ namespace vpet
 			{
 				if (location.gameObject.tag == "editable")
 	            {
-	                SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
 #if UNITY_EDITOR
                     // add recorder
                     if (sceneName != "" && shotName != "" && takeName != "")
@@ -420,7 +419,6 @@ namespace vpet
 
                     location.GetComponent<Light>().enabled = false;
 
-                    SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
 #if UNITY_EDITOR
                     // add recorder
                     if (sceneName != "" && shotName != "" && takeName != "")
@@ -445,7 +443,6 @@ namespace vpet
                     cameraInstance.transform.localScale = new Vector3(1, 1, 1);
                     cameraInstance.transform.localPosition = new Vector3(0, 0, -0.5f);
 
-                    SceneObjectServer scnObj = location.gameObject.AddComponent<SceneObjectServer>();
 #if UNITY_EDITOR
                     // add recorder
                     if (sceneName != "" && shotName != "" && takeName != "")

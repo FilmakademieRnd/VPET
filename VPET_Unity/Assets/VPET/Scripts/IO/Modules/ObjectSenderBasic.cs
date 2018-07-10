@@ -36,8 +36,8 @@ namespace vpet
 {
 	public class ObjectSenderBasic: ObjectSender
 	{
-		protected static readonly ObjectSenderBasic instance = new ObjectSenderBasic();
-	    public static ObjectSender Instance
+		protected static readonly new ObjectSenderBasic instance = new ObjectSenderBasic();
+	    public static new ObjectSender Instance
 	    {
 	        get
 	        {

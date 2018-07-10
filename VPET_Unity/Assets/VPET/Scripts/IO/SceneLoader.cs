@@ -543,9 +543,6 @@ namespace vpet
                 FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Key, BindingFlags.Instance | BindingFlags.Public);
                 Type propertyType = pair.Value.Value;
 
-                print(material.HasProperty(pair.Key));
-                print(fieldInfo);
-
                 if (material.HasProperty(pair.Key) && fieldInfo != null)
                 {
                     if (propertyType == typeof(int))
