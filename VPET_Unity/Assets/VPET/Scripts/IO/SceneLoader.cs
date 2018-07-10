@@ -28,6 +28,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 //!
 //! Script creating the scene received from the server (providing XML3D) within Unity 
@@ -503,6 +504,106 @@ namespace vpet
                     return true;
                 }
             }
+        }
+
+        public static void MapMaterialProperties(Material material, SceneNodeGeo nodeGeo)
+        {
+            //available parameters in this physically based standard shader:
+            // _Color                   diffuse color (color including alpha)
+            // _MainTex                 diffuse texture (2D texture)
+            // _MainTex_ST
+            // _Cutoff                  alpha cutoff
+            // _Glossiness              smoothness of surface
+            // _Metallic                matallic look of the material
+            // _MetallicGlossMap        metallic texture (2D texture)
+            // _BumpScale               scale of the bump map (float)
+            // _BumpMap                 bumpmap (2D texture)
+            // _Parallax                scale of height map
+            // _ParallaxMap             height map (2D texture)
+            // _OcclusionStrength       scale of occlusion
+            // _OcclusionMap            occlusionMap (2D texture)
+            // _EmissionColor           color of emission (color without alpha)
+            // _EmissionMap             emission strength map (2D texture)
+            // _DetailMask              detail mask (2D texture)
+            // _DetailAlbedoMap         detail diffuse texture (2D texture)
+            // _DetailAlbedoMap_ST
+            // _DetailNormalMap
+            // _DetailNormalMapScale    scale of detail normal map (float)
+            // _DetailAlbedoMap         detail normal map (2D texture)
+            // _UVSec                   UV Set for secondary textures (float)
+            // _Mode                    rendering mode (float) 0 -> Opaque , 1 -> Cutout , 2 -> Transparent
+            // _SrcBlend                source blend mode (enum is UnityEngine.Rendering.BlendMode)
+            // _DstBlend                destination blend mode (enum is UnityEngine.Rendering.BlendMode)
+            // test texture
+            // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
+            // Texture2D texture = www.texture;
+
+            foreach (KeyValuePair<string, KeyValuePair<string, Type>> pair in VPETSettings.ShaderPropertyMap)
+            {
+                FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Key, BindingFlags.Instance | BindingFlags.Public);
+                Type propertyType = pair.Value.Value;
+
+                print(material.HasProperty(pair.Key));
+                print(fieldInfo);
+
+                if (material.HasProperty(pair.Key) && fieldInfo != null)
+                {
+                    if (propertyType == typeof(int))
+                    {
+                        material.SetInt(pair.Key, (int)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), propertyType));
+                    }
+                    else if (propertyType == typeof(float))
+                    {
+                        material.SetFloat(pair.Key, (float)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), propertyType));
+                    }
+                    else if (propertyType == typeof(Color))
+                    {
+                        float[] v = (float[])fieldInfo.GetValue(nodeGeo);
+                        float a = v.Length > 3 ? v[3] : 1.0f;
+                        Color c = new Color(v[0], v[1], v[2], a);
+                        material.SetColor(pair.Key, c);
+                    }
+                    else if (propertyType == typeof(Texture))
+                    {
+                        int id = (int)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int));
+                                                         
+                        if (id > -1 && id < SceneLoader.SceneTextureList.Count)
+                        {
+                            Texture2D texRef = SceneLoader.SceneTextureList[nodeGeo.textureId];
+
+                            material.SetTexture(pair.Key, texRef);
+
+                            // set materials render mode to fate to senable alpha blending
+                            // TODO these values should be part of the geo node or material package !?
+                            if (Textures.hasAlpha(texRef))
+                            {
+                                // set rendering mode
+                                material.SetFloat("_Mode", 1);
+                                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                                material.SetInt("_ZWrite", 1);
+                                material.EnableKeyword("_ALPHATEST_ON");
+                                material.DisableKeyword("_ALPHABLEND_ON");
+                                material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                                material.renderQueue = 2450;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Can not map material property " + pair.Key);
+                    }
+
+
+                    // TODO implement the rest
+                    // .
+                    // .
+                    // .
+                }
+
+            }
+
         }
 
 

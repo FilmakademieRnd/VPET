@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System;
 using System.Text;
 using UnityEngine;
+using System.Reflection;
 
 namespace vpet
 {
@@ -110,44 +111,15 @@ namespace vpet
 	    //!
 	    public static GameObject CreateObject( SceneNodeGeo nodeGeo, Transform parentTransform )
 	    {
-
-            // Material
+            // Material Properties and Textures
             Material mat;
-            //available parameters in this physically based shader:
-            // _Color                   diffuse color (color including alpha)
-            // _MainTex                 diffuse texture (2D texture)
-            // _Cutoff                  alpha cutoff
-            // _Glossiness              smoothness of surface
-            // _Metallic                matallic look of the material
-            // _MetallicGlossMap        metallic texture (2D texture)
-            // _BumpScale               scale of the bump map (float)
-            // _BumpMap                 bumpmap (2D texture)
-            // _Parallax                scale of height map
-            // _ParallaxMap             height map (2D texture)
-            // _OcclusionStrength       scale of occlusion
-            // _OcclusionMap            occlusionMap (2D texture)
-            // _EmissionColor           color of emission (color without alpha)
-            // _EmissionMap             emission strength map (2D texture)
-            // _DetailMask              detail mask (2D texture)
-            // _DetailAlbedoMap         detail diffuse texture (2D texture)
-            // _DetailNormalMapScale    scale of detail normal map (float)
-            // _DetailAlbedoMap         detail normal map (2D texture)
-            // _UVSec                   UV Set for secondary textures (float)
-            // _Mode                    rendering mode (float) 0 -> Opaque , 1 -> Cutout , 2 -> Transparent
-            // _SrcBlend                source blend mode (enum is UnityEngine.Rendering.BlendMode)
-            // _DstBlend                destination blend mode (enum is UnityEngine.Rendering.BlendMode)
-            // test texture
-            // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
-            // Texture2D texture = www.texture;
-            // meshRenderer.material.SetTexture("_MainTex",texture);
-
 #if TRUNK
-            // load spacial shader if needed
+            // assign material from material list
             if (nodeGeo.materialId > -1 && nodeGeo.materialId < SceneLoader.SceneMaterialList.Count)
             {
                 mat = SceneLoader.SceneMaterialList[nodeGeo.materialId];
             }
-            else
+            else // or set standard
             {
                 mat = new Material( Shader.Find( "Standard" ) );
             }
@@ -155,48 +127,17 @@ namespace vpet
             mat = new Material( Shader.Find( "Standard" ) );
 #endif
 
-            // Material Properties
-            mat.color = new Color( nodeGeo.color[0], nodeGeo.color[1], nodeGeo.color[2] );
-            if (mat.HasProperty("_Glossiness"))
-                mat.SetFloat( "_Glossiness", nodeGeo.roughness );
+            // map properties
+            SceneLoader.MapMaterialProperties(mat, nodeGeo);
 
-            // set rendering mode
-            //mat.SetFloat("_Mode", 1);
-
-	        // Texture
-	        if (nodeGeo.textureId > -1 && nodeGeo.textureId < SceneLoader.SceneTextureList.Count)
-	        {
-                Texture2D texRef = SceneLoader.SceneTextureList[nodeGeo.textureId];
-
-                mat.SetTexture("_MainTex", texRef);
-
-                // set materials render mode to fate to senable alpha blending
-                if (Textures.hasAlpha(texRef))
-                {
-                    mat.SetFloat("_Mode", 1);
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                    mat.SetInt("_ZWrite", 1);
-                    mat.EnableKeyword("_ALPHATEST_ON");
-                    mat.DisableKeyword("_ALPHABLEND_ON");
-                    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.renderQueue = 2450;
-                }
-            }
-
-            // Tranform / convert handiness
+            // Transform / convert handiness
             Vector3 pos = new Vector3( nodeGeo.position[0], nodeGeo.position[1], nodeGeo.position[2] );
-	        //print( "Position: " + pos );
-	        // Rotation / convert handiness
-	        Quaternion rot = new Quaternion( nodeGeo.rotation[0], nodeGeo.rotation[1], nodeGeo.rotation[2], nodeGeo.rotation[3] );
-	        //print("rot: " + rot.ToString());
-	
 
+            // Rotation / convert handiness
+	        Quaternion rot = new Quaternion( nodeGeo.rotation[0], nodeGeo.rotation[1], nodeGeo.rotation[2], nodeGeo.rotation[3] );
 	
 	        // Scale
 	        Vector3 scl = new Vector3( nodeGeo.scale[0], nodeGeo.scale[1], nodeGeo.scale[2] );
-	        //print( "Scale: " + scl );
-	
 	
 	        // set up object basics
 	        GameObject objMain = new GameObject();
@@ -205,8 +146,6 @@ namespace vpet
 	        // Add Material
 	        MeshRenderer meshRenderer = objMain.AddComponent<MeshRenderer>();
 	        meshRenderer.material = mat;
-	
-	
 	
 	        // Add Mesh
 	        if ( nodeGeo.geoId > -1 && nodeGeo.geoId < SceneLoader.SceneMeshList.Count )
@@ -223,7 +162,6 @@ namespace vpet
 	                subMeshRenderer.material = mat;
 	                subObj.transform.parent = objMain.transform;
 	            }
-	
 	        }
 	
 	        //place object
@@ -231,8 +169,6 @@ namespace vpet
 	        objMain.transform.localPosition =  pos; // new Vector3( 0, 0, 0 );
 	        objMain.transform.localRotation =   rot; //  Quaternion.identity;
 	        objMain.transform.localScale =    scl; // new Vector3( 1, 1, 1 );
-	        //objMain.layer = 0;
-	
 
 	        return objMain;
 	

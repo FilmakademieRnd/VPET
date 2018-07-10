@@ -105,8 +105,15 @@ namespace vpet
         public float lightIntensityFactor = 1; // liveview 50;
         public int textureBinaryType =1;
         public float sceneScale = 1f;
-	
-	    // Explicit static constructor to tell C# compiler
+
+        // Dictionary< Name of the property in the material (target), KeyValuePair< name of the property at the node(source), type of target value > >
+        public static Dictionary<string, KeyValuePair<string, Type>> ShaderPropertyMap = new Dictionary<string, KeyValuePair<string, Type> > {
+            {"_Color", new KeyValuePair<string, Type> ("color", typeof(Color))},
+            {"_Glossiness", new KeyValuePair<string, Type> ("roughness", typeof(float))},
+            {"_MainTex", new KeyValuePair<string, Type> ("textureId", typeof(Texture))}
+        };
+
+   	    // Explicit static constructor to tell C# compiler
 	    // not to mark type as beforefieldinit
 	    static VPETSettings() { 
 		}
@@ -127,7 +134,7 @@ namespace vpet
                 canvasScaleFactor = w2 / w;
                 canvasAspectScaleFactor = ((w / h) / (w2 / h2));
             }
-			}
+		}
 	
 	    public static VPETSettings Instance
 	    {
@@ -136,8 +143,6 @@ namespace vpet
 	            return instance;
 	        }
 	    }
-	
-	
 	
 	    public static void mapValuesFromConfigFile( string configFilePath)
 	    {
