@@ -316,8 +316,8 @@ namespace vpet
 						CameraObject camScript = camObject.GetComponent<CameraObject> ();
 						if (camScript != null) {
 							Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
-							Camera.main.nearClipPlane = camScript.near;
-							Camera.main.farClipPlane = camScript.far;
+                            Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale;
+                            Camera.main.farClipPlane = camScript.far * VPETSettings.Instance.sceneScale;
 							UpdatePropertiesSecondaryCameras ();
 						}
 						// set properties for DOF component from CameraObject
@@ -709,7 +709,7 @@ namespace vpet
 #endif
 
 
-        public void UpdateProjectionMatrixSecondaryCameras()
+        private void UpdateProjectionMatrixSecondaryCameras()
         {
             foreach( Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>() )
             {
@@ -773,6 +773,37 @@ namespace vpet
 #endif
 			VPETSettings.Instance.trackingScale = v;
 		}
+
+
+        public void SetSceneScale(float v)
+        {
+
+
+            // scale the scene
+            SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
+
+            float sceneScalePrevoius = VPETSettings.Instance.sceneScale;
+
+            // update light params
+            foreach (GameObject obj in SceneLoader.SelectableLights)
+            {
+                VPETSettings.Instance.sceneScale = sceneScalePrevoius;
+                //float lightIntensity = obj.GetComponent<SceneObject>().getLightIntensity();
+                float lightRange = obj.GetComponent<SceneObject>().getLightRange();
+                VPETSettings.Instance.sceneScale = v;
+                //obj.GetComponent<SceneObject>().setLightIntensity(lightIntensity);
+                obj.GetComponent<SceneObject>().setLightRange(lightRange);
+
+                // scale the light transform to resize gobo
+                obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
+            }
+
+            // update camera params
+            Camera.main.nearClipPlane = Camera.main.nearClipPlane / sceneScalePrevoius * VPETSettings.Instance.sceneScale;
+            Camera.main.farClipPlane = Camera.main.farClipPlane / sceneScalePrevoius * VPETSettings.Instance.sceneScale;
+            UpdatePropertiesSecondaryCameras();
+        }
+
 
         public void SliderValueChanged( float x )
         {

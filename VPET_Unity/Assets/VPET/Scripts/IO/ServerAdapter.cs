@@ -620,6 +620,7 @@ namespace vpet
                                 if (splitMessage.Length == 4)
                                     try
                                     {
+                                        // TODO consider lightIntensityFactor
                                         obj.GetChild(0).GetComponent<Light>().intensity = float.Parse(splitMessage[3]);
                                     }
                                     catch { }
@@ -636,6 +637,7 @@ namespace vpet
                                 if (splitMessage.Length == 4)
                                     try
                                     {
+                                        // TODO convider sceneScale
                                         obj.GetChild(0).GetComponent<Light>().range = float.Parse(splitMessage[3]);
                                     }
                                     catch { }

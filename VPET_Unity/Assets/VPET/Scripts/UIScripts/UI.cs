@@ -169,9 +169,7 @@ namespace vpet
 			print("Screen.height " + Screen.height);
 			print("VPETSettings.Instance.canvasHalfWidth " + VPETSettings.Instance.canvasHalfWidth);
 			print("VPETSettings.Instance.canvasHalfHeight " + VPETSettings.Instance.canvasHalfHeight);
-	        print("VPETSettings.Instance.canvasScaleFactor " + VPETSettings.Instance.canvasScaleFactor);
 	        print("VPETSettings.Instance.canvasAspectScaleFactor " + VPETSettings.Instance.canvasAspectScaleFactor);
-			print("VPETSettings.Instance.canvasScale " + VPETSettings.Instance.canvasScale);
 	
 	    }
 	
@@ -270,7 +268,7 @@ namespace vpet
                 trackingScaleSliderUI.gameObject.SetActive(true);
                 // tracking Scale Listener
 				configWidget.TrackingScaleChangedEvent.AddListener(mainController.setTrackingScale);
-				configWidget.OnSceneScaleChanged.AddListener(trackingController.scaleMovement);
+                configWidget.OnSceneScaleChangedEvent.AddListener(mainController.SetSceneScale);
 				configWidget.ToggleAREvent.AddListener(mainController.ToggleArMode);
 				// ar key connects
 				configWidget.KeyDepthChangedEvent.AddListener(mainController.setARKeyDepth);

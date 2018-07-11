@@ -99,12 +99,13 @@ namespace vpet
         
         public int canvasHalfWidth = 400;
 	    public int canvasHalfHeight = 300;
-	    public float canvasScaleFactor = 1f;
 	    public float canvasAspectScaleFactor = 1f;
-		public float canvasScale = 1f;
         public float lightIntensityFactor = 1; // liveview 50;
         public int textureBinaryType =1;
+
+
         public float sceneScale = 1f;
+
 
         // Dictionary< Name of the property in the material (target), KeyValuePair< name of the property at the node(source), type of target value > >
         public static Dictionary<string, KeyValuePair<string, Type>> ShaderPropertyMap = new Dictionary<string, KeyValuePair<string, Type> > {
@@ -131,7 +132,6 @@ namespace vpet
                 float h = canvasScaler.referenceResolution.y;
                 float w2 = Screen.width;
                 float h2 = Screen.height;
-                canvasScaleFactor = w2 / w;
                 canvasAspectScaleFactor = ((w / h) / (w2 / h2));
             }
 		}

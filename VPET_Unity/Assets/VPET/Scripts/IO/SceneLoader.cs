@@ -106,6 +106,7 @@ namespace vpet
             SceneMeshList.Clear();
             SceneCameraList.Clear();
             geometryPassiveList.Clear();
+            SelectableLights.Clear();
 
 
             if (scnRoot != null)

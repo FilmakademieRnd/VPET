@@ -603,7 +603,7 @@ namespace vpet
 		//!
 		public float getLightIntensity()
 		{
-			if (sourceLight != null) return sourceLight.intensity / VPETSettings.Instance.lightIntensityFactor;
+            if (sourceLight != null) return sourceLight.intensity / VPETSettings.Instance.lightIntensityFactor; // / VPETSettings.Instance.sceneScale;
 			return 0f;
 		}
 
@@ -615,7 +615,7 @@ namespace vpet
 		{
 			if (isPointLight || isSpotLight)
 			{
-				return sourceLight.range;
+                return sourceLight.range / VPETSettings.Instance.sceneScale;
 			}
 			return float.MaxValue;
 		}
@@ -966,12 +966,13 @@ namespace vpet
 			}
 		}
 
-
+        /*
         public float LightIntensity
         {
             get { return getLightIntensity(); }
             set { setLightIntensity(value);  }
         }
+        */
 
 		//!
 		//! set the light intensity of this object, if it is a light
@@ -981,7 +982,7 @@ namespace vpet
 		{
 			if (isDirectionalLight || isPointLight || isSpotLight)
 			{
-				sourceLight.intensity = intensity * VPETSettings.Instance.lightIntensityFactor;
+                sourceLight.intensity = intensity * VPETSettings.Instance.lightIntensityFactor; // * VPETSettings.Instance.sceneScale;
 				lastModifiedLightParameter = LightParameter.Intensity;
 				if (mainController.liveMode)
 				{
@@ -1000,7 +1001,7 @@ namespace vpet
 		{
 			if (isPointLight || isSpotLight)
 			{
-				sourceLight.range = range;
+                sourceLight.range = range * VPETSettings.Instance.sceneScale;
 				lastModifiedLightParameter = LightParameter.Range;
 				if (mainController.liveMode)
 				{
@@ -1021,6 +1022,8 @@ namespace vpet
 				lastModifiedLightParameter = LightParameter.Range;
 				if (mainController.liveMode)
 				{
+                    // TODO consider sceneScale
+                    // TODO send range!
 					// serverAdapter.sendLightRange(target, sourceLight.range);
 				}
 			}
