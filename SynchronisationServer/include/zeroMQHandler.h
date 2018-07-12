@@ -72,10 +72,8 @@ private:
     QString IPadress;
 
 	//map of last states
-	QMap<QString, QString> objectStateMap;
+    QMap<QString, QString> objectStateMap;
 
-	// the last message
-	zmq::message_t message_;				 
 signals:
     //signal emitted when process requests to work
     void startRequested();

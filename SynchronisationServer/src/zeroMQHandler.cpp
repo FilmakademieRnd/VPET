@@ -91,8 +91,8 @@ void ZeroMQHandler::run()
 
         socket_->recv(&message);
 
-        QString stringMessage = QString::fromStdString(std::string(static_cast<char*>(message_.data()), message_.size()));
-		QString key = stringMessage.section('|', 1, 2);
+        QString stringMessage = QString::fromStdString(std::string(static_cast<char*>(message.data()), message.size()));
+        QString key = stringMessage.section('|', 1, 2);
 		if (key == "udOb") {
 			foreach(const QString &objectState, objectStateMap) {
 				const QByteArray osByteArray = objectState.toLocal8Bit();
@@ -102,7 +102,7 @@ void ZeroMQHandler::run()
 		else {
             if(key.at(0) != 'l')
 				objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
-            sender_->send(message_);
+            sender_->send(message);
 		}
 
         if (stop) {
