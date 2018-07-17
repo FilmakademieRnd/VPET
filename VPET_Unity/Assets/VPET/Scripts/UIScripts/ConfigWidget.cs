@@ -362,6 +362,7 @@ namespace vpet
 				}
 			}
 
+#if USE_TANGO || USE_ARKIT
             // scene scale
             childWidget = this.transform.Find("TS_Slider/TrackingScale_slider");
             if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tracking_Scale.", this.GetType()));
@@ -375,6 +376,7 @@ namespace vpet
                     trackingScaleSlider.onValueChanged.AddListener(this.onSceneScaleChanged);
                 }
             }
+#endif
 
         }
 
@@ -439,6 +441,8 @@ namespace vpet
                 ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
 
+#if USE_TANGO || USE_ARKIT
+
             // scene Scale
             if (trackingScaleSlider)
             {
@@ -446,7 +450,6 @@ namespace vpet
                 trackingScaleSlider.transform.parent.Find("TrackingScale_Value").GetComponent<Text>().text = VPETSettings.Instance.sceneScale.ToString("f1");
             }
 
-#if USE_TANGO || USE_ARKIT
             // arkey settings
             if (arkeyRadiusSlider)
             {
@@ -642,7 +645,6 @@ namespace vpet
             sliderValueText.text = v.ToString("n1");
             TrackingScaleChangedEvent.Invoke(v);
         }
-#endif
 
         private void onSceneScaleChanged(float v)
         {
@@ -650,7 +652,7 @@ namespace vpet
             Text sliderValueText = trackingScaleSlider.transform.Find("../TrackingScale_Value").GetComponent<Text>();
             sliderValueText.text = v.ToString("n1");
         }
-
+#endif
     }
 
 }

@@ -794,8 +794,7 @@ namespace vpet
                 //obj.GetComponent<SceneObject>().setLightIntensity(lightIntensity);
                 obj.GetComponent<SceneObject>().setLightRange(lightRange);
 
-                // scale the light transform to resize gobo
-                obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
+                //VPETSettings.Instance.sceneScaleInverse = 1.0f / v;
             }
 
             // update camera params
