@@ -372,7 +372,7 @@ namespace vpet
                         if (joystickAdapter.moveCameraActive && !mainController.arMode)
                             mainController.moveCameraObject(val); 
                         if (joystickAdapter.moveObjectActive)
-                            mainController.translateSelectionAbsolute(val);
+                            mainController.translateSelectionJoystick(val);
                         if (joystickAdapter.rotateObjectActive)
                             mainController.rotateSelectionJoystick(val);
                         if (joystickAdapter.scaleObjectActive)

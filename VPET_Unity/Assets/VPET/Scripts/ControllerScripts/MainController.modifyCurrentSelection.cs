@@ -73,15 +73,24 @@ namespace vpet
 	        }
 	    }
         //!
-        //! translate currently selected object
+        //! translate currently selected object with joystick
         //! @param      translation     absolute translation beeing applied on current selection
         //!
-        public void translateSelectionAbsolute(Vector3 translation)
+        public void translateSelectionJoystick(Vector3 translation)
         {
             if (currentSelection)
-            {
-                Vector3 finalTranslation = currentSelection.position + Vector3.Scale(translation, axisLocker);
-
+            {                
+                if (translation.x == 0 && translation.y == 0)
+                    axisLocker = new Vector3(0, 0, 1);
+                else if (translation.x == 0 && translation.z == 0)
+                    axisLocker = new Vector3(0, 1, 0);
+                else if (translation.y == 0 && translation.z == 0)
+                    axisLocker = new Vector3(1, 0, 0);
+                else 
+                    axisLocker = new Vector3(1, 0, 1);
+                
+                Vector3 finalTranslation = currentSelection.rotation * Vector3.Scale(Quaternion.Inverse(currentSelection.rotation) * (translation), axisLocker) + currentSelection.position; 
+                
                 SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
                 if (sceneObject)
                     sceneObject.translate(finalTranslation);
@@ -139,8 +148,8 @@ namespace vpet
                 Vector3 v1 = (currentSelection.position - begin).normalized;
                 Vector3 v2 = (currentSelection.position - end).normalized;
                 float angle = Vector3.SignedAngle(v1, v2, helperPlane.normal);
-                Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);
-                
+                Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);                
+
                 lineRenderer.positionCount = 4;
                 lineRenderer.SetPosition(0, currentSelection.position);
                 lineRenderer.SetPosition(1, begin);
@@ -158,8 +167,8 @@ namespace vpet
         //!
         public void rotateSelectionJoystick(Vector3 end)
         {
-            if (currentSelection)            
-                currentSelection.GetComponent<SceneObject>().transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
+            if (currentSelection)                 
+                currentSelection.GetComponent<SceneObject>().transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);                        
         }
         //!
         //! scale currently selected object via joystick
@@ -206,8 +215,17 @@ namespace vpet
         {
             if (currentSelection)
             {
-                // if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1)
-                //    scale = Vector3.one * scale.x;
+                if (scale.x == 0 && scale.y == 0)
+                    axisLocker = new Vector3(0, 0, 1);
+                else if (scale.x == 0 && scale.z == 0)
+                    axisLocker = new Vector3(0, 1, 0);
+                else if (scale.y == 0 && scale.z == 0)
+                    axisLocker = new Vector3(1, 0, 0);
+                else if (scale.x != 0 && scale.y != 0 && scale.z != 0)
+                {
+                    axisLocker = new Vector3(1, 1, 1);
+                    scale = Vector3.one * scale.x;
+                }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>())
                 {
                     currentSelection.transform.localScale += Vector3.Scale(scale, axisLocker) / 1000f;

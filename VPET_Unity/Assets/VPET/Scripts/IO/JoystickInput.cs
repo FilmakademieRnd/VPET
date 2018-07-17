@@ -34,8 +34,8 @@ Fire0 			|Positive Button: joystick button 0	|
 Fire1 			|Positive Button: joystick button 1	|
 Fire2 			|Positive Button: joystick button 2	|
 Fire3 			|Positive Button: joystick button 3	|
-DPAD_H  		|DPad Axis, 6th axis 				|
-DPAD_V  		|DPad Axis, 7th axis				|
+DPAD_H  		|Joystick Axis, 6th axis 			|
+DPAD_V  		|Joystick Axis, 7th axis			|
 LeftStick_X 	|Joystick Axis, X Axis				|
 LeftStick_Y 	|Joystick Axis, Y Axis, invert		|
 RightStick_X 	|Joystick Axis, 4th axis            |
@@ -400,9 +400,6 @@ namespace vpet
         //!
         public Vector3 getTranslation()
         {
-            if (moveObjectActive || rotateObjectActive || scaleObjectActive)
-                mainController.setAxisLockerXYZ();
-
             x_axis = Input.GetAxis("LeftStick_X") * speed;  // mapped to Joystick 1 X Axis
             z_axis = Input.GetAxis("LeftStick_Y") * speed;  // mapped to Joystick 1 Y Axis (inverted)
             y_axis = Input.GetAxis("RightStick_Y") * speed; // mapped to Joystick 1 5th Axis (inverted)
