@@ -347,6 +347,7 @@ namespace vpet
                 sendUpdateObjects();
                 // HACK
                 mainController.repositionCamera();
+                mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
                 // Camera.main.GetComponent<MoveCamera>().calibrate();
 
             }
@@ -656,6 +657,7 @@ namespace vpet
                                 try
                                 {
                                     obj.GetComponent<SceneObject>().locked = bool.Parse(splitMessage[3]);
+                                    obj.GetComponent<SceneObject>().updateLockView();
                                 }
                                 catch { }
                                 break;

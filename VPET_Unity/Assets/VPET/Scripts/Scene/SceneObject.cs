@@ -330,8 +330,8 @@ namespace vpet
             animData = AnimationData.Data;
 
 			//update initial parameters
-			initialPosition = target.position;
-			initialRotation = target.rotation;
+            initialPosition = target.localPosition;
+            initialRotation = target.localRotation;
 			initialScale = target.localScale;
 
 			lastPosition = initialPosition;
@@ -392,8 +392,7 @@ namespace vpet
                     col.isTrigger = true; // not interacting
                     LightIcon iconScript = lightTarget.Find("LightQuad").GetComponent<LightIcon>();
 					iconScript.TargetCollider = col;
-                    iconScript.TargetScale = target.lossyScale; // target.localScale;  
-
+                    iconScript.TargetScale = target.lossyScale; // target.localScale;
 				}
 				else
 				{
@@ -435,18 +434,18 @@ namespace vpet
 		//!
 		void Update () 
 		{
-			if (lastPosition != target.position)
+            if (lastPosition != target.localPosition)
 			{
-				lastPosition = target.position;
+                lastPosition = target.localPosition;
 				translationStillFrameCount = 0;
 			}
 			else if (translationStillFrameCount < 11)
 			{
 				translationStillFrameCount++;
 			}
-			if (lastRotation != target.rotation)
+            if (lastRotation != target.localRotation)
 			{
-				lastRotation = target.rotation;
+                lastRotation = target.localRotation;
 				rotationStillFrameCount = 0;
 			}
 			else if (rotationStillFrameCount < 11)
@@ -656,7 +655,7 @@ namespace vpet
 		//!
 		public void resetRotation()
 		{
-			target.rotation = initialRotation;
+            target.localRotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
 			serverAdapter.SendObjectUpdate(target );
 		}
@@ -666,7 +665,7 @@ namespace vpet
 		//!
 		public void resetPosition()
 		{
-			target.position = initialPosition;
+            target.localPosition = initialPosition;
 			//serverAdapter.sendTranslation(target, target.position);
 			serverAdapter.SendObjectUpdate(target );
 
@@ -690,11 +689,11 @@ namespace vpet
 		{
 			locked = false;
 			serverAdapter.sendLock(this.transform, false);
-			target.rotation = initialRotation;
+            target.localRotation = initialRotation;
 			//serverAdapter.sendRotation(target, target.rotation);
 			serverAdapter.SendObjectUpdate(target );
 
-			target.position = initialPosition;
+            target.localPosition = initialPosition;
 			//serverAdapter.sendTranslation(target, target.position);
 			serverAdapter.SendObjectUpdate(target );
 
@@ -775,7 +774,7 @@ namespace vpet
                         obj.AddComponent<Outline>();
                     else
                         outline.enabled = true;
-                        //obj.SetActive(true);
+                    obj.GetComponent<Outline>().display(false);
                 }
 			}
 			foreach (Transform child in obj.transform)
@@ -784,6 +783,58 @@ namespace vpet
 			}
 		}
 
+        //!
+        //!
+        //!
+        public void updateLockView()
+        {
+            if(this.locked)
+                this.showLocked(this.gameObject);
+            else
+                this.showUnlocked(this.gameObject);
+        }
+
+        //!
+        //! recursively apply highlight shader to locked
+        //! @param  obj    gameObject on which to apply the highlight shader
+        //!
+        private void showLocked(GameObject obj)
+        {
+            //do it for parent object
+            if (obj.GetComponent<Renderer>() != null) //is object rendered?
+            {
+                Outline outline = obj.GetComponent<Outline>();
+                if (!outline)
+                    obj.AddComponent<Outline>();
+                else
+                    outline.enabled = true;
+                obj.GetComponent<Outline>().display(true);
+
+            }
+            foreach (Transform child in obj.transform)
+            {
+                this.showLocked(child.gameObject);
+            }
+        }
+
+        //!
+        //! recursively delete highlight shader of object
+        //! @param  obj    gameObject on which to delete the highlight shader
+        //!
+        private void showUnlocked(GameObject obj)
+        {
+            //do it for parent object
+            if (obj.GetComponent<Renderer>() != null) //is object rendered?
+            {
+                Outline outline = obj.GetComponent<Outline>();
+                if (outline)
+                    outline.enabled = false;
+            }
+            foreach (Transform child in obj.transform)
+            {
+                this.showUnlocked(child.gameObject);
+            }
+        }
 
 		//!
 		//! recursively delete highlight shader of object

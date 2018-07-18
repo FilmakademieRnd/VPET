@@ -143,7 +143,8 @@ namespace vpet
         {
 			//Debug.Log ("movementScale: " + VPETSettings.Instance.trackingScale.ToString());
             Matrix4x4 matrix = m_session.GetCameraPose();
-			transform.localPosition = UnityARMatrixOps.GetPosition (matrix) * VPETSettings.Instance.trackingScale * m_movementScale;
+			//transform.localPosition = UnityARMatrixOps.GetPosition (matrix) * VPETSettings.Instance.trackingScale * m_movementScale;
+            transform.localPosition = UnityARMatrixOps.GetPosition(matrix) * m_movementScale;
             transform.localRotation = UnityARMatrixOps.GetRotation(matrix);
 
 			if (m_arMode)
@@ -173,7 +174,7 @@ namespace vpet
             {
                 if (scene)
                 {
-                    scene.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform) * VPETSettings.Instance.trackingScale;
+                    scene.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform);// * VPETSettings.Instance.trackingScale;
                     scene.transform.rotation = Quaternion.Euler(0,UnityARMatrixOps.GetRotation(arImageAnchor.transform).eulerAngles.y,0);
                 }
             }
@@ -186,7 +187,7 @@ namespace vpet
             {
                 if (scene)
                 {
-                    scene.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform) * VPETSettings.Instance.trackingScale;
+                    scene.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform);// * VPETSettings.Instance.trackingScale;
                     scene.transform.rotation = Quaternion.Euler(0, UnityARMatrixOps.GetRotation(arImageAnchor.transform).eulerAngles.y, 0);
                 }
             }

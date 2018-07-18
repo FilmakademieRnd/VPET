@@ -27,6 +27,7 @@ https://opensource.org/licenses/MIT
 
 using UnityEngine;
 using System.Collections;
+using vpet;
 
 [RequireComponent(typeof(Renderer))]
 public class Outline : MonoBehaviour
@@ -45,11 +46,13 @@ public class Outline : MonoBehaviour
     //{
     //}
 
-    void OnEnable()
+    public void display(bool alt)
     {
         if (Camera.main.transform.childCount > 0)
         {
-            if (outlineEffect == null)
+            if(alt)
+                outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponents<OutlineEffect>()[1];
+            else
                 outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
             outlineEffect.AddOutline(this);
         }

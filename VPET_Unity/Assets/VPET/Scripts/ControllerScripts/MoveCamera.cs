@@ -30,8 +30,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 //!
-//! This class provides all functionallities for the principal camera including the real world rotation functionality
-//!
+//! This class provides all functionallities for the principal camera
 namespace vpet
 {
     public class MoveCamera : MonoBehaviour
@@ -103,12 +102,6 @@ namespace vpet
         }
 
 
-        //! 
-        //! This value holds the compensation values defined through the calibration process and added to each rotaation transform.
-        //! The calibration process enables a user to define a custom null direction (divergent to the magnitic north)
-        //!
-        Vector3 rotationCompensation = Vector3.zero;
-
         //settings & variables for frames-per-second display
 
         //!
@@ -136,7 +129,8 @@ namespace vpet
         //!
         private float timeleft;
 
-        //smooth Translation variables
+
+        //smooth translation variables
 
         //!
         //! slow down factor for smooth translation
@@ -155,6 +149,7 @@ namespace vpet
         //! Used to terminate the smooth translation after 3 seconds.
         //!
         private float smoothTranslateTime = 0;
+
 
         //update sending parameters
 
@@ -516,38 +511,5 @@ namespace vpet
                 rotationFirst = targetRotation * Quaternion.Inverse(newRotation) * newRotation;
             }
         }
-
-
-        /*
-        //!
-        //! Calibrates the camera and enables a user to define a custom null direction (divergent to the magnitic north).
-        //! The new null direction will be the tablet rotation at execution time.
-        //! Only the y axis is affected.
-        //!
-        public void calibrate()
-        {
-            if (this.transform.rotation.eulerAngles.y >= 0)
-            {
-                rotationCompensation.y = 180 - (this.transform.rotation.eulerAngles.y - rotationCompensation.y % 360);
-            }
-            else
-            {
-                rotationCompensation.y = 180 + (this.transform.rotation.eulerAngles.y - rotationCompensation.y % 360);
-            }
-        }
-
-        public void calibrate(float angleY)
-        {
-            if (this.transform.rotation.eulerAngles.y >= 0)
-            {
-                rotationCompensation.y = 180 - (angleY - rotationCompensation.y % 360);
-            }
-            else
-            {
-                rotationCompensation.y = 180 + (angleY - rotationCompensation.y % 360);
-            }
-        }
-        */
-
     }
 }

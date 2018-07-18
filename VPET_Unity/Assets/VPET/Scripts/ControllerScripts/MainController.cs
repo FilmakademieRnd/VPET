@@ -316,8 +316,8 @@ namespace vpet
 						CameraObject camScript = camObject.GetComponent<CameraObject> ();
 						if (camScript != null) {
 							Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
-                            Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale;
-                            Camera.main.farClipPlane = camScript.far * VPETSettings.Instance.sceneScale;
+                            //Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale;
+                            //Camera.main.farClipPlane = camScript.far * VPETSettings.Instance.sceneScale;
 							UpdatePropertiesSecondaryCameras ();
 						}
 						// set properties for DOF component from CameraObject
@@ -613,7 +613,6 @@ namespace vpet
 				rootScene.SetActive(false);
 				arConfigWidget.SetActive(true);
 #endif
-
             }
             else
             {
@@ -782,24 +781,22 @@ namespace vpet
             // scale the scene
             SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
 
-            float sceneScalePrevoius = VPETSettings.Instance.sceneScale;
+            float sceneScalePrevious = VPETSettings.Instance.sceneScale;
+            VPETSettings.Instance.sceneScale = v;
 
             // update light params
             foreach (GameObject obj in SceneLoader.SelectableLights)
             {
-                VPETSettings.Instance.sceneScale = sceneScalePrevoius;
-                //float lightIntensity = obj.GetComponent<SceneObject>().getLightIntensity();
-                float lightRange = obj.GetComponent<SceneObject>().getLightRange();
-                VPETSettings.Instance.sceneScale = v;
-                //obj.GetComponent<SceneObject>().setLightIntensity(lightIntensity);
+                float lightRange = obj.GetComponent<SceneObject>().getLightRange() / sceneScalePrevious * v;
                 obj.GetComponent<SceneObject>().setLightRange(lightRange);
-
-                //VPETSettings.Instance.sceneScaleInverse = 1.0f / v;
+                //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
+                obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
 
             // update camera params
-            Camera.main.nearClipPlane = Camera.main.nearClipPlane / sceneScalePrevoius * VPETSettings.Instance.sceneScale;
-            Camera.main.farClipPlane = Camera.main.farClipPlane / sceneScalePrevoius * VPETSettings.Instance.sceneScale;
+            //CameraObject camScript = SceneLoader.SceneCameraList[camPrefabPosition].GetComponent<CameraObject>();
+            //Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale; // Camera.main.nearClipPlane / sceneScalePrevious * VPETSettings.Instance.sceneScale;
+            //Camera.main.farClipPlane =  camScript.far * 4* VPETSettings.Instance.sceneScale; // Camera.main.farClipPlane / sceneScalePrevious * VPETSettings.Instance.sceneScale;
             UpdatePropertiesSecondaryCameras();
         }
 

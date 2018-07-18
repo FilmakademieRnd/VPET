@@ -203,13 +203,14 @@ namespace vpet
 	        GameObject lightUber = Resources.Load<GameObject>("VPET/Prefabs/UberLight");
 	        GameObject _lightUberInstance = GameObject.Instantiate(lightUber);
 	        _lightUberInstance.name = lightUber.name;
+
 	
 	        Light lightComponent = _lightUberInstance.GetComponent<Light>();
 	        lightComponent.type = nodeLight.lightType;
 	        lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);            
             lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
             lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-            lightComponent.range = nodeLight.range;
+            lightComponent.range = nodeLight.range * VPETSettings.Instance.sceneScale;
 
             Debug.Log("Create Light: " + nodeLight.name + " of type: " + ((LightTypeKatana)(nodeLight.lightType)).ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos  );
 
