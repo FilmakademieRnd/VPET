@@ -88,9 +88,9 @@ namespace vpet
 
             float radius_spot = Mathf.Tan(this.transform.parent.GetComponent<Light>().spotAngle / 2f * Mathf.Deg2Rad) * this.transform.parent.GetComponent<Light>().range;
 
-            this.transform.localScale = new Vector3(radius_spot,
-                                                    this.transform.parent.GetComponent<Light>().range / height,
-                                                    radius_spot);
+            this.transform.localScale = new Vector3(radius_spot / VPETSettings.Instance.sceneScale,
+                                                    this.transform.parent.GetComponent<Light>().range / height / VPETSettings.Instance.sceneScale,
+                                                    radius_spot / VPETSettings.Instance.sceneScale);
         }
     }
 }

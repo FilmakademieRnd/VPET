@@ -72,7 +72,7 @@ namespace vpet
                               sourceLight.color.g,
                               sourceLight.color.b,
                               material.color.a);
-            this.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, this.transform.parent.position) / 5f) * (Camera.main.fieldOfView / 30f);
+            this.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, this.transform.parent.position) / 5f) * (Camera.main.fieldOfView / 30f) / VPETSettings.Instance.sceneScale;
         }
     }
 }
