@@ -110,13 +110,11 @@ namespace vpet
 
         private Button arColorPickerButton;
 
-
-        private InputField arDepthField;
-
         private ColorWheel arColorWheel;
 
         private ColorPicker arColorPicker;
 
+        private Transform arKeyVideoPlane;
 
         private Image arColorField;
 
@@ -257,7 +255,7 @@ namespace vpet
                 childWidget.gameObject.SetActive(false);
             }
 
-
+            // ar color picker button
             childWidget = this.transform.Find("ARKeyPick_button");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKeyPick_button.", this.GetType()));
             else
@@ -272,6 +270,16 @@ namespace vpet
 
 
             // ar video plane
+            arKeyVideoPlane = this.transform.Find("../ARVideoPlane");
+            if (arKeyVideoPlane == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorPlane.", this.GetType()));
+            else
+            {
+                // hide by default
+                arKeyVideoPlane.gameObject.SetActive(false);
+            }
+
+
+            // ar color picker plane
             childWidget = this.transform.Find("../ARKeyWidget/ARColorPlane");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorPlane.", this.GetType()));
             else
@@ -587,17 +595,17 @@ namespace vpet
 
             if (arToggle.isOn && isOn)
             {
-                arColorPicker.gameObject.SetActive(true);
+                arKeyVideoPlane.gameObject.SetActive(true);
                 arColorPickerButton.gameObject.SetActive(true);
             }
             else if (arToggle.isOn && arMatteToggle.isOn)
             {
-                arColorPicker.gameObject.SetActive(false);
+                arKeyVideoPlane.gameObject.SetActive(false);
                 arColorPickerButton.gameObject.SetActive(true);
             }
             else
             {
-                arColorPicker.gameObject.SetActive(false);
+                arKeyVideoPlane.gameObject.SetActive(false);
                 arColorPickerButton.gameObject.SetActive(false);
             }
 
