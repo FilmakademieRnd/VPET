@@ -104,13 +104,21 @@ namespace vpet
 
         private Toggle arToggle;
 
-        private Toggle keyToggle;
+        private Toggle arKeyToggle;
 
-        private Toggle matteToggle;
+        private Toggle arMatteToggle;
+
+        private Button arColorPickerButton;
+
 
         private InputField arDepthField;
 
         private ColorWheel arColorWheel;
+
+        private ColorPicker arColorPicker;
+
+
+        private Image arColorField;
 
         [Config]
         private Color arkeyColor = Color.green;
@@ -220,34 +228,61 @@ namespace vpet
             else
             {
 #if USE_TANGO || USE_ARKIT
-                keyToggle = childWidget.GetComponent<Toggle>();
-                if (keyToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                arKeyToggle = childWidget.GetComponent<Toggle>();
+                if (arKeyToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else
                 {
-                    keyToggle.onValueChanged.AddListener(this.OnToggleArKey);
+                    arKeyToggle.onValueChanged.AddListener(this.OnToggleArKey);
                 }
-
-#else
-                childWidget.gameObject.SetActive(false);
 #endif
+                // hide by default
+                childWidget.gameObject.SetActive(false);
             }
 
-
-            // ar key toggle
+            // ar matte toggle
             childWidget = this.transform.Find("ARMatte_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARMatte_toggle.", this.GetType()));
             else
             {
 #if USE_TANGO || USE_ARKIT
-                matteToggle = childWidget.GetComponent<Toggle>();
-                if (matteToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                arMatteToggle = childWidget.GetComponent<Toggle>();
+                if (arMatteToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else
                 {
-                    matteToggle.onValueChanged.AddListener(this.OnToggleMatte);
+                    arMatteToggle.onValueChanged.AddListener(this.OnToggleMatte);
                 }
 
-#else
+#endif
+                // hide by default
                 childWidget.gameObject.SetActive(false);
+            }
+
+
+            childWidget = this.transform.Find("ARKeyPick_button");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKeyPick_button.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                arColorPickerButton = childWidget.GetComponent<Button>();
+                if (arColorPickerButton == null) Debug.LogError(string.Format("{0}: Cant Component: Button.", this.GetType()));
+#endif
+                // hide by default
+                childWidget.gameObject.SetActive(false);
+            }
+
+
+            // ar video plane
+            childWidget = this.transform.Find("../ARKeyWidget/ARColorPlane");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorPlane.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                arColorPicker = childWidget.GetComponent<ColorPicker>();
+                if (arColorPicker == null) Debug.LogError(string.Format("{0}: Cant Component: ColorPicker.", this.GetType()));
+                else
+                {
+                    arColorPicker.Callback = this.OnKeyColorChanged;
+                }
 #endif
             }
 
@@ -265,6 +300,20 @@ namespace vpet
                     arColorWheel.Callback = this.OnKeyColorChanged;
                 }
 #endif
+                // hide by default
+                childWidget.gameObject.SetActive(false);
+            }
+
+            // ar color field
+            childWidget = this.transform.Find("../ARKeyWidget/ColorField");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ColorField.", this.GetType()));
+            else
+            {
+#if USE_TANGO || USE_ARKIT
+                arColorField = childWidget.GetComponent<Image>();
+                if (arColorField == null) Debug.LogError(string.Format("{0}: Cant Component: Image.", this.GetType()));
+#endif                
+                
             }
 
             // ar video radius slider
@@ -298,35 +347,6 @@ namespace vpet
             }
 
 
-            /* 
-            // AR depth field
-            childWidget = this.transform.Find("ARDepth_field");
-            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARDepth_field.", this.GetType()));
-            else
-            {
-                arDepthField = childWidget.GetComponent<InputField>();
-                if (arDepthField == null) Debug.LogError(string.Format("{0}: Cant Component: Input Field.", this.GetType()));
-                else
-                {
-                    arDepthField.onValueChanged.AddListener(this.OnDepthChanged);
-
-                    // AR color wheel
-                    Transform colorWheelWidget = this.transform.Find("ARColorWheel");
-                    if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ColorWheel.", this.GetType()));
-                    else
-                    {
-                        arColorWheel = colorWheelWidget.GetComponent<ColorWheel>();
-                        if (arColorWheel == null) Debug.LogError(string.Format("{0}: Cant Component: Color Wheel.", this.GetType()));
-                        else
-                        {
-                            arColorWheel.Callback = this.OnKeyColorChanged;
-                        }
-                    }
-
-                }
-            }
-            */
-
             // Cache Load Local
             childWidget = this.transform.Find("LoadCache_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: LoadCache_toggle.", this.GetType()));
@@ -336,8 +356,6 @@ namespace vpet
                 if (loadCacheToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
             }
 
-
-
 			// Checkbox Load Texture
 			childWidget = this.transform.Find("LoadTextures_toggle");
 			if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: LoadTextures_toggle.", this.GetType()));
@@ -346,7 +364,6 @@ namespace vpet
 				loadTexturesToggle = childWidget.GetComponent<Toggle>();
 				if (loadTexturesToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
 			}
-
 
 			// ambient intensity
 			childWidget = this.transform.Find("AI_Slider/Ambient_slider");
@@ -464,6 +481,11 @@ namespace vpet
                 arkeyThresholdSlider.transform.parent.Find("KeyThreshold_Value").GetComponent<Text>().text = arkeyThreshold.ToString("f1");
 
             }
+
+            if (arColorField)
+            {
+                OnKeyColorChanged(arkeyColor);
+            }
 #endif
 
         }
@@ -544,9 +566,8 @@ namespace vpet
         private void OnToggleAr( bool isOn )
         {
             // show/hide ar key toggle
-            keyToggle.gameObject.SetActive(isOn);
-
-            matteToggle.gameObject.SetActive(isOn);
+            arKeyToggle.gameObject.SetActive(isOn);    
+            arMatteToggle.gameObject.SetActive(isOn);
 
             if (arToggle)
             {
@@ -555,38 +576,50 @@ namespace vpet
 				ToggleAREvent.Invoke (isOn);
 
                 // make sure state is correct to toggle button
-                OnToggleArKey(keyToggle.isOn);
+                OnToggleArKey(arKeyToggle.isOn);
+                OnToggleMatte(arMatteToggle.isOn);
             }
         }
 
 
         private void OnToggleArKey( bool isOn )
         {
-            // show/hide depth field and color wheel and pick color button
-            //arDepthField.gameObject.SetActive(isOn);
-            //arColorWheel.gameObject.SetActive(isOn);
-            transform.Find("ARKeyPick_button").gameObject.SetActive(isOn);
-            GameObject.Find("GUI/Canvas/ARVideoPlane").gameObject.SetActive(isOn);
 
-
-            // hide color pick button
-            if (!arToggle.isOn)
+            if (arToggle.isOn && isOn)
             {
-                transform.Find("ARKeyPick_button").gameObject.SetActive(false);
-       			GameObject.Find("GUI/Canvas/ARVideoPlane").gameObject.SetActive(false);
-
+                arColorPicker.gameObject.SetActive(true);
+                arColorPickerButton.gameObject.SetActive(true);
             }
- 
-
-            if (keyToggle)
+            else if (arToggle.isOn && arMatteToggle.isOn)
             {
-				ToggleARKeyEvent.Invoke (isOn);
+                arColorPicker.gameObject.SetActive(false);
+                arColorPickerButton.gameObject.SetActive(true);
             }
+            else
+            {
+                arColorPicker.gameObject.SetActive(false);
+                arColorPickerButton.gameObject.SetActive(false);
+            }
+
+			ToggleARKeyEvent.Invoke (isOn);
         }
 
         private void OnToggleMatte(bool isOn)
         {
-            print("onToggleMatte");
+
+            if (arToggle.isOn && isOn)
+            {
+                arColorPickerButton.gameObject.SetActive(true);
+            }
+            else if (arToggle.isOn && arKeyToggle.isOn)
+            {
+                arColorPickerButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                arColorPickerButton.gameObject.SetActive(false);
+            }
+
             ToggleARMatteEvent.Invoke(isOn);
 
         }
@@ -608,6 +641,7 @@ namespace vpet
         private void OnKeyColorChanged(Color c)
         {
             arkeyColor = c;
+            if (arColorField) arColorField.color = c;
             KeyColorChangedEvent.Invoke(c);
         }
 
@@ -626,6 +660,7 @@ namespace vpet
             sliderValueText.text = v.ToString("n1");
             KeyThresholdChangedEvent.Invoke(v);
         }
+
 
 #endif
 
@@ -653,6 +688,14 @@ namespace vpet
             sliderValueText.text = v.ToString("n1");
         }
 #endif
+
+
+        public void ToggleColorWheel()
+        {
+            if (arColorWheel != null)
+                arColorWheel.gameObject.SetActive(!arColorWheel.gameObject.activeSelf);
+        }
+
     }
 
 }

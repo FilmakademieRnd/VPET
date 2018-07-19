@@ -74,6 +74,8 @@ namespace vpet
             set { callback = value; }
         }
 
+        public Material m_material;
+
         // conversion matrix
         private Matrix4x4 ycbcrToRGBTransform = new Matrix4x4(
             new Vector4(1.0f, +0.0000f, +1.4020f, -0.7010f),
@@ -85,12 +87,11 @@ namespace vpet
         private Texture2D m_readableTexture = null;
         private Texture2D m_readableTextureB = null;
 
-        public RenderTexture SourceTexture;
-
         void Awake()
         {
             image = this.GetComponent<Image>();
             if (image == null) Debug.LogError(string.Format("{0}: No Image Component attached.", this.GetType()));
+
         }
 
         // DRAG
@@ -98,47 +99,39 @@ namespace vpet
         {
             // Debug.Log("BEGIN DRAG");
             isActive = true;
-
-
-            if (IsYCBCR)
-            {
-                // TODO: check if read/write able
-                m_readableTexture = (Texture2D)image.material.GetTexture("_textureY"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureY"), RenderTextureFormat.R8, TextureFormat.R8, "Y");
-                m_readableTextureB = (Texture2D)image.material.GetTexture("_textureCbCr"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureCbCr"), RenderTextureFormat.RG16, TextureFormat.RG16, "CBCR");
-            }
-            else
-            {
-                // TODO: check if read/write able
-                // m_readableTexture = getRenderTexture((Texture2D)image.material.GetTexture("_MainTex"), RenderTextureFormat.Default, TextureFormat.RG16, "FOO");
-            }
         }
 
         public void OnDrag(PointerEventData data)
         {
-            //Debug.Log("ON DRAG delta: " + data.position + " rcet position " + image.rectTransform.position + " anchor min " + image.rectTransform.anchorMin + " size delt " + image.rectTransform.sizeDelta);
-
+            // Debug.Log("ON DRAG delta: " + data.position + " rcet position " + image.rectTransform.position + " anchor min " + image.rectTransform.anchorMin + " size delt " + image.rectTransform.sizeDelta);
 
             if (UseMaterial)
             {
-                float x = data.position.x / Screen.width;
-                float y = data.position.y / Screen.height;
-                Debug.Log("X: " + x + " Y: " + y);
+                float x = ((data.position.x / Screen.width - 0.5f) * 3f / 4f) + 0.5f;
+                float y = 1f - data.position.y / Screen.height;
+                // Debug.Log("x: " + x + " y: " + y);
 
                 if (IsYCBCR)
                 {                    
-                    m_readableTexture = (Texture2D)image.material.GetTexture("_textureY"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureY"), RenderTextureFormat.R8, TextureFormat.R8, "Y");
-                    m_readableTextureB = (Texture2D)image.material.GetTexture("_textureCbCr"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureCbCr"), RenderTextureFormat.RG16, TextureFormat.RG16, "CBCR");
+                    //m_readableTexture = (Texture2D)m_material.GetTexture("_textureY"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureY"), RenderTextureFormat.R8, TextureFormat.R8, "Y");
+                    //m_readableTextureB = (Texture2D)m_material.GetTexture("_textureCbCr"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureCbCr"), RenderTextureFormat.RG16, TextureFormat.RG16, "CBCR");
+                    m_readableTexture = getRenderTexture(m_material.GetTexture("_textureY"), RenderTextureFormat.Default, TextureFormat.R8);
+                    m_readableTextureB = getRenderTexture(m_material.GetTexture("_textureCbCr"), RenderTextureFormat.ARGB32, TextureFormat.RG16);
                     float _y = m_readableTexture.GetPixelBilinear(x, y)[0];
                     Color cbcr = m_readableTextureB.GetPixelBilinear(x, y);
-                    Debug.Log("_y: " + _y +  " cb: " + cbcr.r + " CR: " + cbcr.g);
+                    // Debug.Log("_y: " + _y +  " cb: " + cbcr.r + " CR: " + cbcr.g);
                     Color rgba = ycbcrToRGBTransform * new Vector4(_y, cbcr.r, cbcr.g, 1.0f);
-                    Debug.Log("Color: " + rgba);
-                    callback(rgba);
+                    // Debug.Log("Color: " + rgba);
+                    if (callback!=null) callback(rgba);
+                    Destroy(m_readableTexture);
+                    Destroy(m_readableTextureB);
+
                 }
                 else
                 {
-
+                    m_readableTexture = getRenderTexture(m_material.mainTexture, RenderTextureFormat.Default, TextureFormat.R8);
                     callback(m_readableTexture.GetPixelBilinear(x, y));
+                    Destroy(m_readableTexture);
                 }
             }
             else
@@ -148,7 +141,6 @@ namespace vpet
                 float y = (data.position.y - imageTransform.position.y) / Screen.width * 10f;
 
                 float radius = Mathf.Sqrt(x * x + y * y);
-                //Debug.Log ("x: " + x.ToString () + " y: " + y.ToString ());
 
                 if (radius > 1f)
                 {
@@ -157,7 +149,7 @@ namespace vpet
                     y /= radius + .05f;
                 }
 
-                callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));                
+                if (callback != null) callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));                
             }
         }
 
@@ -167,14 +159,14 @@ namespace vpet
             isActive = false;
         }
 
-        private Texture2D getRenderTexture(Texture2D texture, RenderTextureFormat formatR, TextureFormat formatT, string foo)
+        private Texture2D getRenderTexture(Texture texture, RenderTextureFormat formatR, TextureFormat formatT)
         {
             RenderTexture tmp = RenderTexture.GetTemporary(
                     texture.width,
                     texture.height,
                     0,
                 formatR,
-                RenderTextureReadWrite.sRGB);
+                RenderTextureReadWrite.Default);
 
             // Blit the pixels on texture to the RenderTexture
             Graphics.Blit(texture, tmp);
@@ -185,16 +177,12 @@ namespace vpet
             RenderTexture.active = tmp;
 
             // Create a new readable Texture2D to copy the pixels to it
-            Texture2D readableTexture = new Texture2D(texture.width, texture.height, formatT, false, false);
+            Texture2D readableTexture = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false, false);
 
             // Copy the pixels from the RenderTexture to the new Texture
             readableTexture.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
             readableTexture.Apply();
 
-
-
-            //byte[] bytes = readableTexture.EncodeToPNG();
-            //File.WriteAllBytes(Application.dataPath + "/../testscreen-"+foo+".png", bytes);
 
             // Reset the active RenderTexture
             RenderTexture.active = previous;
