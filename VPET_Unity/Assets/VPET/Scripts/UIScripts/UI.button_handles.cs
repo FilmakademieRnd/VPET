@@ -446,7 +446,7 @@ namespace vpet
             {
                 case 0: // X
                     if (mainController.ActiveMode == MainController.Mode.translationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateX", 2f*VPETSettings.Instance.sceneScale);
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateX", 2f*VPETSettings.Instance.controllerSpeed);
                     else if (mainController.ActiveMode == MainController.Mode.scaleMode)
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleX", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
@@ -459,7 +459,7 @@ namespace vpet
                     break;
                 case 1:
                     if (mainController.ActiveMode == MainController.Mode.translationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateY", 2f * VPETSettings.Instance.sceneScale);
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateY", 2f * VPETSettings.Instance.controllerSpeed);
                     else if (mainController.ActiveMode == MainController.Mode.scaleMode)
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleY", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
@@ -472,7 +472,7 @@ namespace vpet
                     break;
                 case 2:
                     if (mainController.ActiveMode == MainController.Mode.translationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateZ", 2f * VPETSettings.Instance.sceneScale);
+                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateZ", 2f * VPETSettings.Instance.controllerSpeed);
                     else if (mainController.ActiveMode == MainController.Mode.scaleMode)
                         mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleZ", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)

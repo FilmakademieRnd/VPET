@@ -177,7 +177,7 @@ namespace vpet
                         translateModifier.GetComponent<Modifier>().setVisible(true);
                         if ( ui.LayoutUI != layouts.ANIMATION)  ui.drawSecondaryMenu(layouts.TRANSLATION);
                         ui.resetRangeSlider();
-                        ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX", 2f * VPETSettings.Instance.sceneScale);
+                        ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX", 2f * VPETSettings.Instance.controllerSpeed);
                         ui.drawParameterMenu(layouts.TRANSLATION);
                         break;
 	                case (Mode.rotationMode):

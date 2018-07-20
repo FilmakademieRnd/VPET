@@ -89,7 +89,7 @@ namespace vpet
                 else 
                     axisLocker = new Vector3(1, 0, 1);
                 
-                Vector3 finalTranslation = currentSelection.rotation * Vector3.Scale(Quaternion.Inverse(currentSelection.rotation) * (translation), axisLocker) + currentSelection.position; 
+                Vector3 finalTranslation = currentSelection.rotation * Vector3.Scale(Quaternion.Inverse(currentSelection.rotation) * (translation*VPETSettings.Instance.controllerSpeed), axisLocker) + currentSelection.position; 
                 
                 SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
                 if (sceneObject)
@@ -201,7 +201,7 @@ namespace vpet
                     lineRenderer.SetPosition(1, currentSelection.position + axisLocker * 10000);
                 }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>()) {
-                    currentSelection.transform.localScale = Vector3.Scale(scale, inverseInitRotation * axisLocker) / 1000f * VPETSettings.Instance.sceneScale + initScale;
+                    currentSelection.transform.localScale = Vector3.Scale(scale, inverseInitRotation * axisLocker) / 1000f + initScale;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection);
                 }
@@ -228,7 +228,7 @@ namespace vpet
                 }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>())
                 {
-                    currentSelection.transform.localScale += Vector3.Scale(scale, axisLocker) / 1000f;
+                    currentSelection.transform.localScale += Vector3.Scale(scale*VPETSettings.Instance.controllerSpeed, axisLocker) / 1000f;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection);
                 }

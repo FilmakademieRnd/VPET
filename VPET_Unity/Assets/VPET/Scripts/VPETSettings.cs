@@ -103,8 +103,10 @@ namespace vpet
         public float lightIntensityFactor = 1; // liveview 50;
         public int textureBinaryType =1;
 
-
         public float sceneScale = 1f;
+
+        [Config]
+        public float controllerSpeed = 1f;
 
 
         // Dictionary< Name of the property in the material (target), KeyValuePair< name of the property at the node(source), type of target value > >

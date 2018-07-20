@@ -428,6 +428,8 @@ namespace vpet
             activeMode = Mode.idle;
             helpActive = false;
             arMode = false;
+            lockARScale = true;
+            lockARRotation = false;
 
             //find & attach cached GameObjects
             ui = GameObject.Find("UI").GetComponent<UI>();

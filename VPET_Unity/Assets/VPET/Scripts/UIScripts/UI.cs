@@ -256,19 +256,6 @@ namespace vpet
 			configWidget.AmbientChangedEvent.AddListener( mainController.setAmbientIntensity );
 
 #if USE_TANGO || USE_ARKIT
-                // Show Tracking Scale UI objects
-                GameObject trackingScaleSliderUI = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_slider");                
-                // trackingScaleSliderUI.transform.localPosition = new Vector3(31.0f, -560.0f, 0.0f);
-                GameObject trackingScaleLabelUI = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_label");
-                //trackingScaleLabelUI.transform.localPosition = new Vector3(-105.0f, 530.0f, 0.0f);
-                //GameObject startButton = GameObject.Find("GUI/Canvas/ConfigWidget/Start_button");
-                GameObject sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_Value");
-                sliderValueText.gameObject.SetActive(true);
-                trackingScaleLabelUI.gameObject.SetActive(true);
-                trackingScaleSliderUI.gameObject.SetActive(true);
-                // tracking Scale Listener
-				configWidget.TrackingScaleChangedEvent.AddListener(mainController.setTrackingScale);
-                configWidget.OnSceneScaleChangedEvent.AddListener(mainController.SetSceneScale);
 				configWidget.ToggleAREvent.AddListener(mainController.ToggleArMode);
 				// ar key connects
 				configWidget.KeyDepthChangedEvent.AddListener(mainController.setARKeyDepth);
@@ -336,6 +323,18 @@ namespace vpet
         public void hideRangeSlider()
         {
             rangeSlider.Hide();
+        }
+
+        public void changeARLockRotationButtonImage(bool active)
+        {
+            if (active) GameObject.Find("GUI/Canvas/ARConfigWidget/Lock_Rotation").GetComponent<Image>().sprite = Misc_SceneRotate_nrm;
+            else GameObject.Find("GUI/Canvas/ARConfigWidget/Lock_Rotation").GetComponent<Image>().sprite = Misc_SceneRotate_sel;
+        }
+
+        public void changeARLockScaleButtonImage(bool active)
+        {
+            if (active) GameObject.Find("GUI/Canvas/ARConfigWidget/Lock_Scale").GetComponent<Image>().sprite = Misc_SceneScale_nrm;
+            else GameObject.Find("GUI/Canvas/ARConfigWidget/Lock_Scale").GetComponent<Image>().sprite = Misc_SceneScale_sel;
         }
 
         private void onRangeSliderChanged(float v)
