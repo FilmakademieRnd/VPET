@@ -781,6 +781,7 @@ namespace vpet
 
         public void SetSceneScale(float v)
         {
+            v = Mathf.Max(v,0.00001f);
             // scale the scene
             SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
 
@@ -795,6 +796,7 @@ namespace vpet
                 //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
                 obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
+            ui.updateScaleValue(v);
 
             // update camera params
             //CameraObject camScript = SceneLoader.SceneCameraList[camPrefabPosition].GetComponent<CameraObject>();

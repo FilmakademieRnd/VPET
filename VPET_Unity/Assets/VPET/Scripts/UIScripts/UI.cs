@@ -142,6 +142,7 @@ namespace vpet
 
 
         private RangeSlider rangeSlider;
+        private Text scaleLable;
 
 	    void Awake()
 	    {
@@ -232,6 +233,9 @@ namespace vpet
             GameObject paramterMenuObj = new GameObject("paramterMenuObj");
             paramterMenuObj.transform.SetParent(this.transform, false);
             parameterMenu = paramterMenuObj.AddComponent<SubMenu>();
+
+            //store scene scale lable reference
+            scaleLable = GameObject.Find("GUI/Canvas/ARConfigWidget/scale_value").GetComponent<Text>();
 
             // initalize ConfigWidget
             GameObject refObject = GameObject.Find("GUI/Canvas/ConfigWidget");
@@ -472,6 +476,11 @@ namespace vpet
             UI.OnUIChanged.Invoke();
             return configWidget;
 	    }
+
+        public void updateScaleValue(float val)
+        {
+            scaleLable.text = val.ToString("n4");
+        }
 	
 	    public void hideConfigWidget()
 	    {
