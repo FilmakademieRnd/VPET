@@ -538,8 +538,9 @@ namespace vpet
 				if (lightGeo)
 				{
 					lightGeo.GetComponent<Renderer>().enabled = true;
-				}
-				else
+                    this.showHighlighted(lightGeo.gameObject);
+                }
+                else
 				{
 					this.showHighlighted(this.gameObject);
 				}
@@ -553,10 +554,8 @@ namespace vpet
 				{
 					lightGeo.GetComponent<Renderer>().enabled = false;
 				}
-				else
-				{
-					this.showNormal(this.gameObject);
-				}
+     
+				this.showNormal(this.gameObject);
 				drawGlowAgain = true;
 			}
 

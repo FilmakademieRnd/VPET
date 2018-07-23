@@ -45,7 +45,7 @@ namespace vpet
 	    //!
 	    public void resetSelectionRotation(){
 	        if (currentSelection){
-	            currentSelection.GetComponent<SceneObject>().resetRotation();
+	            currentSceneObject.resetRotation();
 	            guiButtonPressIgnore = true;
 	        }
 	    }
@@ -55,7 +55,7 @@ namespace vpet
 	    //!
 	    public void resetSelectionPosition(){
 	        if (currentSelection){
-	            currentSelection.GetComponent<SceneObject>().resetPosition();
+	            currentSceneObject.resetPosition();
 	            guiButtonPressIgnore = true;
 	        }
 	    }
@@ -65,7 +65,7 @@ namespace vpet
 	    //!
 	    public void resetSelectionScale(){
 	        if (currentSelection){
-	            currentSelection.GetComponent<SceneObject>().resetScale();
+	            currentSceneObject.resetScale();
 	            guiButtonPressIgnore = true;
 	        }
 	    }

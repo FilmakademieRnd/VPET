@@ -127,6 +127,7 @@ namespace vpet
 
             //cache current selection
             currentSelection = sObject;
+            currentSceneObject = sObject.GetComponent<SceneObject>();
 
             Debug.Log("Select " + currentSelection );
 
@@ -172,21 +173,22 @@ namespace vpet
 
             if ( activeMode == Mode.objectLinkCamera)
             {
-                if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
-                                            currentSelection.GetComponent<SceneObject>().isPointLight ||
-                                            currentSelection.GetComponent<SceneObject>().isDirectionalLight)
+                if (currentSceneObject.isSpotLight ||
+                                            currentSceneObject.isPointLight ||
+                                            currentSceneObject.isDirectionalLight)
                 {
                     currentSelection.parent = oldParent;
                 }
                 else
                 {
-                    currentSelection.GetComponent<SceneObject>().setKinematic(false);
+                    currentSceneObject.setKinematic(false);
                     currentSelection.parent = oldParent;
                 }
             }
 
             currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
             currentSelection = null;
+            currentSceneObject = null;
 	    }
     }
 }

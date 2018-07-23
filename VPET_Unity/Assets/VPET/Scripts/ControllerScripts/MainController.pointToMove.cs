@@ -72,17 +72,17 @@ namespace vpet
 	            else
 	            {
                     //use currently selected Object as target for the translation
-                    if (currentSelection.GetComponent<SceneObject>())
+                    if (currentSceneObject)
                     {
                         // HACK to animate in pointTOMove mode
                         if (ui.LayoutUI == layouts.ANIMATION)
                         {
-                            currentSelection.GetComponent<SceneObject>().translate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            currentSceneObject.translate(pos + new Vector3(0, currentSelection.position.y, 0));
                             animationController.setKeyFrame();
                         }
                         else
                         {
-                            currentSelection.GetComponent<SceneObject>().smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            currentSceneObject.smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
                         }
                     }
                     else // TODO: what is this for?

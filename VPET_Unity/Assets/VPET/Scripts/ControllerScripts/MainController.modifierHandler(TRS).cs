@@ -55,7 +55,7 @@ namespace vpet
 	        modifier.parent.GetComponent<Modifier>().isUsed();
 	        if  ( ui.LayoutUI != layouts.ANIMATION ) //  (activeMode != Mode.animationEditing)
 	        {
-	            currentSelection.GetComponent<SceneObject>().setKinematic(true);
+	            currentSceneObject.setKinematic(true);
 	        }
 
             initPosition = currentSelection.position;
@@ -106,7 +106,7 @@ namespace vpet
                         axisLocker = new Vector3(1, 0, 1);
                     }
                     else if (modifier.name == "MoveToFloorQuad"){
-						currentSelection.GetComponent<SceneObject>().moveToFloor();
+						currentSceneObject.moveToFloor();
 						translateModifier.transform.position = currentSelection.position;
 						translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 						ignoreDrag = true;
@@ -140,7 +140,7 @@ namespace vpet
                         axisLocker = new Vector3(1, 0, 1);
 		            }
 		            else if (modifier.name == "MoveToFloorQuad"){
-		                currentSelection.GetComponent<SceneObject>().moveToFloor();
+		                currentSceneObject.moveToFloor();
 		                translateModifier.transform.position = currentSelection.position;
 		                translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 		                ignoreDrag = true;
@@ -209,7 +209,7 @@ namespace vpet
 	        scaleModifier.GetComponent<Modifier>().resetColors();
 	        ignoreDrag = false;
 	        initialScaleDistance = float.NaN;
-	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) currentSelection.GetComponent<SceneObject>().setKinematic(false);
+	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) currentSceneObject.setKinematic(false);
 
             // desable line renderer
             if (lineRenderer)
@@ -217,7 +217,7 @@ namespace vpet
             
             //push changes to server
             if (!liveMode && activeMode != Mode.animationEditing){
-	            if (currentSelection) currentSelection.GetComponent<SceneObject>().sendUpdate();
+	            if (currentSelection) currentSceneObject.sendUpdate();
 	        }
 	    }
 	

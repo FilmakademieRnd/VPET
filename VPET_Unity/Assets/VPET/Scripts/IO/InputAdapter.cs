@@ -169,7 +169,6 @@ namespace vpet
 						{
 							//modifier was hit
 							mainController.handleModifier(hitObject.transform);
-                            //hitPositionBuffer = objectRaycast(pos, mainController.helperCollider);
                             hitPositionBuffer = planeRaycast(pos, mainController.helperPlane);
                             pointerOnModifier = true;
 						}
@@ -310,14 +309,12 @@ namespace vpet
 					{
 						if (pointerOnModifier){
                             //Pointer is down on modifier
-                            //hitPositionBuffer = objectRaycast(pos, mainController.helperCollider);
                             Vector3 newHitPosition = planeRaycast(pos, mainController.helperPlane);
 
                             if ( newHitPosition != nullVector && hitPositionBuffer != nullVector )
 							{
 								mainController.pointerDrag( hitPositionBuffer, newHitPosition );
 							}
-							//hitPositionBuffer = newHitPosition;
 						}
 					}
 				}

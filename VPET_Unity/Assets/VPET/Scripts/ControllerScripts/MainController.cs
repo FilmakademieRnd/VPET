@@ -117,25 +117,25 @@ namespace vpet
 	        Color newColor = ui.getColorPickerValue(pos);
 	        if (newColor != new Color(0, 0, 0, 0))
 	        {
-	            if (currentSelection) currentSelection.GetComponent<SceneObject>().setLightColor(newColor);
+	            if (currentSelection) currentSceneObject.setLightColor(newColor);
 	            return;
 	        }
 	        float newIntensity = ui.getIntensityPickerValue(pos);
 	        if (newIntensity != -1)
 	        {
-	            if (currentSelection) currentSelection.GetComponent<SceneObject>().setLightIntensity(newIntensity * 8.0f);
+	            if (currentSelection) currentSceneObject.setLightIntensity(newIntensity * 8.0f);
 	            return;
 	        }
 	        float newDeltaRange = ui.getRangePickerDeltaValue(pos);
 	        if (newDeltaRange != 0)
 	        {
-	            if (currentSelection) currentSelection.GetComponent<SceneObject>().setLightDeltaRange(newDeltaRange);
+	            if (currentSelection) currentSceneObject.setLightDeltaRange(newDeltaRange);
 	            return;
 	        }
 	        float newAngle = ui.getAnglePickerValue(pos);
 	        if (newAngle != -1)
 	        {
-	            if (currentSelection) currentSelection.GetComponent<SceneObject>().setLightAngle(newAngle);
+	            if (currentSelection) currentSceneObject.setLightAngle(newAngle);
 	            return;
 	        }
 	    }
@@ -146,7 +146,7 @@ namespace vpet
         //!
         public void sendUpdateToServer()
 	    {
-	        if (currentSelection) currentSelection.GetComponent<SceneObject>().sendUpdate();
+	        if (currentSelection) currentSceneObject.sendUpdate();
 	    }
 	
 	    //!
@@ -157,9 +157,9 @@ namespace vpet
 	    {
 			if(currentSelection)
 	        {
-	            if (currentSelection.GetComponent<SceneObject>().isDirectionalLight ||
-	                currentSelection.GetComponent<SceneObject>().isPointLight ||
-	                currentSelection.GetComponent<SceneObject>().isSpotLight)
+	            if (currentSceneObject.isDirectionalLight ||
+	                currentSceneObject.isPointLight ||
+	                currentSceneObject.isSpotLight)
 	            {
 	                activeMode = Mode.lightMenuMode;
 	            }
@@ -571,14 +571,12 @@ namespace vpet
                 if (arkitScreen == null) 
 					arkitScreen = Camera.main.gameObject.AddComponent<ARScreen>();
 				
-				
 				if (arKit)
 				{
 					ARKitController arController = arKit.GetComponent<ARKitController>();
 					if (arController)
 						arController.setARMode(true);
 				}
-				
 
 				// enable plane alignment
 				if (root)
@@ -729,9 +727,9 @@ namespace vpet
 
         public bool HasGravityOn()
         {
-            if ( currentSelection && currentSelection.GetComponent<SceneObject>())
+            if ( currentSelection && currentSceneObject)
             {
-                return !currentSelection.GetComponent<SceneObject>().lockKinematic;
+                return !currentSceneObject.lockKinematic;
             }
             return false;
         }

@@ -60,17 +60,18 @@ namespace vpet
 	        {
 	            Vector3 finalTranslation = Vector3.Scale(translation, axisLocker);
 
-                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
-                if (sceneObject)
-                    sceneObject.translate(finalTranslation);
-	            else {
+                if (currentSceneObject)
+                    currentSceneObject.translate(finalTranslation);
+                else
+                {
                     KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
-                    if (keyframeScript) {
+                    if (keyframeScript)
+                    {
                         currentSelection.transform.position = finalTranslation;
                         currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
                     }
-	            }
-	        }
+                }
+            }
 	    }
         //!
         //! translate currently selected object with joystick
@@ -91,9 +92,8 @@ namespace vpet
                 
                 Vector3 finalTranslation = currentSelection.rotation * Vector3.Scale(Quaternion.Inverse(currentSelection.rotation) * (translation), axisLocker) + currentSelection.position; 
                 
-                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
-                if (sceneObject)
-                    sceneObject.translate(finalTranslation);
+                if (currentSceneObject)
+                    currentSceneObject.translate(finalTranslation);
                 else
                 {
                     KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
@@ -111,7 +111,6 @@ namespace vpet
             if (currentSelection)
             {
                 Vector3 finalTranslation =  initRotation * Vector3.Scale(inverseInitRotation * (end-begin), axisLocker) + initPosition;
-                SceneObject sceneObject = currentSelection.GetComponent<SceneObject>();
 
                 if (axisLocker != new Vector3(0, 1, 1) &&
                     axisLocker != new Vector3(1, 0, 1) &&
@@ -124,8 +123,8 @@ namespace vpet
                 else
                     lineRenderer.positionCount = 0;
 
-                if (sceneObject)
-                    sceneObject.translate(finalTranslation);
+                if (currentSceneObject)
+                    currentSceneObject.translate(finalTranslation);
                 else
                 {
                     KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
@@ -156,7 +155,7 @@ namespace vpet
                 lineRenderer.SetPosition(2, currentSelection.position);
                 lineRenderer.SetPosition(3, end);                
 
-                currentSelection.GetComponent<SceneObject>().transform.rotation = initRotation * rotation;
+                currentSceneObject.transform.rotation = initRotation * rotation;
             }
 	    }
 
@@ -168,7 +167,7 @@ namespace vpet
         public void rotateSelectionJoystick(Vector3 end)
         {
             if (currentSelection)                 
-                currentSelection.GetComponent<SceneObject>().transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);                        
+                currentSceneObject.transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);                        
         }
         //!
         //! scale currently selected object via joystick
@@ -297,13 +296,13 @@ namespace vpet
         //! make current selection receive forces (gravitation etc.) or not
         //!
         public void toggleLockSelectionKinematic(){
-	        if (!currentSelection.GetComponent<SceneObject>().isDirectionalLight && !currentSelection.GetComponent<SceneObject>().isSpotLight && !currentSelection.GetComponent<SceneObject>().isPointLight)
+	        if (!currentSceneObject.isDirectionalLight && !currentSceneObject.isSpotLight && !currentSceneObject.isPointLight)
 	        {
-	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
-	            serverAdapter.sendKinematic(currentSelection, !currentSelection.GetComponent<SceneObject>().lockKinematic);
+	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSceneObject.lockKinematic;
+	            serverAdapter.sendKinematic(currentSelection, !currentSceneObject.lockKinematic);
 
-				currentSelection.GetComponent<SceneObject>().lockKinematic = !currentSelection.GetComponent<SceneObject>().lockKinematic;
-	            if (!currentSelection.GetComponent<SceneObject>().lockKinematic){
+				currentSceneObject.lockKinematic = !currentSceneObject.lockKinematic;
+	            if (!currentSceneObject.lockKinematic){
 	                currentSelection.gameObject.GetComponent<Rigidbody>().WakeUp();
 	            }
 	        }
@@ -314,7 +313,7 @@ namespace vpet
 	    //!
 	    public bool currentSelectionisKinematic(){
 	        if (currentSelection){
-	            return currentSelection.GetComponent<SceneObject>().GetComponent<Rigidbody>().isKinematic;
+	            return currentSceneObject.GetComponent<Rigidbody>().isKinematic;
 	        }
 	        else{
 	            return false;

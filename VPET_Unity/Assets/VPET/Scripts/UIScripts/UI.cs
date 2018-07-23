@@ -433,7 +433,7 @@ namespace vpet
 		{
 			hideConfigWidget();
 			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
-			arKeyWidget.SetActive(true);			
+			arKeyWidget.SetActive(true);
 		}
 
 		public void acceptKeyConfig()

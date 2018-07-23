@@ -59,7 +59,7 @@ namespace vpet
                 Thread.Sleep(1);
                 if (sendMessageQueue.Count > 0)
                 {
-                     Debug.Log("Send: " + sendMessageQueue[0]);
+                    //Debug.Log("Send: " + sendMessageQueue[0]);
                     sender.SendFrame(sendMessageQueue[0], false); // true not wait
                     sendMessageQueue.RemoveAt(0);
                 }

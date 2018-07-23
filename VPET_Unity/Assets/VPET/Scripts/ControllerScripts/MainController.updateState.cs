@@ -128,16 +128,16 @@ namespace vpet
 	                case (Mode.objectLinkCamera):
                         if (currentSelection)
                         {
-                            if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
-                                currentSelection.GetComponent<SceneObject>().isPointLight ||
-                                currentSelection.GetComponent<SceneObject>().isDirectionalLight)
+                            if (currentSceneObject.isSpotLight ||
+                                currentSceneObject.isPointLight ||
+                                currentSceneObject.isDirectionalLight)
                             {
                                 currentSelection.parent = oldParent;
                             }
                             else
                             {
                                 //if (ui.LayoutUI != layouts.ANIMATION)
-                                //    currentSelection.GetComponent<SceneObject>().setKinematic(false);
+                                //    currentSceneObject.setKinematic(false);
                                 currentSelection.parent = oldParent;
                             }
                             //if (ui.LayoutUI == layouts.ANIMATION)
@@ -177,34 +177,34 @@ namespace vpet
                         translateModifier.GetComponent<Modifier>().setVisible(true);
                         if ( ui.LayoutUI != layouts.ANIMATION)  ui.drawSecondaryMenu(layouts.TRANSLATION);
                         ui.resetRangeSlider();
-                        ConnectRangeSlider( currentSelection.GetComponent<SceneObject>(), "TranslateX", 2f * VPETSettings.Instance.sceneScale);
+                        ConnectRangeSlider( currentSceneObject, "TranslateX", 2f * VPETSettings.Instance.sceneScale);
                         ui.drawParameterMenu(layouts.TRANSLATION);
                         break;
 	                case (Mode.rotationMode):
                         serverAdapter.sendLock(currentSelection, true);
                         rotationModifier.GetComponent<Modifier>().setVisible(true);
                         ui.resetRangeSlider();
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "RotateX", 1f);
+                        ConnectRangeSlider(currentSceneObject, "RotateX", 1f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.scaleMode):
                         scaleModifier.GetComponent<Modifier>().setVisible(true);
                         serverAdapter.sendLock(currentSelection, true);
                         ui.resetRangeSlider();
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "ScaleX", 0.02f);
+                        ConnectRangeSlider(currentSceneObject, "ScaleX", 0.02f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.objectLinkCamera):
-	                    if (currentSelection.GetComponent<SceneObject>().isSpotLight ||
-	                        currentSelection.GetComponent<SceneObject>().isPointLight ||
-	                        currentSelection.GetComponent<SceneObject>().isDirectionalLight)
+	                    if (currentSceneObject.isSpotLight ||
+	                        currentSceneObject.isPointLight ||
+	                        currentSceneObject.isDirectionalLight)
 	                    {
                             oldParent = currentSelection.parent;
 	                        currentSelection.parent = Camera.main.transform;
                         }
                         else
 	                    {
- 	                        currentSelection.GetComponent<SceneObject>().setKinematic(true);
+ 	                        currentSceneObject.setKinematic(true);
 							oldParent = currentSelection.parent;
 	                        currentSelection.parent = Camera.main.transform;
 	                    }
@@ -225,7 +225,7 @@ namespace vpet
 	                            ui.drawCenterMenu(layouts.ANIMATION);
                                 ui.drawSecondaryMenu(layouts.ANIMATION);
 	                        }
-                            else if (currentSelection.GetComponent<SceneObject>().isMocapTrigger) // mocap trigger component at object
+                            else if (currentSceneObject.isMocapTrigger) // mocap trigger component at object
                             {
                                 ui.drawCenterMenu(layouts.MOCAP);
                             }
@@ -248,11 +248,11 @@ namespace vpet
                                 ui.drawCenterMenu(layouts.LIGHT);
                             }
                             /*
-	                        if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
+	                        if (currentSceneObject.isDirectionalLight)
 	                            ui.drawCenterMenu(layouts.LIGHTDIR);
-	                        else if (currentSelection.GetComponent<SceneObject>().isPointLight)
+	                        else if (currentSceneObject.isPointLight)
 	                            ui.drawCenterMenu(layouts.LIGHTPOINT);
-	                        else if (currentSelection.GetComponent<SceneObject>().isSpotLight)
+	                        else if (currentSceneObject.isSpotLight)
 	                            ui.drawCenterMenu(layouts.LIGHTSPOT);
                             */
                         }
@@ -260,15 +260,15 @@ namespace vpet
 	                case (Mode.lightSettingsMode):
                         if (currentSelection)
                         {
-                            currentSelection.GetComponent<SceneObject>().hideLightVisualization(true);
+                            currentSceneObject.hideLightVisualization(true);
                         }
-                        // ConnectRangeSlider(currentSelection.GetComponent<SceneObject>(), "LightIntensity", 1f);
-                        ConnectRangeSlider(currentSelection.GetComponent<SceneObject>().setLightIntensity, currentSelection.GetComponent<SceneObject>().getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);
-                        if (currentSelection.GetComponent<SceneObject>().isDirectionalLight)
+                        // ConnectRangeSlider(currentSceneObject, "LightIntensity", 1f);
+                        ConnectRangeSlider(currentSceneObject.setLightIntensity, currentSceneObject.getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);
+                        if (currentSceneObject.isDirectionalLight)
                             ui.drawParameterMenu(layouts.LIGHTDIR);
-                        else if (currentSelection.GetComponent<SceneObject>().isPointLight)
+                        else if (currentSceneObject.isPointLight)
                             ui.drawParameterMenu(layouts.LIGHTPOINT);
-                        else if (currentSelection.GetComponent<SceneObject>().isSpotLight)
+                        else if (currentSceneObject.isSpotLight)
                             ui.drawParameterMenu(layouts.LIGHTSPOT);
                         ui.drawLightSettingsWidget();
                         serverAdapter.sendLock(currentSelection, true);

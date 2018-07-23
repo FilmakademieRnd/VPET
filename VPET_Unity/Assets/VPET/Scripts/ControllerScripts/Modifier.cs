@@ -45,26 +45,44 @@ namespace vpet
 	    //!
 	    //! stores the last position of the modifiers to be able to detect weather it moved.
 	    //!
-	    private Vector3 lastPosition;
-	
-	    //!
-	    //! Use this for initialization
-	    //!
-		void Start () 
+	    private Quaternion lastPosition;
+
+        //!
+        //! all transform modifier transforms.
+        //!
+        private Transform c0, c1, c2, c3, c4, c5, c6, c7, c8;
+
+        //!
+        //! Use this for initialization
+        //!
+        void Start () 
 	    {
 	        this.setVisible(false);
-	        lastPosition = this.transform.position;
-		}
+	        lastPosition = this.transform.rotation;
+
+            if (this.name == "TranslateModifier")
+            {
+                c0 = this.transform.GetChild(0);
+                c1 = this.transform.GetChild(1);
+                c2 = this.transform.GetChild(2);
+                c3 = this.transform.GetChild(3);
+                c4 = this.transform.GetChild(4);
+                c5 = this.transform.GetChild(5);
+                c6 = this.transform.GetChild(6);
+                c7 = this.transform.GetChild(7);
+                c8 = this.transform.GetChild(8);
+            }
+        }
 	
 	    //!
 	    //! Update is called once per frame
 	    //!
 		void Update () 
 	    {
-	        if (!pause && lastPosition != this.transform.position)
+	        if (!pause && lastPosition != this.transform.rotation)
 	        {
 	            this.adjustOrientation();
-	            lastPosition = this.transform.position;
+	            lastPosition = this.transform.rotation;
 	        }
 		}
 
@@ -115,24 +133,20 @@ namespace vpet
 	    //!
 	    private void adjustOrientation()
 	    {
-	        if (this.name == "TranslateModifier")
+            Vector3 toOther = (this.transform.position - Camera.main.transform.position).normalized;
+
+            float rx = Vector3.SignedAngle(toOther, this.transform.forward, this.transform.up);
+            float rz = Vector3.SignedAngle(toOther, this.transform.up, this.transform.right);
+
+            Debug.Log("X: " + Vector3.SignedAngle(toOther, this.transform.forward, this.transform.up));
+            Debug.Log("Z: " + Vector3.SignedAngle(toOther, this.transform.up, this.transform.right));
+
+            if (this.name == "TranslateModifier")
 	        {
-                Vector3 camPos = Camera.main.transform.position;
-
-                Transform c0, c1, c2, c3, c4, c5, c6, c7, c8;
-                c0 = this.transform.GetChild(0);
-                c1 = this.transform.GetChild(1);
-                c2 = this.transform.GetChild(2);
-                c3 = this.transform.GetChild(3);
-                c4 = this.transform.GetChild(4);
-                c5 = this.transform.GetChild(5);
-                c6 = this.transform.GetChild(6);
-                c7 = this.transform.GetChild(7);
-                c8 = this.transform.GetChild(8);
-
+                
                 float shift = 0f;
 
-                if (camPos.x > this.transform.position.x)
+                if (rx > -135 && rx < -45)
 	            {
                     c0.localRotation = Quaternion.Euler(0, 180, 0);
                     shift = 0.5f;
@@ -147,30 +161,30 @@ namespace vpet
                 c7.localPosition = new Vector3(shift, c7.localPosition.y, c7.localPosition.z);
                 c8.localPosition = new Vector3(shift, c8.localPosition.y, c8.localPosition.z);
 
-                if (camPos.y > this.transform.position.y)
-	            {
-                    c1.localRotation = Quaternion.Euler(0, 0, 0);
-                    shift = 0.5f;
-                }
-	            else
+                if (rz > -45 && rz < 45)
 	            {
                     c1.localRotation = Quaternion.Euler(180, 0, 0);
                     shift = -0.5f;
+                }
+	            else
+	            {
+                    c1.localRotation = Quaternion.Euler(0, 0, 0);
+                    shift = 0.5f;
 	            }
                 c3.localPosition = new Vector3(c3.localPosition.x, shift, c3.localPosition.z);
                 c4.localPosition = new Vector3(c4.localPosition.x, shift, c4.localPosition.z);
                 c5.localPosition = new Vector3(c5.localPosition.x, shift, c5.localPosition.z);
                 c6.localPosition = new Vector3(c6.localPosition.x, shift, c6.localPosition.z);
 
-                if (camPos.z > this.transform.position.z)
+                if (rx > -45 && rx < 45)
 	            {
-                    c2.localRotation = Quaternion.Euler(0, 0, 0);
-                    shift = 0.5f;
+                    c2.localRotation = Quaternion.Euler(0, 180, 0);
+                    shift = -0.5f;
                 }
                 else
 	            {
-	                c2.localRotation = Quaternion.Euler(0, 180, 0);
-                    shift = -0.5f;
+	                c2.localRotation = Quaternion.Euler(0, 0, 0);
+                    shift = 0.5f;
                 }
                 c5.localPosition = new Vector3(c5.localPosition.x, c5.localPosition.y, shift);
                 c6.localPosition = new Vector3(c6.localPosition.x, c6.localPosition.y, shift);

@@ -179,6 +179,11 @@ namespace vpet
         //!
         private Transform currentSelection;
 
+        //!
+        //! currently selected Object (if none = null)
+        //!
+        private SceneObject currentSceneObject;
+
 		//!
 		//! currently selected Object (if none = null)
 		//!
@@ -450,6 +455,7 @@ namespace vpet
             print("Camera Rig is: " + cameraRig);
 
             currentSelection = null;
+            currentSceneObject = null;
 
             // Set ambient light
             setAmbientIntensity(VPETSettings.Instance.ambientLight);
