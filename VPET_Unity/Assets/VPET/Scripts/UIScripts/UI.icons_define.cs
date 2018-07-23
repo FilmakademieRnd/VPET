@@ -161,6 +161,10 @@ namespace vpet
         private Sprite ScoutMode_PathRecord_sel;
         private Sprite ScoutMode_Snapshot_nrm;
         private Sprite ScoutMode_Snapshot_sel;
+        private Sprite Misc_SceneRotate_nrm;
+        private Sprite Misc_SceneRotate_sel;
+        private Sprite Misc_SceneScale_nrm;
+        private Sprite Misc_SceneScale_sel;
         // DOF extension by Tim
         //private Sprite ScoutMode_DOF_nrm;
         //private Sprite ScoutMode_DOF_sel;

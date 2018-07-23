@@ -415,7 +415,7 @@ namespace vpet
             }
             else
             {
-                Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) * VPETSettings.Instance.sceneScale);
+                Camera.main.orthographicSize = Camera.main.orthographicSize + (((camMovePos.z - pos.y) * Time.deltaTime) * VPETSettings.Instance.controllerSpeed);
                 foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
                 {
                     cam.orthographicSize = Camera.main.orthographicSize;

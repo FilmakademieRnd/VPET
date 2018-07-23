@@ -34,10 +34,9 @@ namespace vpet
 	public class ConfigEvent : UnityEvent<ConfigWidget> { }
 	public class AmbientIntensityChangedEvent : UnityEvent<float> { }
 	public class VisibilityChangeEvent: UnityEvent<bool> { }
-	public class SceneScaleChangedEvent : UnityEvent<float> { }
 
 #if USE_TANGO || USE_ARKIT
-    public class TrackingScaleIntensityChangedEvent : UnityEvent<float> { }
+    public class FloatChangedEvent : UnityEvent<float> { }
     public class ARColorChangedEvent: UnityEvent<Color> {}
 	public class ToggleARSwitchEvent : UnityEvent<bool> { }
 #endif
@@ -46,14 +45,12 @@ namespace vpet
 	{
 	    public ConfigEvent SubmitEvent = new ConfigEvent();
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
-        public SceneScaleChangedEvent OnSceneScaleChangedEvent = new SceneScaleChangedEvent();
 #if USE_TANGO || USE_ARKIT
-		public TrackingScaleIntensityChangedEvent TrackingScaleChangedEvent = new TrackingScaleIntensityChangedEvent();
 		public ToggleARSwitchEvent ToggleAREvent = new ToggleARSwitchEvent();
-		public TrackingScaleIntensityChangedEvent KeyDepthChangedEvent = new TrackingScaleIntensityChangedEvent();
+        public FloatChangedEvent KeyDepthChangedEvent = new FloatChangedEvent();
         public ARColorChangedEvent KeyColorChangedEvent  = new ARColorChangedEvent();
-        public TrackingScaleIntensityChangedEvent KeyRadiusChangedEvent = new TrackingScaleIntensityChangedEvent();
-        public TrackingScaleIntensityChangedEvent KeyThresholdChangedEvent = new TrackingScaleIntensityChangedEvent();
+        public FloatChangedEvent KeyRadiusChangedEvent = new FloatChangedEvent();
+        public FloatChangedEvent KeyThresholdChangedEvent = new FloatChangedEvent();
 		public ToggleARSwitchEvent ToggleARKeyEvent = new ToggleARSwitchEvent();
         public ToggleARSwitchEvent ToggleARMatteEvent = new ToggleARSwitchEvent();
 #endif
@@ -83,11 +80,8 @@ namespace vpet
 		//!
 		private float ambientLight = 0.1f;
 
-#if USE_TANGO || USE_ARKIT
         [HideInInspector]
-        public float trackingScale = 1.0f;
-        private Slider trackingScaleSlider;
-#endif
+        private Slider controllerSpeedSlider;
 
 
         private InputField serverIPField;
@@ -188,19 +182,6 @@ namespace vpet
                 }
             }
 
-            // Units toggle
-            childWidget = this.transform.Find("CM_toggle");
-            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: CM_toggle.", this.GetType()));
-            else
-            {
-                cmToggle = childWidget.GetComponent<Toggle>();
-                if (cmToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
-                else
-                {
-                    cmToggle.onValueChanged.AddListener(this.OnToggleUnitsCm);
-                }
-            }
-
             // ar toggle
             childWidget = this.transform.Find("AR_toggle");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: AR_toggle.", this.GetType()));
@@ -255,7 +236,7 @@ namespace vpet
                 childWidget.gameObject.SetActive(false);
             }
 
-            // ar color picker button
+            //ar color picker button
             childWidget = this.transform.Find("ARKeyPick_button");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKeyPick_button.", this.GetType()));
             else
@@ -387,21 +368,19 @@ namespace vpet
 				}
 			}
 
-#if USE_TANGO || USE_ARKIT
-            // scene scale
-            childWidget = this.transform.Find("TS_Slider/TrackingScale_slider");
-            if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: Tracking_Scale.", this.GetType()));
+            // controller speed
+            childWidget = this.transform.Find("CS_Slider/ControllerSpeed_slider");
+            if (childWidget == null) Debug.LogWarning(string.Format("{0}: Cant Find: ControllerSpeed.", this.GetType()));
             else
             {
-                trackingScaleSlider = childWidget.GetComponent<Slider>();
-                if (trackingScaleSlider == null) Debug.LogWarning(string.Format("{0}: Cant Component: Slider.", this.GetType()));
+                controllerSpeedSlider = childWidget.GetComponent<Slider>();
+                if (controllerSpeedSlider == null) Debug.LogWarning(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
                 {
-                    trackingScaleSlider.value = trackingScale;
-                    trackingScaleSlider.onValueChanged.AddListener(this.onSceneScaleChanged);
+                    controllerSpeedSlider.value = Mathf.Pow(VPETSettings.Instance.controllerSpeed, 1f / 100f);
+                    controllerSpeedSlider.onValueChanged.AddListener(this.onControllerSpeedChanged);
                 }
             }
-#endif
 
         }
 
@@ -466,14 +445,16 @@ namespace vpet
                 ambientIntensitySlider.onValueChanged.Invoke(ambientLight);
             }
 
-#if USE_TANGO || USE_ARKIT
+
 
             // scene Scale
-            if (trackingScaleSlider)
+            if (controllerSpeedSlider)
             {
-                trackingScaleSlider.value = VPETSettings.Instance.sceneScale;
-                trackingScaleSlider.transform.parent.Find("TrackingScale_Value").GetComponent<Text>().text = VPETSettings.Instance.sceneScale.ToString("f1");
+                controllerSpeedSlider.value = Mathf.Pow(VPETSettings.Instance.controllerSpeed,1f/100f);
+                controllerSpeedSlider.transform.parent.Find("ControllerSpeed_Value").GetComponent<Text>().text = VPETSettings.Instance.controllerSpeed.ToString("n3");
             }
+
+#if USE_TANGO || USE_ARKIT
 
             // arkey settings
             if (arkeyRadiusSlider)
@@ -552,20 +533,6 @@ namespace vpet
             drawGrid drawGrid = Camera.main.GetComponent<drawGrid>();
             if (drawGrid)
                 drawGrid.enabled = isOn;
-        }
-
-
-        private void OnToggleUnitsCm(bool isOn)
-        {
-            if ( isOn )
-            {
-                VPETSettings.Instance.sceneScale = 0.01f;
-            }
-            else
-            {
-                VPETSettings.Instance.sceneScale = 1f;
-            }
-            OnSceneScaleChangedEvent.Invoke(VPETSettings.Instance.sceneScale);
         }
 
 
@@ -680,23 +647,12 @@ namespace vpet
             AmbientChangedEvent.Invoke( v );
 		}
 
-#if USE_TANGO || USE_ARKIT
-        private void OnTrackingScaleChanged( float v )
+        private void onControllerSpeedChanged(float v)
         {
-            trackingScale = v;            
-            Text sliderValueText = GameObject.Find("GUI/Canvas/ConfigWidget/TS_Slider/TrackingScale_Value").GetComponent<Text>();            
-            sliderValueText.text = v.ToString("n1");
-            TrackingScaleChangedEvent.Invoke(v);
+            Text sliderValueText = controllerSpeedSlider.transform.Find("../ControllerSpeed_Value").GetComponent<Text>();
+            sliderValueText.text = Mathf.Pow(v,100).ToString("n3");
+            VPETSettings.Instance.controllerSpeed = Mathf.Pow(v, 100);
         }
-
-        private void onSceneScaleChanged(float v)
-        {
-            OnSceneScaleChangedEvent.Invoke(v);
-            Text sliderValueText = trackingScaleSlider.transform.Find("../TrackingScale_Value").GetComponent<Text>();
-            sliderValueText.text = v.ToString("n1");
-        }
-#endif
-
 
         public void ToggleColorWheel()
         {

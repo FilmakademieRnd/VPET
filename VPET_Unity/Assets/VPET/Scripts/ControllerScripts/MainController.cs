@@ -47,13 +47,11 @@ namespace vpet
 
         public Material matteMaterial;
 
-
-
         public GameObject arCoverSphere;
 
-
-
 		public bool arMode;
+        public bool lockARRotation;
+        public bool lockARScale;
 
 #if USE_ARKIT
 		private GameObject m_anchorModifier = null;
@@ -78,7 +76,7 @@ namespace vpet
         //!
         public void moveCameraObject(Vector3 translation)
         {
-            Camera.main.transform.Translate(translation * VPETSettings.Instance.sceneScale);
+            Camera.main.transform.Translate(translation * VPETSettings.Instance.controllerSpeed);
         }
 
         //!
@@ -87,7 +85,7 @@ namespace vpet
         //!
         public void moveCameraParent( Vector3 translation )
 	    {
-	        cameraRig.Translate( translation * VPETSettings.Instance.sceneScale);
+            cameraRig.Translate( translation * VPETSettings.Instance.controllerSpeed);
 	    }
 
         //!
@@ -525,6 +523,18 @@ namespace vpet
             RenderSettings.ambientLight = new Color(v, v, v, 1f);
 		}
 
+        public void toggleLockRotation()
+        {
+            lockARRotation = !lockARRotation;
+            ui.changeARLockRotationButtonImage(lockARRotation);
+        }
+
+        public void toggleLockScale()
+        {
+            lockARScale = !lockARScale;
+            ui.changeARLockScaleButtonImage(lockARScale);
+        }
+
         public void ToggleArMode(bool active)
         {
 			arMode = active;
@@ -608,8 +618,14 @@ namespace vpet
 				}
                 ui.hideConfigWidget();
 				//hide scene while placing AR anchor
-				rootScene.SetActive(false);
+				//rootScene.SetActive(false);
 				arConfigWidget.SetActive(true);
+                SetSceneScale(VPETSettings.Instance.sceneScale);
+                //arConfigWidget.transform.Find("scale_value").GetComponent<Text>().text;
+
+                //initalize ar lock buttons
+                ui.changeARLockRotationButtonImage(lockARRotation);
+                ui.changeARLockScaleButtonImage(lockARScale);
 #endif
             }
             else
@@ -761,21 +777,9 @@ namespace vpet
             ui.drawRangeSlider(act, initValue, sensitivity);
         }
 
-		public void setTrackingScale( float v )
-		{
-#if USE_ARKIT
-            if (m_anchorModifier)
-				m_anchorModifier.transform.localScale = new Vector3 (1f, 1f, 1f) * v;
-			//Camera.main.transform.position /= v;
-#endif
-			VPETSettings.Instance.trackingScale = v;
-		}
-
-
         public void SetSceneScale(float v)
         {
-
-
+            v = Mathf.Max(v,0.00001f);
             // scale the scene
             SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
 
@@ -790,6 +794,7 @@ namespace vpet
                 //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
                 obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
+            ui.updateScaleValue(v);
 
             // update camera params
             //CameraObject camScript = SceneLoader.SceneCameraList[camPrefabPosition].GetComponent<CameraObject>();

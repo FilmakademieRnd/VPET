@@ -413,7 +413,7 @@ namespace vpet
 
             Vector3 pos = Vector3.zero;
             pos = new Vector3(x_axis, y_axis, z_axis);           
-			return (VPETSettings.Instance.sceneScale) * pos * Time.deltaTime;
+            return (VPETSettings.Instance.controllerSpeed) * pos * Time.deltaTime;
         }
 
         public Transform WorldTransform
