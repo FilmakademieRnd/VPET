@@ -51,7 +51,7 @@ void ZeroMQHandler::requestStart()
     mutex.lock();
     _working = true;
     _stop = false;
-    qDebug()<<"ZeroMQHandler requested to start in Thread "<<thread()->currentThreadId();
+    qDebug()<<"ZeroMQHandler requested to start";// in Thread "<<thread()->currentThreadId();
     mutex.unlock();
 
     emit startRequested();
@@ -62,7 +62,7 @@ void ZeroMQHandler::requestStop()
     mutex.lock();
     if (_working) {
         _stop = true;
-        qDebug()<<"ZeroMQHandler stopping in Thread "<<thread()->currentThreadId();
+        qDebug()<<"ZeroMQHandler stopping";// in Thread "<<thread()->currentThreadId();
     }
     mutex.unlock();
 }
@@ -70,6 +70,8 @@ void ZeroMQHandler::requestStop()
 void ZeroMQHandler::run()
 {
     socket_ = new zmq::socket_t(*context_,ZMQ_SUB);
+    int timeout = 5000;
+    socket_->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof (int));
     socket_->bind(QString("tcp://"+IPadress+":5557").toLatin1().data());
     socket_->setsockopt(ZMQ_SUBSCRIBE,"client",0);
     socket_->setsockopt(ZMQ_SUBSCRIBE,"ncam",0);
@@ -78,7 +80,7 @@ void ZeroMQHandler::run()
     sender_ = new zmq::socket_t(*context_,ZMQ_PUB);
     sender_->bind(QString("tcp://"+IPadress+":5556").toLatin1().data());
 
-    qDebug()<<"Starting ZeroMQHandler in Thread " << thread()->currentThreadId();
+    qDebug()<<"Starting ZeroMQHandler";// in Thread " << thread()->currentThreadId();
 
     while(true) {
 
@@ -91,22 +93,69 @@ void ZeroMQHandler::run()
 
         socket_->recv(&message);
 
-        QString stringMessage = QString::fromStdString(std::string(static_cast<char*>(message.data()), message.size()));
-        QString key = stringMessage.section('|', 1, 2);
-		if (key == "udOb") {
-			foreach(const QString &objectState, objectStateMap) {
-				const QByteArray osByteArray = objectState.toLocal8Bit();
-				sender_->send(osByteArray.constData(), osByteArray.length());
-			}
+        //check if recv timed out
+        if(message.size() != 0)
+        {
+            QString stringMessage = QString::fromStdString(std::string(static_cast<char*>(message.data()), message.size()));
+            QString key = stringMessage.section('|', 1, 2);
+            QString clientId = stringMessage.section('|', 0, 0);
+
+            //update ping timeout
+            if(pingMap.contains(clientId))
+            {
+                pingMap[clientId]->restart();
+            }
+            else
+            {
+                QTime* t = new QTime();
+                t->start();
+                pingMap.insert(clientId,t);
+                std::cout << "New client registered: " << clientId.toStdString() << std::endl;
+            }
+
+            if (key == "udOb") {
+                foreach(const QString &objectState, objectStateMap) {
+                    const QByteArray osByteArray = objectState.toLocal8Bit();
+                    sender_->send(osByteArray.constData(), osByteArray.length());
+                }
+            }
+            else if (key.at(0) == 'l'){
+                //store locked object for each client
+                lockMap.insert(clientId,key.section('|', 1, 1));
+                objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
+                sender_->send(message);
+            }
+            else if (key != "ping"){
+                objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
+                sender_->send(message);
+            }
         }
-		else {
-            if(key.at(0) != 'l')
-				objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
-            sender_->send(message);
-		}
+
+
+        //check if ping timed out for any client
+        foreach(QTime* time, pingMap) {
+            if(time->elapsed() > 10000)
+            {
+                //connection to client lost
+                QString clientID = pingMap.key(time);
+                std::cout << "Lost connection to: " << clientID.toStdString() << std::endl;
+                pingMap.remove(clientID);
+                //check if client had lock
+                if(lockMap.contains(clientID))
+                {
+                    //release lock
+                    QString msg = "client 001|l|" + lockMap[clientID] + "|False";
+                    std::cout << "Resetting lock: " << msg.toStdString() << std::endl;
+                    objectStateMap.insert(msg.section('|', 1, 2), "client 001|" + msg.section('|', 1, -1));
+                    const QByteArray msgData = msg.toLocal8Bit();
+                    sender_->send(msgData.constData(), msgData.length());
+                    lockMap.remove(clientID);
+                }
+            }
+        }
 
         if (stop) {
-            qDebug()<<"Stopping ZeroMQHandler in Thread "<<thread()->currentThreadId();
+            qDebug()<<"Stopping ZeroMQHandler";// in Thread "<<thread()->currentThreadId();
             break;
         }
     }
@@ -116,7 +165,7 @@ void ZeroMQHandler::run()
     _working = false;
     mutex.unlock();
 
-    qDebug()<<"ZeroMQHandler process stopped in Thread "<<thread()->currentThreadId();
+    qDebug()<<"ZeroMQHandler process stopped";// in Thread "<<thread()->currentThreadId();
 
     emit stopped();
 }

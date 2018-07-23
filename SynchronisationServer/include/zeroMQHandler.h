@@ -37,6 +37,8 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 
 #include <QObject>
 #include <QMutex>
+#include <QMap>
+#include <QTime>
 #include <nzmqt/nzmqt.hpp>
 
 class ZeroMQHandler : public QObject
@@ -72,7 +74,13 @@ private:
     QString IPadress;
 
 	//map of last states
-    QMap<QString, QString> objectStateMap;
+	QMap<QString, QString> objectStateMap;
+
+    //map of ping timings
+    QMap<QString, QTime*> pingMap;
+
+    //map of last states
+    QMap<QString, QString> lockMap;
 
 signals:
     //signal emitted when process requests to work

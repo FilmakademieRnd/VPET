@@ -50,8 +50,13 @@ int main(int argc, char *argv[])
     {
         std::cout << "-h, -help:            display this help" << std::endl;
         std::cout << "-ownIP:               IP address of this computer" << std::endl;
+#ifdef Q_OS_MACOS
+        std::cout << "Note: This SyncServer version does not support NCam input." << std::endl;
+#endif
+#ifdef Q_OS_WIN
         std::cout << "-ncamIP:              ncam server IP address" << std::endl;
         std::cout << "-ncamPort:            ncam server port, neccessary if not 38860" << std::endl;
+#endif
     }
     else
     {
@@ -88,15 +93,25 @@ int main(int argc, char *argv[])
             }
             else if(cmdlineArgs[k] == "-ncamIP")
             {
+#ifdef Q_OS_MACOS
+        std::cout << "Note: This SyncServer version does not support NCam input." << std::endl;
+#endif
+#ifdef Q_OS_WIN
                 QHostAddress checkIP;
                 if(checkIP.setAddress(cmdlineArgs[k+1]))
                 {
                     ncamIP = cmdlineArgs[k+1];
                 }
+#endif
             }
             else if(cmdlineArgs[k] == "-ncamPort")
             {
+#ifdef Q_OS_MACOS
+        std::cout << "Note: This SyncServer version does not support NCam input." << std::endl;
+#endif
+#ifdef Q_OS_WIN
                 ncamPort = cmdlineArgs[k+1];
+#endif
             }
             k = k+2;
         }
@@ -112,6 +127,10 @@ int main(int argc, char *argv[])
         }
         else
         {
+#ifdef Q_OS_MACOS
+        std::cout << "Note: This SyncServer version does not support NCam input." << std::endl;
+#endif
+#ifdef Q_OS_WIN
             if(ncamIP == "")
             {
                 std::cout << "No valid IP address for ncam server defined." << std::endl;
@@ -121,6 +140,7 @@ int main(int argc, char *argv[])
                 std::cout << "No new port for ncam server defined. Use 38860." << std::endl;
                 ncamPort = "38860";
             }
+#endif
             MainApp* app = new MainApp(ownIP, ncamIP, ncamPort);
             app->run();
 

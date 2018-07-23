@@ -35,7 +35,7 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include "transformationrecorder.h"
 #include <iostream>
 #include <QThread>
-
+#ifdef Q_OS_WIN
 TransformationRecorder::TransformationRecorder(QString serverIP, zmq::context_t* context, QList<QStringList> *i_messagesStorage, QMutex *i_mutex, NcamAdapter *i_ncamAdapter ) //, RecordWriter* i_recordWriter )
 {
     serverIP_ = serverIP;
@@ -49,6 +49,21 @@ TransformationRecorder::TransformationRecorder(QString serverIP, zmq::context_t*
     isRecording = false;
     lastTimeCode = 0;
 }
+#endif
+#ifdef Q_OS_MACOS
+TransformationRecorder::TransformationRecorder(QString serverIP, zmq::context_t* context, QList<QStringList> *i_messagesStorage, QMutex *i_mutex) //, RecordWriter* i_recordWriter )
+{
+    serverIP_ = serverIP;
+    context_ = context;
+    timer.start();
+    lastTime = 0;
+    messagesStorage = i_messagesStorage;
+    mutexmain = i_mutex;
+    // erecordWriter = i_recordWriter;
+    isRecording = false;
+    lastTimeCode = 0;
+}
+#endif
 
 void TransformationRecorder::run()
 {
@@ -93,6 +108,7 @@ void TransformationRecorder::run()
             // recordWriter->forceWrite = true;
         }
 
+#ifdef Q_OS_WIN
         if ( ncamAdapter->timeCode != lastTimeCode )
         {
             // add time code
@@ -150,7 +166,7 @@ void TransformationRecorder::run()
             lastTimeCode = ncamAdapter->timeCode;
 
         }
-
+#endif
 
     }
 }

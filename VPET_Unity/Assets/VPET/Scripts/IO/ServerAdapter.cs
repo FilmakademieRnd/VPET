@@ -253,6 +253,9 @@ namespace vpet
             //register cam sending function
             InvokeRepeating("sendCam", 0.0f, 0.04f);
 
+            //register cam sending function
+            InvokeRepeating("sendPing", 0.0f, 5f);
+
             if (GameObject.Find("MainController") != null)
                 mainController = GameObject.Find("MainController").GetComponent<MainController>();
 
@@ -397,6 +400,15 @@ namespace vpet
                                                         Camera.main.transform.position.z;
                 SendObjectUpdate<ObjectSenderBasic>(msg);
             }
+        }
+
+        //!
+        //! sends current main camera position, called every x milliseconds
+        //!
+        void sendPing()
+        {
+            string msg = "client " + id + "|" + "ping";
+            SendObjectUpdate<ObjectSenderBasic>(msg);
         }
 
         //!

@@ -37,6 +37,7 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 
 #include <QObject>
 #include <QMutex>
+#include <QMap>
 #include <nzmqt/nzmqt.hpp>
 
 class ObjectStateHandler : public QObject
