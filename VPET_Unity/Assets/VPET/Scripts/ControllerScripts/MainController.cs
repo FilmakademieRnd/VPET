@@ -567,15 +567,15 @@ namespace vpet
                 tangoArScreen.enabled = true;
 #elif USE_ARKIT
 
-				// reset camera
-				cameraAdapter.globalCameraReset();
-				resetCameraOffset();
-				Camera.main.transform.position = Vector3.zero;
-				Camera.main.transform.rotation = Quaternion.identity;
-				Camera.main.fieldOfView = 60;
-				Camera.main.nearClipPlane = 0.1f;
-				Camera.main.farClipPlane = 100000;
-				// enable video background
+                // reset camera
+                cameraAdapter.globalCameraReset();
+                //resetCameraOffset();
+                Camera.main.transform.position = Vector3.zero;
+                Camera.main.transform.rotation = Quaternion.identity;
+                //Camera.main.fieldOfView = 60;
+                //Camera.main.nearClipPlane = 0.1f;
+                //Camera.main.farClipPlane = 100000;
+                // enable video background
 
 				ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
                 if (arkitScreen == null) 
@@ -609,10 +609,14 @@ namespace vpet
 				if (m_anchorModifier == null) 
 				{
 					m_anchorModifier = GameObject.Instantiate(m_anchorPrefab);
-					m_anchorModifier.transform.position = new Vector3(0f,0f,0f);
-					//m_anchorModifier.transform.localScale = new Vector3(1f,1f,1f) * VPETSettings.Instance.trackingScale;
-					m_anchorModifier.SetActive(false);
-					m_anchorModifier.name = "ARModifier";
+                    m_anchorModifier.transform.position = new Vector3(0f,0f,0f);
+                    m_anchorModifier.layer = 8;
+                    foreach (Transform child in m_anchorModifier.transform)
+                    {
+                        child.gameObject.layer = 8;
+                    }
+                    //m_anchorModifier.transform.localScale = new Vector3(1f,1f,1f) * VPETSettings.Instance.trackingScale;
+                    m_anchorModifier.name = "ARModifier";
 					if (helper)
 						m_anchorModifier.transform.SetParent(helper.transform);
 				}

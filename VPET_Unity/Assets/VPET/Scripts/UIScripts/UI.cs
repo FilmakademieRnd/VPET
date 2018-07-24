@@ -429,14 +429,23 @@ namespace vpet
 
 		public void acceptARConfig()
 		{
-			drawConfigWidget ();
+            GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
+            arConfigWidget.SetActive(false);
+
+            InputAdapter inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();
+
+            TouchInput input = inputAdapter.GetComponent<TouchInput>();
+            if (input)
+                input.enabled = true;
+
+            mainController.hideARWidgets();
 		}
 
 		public void requestKeyConfig()
 		{
 			hideConfigWidget();
 			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
-			arKeyWidget.SetActive(true);
+			arKeyWidget.SetActive(true);			
 		}
 
 		public void acceptKeyConfig()
