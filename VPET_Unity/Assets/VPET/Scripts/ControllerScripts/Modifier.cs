@@ -49,6 +49,11 @@ namespace vpet
 	    private Vector3 lastPosition;
 
         //!
+        //! stores the last position of the main camera to be able to detect weather to update the transform widget.
+        //!
+        private Vector3 lastCamPosition;
+
+        //!
         //! all transform modifier transforms.
         //!
         private Transform c0, c1, c2, c3, c4, c5, c6, c7, c8;
@@ -60,6 +65,7 @@ namespace vpet
 	    {
 	        this.setVisible(false);
 	        lastPosition = this.transform.position;
+            lastCamPosition = Camera.main.transform.position;
 
             if (this.name == "TranslateModifier")
             {
@@ -80,10 +86,14 @@ namespace vpet
 	    //!
 		void Update () 
 	    {
-	        if (!pause && (lastPosition != this.transform.position))
-	        {
-	            this.adjustOrientation();
-	            lastPosition = this.transform.position;
+            if (this.name == "TranslateModifier")
+            {
+                if (!pause && (lastPosition != this.transform.position || lastCamPosition != Camera.main.transform.position))
+                {
+                    this.adjustOrientation();
+                    lastPosition = this.transform.position;
+                    lastCamPosition = Camera.main.transform.position;
+                }
             }
 		}
 
@@ -134,9 +144,7 @@ namespace vpet
 	    //!
 	    private void adjustOrientation()
 	    {
-            if (this.name == "TranslateModifier")
-	        {
-                Vector3 toOther = (this.transform.position - Camera.main.transform.position).normalized;
+                Vector3 toOther = (this.transform.position - lastCamPosition).normalized;
 
                 float rx = Vector3.Dot(toOther, this.transform.right);
                 float ry = Vector3.Dot(toOther, this.transform.up);
@@ -194,5 +202,4 @@ namespace vpet
                 c8.localPosition = new Vector3(c8.localPosition.x, c8.localPosition.y, shift);
             }
 	    }
-}
 }
