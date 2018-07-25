@@ -25,6 +25,7 @@ https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 //!
@@ -45,7 +46,7 @@ namespace vpet
 	    //!
 	    //! stores the last position of the modifiers to be able to detect weather it moved.
 	    //!
-	    private Quaternion lastPosition;
+	    private Vector3 lastPosition;
 
         //!
         //! all transform modifier transforms.
@@ -58,7 +59,7 @@ namespace vpet
         void Start () 
 	    {
 	        this.setVisible(false);
-	        lastPosition = this.transform.rotation;
+	        lastPosition = this.transform.position;
 
             if (this.name == "TranslateModifier")
             {
@@ -79,11 +80,11 @@ namespace vpet
 	    //!
 		void Update () 
 	    {
-	        if (!pause && lastPosition != this.transform.rotation)
+	        if (!pause && (lastPosition != this.transform.position))
 	        {
 	            this.adjustOrientation();
-	            lastPosition = this.transform.rotation;
-	        }
+	            lastPosition = this.transform.position;
+            }
 		}
 
 	    //!
@@ -133,35 +134,36 @@ namespace vpet
 	    //!
 	    private void adjustOrientation()
 	    {
-            Vector3 toOther = (this.transform.position - Camera.main.transform.position).normalized;
-
-            float rx = Vector3.SignedAngle(toOther, this.transform.forward, this.transform.up);
-            float rz = Vector3.SignedAngle(toOther, this.transform.up, this.transform.right);
-
-            Debug.Log("X: " + Vector3.SignedAngle(toOther, this.transform.forward, this.transform.up));
-            Debug.Log("Z: " + Vector3.SignedAngle(toOther, this.transform.up, this.transform.right));
-
             if (this.name == "TranslateModifier")
 	        {
-                
-                float shift = 0f;
+                Vector3 toOther = (this.transform.position - Camera.main.transform.position).normalized;
 
-                if (rx > -135 && rx < -45)
-	            {
-                    c0.localRotation = Quaternion.Euler(0, 180, 0);
-                    shift = 0.5f;
+                float rx = Vector3.Dot(toOther, this.transform.right);
+                float ry = Vector3.Dot(toOther, this.transform.up);
+                float rz = Vector3.Dot(toOther, this.transform.forward);
+
+                float rx_ = Vector3.Dot(toOther, -this.transform.right);
+                float ry_ = Vector3.Dot(toOther, -this.transform.up);
+                float rz_ = Vector3.Dot(toOther, -this.transform.forward);
+
+                float shift = 0;
+
+                if (rx > rx_)
+                {
+                    c0.localRotation = Quaternion.Euler(0, 0, 0);
+                    shift = -0.5f;
 	            }
 	            else
 	            {
-                    c0.localRotation = Quaternion.Euler(0, 0, 0);
-                    shift = -0.5f;
+                    c0.localRotation = Quaternion.Euler(0, 180, 0);
+                    shift = 0.5f;
 	            }
                 c3.localPosition = new Vector3(shift, c3.localPosition.y, c3.localPosition.z);
                 c4.localPosition = new Vector3(shift, c4.localPosition.y, c4.localPosition.z);
                 c7.localPosition = new Vector3(shift, c7.localPosition.y, c7.localPosition.z);
                 c8.localPosition = new Vector3(shift, c8.localPosition.y, c8.localPosition.z);
 
-                if (rz > -45 && rz < 45)
+                if (ry > ry_)
 	            {
                     c1.localRotation = Quaternion.Euler(180, 0, 0);
                     shift = -0.5f;
@@ -176,14 +178,14 @@ namespace vpet
                 c5.localPosition = new Vector3(c5.localPosition.x, shift, c5.localPosition.z);
                 c6.localPosition = new Vector3(c6.localPosition.x, shift, c6.localPosition.z);
 
-                if (rx > -45 && rx < 45)
-	            {
+                if (rz > rz_)
+                {
                     c2.localRotation = Quaternion.Euler(0, 180, 0);
                     shift = -0.5f;
                 }
                 else
-	            {
-	                c2.localRotation = Quaternion.Euler(0, 0, 0);
+                {
+                    c2.localRotation = Quaternion.Euler(0, 0, 0);
                     shift = 0.5f;
                 }
                 c5.localPosition = new Vector3(c5.localPosition.x, c5.localPosition.y, shift);
