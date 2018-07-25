@@ -566,7 +566,8 @@ namespace vpet
                     tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
                 tangoArScreen.enabled = true;
 #elif USE_ARKIT
-
+                //avoids object updates while placing, scaling, rotating scene in AR setup
+                lockScene = true;
                 // reset camera
                 cameraAdapter.globalCameraReset();
                 //resetCameraOffset();

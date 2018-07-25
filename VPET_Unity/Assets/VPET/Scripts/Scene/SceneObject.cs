@@ -456,7 +456,7 @@ namespace vpet
 			{
 				tempLock = false;
 			}
-			if (!locked && !tempLock)
+            if (!locked && !tempLock && !mainController.lockScene)
 			{
 				//publish translation change
 				if (mainController.liveMode)
@@ -465,7 +465,7 @@ namespace vpet
 					{
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
-							// serverAdapter.sendTranslation(target, target.position, !selected);
+                            // serverAdapter.sendTranslation(target, target.position, !selected);
 							serverAdapter.SendObjectUpdate(target, !selected );
 
 							lastTranslationUpdateTime = Time.time;
@@ -479,7 +479,7 @@ namespace vpet
 					else if (translationUpdateDelayed) //update delayed, but object not moving
 					{
 						// serverAdapter.sendTranslation(target, target.position, !selected);
-						serverAdapter.SendObjectUpdate(target, !selected );
+                        serverAdapter.SendObjectUpdate(target, !selected );
 
 						lastTranslationUpdateTime = Time.time;
 						translationUpdateDelayed = false;
@@ -501,7 +501,7 @@ namespace vpet
 						if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendRotation(target, target.rotation, !selected);
-							serverAdapter.SendObjectUpdate(target, !selected );
+                            serverAdapter.SendObjectUpdate(target, !selected );
 
 
 
@@ -516,7 +516,7 @@ namespace vpet
 					else if (rotationUpdateDelayed) //update delayed, but object not moving
 					{
 						//serverAdapter.sendRotation(target, target.rotation, !selected);
-						serverAdapter.SendObjectUpdate(target, !selected );
+                        serverAdapter.SendObjectUpdate(target, !selected );
 
 						lastRotationUpdateTime = Time.time;
 						rotationUpdateDelayed = false;

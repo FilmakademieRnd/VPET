@@ -46,6 +46,13 @@ namespace vpet
         public bool helpActive;
 
         //!
+        //! lock all scene objects locally
+        //! used to avoid unwanted updates while in ar setup
+        //!
+        public bool lockScene;
+
+
+        //!
         //! are changes reported to server immediatelly (while dragging)
         //!
         public bool liveMode = false;
@@ -435,6 +442,7 @@ namespace vpet
             arMode = false;
             lockARScale = true;
             lockARRotation = false;
+            lockScene = false;
 
             //find & attach cached GameObjects
             ui = GameObject.Find("UI").GetComponent<UI>();

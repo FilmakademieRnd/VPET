@@ -431,6 +431,8 @@ namespace vpet
 		{
             GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
             arConfigWidget.SetActive(false);
+            //reset kinematic properties to previous values
+            mainController.lockScene = false;
 
             InputAdapter inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();
 
@@ -459,12 +461,8 @@ namespace vpet
 
         public ConfigWidget drawConfigWidget()
 	    {
-			// TODO: next 5 lines should be in acceptARConfig !?!
-			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
-			GameObject rootScene = SceneLoader.scnRoot;
-			arConfigWidget.SetActive(false);
-			rootScene.SetActive(true);
-			mainController.hideARWidgets();
+            //if user clicks on config icon while in AR setup, accept setup (same as ok button)
+            acceptARConfig();
 
             // get radial menu
             // get ProgressWidget
