@@ -447,12 +447,14 @@ namespace vpet
 		{
 			hideConfigWidget();
 			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
+            GameObject.Find("GUI/Canvas/ARColorPlane").SetActive(true);
 			arKeyWidget.SetActive(true);			
 		}
 
 		public void acceptKeyConfig()
 		{
 			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
+            GameObject.Find("GUI/Canvas/ARColorPlane").SetActive(false);
 			arKeyWidget.SetActive(false);
             // save values to preferences
             VPETSettings.mapValuesToPreferences(configWidget);
