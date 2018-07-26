@@ -119,7 +119,7 @@ namespace vpet
         private float arkeyThreshold = 0.1f;
 
         [Config]
-        private float arkeyRadius = 0.22f;
+        private float arkeyRadius = 0.1f;
 
         private Slider arkeyRadiusSlider;
 
@@ -261,7 +261,7 @@ namespace vpet
 
 
             // ar color picker plane
-            childWidget = this.transform.Find("../ARKeyWidget/ARColorPlane");
+            childWidget = this.transform.Find("../ARColorPlane");
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorPlane.", this.GetType()));
             else
             {
@@ -460,14 +460,14 @@ namespace vpet
             if (arkeyRadiusSlider)
             {
                 arkeyRadiusSlider.value = arkeyRadius;
-                arkeyRadiusSlider.transform.parent.Find("KeyRadius_Value").GetComponent<Text>().text = arkeyRadius.ToString("f1");
+                arkeyRadiusSlider.transform.parent.Find("KeyRadius_Value").GetComponent<Text>().text = arkeyRadius.ToString("n2");
 
             }
 
             if (arkeyThresholdSlider)
             {
                 arkeyThresholdSlider.value = arkeyThreshold;
-                arkeyThresholdSlider.transform.parent.Find("KeyThreshold_Value").GetComponent<Text>().text = arkeyThreshold.ToString("f1");
+                arkeyThresholdSlider.transform.parent.Find("KeyThreshold_Value").GetComponent<Text>().text = arkeyThreshold.ToString("n2");
 
             }
 
@@ -624,7 +624,7 @@ namespace vpet
         {
             arkeyRadius = v;
             Text sliderValueText = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyRadiusSlider/KeyRadius_Value").GetComponent<Text>();
-            sliderValueText.text = v.ToString("n1");
+            sliderValueText.text = v.ToString("n2");
             KeyRadiusChangedEvent.Invoke(v);
         }
 
@@ -632,7 +632,7 @@ namespace vpet
         {
             arkeyThreshold = v;
             Text sliderValueText = GameObject.Find("GUI/Canvas/ARKeyWidget/KeyThresholdSlider/KeyThreshold_Value").GetComponent<Text>();
-            sliderValueText.text = v.ToString("n1");
+            sliderValueText.text = v.ToString("n2");
             KeyThresholdChangedEvent.Invoke(v);
         }
 
