@@ -77,6 +77,7 @@ namespace vpet
         void Awake()
         {
             sceneDataHandler = new SceneDataHandler();
+            sceneDataHandler.initializeLists();
         }
 
         void Start()
@@ -130,14 +131,15 @@ namespace vpet
 #if TRUNK
             createMaterials();
 #endif
+
             // create textures
             if (VPETSettings.Instance.doLoadTextures )
 	        {
 	            createTextures();
-	        }      
-	
-	        // create meshes
-	        createMeshes();
+            }
+
+            // create meshes
+            createMeshes();
 	
 	        // iterate nodes
 	        createSceneGraphIter(scnRoot.transform, 0);

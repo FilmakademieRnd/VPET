@@ -144,6 +144,13 @@ namespace vpet
                 nodeParserDelegateList.Add(call);
         }
 
+        public void initializeLists()
+        {
+            m_nodeList = new List<SceneNode>();
+            m_materialList = new List<MaterialPackage>();
+            m_textureList = new List<TexturePackage>();
+            m_objectList = new List<ObjectPackage>();
+        }
 
         //!
         //! function to check and reverse the endian order ( assume message from server adapter is little endian )
@@ -157,7 +164,6 @@ namespace vpet
 
         private void convertHeaderByteStream()
         {
-
             int dataIdx = 0;
             VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(m_headerByteData, dataIdx);
             dataIdx += sizeof(float);
