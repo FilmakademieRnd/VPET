@@ -782,6 +782,10 @@ namespace vpet
             ui.drawRangeSlider(act, initValue, sensitivity);
         }
 
+        //!
+        //! set the global scale of the scene
+        //! @Param v absolute scale
+        //!
         public void SetSceneScale(float v)
         {
             v = Mathf.Max(v,0.00001f);
@@ -800,6 +804,7 @@ namespace vpet
                 obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
             ui.updateScaleValue(v);
+            QualitySettings.shadowDistance = v*20f;
 
             // update camera params
             //CameraObject camScript = SceneLoader.SceneCameraList[camPrefabPosition].GetComponent<CameraObject>();

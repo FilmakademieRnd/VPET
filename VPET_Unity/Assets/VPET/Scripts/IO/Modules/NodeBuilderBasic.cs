@@ -128,7 +128,10 @@ namespace vpet
 #endif
 
             // map properties
-            SceneLoader.MapMaterialProperties(mat, nodeGeo);
+            if (VPETSettings.Instance.doLoadTextures)
+            {
+                SceneLoader.MapMaterialProperties(mat, nodeGeo);
+            }
 
             // Transform / convert handiness
             Vector3 pos = new Vector3( nodeGeo.position[0], nodeGeo.position[1], nodeGeo.position[2] );
@@ -210,6 +213,7 @@ namespace vpet
 	        lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);            
             lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
             lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
+            lightComponent.shadows = LightShadows.Soft;
             lightComponent.range = nodeLight.range * VPETSettings.Instance.sceneScale;
 
             Debug.Log("Create Light: " + nodeLight.name + " of type: " + ((LightTypeKatana)(nodeLight.lightType)).ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos  );
