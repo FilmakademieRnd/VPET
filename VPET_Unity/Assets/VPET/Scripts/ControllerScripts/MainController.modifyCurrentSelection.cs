@@ -166,8 +166,11 @@ namespace vpet
         //!
         public void rotateSelectionJoystick(Vector3 end)
         {
-            if (currentSelection)                 
-                currentSceneObject.transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);                        
+            if (currentSelection)
+            {
+                end *= VPETSettings.Instance.controllerSpeed;
+                currentSceneObject.transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
+            }                    
         }
         //!
         //! scale currently selected object via joystick
