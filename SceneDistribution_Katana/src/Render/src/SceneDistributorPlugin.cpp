@@ -35,6 +35,8 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include "SceneDistributorPlugin.h"
 #include "SceneIterator.h"
 
+#include <FnAPI\FnAPI.h>
+
 #include <FnScenegraphIterator/FnScenegraphIterator.h>
 #include <FnRenderOutputUtils/FnRenderOutputUtils.h>
 #include <FnRenderOutputUtils/CameraInfo.h>
@@ -289,6 +291,7 @@ int SceneDistributorPlugin::queueDataUpdates(FnKat::GroupAttribute updateAttribu
             _cameraUpdates.push(update);
         }
     }
+	return 0;
 }
 
 int SceneDistributorPlugin::applyPendingDataUpdates()
@@ -629,16 +632,29 @@ void SceneDistributorPlugin::configureDiskRenderOutputProcess(
     const std::string& renderMethodName,
     const float& frameTime) const
 {
-    // e.g.
+#if KATANA_VERSION_MAJOR >= 3
 
+	// The render action used for this render output:
+	// Set the render action to do nothing:
+	FnKat::Render::DiskRenderOutputProcess::RenderActionPtr renderAction(
+		new FnKat::Render::NoOutputRenderAction());
+
+	// Pass ownership of the renderAction to the diskRenderOutputProcess:
+	diskRenderOutputProcess.setRenderAction(
+		FnKat::Render::DiskRenderOutputProcess::UniquePtr::move(renderAction));
+
+// OLD KATANA 2.x IMPLEMENTATION
+#else
     // The render action used for this render output:
-    std::auto_ptr<FnKat::Render::RenderAction> renderAction;
+    //std::auto_ptr<FnKat::Render::RenderAction> renderAction;
 
-    // Set the render action to do nothing:
-    renderAction.reset(new FnKat::Render::NoOutputRenderAction());
+    //// Set the render action to do nothing:
+    //renderAction.reset(new FnKat::Render::NoOutputRenderAction());
 
-    // Pass ownership of the renderAction to the diskRenderOutputProcess:
-    diskRenderOutputProcess.setRenderAction(renderAction);
+    //// Pass ownership of the renderAction to the diskRenderOutputProcess:
+    //diskRenderOutputProcess.setRenderAction(renderAction);
+#endif
+
 }
 
 DEFINE_RENDER_PLUGIN(SceneDistributorPlugin)
