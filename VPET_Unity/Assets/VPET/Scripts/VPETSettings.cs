@@ -37,6 +37,12 @@ namespace vpet
 	{
 	    private static readonly VPETSettings instance = new VPETSettings();
 	
+        //!
+        //! The maximum extend of the scene
+        //!
+        public Vector3 sceneBoundsMax;
+        public Vector3 sceneBoundsMin;
+
 	    //!
 	    //! IP Adress of server
 	    //!

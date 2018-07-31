@@ -81,7 +81,7 @@ namespace vpet
         {
             if (currentSelection)
             {                
-                if (translation.x == 0 && translation.y == 0)
+                /*if (translation.x == 0 && translation.y == 0)
                     axisLocker = new Vector3(0, 0, 1);
                 else if (translation.x == 0 && translation.z == 0)
                     axisLocker = new Vector3(0, 1, 0);
@@ -89,9 +89,14 @@ namespace vpet
                     axisLocker = new Vector3(1, 0, 0);
                 else 
                     axisLocker = new Vector3(1, 0, 1);
-                
+
                 Vector3 finalTranslation = currentSelection.rotation * Vector3.Scale(Quaternion.Inverse(currentSelection.rotation) * (translation*VPETSettings.Instance.controllerSpeed), axisLocker) + currentSelection.position; 
-                
+                */
+                Vector3 xTrans = translation.z * Vector3.Scale(Camera.main.transform.forward ,(Vector3.forward + Vector3.right)).normalized;
+                Vector3 yTrans = new Vector3(0 , translation.y , 0);
+                Vector3 zTrans = translation.x * Vector3.Scale(Camera.main.transform.right, (Vector3.forward + Vector3.right)).normalized;
+
+                Vector3 finalTranslation = xTrans + yTrans + zTrans + currentSelection.position;
                 if (currentSceneObject)
                     currentSceneObject.translate(finalTranslation);
                 else
@@ -170,7 +175,7 @@ namespace vpet
             {
                 end *= VPETSettings.Instance.controllerSpeed;
                 currentSceneObject.transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
-            }                    
+            }                       
         }
         //!
         //! scale currently selected object via joystick

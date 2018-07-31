@@ -121,6 +121,8 @@ namespace vpet
 
         public void createSceneGraph( )
 	    {
+            VPETSettings.Instance.sceneBoundsMax = Vector3.negativeInfinity;
+            VPETSettings.Instance.sceneBoundsMin = Vector3.positiveInfinity;
 
 #if TRUNK
             print(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneDataHandler.ObjectList.Count, sceneDataHandler.TextureList.Count, sceneDataHandler.MaterialList.Count, sceneDataHandler.NodeList.Count));

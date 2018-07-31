@@ -272,6 +272,7 @@ namespace vpet
 		//!
 		void Start () 
 		{
+
 			if (transform.childCount > 0)
 			{
 				lightTarget = transform.GetChild(0);

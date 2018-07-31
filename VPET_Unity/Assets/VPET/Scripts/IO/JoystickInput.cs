@@ -46,7 +46,7 @@ L2				|Joystick Axis, 3rd axis			|
 R1				|Key or Mouse Button,				|
 				|Positive Button: joystick button 5	|				
 R2				|Joystick Axis, 3rd axis			|			
-Settings    	|Positive Button: joystick button 7 |	
+Settings        |Positive Button: joystick button 7 |   
 				
 
 Command 		|		iOS GameVice mapping 		 						| 
@@ -66,7 +66,7 @@ RightStick_Y 	|Joystick Axis, 4th axis, invert							|
 L1				|Key or Mouse Button, Positive Button: joystick button 8	|
 R1				|Key or Mouse Button, Positive Button: joystick button 9	|
 R2				|Key or Mouse Button, Positive Button: joystick button 11	|
-Settings    	|Key or Mouse Button, Positive Button: joystick button 9	|
+Settings        |Key or Mouse Button, Positive Button: joystick button 9    |
 	
 */
 using UnityEngine;
@@ -127,8 +127,7 @@ namespace vpet
             foreach (GameObject g in SceneLoader.SelectableLights)
             {
                 if (g)
-                    if (g.GetComponent<SceneObject>() != null && 
-                        (g.GetComponent<SceneObject>().IsLight == true || g.GetComponent<SceneObject>().isDirectionalLight == true))
+                    if (g.GetComponent<SceneObject>() != null && (g.GetComponent<SceneObject>().IsLight == true || g.GetComponent<SceneObject>().isDirectionalLight == true))
                         EditableLightList.Add(g.GetComponent<SceneObject>());
             }
             // sceneEditableObjects contains cameras and lights, we need to sort those out and build a new list
@@ -287,12 +286,12 @@ namespace vpet
                 }
 
             }
-			// toggle configuration window
+            // toggle configuration window
             else if (Input.GetButtonDown("Settings"))
             {
                 mainController.UIAdapter.MainMenu.transform.GetChild(3).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
-			
+    
             // toggle predefined bookmarks
             else if (Input.GetButtonDown("R1") && !mainController.arMode)
             {

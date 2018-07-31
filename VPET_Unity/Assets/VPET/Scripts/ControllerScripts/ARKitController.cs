@@ -46,8 +46,8 @@ namespace vpet
         public UnityARAlignment startAlignment = UnityARAlignment.UnityARAlignmentGravity;
         public UnityARPlaneDetection planeDetection = UnityARPlaneDetection.Horizontal;
         public ARReferenceImagesSet detectionImages = null;
-        public bool getPointCloud = true;
-        public bool enableLightEstimation = true;
+        public bool getPointCloud = false;
+        public bool enableLightEstimation = false;
         public bool enableAutoFocus = true;
         private bool sessionStarted = false;
 
@@ -146,9 +146,15 @@ namespace vpet
 			//transform.localPosition = UnityARMatrixOps.GetPosition (matrix) * VPETSettings.Instance.trackingScale * m_movementScale;
             transform.localPosition = UnityARMatrixOps.GetPosition(matrix) * m_movementScale;
             transform.localRotation = UnityARMatrixOps.GetRotation(matrix);
-
-			if (m_arMode)
-				Camera.main.projectionMatrix = m_session.GetCameraProjection ();   // for AR
+            if (m_arMode)
+            {
+                //for AR mode
+                Camera.main.projectionMatrix = m_session.GetCameraProjection();
+                foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
+                {
+                   cam.projectionMatrix = Camera.main.projectionMatrix;
+                }
+            }
         }
 
    //     public void setTrackingScaleIntensity( float v )

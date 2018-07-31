@@ -53,6 +53,7 @@ namespace vpet
         public bool lockARRotation;
         public bool lockARScale;
 
+
 #if USE_ARKIT
 		private GameObject m_anchorModifier = null;
 		private GameObject m_anchorPrefab = null;
@@ -611,7 +612,7 @@ namespace vpet
 				{
 					m_anchorModifier = GameObject.Instantiate(m_anchorPrefab);
                     m_anchorModifier.transform.position = new Vector3(0f,0f,0f);
-                    m_anchorModifier.layer = 8;
+                    m_anchorModifier.layer = LayerMask.NameToLayer("RenderInFront");
                     foreach (Transform child in m_anchorModifier.transform)
                     {
                         child.gameObject.layer = 8;
@@ -631,6 +632,7 @@ namespace vpet
                 //initalize ar lock buttons
                 ui.changeARLockRotationButtonImage(lockARRotation);
                 ui.changeARLockScaleButtonImage(lockARScale);
+
 #endif
             }
             else
@@ -803,8 +805,10 @@ namespace vpet
                 //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
                 obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
-            ui.updateScaleValue(v);
-            QualitySettings.shadowDistance = v*20f;
+            Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
+            float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+            QualitySettings.shadowDistance = v * maxExtend * maxExtend * 0.0025f;
+            Debug.Log("newShadowDistance: " + QualitySettings.shadowDistance);
 
             // update camera params
             //CameraObject camScript = SceneLoader.SceneCameraList[camPrefabPosition].GetComponent<CameraObject>();
