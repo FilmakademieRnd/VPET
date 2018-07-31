@@ -149,13 +149,15 @@ namespace vpet
 	        // Add Material
 	        MeshRenderer meshRenderer = objMain.AddComponent<MeshRenderer>();
 	        meshRenderer.material = mat;
-	
+
 	        // Add Mesh
 	        if ( nodeGeo.geoId > -1 && nodeGeo.geoId < SceneLoader.SceneMeshList.Count )
 	        {
 	            Mesh[] meshes = SceneLoader.SceneMeshList[nodeGeo.geoId];
 	            objMain.AddComponent<MeshFilter>();
 	            objMain.GetComponent<MeshFilter>().mesh  = meshes[0];
+                VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, meshRenderer.bounds.max);
+                VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, meshRenderer.bounds.min);
 	            for( int i=1; i<meshes.Length; i++ )
 	            {
 	                GameObject subObj = new GameObject( objMain.name+"_part"+i.ToString() );
@@ -164,6 +166,8 @@ namespace vpet
 	                MeshRenderer subMeshRenderer = subObj.AddComponent<MeshRenderer>();
 	                subMeshRenderer.material = mat;
 	                subObj.transform.parent = objMain.transform;
+                    VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, subMeshRenderer.bounds.max);
+                    VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, subMeshRenderer.bounds.min);
 	            }
 	        }
 	
@@ -213,7 +217,12 @@ namespace vpet
 	        lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);            
             lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
             lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
-            lightComponent.shadows = LightShadows.Soft;
+            if (lightComponent.type == LightType.Directional)
+                lightComponent.shadows = LightShadows.Soft;
+            else
+                lightComponent.shadows = LightShadows.None;
+            lightComponent.shadowBias = 0f;
+            lightComponent.shadowNormalBias = 1f;
             lightComponent.range = nodeLight.range * VPETSettings.Instance.sceneScale;
 
             Debug.Log("Create Light: " + nodeLight.name + " of type: " + ((LightTypeKatana)(nodeLight.lightType)).ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos  );

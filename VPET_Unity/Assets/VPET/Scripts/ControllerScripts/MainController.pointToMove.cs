@@ -46,6 +46,8 @@ namespace vpet
 	    public void showPointToMoveIdentifier(Vector3 pos){
 	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode )){
 	            pointToMoveModifier.transform.position = pos + new Vector3(0, 0.01f, 0);
+                pointToMoveModifier.layer = LayerMask.NameToLayer("RenderInFront");
+                pointToMoveModifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, pos) / 1000) * (Camera.main.fieldOfView / 30);
 	            pointToMoveModifier.GetComponent<Renderer>().enabled = true;
 	        }
 	    }
@@ -67,7 +69,7 @@ namespace vpet
 	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
 	            if (cameraPointMove){
 	                //use camera as target for the translation
-	                Camera.main.GetComponent<MoveCamera>().smoothTranslate(pos + new Vector3(0, Camera.main.transform.position.y, 0));
+	                Camera.main.GetComponent<MoveCamera>().smoothTranslate(new Vector3(pos.x, Camera.main.transform.position.y, pos.z));
 	            }
 	            else
 	            {
@@ -77,12 +79,12 @@ namespace vpet
                         // HACK to animate in pointTOMove mode
                         if (ui.LayoutUI == layouts.ANIMATION)
                         {
-                            currentSceneObject.translate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            currentSceneObject.translate(new Vector3(pos.x, currentSelection.position.y, pos.z));
                             animationController.setKeyFrame();
                         }
                         else
                         {
-                            currentSceneObject.smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            currentSceneObject.smoothTranslate(new Vector3(pos.x, currentSelection.position.y, pos.z));
                         }
                     }
                     else // TODO: what is this for?
@@ -90,12 +92,12 @@ namespace vpet
                         // HACK to animate in pointTOMove mode
                         if (ui.LayoutUI == layouts.ANIMATION)
                         {
-                            currentSelection.GetChild(0).GetComponent<SceneObject>().translate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            currentSelection.GetChild(0).GetComponent<SceneObject>().translate(new Vector3(pos.x, currentSelection.position.y, pos.z));
                             animationController.setKeyFrame();
                         }
                         else
                         {
-                            currentSelection.GetChild(0).GetComponent<SceneObject>().smoothTranslate(pos + new Vector3(0, currentSelection.position.y, 0));
+                            currentSelection.GetChild(0).GetComponent<SceneObject>().smoothTranslate(new Vector3(pos.x, currentSelection.position.y, pos.z));
                         }
                     }
 	            }

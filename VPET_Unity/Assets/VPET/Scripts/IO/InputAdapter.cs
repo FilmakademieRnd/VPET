@@ -77,9 +77,9 @@ namespace vpet
 		// private float forwardSpeed = 200f;
 	
 		//!
-		//! cached reference to the ground plane
+		//! plane on wich raycast is executed when in pointToMove mode
 		//!
-		private Collider groundPlane;
+        private Plane targetPlane;
 	
 		//!
 		//! is the user currently editing lights
@@ -121,16 +121,6 @@ namespace vpet
 #endif
 
         }
-
-
-        //!
-        //! Use this for initialization
-        //!
-        void Start ()
-		{
-			groundPlane = GameObject.Find("GroundPlane").GetComponent<Collider>();
-	
-	    }
 	
 	    //!
 	    //! single touch start (called by Mouse or Touch Input)
@@ -150,7 +140,12 @@ namespace vpet
 				//pointToMove active
 				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 				{
-					mainController.showPointToMoveIdentifier(objectRaycast(pos, groundPlane));
+                    Transform selection = mainController.getCurrentSelection();
+                    targetPlane = new Plane(Vector3.up, Vector3.zero);
+                    //GameObject pl = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                    //pl.transform.localScale = new Vector3(10, 10, 10);
+                    //pl.transform.position = new Vector3(0, selection.TransformPoint(selection.gameObject.GetComponent<BoxCollider>().center - selection.gameObject.GetComponent<BoxCollider>().size).y * VPETSettings.Instance.sceneScale / 2f, 0);
+                    mainController.showPointToMoveIdentifier(planeRaycast(pos, targetPlane));
 					return;
 				}
 	
@@ -231,7 +226,7 @@ namespace vpet
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
-						mainController.hidePointToMoveIdentifier(objectRaycast(pos, groundPlane));
+                        mainController.hidePointToMoveIdentifier(planeRaycast(pos, targetPlane));
 						return;
 					}
 	
@@ -297,7 +292,7 @@ namespace vpet
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
-						mainController.movePointToMoveIdentifier(objectRaycast(pos, groundPlane));
+                        mainController.movePointToMoveIdentifier(planeRaycast(pos, targetPlane));
 						return;
 					}
 	

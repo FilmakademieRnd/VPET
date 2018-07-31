@@ -53,13 +53,13 @@ namespace vpet
 
             sender = new PublisherSocket();
             sender.Connect("tcp://" + IP + ":" + Port);
-            Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
+            //Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
             while (IsRunning)
             {
                 Thread.Sleep(1);
                 if (sendMessageQueue.Count > 0)
                 {
-                    Debug.Log("Send: " + sendMessageQueue[0]);
+                    //Debug.Log("Send: " + sendMessageQueue[0]);
                     sender.SendFrame(sendMessageQueue[0], false); // true not wait
                     sendMessageQueue.RemoveAt(0);
                 }
