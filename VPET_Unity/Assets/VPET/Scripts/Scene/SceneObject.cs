@@ -409,7 +409,7 @@ namespace vpet
 			{
 				Rigidbody rigidbody = this.gameObject.AddComponent<Rigidbody>();
                 
-				rigidbody.mass = 100.0f;
+                rigidbody.mass = 100f;
 				rigidbody.drag = 2.5f;
                 
                 // TODO: temporary

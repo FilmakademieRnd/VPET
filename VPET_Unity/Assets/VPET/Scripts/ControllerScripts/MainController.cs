@@ -805,15 +805,20 @@ namespace vpet
                 //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
                 obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
+
+            ui.updateScaleValue(v);
             Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
             float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
             QualitySettings.shadowDistance = v * maxExtend * maxExtend * 0.0025f;
-            Debug.Log("newShadowDistance: " + QualitySettings.shadowDistance);
+            Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
 
+            /*foreach (Rigidbody rigi in FindObjectsOfType<Rigidbody>())
+            {
+                rigi.mass = 0.1f * maxExtend * v;
+            }*/
+
+            VPETSettings.Instance.maxExtend = maxExtend;
             // update camera params
-            //CameraObject camScript = SceneLoader.SceneCameraList[camPrefabPosition].GetComponent<CameraObject>();
-            //Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale; // Camera.main.nearClipPlane / sceneScalePrevious * VPETSettings.Instance.sceneScale;
-            //Camera.main.farClipPlane =  camScript.far * 4* VPETSettings.Instance.sceneScale; // Camera.main.farClipPlane / sceneScalePrevious * VPETSettings.Instance.sceneScale;
             UpdatePropertiesSecondaryCameras();
         }
 

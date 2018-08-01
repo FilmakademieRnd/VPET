@@ -269,6 +269,7 @@ namespace vpet
         //!
         void Awake()
         {
+
             // read settings from inspector values
             VPETSettings.mapValuesFromObject(this);
 
@@ -476,6 +477,14 @@ namespace vpet
             SplashWidget splashWidget = ui.drawSplashWidget();
             splashWidget.OnFinishEvent.AddListener(this.splashFinished);
 
+            GameObject groundPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            groundPlane.layer = LayerMask.NameToLayer("GroundLayer");
+            groundPlane.name = "GroundPlane";
+            groundPlane.tag = "editable";
+            groundPlane.GetComponent<MeshRenderer>().enabled = false;
+            groundPlane.transform.parent = scene.transform;
+            groundPlane.transform.localPosition = Vector3.zero;
+            groundPlane.transform.localScale = new Vector3(5000,5000,5000);
 
             // HACK store command buffers
             // to restore them when disabling AR mode on Tango

@@ -416,7 +416,7 @@ namespace vpet
 	                int pointCount = 0;
 	                List<Vector3[]> pointArraysList = new List<Vector3[]>(0);
 	
-	                for (int i = 0; i <= transXcurve.keys.Length - 1; i++)
+	                for (int i = 0; i < transXcurve.keys.Length; i++)
 	                {
 	                    if (i != transXcurve.keys.Length - 1)
 	                    {

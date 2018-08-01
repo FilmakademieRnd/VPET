@@ -149,6 +149,7 @@ namespace UnityEngine.XR.iOS
 	                    ARHitTestResultType[] resultTypes = {
 	                        //ARHitTestResultType.ARHitTestResultTypeExistingPlaneUsingExtent, 
 	                        // if you want to use infinite planes use this:
+                            //ARHitTestResultType.ARHitTestResultTypeEstimatedVerticalPlane,
 	                        ARHitTestResultType.ARHitTestResultTypeExistingPlane,
 	                        ARHitTestResultType.ARHitTestResultTypeEstimatedHorizontalPlane, 
 	                        //ARHitTestResultType.ARHitTestResultTypeFeaturePoint

@@ -180,7 +180,7 @@ namespace vpet
 	    //!
 	    public void changeAnimationCurve(AnimationClip clip, System.Type type, string propertyName, AnimationCurve curve)
 	    {
-	        clip.SetCurve(null, type, propertyName, curve);
+	        clip.SetCurve("", type, propertyName, curve);
 	    }
 	
 	    //!
@@ -232,7 +232,7 @@ namespace vpet
 	            _animationCurves.Add(clip, new List<AnimationCurve>());
 	
 	        _animationCurves[clip].Add(curve);
-	        clip.SetCurve(null, type, propertyName, curve);
+	        clip.SetCurve("", type, propertyName, curve);
 	        XML_AnimationCurve xmlCurve = new XML_AnimationCurve(type.ToString(), propertyName);
 	        addXMLCurve(curve, xmlCurve);
 	    }

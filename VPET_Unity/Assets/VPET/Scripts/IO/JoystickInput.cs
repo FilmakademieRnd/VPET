@@ -66,7 +66,7 @@ RightStick_Y 	|Joystick Axis, 4th axis, invert							|
 L1				|Key or Mouse Button, Positive Button: joystick button 8	|
 R1				|Key or Mouse Button, Positive Button: joystick button 9	|
 R2				|Key or Mouse Button, Positive Button: joystick button 11	|
-Settings        |Key or Mouse Button, Positive Button: joystick button 9    |
+Settings        |Key or Mouse Button, Positive Button: joystick button 0    |
 	
 */
 using UnityEngine;
@@ -74,6 +74,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+#if UNITY_IOS && UNITY_EDITOR
+using System.IO;
+using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEditor.iOS.Xcode;
+#endif
 
 //!
 //! script receiving input from one or two (vcs) joystick
@@ -90,7 +96,7 @@ namespace vpet
         public bool moveObjectActive = false;
         public bool rotateObjectActive = false;
         public bool scaleObjectActive = false;
-		private bool hasPressedDirectionalPad = false;
+        private bool hasPressedDirectionalPad = false;
         private bool hasPressedR2 = false;
         private bool hasPressedL2 = false;
         private int DPADdirection = 0;
@@ -98,8 +104,8 @@ namespace vpet
         List<SceneObject> EditableObjectsList = new List<SceneObject>();
         List<SceneObject> EditableLightList = new List<SceneObject>();
         List<SceneObject> EditableObjects = new List<SceneObject>();
-        SceneObject currselTransform;       
-								  
+        SceneObject currselTransform;
+
         private float left, right, bottom, top;
         private Transform worldTransform = null;
         private SceneObject sceneObject = null;
@@ -113,15 +119,16 @@ namespace vpet
         //!
         private MainController mainController = null;
         private SceneLoader sceneLoader = null;
-		public SceneLoader SceneLoader
-		{
-			set { sceneLoader = value;  }
-		}
-		
-		  //!
+        public SceneLoader SceneLoader
+        {
+            set { sceneLoader = value; }
+        }
+
+        //!
         //! called by main controller once scene has been loaded to fill lists with appropriate items
         //!
-        public void initSelectionLists() {
+        public void initSelectionLists()
+        {
             // create light list
             EditableLightList.Clear();
             foreach (GameObject g in SceneLoader.SelectableLights)
@@ -136,7 +143,7 @@ namespace vpet
             {
                 if (g.GetComponent<CameraObject>() == null && g.GetComponent<SceneObject>().IsLight == false)
                     EditableObjectsList.Add(g.GetComponent<SceneObject>());
-            }            
+            }
         }
 
         //!
@@ -291,7 +298,7 @@ namespace vpet
             {
                 mainController.UIAdapter.MainMenu.transform.GetChild(3).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
-    
+
             // toggle predefined bookmarks
             else if (Input.GetButtonDown("R1") && !mainController.arMode)
             {
@@ -308,7 +315,7 @@ namespace vpet
                 mainController.UIAdapter.MainMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
             // reset current selection                                          
-			else if (Input.GetButtonDown("Fire2"))
+            else if (Input.GetButtonDown("Fire2"))
             {
                 if (mainController.getCurrentSelection())
                 {
@@ -321,7 +328,7 @@ namespace vpet
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
             else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-			else if (Input.GetButtonDown("L2"))
+            else if (Input.GetButtonDown("L2"))
 #endif
             {
                 hasPressedL2 = true;
@@ -389,7 +396,7 @@ namespace vpet
                     mainController.handleSelection();
                     mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
                 }
-			}
+            }
             // Dpad and R2 reset 
 #if UNITY_EDITOR || UNITY_STANDALONE
             if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))
@@ -419,7 +426,7 @@ namespace vpet
             }
 
             Vector3 pos = Vector3.zero;
-            pos = new Vector3(x_axis, y_axis, z_axis);           
+            pos = new Vector3(x_axis, y_axis, z_axis);
             return (VPETSettings.Instance.controllerSpeed) * pos * Time.deltaTime;
         }
 
@@ -456,4 +463,30 @@ namespace vpet
         }
     }
 }
- 
+
+
+
+
+#if UNITY_IOS && UNITY_EDITOR
+public class BuildPostProcessor
+{
+    [PostProcessBuildAttribute(1)]
+    public static void OnPostProcessBuild(BuildTarget target, string path)
+    {
+        if (target == BuildTarget.iOS)
+        {
+            // Read.
+            string projectPath = PBXProject.GetPBXProjectPath(path);
+            PBXProject project = new PBXProject();
+            project.ReadFromFile(projectPath);
+            string targetName = PBXProject.GetUnityTargetName();
+            string targetGUID = project.TargetGuidByName(targetName);
+
+            project.AddFrameworkToProject(targetGUID, "GameController.framework", false);
+
+            // Write.
+            File.WriteAllText(projectPath, project.WriteToString());
+        }
+    }
+}
+#endif

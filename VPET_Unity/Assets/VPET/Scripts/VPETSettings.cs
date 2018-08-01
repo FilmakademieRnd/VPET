@@ -42,6 +42,7 @@ namespace vpet
         //!
         public Vector3 sceneBoundsMax;
         public Vector3 sceneBoundsMin;
+        public float maxExtend = 1f;
 
 	    //!
 	    //! IP Adress of server

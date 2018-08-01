@@ -45,6 +45,11 @@ namespace vpet
 		private MainController mainController;
 
         //!
+        //! Cached reference to scene
+        //!
+        private GameObject scene;
+
+        //!
         //! Cached reference to main controller.
         //!
         private HelpScreen helpMenu;
@@ -104,6 +109,7 @@ namespace vpet
 		{
 	
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
+            scene = GameObject.Find("Scene");
             helpMenu = GameObject.Find("GUI/Canvas/HelpScreen").GetComponent<HelpScreen>();
 
             // declare touch input
@@ -141,10 +147,7 @@ namespace vpet
 				if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 				{
                     Transform selection = mainController.getCurrentSelection();
-                    targetPlane = new Plane(Vector3.up, Vector3.zero);
-                    //GameObject pl = GameObject.CreatePrimitive(PrimitiveType.Plane);
-                    //pl.transform.localScale = new Vector3(10, 10, 10);
-                    //pl.transform.position = new Vector3(0, selection.TransformPoint(selection.gameObject.GetComponent<BoxCollider>().center - selection.gameObject.GetComponent<BoxCollider>().size).y * VPETSettings.Instance.sceneScale / 2f, 0);
+                    targetPlane = new Plane(Vector3.up, scene.transform.position);
                     mainController.showPointToMoveIdentifier(planeRaycast(pos, targetPlane));
 					return;
 				}
