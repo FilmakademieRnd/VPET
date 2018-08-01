@@ -395,6 +395,13 @@ namespace vpet
                     mainController.handleSelection();
                     mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
                 }
+				// reactivate last selected edit mode
+                if (moveObjectActive)
+                    mainController.buttonTranslationClicked(true);
+                else if (rotateObjectActive)
+                    mainController.buttonRotationClicked(true);
+                else if (scaleObjectActive)
+                    mainController.buttonScaleClicked(true);
             }
             // Dpad and R2 reset 
 #if UNITY_EDITOR || UNITY_STANDALONE
