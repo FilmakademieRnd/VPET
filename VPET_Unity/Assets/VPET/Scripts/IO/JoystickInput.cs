@@ -156,12 +156,11 @@ namespace vpet
                 // toggle gravity
                 if (mainController.getCurrentSelection())
                 {
-                    if (mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().enabled)
-                        mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
-                    //if (mainController.HasGravityOn())
-                    //    mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = false;
-                    //else
-                    //    mainController.getCurrentSelection().GetComponent<Rigidbody>().useGravity = true;
+                    if (mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().enabled &! (mainController.UIAdapter.LayoutUI == layouts.ANIMATION))
+                        mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));                    
+                    // set keyframe for current selection (translate, rotate, scale)
+                    if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION &! moveCameraActive)                    
+                        mainController.AnimationController.setKeyFrame();
                 }
 
             }
