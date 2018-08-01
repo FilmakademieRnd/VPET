@@ -266,37 +266,36 @@ namespace vpet
 
                 node = nodeLight;
             }
-			else if (location.GetComponent<Camera>() != null)
-			{
-				SceneNodeCam nodeCamera = new SceneNodeCam();
+            else if (location.GetComponent<Camera>() != null)
+            {
+                SceneNodeCam nodeCamera = new SceneNodeCam();
 
-				Camera camera = location.GetComponent<Camera>();
-				nodeCamera.fov = camera.fieldOfView;
-				nodeCamera.near = camera.nearClipPlane;
-				nodeCamera.far = camera.farClipPlane;
+                Camera camera = location.GetComponent<Camera>();
+                nodeCamera.fov = camera.fieldOfView;
+                nodeCamera.near = camera.nearClipPlane;
+                nodeCamera.far = camera.farClipPlane;
                 node = nodeCamera;
-			}
+            }
             else if (location.GetComponent<MeshFilter>() != null)
             {
-                
-                SceneNodeGeo nodeGeo = new SceneNodeGeo(); 
+                SceneNodeGeo nodeGeo = new SceneNodeGeo();
                 nodeGeo.geoId = processGeometry(location.GetComponent<MeshFilter>().sharedMesh);
 
                 if (location.GetComponent<Renderer>() != null && location.GetComponent<Renderer>().sharedMaterial != null)
                 {
-                    Material mat = location.GetComponent<Renderer>().sharedMaterial; 
+                    Material mat = location.GetComponent<Renderer>().sharedMaterial;
 #if TRUNK
                     // if materials's shader is not standard, add this material to material package. 
                     // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
                     nodeGeo.materialId = processMaterial(location.GetComponent<Renderer>().sharedMaterial);
 #endif
-					if (mat.HasProperty("_Color"))
+                    if (mat.HasProperty("_Color"))
                     {
                         nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
                     }
 
                     if (mat.HasProperty("_Glossiness"))
-                       nodeGeo.roughness = mat.GetFloat("_Glossiness");
+                        nodeGeo.roughness = mat.GetFloat("_Glossiness");
 
                     if (mat.mainTexture != null)
                     {
@@ -349,7 +348,7 @@ namespace vpet
 
                 node = nodeGeo;
             }
-            else if ( location.parent.GetComponent<AnimatorObject>() != null )
+            else if (location.parent.GetComponent<AnimatorObject>() != null)
             {
                 SceneNodeMocap nodeMocap = new SceneNodeMocap();
                 node = nodeMocap;
@@ -360,12 +359,13 @@ namespace vpet
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
             node.scale = new float[3] { location.localScale.x, location.localScale.y, location.localScale.z };
             node.rotation = new float[4] { location.localRotation.x, location.localRotation.y, location.localRotation.z, location.localRotation.w };
-            node.name = Encoding.ASCII.GetBytes(location.name);
+            node.name = Encoding.ASCII.GetBytes(location.name); //TODO: MAC Naming ccorrupted by this function?
 
-            // print("Added: " + location.name);
-            nodeList.Add(node);
-
-
+            if(location.name != "root")
+            {
+                // print("Added: " + location.name);
+                nodeList.Add(node);
+            }
 
 
             // recursive children

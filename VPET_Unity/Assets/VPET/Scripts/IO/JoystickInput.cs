@@ -475,7 +475,7 @@ public class BuildPostProcessor
     {
         if (target == BuildTarget.iOS)
         {
-            // Read.
+            //Read XCode project file
             string projectPath = PBXProject.GetPBXProjectPath(path);
             PBXProject project = new PBXProject();
             project.ReadFromFile(projectPath);
@@ -484,7 +484,7 @@ public class BuildPostProcessor
 
             project.AddFrameworkToProject(targetGUID, "GameController.framework", false);
 
-            // Write.
+            // Write project file
             File.WriteAllText(projectPath, project.WriteToString());
         }
     }
