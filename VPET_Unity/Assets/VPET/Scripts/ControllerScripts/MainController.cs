@@ -544,7 +544,6 @@ namespace vpet
 			GameObject root = GameObject.Find("Scene");
 			GameObject arPlanes = GameObject.Find("ARPlanes");
 			GameObject arKit = GameObject.Find("ARKit");
-			GameObject helper = GameObject.Find("SceneHelpers");
 			TouchInput input = inputAdapter.GetComponent<TouchInput>();
 			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
 			GameObject rootScene = SceneLoader.scnRoot;
@@ -617,10 +616,10 @@ namespace vpet
                     {
                         child.gameObject.layer = 8;
                     }
-                    //m_anchorModifier.transform.localScale = new Vector3(1f,1f,1f) * VPETSettings.Instance.trackingScale;
+                    m_anchorModifier.transform.localScale = new Vector3(.3f,.3f,.3f);
                     m_anchorModifier.name = "ARModifier";
-					if (helper)
-						m_anchorModifier.transform.SetParent(helper.transform);
+					if (root)
+						m_anchorModifier.transform.SetParent(root.transform, false);
 				}
                 ui.hideConfigWidget();
 				//hide scene while placing AR anchor

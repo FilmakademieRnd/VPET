@@ -56,25 +56,6 @@ namespace vpet
 
         private GameObject scene;
 
-
-        /*private void OnEnable()
-        {
-            // Subscribe event
-            UnityARSessionNativeInterface.ARFrameUpdatedEvent += ARFrameUpdated;
-        }
-
-        private void OnDisable()
-        {
-            // Unsubscribe event
-            UnityARSessionNativeInterface.ARFrameUpdatedEvent -= ARFrameUpdated;
-        }
-
-        private void ARFrameUpdated(UnityARCamera camera)
-        {
-            Debug.Log("ARKit State: " + camera.trackingState);
-            Debug.Log("ARKit Reason: " + camera.trackingReason);
-        }*/
-
         // Use this for initialization
         void Start()
         {

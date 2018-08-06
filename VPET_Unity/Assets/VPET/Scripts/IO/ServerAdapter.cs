@@ -346,6 +346,10 @@ namespace vpet
             {
                 m_sceneTransferDirty = false;
                 print("sceneLoader.createSceneGraph");
+                Vector3 scenePos = scene.position;
+                Quaternion scenRot = scene.rotation;
+                scene.rotation = Quaternion.identity;
+                scene.position = Vector3.zero;
                 sceneLoader.createSceneGraph();
                 sendUpdateObjects();
                 // HACK
@@ -353,6 +357,8 @@ namespace vpet
                 mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
                 // Camera.main.GetComponent<MoveCamera>().calibrate();
 
+                scene.rotation = scenRot;
+                scene.position = scenePos;
             }
 
             if (!deactivateReceive)
