@@ -47,6 +47,8 @@ namespace vpet
                 {
                     joystickAdapter.moveCameraActive = false;
                     joystickAdapter.moveObjectActive = true;
+                    joystickAdapter.rotateObjectActive = false;
+                    joystickAdapter.scaleObjectActive = false;
                 }
             }
             else
@@ -67,7 +69,9 @@ namespace vpet
                 if (joystickAdapter != null)
                 {
                     joystickAdapter.moveCameraActive = false;
+                    joystickAdapter.moveObjectActive = false;
                     joystickAdapter.rotateObjectActive = true;
+                    joystickAdapter.scaleObjectActive = false;
                 }
             }
             else
@@ -88,6 +92,8 @@ namespace vpet
                 if (joystickAdapter != null)
                 {
                     joystickAdapter.moveCameraActive = false;
+                    joystickAdapter.moveObjectActive = false;
+                    joystickAdapter.rotateObjectActive = false;
                     joystickAdapter.scaleObjectActive = true;
                 }
             }

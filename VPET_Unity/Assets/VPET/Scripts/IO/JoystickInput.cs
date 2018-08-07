@@ -174,8 +174,7 @@ namespace vpet
                     moveObjectActive = true;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.buttonTranslationClicked(true);
-                    mainController.UIAdapter.hideCenterMenu();
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));                    
                 }
                 // directly enter rotation mode
                 else if (rotateObjectActive)
@@ -184,7 +183,9 @@ namespace vpet
                     moveObjectActive = true;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.buttonTranslationClicked(true);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // directly enter scale mode
                 else if (scaleObjectActive)
@@ -192,8 +193,10 @@ namespace vpet
                     moveCameraActive = false;
                     moveObjectActive = true;
                     rotateObjectActive = false;
-                    scaleObjectActive = false;
-                    mainController.buttonTranslationClicked(true);
+                    scaleObjectActive = false;                    
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // enter camera mode
                 else if (moveObjectActive)
@@ -203,9 +206,7 @@ namespace vpet
                     rotateObjectActive = false;
                     scaleObjectActive = false;
                     mainController.handleSelection();
-                    mainController.buttonTranslationClicked(false);
                 }
-
             }
             // enter rotation mode
             else if (Input.GetButtonDown("Fire1"))
@@ -217,8 +218,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = true;
                     scaleObjectActive = false;
-                    mainController.buttonRotationClicked(true);
-                    mainController.UIAdapter.hideCenterMenu();
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));                    
                 }
                 // directly enter rotation mode
                 else if (moveObjectActive)
@@ -227,7 +227,10 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = true;
                     scaleObjectActive = false;
-                    mainController.buttonRotationClicked(true);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    
                 }
                 // directly enter scale mode
                 else if (scaleObjectActive)
@@ -236,7 +239,9 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = true;
                     scaleObjectActive = false;
-                    mainController.buttonRotationClicked(true);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // enter camera mode
                 else if (rotateObjectActive)
@@ -246,8 +251,7 @@ namespace vpet
                     rotateObjectActive = false;
                     scaleObjectActive = false;
                     mainController.handleSelection();
-                    mainController.buttonRotationClicked(false);
-                }
+                }  
             }
             // enter scale mode
             else if (Input.GetButtonDown("Fire0"))
@@ -259,8 +263,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = true;
-                    mainController.buttonScaleClicked(true);
-                    mainController.UIAdapter.hideCenterMenu();
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // directly enter rotation mode
                 else if (moveObjectActive)
@@ -268,8 +271,10 @@ namespace vpet
                     moveCameraActive = false;
                     moveObjectActive = false;
                     rotateObjectActive = false;
-                    scaleObjectActive = true;
-                    mainController.buttonScaleClicked(true);
+                    scaleObjectActive = true;                    
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // directly enter scale mode
                 else if (rotateObjectActive)
@@ -277,8 +282,10 @@ namespace vpet
                     moveCameraActive = false;
                     moveObjectActive = false;
                     rotateObjectActive = false;
-                    scaleObjectActive = true;
-                    mainController.buttonScaleClicked(true);
+                    scaleObjectActive = true;                    
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // enter camera mode
                 else if (scaleObjectActive)
@@ -287,10 +294,8 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.handleSelection();
-                    mainController.buttonScaleClicked(false);
+                    mainController.handleSelection();                    
                 }
-
             }
             // toggle configuration window
             else if (Input.GetButtonDown("Settings"))
