@@ -248,6 +248,8 @@ namespace vpet
 
 		private Transform lightGeo = null;
 
+        public bool isPlayingAnimation;
+
 		private Light sourceLight = null;
 		public Light SourceLight
 		{
@@ -427,6 +429,8 @@ namespace vpet
                 gameObject.GetComponent<SceneObject>().setKinematic(true, false);
                 updateAnimationCurves();
             }
+
+            isPlayingAnimation = false;
         }
 
 
@@ -467,7 +471,7 @@ namespace vpet
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
                             // serverAdapter.sendTranslation(target, target.position, !selected);
-							serverAdapter.SendObjectUpdate(target, !selected );
+                            serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
 
 							lastTranslationUpdateTime = Time.time;
 							translationUpdateDelayed = false;
@@ -480,7 +484,7 @@ namespace vpet
 					else if (translationUpdateDelayed) //update delayed, but object not moving
 					{
 						// serverAdapter.sendTranslation(target, target.position, !selected);
-                        serverAdapter.SendObjectUpdate(target, !selected );
+                        serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
 
 						lastTranslationUpdateTime = Time.time;
 						translationUpdateDelayed = false;
@@ -489,7 +493,7 @@ namespace vpet
 				else if (translationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendTranslation(target, target.position, !selected);
-					serverAdapter.SendObjectUpdate(target, !selected );
+                    serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
 
 
 				}
@@ -502,7 +506,7 @@ namespace vpet
 						if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
 						{
 							// serverAdapter.sendRotation(target, target.rotation, !selected);
-                            serverAdapter.SendObjectUpdate(target, !selected );
+                            serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
 
 
 
@@ -517,7 +521,7 @@ namespace vpet
 					else if (rotationUpdateDelayed) //update delayed, but object not moving
 					{
 						//serverAdapter.sendRotation(target, target.rotation, !selected);
-                        serverAdapter.SendObjectUpdate(target, !selected );
+                        serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
 
 						lastRotationUpdateTime = Time.time;
 						rotationUpdateDelayed = false;
@@ -526,7 +530,7 @@ namespace vpet
 				else if (rotationStillFrameCount == 10) //object is now no longer moving
 				{
 					// serverAdapter.sendRotation(target, target.rotation, !selected);
-					serverAdapter.SendObjectUpdate(target, !selected );
+                    serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
 
 
 				}
