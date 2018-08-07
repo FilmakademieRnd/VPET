@@ -667,8 +667,11 @@ namespace vpet
 #endif
 				// reset cameras to defaults
                 Camera.main.ResetProjectionMatrix();
+                SetSceneScale(1f);
 				repositionCamera();
+                UpdateProjectionMatrixSecondaryCameras();
                 sceneAdapter.ShowGeometry();
+
             }
 
             hasUpdatedProjectionMatrix = true;
