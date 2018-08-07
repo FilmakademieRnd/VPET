@@ -381,6 +381,8 @@ namespace vpet
                         mainController.handleSelection();
                         if (!currselTransform.locked)
                             mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
+						else
+                            mainController.callSelect(GameObject.Find(EditableObjects[1].name).GetComponent<Transform>());
                     }
                 }
                 else if (!EditableObjects[0].GetComponent<SceneObject>().locked)
@@ -401,6 +403,8 @@ namespace vpet
                     mainController.handleSelection();
                     if (!currselTransform.locked)
                         mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
+					else
+                        mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection+ DPADdirection].name).GetComponent<Transform>());
                 }
                 // reactivate last selected edit mode
                 if (moveObjectActive)
