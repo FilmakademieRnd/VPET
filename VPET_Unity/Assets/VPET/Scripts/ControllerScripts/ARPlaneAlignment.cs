@@ -47,7 +47,7 @@ namespace UnityEngine.XR.iOS
 
         private void Start()
         {
-            m_arModifier = GameObject.Find("Scene/Helpers/ARModifier");
+            m_arModifier = GameObject.Find("Scene/ARModifier");
             mainController = GameObject.Find("Controller/MainController").GetComponent<MainController>();
         }
 

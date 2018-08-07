@@ -309,8 +309,6 @@ namespace vpet
 	        */
 	    }
 	
-	
-	
 	    private void setTime(float x)
 	    {
 	        currentAnimationTime = Mathf.Clamp(x, timeLine.StartTime, timeLine.EndTime );
@@ -675,6 +673,20 @@ namespace vpet
                     animLayer.isPlaying = false;
                 }
             }
+
+            foreach (SceneObject obj in animatedObjects)
+                obj.isPlayingAnimation = playing;
+            
+            foreach (AnimationLayer layer in animationLayers)
+            {
+                //animation is playing but not on this layer
+                if (!layer.isPlaying && playing)
+                    foreach (SceneObject obj in layer.layerObjects)
+                        obj.isPlayingAnimation = false;
+                else
+                    foreach (SceneObject obj in layer.layerObjects)
+                        obj.isPlayingAnimation = playing;
+            }
         }
 	
 	    //!
@@ -948,6 +960,9 @@ namespace vpet
                 animationLayers[layerIdx].offset = -currentAnimationTime;
                 animationLayers[layerIdx].currentAnimationTime = 0.0f;
                 animationLayers[layerIdx].isPlaying = true;
+                if (playing)
+                    foreach(SceneObject obj in animationLayers[layerIdx].layerObjects)
+                            obj.isPlayingAnimation = true;
             }
         }
 
@@ -958,6 +973,9 @@ namespace vpet
         {
             if (layerIdx < animationLayers.Length)
                 animationLayers[layerIdx].isPlaying = false;
+            if (playing)
+                foreach (SceneObject obj in animationLayers[layerIdx].layerObjects)
+                    obj.isPlayingAnimation = false;
         }
 
         //!
