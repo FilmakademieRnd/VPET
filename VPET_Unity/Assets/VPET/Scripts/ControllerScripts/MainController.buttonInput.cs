@@ -33,45 +33,63 @@ using System.Collections;
 namespace vpet
 {
 	public partial class MainController : MonoBehaviour {
-	
-	    //!
-	    //! click on the translation button
-	    //! @param      active      state that the button dows no have (on or off)
-	    //!
-	    public void buttonTranslationClicked(bool active){
-	        if (active)
+
+        //!
+        //! click on the translation button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonTranslationClicked(bool active)
+        {
+            if (active)
             {
-	            activeMode = Mode.translationMode;
-            }
-            else
-            {
-                openMenu();
-	        }
-	    }
-	
-	    //!
-	    //! click on the rotation button
-	    //! @param      active      state that the button dows no have (on or off)
-	    //!
-	    public void buttonRotationClicked(bool active){
-	        if (active)
-            {
-	            activeMode = Mode.rotationMode;
+                activeMode = Mode.translationMode;
+                if (joystickAdapter != null)
+                {
+                    joystickAdapter.moveCameraActive = false;
+                    joystickAdapter.moveObjectActive = true;
+                }
             }
             else
             {
                 openMenu();
             }
         }
-	
-	    //!
-	    //! click on the scale button
-	    //! @param      active      state that the button dows no have (on or off)
-	    //!
-	    public void buttonScaleClicked(bool active){
-	        if (active)
+
+        //!
+        //! click on the rotation button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonRotationClicked(bool active)
+        {
+            if (active)
             {
-	            activeMode = Mode.scaleMode;
+                activeMode = Mode.rotationMode;
+                if (joystickAdapter != null)
+                {
+                    joystickAdapter.moveCameraActive = false;
+                    joystickAdapter.rotateObjectActive = true;
+                }
+            }
+            else
+            {
+                openMenu();
+            }
+        }
+
+        //!
+        //! click on the scale button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonScaleClicked(bool active)
+        {
+            if (active)
+            {
+                activeMode = Mode.scaleMode;
+                if (joystickAdapter != null)
+                {
+                    joystickAdapter.moveCameraActive = false;
+                    joystickAdapter.scaleObjectActive = true;
+                }
             }
             else
             {

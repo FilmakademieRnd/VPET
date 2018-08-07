@@ -134,14 +134,14 @@ namespace vpet
             foreach (GameObject g in SceneLoader.SelectableLights)
             {
                 if (g)
-                    if (g.GetComponent<SceneObject>() != null && (g.GetComponent<SceneObject>().IsLight == true || g.GetComponent<SceneObject>().isDirectionalLight == true))
+                    if (g.GetComponent<SceneObject>() != null)
                         EditableLightList.Add(g.GetComponent<SceneObject>());
             }
             // sceneEditableObjects contains cameras and lights, we need to sort those out and build a new list
             EditableObjectsList.Clear();
             foreach (GameObject g in SceneLoader.SceneEditableObjects)
             {
-                if (g.GetComponent<CameraObject>() == null && g.GetComponent<SceneObject>().IsLight == false)
+                if (g.GetComponent<CameraObject>() == null)
                     EditableObjectsList.Add(g.GetComponent<SceneObject>());
             }
         }
@@ -305,9 +305,9 @@ namespace vpet
             }
             // disable tracking
 #if UNITY_EDITOR || UNITY_STANDALONE
-            else if (Input.GetAxis("R2") < 0 && !hasPressedR2)
+            else if (Input.GetAxis("R2") < 0 && !hasPressedR2 && !mainController.arMode)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-			else if (Input.GetButtonDown("R2"))
+			else if (Input.GetButtonDown("R2") && !mainController.arMode)
 #endif
             {
                 hasPressedR2 = true;
@@ -374,10 +374,11 @@ namespace vpet
                     if (match == -1)
                     {
                         mainController.handleSelection();
-                        mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
+                        if (!currselTransform.locked)
+                            mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
                     }
                 }
-                else
+                else if (!EditableObjects[0].GetComponent<SceneObject>().locked)
                     mainController.callSelect(EditableObjects[0].GetComponent<Transform>());
 
                 match = 0;
@@ -393,9 +394,10 @@ namespace vpet
                         match = EditableObjects.Count;
                     // all other cases
                     mainController.handleSelection();
-                    mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
+                    if (!currselTransform.locked)
+                        mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
                 }
-				// reactivate last selected edit mode
+                // reactivate last selected edit mode
                 if (moveObjectActive)
                     mainController.buttonTranslationClicked(true);
                 else if (rotateObjectActive)
