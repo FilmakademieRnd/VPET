@@ -65,9 +65,9 @@ namespace vpet
             Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
             while (IsRunning)
             {
-                Thread.Sleep(100);
-                if (sendMessageQueue.Count > 3)
-                    sendMessageQueue.RemoveRange(0, sendMessageQueue.Count - 3);
+                Thread.Sleep(5);
+                //if (sendMessageQueue.Count > 3)
+                //    sendMessageQueue.RemoveRange(0, sendMessageQueue.Count - 3);
                 if (sendMessageQueue.Count > 0)
                 {
                     // Debug.Log("Send: " + sendMessageQueue[0]);
