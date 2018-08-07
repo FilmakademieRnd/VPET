@@ -377,7 +377,10 @@ namespace vpet
                 if (controllerSpeedSlider == null) Debug.LogWarning(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
                 {
-                    controllerSpeedSlider.value = Mathf.Pow(VPETSettings.Instance.controllerSpeed, 1f / 100f);
+                    if(VPETSettings.Instance.controllerSpeed <= 1)
+                        controllerSpeedSlider.value = (VPETSettings.Instance.controllerSpeed-0.25f)/ 1.5f;
+                    else
+                        controllerSpeedSlider.value = (VPETSettings.Instance.controllerSpeed + 23f) /48f;
                     controllerSpeedSlider.onValueChanged.AddListener(this.onControllerSpeedChanged);
                 }
             }
@@ -450,7 +453,10 @@ namespace vpet
             // scene Scale
             if (controllerSpeedSlider)
             {
-                controllerSpeedSlider.value = Mathf.Pow(VPETSettings.Instance.controllerSpeed,1f/100f);
+                if (VPETSettings.Instance.controllerSpeed <= 1)
+                    controllerSpeedSlider.value = (VPETSettings.Instance.controllerSpeed - 0.25f) / 1.5f;
+                else
+                    controllerSpeedSlider.value = (VPETSettings.Instance.controllerSpeed + 23f) / 48f;
                 controllerSpeedSlider.transform.parent.Find("ControllerSpeed_Value").GetComponent<Text>().text = VPETSettings.Instance.controllerSpeed.ToString("n3");
             }
 
@@ -650,8 +656,16 @@ namespace vpet
         private void onControllerSpeedChanged(float v)
         {
             Text sliderValueText = controllerSpeedSlider.transform.Find("../ControllerSpeed_Value").GetComponent<Text>();
-            sliderValueText.text = Mathf.Pow(v,100).ToString("n3");
-            VPETSettings.Instance.controllerSpeed = Mathf.Pow(v, 100);
+            if (v <= 0.5f)
+            {
+                sliderValueText.text = (0.25f + v * 1.5f).ToString("n3");
+                VPETSettings.Instance.controllerSpeed = 0.25f + v * 1.5f;
+            }
+            else
+            {
+                sliderValueText.text = (v * 48f - 23f).ToString("n3");
+                VPETSettings.Instance.controllerSpeed = v * 48f - 23f;
+            }
         }
 
         public void ToggleColorWheel()

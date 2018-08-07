@@ -96,7 +96,9 @@ namespace vpet
                 Vector3 yTrans = new Vector3(0 , translation.y , 0);
                 Vector3 zTrans = translation.x * Vector3.Scale(Camera.main.transform.right, (Vector3.forward + Vector3.right)).normalized;
 
-                Vector3 finalTranslation = xTrans + yTrans + zTrans + currentSelection.position;
+                float scaleFactor = (8f * Vector3.Distance(Camera.main.transform.position, currentSelection.position)/ VPETSettings.Instance.maxExtend);
+
+                Vector3 finalTranslation = scaleFactor * (xTrans + yTrans + zTrans) + currentSelection.position;
                 if (currentSceneObject)
                     currentSceneObject.translate(finalTranslation);
                 else
@@ -173,7 +175,8 @@ namespace vpet
         {
             if (currentSelection)
             {
-                end *= VPETSettings.Instance.controllerSpeed;
+                end /= VPETSettings.Instance.controllerSpeed;
+                end *= 5f;
                 currentSceneObject.transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
             }                       
         }
@@ -235,7 +238,8 @@ namespace vpet
                 }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>())
                 {
-                    currentSelection.transform.localScale += Vector3.Scale(scale*VPETSettings.Instance.controllerSpeed, axisLocker) / 1000f;
+                    float scaleFactor = (8f * Vector3.Distance(Camera.main.transform.position, currentSelection.position) / VPETSettings.Instance.maxExtend);
+                    currentSelection.transform.localScale += Vector3.Scale(scale/currentSelection.transform.parent.lossyScale.x*scaleFactor/VPETSettings.Instance.controllerSpeed, axisLocker) / 100f;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection);
                 }

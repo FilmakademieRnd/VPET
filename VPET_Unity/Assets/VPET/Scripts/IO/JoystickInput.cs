@@ -134,14 +134,14 @@ namespace vpet
             foreach (GameObject g in SceneLoader.SelectableLights)
             {
                 if (g)
-                    if (g.GetComponent<SceneObject>() != null && (g.GetComponent<SceneObject>().IsLight == true || g.GetComponent<SceneObject>().isDirectionalLight == true))
+                    if (g.GetComponent<SceneObject>() != null)
                         EditableLightList.Add(g.GetComponent<SceneObject>());
             }
             // sceneEditableObjects contains cameras and lights, we need to sort those out and build a new list
             EditableObjectsList.Clear();
             foreach (GameObject g in SceneLoader.SceneEditableObjects)
             {
-                if (g.GetComponent<CameraObject>() == null && g.GetComponent<SceneObject>().IsLight == false)
+                if (g.GetComponent<CameraObject>() == null)
                     EditableObjectsList.Add(g.GetComponent<SceneObject>());
             }
         }

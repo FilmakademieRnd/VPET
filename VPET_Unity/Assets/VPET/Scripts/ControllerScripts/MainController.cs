@@ -610,13 +610,13 @@ namespace vpet
 				if (m_anchorModifier == null) 
 				{
 					m_anchorModifier = GameObject.Instantiate(m_anchorPrefab);
-                    m_anchorModifier.transform.position = new Vector3(0f,0f,0f);
+                    m_anchorModifier.transform.position = Vector3.zero;
                     m_anchorModifier.layer = LayerMask.NameToLayer("RenderInFront");
                     foreach (Transform child in m_anchorModifier.transform)
                     {
                         child.gameObject.layer = 8;
                     }
-                    m_anchorModifier.transform.localScale = new Vector3(.3f,.3f,.3f);
+                    m_anchorModifier.transform.localScale = Vector3.zero;
                     m_anchorModifier.name = "ARModifier";
 					if (root)
 						m_anchorModifier.transform.SetParent(root.transform, false);
