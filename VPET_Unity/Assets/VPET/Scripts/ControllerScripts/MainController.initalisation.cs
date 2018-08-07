@@ -170,11 +170,6 @@ namespace vpet
         //!
         private GameObject pointToMoveModifier;
 
-        //!
-        //! container object holding all keyframe spheres in the scene
-        //!
-        private GameObject frameSphereContainer;
-
         [HideInInspector]
         //!
         //! cache references to active transform plane
@@ -454,9 +449,6 @@ namespace vpet
             rotationModifier = GameObject.Find("RotationModifier");
             scaleModifier = GameObject.Find("ScaleModifier");
             pointToMoveModifier = GameObject.Find("PointToMoveModifier");
-            
-            //cache reference to keyframe Sphere container
-            frameSphereContainer = GameObject.Find("FrameSphereContainer");
 
             animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 

@@ -47,6 +47,8 @@ namespace vpet
 
 	public class AnimationController : MonoBehaviour
     {
+        
+        bool updateAppearance;
 
         // private delegate float FieldFloatDelegate();
         
@@ -203,6 +205,8 @@ namespace vpet
         //!
         void Awake()
 	    {
+            updateAppearance = true;
+
 	        //cache reference to main Controller
 	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
 
@@ -214,9 +218,16 @@ namespace vpet
 	        if (timeLine == null) Debug.LogError(string.Format("{0}: No TimeLine script attached.", this.GetType()));
 	        // assign callback for frame changes on timeline (on user drag)
 	        timeLine.Callback = this.setTime;
-	
-	        //cache reference to keyframe Sphere container
-	        frameSphereContainer = GameObject.Find("FrameSphereContainer");
+
+            //cache reference to keyframe Sphere container
+            if (!frameSphereContainer)
+            {
+                frameSphereContainer = new GameObject("FrameSphereContainer");
+                frameSphereContainer.transform.parent = GameObject.Find("Scene").transform;
+                frameSphereContainer.transform.localPosition = Vector3.zero;
+                frameSphereContainer.transform.localRotation = Quaternion.identity;
+                frameSphereContainer.transform.localScale = Vector3.one;
+            }
 	
 	        // cache key prefab
 	        keySpherePrefab = Resources.Load<GameObject>("VPET/Prefabs/KeySphere");
@@ -247,10 +258,8 @@ namespace vpet
 	        //initalize lineRenderer
 	        lineRenderer = gameObject.AddComponent<LineRenderer>();
 	        lineRenderer.material = Resources.Load<Material>("VPET/Materials/LineRendererMaterial");
-	        lineRenderer.SetColors(lineColor, lineColor);
-            lineRenderer.SetWidth(2f*VPETSettings.Instance.sceneScale, 2f*VPETSettings.Instance.sceneScale);
 	        lineRenderer.useWorldSpace = true;
-	        lineRenderer.SetVertexCount(0);
+            lineRenderer.positionCount = 0;
 	    }
 	
 	
@@ -413,6 +422,21 @@ namespace vpet
 	
 	                int pointCount = 0;
 	                List<Vector3[]> pointArraysList = new List<Vector3[]>(0);
+
+                    if (updateAppearance)
+                    {
+                        Vector3 lineMiddle = Vector3.zero;
+                        for (int i = 0; i < transXcurve.keys.Length; i++)
+                        {
+                            lineMiddle += animationTarget.transform.parent.TransformPoint(new Vector3(transXcurve.keys[i].value, transYcurve.keys[i].value, transZcurve.keys[i].value));
+                        }
+                        lineMiddle /= transXcurve.keys.Length;
+                        keyHandleScale = Vector3.Distance(Camera.main.transform.position, lineMiddle) / 100f;
+                        lineRenderer.startWidth = keyHandleScale /3f;
+                        lineRenderer.endWidth = lineRenderer.startWidth;
+                        updateAppearance = false;
+                    }
+
 	
 	                for (int i = 0; i < transXcurve.keys.Length; i++)
 	                {
@@ -429,8 +453,8 @@ namespace vpet
 	                    else
 	                    {
 	                        GameObject sphere = GameObject.Instantiate<GameObject>(keySpherePrefab);
-	                        sphere.transform.position = new Vector3(transXcurve.keys[i].value, transYcurve.keys[i].value, transZcurve.keys[i].value);
-	                        sphere.transform.localScale = new Vector3(keyHandleScale, keyHandleScale, keyHandleScale);
+                            sphere.transform.position = animationTarget.transform.parent.TransformPoint(new Vector3(transXcurve.keys[i].value, transYcurve.keys[i].value, transZcurve.keys[i].value));
+                            sphere.transform.localScale = new Vector3(keyHandleScale, keyHandleScale, keyHandleScale);
 	                        sphere.transform.parent = frameSphereContainer.transform;
 	                        sphere.layer = 13;
 	                        sphere.name = i.ToString();
@@ -446,7 +470,7 @@ namespace vpet
 	                    keyframeSpheres.RemoveRange(transXcurve.keys.Length, keyframeSpheres.Count - transXcurve.keys.Length);
 	                }
 	
-	                lineRenderer.SetVertexCount(pointCount);
+                    lineRenderer.positionCount = pointCount;
 	                int currentPosition = 0;
 	                Vector3 lastPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
 	
@@ -463,7 +487,7 @@ namespace vpet
 	                        else
 	                        {
 	                            pointCount--;
-	                            lineRenderer.SetVertexCount(pointCount);
+                                lineRenderer.positionCount = pointCount;
 	                        }
 	                    }
 	                }
@@ -589,8 +613,10 @@ namespace vpet
 
             animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
 
-            lineRenderer.SetVertexCount(0);
+            lineRenderer.positionCount = 0;
             lineRenderer.enabled = true;
+
+            updateAppearance = true;
 
             updateLine();
 
@@ -636,7 +662,7 @@ namespace vpet
             animationTarget.layer = 0;
             isActive = false;
 	
-	        lineRenderer.SetVertexCount(0);
+            lineRenderer.positionCount = 0;
 	        lineRenderer.enabled = false;
 	        foreach (GameObject sphere in keyframeSpheres)
 	        {
@@ -857,7 +883,7 @@ namespace vpet
 	        float deltaTime = endXKey.time - startXKey.time;
 	
 	        Vector3[] outPointArray;
-	        int subdivisionCount = Mathf.RoundToInt((Vector3.Angle(startOutTangent, endPoint - startPoint) + Vector3.Angle(endInTangent, endPoint - startPoint)) / hermitInterpolationRate) + 2;
+            int subdivisionCount = Mathf.RoundToInt((Vector3.Angle(startOutTangent, endPoint - startPoint) + Vector3.Angle(endInTangent, endPoint - startPoint)) / hermitInterpolationRate)*2 + 2;
 	        outPointArray = new Vector3[subdivisionCount];
 	        float s = 0;
 	        for (int i = 0; i < subdivisionCount; i++)
@@ -867,9 +893,9 @@ namespace vpet
 	            float H2 = -2 * s * s * s + 3 * s * s;
 	            float H3 = s * s * s - 2 * s * s + s;
 	            float H4 = s * s * s - s * s;
-	            outPointArray[i] = new Vector3(H1 * startPoint.x + H2 * endPoint.x + H3 * startOutTangent.x * deltaTime + H4 * endInTangent.x * deltaTime,
-	                                           H1 * startPoint.y + H2 * endPoint.y + H3 * startOutTangent.y * deltaTime + H4 * endInTangent.y * deltaTime,
-	                                           H1 * startPoint.z + H2 * endPoint.z + H3 * startOutTangent.z * deltaTime + H4 * endInTangent.z * deltaTime);
+                outPointArray[i] = animationTarget.transform.parent.TransformPoint(new Vector3(H1 * startPoint.x + H2 * endPoint.x + H3 * startOutTangent.x * deltaTime + H4 * endInTangent.x * deltaTime,
+	                                                                                           H1 * startPoint.y + H2 * endPoint.y + H3 * startOutTangent.y * deltaTime + H4 * endInTangent.y * deltaTime,
+                                                                                               H1 * startPoint.z + H2 * endPoint.z + H3 * startOutTangent.z * deltaTime + H4 * endInTangent.z * deltaTime));
 	        }
 	
 	        return outPointArray;

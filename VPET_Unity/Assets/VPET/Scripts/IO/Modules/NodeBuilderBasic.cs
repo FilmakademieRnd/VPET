@@ -158,6 +158,7 @@ namespace vpet
 	            objMain.GetComponent<MeshFilter>().mesh  = meshes[0];
                 VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, meshRenderer.bounds.max);
                 VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, meshRenderer.bounds.min);
+
 	            for( int i=1; i<meshes.Length; i++ )
 	            {
 	                GameObject subObj = new GameObject( objMain.name+"_part"+i.ToString() );
@@ -169,6 +170,9 @@ namespace vpet
                     VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, subMeshRenderer.bounds.max);
                     VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, subMeshRenderer.bounds.min);
 	            }
+
+                Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
+                VPETSettings.Instance.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
 	        }
 	
 	        //place object
