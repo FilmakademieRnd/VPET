@@ -579,6 +579,27 @@ namespace vpet
 
             animationTarget.layer = 13; //noPhysics layer
 
+            animationProperties = new string[] { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z",
+                                                 "m_LocalRotation.x", "m_LocalRotation.y", "m_LocalRotation.z", "m_LocalRotation.w",
+                                                 "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z"};
+            animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateX")  ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateY") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateZ") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatX")  ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatY") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatZ") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatW") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleX")  ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleY") ,
+                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleZ") };
+            animationInstance = animationTarget.GetComponent<SceneObject>();
+
+            //
+			// this was created on request to keep keys individually from current selection mode but turned out to be not practical,
+            // keep for potential future keying options
+			//
+			
+            /*
             switch (mainController.ActiveMode)
             {
                 case MainController.Mode.translationMode: case MainController.Mode.pointToMoveMode: case MainController.Mode.objectLinkCamera:
@@ -604,8 +625,8 @@ namespace vpet
                     animationInstance = animationTarget.GetComponent<SceneObject>();
                     break;
             }
-
             print("Activate Animation in Mode: " + mainController.ActiveMode);
+            */
 
 
             if ( updateTimeLine ) setStartEndTimeline();
