@@ -103,6 +103,8 @@ namespace vpet
 
         List<SceneObject> EditableObjectsList = new List<SceneObject>();
         List<SceneObject> EditableLightList = new List<SceneObject>();
+        List<SceneObject> tmpEditableObjectsList = new List<SceneObject>();
+        List<SceneObject> tmpEditableLightList = new List<SceneObject>();
         List<SceneObject> EditableObjects = new List<SceneObject>();
         SceneObject currselTransform;
 
@@ -350,7 +352,21 @@ namespace vpet
 						(Input.GetButtonDown("DPAD_V_neg")) )
 #endif
             {
-                EditableObjects = EditableObjectsList;
+                // check EditableObjectsList and EditableLightList for locked objects and create temporary lists
+                tmpEditableObjectsList = EditableObjectsList;
+                tmpEditableLightList = EditableLightList;
+                for (int i = 0; i < tmpEditableObjectsList.Count; i++)
+                {
+                    if (GameObject.Find(tmpEditableObjectsList[i].name).GetComponent<SceneObject>().locked)
+                        tmpEditableObjectsList.Remove(EditableObjects[i]);
+                }
+                for (int i = 0; i < tmpEditableLightList.Count; i++)
+                {
+                    if (GameObject.Find(tmpEditableLightList[i].name).GetComponent<SceneObject>().locked)
+                        tmpEditableLightList.Remove(EditableObjects[i]);
+                }
+
+                EditableObjects = tmpEditableObjectsList;
 #if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
                     DPADdirection = 1;
@@ -364,10 +380,10 @@ namespace vpet
                 int match = 0;
 #if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_V") != 0)
-                    EditableObjects = EditableLightList;
+                    EditableObjects = tmpEditableLightList;
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
 				if (Input.GetButtonDown("DPAD_V") || Input.GetButtonDown("DPAD_V_neg") )
-                    EditableObjects = EditableLightList;
+                    EditableObjects = tmpEditableLightList;
 #endif
                 // test current selection
                 if (mainController.getCurrentSelection())
@@ -379,14 +395,11 @@ namespace vpet
                     if (match == -1)
                     {
                         mainController.handleSelection();
-                        if (!currselTransform.locked)
-                            mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());
-						else
-                            mainController.callSelect(GameObject.Find(EditableObjects[1].name).GetComponent<Transform>());
+                        mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());                                                                
                     }
                 }
-                else if (!EditableObjects[0].GetComponent<SceneObject>().locked)
-                    mainController.callSelect(EditableObjects[0].GetComponent<Transform>());
+                else
+                    mainController.callSelect(EditableObjects[0].GetComponent<Transform>());                
 
                 match = 0;
                 match = EditableObjects.FindIndex(x => x == currselTransform);
@@ -401,10 +414,7 @@ namespace vpet
                         match = EditableObjects.Count;
                     // all other cases
                     mainController.handleSelection();
-                    if (!currselTransform.locked)
-                        mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());
-					else
-                        mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection+ DPADdirection].name).GetComponent<Transform>());
+                    mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());                    
                 }
                 // reactivate last selected edit mode
                 if (moveObjectActive)
