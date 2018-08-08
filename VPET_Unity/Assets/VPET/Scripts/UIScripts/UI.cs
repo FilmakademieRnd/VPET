@@ -131,6 +131,8 @@ namespace vpet
 
         private SplashWidget splashWidget;
 
+        private GameObject arKeyVideoPlane;
+
 
         private ConfigWidget configWidget = null;
         public ConfigWidget ConfigWidget
@@ -179,7 +181,8 @@ namespace vpet
 	    //!
 	    void Start ()
 	    {
-	
+            arKeyVideoPlane = GameObject.Find("GUI/Canvas/ARVideoPlane");
+
 			try
 			{
 		        //cache reference to main Controller
@@ -448,7 +451,11 @@ namespace vpet
 			hideConfigWidget();
 			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
             GameObject.Find("GUI/Canvas/ARColorPlane").SetActive(true);
-			arKeyWidget.SetActive(true);			
+			arKeyWidget.SetActive(true);
+            arKeyVideoPlane.SetActive(true);
+            //temporarely enable standard chroma key to visualize keying while picking
+            mainController.ToggleARMatteMode(false);
+            mainController.ToggleARKeyMode(true);
 		}
 
 		public void acceptKeyConfig()
@@ -459,6 +466,10 @@ namespace vpet
             // save values to preferences
             VPETSettings.mapValuesToPreferences(configWidget);
 			drawConfigWidget();
+            arKeyVideoPlane.SetActive(false);
+            //reset chroma keying settings
+            mainController.ToggleARMatteMode(configWidget.mattModeOn);
+            mainController.ToggleARKeyMode(configWidget.keyModeOn);
 		}
 
         public ConfigWidget drawConfigWidget()

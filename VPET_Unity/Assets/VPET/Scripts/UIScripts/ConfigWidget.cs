@@ -83,6 +83,8 @@ namespace vpet
         [HideInInspector]
         private Slider controllerSpeedSlider;
 
+        public bool mattModeOn;
+        public bool keyModeOn;
 
         private InputField serverIPField;
 
@@ -581,7 +583,7 @@ namespace vpet
                 arKeyVideoPlane.gameObject.SetActive(false);
                 arColorPickerButton.gameObject.SetActive(false);
             }
-
+            keyModeOn = isOn;
 			ToggleARKeyEvent.Invoke (isOn);
         }
 
@@ -600,7 +602,7 @@ namespace vpet
             {
                 arColorPickerButton.gameObject.SetActive(false);
             }
-
+            mattModeOn = isOn;
             ToggleARMatteEvent.Invoke(isOn);
 
         }

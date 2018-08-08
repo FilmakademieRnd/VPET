@@ -97,59 +97,64 @@ namespace vpet
         // DRAG
         public void OnBeginDrag(PointerEventData eventData)
         {
-            // Debug.Log("BEGIN DRAG");
-            isActive = true;
+            if (eventData.position.y > 200)
+            {
+                // Debug.Log("BEGIN DRAG");
+                isActive = true;
+            }
         }
 
         public void OnDrag(PointerEventData data)
         {
             // Debug.Log("ON DRAG delta: " + data.position + " rcet position " + image.rectTransform.position + " anchor min " + image.rectTransform.anchorMin + " size delt " + image.rectTransform.sizeDelta);
-
-            if (UseMaterial)
+            if (data.position.y > 200)
             {
-                float x = ((data.position.x / Screen.width - 0.5f) * 3f / 4f) + 0.5f;
-                float y = 1f - data.position.y / Screen.height;
-                // Debug.Log("x: " + x + " y: " + y);
+                if (UseMaterial)
+                {
+                    float x = ((data.position.x / Screen.width - 0.5f) * 3f / 4f) + 0.5f;
+                    float y = 1f - data.position.y / Screen.height;
+                    // Debug.Log("x: " + x + " y: " + y);
 
-                if (IsYCBCR)
-                {                    
-                    //m_readableTexture = (Texture2D)m_material.GetTexture("_textureY"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureY"), RenderTextureFormat.R8, TextureFormat.R8, "Y");
-                    //m_readableTextureB = (Texture2D)m_material.GetTexture("_textureCbCr"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureCbCr"), RenderTextureFormat.RG16, TextureFormat.RG16, "CBCR");
-                    m_readableTexture = getRenderTexture(m_material.GetTexture("_textureY"), RenderTextureFormat.Default, TextureFormat.R8);
-                    m_readableTextureB = getRenderTexture(m_material.GetTexture("_textureCbCr"), RenderTextureFormat.ARGB32, TextureFormat.RG16);
-                    float _y = m_readableTexture.GetPixelBilinear(x, y)[0];
-                    Color cbcr = m_readableTextureB.GetPixelBilinear(x, y);
-                    // Debug.Log("_y: " + _y +  " cb: " + cbcr.r + " CR: " + cbcr.g);
-                    Color rgba = ycbcrToRGBTransform * new Vector4(_y, cbcr.r, cbcr.g, 1.0f);
-                    // Debug.Log("Color: " + rgba);
-                    if (callback!=null) callback(rgba);
-                    Destroy(m_readableTexture);
-                    Destroy(m_readableTextureB);
+                    if (IsYCBCR)
+                    {
+                        //m_readableTexture = (Texture2D)m_material.GetTexture("_textureY"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureY"), RenderTextureFormat.R8, TextureFormat.R8, "Y");
+                        //m_readableTextureB = (Texture2D)m_material.GetTexture("_textureCbCr"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureCbCr"), RenderTextureFormat.RG16, TextureFormat.RG16, "CBCR");
+                        m_readableTexture = getRenderTexture(m_material.GetTexture("_textureY"), RenderTextureFormat.Default, TextureFormat.R8);
+                        m_readableTextureB = getRenderTexture(m_material.GetTexture("_textureCbCr"), RenderTextureFormat.ARGB32, TextureFormat.RG16);
+                        float _y = m_readableTexture.GetPixelBilinear(x, y)[0];
+                        Color cbcr = m_readableTextureB.GetPixelBilinear(x, y);
+                        // Debug.Log("_y: " + _y +  " cb: " + cbcr.r + " CR: " + cbcr.g);
+                        Color rgba = ycbcrToRGBTransform * new Vector4(_y, cbcr.r, cbcr.g, 1.0f);
+                        // Debug.Log("Color: " + rgba);
+                        if (callback != null) callback(rgba);
+                        Destroy(m_readableTexture);
+                        Destroy(m_readableTextureB);
 
+                    }
+                    else
+                    {
+                        m_readableTexture = getRenderTexture(m_material.mainTexture, RenderTextureFormat.Default, TextureFormat.R8);
+                        callback(m_readableTexture.GetPixelBilinear(x, y));
+                        Destroy(m_readableTexture);
+                    }
                 }
                 else
                 {
-                    m_readableTexture = getRenderTexture(m_material.mainTexture, RenderTextureFormat.Default, TextureFormat.R8);
-                    callback(m_readableTexture.GetPixelBilinear(x, y));
-                    Destroy(m_readableTexture);
+                    RectTransform imageTransform = image.rectTransform;
+                    float x = (data.position.x - imageTransform.position.x) / Screen.width * 10f;
+                    float y = (data.position.y - imageTransform.position.y) / Screen.width * 10f;
+
+                    float radius = Mathf.Sqrt(x * x + y * y);
+
+                    if (radius > 1f)
+                    {
+                        // + offset to exclude aliased boarder values
+                        x /= radius + .05f;
+                        y /= radius + .05f;
+                    }
+
+                    if (callback != null) callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));
                 }
-            }
-            else
-            {
-                RectTransform imageTransform = image.rectTransform;
-                float x = (data.position.x - imageTransform.position.x) / Screen.width * 10f;
-                float y = (data.position.y - imageTransform.position.y) / Screen.width * 10f;
-
-                float radius = Mathf.Sqrt(x * x + y * y);
-
-                if (radius > 1f)
-                {
-                    // + offset to exclude aliased boarder values
-                    x /= radius + .05f;
-                    y /= radius + .05f;
-                }
-
-                if (callback != null) callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));                
             }
         }
 
@@ -193,6 +198,5 @@ namespace vpet
             return readableTexture;
 
         }
-
     }
 }
