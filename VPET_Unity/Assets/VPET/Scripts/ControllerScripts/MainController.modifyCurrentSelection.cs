@@ -177,6 +177,7 @@ namespace vpet
             {
                 end /= VPETSettings.Instance.controllerSpeed;
                 end *= 5f;
+                end.x *= -1;
                 currentSceneObject.transform.rotation *= Quaternion.Euler(end.z, end.x, end.y);
             }                       
         }
@@ -225,23 +226,39 @@ namespace vpet
         {
             if (currentSelection)
             {
-                if (scale.x == 0 && scale.y == 0)
-                    axisLocker = new Vector3(0, 0, 1);
-                else if (scale.x == 0 && scale.z == 0)
-                    axisLocker = new Vector3(0, 1, 0);
-                else if (scale.y == 0 && scale.z == 0)
-                    axisLocker = new Vector3(1, 0, 0);
-                else if (scale.x != 0 && scale.y != 0 && scale.z != 0)
+                // lights (scalemode is used for light parameters intensity and range)
+                if (currentSelection.GetComponent<SceneObject>().IsLight)
                 {
-                    axisLocker = new Vector3(1, 1, 1);
-                    scale = Vector3.one * scale.x;
+                    // set light intensity
+                    currentSelection.GetComponent<SceneObject>().setLightIntensity(currentSelection.GetComponent<SceneObject>().getLightIntensity() + (scale.z * 5));
+                    // set gui element
+                    currentSelection.GetComponent<SceneObject>().setLightRange(currentSelection.GetComponent<SceneObject>().getLightRange() + (scale.y * 5));
+                    if (scale.z == 0.0f)
+                        UIAdapter.updateRangeSlider(currentSelection.GetComponent<SceneObject>().getLightRange());
+                    else if (scale.y == 0.0f)
+                        UIAdapter.updateRangeSlider(currentSelection.GetComponent<SceneObject>().getLightIntensity());
                 }
-                if (!currentSelection.transform.parent.transform.GetComponent<Light>())
+                // objects
+                else
                 {
-                    float scaleFactor = (8f * Vector3.Distance(Camera.main.transform.position, currentSelection.position) / VPETSettings.Instance.maxExtend);
-                    currentSelection.transform.localScale += Vector3.Scale(scale/currentSelection.transform.parent.lossyScale.x*scaleFactor/VPETSettings.Instance.controllerSpeed, axisLocker) / 100f;
-                    if (liveMode)
-                        serverAdapter.SendObjectUpdate(currentSelection);
+                    if (scale.x == 0 && scale.y == 0)
+                        axisLocker = new Vector3(0, 0, 1);
+                    else if (scale.x == 0 && scale.z == 0)
+                        axisLocker = new Vector3(0, 1, 0);
+                    else if (scale.y == 0 && scale.z == 0)
+                        axisLocker = new Vector3(1, 0, 0);
+                    else if (scale.x != 0 && scale.y != 0 && scale.z != 0)
+                    {
+                        axisLocker = new Vector3(1, 1, 1);
+                        scale = Vector3.one * scale.x;
+                    }
+                    if (!currentSelection.transform.parent.transform.GetComponent<Light>())
+                    {
+                        float scaleFactor = (8f * Vector3.Distance(Camera.main.transform.position, currentSelection.position) / VPETSettings.Instance.maxExtend);
+                        currentSelection.transform.localScale += Vector3.Scale(scale / currentSelection.transform.parent.lossyScale.x * scaleFactor / VPETSettings.Instance.controllerSpeed, axisLocker) / 100f;
+                        if (liveMode)
+                            serverAdapter.SendObjectUpdate(currentSelection);
+                    }
                 }
             }
         }
