@@ -122,6 +122,7 @@ namespace vpet
         private void select(Transform sObject) {
 
             if (sObject.GetComponent<SceneObject>().locked)
+            if (sObject.GetComponent<SceneObject>().locked || (ui.LayoutUI == layouts.SCOUT))
                 return;
 
 
@@ -134,12 +135,6 @@ namespace vpet
             //show selection
             sObject.gameObject.GetComponent<SceneObject>().selected = true;
 
-	        if ( ui.LayoutUI == layouts.SCOUT )
-	        {
-	            // pass
-	        }
-	        else
-	        {
 	            if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
 	            {
                     if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode  || activeMode == Mode.animationEditing || activeMode == Mode.lightSettingsMode))
@@ -154,7 +149,6 @@ namespace vpet
 		                activeMode = Mode.objectMenuMode;
 					}
                 }
-            }
 	
 	    }
 

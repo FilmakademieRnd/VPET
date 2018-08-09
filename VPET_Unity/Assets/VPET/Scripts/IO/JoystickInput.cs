@@ -101,13 +101,6 @@ namespace vpet
         private bool hasPressedL2 = false;
         private int DPADdirection = 0;
 
-        List<SceneObject> EditableObjectsList = new List<SceneObject>();
-        List<SceneObject> EditableLightList = new List<SceneObject>();
-        List<SceneObject> tmpEditableObjectsList = new List<SceneObject>();
-        List<SceneObject> tmpEditableLightList = new List<SceneObject>();
-        List<SceneObject> EditableObjects = new List<SceneObject>();
-        SceneObject currselTransform;
-
         private float left, right, bottom, top;
         private Transform worldTransform = null;
         private SceneObject sceneObject = null;
@@ -124,28 +117,6 @@ namespace vpet
         public SceneLoader SceneLoader
         {
             set { sceneLoader = value; }
-        }
-
-        //!
-        //! called by main controller once scene has been loaded to fill lists with appropriate items
-        //!
-        public void initSelectionLists()
-        {
-            // create light list
-            EditableLightList.Clear();
-            foreach (GameObject g in SceneLoader.SelectableLights)
-            {
-                if (g)
-                    if (g.GetComponent<SceneObject>() != null)
-                        EditableLightList.Add(g.GetComponent<SceneObject>());
-            }
-            // sceneEditableObjects contains cameras and lights, we need to sort those out and build a new list
-            EditableObjectsList.Clear();
-            foreach (GameObject g in SceneLoader.SceneEditableObjects)
-            {
-                if (g.GetComponent<CameraObject>() == null)
-                    EditableObjectsList.Add(g.GetComponent<SceneObject>());
-            }
         }
 
         //!
@@ -352,21 +323,7 @@ namespace vpet
 						(Input.GetButtonDown("DPAD_V_neg")) )
 #endif
             {
-                // check EditableObjectsList and EditableLightList for locked objects and create temporary lists
-                tmpEditableObjectsList = EditableObjectsList;
-                tmpEditableLightList = EditableLightList;
-                for (int i = 0; i < tmpEditableObjectsList.Count; i++)
-                {
-                    if (GameObject.Find(tmpEditableObjectsList[i].name).GetComponent<SceneObject>().locked)
-                        tmpEditableObjectsList.Remove(EditableObjects[i]);
-                }
-                for (int i = 0; i < tmpEditableLightList.Count; i++)
-                {
-                    if (GameObject.Find(tmpEditableLightList[i].name).GetComponent<SceneObject>().locked)
-                        tmpEditableLightList.Remove(EditableObjects[i]);
-                }
-
-                EditableObjects = tmpEditableObjectsList;
+                
 #if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
                     DPADdirection = 1;
@@ -377,45 +334,36 @@ namespace vpet
 #endif
                 else DPADdirection = -1;
                 hasPressedDirectionalPad = true;
-                int match = 0;
+                int match = -1;
+                bool cycleLights = false;
 #if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_V") != 0)
-                    EditableObjects = tmpEditableLightList;
+                    cycleLights = true;
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
 				if (Input.GetButtonDown("DPAD_V") || Input.GetButtonDown("DPAD_V_neg") )
-                    EditableObjects = tmpEditableLightList;
+                    cycleLights = true;
 #endif
-                // test current selection
-                if (mainController.getCurrentSelection())
+                Transform currentSelection = mainController.getCurrentSelection();
+                mainController.handleSelection();
+                if(cycleLights)
                 {
-                    currselTransform = mainController.getCurrentSelection().gameObject.GetComponent<SceneObject>();
-                    // is current sel in objects? if not set manualy to object[0], happens when switching from assets to lights
-                    match = 0;
-                    match = EditableObjects.FindIndex(x => x == currselTransform);
-                    if (match == -1)
-                    {
-                        mainController.handleSelection();
-                        mainController.callSelect(GameObject.Find(EditableObjects[0].name).GetComponent<Transform>());                                                                
-                    }
+                    if (currentSelection) 
+                        match = SceneLoader.SelectableLights.IndexOf(currentSelection.gameObject);
+                    if (match < 0)
+                        selectLight(0);
+                    else
+                        selectLight(match + DPADdirection);
                 }
                 else
-                    mainController.callSelect(EditableObjects[0].GetComponent<Transform>());                
-
-                match = 0;
-                match = EditableObjects.FindIndex(x => x == currselTransform);
-
-                if (match != -1)
                 {
-                    // Dpad right/up end reched start over
-                    if (match == EditableObjects.Count - 1 && DPADdirection == 1)
-                        match = -1;
-                    // Dpad left/down first list entry reached
-                    if (match == 0 && DPADdirection == -1)
-                        match = EditableObjects.Count;
-                    // all other cases
-                    mainController.handleSelection();
-                    mainController.callSelect(GameObject.Find(EditableObjects[match + DPADdirection].name).GetComponent<Transform>());                    
+                    if (currentSelection) 
+                        match = SceneLoader.SceneEditableObjects.IndexOf(currentSelection.gameObject);
+                    if (match < 0)
+                        selectObject(0);
+                    else
+                        selectObject(match + DPADdirection);
                 }
+
                 // reactivate last selected edit mode
                 if (moveObjectActive)
                     mainController.buttonTranslationClicked(true);
@@ -434,6 +382,39 @@ namespace vpet
                 hasPressedL2 = false;
 #endif
 
+        }
+
+        private void selectObject(int potentialIdx)
+        {
+            for (int offset = 0; offset < SceneLoader.SceneEditableObjects.Count; offset++)
+            {
+                int realIdx = mod((potentialIdx + offset * DPADdirection), SceneLoader.SceneEditableObjects.Count);
+                if (!SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObject>().locked && 
+                    !SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObject>().IsLight &&
+                    SceneLoader.SceneEditableObjects[realIdx].GetComponent<CameraObject>() == null)
+                {
+                    mainController.callSelect(SceneLoader.SceneEditableObjects[realIdx].transform);
+                    break;
+                }
+            }
+        }
+
+        private void selectLight(int potentialIdx)
+        {
+            for (int offset = 0; offset < SceneLoader.SelectableLights.Count; offset++)
+            {
+                int realIdx = mod((potentialIdx + offset * DPADdirection),SceneLoader.SelectableLights.Count);
+                if (!SceneLoader.SelectableLights[realIdx].GetComponent<SceneObject>().locked)
+                {
+                    mainController.callSelect(SceneLoader.SelectableLights[realIdx].transform);
+                    break;
+                }
+            }
+        }
+
+        private int mod(int a, int b)
+        {
+            return (a % b + b) % b;
         }
 
         //!

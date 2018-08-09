@@ -115,13 +115,13 @@ namespace vpet
         private Image arColorField;
 
         [Config]
-        private Color arkeyColor = Color.green;
+        private Color arkeyColor;
 
         [Config]
-        private float arkeyThreshold = 0.1f;
+        private float arkeyThreshold;
 
         [Config]
-        private float arkeyRadius = 0.1f;
+        private float arkeyRadius;
 
         private Slider arkeyRadiusSlider;
 

@@ -512,9 +512,6 @@ namespace vpet
         public void sceneLoadCompleted()
 	    {
 			ui.hideProgressWidget();
-			// call joystick adapter to init selection lists            
-            if (joystickAdapter != null)
-                joystickAdapter.initSelectionLists();
 		}
 
 		//

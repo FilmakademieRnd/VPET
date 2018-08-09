@@ -180,8 +180,12 @@ namespace vpet
             {
                 if (scene)
                 {
-                    scene.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform);// * VPETSettings.Instance.trackingScale;
+                    Vector3 newPos = UnityARMatrixOps.GetPosition(arImageAnchor.transform);
+                    scene.transform.position = newPos;
                     scene.transform.rotation = Quaternion.Euler(0,UnityARMatrixOps.GetRotation(arImageAnchor.transform).eulerAngles.y,0);
+                    GameObject modifier = GameObject.Find("Scene/ARModifier");
+                    if(modifier)
+                        modifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, newPos) / 15) * (Camera.main.fieldOfView / 30) * 2.0f;
                 }
             }
         }
@@ -193,8 +197,12 @@ namespace vpet
             {
                 if (scene)
                 {
-                    scene.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform);// * VPETSettings.Instance.trackingScale;
+                    Vector3 newPos = UnityARMatrixOps.GetPosition(arImageAnchor.transform);
+                    scene.transform.position = newPos;
                     scene.transform.rotation = Quaternion.Euler(0, UnityARMatrixOps.GetRotation(arImageAnchor.transform).eulerAngles.y, 0);
+                    GameObject modifier = GameObject.Find("Scene/ARModifier");
+                    if (modifier)
+                        modifier.transform.localScale = Vector3.one * (Vector3.Distance(Camera.main.transform.position, newPos) / 15) * (Camera.main.fieldOfView / 30) * 2.0f;
                 }
             }
         }
