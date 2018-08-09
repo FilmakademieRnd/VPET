@@ -222,7 +222,10 @@ namespace vpet
             lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
             lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
             if (lightComponent.type == LightType.Directional)
+            {
                 lightComponent.shadows = LightShadows.Soft;
+                lightComponent.shadowStrength = 0.8f;
+            }
             else
                 lightComponent.shadows = LightShadows.None;
             lightComponent.shadowBias = 0f;

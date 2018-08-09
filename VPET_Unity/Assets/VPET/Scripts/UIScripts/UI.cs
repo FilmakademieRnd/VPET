@@ -454,8 +454,10 @@ namespace vpet
 			arKeyWidget.SetActive(true);
             arKeyVideoPlane.SetActive(true);
             //temporarely enable standard chroma key to visualize keying while picking
+#if USE_ARKIT
             mainController.ToggleARMatteMode(false);
             mainController.ToggleARKeyMode(true);
+# endif
 		}
 
 		public void acceptKeyConfig()
@@ -468,8 +470,10 @@ namespace vpet
 			drawConfigWidget();
             arKeyVideoPlane.SetActive(false);
             //reset chroma keying settings
+#if USE_ARKIT
             mainController.ToggleARMatteMode(configWidget.mattModeOn);
             mainController.ToggleARKeyMode(configWidget.keyModeOn);
+#endif
 		}
 
         public ConfigWidget drawConfigWidget()
