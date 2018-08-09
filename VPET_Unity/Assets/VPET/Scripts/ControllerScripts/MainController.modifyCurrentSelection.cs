@@ -230,9 +230,9 @@ namespace vpet
                 if (currentSelection.GetComponent<SceneObject>().IsLight)
                 {
                     // set light intensity
-                    currentSelection.GetComponent<SceneObject>().setLightIntensity(currentSelection.GetComponent<SceneObject>().getLightIntensity() + (scale.z * 5));
+                    currentSelection.GetComponent<SceneObject>().setLightIntensity(currentSelection.GetComponent<SceneObject>().getLightIntensity() + (scale.z * 0.5f));
                     // set gui element
-                    currentSelection.GetComponent<SceneObject>().setLightRange(currentSelection.GetComponent<SceneObject>().getLightRange() + (scale.y * 5));
+                    currentSelection.GetComponent<SceneObject>().setLightRange(currentSelection.GetComponent<SceneObject>().getLightRange() + (scale.y * 0.5f));
                     if (scale.z == 0.0f)
                         UIAdapter.updateRangeSlider(currentSelection.GetComponent<SceneObject>().getLightRange());
                     else if (scale.y == 0.0f)
