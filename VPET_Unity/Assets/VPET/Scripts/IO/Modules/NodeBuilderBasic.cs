@@ -237,14 +237,17 @@ namespace vpet
 	        }
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
-	        }
+                lightComponent.range *= 10;
+                objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+            }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
                 // TODO: use are lights when supported in unity
                 lightComponent.type = LightType.Spot;
                 lightComponent.spotAngle = 120;
-	        }
-	        else
+                lightComponent.range *= 10;
+            }
+            else
 	        {
 	        }
 	
@@ -257,7 +260,7 @@ namespace vpet
 			sco.exposure = nodeLight.exposure;
 
             // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
-            // objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+            //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
 
             // TODO: what for ??
             objMain.layer = 0;
@@ -278,9 +281,9 @@ namespace vpet
 	        Vector3 pos = new Vector3( nodeCam.position[0], nodeCam.position[1], nodeCam.position[2] );
 	        Quaternion rot = new Quaternion( nodeCam.rotation[0], nodeCam.rotation[1], nodeCam.rotation[2], nodeCam.rotation[3] );
 	        Vector3 scl = new Vector3( nodeCam.scale[0], nodeCam.scale[1], nodeCam.scale[2] );
-	
-	        // set up object basics
-	        GameObject objMain = new GameObject();
+
+            // set up object basics
+            GameObject objMain = new GameObject();
 	        objMain.name =Encoding.ASCII.GetString(nodeCam.name);
 	
 	        // add camera data script and set values
@@ -296,7 +299,7 @@ namespace vpet
 	        objMain.transform.localScale =    scl; 
 	        
             // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
-	        // objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+	        //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
 	
 	        // TODO: what for ??
 	        objMain.layer = 0;

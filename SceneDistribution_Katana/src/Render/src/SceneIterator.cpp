@@ -170,21 +170,28 @@ namespace Dreamspace
 
 				}
 
-
-
-
-
 				glm::vec3 skew, position, scale;
 				glm::vec4 persp;
 				glm::quat _rotation;
 				glm::quat rotation;
+
 				glm::decompose(transform, scale, _rotation, position, skew, persp);
 
-				if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA || sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
+
+				if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA)
 				{
-					glm::vec3 axis(0, 1, 0);
-					float angle = 3.14;
-					rotation = glm::rotate(_rotation, angle, axis);
+					rotation = glm::rotate(_rotation, glm::pi<float>(), glm::vec3(0, 1, 0));
+				}
+				else if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
+				{
+					_rotation = glm::rotate(_rotation, glm::pi<float>(), glm::vec3(0, 1, 0));
+										
+					rotation[0] = _rotation[0];
+					rotation[1] = _rotation[2];
+					rotation[2] = _rotation[1];
+					rotation[3] = _rotation[3];
+
+					rotation = glm::rotate(rotation, -glm::pi<float>(), glm::vec3(0, 1, 0));
 				}
 				else
 				{
@@ -204,14 +211,9 @@ namespace Dreamspace
 				sharedState->node->rotation[2] = rotation[2];
 				sharedState->node->rotation[3] = rotation[3];
 
-
 				sharedState->node->scale[0] = scale[0];
 				sharedState->node->scale[1] = scale[1];
 				sharedState->node->scale[2] = scale[2];
-
-
-
-
 
 				sharedState->node->editable=false;
 
