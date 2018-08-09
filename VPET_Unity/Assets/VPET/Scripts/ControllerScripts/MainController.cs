@@ -77,7 +77,7 @@ namespace vpet
         //!
         public void moveCameraObject(Vector3 translation)
         {
-            Camera.main.transform.Translate(translation * VPETSettings.Instance.controllerSpeed);
+            Camera.main.transform.Translate(translation * VPETSettings.Instance.controllerSpeed * ( VPETSettings.Instance.maxExtend/ 3000f));
         }
 
         //!
@@ -86,7 +86,7 @@ namespace vpet
         //!
         public void moveCameraParent( Vector3 translation )
 	    {
-            cameraRig.Translate( translation * VPETSettings.Instance.controllerSpeed);
+            cameraRig.Translate(translation * VPETSettings.Instance.controllerSpeed / VPETSettings.Instance.maxExtend);
 	    }
 
         //!

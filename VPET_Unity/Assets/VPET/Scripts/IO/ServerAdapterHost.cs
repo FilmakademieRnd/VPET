@@ -79,11 +79,6 @@ namespace vpet
 	    Transform currentlyLockedObject = null;
 	
 	    //!
-	    //! camera representing object
-	    //!
-	    Transform camObject;
-	
-	    //!
 	    //! is Application running or should threads stop working
 	    //!
 	    bool isRunning = false;
@@ -147,12 +142,6 @@ namespace vpet
 	    //! reference to thread receiving the scene from Katana
 	    //!
 	    Thread sceneReceiverThread;
-	
-	    //!
-	    //! system time that the last ncam message was received
-	    //! used to hide the camera object when no ncam data was received after some time
-	    //!
-	    float lastNcamReceivedTime = 0;
 	
 	    //!
 	    //! cached reference to the apps scene root object
@@ -235,8 +224,6 @@ namespace vpet
 
             if (GameObject.Find("MainController") != null )
     	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
-	
-	        camObject = GameObject.Find("camera").transform;
 	
 	        persistentDataPath = Application.persistentDataPath;
 	
@@ -349,11 +336,6 @@ namespace vpet
 	                count++;
 	            }
 	            receiveMessageQueue.RemoveRange(0, count);
-	        }
-	
-	        if (camObject!=null && camObject.GetComponent<Renderer>().enabled && (Time.time-lastNcamReceivedTime) > 10)
-	        {
-	            camObject.GetComponent<Renderer>().enabled = false;
 	        }
 
             currentTimeTime = Time.time;
@@ -501,14 +483,11 @@ namespace vpet
 
                 if (splitMessage[2] == "cam")
                 {
-                    if (!camObject.GetComponent<Renderer>().enabled) camObject.GetComponent<Renderer>().enabled = true;
-                    lastNcamReceivedTime = Time.time;
                     switch (splitMessage[1])
                     {
                         case "t":
                             if (splitMessage.Length == 6)
-                                if (receiveNcam) Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                else camObject.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+                                Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
                             break;
                         case "r":
                             if (splitMessage.Length == 7)
@@ -519,12 +498,7 @@ namespace vpet
                                 {
                                     Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
                                     Vector3 rot = quat.eulerAngles;
-
-                                    if (receiveNcam)
-                                    {
-                                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
-                                    }
-                                    else camObject.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
+                                    Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
                                 }
                             }
                             break;

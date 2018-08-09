@@ -396,10 +396,12 @@ namespace vpet
         {
             if (publishCam)
             {
-                string msg = "client " + id + "|" + "r|cam|" + Camera.main.transform.rotation.x + "|" +
-                                                               Camera.main.transform.rotation.y + "|" +
-                                                               Camera.main.transform.rotation.z + "|" +
-                                                               Camera.main.transform.rotation.w;
+                Vector3 eul = Camera.main.transform.rotation.eulerAngles;
+                Quaternion adjustedRot = Quaternion.Euler(eul.x, -eul.y, -eul.z - 180);
+                string msg = "client " + id + "|" + "r|cam|" + adjustedRot.x + "|" +
+                                                               adjustedRot.y + "|" +
+                                                               adjustedRot.z + "|" +
+                                                               adjustedRot.w;
                 SendObjectUpdate<ObjectSenderBasic>(msg);
                 msg = "client " + id + "|" + "t|cam|" + Camera.main.transform.position.x + "|" +
                                                         Camera.main.transform.position.y + "|" +
@@ -557,7 +559,7 @@ namespace vpet
 
                 if (splitMessage[2] == "cam")
                 {
-                    if (!camObject.GetComponent<Renderer>().enabled) camObject.GetComponent<Renderer>().enabled = true;
+                    //if (!camObject.GetComponent<Renderer>().enabled) camObject.GetComponent<Renderer>().enabled = true;
                     lastNcamReceivedTime = Time.time;
                     switch (splitMessage[1])
                     {
