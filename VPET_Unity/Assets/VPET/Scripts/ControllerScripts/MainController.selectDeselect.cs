@@ -121,7 +121,6 @@ namespace vpet
         //!
         private void select(Transform sObject) {
 
-            if (sObject.GetComponent<SceneObject>().locked)
             if (sObject.GetComponent<SceneObject>().locked || (ui.LayoutUI == layouts.SCOUT))
                 return;
 
