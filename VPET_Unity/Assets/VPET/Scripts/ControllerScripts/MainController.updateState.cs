@@ -93,7 +93,7 @@ namespace vpet
                 //if (activeMode!=Mode.translationMode && activeMode!=Mode.rotationMode && activeMode != Mode.scaleMode && activeMode != Mode.objectLinkCamera && activeMode != Mode.animationEditing && activeMode != Mode.pointToMoveMode && activeMode != Mode.lightSettingsMode)
                 if (activeMode != oldState)
                 {
-                    serverAdapter.sendLock(currentSelection, false);
+                    //serverAdapter.sendLock(currentSelection, false);
                 }
 
                 animationController.deactivate();
@@ -173,7 +173,7 @@ namespace vpet
 	                    ui.hideCenterMenu();
 	                    break;
 	                case (Mode.translationMode):
-                        serverAdapter.sendLock(currentSelection, true);
+                        //serverAdapter.sendLock(currentSelection, true);
                         translateModifier.GetComponent<Modifier>().setVisible(true);
                         if ( ui.LayoutUI != layouts.ANIMATION)  ui.drawSecondaryMenu(layouts.TRANSLATION);
                         ui.resetRangeSlider();
@@ -181,7 +181,7 @@ namespace vpet
                         ui.drawParameterMenu(layouts.TRANSLATION);
                         break;
 	                case (Mode.rotationMode):
-                        serverAdapter.sendLock(currentSelection, true);
+                        //serverAdapter.sendLock(currentSelection, true);
                         rotationModifier.GetComponent<Modifier>().setVisible(true);
                         ui.resetRangeSlider();
                         ConnectRangeSlider(currentSceneObject, "RotateX", 1f);
@@ -189,7 +189,7 @@ namespace vpet
                         break;
 	                case (Mode.scaleMode):
                         scaleModifier.GetComponent<Modifier>().setVisible(true);
-                        serverAdapter.sendLock(currentSelection, true);
+                        //serverAdapter.sendLock(currentSelection, true);
                         ui.resetRangeSlider();
                         ConnectRangeSlider(currentSceneObject, "ScaleX", 0.02f);
                         ui.drawParameterMenu(layouts.TRANSFORM);
@@ -210,12 +210,12 @@ namespace vpet
 	                    }
                         ui.hideRangeSlider();
                         // ui.drawParameterMenu(layouts.TRANSLATION);
-                        serverAdapter.sendLock(currentSelection, true);
+                        //serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.pointToMoveMode):
                         ui.hideRangeSlider();
                         // ui.drawParameterMenu(layouts.TRANSLATION);
-                        serverAdapter.sendLock(currentSelection, true);
+                        //serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.objectMenuMode):
 	                    if (currentSelection && ui.LayoutUI != layouts.SCOUT )
@@ -271,7 +271,7 @@ namespace vpet
                         else if (currentSceneObject.isSpotLight)
                             ui.drawParameterMenu(layouts.LIGHTSPOT);
                         ui.drawLightSettingsWidget();
-                        serverAdapter.sendLock(currentSelection, true);
+                        //serverAdapter.sendLock(currentSelection, true);
                         break;
 	                case (Mode.addMode):
 	                    break;

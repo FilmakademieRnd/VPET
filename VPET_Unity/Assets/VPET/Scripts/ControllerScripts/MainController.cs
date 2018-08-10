@@ -736,7 +736,7 @@ namespace vpet
             }
         }
 
-        private void UpdatePropertiesSecondaryCameras()
+        public void UpdatePropertiesSecondaryCameras()
         {
             foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
             {
@@ -808,7 +808,9 @@ namespace vpet
             ui.updateScaleValue(v);
             Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
             float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
-            QualitySettings.shadowDistance = v * maxExtend * maxExtend * 0.0025f;
+            QualitySettings.shadowDistance = v * maxExtend * 3f;
+            Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend * v);
+            Camera.main.farClipPlane = Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend * v);
             Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
 
             /*foreach (Rigidbody rigi in FindObjectsOfType<Rigidbody>())

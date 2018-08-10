@@ -71,6 +71,11 @@ namespace vpet
         //!
         private MainController mainController = null;
 
+        //!
+        //! Reference to Scene root
+        //!
+        private Transform scene;
+
 
         //!
         //! Reference to server adapter to send out changes on execution
@@ -235,6 +240,8 @@ namespace vpet
                 outlineCamera.nearClipPlane = this.GetComponent<Camera>().nearClipPlane;
             }
 
+            scene = GameObject.Find("Scene").transform;
+
             // get server adapter
             GameObject refObject = GameObject.Find("ServerAdapter");
             if (refObject != null) serverAdapter = refObject.GetComponent<ServerAdapter>();
@@ -264,6 +271,11 @@ namespace vpet
         //!
         void Update()
         {
+
+            Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale);
+            Camera.main.farClipPlane = Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale);
+            mainController.UpdatePropertiesSecondaryCameras();
+
 			//forward changes of the fov to the secondary (render in front) camera
             Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
             frontCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;

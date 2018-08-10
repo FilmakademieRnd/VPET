@@ -124,10 +124,11 @@ namespace vpet
             if (sObject.GetComponent<SceneObject>().locked || (ui.LayoutUI == layouts.SCOUT))
                 return;
 
-
             //cache current selection
             currentSelection = sObject;
             currentSceneObject = sObject.GetComponent<SceneObject>();
+
+            serverAdapter.sendLock(currentSelection, true);
 
             Debug.Log("Select " + currentSelection );
 
