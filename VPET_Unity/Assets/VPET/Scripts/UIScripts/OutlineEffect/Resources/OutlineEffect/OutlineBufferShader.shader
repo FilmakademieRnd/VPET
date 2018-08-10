@@ -75,7 +75,7 @@ Shader "Hidden/OutlineBufferEffect" {
 			fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * IN.color;
 			if (c.a < _AlphaCutoff) discard;
 
-			float alpha = c.a * 99999999;
+			half alpha = c.a * 9999;
 
 			o.Albedo = _Color * alpha;
 			o.Alpha = alpha;

@@ -71,20 +71,17 @@ Shader "Hidden/OutlineEffect"
 			float _LineThicknessY;
 			float _LineIntensity;
 			half4 _LineColor1;
-			int _FlipY;
 			int _Dark;
 			uniform float4 _MainTex_TexelSize;
 
 			half4 frag (v2f input) : COLOR
 			{	
 				float2 uv = input.uv;
-				if (_FlipY == 1)
-					uv.y = 1 - uv.y;
 
 				half4 originalPixel = tex2D(_MainTex,input.uv);
 				half4 outlineSource = tex2D(_OutlineSource, uv);
 								
-				float h = .95f;
+				half h = .95;
 				half4 outline = 0;
 				bool hasOutline = false;
 

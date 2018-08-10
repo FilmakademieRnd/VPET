@@ -277,9 +277,6 @@ namespace vpet
                 UpdatePropertiesSecondaryCameras();
                 cameraAdapter.setMove(true);
 				currentCameraView = View.PERSP;
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
-                Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>().FlipY = false;
-#endif
             }
 
 			// restore previous view, e.g. when returning from orthographic view
@@ -356,9 +353,6 @@ namespace vpet
 
 	        Camera.main.orthographic = true;
             UpdatePropertiesSecondaryCameras();
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
-            Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>().FlipY = true;
-#endif
 
             cameraAdapter.setMove(false);
 			currentCameraView = view;

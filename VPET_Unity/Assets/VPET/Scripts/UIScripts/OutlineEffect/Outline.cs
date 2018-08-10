@@ -32,35 +32,41 @@ using vpet;
 [RequireComponent(typeof(Renderer))]
 public class Outline : MonoBehaviour
 {
-    public OutlineEffect outlineEffect;
-
-	public int color;
-	public bool eraseRenderer;
-
+    private OutlineEffect outlineEffect;
 	[HideInInspector]
 	public int originalLayer;
-	[HideInInspector]
-	public Material originalMaterial;
+    [HideInInspector]
+    public Material originalMaterial;
+    [HideInInspector]
+    public Color lineColor;
+    [HideInInspector]
+    public bool useLineColor;
 
-    //void Start()
-    //{
-    //}
-
-    public void display(bool alt)
+    void Awake()
     {
-        if (Camera.main.transform.childCount > 0)
-        {
-            if(alt)
-                outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponents<OutlineEffect>()[1];
-            else
-                outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
-            outlineEffect.AddOutline(this);
-        }
+        useLineColor = false;
+        lineColor = new Color();
+    }
+
+    public void setLineColor(Color color)
+    {
+        useLineColor = true;
+        lineColor = color;
+    }
+
+    void OnEnable()
+    {
+        if (outlineEffect == null) 
+            outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
+        outlineEffect.AddOutline(this);
     }
 
     void OnDisable()
     {
-        if (outlineEffect)
+        if (outlineEffect != null)
+        {
             outlineEffect.RemoveOutline(this);
+            useLineColor = false;
+        }
     }
 }

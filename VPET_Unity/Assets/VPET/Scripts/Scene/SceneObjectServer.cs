@@ -235,9 +235,6 @@ namespace vpet
 		//!
 		public bool isPointLight = false;
 
-		public OutlineEffect outlineEffect;
-		public Outline outline;
-
 		private Transform lightTarget = null;
 
 		private Transform lightGeo = null;

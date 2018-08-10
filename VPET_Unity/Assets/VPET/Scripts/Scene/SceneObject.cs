@@ -241,9 +241,6 @@ namespace vpet
 		//!
 		public bool isPointLight = false;
 
-		public OutlineEffect outlineEffect;
-		public Outline outline;
-
 		private Transform lightTarget = null;
 
 		private Transform lightGeo = null;
@@ -760,31 +757,59 @@ namespace vpet
 		//!
 		private void showHighlighted(GameObject obj)
 		{
-			//do it for parent object
-			if (obj.GetComponent<Renderer>() != null) //is object rendered?
-			{
-				////add makeBrighter Material
-				//Material[] newMaterials = new Material[obj.GetComponent<Renderer>().materials.GetLength(0) + 1];
-				//obj.GetComponent<Renderer>().materials.CopyTo(newMaterials, 0);
-				//newMaterials[newMaterials.GetLength(0) - 1] = Resources.Load("VPET/Materials/makeBrighter", typeof(Material)) as Material;
-				//obj.GetComponent<Renderer>().materials = newMaterials;
+            //do it for parent object
+            if (obj.GetComponent<Renderer>() != null) //is object rendered?
+            {
+                ////add makeBrighter Material
+                //Material[] newMaterials = new Material[obj.GetComponent<Renderer>().materials.GetLength(0) + 1];
+                //obj.GetComponent<Renderer>().materials.CopyTo(newMaterials, 0);
+                //newMaterials[newMaterials.GetLength(0) - 1] = Resources.Load("VPET/Materials/makeBrighter", typeof(Material)) as Material;
+                //obj.GetComponent<Renderer>().materials = newMaterials;
 
-				if (Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>())
-				{
-
+                if (Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>())
+                {
                     Outline outline = obj.GetComponent<Outline>();
-                    if (!outline)
-                        obj.AddComponent<Outline>();
+                    if (outline == null)
+                        outline = obj.AddComponent<Outline>();
                     else
                         outline.enabled = true;
-                    obj.GetComponent<Outline>().display(false);
+
+                    // outline.setLineColor(new Color(1.0f, 0.8f, 0.3f));  // yellow. no need to set because default is yellow
                 }
-			}
-			foreach (Transform child in obj.transform)
-			{
-				this.showHighlighted(child.gameObject);
-			}
-		}
+            }
+            foreach (Transform child in obj.transform)
+            {
+                this.showHighlighted(child.gameObject);
+            }
+        }
+
+        //!
+        //! recursively delete highlight shader of object
+        //! @param  obj    gameObject on which to delete the highlight shader
+        //!
+        private void showNormal(GameObject obj)
+        {
+            //do it for parent object
+            if (obj.GetComponent<Renderer>() != null) //is object rendered?
+            {
+                ////remove makeBrighter Material
+                //Material[] oldMaterials = new Material[obj.GetComponent<Renderer>().materials.GetLength(0) - 1];
+                //for (int i = 0; i < obj.GetComponent<Renderer>().materials.GetLength(0) - 1; i++)
+                //{
+                //    oldMaterials[i] = obj.GetComponent<Renderer>().materials[i];
+                //}
+                //obj.GetComponent<Renderer>().materials = oldMaterials;
+
+                Outline outline = obj.GetComponent<Outline>();
+                if (outline != null)
+                    outline.enabled = false;
+
+            }
+            foreach (Transform child in obj.transform)
+            {
+                this.showNormal(child.gameObject);
+            }
+        }
 
         //!
         //!
@@ -807,11 +832,12 @@ namespace vpet
             if (obj.GetComponent<Renderer>() != null) //is object rendered?
             {
                 Outline outline = obj.GetComponent<Outline>();
-                if (!outline)
-                    obj.AddComponent<Outline>();
+                if (outline == null)
+                    outline = obj.AddComponent<Outline>();
                 else
                     outline.enabled = true;
-                obj.GetComponent<Outline>().display(true);
+
+                outline.setLineColor(new Color(0.7f, 0f, 0.03f));  // override default yellow with deep red color
 
             }
             foreach (Transform child in obj.transform)
@@ -830,7 +856,7 @@ namespace vpet
             if (obj.GetComponent<Renderer>() != null) //is object rendered?
             {
                 Outline outline = obj.GetComponent<Outline>();
-                if (outline)
+                if (outline != null)
                     outline.enabled = false;
             }
             foreach (Transform child in obj.transform)
@@ -838,34 +864,6 @@ namespace vpet
                 this.showUnlocked(child.gameObject);
             }
         }
-
-		//!
-		//! recursively delete highlight shader of object
-		//! @param  obj    gameObject on which to delete the highlight shader
-		//!
-		private void showNormal(GameObject obj)
-		{
-			//do it for parent object
-			if (obj.GetComponent<Renderer>() != null) //is object rendered?
-			{
-				////remove makeBrighter Material
-				//Material[] oldMaterials = new Material[obj.GetComponent<Renderer>().materials.GetLength(0) - 1];
-				//for (int i = 0; i < obj.GetComponent<Renderer>().materials.GetLength(0) - 1; i++)
-				//{
-				//    oldMaterials[i] = obj.GetComponent<Renderer>().materials[i];
-				//}
-				//obj.GetComponent<Renderer>().materials = oldMaterials;
-
-				Outline outline = obj.GetComponent<Outline>();
-                if (outline)
-                    outline.enabled = false;
-
-            }
-			foreach (Transform child in obj.transform)
-			{
-				this.showNormal(child.gameObject);
-			}
-		}
 
 		//!
 		//! initalize a smooth translation of the object to a given point
