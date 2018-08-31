@@ -264,7 +264,8 @@ namespace vpet
         //!
         void Awake()
         {
-            //Application.targetFrameRate = 40;
+            //QualitySettings.vSyncCount = 0;
+            //Application.targetFrameRate = 30;
 
             // read settings from inspector values
             VPETSettings.mapValuesFromObject(this);

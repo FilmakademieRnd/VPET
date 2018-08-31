@@ -69,8 +69,6 @@ public class OutlineEffect : MonoBehaviour
 
     void Start()
     {
-        List<Outline> outlines = new List<Outline>();
-
         CreateMaterialsIfNeeded();
         UpdateMaterialsPublicProperties();
 
@@ -93,7 +91,7 @@ public class OutlineEffect : MonoBehaviour
 
         outlineCamera.depthTextureMode = DepthTextureMode.None;
 
-        renderTexture = new RenderTexture(sourceCamera.pixelWidth, sourceCamera.pixelHeight, 0, RenderTextureFormat.ARGB1555);
+        renderTexture = new RenderTexture(sourceCamera.pixelWidth, sourceCamera.pixelHeight, 0, RenderTextureFormat.Default);
         outlineCamera.targetTexture = renderTexture;
     }
 
@@ -137,7 +135,8 @@ public class OutlineEffect : MonoBehaviour
             }
         }
 
-        outlineCamera.Render();
+        if (outlineCamera != null)
+            outlineCamera.Render();
 
         if (outlines != null)
         {
