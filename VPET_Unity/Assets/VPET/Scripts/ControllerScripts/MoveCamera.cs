@@ -273,7 +273,7 @@ namespace vpet
         {
 
             //Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale);
-            //Camera.main.farClipPlane = Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale);
+            //Camera.main.farClipPlane = Mathf.Max(100f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale));
             mainController.UpdatePropertiesSecondaryCameras();
 
 			//forward changes of the fov to the secondary (render in front) camera
