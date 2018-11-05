@@ -34,7 +34,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using NetMQ;
 using NetMQ.Sockets;
-
+using Valve.VR;
 using System.Collections.Generic;
 
 //!
@@ -44,11 +44,34 @@ using System.Collections.Generic;
 //!
 namespace vpet
 {
-
 	public class ServerAdapterProgressEventHost : UnityEvent<float, string> { }
 
     public class ServerAdapterHost : MonoBehaviour
 	{
+        //LOCKED OBJECT ON CLIENT DOESN'T GET UPDATED
+
+        public enum VRSelection
+        {
+            Disabled,
+            UpdateSingle,
+            UpdateAll
+        };
+
+        private VRInput[] inputs = null;
+        private Transform updateObj = null;
+        private float timer = 0f;
+
+        [Header("VR Settings")]
+        public VRSelection ModeSelection = VRSelection.UpdateAll;
+
+        [Tooltip("Updates per second for VR")]
+        [Range(1,60)]
+        public float updateRate = 30f;
+
+        [Tooltip("Write tracker data to file")]
+        public bool writeFile = true;
+        [Space(20)]
+
         public string IP = "192.168.161.100";
 
         //!
@@ -60,7 +83,6 @@ namespace vpet
 	    //! cached reference to Katana massage templates
 	    //!
 	    KatanaTemplates katanaTemplates;
-	
 	
 	    [HideInInspector]
 	    //!
@@ -123,7 +145,6 @@ namespace vpet
 	    //!
 	    public bool isRecording = false;
 	
-	
 	    //!
 	    //! regEx expression to check if it is a valid IP adress
 	    //!
@@ -138,6 +159,7 @@ namespace vpet
 	    //! reference to thread receiving all object updates from tablet syncronizing server
 	    //!
 	    Thread receiverThread;
+
 	    //!
 	    //! reference to thread receiving the scene from Katana
 	    //!
@@ -157,7 +179,6 @@ namespace vpet
 	    //!
 	    MainController mainController = null;
 
-
 	    //!
 	    //! none
 	    //!
@@ -166,8 +187,7 @@ namespace vpet
 	    {
 	        set { sceneLoader = value;  }
 	    }
-	    
-	
+
 		public ServerAdapterProgressEventHost OnProgressEvent = new ServerAdapterProgressEventHost();
 
         // used to pass time to threads
@@ -200,9 +220,6 @@ namespace vpet
                 objectSenderList.Add(sender);
         }
 
-
-
-
         void Awake()
 	    {
             VPETSettings.Instance.serverIP = IP;
@@ -212,8 +229,7 @@ namespace vpet
                 receiverThread.Start();
                 isRunning = true;
             }
-	    }
-	
+        }
 
 	    //!
 	    //! Use this for initialization
@@ -231,14 +247,21 @@ namespace vpet
 	
   	        scene = GameObject.Find( "Scene" ).transform;
 
-			  
-			  
 			receiveMessageQueue = new ArrayList();			  
 	
             dreamspaceRoot = scene; // GameObject.Find("Scene").transform;
 	        if (dreamspaceRoot == null) Debug.LogError(string.Format("{0}: Cant Find: Scene.", this.GetType()));
-        }
 
+            if (ModeSelection != VRSelection.Disabled)
+            {
+                inputs = FindObjectsOfType<VRInput>();
+
+                RegisterSender(ObjectSenderBasic.Instance);
+                initWriteFile();
+            }
+
+            initServerAdapterTransfer();
+        }
 
         //!
         //! Init the sever adpater for receiving a scene
@@ -246,30 +269,18 @@ namespace vpet
         //!
         public void initServerAdapterTransfer()
 	    {
-	
-	        if (!ipAdressFormat.IsMatch( VPETSettings.Instance.serverIP))
-	        {
-	            deactivatePublish = true;
-	            deactivateReceive = true;
-	            deactivatePublishKatana = true;
-	        }
-
-            // clear previous scene
-            sceneLoader.ResetScene();
-	
-	        // if (!ipAdressFormat.IsMatch(VPETSettings.Instance.katanaIP)) deactivatePublishKatana = true;
-	
-	        //bind Threads to methods & start them
-	        if (!deactivateReceive && receiverThread == null )
+            //bind Threads to methods & start them
+            if (!deactivateReceive && receiverThread == null )
 	        {
 	            receiverThread = new Thread(new ThreadStart(listener));
 	            receiverThread.Start();
 				isRunning = true;
 	        }
+
 	        if (!deactivatePublish)
             {
-				// create thread for all registered sender
-				foreach( ObjectSender sender in  objectSenderList)
+                // create thread for all registered sender
+                foreach ( ObjectSender sender in  objectSenderList)
 				{
 					sender.SetTarget(VPETSettings.Instance.serverIP, "5557");
 					Thread _thread = new Thread(new ThreadStart(sender.Publisher));
@@ -279,26 +290,7 @@ namespace vpet
 					sender.IsRunning = true;
 				}
 	        }
-	
-	        if (VPETSettings.Instance.doLoadFromResource)
-	        {
-				sceneReceiverThread = null;
-	            sceneReceiverResource();
-	        }
-	        else
-	        {
-                if (sceneReceiverThread != null)
-                {
-                    sceneReceiverThread.Abort();
-                    sceneReceiverThread = null;
-                }
-
-                sceneReceiverThread = new Thread(new ThreadStart(sceneReceiver));
-                sceneReceiverThread.Start();
-            }
         }
-	
-
 	    	
 	    //!
 		//! Update is called once per frame
@@ -317,7 +309,7 @@ namespace vpet
 	            // Camera.main.GetComponent<MoveCamera>().calibrate();
 	
 	        }
-	
+
 	        if (!deactivateReceive)
 	        {
 	            //process all available transforms send by server & delete them from Queue
@@ -338,10 +330,33 @@ namespace vpet
 	            receiveMessageQueue.RemoveRange(0, count);
 	        }
 
+            if (ModeSelection != VRSelection.Disabled)
+            {
+                timer += Time.deltaTime;
+
+                if (timer >= 1f / updateRate)
+                {
+                    timer -= 1f / updateRate;
+
+                    if (ModeSelection == VRSelection.UpdateSingle)
+                    {
+                        if (updateObj)
+                            updateSingleVR(updateObj.GetComponent<VRInput>());
+                    }
+                    else if (ModeSelection == VRSelection.UpdateAll)
+                        updateAllVR();
+                }
+
+                //RECONNECT SERVER IF CONNECTION LOST
+                if (false) //CHECK WITH PING?
+                {
+                    RegisterSender(ObjectSenderBasic.Instance);
+                    initServerAdapterTransfer();
+                }
+            }
+
             currentTimeTime = Time.time;
-
 		}
-
 
 		//!
 		//!
@@ -376,7 +391,6 @@ namespace vpet
 			{
 				sender.SendObject(id, sobj, dagPath, nodeType, args);
 			}
-
 		}
 
 		//!
@@ -392,9 +406,7 @@ namespace vpet
 				if (sender.GetType() == typeof(T))
 					sender.SendObject(msg);
 			}
-
 		}
-
 
 	    //! function to be called to send a scale change to server
 	    //! @param  obj             Transform of GameObject
@@ -406,7 +418,6 @@ namespace vpet
 	            // katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTemplate, fov, left, right, bottom, top));
 	        }
 	    }
-	
 
 	    //! function to be called to send a kinematic on/off signal to server
 	    //! @param  obj             Transform of GameObject to be locked
@@ -450,13 +461,11 @@ namespace vpet
 	        }
 	    }
 
-
         public void sendAnimatorCommand(Transform obj, int cmd)
         {
 			string msg = "client " + id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd;
 			SendObjectUpdate<ObjectSenderBasic>(msg);			
         }
-
 
         public void sendColliderOffset(Transform obj, Vector3 offset )
         {
@@ -464,23 +473,19 @@ namespace vpet
 			SendObjectUpdate<ObjectSenderBasic>(msg);			
         }
 
-
         //! function to be called to resend stored scene object attributes
         public void sendUpdateObjects()
         {
 			SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "udOb");
         }
 
-
-
         //! function parsing received message and executing change
         //! @param  message         message string received by server
         public void parseTransformation(string message)
 	    {
-	        string[] splitMessage = message.Split('|');
+            string[] splitMessage = message.Split('|');
             if (splitMessage.Length > 1)
             {
-
                 if (splitMessage[2] == "cam")
                 {
                     switch (splitMessage[1])
@@ -513,6 +518,7 @@ namespace vpet
                 else
                 {
                     Transform obj = getOjectFromString(splitMessage[2]);
+
                     if ( obj && obj != currentlyLockedObject && splitMessage[0] != id )
 	                {
 	                    switch ( splitMessage[1] )
@@ -535,10 +541,10 @@ namespace vpet
 									if(obj.GetComponent<SceneObject>()) obj.GetComponent<SceneObject>().tempLock = true;
 	                                try
 									{
-										// obj.rotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-										obj.localRotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-									}
-									catch {}
+                                        // obj.rotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                        obj.localRotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                    }
+                                    catch {}
 								}
 								break;
 	                        case "s":
@@ -594,13 +600,22 @@ namespace vpet
 									catch {}
 	                            break;
 	                        case "l":
-	                            if (splitMessage.Length == 4)
-	                                if (bool.Parse(splitMessage[3])) mainController.unselectIfSelected(obj);
-										try
-										{
-	                            			obj.GetComponent<SceneObject>().locked = bool.Parse(splitMessage[3]);
-										}
-										catch {}
+                                if (splitMessage.Length == 4)
+                                {
+                                    if (bool.Parse(splitMessage[3]))
+                                    {
+                                        updateObj = obj;
+                                        mainController.unselectIfSelected(obj);
+                                    }
+                                    else
+                                        updateObj = null;
+
+                                    try
+                                    {
+                                        obj.GetComponent<SceneObject>().locked = bool.Parse(splitMessage[3]);
+                                    }
+                                    catch { }
+                                }
 	                            break;
                             case "b": // move bbox/collider
                                 if (splitMessage.Length == 6)
@@ -627,11 +642,49 @@ namespace vpet
 	            }
 	        }
 	    }
-	
-	    //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
-	    //! @param  obj         Transform of GameObject to find the path for
-	    //! @return     path to gameObject started at main scene, separated by "/"
-	    private string getPathString(Transform obj, Transform root, string separator = "/") {
+
+        private void initWriteFile()
+        {
+            if (!Directory.Exists("data"))
+                Directory.CreateDirectory("data");
+
+            foreach (VRInput input in inputs)
+                File.WriteAllText("data\\" + input.name, "UpdateRate | " + updateRate + " FPS" + Environment.NewLine);
+        }
+
+        private void updateAllVR()
+        {
+            foreach (VRInput input in inputs)
+            {
+                updateObj = input.transform;
+                updateSingleVR(input);
+            }
+        }
+
+        private void updateSingleVR(VRInput input)
+        {
+            //IGNORE DATA IF TOO EXTREME (TRACKER LOST)
+
+            if (!input.capture)
+                return;
+
+            SteamVR_TrackedObject tracker = input.tracker;
+            tracker.index = input.index;
+
+            updateObj.localRotation = tracker.transform.rotation;
+            updateObj.localPosition = Vector3.Scale(tracker.transform.position, input.scale) + input.offset;
+
+            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "r" + "|" + getPathString(updateObj, scene) + "|" + updateObj.localRotation.x + "|" + updateObj.localRotation.y + "|" + updateObj.localRotation.z + "|" + updateObj.localRotation.w);
+            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "t" + "|" + getPathString(updateObj, scene) + "|" + updateObj.localPosition.x + "|" + updateObj.localPosition.y + "|" + updateObj.localPosition.z);
+
+            if (writeFile)
+                File.AppendAllText("data\\" + updateObj.name, DateTime.Now.ToLocalTime() + " | Pos: " + updateObj.transform.position + " | Rot: " + updateObj.transform.rotation + Environment.NewLine);
+        }
+
+        //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
+        //! @param  obj         Transform of GameObject to find the path for
+        //! @return     path to gameObject started at main scene, separated by "/"
+        private string getPathString(Transform obj, Transform root, string separator = "/") {
 	        if (obj.parent) 
 	        {
 	            if (obj.parent == Camera.main.transform)
@@ -655,7 +708,7 @@ namespace vpet
 	    }
 	
 	    //!
-	    //! client function, listening for messages in receiveMessageQueue from server (executed in separate thread)
+	    //! client function, listening for messages in from server (executed in separate thread)
 	    //!
 	    public void listener() 
 	    {
@@ -695,7 +748,6 @@ namespace vpet
             //NetMQConfig.Cleanup();
 	    }
 		
-	
 	    //!
 	    //! receiver function, receiving the initial scene from the katana server (executed in separate thread)
 	    //!
@@ -795,7 +847,6 @@ namespace vpet
 
         }
 
-
         //!
         //! none
         //!
@@ -882,7 +933,6 @@ namespace vpet
 			OnProgressEvent.Invoke(progress, msg);
 		}
 
-	
 	    //!
 	    //! Unity build in function beeing called just before Application is closed
 	    //! closes network Connections & terminates threads
