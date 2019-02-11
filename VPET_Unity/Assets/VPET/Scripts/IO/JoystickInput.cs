@@ -108,15 +108,31 @@ namespace vpet
         private float x_axis = 0f;
         private float y_axis = 0f;
         private float z_axis = 0f;
+        private GameObject crossHair = null;
+        private GameObject previousCrosshairObject = null;
+        private GameObject currentCrosshairObject = null;
+        public OutlineEffect outlineEffect;
+        static int defaultLayermask = (1 << 0) | (1 << 13);
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
         //!
         //! Cached reference to the main controller.
         //!
         private MainController mainController = null;
         private SceneLoader sceneLoader = null;
+        private InputAdapter inputAdapter = null;
         public SceneLoader SceneLoader
         {
             set { sceneLoader = value; }
+        }
+
+        //!
+        //! get current cross hair object 
+        //!
+        public void getcurrentCrosshairObject()
+        {
+            previousCrosshairObject = currentCrosshairObject;
+            currentCrosshairObject = inputAdapter.callCameraRaycast(screenCenter, defaultLayermask);
         }
 
         //!
@@ -124,18 +140,46 @@ namespace vpet
         //!
         public void getButtonUpdates()
         {
-            if (Input.GetButtonDown("L1"))
+            // outline effect
+            outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
+
+            if (Input.GetButton("L1"))
             {
-                // toggle gravity
-                if (mainController.getCurrentSelection())
+                // hide center menu
+                mainController.callDeselect();
+                // switch to camera mode
+                moveCameraActive = true;
+                moveObjectActive = false;
+                rotateObjectActive = false;
+                scaleObjectActive = false;
+                // show crosshair
+                crossHair.SetActive(true);
+
+                // initial state, previousCrosshairObject == some object, currentCrosshairObject == null
+                if (previousCrosshairObject != null && currentCrosshairObject == null)
+                    previousCrosshairObject.GetComponent<SceneObject>().callShowNormal(previousCrosshairObject);
+
+                // initial state, previousCrosshairObject == some object (previous), currentCrosshairObject == some object new
+                else if (currentCrosshairObject != null && previousCrosshairObject != null && currentCrosshairObject != previousCrosshairObject)
+                    previousCrosshairObject.GetComponent<SceneObject>().callShowNormal(previousCrosshairObject);
+
+                // highlight current selection
+                else
+                    if (currentCrosshairObject)
                 {
-                    if (mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().enabled &! (mainController.UIAdapter.LayoutUI == layouts.ANIMATION))
-                        mainController.UIAdapter.CenterMenu.transform.GetChild(4).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));                    
-                    // set keyframe for current selection (translate, rotate, scale)
-                    if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION &! moveCameraActive)                    
-                        mainController.AnimationController.setKeyFrame();
+                    outlineEffect.lineColor0 = new Color(1f, 0.9f, 0.7f);
+                    currentCrosshairObject.GetComponent<SceneObject>().callShowHighlighted(currentCrosshairObject);
                 }
 
+            }
+            else if (Input.GetButtonUp("L1"))
+            {
+                if (currentCrosshairObject != null)
+                {
+                    outlineEffect.lineColor0 = new Color(1f, .8f, .3f);
+                    mainController.callSelect(currentCrosshairObject.GetComponent<Transform>());
+                }
+                crossHair.SetActive(false);
             }
             // enter translation mode
             else if (Input.GetButtonDown("Fire3"))
@@ -483,6 +527,8 @@ namespace vpet
             //cache reference to main Controller
             mainController = GameObject.Find("MainController").GetComponent<MainController>();
             //sceneLoader = GameObject.Find("SceneAdapter").GetComponent<SceneLoader>();
+            inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();
+            crossHair = GameObject.Find("GUI/Canvas/Crosshair");
         }
     }
 }

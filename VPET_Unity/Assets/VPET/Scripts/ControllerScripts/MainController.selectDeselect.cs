@@ -152,6 +152,14 @@ namespace vpet
 	
 	    }
 
+        //!
+        //! unselect an object or reset state from other script
+        //!
+        public void callDeselect()
+        {
+            deselect();
+        }
+
 	    //!
 	    //! unselect an object or reset state
 	    //!

@@ -784,6 +784,14 @@ namespace vpet
         }
 
         //!
+        //! recursively apply highlight shader to object from other scripts
+        //! @param  obj    gameObject on which to apply the highlight shader
+        //!
+        public void callShowHighlighted(GameObject obj) {
+            showHighlighted(obj);
+        }
+
+        //!
         //! recursively delete highlight shader of object
         //! @param  obj    gameObject on which to delete the highlight shader
         //!
@@ -809,6 +817,15 @@ namespace vpet
             {
                 this.showNormal(child.gameObject);
             }
+        }
+
+        //!
+        //! recursively delete highlight shader of object from other script
+        //! @param  obj    gameObject on which to delete the highlight shader
+        //!
+        public void callShowNormal(GameObject obj)
+        {
+            showNormal(obj);
         }
 
         //!

@@ -440,14 +440,28 @@ namespace vpet
 				return null;
 			}
 		}
-	
-		//!
-		//! execute a raycast onto a specific object
-		//! @param      pos         screen position of second pointer
-		//! @param      target      collider of the gameObject to raycast against
-		//! @return     3D position on the object where the ray hit (nullVector if object was not hit)
-		//!
-		private Vector3 objectRaycast(Vector3 pos, Collider target)
+
+        //!
+        //! call raycast from other scripts
+        //! raycast through the current position on a specific Unity layer (& ignore other layers)
+        //! @param      pos             screen position of second pointer
+        //! @param      layerMask       layer on which to execute the raycast
+        //!                             3 -> defaul layer
+        //!                             256 -> RenderInFront Layer (layer 8)
+        //! @return     returns reference to the hit object (null if nothing was hit)             
+        //!
+        public GameObject callCameraRaycast(Vector3 pos, int layerMask = 1)
+        {
+            return cameraRaycast(pos, layerMask);
+        }
+
+        //!
+        //! execute a raycast onto a specific object
+        //! @param      pos         screen position of second pointer
+        //! @param      target      collider of the gameObject to raycast against
+        //! @return     3D position on the object where the ray hit (nullVector if object was not hit)
+        //!
+        private Vector3 objectRaycast(Vector3 pos, Collider target)
         {
 			Ray ray = Camera.main.ScreenPointToRay(pos);
 			RaycastHit hit;
