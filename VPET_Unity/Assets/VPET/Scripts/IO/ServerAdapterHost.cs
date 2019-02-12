@@ -29,13 +29,14 @@ using UnityEngine.Events;
 using System.Collections;
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Text.RegularExpressions;
 using NetMQ;
 using NetMQ.Sockets;
-using Valve.VR;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using UnityEditor;
 
 //!
 //! adapter script handling all communication to network partners
@@ -44,33 +45,56 @@ using System.Collections.Generic;
 //!
 namespace vpet
 {
-	public class ServerAdapterProgressEventHost : UnityEvent<float, string> { }
+    public class ServerAdapterProgressEventHost : UnityEvent<float, string> { }
 
     public class ServerAdapterHost : MonoBehaviour
 	{
-        //LOCKED OBJECT ON CLIENT DOESN'T GET UPDATED
+        //---------------------------------------
+        // VIVE Integration
+        //---------------------------------------
 
-        public enum VRSelection
+        /* TODO
+		Bugs/Problems:
+		Client which locks object doesn't see the updates
+
+		Optimization:
+		Update scale only when changed (reduces update calls by 1/3)
+		Seperate recording and update rates (not that many updates needed)
+		Buffer multiple lines when recording before write (less IO file writes)
+		*/
+
+        public enum VIVESelection
         {
-            Disabled,
             UpdateSingle,
             UpdateAll
         };
 
-        private VRInput[] inputs = null;
-        private Transform updateObj = null;
-        private float timer = 0f;
+        [HideInInspector]
+        public bool enableVIVE = false;
 
-        [Header("VR Settings")]
-        public VRSelection ModeSelection = VRSelection.UpdateAll;
+        [HideInInspector]
+        public VIVESelection selectionMode = VIVESelection.UpdateAll;
 
-        [Tooltip("Updates per second for VR")]
-        [Range(1,60)]
+        [HideInInspector]
         public float updateRate = 30f;
 
-        [Tooltip("Write tracker data to file")]
-        public bool writeFile = true;
-        [Space(20)]
+        [HideInInspector]
+        public bool fileOutput = true;
+
+        [HideInInspector]
+        public string seperator = "|";
+
+        [HideInInspector]
+        public int precision = 2;
+
+        [HideInInspector]
+        public string point = ".";
+
+        private float timer = 0f;
+        private VIVEInput[] inputs = null;
+        private Transform updateObj = null;
+
+        //---------------------------------------
 
         public string IP = "192.168.161.100";
 
@@ -188,7 +212,7 @@ namespace vpet
 	        set { sceneLoader = value;  }
 	    }
 
-		public ServerAdapterProgressEventHost OnProgressEvent = new ServerAdapterProgressEventHost();
+        public ServerAdapterProgressEventHost OnProgressEvent = new ServerAdapterProgressEventHost();
 
         // used to pass time to threads
         private float currentTimeTime = 0;
@@ -208,17 +232,6 @@ namespace vpet
 		//!
 		//! 
         public static List<ObjectSender> objectSenderList = new List<ObjectSender>();
-
-		//!
-		//! Register sender objects
-		//!
-        public static void RegisterSender(ObjectSender sender)
-        {
-			print("Register " + sender.GetType());
-
-            if (!objectSenderList.Contains(sender))
-                objectSenderList.Add(sender);
-        }
 
         void Awake()
 	    {
@@ -252,15 +265,26 @@ namespace vpet
             dreamspaceRoot = scene; // GameObject.Find("Scene").transform;
 	        if (dreamspaceRoot == null) Debug.LogError(string.Format("{0}: Cant Find: Scene.", this.GetType()));
 
-            if (ModeSelection != VRSelection.Disabled)
+            //Gets all VIVEInputs in the scene for later updating and registers a sender for the host to update the clients
+            if (enableVIVE)
             {
-                inputs = FindObjectsOfType<VRInput>();
-
+                Utilities.CustomLog("Registered Host Sender");
+                inputs = FindObjectsOfType<VIVEInput>();
                 RegisterSender(ObjectSenderBasic.Instance);
-                initWriteFile();
             }
 
             initServerAdapterTransfer();
+        }
+
+        //!
+        //! Register sender objects
+        //!
+        public static void RegisterSender(ObjectSender sender)
+        {
+            print("Register " + sender.GetType());
+
+            if (!objectSenderList.Contains(sender))
+                objectSenderList.Add(sender);
         }
 
         //!
@@ -297,8 +321,8 @@ namespace vpet
 		//!
 	    void Update () 
 	    {
-	        // if we received new objects build them
-			if ( m_sceneTransferDirty )
+            // if we received new objects build them
+            if ( m_sceneTransferDirty )
 	        {
                 m_sceneTransferDirty = false;
                 print( "sceneLoader.createSceneGraph" );
@@ -330,28 +354,23 @@ namespace vpet
 	            receiveMessageQueue.RemoveRange(0, count);
 	        }
 
-            if (ModeSelection != VRSelection.Disabled)
+            if (enableVIVE)
             {
                 timer += Time.deltaTime;
 
+                //Handles the updating to stay constant at a specific rate (reduces network load as well - compared to updates every frame)
                 if (timer >= 1f / updateRate)
                 {
                     timer -= 1f / updateRate;
 
-                    if (ModeSelection == VRSelection.UpdateSingle)
+                    //Updates a single (selected on client) object or all VIVEInputs in scene
+                    if (selectionMode == VIVESelection.UpdateSingle)
                     {
                         if (updateObj)
-                            updateSingleVR(updateObj.GetComponent<VRInput>());
+                            UpdateSingleVIVEInput(updateObj.GetComponent<VIVEInput>());
                     }
-                    else if (ModeSelection == VRSelection.UpdateAll)
-                        updateAllVR();
-                }
-
-                //RECONNECT SERVER IF CONNECTION LOST
-                if (false) //CHECK WITH PING?
-                {
-                    RegisterSender(ObjectSenderBasic.Instance);
-                    initServerAdapterTransfer();
+                    else
+                        UpdateAllVIVEInputs();
                 }
             }
 
@@ -492,16 +511,16 @@ namespace vpet
                     {
                         case "t":
                             if (splitMessage.Length == 6)
-                                Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+                                Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture));
                             break;
                         case "r":
                             if (splitMessage.Length == 7)
                             {
                                 if (splitMessage[0].StartsWith("client", StringComparison.CurrentCulture))
-                                    Camera.main.transform.rotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                    Camera.main.transform.rotation = new Quaternion(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture), float.Parse(splitMessage[6], CultureInfo.InvariantCulture));
                                 else
                                 {
-                                    Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                    Quaternion quat = new Quaternion(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture), float.Parse(splitMessage[6], CultureInfo.InvariantCulture));
                                     Vector3 rot = quat.eulerAngles;
                                     Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
                                 }
@@ -509,7 +528,7 @@ namespace vpet
                             break;
                         case "f":
                             if (splitMessage.Length == 4)
-                                if (receiveNcam) Camera.main.fieldOfView = float.Parse(splitMessage[3]);
+                                if (receiveNcam) Camera.main.fieldOfView = float.Parse(splitMessage[3], CultureInfo.InvariantCulture);
                             break;
                         default:
                             break;
@@ -529,9 +548,9 @@ namespace vpet
 	                                if ( obj.GetComponent<SceneObject>() ) obj.GetComponent<SceneObject>().tempLock = true;
 									try
 									{
-	                            		// obj.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-										obj.localPosition = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-									}
+                                        // obj.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+                                        obj.localPosition = new Vector3(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture));
+                                    }
 									catch {}
 								}
 	                            break;
@@ -542,7 +561,7 @@ namespace vpet
 	                                try
 									{
                                         // obj.rotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-                                        obj.localRotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
+                                        obj.localRotation = new Quaternion(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture), float.Parse(splitMessage[6], CultureInfo.InvariantCulture));
                                     }
                                     catch {}
 								}
@@ -551,7 +570,7 @@ namespace vpet
 	                            if (splitMessage.Length == 6)
 									try
 									{
-		                                obj.localScale = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+		                                obj.localScale = new Vector3(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture));
 									}
 									catch {}
 	                            break;
@@ -560,7 +579,7 @@ namespace vpet
 								{
 									try
 									{
-	                                	obj.GetChild(0).GetComponent<Light>().color = new Color(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
+	                                	obj.GetChild(0).GetComponent<Light>().color = new Color(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture));
                                         //obj.GetComponent<Light>().color = new Color(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));                 
                                         //obj.GetChild(0).GetComponent<Renderer>().material.color = new Color(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
                                     }
@@ -571,7 +590,7 @@ namespace vpet
 	                            if (splitMessage.Length == 4)
 									try
 									{
-		                                obj.GetChild(0).GetComponent<Light>().intensity = float.Parse(splitMessage[3]);
+		                                obj.GetChild(0).GetComponent<Light>().intensity = float.Parse(splitMessage[3], CultureInfo.InvariantCulture);
 									}
 									catch {}
 	                            break;
@@ -579,7 +598,7 @@ namespace vpet
 	                            if (splitMessage.Length == 4)
 									try
 									{
-	                                	obj.GetChild(0).GetComponent<Light>().spotAngle = float.Parse(splitMessage[3]);
+	                                	obj.GetChild(0).GetComponent<Light>().spotAngle = float.Parse(splitMessage[3], CultureInfo.InvariantCulture);
 									}
 									catch {}	
 									break;
@@ -587,7 +606,7 @@ namespace vpet
 	                            if (splitMessage.Length == 4)
 									try
 									{
-	                                	obj.GetChild(0).GetComponent<Light>().range = float.Parse(splitMessage[3]);
+	                                	obj.GetChild(0).GetComponent<Light>().range = float.Parse(splitMessage[3], CultureInfo.InvariantCulture);
 									}
 									catch {}
 	                            break;
@@ -602,6 +621,7 @@ namespace vpet
 	                        case "l":
                                 if (splitMessage.Length == 4)
                                 {
+                                    //Handles the selection (locking) of an object to update it
                                     if (bool.Parse(splitMessage[3]))
                                     {
                                         updateObj = obj;
@@ -621,7 +641,7 @@ namespace vpet
                                 if (splitMessage.Length == 6)
                                     try
                                     {
-                                        obj.GetComponent<SceneObject>().colliderOffset( new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5])) );
+                                        obj.GetComponent<SceneObject>().colliderOffset( new Vector3(float.Parse(splitMessage[3], CultureInfo.InvariantCulture), float.Parse(splitMessage[4], CultureInfo.InvariantCulture), float.Parse(splitMessage[5], CultureInfo.InvariantCulture)) );
                                     }
                                     catch { }
                                 break;
@@ -643,42 +663,119 @@ namespace vpet
 	        }
 	    }
 
-        private void initWriteFile()
+        /// <summary>
+        /// Loops through all VIVEInputs gathered before and updates them.
+        /// </summary>
+        private void UpdateAllVIVEInputs()
         {
-            if (!Directory.Exists("data"))
-                Directory.CreateDirectory("data");
-
-            foreach (VRInput input in inputs)
-                File.WriteAllText("data\\" + input.name, "UpdateRate | " + updateRate + " FPS" + Environment.NewLine);
+            foreach (VIVEInput input in inputs)
+                UpdateSingleVIVEInput(input);
         }
 
-        private void updateAllVR()
+        /// <summary>
+        /// Handles the actual tracker data, calculates the correct values and sends appropriate updates depending on selections.
+        /// Only operating when the VIVEInput is capturing. (Origin is an exception)
+        /// </summary>
+        private void UpdateSingleVIVEInput(VIVEInput input)
         {
-            foreach (VRInput input in inputs)
+            updateObj = input.transform;
+
+            if (!input.capture)
             {
-                updateObj = input.transform;
-                updateSingleVR(input);
+                if (input.isOrigin)
+                    SendVIVEObjectUpdate(new Vector3(), updateObj.localRotation);
+  
+                return;
+            }
+
+            Vector3 pos = updateObj.localPosition + input.positionOffset - (input.origin ? input.origin.localPosition : Vector3.zero);
+            Vector3 rotDiff = TransformUtils.GetInspectorRotation(updateObj) + input.rotationOffset - updateObj.localEulerAngles;       //Workaround for the different rotation values from the inspector to the engine (Would be missleading if using engine values)
+            Quaternion rot = Quaternion.Euler(updateObj.localEulerAngles + rotDiff);
+
+            //Changes the specific update calls and file writes, depending on the selection where offset should be applied
+            switch (input.offsetSelection)
+            {
+                case VIVEInput.OffsetSelection.Both:
+                    SendVIVEObjectUpdate(pos, rot);
+                    WriteFileLine(pos, updateObj.localEulerAngles + rotDiff, input);
+                break;
+                case VIVEInput.OffsetSelection.Updating:
+                    SendVIVEObjectUpdate(pos, rot);
+                    WriteFileLine(updateObj.localPosition - (input.origin ? input.origin.localPosition : Vector3.zero), TransformUtils.GetInspectorRotation(updateObj), input);
+                break;
+                case VIVEInput.OffsetSelection.Recording:
+                    SendVIVEObjectUpdate(updateObj.localPosition - (input.origin ? input.origin.localPosition : Vector3.zero), updateObj.localRotation);
+                    WriteFileLine(pos, updateObj.localEulerAngles + rotDiff, input);
+                break;
             }
         }
 
-        private void updateSingleVR(VRInput input)
+        /// <summary>
+        /// Limits the rotation from 0 to max. (Default: 360f)
+        /// </summary>
+        private Vector3 RangedRotation(Vector3 rot, float max=360f)
         {
-            //IGNORE DATA IF TOO EXTREME (TRACKER LOST)
+            return new Vector3(rot.x % max, rot.y % max, rot.z % max);
+        }
 
-            if (!input.capture)
-                return;
+        /// <summary>
+        /// Sends an object update to the synchronisation server for distribution to all clients. (VIVE Integration)
+        /// </summary>
+        private void SendVIVEObjectUpdate(Vector3 pos, Quaternion rot)
+        {
+            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "t" + "|" + getPathString(updateObj, scene) + "|" + pos.x.ToString(CultureInfo.InvariantCulture) + "|" + pos.y.ToString(CultureInfo.InvariantCulture) + "|" + pos.z.ToString(CultureInfo.InvariantCulture));
+            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "r" + "|" + getPathString(updateObj, scene) + "|" + rot.x.ToString(CultureInfo.InvariantCulture) + "|" + rot.y.ToString(CultureInfo.InvariantCulture) + "|" + rot.z.ToString(CultureInfo.InvariantCulture) + "|" + rot.w.ToString(CultureInfo.InvariantCulture));
+            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "s" + "|" + getPathString(updateObj, scene) + "|" + updateObj.localScale.x.ToString(CultureInfo.InvariantCulture) + "|" + updateObj.localScale.y.ToString(CultureInfo.InvariantCulture) + "|" + updateObj.localScale.z.ToString(CultureInfo.InvariantCulture));
+        }
 
-            SteamVR_TrackedObject tracker = input.tracker;
-            tracker.index = input.index;
+        /// <summary>
+        /// Writes the returned line from BuildFileLine(Vector3 pos, Vector3 rot) to the actual file.
+        /// Only operating when "File Output" is checked and the VIVEInput is recording.
+        /// Also handles when the tracker signal is lost and marks it in the file.
+        /// </summary>
+        private void WriteFileLine(Vector3 pos, Vector3 rot, VIVEInput input)
+        {
+            if (fileOutput && input.recording)
+            {
+                string path = "data\\" + ((input.fileName == "") ? input.name : input.fileName);
 
-            updateObj.localRotation = tracker.transform.rotation;
-            updateObj.localPosition = Vector3.Scale(tracker.transform.position, input.scale) + input.offset;
+                if (input.CheckTrackerSignal())
+                {
+                    File.AppendAllText(path, BuildFileLine(pos, RangedRotation(rot)) + Environment.NewLine);
+                    input.wroteError = false;
+                }
+                else
+                {
+                    if (!input.wroteError)
+                    {
+                        File.AppendAllText(path, "\u2191 TRACKER SIGNAL LOST ABOVE \u2191" + Environment.NewLine);
+                        input.wroteError = true;
+                    }
+                }
+            }
+        }
 
-            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "r" + "|" + getPathString(updateObj, scene) + "|" + updateObj.localRotation.x + "|" + updateObj.localRotation.y + "|" + updateObj.localRotation.z + "|" + updateObj.localRotation.w);
-            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "t" + "|" + getPathString(updateObj, scene) + "|" + updateObj.localPosition.x + "|" + updateObj.localPosition.y + "|" + updateObj.localPosition.z);
+        /// <summary>
+        /// Converts the position and rotation to a proper string using the selected precision, seperator and point values.
+        /// </summary>
+        private string BuildFileLine(Vector3 pos, Vector3 rot)
+        {
+            StringBuilder builder = new StringBuilder();
 
-            if (writeFile)
-                File.AppendAllText("data\\" + updateObj.name, DateTime.Now.ToLocalTime() + " | Pos: " + updateObj.transform.position + " | Rot: " + updateObj.transform.rotation + Environment.NewLine);
+            builder.Append(pos.x.ToString("F" + precision));
+            builder.Append(seperator);
+            builder.Append(pos.y.ToString("F" + precision));
+            builder.Append(seperator);
+            builder.Append(pos.z.ToString("F" + precision));
+            builder.Append(seperator);
+            builder.Append(rot.x.ToString("F" + precision));
+            builder.Append(seperator);
+            builder.Append(rot.y.ToString("F" + precision));
+            builder.Append(seperator);
+            builder.Append(rot.z.ToString("F" + precision));
+            builder.Replace(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, point);
+
+            return builder.ToString();
         }
 
         //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
@@ -969,8 +1066,6 @@ namespace vpet
                 receiverThread.Join();
                 receiverThread.Abort();
             }
-
         }
-
     }
 }

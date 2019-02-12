@@ -89,7 +89,6 @@ namespace vpet
             lodLowLayer = LayerMask.NameToLayer("LodLow");
             lodHighLayer = LayerMask.NameToLayer("LodHigh");
             lodMixedLayer = LayerMask.NameToLayer("LodMixed");
-
         }
 
         // Use this for initialization
@@ -130,60 +129,63 @@ namespace vpet
             }
         }
 
-
-
         private void dataServer()
         {
             AsyncIO.ForceDotNet.Force();
-            using (var dataSender = new ResponseSocket ()) {
-                dataSender.Bind ("tcp://*:5565");
-                Debug.Log ("Enter while.. ");
+            using (var dataSender = new ResponseSocket()) {
+                dataSender.Bind("tcp://*:5565");
+                Debug.Log("Enter while.. ");
 
-                while (isRunning) {
-                    string message = dataSender.ReceiveFrameString ();
-                    print ("Got request message: " + message);
+                try
+                {
+                    while (isRunning)
+                    {
+                        string message = dataSender.ReceiveFrameString();
+                        print("Got request message: " + message);
 
-                    // re-run scene iteration if true
-                    if (doGatherOnRequest)
-                        gatherSceneData ();
+                        // re-run scene iteration if true
+                        if (doGatherOnRequest)
+                            gatherSceneData();
 
-                    switch (message) {
-                    case "header":
-                        print ("Send Header.. ");
-                        dataSender.SendFrame (headerByteData);
-                        print (string.Format (".. Nodes ({0} bytes) sent ", headerByteData.Length));
-                        break;
-                    case "nodes":
-                        print ("Send Nodes.. ");
-                        dataSender.SendFrame (nodesByteData);
-                        print (string.Format (".. Nodes ({0} bytes) sent ", nodesByteData.Length));
-                        break;
-                    case "objects":
-                        print ("Send Objects.. ");
-                        dataSender.SendFrame (objectsByteData);
-                        print (string.Format (".. Objects ({0} bytes) sent ", objectsByteData.Length));
-                        break;
-                    case "textures":
-                        print ("Send Textures.. ");
-                        dataSender.SendFrame (texturesByteData);
-                        print (string.Format (".. Textures ({0} bytes) sent ", texturesByteData.Length));
-                        break;
+                        switch (message) {
+                            case "header":
+                                print("Send Header.. ");
+                                dataSender.SendFrame(headerByteData);
+                                print(string.Format(".. Nodes ({0} bytes) sent ", headerByteData.Length));
+                                break;
+                            case "nodes":
+                                print("Send Nodes.. ");
+                                dataSender.SendFrame(nodesByteData);
+                                print(string.Format(".. Nodes ({0} bytes) sent ", nodesByteData.Length));
+                                break;
+                            case "objects":
+                                print("Send Objects.. ");
+                                dataSender.SendFrame(objectsByteData);
+                                print(string.Format(".. Objects ({0} bytes) sent ", objectsByteData.Length));
+                                break;
+                            case "textures":
+                                print("Send Textures.. ");
+                                dataSender.SendFrame(texturesByteData);
+                                print(string.Format(".. Textures ({0} bytes) sent ", texturesByteData.Length));
+                                break;
 #if TRUNK
-                        case "materials":
-                        print("Send Materials.. ");
-                        dataSender.SendFrame(materialsByteData);
-                        print(string.Format(".. Materials ({0} bytes) sent ", materialsByteData.Length));
-                        break;
+                            case "materials":
+                                print("Send Materials.. ");
+                                dataSender.SendFrame(materialsByteData);
+                                print(string.Format(".. Materials ({0} bytes) sent ", materialsByteData.Length));
+                                break;
 #endif
-                        default:
-                        break;
+                        }
                     }
 
+                    dataSender.Unbind("tcp://127.0.0.1:5565");
+                    dataSender.Close();
+                    dataSender.Dispose();
                 }
-
-                dataSender.Unbind ("tcp://127.0.0.1:5565");
-                dataSender.Close();
-                dataSender.Dispose();
+                catch (TerminatingException te)
+                {
+                    Utilities.CustomLog("ResponseSocket TerminatingException: " + te.Message, "VPET");
+                }
             }
             //NetMQConfig.Cleanup();
         }

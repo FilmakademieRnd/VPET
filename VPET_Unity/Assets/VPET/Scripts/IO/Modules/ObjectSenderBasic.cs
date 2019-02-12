@@ -60,7 +60,13 @@ namespace vpet
                 if (sendMessageQueue.Count > 0)
                 {
                     //Debug.Log("Send: " + sendMessageQueue[0]);
-                    sender.SendFrame(sendMessageQueue[0], false); // true not wait
+
+                    //Fix for host disconnecting on null pointer exception
+                    if (sendMessageQueue[0] != null && sendMessageQueue[0] != "")
+                        sender.SendFrame(sendMessageQueue[0], false); // true not wait
+                    else
+                        Utilities.CustomLog("PublisherSocket ArgumentNullException: Value cannot be null", "VPET");
+
                     sendMessageQueue.RemoveAt(0);
                 }
             }
@@ -122,7 +128,6 @@ namespace vpet
 				}			
 				else // send transform
 				{
-	
 					Transform obj = sceneObject.transform;
 
 					string physicString = "";
