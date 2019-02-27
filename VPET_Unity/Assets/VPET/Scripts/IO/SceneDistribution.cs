@@ -24,6 +24,8 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
+#define SCENE_HOST
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +36,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System;
 using System.IO;
+
 
 namespace vpet
 {
@@ -354,8 +357,14 @@ namespace vpet
                 node = nodeMocap;
             }
 
+            if (location.gameObject.tag == "editable")
+            {
+                node.editable = true;
+                location.gameObject.AddComponent<SceneObject>();
+            }
+            else
+                node.editable = false;
 
-            node.editable = (location.gameObject.tag == "editable");
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
             node.scale = new float[3] { location.localScale.x, location.localScale.y, location.localScale.z };
             node.rotation = new float[4] { location.localRotation.x, location.localRotation.y, location.localRotation.z, location.localRotation.w };

@@ -29,13 +29,24 @@ using System.Collections.Generic;
 
 namespace vpet
 {
-	// Basic 
-	// public enum NodeType { GROUP, GEO, LIGHT, CAMERA}
+    // Basic 
+    // public enum NodeType { GROUP, GEO, LIGHT, CAMERA}
 
-	// Basic, Mocap
-	public enum NodeType { GROUP, GEO, LIGHT, CAMERA, MOCAP }
+    // Basic, Mocap
+    public enum NodeType { GROUP, GEO, LIGHT, CAMERA, MOCAP }
 
-	public static class VPETRegister  
+    // Basic, Mocap
+    public enum ParameterType
+    {
+        POS, ROT, SCALE, LOCK, KINEMATIC, // node
+        FOV, FOCUS, APERTURE,   // camera
+        COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
+        BONEANIM, // animation bone
+        VERTEXANIM, // animation vertex
+        PING, RESENDUPDATE  // sync and ping
+    } 
+
+    public static class VPETRegister  
 	{
 		public static void RegisterNodeParser()
 		{

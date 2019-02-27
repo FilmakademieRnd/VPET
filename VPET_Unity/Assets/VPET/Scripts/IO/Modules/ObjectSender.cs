@@ -55,7 +55,7 @@ namespace vpet
 		protected List<string> sendMessageQueue = new List<string>(); 
 
 
-		public virtual void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args) {}
+		public virtual void SendObject(int id, SceneObject sceneObject, ParameterType paramType, params object[] args) {}
 
 		public void SendObject(string msg)
 		{

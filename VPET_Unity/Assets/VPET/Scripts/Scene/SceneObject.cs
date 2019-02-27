@@ -34,18 +34,17 @@ namespace vpet
 {
 	public class SceneObject : MonoBehaviour {
 
+#if !SCENE_HOST
+        //!
+        //! cached reference to animation controller
+        //!
+        private AnimationController animationController;
+#endif
 
-        public bool isMocapTrigger = false;
-
-		//!
-		//! cached reference to animation controller
-		//!
-		private AnimationController animationController;
-
-		//!
-		//! cached reference to animation data (runtime representation)
-		//!
-		private AnimationData animData = null;
+        //!
+        //! cached reference to animation data (runtime representation)
+        //!
+        private AnimationData animData = null;
 
 		//!
 		//! current animation layer
@@ -116,19 +115,25 @@ namespace vpet
 		//!
 		Quaternion lastRotation;
 
-		//!
-		//! should a boxcollider be generated auomatically
-		//!
-		public bool generateBoxCollider = true;
+        //!
+        //! should a boxcollider be generated auomatically
+        //!
+#if !SCENE_HOST
+        public bool generateBoxCollider = true;
+#else
+        public bool generateBoxCollider = false;
+#endif
 
-		//!
-		//! cached reference to mainController
-		//!
-		MainController mainController;
-		//!
-		//! cached reference to serverAdapter
-		//!
-		ServerAdapter serverAdapter;
+#if !SCENE_HOST
+        //!
+        //! cached reference to mainController
+        //!
+        MainController mainController;
+#endif
+        //!
+        //! cached reference to serverAdapter
+        //!
+        ServerAdapter serverAdapter;
         //!
         //! cached reference to sceneLoader
         //!
@@ -247,7 +252,7 @@ namespace vpet
 
         public bool isPlayingAnimation;
 
-		private Light sourceLight = null;
+        private Light sourceLight = null;
 		public Light SourceLight
 		{
 			get{return sourceLight;}
@@ -318,24 +323,26 @@ namespace vpet
 				target = this.transform;
 			}
 
-			//initalize cached references
-			animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
+            //initalize cached references
+
+            serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
+
+#if !SCENE_HOST
+            animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
-			serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
             sceneLoader = GameObject.Find("SceneAdapter").GetComponent<SceneLoader>();
-
-
+           
             //cache Reference to animation data
             animData = AnimationData.Data;
+#endif
 
-			//update initial parameters
+            //update initial parameters
             initialPosition = target.localPosition;
             initialRotation = target.localRotation;
 			initialScale = target.localScale;
 
 			lastPosition = initialPosition;
 			lastRotation = initialRotation;
-
 
 			//generate colliding volumes
 			if(generateBoxCollider)
@@ -416,8 +423,9 @@ namespace vpet
 				this.GetComponent<SceneObject> ().lockKinematic = true;
 			}
 
-			//Initalize animation loading if animation available
-			AnimationSerializer asScript =  target.gameObject.AddComponent<AnimationSerializer>();
+#if !SCENE_HOST
+            //Initalize animation loading if animation available
+            AnimationSerializer asScript =  target.gameObject.AddComponent<AnimationSerializer>();
 			if ( asScript.loadData() )
             {
                 //register the object in the animation Controller
@@ -427,6 +435,7 @@ namespace vpet
             }
 
             isPlayingAnimation = false;
+#endif
         }
 
 
@@ -457,8 +466,13 @@ namespace vpet
 			{
 				tempLock = false;
 			}
-            if (!locked && !tempLock && !mainController.lockScene)
-			{
+#if !SCENE_HOST
+            if (!locked && !tempLock && !mainController.lockScene)    
+#else
+            if (!locked && !tempLock)
+            isPlayingAnimation = false;
+#endif
+            {
 				//publish translation change
 				if (mainController.liveMode)
 				{
@@ -466,8 +480,7 @@ namespace vpet
 					{
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
-                            // serverAdapter.sendTranslation(target, target.position, !selected);
-                            serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
+                            serverAdapter.SendObjectUpdate( this, ParameterType.POS, !selected && !isPlayingAnimation );
 
 							lastTranslationUpdateTime = Time.time;
 							translationUpdateDelayed = false;
@@ -479,62 +492,53 @@ namespace vpet
 					}
 					else if (translationUpdateDelayed) //update delayed, but object not moving
 					{
-						// serverAdapter.sendTranslation(target, target.position, !selected);
-                        serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
+                        serverAdapter.SendObjectUpdate( this, ParameterType.POS, !selected && !isPlayingAnimation );
 
-						lastTranslationUpdateTime = Time.time;
+                        lastTranslationUpdateTime = Time.time;
 						translationUpdateDelayed = false;
 					}
 				}
 				else if (translationStillFrameCount == 10) //object is now no longer moving
 				{
-					// serverAdapter.sendTranslation(target, target.position, !selected);
-                    serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
+                    serverAdapter.SendObjectUpdate(this, ParameterType.POS, !selected && !isPlayingAnimation);
+                }
 
+                //publish rotation change
+#if !SCENE_HOST
+                if (mainController.liveMode)
+#endif
+                {
+                    if (rotationStillFrameCount == 0) //position just changed
+                    {
+                        if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
+                        {
+                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT, !selected && !isPlayingAnimation);
 
-				}
+                            lastRotationUpdateTime = Time.time;
+                            rotationUpdateDelayed = false;
+                        }
+                        else
+                        {
+                            rotationUpdateDelayed = true;
+                        }
+                    }
+                    else if (rotationUpdateDelayed) //update delayed, but object not moving
+                    {
+                        serverAdapter.SendObjectUpdate(this, ParameterType.ROT, !selected && !isPlayingAnimation);
 
-				//publish rotation change
-				if (mainController.liveMode)
-				{
-					if (rotationStillFrameCount == 0) //position just changed
-					{
-						if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
-						{
-							// serverAdapter.sendRotation(target, target.rotation, !selected);
-                            serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
+                        lastRotationUpdateTime = Time.time;
+                        rotationUpdateDelayed = false;
+                    }
+                }
+                else if (rotationStillFrameCount == 10) //object is now no longer moving
+                {
+                    serverAdapter.SendObjectUpdate(this, ParameterType.ROT, !selected && !isPlayingAnimation);
+                }
 
+            }
 
-
-							lastRotationUpdateTime = Time.time;
-							rotationUpdateDelayed = false;
-						}
-						else
-						{
-							rotationUpdateDelayed = true;
-						}
-					}
-					else if (rotationUpdateDelayed) //update delayed, but object not moving
-					{
-						//serverAdapter.sendRotation(target, target.rotation, !selected);
-                        serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
-
-						lastRotationUpdateTime = Time.time;
-						rotationUpdateDelayed = false;
-					}
-				}
-				else if (rotationStillFrameCount == 10) //object is now no longer moving
-				{
-					// serverAdapter.sendRotation(target, target.rotation, !selected);
-                    serverAdapter.SendObjectUpdate(target, !selected && !isPlayingAnimation );
-
-
-				}
-
-			}
-
-			//turn on highlight modes
-			if (selected && drawGlowAgain)
+            //turn on highlight modes
+            if (selected && drawGlowAgain)
 			{
 				if (lightGeo)
 				{
@@ -656,72 +660,64 @@ namespace vpet
 		public void resetRotation()
 		{
             target.localRotation = initialRotation;
-			//serverAdapter.sendRotation(target, target.rotation);
-			serverAdapter.SendObjectUpdate(target );
-		}
+            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
+        }
 
-		//!
-		//! reset position to values present on startup
-		//!
-		public void resetPosition()
+        //!
+        //! reset position to values present on startup
+        //!
+        public void resetPosition()
 		{
             target.localPosition = initialPosition;
-			//serverAdapter.sendTranslation(target, target.position);
-			serverAdapter.SendObjectUpdate(target );
+            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
+        }
 
-		}
-
-		//!
-		//! reset scale to values present on startup
-		//!
-		public void resetScale()
+        //!
+        //! reset scale to values present on startup
+        //!
+        public void resetScale()
 		{
 			target.localScale = initialScale;
-			//serverAdapter.sendScale(target, target.localScale);
-			serverAdapter.SendObjectUpdate(target );
+            serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
+        }
 
-		}
-
-		//!
-		//! reset all parameters to inital values present on startup
-		//!
-		public void resetAll()
+        //!
+        //! reset all parameters to inital values present on startup
+        //!
+        public void resetAll()
 		{
 			locked = false;
-			serverAdapter.sendLock(this.transform, false);
+			serverAdapter.SendObjectUpdate(this, ParameterType.LOCK);
             target.localRotation = initialRotation;
-			//serverAdapter.sendRotation(target, target.rotation);
-			serverAdapter.SendObjectUpdate(target );
+
+            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
 
             target.localPosition = initialPosition;
-			//serverAdapter.sendTranslation(target, target.position);
-			serverAdapter.SendObjectUpdate(target );
+            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
 
-			target.localScale = initialScale;
-			//serverAdapter.sendScale(target, target.localScale);
-			serverAdapter.SendObjectUpdate(target );
+            target.localScale = initialScale;
+            serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
 
-			if (isSpotLight || isPointLight || isDirectionalLight) 
+            if (isSpotLight || isPointLight || isDirectionalLight) 
 			{
 				sourceLight.color = initialLightColor;
                 sourceLight.intensity = initialLightIntensity;
 				lightGeo.GetComponent<Renderer>().material.color = initialLightColor;
-				serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-				//serverAdapter.sendLightColor(target, sourceLight, exposure );
-				//serverAdapter.sendLightIntensity(target, sourceLight, exposure);
-			}
-			if (isSpotLight || isPointLight) 
+                serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
+                serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
+                serverAdapter.SendObjectUpdate(this, ParameterType.EXPOSURE);
+            }
+            if (isSpotLight || isPointLight) 
 			{
 				sourceLight.range = initialLightRange;
-				// serverAdapter.sendLightRange(target, initialLightRange);
-			}
-			if (isSpotLight) 
+                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
+            }
+            if (isSpotLight) 
 			{
 				sourceLight.spotAngle = initialSpotAngle;
-				serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-				// serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
-			}
-		}
+                serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
+            }
+        }
 
 		//!
 		//! rotate childs of this object based on arc ball rotation
@@ -913,14 +909,8 @@ namespace vpet
         public void scale( Vector3 scl )
 		{
 			target.transform.localScale = scl;
-
-			// HACK
-			//serverAdapter.sendScale( target, target.localScale );
-			serverAdapter.SendObjectUpdate(target );
-
-
+			serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
 		}
-
 
         public float ScaleX
         {
@@ -992,7 +982,7 @@ namespace vpet
 			{
 				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
 				if (send)
-					serverAdapter.sendKinematic(target, set);
+					serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
 				if (!set)
 					this.gameObject.GetComponent<Rigidbody>().WakeUp();
 			}
@@ -1010,12 +1000,9 @@ namespace vpet
 				sourceLight.color = color;
 				lightGeo.GetComponent<Renderer>().material.color = color;
 				lastModifiedLightParameter = LightParameter.Color;
-				if (mainController.liveMode)
-				{
-					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-					// serverAdapter.sendLightColor(target, sourceLight, exposure );
-				}
-			}
+
+                serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
+            }
 		}
 
         /*
@@ -1036,12 +1023,8 @@ namespace vpet
 			{
                 sourceLight.intensity = intensity * VPETSettings.Instance.lightIntensityFactor; // * VPETSettings.Instance.sceneScale;
 				lastModifiedLightParameter = LightParameter.Intensity;
-				if (mainController.liveMode)
-				{
-					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-					// serverAdapter.sendLightIntensity(target, sourceLight, exposure );
-				}
-			}
+                serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
+            }
 		}
 
 
@@ -1055,10 +1038,7 @@ namespace vpet
 			{
                 sourceLight.range = range * VPETSettings.Instance.sceneScale;
 				lastModifiedLightParameter = LightParameter.Range;
-				if (mainController.liveMode)
-				{
-					// serverAdapter.sendLightRange(target, light.range);
-				}
+                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
 			}
 		}
 
@@ -1072,13 +1052,8 @@ namespace vpet
 			{
 				sourceLight.range += delta;
 				lastModifiedLightParameter = LightParameter.Range;
-				if (mainController.liveMode)
-				{
-                    // TODO consider sceneScale
-                    // TODO send range!
-					// serverAdapter.sendLightRange(target, sourceLight.range);
-				}
-			}
+                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
+            }
 		}
 
 		//!
@@ -1091,12 +1066,8 @@ namespace vpet
 			{
 				sourceLight.spotAngle = angle;
 				lastModifiedLightParameter = LightParameter.Angle;
-				if (mainController.liveMode)
-				{
-					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-					//serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
-				}
-			}
+                serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
+            }
 		}
 
 		//!
@@ -1111,47 +1082,43 @@ namespace vpet
 			}
 		}
 
-		//!
-		//! send updates of the last modifications to the network server
-		//!
-		public void sendUpdate()
+#if !SCENE_HOST
+        //!
+        //! send updates of the last modifications to the network server
+        //!
+        public void sendUpdate()
 		{
 			if (mainController.ActiveMode == MainController.Mode.scaleMode)
 			{
-				//serverAdapter.sendScale(target, target.transform.localScale);
-				serverAdapter.SendObjectUpdate(target );
+                serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
+            }
+            if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
+            {
+                switch (lastModifiedLightParameter)
+                {
+                    case (LightParameter.Intensity):
+                        serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
+                        break;
+                    case (LightParameter.Color):
+                        serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
+                        break;
+                    case (LightParameter.Angle):
+                        serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
+                        break;
+                    case (LightParameter.Range):
+                        serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
-			}
-			if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
-			{
-				switch (lastModifiedLightParameter)
-				{
-				case (LightParameter.Intensity):
-					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-					//serverAdapter.sendLightIntensity(target, sourceLight, exposure);
-					break;
-				case (LightParameter.Color):
-					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-					//serverAdapter.sendLightColor(target, sourceLight, exposure );
-					break;
-				case (LightParameter.Angle):
-					serverAdapter.SendObjectUpdate(target, NodeType.LIGHT );
-					//serverAdapter.sendLightConeAngle(target, sourceLight, exposure);
-					break;
-				case (LightParameter.Range):
-					// serverAdapter.sendLightRange(target, sourceLight.range);
-					break;
-				default:
-					break;
-				}
-			}
-		}
-			
-	    //!
-	    //! set the sceneObjects to a given position (time) in the animation
-	    //! @param      time        time within the animation
-	    //!
-	    public void setAnimationState(float time)
+        //!
+        //! set the sceneObjects to a given position (time) in the animation
+        //! @param      time        time within the animation
+        //!
+        public void setAnimationState(float time)
 	    {
             // print("setAnimationState at time: " + time);
 
@@ -1301,16 +1268,7 @@ namespace vpet
 	
 	        updateAnimationCurves();
 	    }
-
-
-        public void colliderOffset( Vector3 offset )
-        {
-            BoxCollider col = transform.GetComponent<BoxCollider>();
-            if (col != null)
-            {
-                col.center = offset;
-            }
-        }
+#endif
 
         /*
         private void OnDrawGizmos()

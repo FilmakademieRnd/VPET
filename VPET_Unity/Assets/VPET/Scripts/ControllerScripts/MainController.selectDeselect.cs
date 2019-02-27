@@ -128,14 +128,12 @@ namespace vpet
             currentSelection = sObject;
             currentSceneObject = sObject.GetComponent<SceneObject>();
 
-            serverAdapter.sendLock(currentSelection, true);
+            //set selection
+            currentSceneObject.selected = true;
+            serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);
+            Debug.Log("Select " + currentSelection);
 
-            Debug.Log("Select " + currentSelection );
-
-            //show selection
-            sObject.gameObject.GetComponent<SceneObject>().selected = true;
-
-	            if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
+            if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
 	            {
                     if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode  || activeMode == Mode.animationEditing || activeMode == Mode.lightSettingsMode))
                     {
@@ -160,11 +158,6 @@ namespace vpet
 			if (!currentSelection)
 				return;
 
-            Debug.Log("Deselect " + currentSelection);
-
-            // make sure its not more locked
-            serverAdapter.sendLock(currentSelection, false);
-
             if ( activeMode == Mode.objectLinkCamera)
             {
                 if (currentSceneObject.isSpotLight ||
@@ -179,8 +172,13 @@ namespace vpet
                     currentSelection.parent = oldParent;
                 }
             }
-
             currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
+            
+            // make sure its not more locked
+            serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);
+            Debug.Log("Deselect " + currentSelection);
+
+            // mutex missing, lock objectSender thread first !! 
             currentSelection = null;
             currentSceneObject = null;
 	    }

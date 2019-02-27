@@ -224,16 +224,6 @@ namespace vpet
 	            mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
 	    }
 
-        private void triggerMocap(IMenuButton button)
-        {
-            if (button.Toggled)
-                mainController.buttonAnimatorCmdClicked(1); //play
-            else
-                mainController.buttonAnimatorCmdClicked(2); // stop
-        }
-
-
-
 
         //!
         //! click on light color edit

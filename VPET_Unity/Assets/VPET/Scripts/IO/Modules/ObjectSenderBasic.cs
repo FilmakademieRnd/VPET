@@ -82,8 +82,8 @@ namespace vpet
         }
 
 
-        public override void SendObject(string id, SceneObject sceneObject, string dagPath, NodeType nodeType, params object[] args)
-		{
+		public virtual void SendObject(int id, SceneObject sceneObject, ParameterType paramType, params object[] args) 
+        {
 			bool onlyToClientsWithoutPhysics = false;
 
 			if (args.Length > 0)
@@ -94,7 +94,7 @@ namespace vpet
 
 	        if ( sceneObject.GetType() == typeof(SceneObject) )
 			{
-
+                
 				if (nodeType == NodeType.LIGHT)
 				{
 					if (sceneObject.IsLight)

@@ -43,6 +43,7 @@ using System.Collections.Generic;
 //! receives and sends messages to the synchronization server
 //! sends messages to katana server
 //!
+
 namespace vpet
 {
 
@@ -51,10 +52,14 @@ namespace vpet
     public class ServerAdapter : MonoBehaviour
     {
 
+#if SCENE_HOST
+        public string hostIP = "192.168.161.100";
+#endif
+
         //!
         //! unique id of client instance
         //!
-        String id;
+        int m_id;
 
         //!
         //! cached reference to Katana massage templates
@@ -68,7 +73,6 @@ namespace vpet
         //!
         public bool receiveNcam = false;
 
-        [HideInInspector]
         //!
         //! enable/disable publising the own camera position/rotation/fov (like ncam)
         //!
@@ -149,10 +153,13 @@ namespace vpet
         //! reference to thread receiving all object updates from tablet syncronizing server
         //!
         Thread receiverThread;
+
+#if !SCENE_HOST        
         //!
         //! reference to thread receiving the scene from Katana
         //!
         Thread sceneReceiverThread;
+#endif
 
         //!
         //! system time that the last ncam message was received
@@ -222,11 +229,20 @@ namespace vpet
 
         void Awake()
         {
-            //receiveObjectQueue = new List<SceneObjectKatana>();
+#if SCENE_HOST
+            VPETSettings.Instance.serverIP = IP;
+            if (!deactivateReceive && receiverThread == null)
+            {
+                receiverThread = new Thread(new ThreadStart(listener));
+                receiverThread.Start();
+                isRunning = true;
+            }
+#else
             if (doAutostartListener)
             {
                 VPETSettings.Instance.serverIP = "127.0.0.1";
             }
+#endif
         }
 
 
@@ -235,18 +251,22 @@ namespace vpet
         //!
         void Start()
         {
+#if SCENE_HOST
+            m_id = Int32.Parse(hostIP.ToString().Split('.')[3]);
+#else
+
             //reads the network name of the device
             var hostName = Dns.GetHostName();
 
             var host = Dns.GetHostEntry(hostName);
-            id = "000";
+            m_id = 300;
 
             //Take last ip adress of local network (which is local wlan ip address)
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
-                    id = ip.ToString().Split('.')[3];
+                    m_id = Int32.Parse(ip.ToString().Split('.')[3]);
                 }
             }
 
@@ -255,18 +275,16 @@ namespace vpet
 
             //register cam sending function
             InvokeRepeating("sendPing", 0.0f, 5f);
-
+            camObject = GameObject.Find("camera").transform;
+#endif
             if (GameObject.Find("MainController") != null)
                 mainController = GameObject.Find("MainController").GetComponent<MainController>();
-
-            camObject = GameObject.Find("camera").transform;
 
             persistentDataPath = Application.persistentDataPath;
 
             print("persistentDataPath: " + persistentDataPath);
 
             scene = GameObject.Find("Scene").transform;
-
 
 
             receiveMessageQueue = new ArrayList();
@@ -316,6 +334,7 @@ namespace vpet
                 }
             }
 
+#if !SCENE_HOST
             if (VPETSettings.Instance.doLoadFromResource)
             {
                 sceneReceiverThread = null;
@@ -333,7 +352,7 @@ namespace vpet
                 sceneReceiverThread.Start();
             }
         }
-
+#endif
 
 
         //!
@@ -341,17 +360,21 @@ namespace vpet
         //!
         void Update()
         {
+#if !SCENE_HOST
             // if we received new objects build them
             if (m_sceneTransferDirty)
             {
                 m_sceneTransferDirty = false;
                 print("sceneLoader.createSceneGraph");
+
                 Vector3 scenePos = scene.position;
                 Quaternion scenRot = scene.rotation;
                 scene.rotation = Quaternion.identity;
                 scene.position = Vector3.zero;
+
                 sceneLoader.createSceneGraph();
-                sendUpdateObjects();
+                SendObjectUpdate(null, ParameterType.RESENDUPDATE);
+
                 // HACK
                 mainController.repositionCamera();
                 mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
@@ -360,6 +383,7 @@ namespace vpet
                 scene.rotation = scenRot;
                 scene.position = scenePos;
             }
+#endif
 
             if (!deactivateReceive)
             {
@@ -380,10 +404,11 @@ namespace vpet
                 }
                 receiveMessageQueue.RemoveRange(0, count);
             }
-            if (camObject != null && camObject.GetComponent<Renderer>().enabled && (Time.time - lastNcamReceivedTime) > 10)
-            {
-                camObject.GetComponent<Renderer>().enabled = false;
-            }
+            
+            //if (camObject != null && camObject.GetComponent<Renderer>().enabled && (Time.time - lastNcamReceivedTime) > 10)
+            //{
+            //    camObject.GetComponent<Renderer>().enabled = false;
+            //}  // SEIM WAS HERE (syncprotocol rewrite)
 
             currentTimeTime = Time.time;
 
@@ -411,142 +436,96 @@ namespace vpet
         }
 
         //!
-        //! sends current main camera position, called every x milliseconds
+        //! sends current ping signal for sync server
         //!
         void sendPing()
         {
-            string msg = "client " + id + "|" + "ping";
-            SendObjectUpdate<ObjectSenderBasic>(msg);
+            SendObjectUpdate(null, ParameterType.PING);
         }
 
-        //!
-        //!
-        //!
-        public void SendObjectUpdate(Transform trn, bool onlyToClientsWithoutPhysics)
-        {
-            SendObjectUpdate(trn, NodeType.GROUP, onlyToClientsWithoutPhysics);
-        }
+        ////!
+        ////!
+        ////!
+        //public void SendObjectUpdate(Transform trn, bool onlyToClientsWithoutPhysics)
+        //{
+        //    SendObjectUpdate(trn, NodeType.GROUP, onlyToClientsWithoutPhysics);
+        //}
 
-        //!
-        //!
-        //!
-        public void SendObjectUpdate(Transform trn, NodeType nodeType = NodeType.GROUP, params object[] args)
-        {
-            // bool onlyToClientsWithoutPhysics = false,
+        ////!
+        ////!
+        ////!
+        //public void SendObjectUpdate(Transform trn, NodeType nodeType = NodeType.GROUP, params object[] args)
+        //{
+        //    // bool onlyToClientsWithoutPhysics = false,
 
-            if (trn.GetComponent<SceneObject>() != null)
-                SendObjectUpdate(trn.GetComponent<SceneObject>(), nodeType, args);
-        }
+        //    if (trn.GetComponent<SceneObject>() != null)
+        //        SendObjectUpdate(trn.GetComponent<SceneObject>(), nodeType, args);
+        //}
 
+        ////!
+        ////!
+        ////!
+        //public void SendObjectUpdate<T>(string msg)
+        //{
+        //    if (deactivatePublish)
+        //        return;
+
+        //    foreach (ObjectSender sender in objectSenderList)
+        //    {
+        //        if (sender.GetType() == typeof(T))
+        //            sender.SendObject(msg);
+        //    }
+
+        //}
+        
+        
         //!
         //!
         //!
-        public void SendObjectUpdate(SceneObject sobj, NodeType nodeType = NodeType.GROUP, params object[] args)
+        public void SendObjectUpdate(SceneObject sobj, ParameterType paramType, params object[] args)
         {
             if (deactivatePublish)
                 return;
 
-            string dagPath = getPathString(sobj.transform, scene);
-
             foreach (ObjectSender sender in objectSenderList)
             {
-                sender.SendObject(id, sobj, dagPath, nodeType, args);
+                sender.SendObject(m_id, sobj, paramType, args);
             }
 
         }
 
-        //!
-        //!
-        //!
-        public void SendObjectUpdate<T>(string msg)
-        {
-            if (deactivatePublish)
-                return;
-
-            foreach (ObjectSender sender in objectSenderList)
-            {
-                if (sender.GetType() == typeof(T))
-                    sender.SendObject(msg);
-            }
-
-        }
-
-
-        //! function to be called to send a scale change to server
-        //! @param  obj             Transform of GameObject
-        //! @param  newPosition     new relative scale of GameObject in object space
-        public void sendFov(float fov, float left, float right, float bottom, float top)
-        {
-            if (!deactivatePublishKatana)
-            {
-                // katanaSendMessageQueue.Add(String.Format(katanaTemplates.camTemplate, fov, left, right, bottom, top));
-            }
-        }
-
-
-        //! function to be called to send a kinematic on/off signal to server
-        //! @param  obj             Transform of GameObject to be locked
-        //! @param  on              should it be set to on or off
-        public void sendKinematic(Transform obj, bool on)
-        {
-            string msg = "client " + id + "|" + "k" + "|" + this.getPathString(obj, scene) + "|" + on;
-            SendObjectUpdate<ObjectSenderBasic>(msg);
-        }
-
-        //! function to be called to send a lock signal to server
-        //! @param  obj             Transform of GameObject to be locked
-        //! @param  locked          should it be locked or unlocked
-        public void sendLock(Transform obj, bool locked)
-        {
-            if (locked) // lock it
-            {
-                if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
-                {
-                    string msg = "client " + id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
-                    SendObjectUpdate<ObjectSenderBasic>(msg);
-                    // print("Unlock object " + currentlyLockedObject.gameObject.name );
-                }
-                if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
-                {
-                    string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
-                    SendObjectUpdate<ObjectSenderBasic>(msg);
-                    // print("Lock object " + obj.gameObject.name);
-                }
-                currentlyLockedObject = obj;
-            }
-            else // unlock it
-            {
-                if (currentlyLockedObject != null && !deactivatePublish) // unlock if locked
-                {
-                    string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
-                    SendObjectUpdate<ObjectSenderBasic>(msg);
-                    // print("Unlock object " + obj.gameObject.name);
-                }
-                currentlyLockedObject = null;
-            }
-        }
-
-
-        public void sendAnimatorCommand(Transform obj, int cmd)
-        {
-            string msg = "client " + id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd;
-            SendObjectUpdate<ObjectSenderBasic>(msg);
-        }
-
-
-        public void sendColliderOffset(Transform obj, Vector3 offset)
-        {
-            string msg = "client " + id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z;
-            SendObjectUpdate<ObjectSenderBasic>(msg);
-        }
-
-
-        //! function to be called to resend stored scene object attributes
-        public void sendUpdateObjects()
-        {
-            SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "udOb");
-        }
-
+        ////! function to be called to send a lock signal to server
+        ////! @param  obj             Transform of GameObject to be locked
+        ////! @param  locked          should it be locked or unlocked
+        //public void sendLock(Transform obj, bool locked)
+        //{
+        //    if (locked) // lock it
+        //    {
+        //        if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
+        //        {
+        //            string msg = "client " + id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
+        //            SendObjectUpdate<ObjectSenderBasic>(msg);
+        //            // print("Unlock object " + currentlyLockedObject.gameObject.name );
+        //        }
+        //        if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
+        //        {
+        //            string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
+        //            SendObjectUpdate<ObjectSenderBasic>(msg);
+        //            // print("Lock object " + obj.gameObject.name);
+        //        }
+        //        currentlyLockedObject = obj;
+        //    }
+        //    else // unlock it
+        //    {
+        //        if (currentlyLockedObject != null && !deactivatePublish) // unlock if locked
+        //        {
+        //            string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
+        //            SendObjectUpdate<ObjectSenderBasic>(msg);
+        //            // print("Unlock object " + obj.gameObject.name);
+        //        }
+        //        currentlyLockedObject = null;
+        //    }
+        //}  // commented at sync update rewrite 
 
 
         //! function parsing received message and executing change
@@ -589,7 +568,7 @@ namespace vpet
                 else
                 {
                     Transform obj = getOjectFromString(splitMessage[2]);
-                    if (obj && obj != currentlyLockedObject && splitMessage[0] != id)
+                    if (obj && obj != currentlyLockedObject && splitMessage[0] != m_id)
                     {
                         switch (splitMessage[1])
                         {
@@ -778,7 +757,7 @@ namespace vpet
             //NetMQConfig.Cleanup();
         }
 
-
+#if !SCENE_HOST
         //!
         //! receiver function, receiving the initial scene from the katana server (executed in separate thread)
         //!
@@ -826,7 +805,7 @@ namespace vpet
                 sceneLoader.SceneDataHandler.MaterialsByteData = byteStream;
 
                 OnProgress(0.20f, "..Received Materials..");
-#endif              
+#endif
 
                 // Textures
                 if (VPETSettings.Instance.doLoadTextures) {
@@ -884,7 +863,6 @@ namespace vpet
 
         }
 
-
         //!
         //! none
         //!
@@ -907,7 +885,7 @@ namespace vpet
             print("byteStreamMaterial size: " + byteStreamMaterial.Length);
             sceneLoader.SceneDataHandler.MaterialsByteData = byteStreamMaterial;
             OnProgress(0.20f, "..Received Materials..");
-#endif              
+#endif
 
 
             // Textures
@@ -941,6 +919,7 @@ namespace vpet
 
         }
 
+
         //!
         //! none
         //!
@@ -953,10 +932,10 @@ namespace vpet
 			writer.Close();
 		}
 
-		//!
-	    //! none
-	    //!
-	    private byte[] loadBinary( string dataname )
+        //!
+        //! none
+        //!
+        private byte[] loadBinary( string dataname )
 	    {
 	        string filesrc = "VPET/SceneDumps/" + VPETSettings.Instance.sceneFileName + "_" + dataname;
 	        print( "Load binary data: " + filesrc );
@@ -968,17 +947,17 @@ namespace vpet
 	        */
 	    }
 
-		private void OnProgress( float progress, string msg="")
+        private void OnProgress( float progress, string msg="")
 		{
 			OnProgressEvent.Invoke(progress, msg);
 		}
+#endif
 
-	
-	    //!
-	    //! Unity build in function beeing called just before Application is closed
-	    //! closes network Connections & terminates threads
-	    //!
-	    void OnApplicationQuit() 
+        //!
+        //! Unity build in function beeing called just before Application is closed
+        //! closes network Connections & terminates threads
+        //!
+        void OnApplicationQuit() 
 	    {
 	        Debug.Log("receiveMessageQueue.Count :" + receiveMessageQueue.Count);
 
@@ -1000,9 +979,11 @@ namespace vpet
 					_thread.Abort();
 			}
 
+#if !SCENE_HOST
             // halt scene receiver thread
-	        if ( sceneReceiverThread != null  && sceneReceiverThread.IsAlive )
+            if ( sceneReceiverThread != null  && sceneReceiverThread.IsAlive )
 	            sceneReceiverThread.Abort();
+#endif
 
             // halt receiver thread
             if (receiverThread != null && receiverThread.IsAlive)

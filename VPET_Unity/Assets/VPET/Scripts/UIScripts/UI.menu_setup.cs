@@ -267,11 +267,6 @@ namespace vpet
             centerMenu.OnMenuOpen.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );
             centerMenu.addButton(buttonKin, layouts.MOCAP);
-            // Mocap trigger
-            IMenuButton buttonMocap = Elements.MenuButtonToggle();
-            buttonMocap.AddAction(AnimationMode_Pause_sel, AnimationMode_Play_nrm, call: () => triggerMocap(buttonMocap));
-            buttonMocap.AddHoldAction(() => mainController.buttonAnimatorCmdClicked(0)); // reset/re-trigger mocap animation 
-            centerMenu.addButton(buttonMocap, layouts.MOCAP);
             // light color
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
             buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 

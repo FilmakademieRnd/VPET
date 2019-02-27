@@ -54,7 +54,7 @@ namespace vpet
         //!
         //! unique id of client instance
         //!
-        String id;
+        int m_id;
 	
 	    //!
 	    //! cached reference to Katana massage templates
@@ -220,7 +220,7 @@ namespace vpet
 	    //!
 	    void Start ()
 	    {
-            id = "XXX";
+            m_id = "XXX";
 
             if (GameObject.Find("MainController") != null )
     	        mainController = GameObject.Find("MainController").GetComponent<MainController>();
@@ -310,7 +310,8 @@ namespace vpet
 	        {
                 m_sceneTransferDirty = false;
                 print( "sceneLoader.createSceneGraph" );
-	            sceneLoader.createSceneGraph( );
+
+                sceneLoader.createSceneGraph( );
                 sendUpdateObjects();
 	            // HACK
 	            mainController.repositionCamera();
@@ -374,7 +375,7 @@ namespace vpet
 
 			foreach(ObjectSender sender in objectSenderList)
 			{
-				sender.SendObject(id, sobj, dagPath, nodeType, args);
+				sender.SendObject(m_id, sobj, dagPath, nodeType, args);
 			}
 
 		}
@@ -413,7 +414,7 @@ namespace vpet
 	    //! @param  on              should it be set to on or off
 	    public void sendKinematic(Transform obj, bool on)
 	    {
- 			string msg = "client " + id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on;
+ 			string msg = "client " + m_id + "|" + "k" + "|" + this.getPathString(obj,scene) + "|" + on;
 			SendObjectUpdate<ObjectSenderBasic>(msg);
 	    }
 
@@ -426,13 +427,13 @@ namespace vpet
 	        {
                 if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
                 {
-					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
+					string msg = "client " + m_id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
  					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Unlock object " + currentlyLockedObject.gameObject.name );
                 }
                 if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
                 {
-					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
+					string msg = "client " + m_id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
  					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Lock object " + obj.gameObject.name);
                 }
@@ -442,7 +443,7 @@ namespace vpet
 	        {
                 if ( currentlyLockedObject != null && !deactivatePublish ) // unlock if locked
                 {
-					string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
+					string msg = "client " + m_id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
  					SendObjectUpdate<ObjectSenderBasic>(msg);
                     // print("Unlock object " + obj.gameObject.name);
                 }
@@ -453,14 +454,14 @@ namespace vpet
 
         public void sendAnimatorCommand(Transform obj, int cmd)
         {
-			string msg = "client " + id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd;
+			string msg = "client " + m_id + "|" + "m" + "|" + this.getPathString(obj, scene) + "|" + cmd;
 			SendObjectUpdate<ObjectSenderBasic>(msg);			
         }
 
 
         public void sendColliderOffset(Transform obj, Vector3 offset )
         {
-			string msg = "client " + id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z;
+			string msg = "client " + m_id + "|" + "b" + "|" + this.getPathString(obj, scene) + "|" + offset.x + "|" + offset.y + "|" + offset.z;
 			SendObjectUpdate<ObjectSenderBasic>(msg);			
         }
 
@@ -468,7 +469,7 @@ namespace vpet
         //! function to be called to resend stored scene object attributes
         public void sendUpdateObjects()
         {
-			SendObjectUpdate<ObjectSenderBasic>("client " + id + "|" + "udOb");
+			SendObjectUpdate<ObjectSenderBasic>("client " + m_id + "|" + "udOb");
         }
 
 
@@ -513,7 +514,7 @@ namespace vpet
                 else
                 {
                     Transform obj = getOjectFromString(splitMessage[2]);
-                    if ( obj && obj != currentlyLockedObject && splitMessage[0] != id )
+                    if ( obj && obj != currentlyLockedObject && splitMessage[0] != m_id )
 	                {
 	                    switch ( splitMessage[1] )
 	                    {
