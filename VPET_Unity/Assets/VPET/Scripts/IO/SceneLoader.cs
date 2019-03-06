@@ -145,16 +145,6 @@ namespace vpet
 	
 	        // iterate nodes
 	        createSceneGraphIter(scnRoot.transform, 0);
-	
-	        // make editable        
-	        foreach ( GameObject g in SceneEditableObjects )
-	        {
-	            SceneObject sobj = g.GetComponent<SceneObject>();
-	            if ( sobj == null )
-	            {
-	                g.AddComponent<SceneObject>();
-	            }
-	        }
 
             // set default orthographic size
             Camera.main.orthographicSize = 1000 * VPETSettings.Instance.sceneScale;

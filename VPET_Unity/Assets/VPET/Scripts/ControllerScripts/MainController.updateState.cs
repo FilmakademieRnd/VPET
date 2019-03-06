@@ -128,9 +128,7 @@ namespace vpet
 	                case (Mode.objectLinkCamera):
                         if (currentSelection)
                         {
-                            if (currentSceneObject.isSpotLight ||
-                                currentSceneObject.isPointLight ||
-                                currentSceneObject.isDirectionalLight)
+                            if (currentSceneObject.GetType() == typeof(SceneObjectLight))
                             {
                                 currentSelection.parent = oldParent;
                             }
@@ -195,9 +193,7 @@ namespace vpet
                         ui.drawParameterMenu(layouts.TRANSFORM);
                         break;
 	                case (Mode.objectLinkCamera):
-	                    if (currentSceneObject.isSpotLight ||
-	                        currentSceneObject.isPointLight ||
-	                        currentSceneObject.isDirectionalLight)
+	                    if (currentSceneObject.GetType() == typeof(SceneObjectLight))
 	                    {
                             oldParent = currentSelection.parent;
 	                        currentSelection.parent = Camera.main.transform;
@@ -224,11 +220,7 @@ namespace vpet
 	                        {
 	                            ui.drawCenterMenu(layouts.ANIMATION);
                                 ui.drawSecondaryMenu(layouts.ANIMATION);
-	                        }
-                            else if (currentSceneObject.isMocapTrigger) // mocap trigger component at object
-                            {
-                                ui.drawCenterMenu(layouts.MOCAP);
-                            }
+	                        }                         
                             else
 	                        {
 	                            ui.drawCenterMenu(layouts.OBJECT);
@@ -258,17 +250,18 @@ namespace vpet
                         }
                         break;
 	                case (Mode.lightSettingsMode):
-                        if (currentSelection)
+                        SceneObjectLight sol = (SceneObjectLight) currentSceneObject;
+                        if (currentSelection && sol)
                         {
-                            currentSceneObject.hideLightVisualization(true);
+                            sol.hideLightVisualization(true);
                         }
                         // ConnectRangeSlider(currentSceneObject, "LightIntensity", 1f);
-                        ConnectRangeSlider(currentSceneObject.setLightIntensity, currentSceneObject.getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);
-                        if (currentSceneObject.isDirectionalLight)
+                        ConnectRangeSlider(sol.setLightIntensity, sol.getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);
+                        if (sol.isDirectionalLight)
                             ui.drawParameterMenu(layouts.LIGHTDIR);
-                        else if (currentSceneObject.isPointLight)
+                        else if (sol.isPointLight)
                             ui.drawParameterMenu(layouts.LIGHTPOINT);
-                        else if (currentSceneObject.isSpotLight)
+                        else if (sol.isSpotLight)
                             ui.drawParameterMenu(layouts.LIGHTSPOT);
                         ui.drawLightSettingsWidget();
                         //serverAdapter.sendLock(currentSelection, true);

@@ -34,7 +34,7 @@ namespace vpet
 
         private ColorWheel colorWheel;
 
-        private SceneObject currentLight;
+        private SceneObjectLight currentLight;
 
         private SliderType sliderType;
 
@@ -67,7 +67,7 @@ namespace vpet
             colorWheel.gameObject.SetActive(false);
         }
 
-        public void show(SceneObject light)
+        public void show(SceneObjectLight light)
         {
             currentLight = light;
 

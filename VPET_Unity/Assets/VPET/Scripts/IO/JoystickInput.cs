@@ -236,7 +236,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = true;
-                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                    if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     else
                         mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
@@ -249,7 +249,7 @@ namespace vpet
                     rotateObjectActive = false;
                     scaleObjectActive = true;
                     mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
-                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                    if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
                         mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
@@ -268,7 +268,7 @@ namespace vpet
                     rotateObjectActive = false;
                     scaleObjectActive = true;
                     mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
-                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                    if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
                         mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
@@ -384,7 +384,7 @@ namespace vpet
                     mainController.buttonTranslationClicked(true);
                 else if (rotateObjectActive)
                     mainController.buttonRotationClicked(true);
-                else if (scaleObjectActive & !mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                else if (scaleObjectActive & !mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     mainController.buttonScaleClicked(true);
             }
             // Dpad and R2 reset 
@@ -405,7 +405,7 @@ namespace vpet
             {
                 int realIdx = mod((potentialIdx + offset * DPADdirection), SceneLoader.SceneEditableObjects.Count);
                 if (!SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObject>().locked && 
-                    !SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObject>().IsLight &&
+                    !SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObjectLight>() &&
                     SceneLoader.SceneEditableObjects[realIdx].GetComponent<CameraObject>() == null)
                 {
                     mainController.callSelect(SceneLoader.SceneEditableObjects[realIdx].transform);

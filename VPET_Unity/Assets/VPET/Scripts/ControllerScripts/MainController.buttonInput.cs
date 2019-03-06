@@ -248,12 +248,5 @@ namespace vpet
                 buttonTranslationClicked(true);
             }
         }
-
-
-        public void buttonAnimatorCmdClicked(int cmd)
-        {
-            serverAdapter.sendAnimatorCommand(currentSelection.transform, cmd);
-        }
-
     }
 }

@@ -70,7 +70,7 @@ namespace vpet
                 secondaryMenu.switchLayout(layout);
                 if (mainController.getCurrentSelection() != null)
                 {
-                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                    if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
                         mainController.ActiveMode = MainController.Mode.lightMenuMode;
                     }
@@ -157,12 +157,6 @@ namespace vpet
 			secondaryMenu.reset();
 			mainController.toggleNcam();
 		}
-
-        private void pubCam()
-        {
-            secondaryMenu.reset();
-            mainController.togglePubCam();
-        }
 
         private void editWidget3D(IMenuButton button)
         {
@@ -432,46 +426,60 @@ namespace vpet
             rangeSlider.MinValue = float.MinValue;
             rangeSlider.MaxValue = float.MaxValue;
 
+            SceneObject sco = mainController.getCurrentSelection().GetComponent<SceneObject>();
+
             switch (idx)
             {
                 case 0: // X
                     if (mainController.ActiveMode == MainController.Mode.translationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateX", 2f*VPETSettings.Instance.controllerSpeed);
+                        mainController.ConnectRangeSlider(sco, "TranslateX", 2f*VPETSettings.Instance.controllerSpeed);
                     else if (mainController.ActiveMode == MainController.Mode.scaleMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleX", 0.02f);
+                        mainController.ConnectRangeSlider(sco, "ScaleX", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateX", 1f);
+                        mainController.ConnectRangeSlider(sco, "RotateX", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightIntensity, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);
-                        rangeSlider.MinValue = 0f;
+                        SceneObjectLight scl = (SceneObjectLight) sco;
+                        if (scl)
+                        {
+                            mainController.ConnectRangeSlider(scl.setLightIntensity, scl.getLightIntensity(), 0.1f / VPETSettings.Instance.lightIntensityFactor);
+                            rangeSlider.MinValue = 0f;
+                        }
                     }
                     break;
                 case 1:
                     if (mainController.ActiveMode == MainController.Mode.translationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateY", 2f * VPETSettings.Instance.controllerSpeed);
+                        mainController.ConnectRangeSlider(sco, "TranslateY", 2f * VPETSettings.Instance.controllerSpeed);
                     else if (mainController.ActiveMode == MainController.Mode.scaleMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleY", 0.02f);
+                        mainController.ConnectRangeSlider(sco, "ScaleY", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateY", 1f);
+                        mainController.ConnectRangeSlider(sco, "RotateY", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightRange, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightRange(), 10f*VPETSettings.Instance.sceneScale);
-                        rangeSlider.MinValue = 0.1f;
+                        SceneObjectLight scl = (SceneObjectLight)sco;
+                        if (scl)
+                        {
+                            mainController.ConnectRangeSlider(scl.setLightRange, scl.getLightRange(), 10f * VPETSettings.Instance.sceneScale);
+                            rangeSlider.MinValue = 0.1f;
+                        }
                     }
                     break;
                 case 2:
                     if (mainController.ActiveMode == MainController.Mode.translationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "TranslateZ", 2f * VPETSettings.Instance.controllerSpeed);
+                        mainController.ConnectRangeSlider(sco, "TranslateZ", 2f * VPETSettings.Instance.controllerSpeed);
                     else if (mainController.ActiveMode == MainController.Mode.scaleMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "ScaleZ", 0.02f);
+                        mainController.ConnectRangeSlider(sco, "ScaleZ", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>(), "RotateZ", 1f);
+                        mainController.ConnectRangeSlider(sco, "RotateZ", 1f);
                     else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
                     {
-                        mainController.ConnectRangeSlider(mainController.getCurrentSelection().GetComponent<SceneObject>().setLightAngle, mainController.getCurrentSelection().GetComponent<SceneObject>().getLightAngle(), 1f);
-                        rangeSlider.MinValue = 1f;
-                        rangeSlider.MaxValue = 179f;
+                        SceneObjectLight scl = (SceneObjectLight)sco;
+                        if (scl)
+                        {
+                            mainController.ConnectRangeSlider(scl.setLightAngle, scl.getLightAngle(), 1f);
+                            rangeSlider.MinValue = 1f;
+                            rangeSlider.MaxValue = 179f;
+                        }
                     }
                     break;
             }

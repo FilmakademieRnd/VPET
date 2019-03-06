@@ -214,11 +214,6 @@ namespace vpet
             // desable line renderer
             if (lineRenderer)
                 lineRenderer.enabled = false;
-            
-            //push changes to server
-            if (!liveMode && activeMode != Mode.animationEditing){
-	            if (currentSelection) currentSceneObject.sendUpdate();
-	        }
 	    }
 	
 	    //!

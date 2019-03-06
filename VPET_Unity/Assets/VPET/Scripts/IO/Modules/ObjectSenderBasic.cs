@@ -24,6 +24,7 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,65 +83,248 @@ namespace vpet
         }
 
 
-		public virtual void SendObject(int id, SceneObject sceneObject, ParameterType paramType, params object[] args) 
+		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType) 
         {
-			bool onlyToClientsWithoutPhysics = false;
+            byte[] msg;
+            switch (paramType)
+            {
+                case ParameterType.POS:
+                    {
+                        Vector3 locPos = sceneObject.transform.localPosition;
+                        msg = new byte[18];
 
-			if (args.Length > 0)
-			{
-				onlyToClientsWithoutPhysics = (bool)args[0];
-			}
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
+                    }
+                    break;
 
+                case ParameterType.ROT:
+                    {
+                        Quaternion locRot = sceneObject.transform.localRotation;
+                       msg = new byte[22];
 
-	        if ( sceneObject.GetType() == typeof(SceneObject) )
-			{
-                
-				if (nodeType == NodeType.LIGHT)
-				{
-					if (sceneObject.IsLight)
-					{
-						Light light = sceneObject.SourceLight;
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locRot.x), 0, msg, 6, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locRot.y), 0, msg, 10, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locRot.z), 0, msg, 14, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locRot.w), 0, msg, 18, 4);
+                    }
+                    break;
+                case ParameterType.SCALE:
+                    {
+                        Vector3 locScale = sceneObject.transform.localScale;
+                        msg = new byte[18];
 
-						// color
-						sendMessageQueue.Add("client " + id + "|" + "c" + "|" + dagPath + "|" + light.color.r + "|" + light.color.g + "|" + light.color.b);
-						//intensity
-						sendMessageQueue.Add("client " + id + "|" + "i" + "|" + dagPath + "|" + light.intensity );
-						// cone
-						sendMessageQueue.Add("client " + id + "|" + "a" + "|" + dagPath + "|" + light.spotAngle);
-						// range
-						sendMessageQueue.Add("client " + id + "|" + "d" + "|" + dagPath + "|" + light.range);
-					}
-					
-				}	
-				else if (nodeType == NodeType.CAMERA)
-				{
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locScale.x), 0, msg, 6, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locScale.y), 0, msg, 10, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(locScale.z), 0, msg, 14, 4);
+                    }
+                    break;
+                case ParameterType.LOCK:
+                    {
+                        msg = new byte[7];
 
-				}
-				else if (nodeType == NodeType.GEO) // send mesh i.e.
-				{
+                        msg[0] = cID;
+                        msg[1] = (byte) paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        msg[6] = Convert.ToByte(sceneObject.selected);
+                    }
+                    break;
+                case ParameterType.HIDDENLOCK:
+                    {
+                        msg = new byte[7];
 
-				}			
-				else // send transform
-				{
-	
-					Transform obj = sceneObject.transform;
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        msg[6] = Convert.ToByte(sceneObject.isPhysicsActive || sceneObject.isPlayingAnimation);
+                    }
+                    break;
+                case ParameterType.KINEMATIC:
+                    {
+                        msg = new byte[7];
 
-					string physicString = "";
-					if (onlyToClientsWithoutPhysics) 
-						physicString =  "|physics";
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        msg[6] = Convert.ToByte(sceneObject.getKinematic());
+                    }
+                    break;
+                case ParameterType.FOV:
+                    {
+                        SceneObjectCamera soc = (SceneObjectCamera) sceneObject;
+                        if (soc)
+                        {
+                            msg = new byte[10];
 
-					// translate
-					sendMessageQueue.Add("client " + id + "|" + "t" + "|" + dagPath + "|" + obj.localPosition.x + "|" + obj.localPosition.y + "|" + obj.localPosition.z + physicString);
-					// rotate
-					sendMessageQueue.Add("client " + id + "|" + "r" + "|" + dagPath + "|" + obj.localRotation.x + "|" + obj.localRotation.y + "|" + obj.localRotation.z + "|" + obj.localRotation.w + physicString);
-					// scale
-					sendMessageQueue.Add("client " + id + "|" + "s" + "|" + dagPath + "|" + obj.localScale.x + "|" + obj.localScale.y + "|" + obj.localScale.z);
-				}
-			}
-			else //light, camera if ( sobj.GetType() == typeof(SceneObjectLight) )
-			{
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(soc.fov), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.ASPECT:
+                    {
+                        SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                        if (soc)
+                        {
+                            msg = new byte[10];
 
-			}
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(soc.aspect), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.FOCUSDIST:
+                    {
+                        SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                        if (soc)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(soc.focDist), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.FOCUSSIZE:
+                    {
+                        SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                        if (soc)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(soc.focSize), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.APERTURE:
+                    {
+                        SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                        if (soc)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(soc.aperture), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.COLOR:
+                    {
+                        SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                        if (sol)
+                        {
+                            Color color = sol.getLightColor();
+                            msg = new byte[18];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.r), 0, msg, 6, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.g), 0, msg, 10, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.b), 0, msg, 14, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.INTENSITY:
+                    {
+                        SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                        if (sol)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(sol.getLightIntensity()), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.EXPOSURE:
+                    {
+                        SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                        if (sol)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(sol.exposure), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.RANGE:
+                    {
+                        SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                        if (sol)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(sol.getLightRange()), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.ANGLE:
+                    {
+                        SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                        if (sol)
+                        {
+                            msg = new byte[10];
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(sol.getLightAngle()), 0, msg, 6, 4);
+                        }
+                    }
+                    break;
+                case ParameterType.PING:
+                    {
+                        msg = new byte[2];
+
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                    }
+                    break;
+                case ParameterType.RESENDUPDATE:
+                    {
+                        msg = new byte[2];
+
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                    }
+                    break;
+                default:
+                    Debug.Log("Unknown paramType in ObjectSenderBasic:SendObject");
+                    return;
+                    break;
+
+                sendMessageQueue.Add(msg);
+            }
 			
 		}
 

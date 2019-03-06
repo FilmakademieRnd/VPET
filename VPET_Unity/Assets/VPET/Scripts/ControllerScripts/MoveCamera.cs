@@ -354,22 +354,22 @@ namespace vpet
                 oldPosition = trackingTransform.position;
                 oldRotation = trackingTransform.rotation;
 #endif
-                //reset rotation of attached gameObjects and send update to server if neccessary 
-                if (this.transform.childCount > 1)
-                {
-                    this.transform.GetChild(1).rotation = childrotationBuffer;
-                    if (this.transform.GetChild(1).position != lastPosition)
-                    {
-                        //only sends updates every 30 times per second (at most)
-                        if ((Time.time - lastUpdateTime) >= updateIntervall)
-                        {
-                            lastUpdateTime = Time.time;
-                            lastPosition = this.transform.GetChild(1).position;
-							// serverAdapter.sendTranslation(this.transform.GetChild(1) );
-                            serverAdapter.SendObjectUpdate(this.transform.GetChild(1));
-                        }
-                    }
-                }
+       //         //reset rotation of attached gameObjects and send update to server if neccessary 
+       //         if (this.transform.childCount > 1)
+       //         {
+       //             this.transform.GetChild(1).rotation = childrotationBuffer;
+       //             if (this.transform.GetChild(1).position != lastPosition)
+       //             {
+       //                 //only sends updates every 30 times per second (at most)
+       //                 if ((Time.time - lastUpdateTime) >= updateIntervall)
+       //                 {
+       //                     lastUpdateTime = Time.time;
+       //                     lastPosition = this.transform.GetChild(1).position;
+							//// serverAdapter.sendTranslation(this.transform.GetChild(1) );
+       //                     serverAdapter.SendObjectUpdate(this.transform.GetChild(1));
+       //                 }
+       //             }
+       //         }
 
 				if (joystickAdapter) 
 				{

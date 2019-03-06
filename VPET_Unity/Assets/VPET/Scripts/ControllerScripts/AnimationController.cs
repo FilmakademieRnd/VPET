@@ -174,6 +174,8 @@ namespace vpet
 	    //! cached reference to animation data (runtime representation)
 	    //!
 	    private AnimationData animData = null;
+
+        private ServerAdapter serverAdapter;
 	
 	    //!
 	    //! list of keyframe representing spheres
@@ -265,7 +267,9 @@ namespace vpet
 	
 	    void Start()
 	    {
-	        timeLine.StartTime = timeLineStartInit;
+            serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
+
+            timeLine.StartTime = timeLineStartInit;
 	        timeLine.EndTime = currentAnimationTime = timeLineEndInit;
 	    }
 	
@@ -722,17 +726,26 @@ namespace vpet
             }
 
             foreach (SceneObject obj in animatedObjects)
+            {
                 obj.isPlayingAnimation = playing;
+                serverAdapter.SendObjectUpdate(obj, ParameterType.HIDDENLOCK);
+            }
             
             foreach (AnimationLayer layer in animationLayers)
             {
                 //animation is playing but not on this layer
                 if (!layer.isPlaying && playing)
                     foreach (SceneObject obj in layer.layerObjects)
+                    {
                         obj.isPlayingAnimation = false;
+                        serverAdapter.SendObjectUpdate(obj, ParameterType.HIDDENLOCK);
+                    }
                 else
                     foreach (SceneObject obj in layer.layerObjects)
+                    {
                         obj.isPlayingAnimation = playing;
+                        serverAdapter.SendObjectUpdate(obj, ParameterType.HIDDENLOCK);
+                    }
             }
         }
 	

@@ -133,36 +133,34 @@ namespace vpet
             serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);
             Debug.Log("Select " + currentSelection);
 
-            if (sObject.GetComponent<SceneObject>().isDirectionalLight || sObject.GetComponent<SceneObject>().isSpotLight || sObject.GetComponent<SceneObject>().isPointLight)
-	            {
-                    if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode  || activeMode == Mode.animationEditing || activeMode == Mode.lightSettingsMode))
-                    {
-                        activeMode = Mode.lightMenuMode;
-                    }
-	            }
-	            else
-	            {
-					if ( !(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode || activeMode == Mode.scaleMode || activeMode == Mode.animationEditing) )
-					{
-		                activeMode = Mode.objectMenuMode;
-					}
+            if (currentSceneObject.GetType() == typeof(SceneObjectLight))
+            {
+                if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode || activeMode == Mode.animationEditing || activeMode == Mode.lightSettingsMode))
+                {
+                    activeMode = Mode.lightMenuMode;
                 }
-	
-	    }
+            }
+            else
+            {
+                if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode || activeMode == Mode.scaleMode || activeMode == Mode.animationEditing))
+                {
+                    activeMode = Mode.objectMenuMode;
+                }
+            }
 
-	    //!
-	    //! unselect an object or reset state
-	    //!
-	    private void deselect()
+        }
+
+        //!
+        //! unselect an object or reset state
+        //!
+        private void deselect()
 	    {
 			if (!currentSelection)
 				return;
 
             if ( activeMode == Mode.objectLinkCamera)
             {
-                if (currentSceneObject.isSpotLight ||
-                                            currentSceneObject.isPointLight ||
-                                            currentSceneObject.isDirectionalLight)
+                if (currentSceneObject.GetType() == typeof(SceneObjectLight))
                 {
                     currentSelection.parent = oldParent;
                 }

@@ -39,6 +39,8 @@ namespace vpet
 
 	public class NodeBuilderBasic
 	{
+        private static int idCount = 0;
+
 		public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj)
 		{
 	        if ( node.GetType() == typeof(SceneNodeGeo) )
@@ -57,13 +59,14 @@ namespace vpet
 	        {
                 SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType( node, typeof(SceneNodeCam) );
 				// make the camera editable
-                nodeCam.editable = true;
+                // nodeCam.editable = true;
 	            return CreateCamera( nodeCam, parent );			
 			}
             else if ( node.GetType() == typeof(SceneNode))
             {
 	            return CreateNode( node, parent );
 	        }
+
 
 			return null;
 
@@ -100,8 +103,14 @@ namespace vpet
 	        objMain.transform.localRotation =   rot; //  Quaternion.identity;
 	        objMain.transform.localScale =    scl; // new Vector3( 1, 1, 1 );
 	        objMain.layer = 0;
-	
-	        return objMain;
+
+            if (node.editable)
+            {
+                SceneObject sceneObject = objMain.AddComponent<SceneObject>();
+                sceneObject.id = idCount++;
+            }
+
+            return objMain;
 	    }
 
 
@@ -181,7 +190,13 @@ namespace vpet
 	        objMain.transform.localRotation =   rot; //  Quaternion.identity;
 	        objMain.transform.localScale =    scl; // new Vector3( 1, 1, 1 );
 
-	        return objMain;
+            if (nodeGeo.editable)
+            {
+                SceneObject sceneObject = objMain.AddComponent<SceneObject>();
+                sceneObject.id = idCount++;
+            }
+
+            return objMain;
 	
 	    }
 	
@@ -257,20 +272,22 @@ namespace vpet
 	
 	        // parent 
 	        _lightUberInstance.transform.SetParent(objMain.transform, false);
-	
-	        // add scene object for interactivity at the light quad
-			SceneObject sco = objMain.AddComponent<SceneObject>();
-			sco.exposure = nodeLight.exposure;
+
+            // add scene object for interactivity at the light quad
+            //if (nodeLight.editable)
+            //{
+                SceneObjectLight sco = objMain.AddComponent<SceneObjectLight>();
+                sco.id = idCount++;
+                sco.exposure = nodeLight.exposure;
+            //}
 
             // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
             //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
 
             // TODO: what for ??
             objMain.layer = 0;
-
-
+            
             return objMain;
-	
 	    }
 	
 	    //!
@@ -288,12 +305,16 @@ namespace vpet
             // set up object basics
             GameObject objMain = new GameObject();
 	        objMain.name =Encoding.ASCII.GetString(nodeCam.name);
-	
-	        // add camera data script and set values
-	        CameraObject camScript = objMain.AddComponent<CameraObject>();
-	        camScript.fov = nodeCam.fov;
-	        camScript.near = nodeCam.near;
-	        camScript.far = nodeCam.far;
+
+            // add camera data script and set values
+            //if (nodeCam.editable)
+            //{
+                SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
+                sco.id = idCount++;
+                sco.fov = nodeCam.fov;
+                sco.near = nodeCam.near;
+                sco.far = nodeCam.far;
+            //}
 	
 	        // place camera
 	        objMain.transform.parent = parentTransform; 
@@ -306,24 +327,14 @@ namespace vpet
 	
 	        // TODO: what for ??
 	        objMain.layer = 0;
-
-
-
-
-
-
+            
 	        // add to list for later access as camera location
 	        SceneLoader.SceneCameraList.Add( objMain );
-
-
-
-
-
-
+            
             // add camera dummy mesh
             GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
             GameObject cameraInstance = GameObject.Instantiate(cameraObject);
-            cameraInstance.SetActive(false);
+            //cameraInstance.SetActive(false);
             cameraInstance.name = cameraObject.name;
             cameraInstance.transform.SetParent(objMain.transform, false);
             cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 2f;

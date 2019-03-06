@@ -213,10 +213,6 @@ namespace vpet
 
 			if (mainController.ActiveMode == MainController.Mode.lightSettingsMode && editingLight)
 			{
-				if (!mainController.liveMode)
-				{
-					mainController.sendUpdateToServer();
-				}
 				editingLight = false;
 				return;
 			}

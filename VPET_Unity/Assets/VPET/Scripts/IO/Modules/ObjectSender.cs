@@ -51,13 +51,11 @@ namespace vpet
 		protected string IP = null;
 		protected string Port = null;
 
+        protected List<byte[]> sendMessageQueue = new List<byte[]>();
 
-		protected List<string> sendMessageQueue = new List<string>(); 
+        public virtual void SendObject(byte id, SceneObject sceneObject, ParameterType paramType) {}
 
-
-		public virtual void SendObject(int id, SceneObject sceneObject, ParameterType paramType, params object[] args) {}
-
-		public void SendObject(string msg)
+		public void SendObject(byte[] msg)
 		{
 			sendMessageQueue.Add(msg);	
 		}

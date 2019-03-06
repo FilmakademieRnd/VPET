@@ -227,16 +227,17 @@ namespace vpet
             if (currentSelection)
             {
                 // lights (scalemode is used for light parameters intensity and range)
-                if (currentSelection.GetComponent<SceneObject>().IsLight)
+                SceneObjectLight scl = currentSelection.GetComponent<SceneObjectLight>();
+                if (scl)
                 {
                     // set light intensity
-                    currentSelection.GetComponent<SceneObject>().setLightIntensity(currentSelection.GetComponent<SceneObject>().getLightIntensity() + (scale.z * 0.5f));
+                    scl.setLightIntensity(scl.getLightIntensity() + (scale.z * 0.5f));
                     // set gui element
-                    currentSelection.GetComponent<SceneObject>().setLightRange(currentSelection.GetComponent<SceneObject>().getLightRange() + (scale.y * 0.5f));
+                    scl.setLightRange(scl.getLightRange() + (scale.y * 0.5f));
                     if (scale.z == 0.0f)
-                        UIAdapter.updateRangeSlider(currentSelection.GetComponent<SceneObject>().getLightRange());
+                        UIAdapter.updateRangeSlider(scl.getLightRange());
                     else if (scale.y == 0.0f)
-                        UIAdapter.updateRangeSlider(currentSelection.GetComponent<SceneObject>().getLightIntensity());
+                        UIAdapter.updateRangeSlider(scl.getLightIntensity());
                 }
                 // objects
                 else
@@ -324,16 +325,7 @@ namespace vpet
         //! make current selection receive forces (gravitation etc.) or not
         //!
         public void toggleLockSelectionKinematic(){
-	        if (!currentSceneObject.isDirectionalLight && !currentSceneObject.isSpotLight && !currentSceneObject.isPointLight)
-	        {
-	            currentSelection.gameObject.GetComponent<Rigidbody>().isKinematic = !currentSceneObject.lockKinematic;
-				currentSceneObject.lockKinematic = !currentSceneObject.lockKinematic;
-
-	            if (!currentSceneObject.lockKinematic){
-	                currentSelection.gameObject.GetComponent<Rigidbody>().WakeUp();
-	            }
-	            serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.KINEMATIC);
-	        }
+            currentSceneObject.setKinematic(!currentSceneObject.lockKinematic, true);
 	    }
 	
 	    //!

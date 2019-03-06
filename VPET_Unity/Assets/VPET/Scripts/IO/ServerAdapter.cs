@@ -59,7 +59,7 @@ namespace vpet
         //!
         //! unique id of client instance
         //!
-        int m_id;
+        byte m_id;
 
         //!
         //! cached reference to Katana massage templates
@@ -72,11 +72,6 @@ namespace vpet
         //! enable/disable receiving of ncam data
         //!
         public bool receiveNcam = false;
-
-        //!
-        //! enable/disable publising the own camera position/rotation/fov (like ncam)
-        //!
-        public bool publishCam = false;
 
         //!
         //! timeout for receiving messages (on seconds)
@@ -181,6 +176,10 @@ namespace vpet
         //!
         MainController mainController = null;
 
+        //!
+        //! list containing sceneObjects to sceneObject ID references
+        //!
+        private SceneObject[] sceneObjectRefList;
 
         //!
         //! none
@@ -259,19 +258,16 @@ namespace vpet
             var hostName = Dns.GetHostName();
 
             var host = Dns.GetHostEntry(hostName);
-            m_id = 300;
+            m_id = 0;
 
             //Take last ip adress of local network (which is local wlan ip address)
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
-                    m_id = Int32.Parse(ip.ToString().Split('.')[3]);
+                    m_id = byte.Parse(ip.ToString().Split('.')[3]);
                 }
             }
-
-            //register cam sending function
-            InvokeRepeating("sendCam", 0.0f, 0.04f);
 
             //register cam sending function
             InvokeRepeating("sendPing", 0.0f, 5f);
@@ -286,6 +282,7 @@ namespace vpet
 
             scene = GameObject.Find("Scene").transform;
 
+            sceneObjectRefList = new SceneObject[0];
 
             receiveMessageQueue = new ArrayList();
 
@@ -375,6 +372,30 @@ namespace vpet
                 sceneLoader.createSceneGraph();
                 SendObjectUpdate(null, ParameterType.RESENDUPDATE);
 
+                int refListCount = SceneLoader.SceneEditableObjects.Count + 
+                                   SceneLoader.SelectableLights.Count + 
+                                   SceneLoader.SceneCameraList.Count;
+
+                sceneObjectRefList = new SceneObject[refListCount];
+
+                foreach (GameObject gameObject in SceneLoader.SceneEditableObjects)
+                {
+                    SceneObject sceneObject = gameObject.GetComponent<SceneObject>();
+                    sceneObjectRefList[sceneObject.id] = sceneObject;
+                }
+
+                foreach(GameObject gameObject in SceneLoader.SelectableLights)
+                {
+                    SceneObject sceneObject = gameObject.GetComponent<SceneObjectLight>();
+                    sceneObjectRefList[sceneObject.id] = sceneObject;
+                }
+
+                foreach (GameObject gameObject in SceneLoader.SceneCameraList)
+                {
+                    SceneObject sceneObject = gameObject.GetComponent<SceneObjectCamera>();
+                    sceneObjectRefList[sceneObject.id] = sceneObject;
+                }
+
                 // HACK
                 mainController.repositionCamera();
                 mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
@@ -394,7 +415,7 @@ namespace vpet
                     // Debug.Log(receiveMessageQueue[i] as string);
                     try
                     {
-                        parseTransformation(receiveMessageQueue[i] as string);
+                        parseTransformation(receiveMessageQueue[i] as byte[]);
                     }
                     catch
                     {
@@ -415,27 +436,6 @@ namespace vpet
         }
 
         //!
-        //! sends current main camera position, called every x milliseconds
-        //!
-        void sendCam()
-        {
-            if (publishCam)
-            {
-                Vector3 eul = Camera.main.transform.rotation.eulerAngles;
-                Quaternion adjustedRot = Quaternion.Euler(eul.x, -eul.y, -eul.z - 180);
-                string msg = "client " + id + "|" + "r|cam|" + adjustedRot.x + "|" +
-                                                               adjustedRot.y + "|" +
-                                                               adjustedRot.z + "|" +
-                                                               adjustedRot.w;
-                SendObjectUpdate<ObjectSenderBasic>(msg);
-                msg = "client " + id + "|" + "t|cam|" + Camera.main.transform.position.x + "|" +
-                                                        Camera.main.transform.position.y + "|" +
-                                                        Camera.main.transform.position.z;
-                SendObjectUpdate<ObjectSenderBasic>(msg);
-            }
-        }
-
-        //!
         //! sends current ping signal for sync server
         //!
         void sendPing()
@@ -443,53 +443,17 @@ namespace vpet
             SendObjectUpdate(null, ParameterType.PING);
         }
 
-        ////!
-        ////!
-        ////!
-        //public void SendObjectUpdate(Transform trn, bool onlyToClientsWithoutPhysics)
-        //{
-        //    SendObjectUpdate(trn, NodeType.GROUP, onlyToClientsWithoutPhysics);
-        //}
-
-        ////!
-        ////!
-        ////!
-        //public void SendObjectUpdate(Transform trn, NodeType nodeType = NodeType.GROUP, params object[] args)
-        //{
-        //    // bool onlyToClientsWithoutPhysics = false,
-
-        //    if (trn.GetComponent<SceneObject>() != null)
-        //        SendObjectUpdate(trn.GetComponent<SceneObject>(), nodeType, args);
-        //}
-
-        ////!
-        ////!
-        ////!
-        //public void SendObjectUpdate<T>(string msg)
-        //{
-        //    if (deactivatePublish)
-        //        return;
-
-        //    foreach (ObjectSender sender in objectSenderList)
-        //    {
-        //        if (sender.GetType() == typeof(T))
-        //            sender.SendObject(msg);
-        //    }
-
-        //}
-        
-        
         //!
         //!
         //!
-        public void SendObjectUpdate(SceneObject sobj, ParameterType paramType, params object[] args)
+        public void SendObjectUpdate(SceneObject sobj, ParameterType paramType)
         {
             if (deactivatePublish)
                 return;
 
             foreach (ObjectSender sender in objectSenderList)
             {
-                sender.SendObject(m_id, sobj, paramType, args);
+                sender.SendObject(m_id, sobj, paramType);
             }
 
         }
@@ -530,158 +494,152 @@ namespace vpet
 
         //! function parsing received message and executing change
         //! @param  message         message string received by server
-        public void parseTransformation(string message)
+        public void parseTransformation(byte[] msg)
         {
-            string[] splitMessage = message.Split('|');
-            if (splitMessage.Length > 1)
+            if (msg[0] != m_id)
             {
+                ParameterType paramType = (ParameterType) msg[1];
+                int objectID = BitConverter.ToInt32(msg, 2);
+                SceneObject sceneObject = sceneObjectRefList[objectID];
 
-                if (splitMessage[2] == "cam")
+                switch (paramType)
                 {
-                    //if (!camObject.GetComponent<Renderer>().enabled) camObject.GetComponent<Renderer>().enabled = true;
-                    lastNcamReceivedTime = Time.time;
-                    switch (splitMessage[1])
-                    {
-                        case "t":
-                            if (splitMessage.Length == 6)
-                                if (receiveNcam) Camera.main.transform.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                else camObject.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                            break;
-                        case "r":
-                            if (splitMessage.Length == 7)
-                            {
-                                Quaternion quat = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-                                Vector3 rot = quat.eulerAngles;
-
-                                if (receiveNcam) Camera.main.transform.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
-                                else camObject.rotation = Quaternion.Euler(new Vector3(rot.x, -rot.y, -rot.z + 180));
-                            }
-                            break;
-                        case "f":
-                            if (splitMessage.Length == 4)
-                                if (receiveNcam) Camera.main.fieldOfView = float.Parse(splitMessage[3]);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else
-                {
-                    Transform obj = getOjectFromString(splitMessage[2]);
-                    if (obj && obj != currentlyLockedObject && splitMessage[0] != m_id)
-                    {
-                        switch (splitMessage[1])
+                    case ParameterType.POS:
                         {
-                            case "t":
-                                if (splitMessage.Length == 6)
-                                {
-                                    if (obj.GetComponent<SceneObject>()) obj.GetComponent<SceneObject>().tempLock = true;
-                                    try
-                                    {
-                                        // obj.position = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                        obj.localPosition = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                    }
-                                    catch { }
-                                }
-                                break;
-                            case "r":
-                                if (splitMessage.Length == 7)
-                                {
-                                    if (obj.GetComponent<SceneObject>()) obj.GetComponent<SceneObject>().tempLock = true;
-                                    try
-                                    {
-                                        // obj.rotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-                                        obj.localRotation = new Quaternion(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]), float.Parse(splitMessage[6]));
-                                    }
-                                    catch { }
-                                }
-                                break;
-                            case "s":
-                                if (splitMessage.Length == 6)
-                                    try
-                                    {
-                                        obj.localScale = new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                    }
-                                    catch { }
-                                break;
-                            case "c":
-                                if (splitMessage.Length == 6)
-                                {
-                                    try
-                                    {
-                                        obj.GetChild(0).GetComponent<Light>().color = new Color(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                        //obj.GetComponent<Light>().color = new Color(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));                 
-                                        //obj.GetChild(0).GetComponent<Renderer>().material.color = new Color(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5]));
-                                    }
-                                    catch { }
-                                }
-                                break;
-                            case "i":
-                                if (splitMessage.Length == 4)
-                                    try
-                                    {
-                                        // TODO consider lightIntensityFactor
-                                        obj.GetChild(0).GetComponent<Light>().intensity = float.Parse(splitMessage[3]);
-                                    }
-                                    catch { }
-                                break;
-                            case "a":
-                                if (splitMessage.Length == 4)
-                                    try
-                                    {
-                                        obj.GetChild(0).GetComponent<Light>().spotAngle = float.Parse(splitMessage[3]);
-                                    }
-                                    catch { }
-                                break;
-                            case "d":
-                                if (splitMessage.Length == 4)
-                                    try
-                                    {
-                                        // TODO convider sceneScale
-                                        obj.GetChild(0).GetComponent<Light>().range = float.Parse(splitMessage[3]);
-                                    }
-                                    catch { }
-                                break;
-                            case "k":
-                                if (splitMessage.Length == 4)
-                                    try
-                                    {
-                                        obj.GetComponent<SceneObject>().setKinematic(bool.Parse(splitMessage[3]), false);
-                                    }
-                                    catch { }
-                                break;
-                            case "l":
-                                if (splitMessage.Length == 4)
-                                    if (bool.Parse(splitMessage[3])) mainController.unselectIfSelected(obj);
-                                try
-                                {
-                                    obj.GetComponent<SceneObject>().locked = bool.Parse(splitMessage[3]);
-                                    obj.GetComponent<SceneObject>().updateLockView();
-                                }
-                                catch { }
-                                break;
-                            case "b": // move bbox/collider
-                                if (splitMessage.Length == 6)
-                                    try
-                                    {
-                                        obj.GetComponent<SceneObject>().colliderOffset(new Vector3(float.Parse(splitMessage[3]), float.Parse(splitMessage[4]), float.Parse(splitMessage[5])));
-                                    }
-                                    catch { }
-                                break;
-                            case "m": // trigger mocap data
-                                if (splitMessage.Length == 4 && obj.GetComponent<SceneObjectServer>() != null)
-                                {
-                                    try
-                                    {
-                                        obj.GetComponent<SceneObjectServer>().AnimatorCommand(int.Parse(splitMessage[3]));
-                                    }
-                                    catch { }
-                                }
-                                break;
-                            default:
-                                break;
+                            sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6), 
+                                                                              BitConverter.ToSingle(msg, 10), 
+                                                                              BitConverter.ToSingle(msg, 14));
                         }
-                    }
+                        break;
+
+                    case ParameterType.ROT:
+                        {
+                            sceneObject.transform.localRotation = new Quaternion(BitConverter.ToSingle(msg, 6),
+                                                                                 BitConverter.ToSingle(msg, 10),
+                                                                                 BitConverter.ToSingle(msg, 14),
+                                                                                 BitConverter.ToSingle(msg, 18));
+                        }
+                        break;
+                    case ParameterType.SCALE:
+                        {
+                            sceneObject.transform.localScale = new Vector3(BitConverter.ToSingle(msg, 6),
+                                                                           BitConverter.ToSingle(msg, 10),
+                                                                           BitConverter.ToSingle(msg, 14));
+                        }
+                        break;
+                    case ParameterType.LOCK:
+                        {
+                            bool locked = BitConverter.ToBoolean(msg, 6);
+                            sceneObject.enableRigidbody(locked); 
+                            sceneObject.locked = locked;
+                            sceneObject.updateLockView();
+                        }
+                        break;
+                    case ParameterType.HIDDENLOCK:
+                        {
+                            bool locked = BitConverter.ToBoolean(msg, 6);
+                            sceneObject.enableRigidbody(locked);
+                            sceneObject.locked = locked;
+                        }
+                        break;
+                    case ParameterType.KINEMATIC:
+                        {
+                            sceneObject.setKinematic(BitConverter.ToBoolean(msg, 6), false);
+                        }
+                        break;
+                    case ParameterType.FOV:
+                        {
+                            SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                            if (soc)
+                                soc.fov = BitConverter.ToSingle(msg, 6);
+                        }
+                        break;
+                    case ParameterType.ASPECT:
+                        {
+                            SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                            if (soc)
+                                soc.aspect = BitConverter.ToSingle(msg, 6);
+                        }
+                        break;
+                    case ParameterType.FOCUSDIST:
+                        {
+                            SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                            if (soc)
+                                soc.focDist = BitConverter.ToSingle(msg, 6);
+                        }
+                        break;
+                    case ParameterType.FOCUSSIZE:
+                        {
+                            SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                            if (soc)
+                                soc.focSize = BitConverter.ToSingle(msg, 6);
+                        }
+                        break;
+                    case ParameterType.APERTURE:
+                        {
+                            SceneObjectCamera soc = (SceneObjectCamera)sceneObject;
+                            if (soc)
+                                soc.aperture = BitConverter.ToSingle(msg, 6);
+                        }
+                        break;
+                    case ParameterType.COLOR:
+                        {
+                            SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                            if (sol)
+                            {
+                                sol.transform.GetChild(0).GetComponent<Light>().color = new Color(BitConverter.ToSingle(msg, 6),
+                                                                                        BitConverter.ToSingle(msg, 10),
+                                                                                        BitConverter.ToSingle(msg, 14));
+                            }
+                        }
+                        break;
+                    case ParameterType.INTENSITY:
+                        {
+                            SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                            if (sol)
+                            {
+                                sol.transform.GetChild(0).GetComponent<Light>().intensity = BitConverter.ToSingle(msg, 6);
+                            }
+                        }
+                        break;
+                    case ParameterType.EXPOSURE:
+                        {
+                            // no exposure for unity lights
+                            // used for katana
+                        }
+                        break;
+                    case ParameterType.RANGE:
+                        {
+                            SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                            if (sol)
+                            {
+                                sol.transform.GetChild(0).GetComponent<Light>().range = BitConverter.ToSingle(msg, 6);
+                            }
+                        }
+                        break;
+                    case ParameterType.ANGLE:
+                        {
+                            SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                            if (sol)
+                            {
+                                sol.transform.GetChild(0).GetComponent<Light>().spotAngle = BitConverter.ToSingle(msg, 6);
+                            }
+                        }
+                        break;
+                    case ParameterType.PING:
+                        {
+                            // only for sync server
+                        }
+                        break;
+                    case ParameterType.RESENDUPDATE:
+                        {
+                            // only for sync server
+                        }
+                        break;
+                    default:
+                        Debug.Log("Unknown paramType in ServerAdapter:ParseTransformation");
+                        return;
+                        break;
                 }
             }
         }

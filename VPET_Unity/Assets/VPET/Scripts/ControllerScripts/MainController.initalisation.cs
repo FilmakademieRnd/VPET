@@ -51,11 +51,10 @@ namespace vpet
         //!
         public bool lockScene;
 
-
         //!
         //! are changes reported to server immediatelly (while dragging)
         //!
-        public bool liveMode = false;
+        public bool liveMode = true;
         //!
         //! shall we ignore config file 
         //!

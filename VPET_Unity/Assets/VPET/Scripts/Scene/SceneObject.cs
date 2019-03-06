@@ -34,6 +34,11 @@ namespace vpet
 {
 	public class SceneObject : MonoBehaviour {
 
+        //!
+        //! ID of a scene object
+        //!
+        public int id = -1;
+
 #if !SCENE_HOST
         //!
         //! cached reference to animation controller
@@ -128,12 +133,12 @@ namespace vpet
         //!
         //! cached reference to mainController
         //!
-        MainController mainController;
+        protected MainController mainController;
 #endif
         //!
         //! cached reference to serverAdapter
         //!
-        ServerAdapter serverAdapter;
+        protected ServerAdapter serverAdapter;
         //!
         //! cached reference to sceneLoader
         //!
@@ -154,12 +159,12 @@ namespace vpet
 		//!
 		public bool lockKinematic = false;
 
-		//smooth Translation variables
+        //smooth Translation variables
 
-		//!
-		//! slow down factor for smooth translation
-		//!
-		public float translationDamping = 1.0f;
+        //!
+        //! slow down factor for smooth translation
+        //!
+        public float translationDamping = 1.0f;
 		//!
 		//! final target position of current translation
 		//!
@@ -189,149 +194,50 @@ namespace vpet
 		//!
 		public Vector3 initialScale;
 		//!
-		//! initial light color at startup, used to reset object (only used when object has a light component)
-		//!
-		public Color initialLightColor;
-		//!
-		//! initial light intensity at startup, used to reset object (only used when object has a light component)
-		//!
-		public float initialLightIntensity;
-		//!
-		//! initial light range at startup, used to reset object (only used when object has a light component)
-		//!
-		public float initialLightRange;
-		//!
-		//! initial light spot angle at startup, used to reset object (only used when object has a light component)
-		//!
-		public float initialSpotAngle;
-
-		//!
 		//! is the object currently selected
 		//!
 		public bool selected = false;
 		//!
 		//! should the slection visualization be drawn now
 		//!
-		private bool drawGlowAgain = true;
-
-		//!
-		//! enumeration of available light parameters
-		//!
-		private enum LightParameter {Intensity, Color, Range, Angle};
-		//!
-		//! last modified light parameter
-		//!
-		LightParameter lastModifiedLightParameter;
-
+		protected bool drawGlowAgain = true;
 		//!
 		//! extends of the object
 		//!
 		public Bounds bounds;
 
-		//!
-		//! target receiving all modifications (e.g. for light -> parent)
-		//!
-		Transform target;
+        //!
+        //! target receiving all modifications (e.g. for light -> parent)
+        //!
+        protected Transform target;
 
-		//!
-		//! is this GameObject a directional light
-		//!
-		public bool isDirectionalLight = false;
-		//!
-		//! is this GameObject a spot light
-		//!
-		public bool isSpotLight = false;
-		//!
-		//! is this GameObject a point light
-		//!
-		public bool isPointLight = false;
+        protected BoxCollider boxCollider;
 
-		private Transform lightTarget = null;
+        public OutlineEffect outlineEffect;
 
-		private Transform lightGeo = null;
+        public Outline outline;
 
         public bool isPlayingAnimation;
 
-        private Light sourceLight = null;
-		public Light SourceLight
-		{
-			get{return sourceLight;}
-		}
+        public bool isPhysicsActive;
 
-		public float exposure = 3f;
+        //!
+        //! Use this for initialization
+        //!
+        protected void Start()
+        {
 
-		public bool IsLight
-		{
-			get {
-				if (sourceLight != null)
-					return true;
-				else
-					return false;
-			}
-		}
+            target = this.transform;
 
-
-		//!
-		//! Use this for initialization
-		//!
-		void Start () 
-		{
-			if (transform.childCount > 0)
-			{
-				lightTarget = transform.GetChild(0);
-				if (lightTarget != null)
-				{
-					sourceLight = lightTarget.GetComponent<Light>();
-				}
-			}
-
-			// if (this.transform.parent.transform.GetComponent<Light>())
-
-			if ( sourceLight )
-			{
-
-				// target = this.transform.parent;
-				target = this.transform;
-
-				initialLightColor = sourceLight.color;
-				initialLightColor.a = 0.25f;
-				initialLightIntensity = sourceLight.intensity;
-
-				if (sourceLight.type == LightType.Directional)
-				{
-					isDirectionalLight = true;
-					lightGeo = lightTarget.Find("Arrow");
-				}
-				else if (sourceLight.type == LightType.Spot)
-				{
-					isSpotLight = true;
-					initialLightRange = sourceLight.range;
-					initialSpotAngle = sourceLight.spotAngle;
-					lightGeo = lightTarget.Find("Cone");
-				}
-				else if (sourceLight.type == LightType.Point)
-				{
-					isPointLight = true;
-					initialLightRange = sourceLight.range;
-					lightGeo = lightTarget.Find("Sphere");
-				}
-
-
-			}
-			else
-			{
-				target = this.transform;
-			}
-
-            //initalize cached references
+            isPhysicsActive = false;
 
             serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
 
 #if !SCENE_HOST
             animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
-			mainController = GameObject.Find("MainController").GetComponent<MainController>();
+            mainController = GameObject.Find("MainController").GetComponent<MainController>();
             sceneLoader = GameObject.Find("SceneAdapter").GetComponent<SceneLoader>();
-           
+
             //cache Reference to animation data
             animData = AnimationData.Data;
 #endif
@@ -339,22 +245,23 @@ namespace vpet
             //update initial parameters
             initialPosition = target.localPosition;
             initialRotation = target.localRotation;
-			initialScale = target.localScale;
+            initialScale = target.localScale;
 
-			lastPosition = initialPosition;
-			lastRotation = initialRotation;
-
-			//generate colliding volumes
-			if(generateBoxCollider)
-			{
-				//calculate bounds
-				bounds = new Bounds( Vector3.zero, Vector3.zero );
+            lastPosition = initialPosition;
+            lastRotation = initialRotation;
 
 
-				bool hasBounds = false;
-				Renderer[] renderers = this.gameObject.GetComponentsInChildren<Renderer>();
-				foreach (Renderer render in renderers)
-				{
+            //generate colliding volumes
+            if (generateBoxCollider)
+            {
+                //calculate bounds
+                bounds = new Bounds(Vector3.zero, Vector3.zero);
+
+
+                bool hasBounds = false;
+                Renderer[] renderers = this.gameObject.GetComponentsInChildren<Renderer>();
+                foreach (Renderer render in renderers)
+                {
                     if (!sceneLoader.isEditable(render.gameObject) || render.gameObject == this.gameObject)
                     {
                         if (hasBounds)
@@ -367,66 +274,40 @@ namespace vpet
                             hasBounds = true;
                         }
                     }
-				}
-
-				BoxCollider col = this.gameObject.AddComponent<BoxCollider>();
-
-                // TODO: temporary
-                if (transform.GetComponent<CameraObject>() != null)
-                {
-                   col.isTrigger = true; // not interacting
-                    this.gameObject.AddComponent<Rigidbody>();
-                    this.gameObject.GetComponent<Rigidbody>().mass = 100.0f;
-                    this.gameObject.GetComponent<Rigidbody>().drag = 2.5f;
-
-
-                    // TODO: temporary
-                    this.gameObject.GetComponent<Rigidbody>().useGravity = false;
                 }
+
+                boxCollider = this.gameObject.AddComponent<BoxCollider>();
+
 
 
                 // col.isTrigger = true; // not interacting
 
+                if (this.GetType() == typeof(SceneObject))
+                {
+                    boxCollider.center = new Vector3((bounds.center.x - this.transform.position.x) / this.transform.lossyScale.x, (bounds.center.y - this.transform.position.y) / this.transform.lossyScale.y, (bounds.center.z - this.transform.position.z) / this.transform.lossyScale.z);
+                    boxCollider.size = new Vector3(bounds.size.x / this.transform.lossyScale.x, bounds.size.y / this.transform.lossyScale.y, bounds.size.z / this.transform.lossyScale.z);
+                    boxCollider.material = new PhysicMaterial();
+                    boxCollider.material.bounciness = 1.0f;
+                }
 
+            }
+            if (this.GetType() == typeof(SceneObject))
+            {
+                Rigidbody rigidbody = this.gameObject.AddComponent<Rigidbody>();
 
-
-                if (sourceLight)
-				{
-                    // BoxCollider col_lightquad = lightTarget.FindChild("LightQuad").GetComponent<BoxCollider>();
-                    // col.size = col_lightquad.size;
-                    // col.center = col_lightquad.center;
-                    col.isTrigger = true; // not interacting
-                    LightIcon iconScript = lightTarget.Find("LightQuad").GetComponent<LightIcon>();
-					iconScript.TargetCollider = col;
-                    iconScript.TargetScale = target.lossyScale; // target.localScale;
-				}
-				else
-				{
-					col.center = new Vector3((bounds.center.x - this.transform.position.x) / this.transform.lossyScale.x, (bounds.center.y - this.transform.position.y) / this.transform.lossyScale.y, (bounds.center.z - this.transform.position.z) / this.transform.lossyScale.z);
-					col.size = new Vector3(bounds.size.x / this.transform.lossyScale.x, bounds.size.y / this.transform.lossyScale.y, bounds.size.z / this.transform.lossyScale.z);
-					col.material = new PhysicMaterial();
-					col.material.bounciness = 1.0f;
-				}
-
-
-			}
-			if ( !isDirectionalLight && !isPointLight && !isSpotLight && this.name != "camera" && transform.GetComponent<CameraObject>() == null)
-			{
-				Rigidbody rigidbody = this.gameObject.AddComponent<Rigidbody>();
-                
                 rigidbody.mass = 100f;
-				rigidbody.drag = 2.5f;
-                
+                rigidbody.drag = 2.5f;
+
                 // TODO: temporary
-				rigidbody.useGravity = true;
-				rigidbody.isKinematic = true;
-				this.GetComponent<SceneObject> ().lockKinematic = true;
-			}
+                rigidbody.useGravity = true;
+                rigidbody.isKinematic = true;
+                this.GetComponent<SceneObject>().lockKinematic = true;
+            }
 
 #if !SCENE_HOST
             //Initalize animation loading if animation available
-            AnimationSerializer asScript =  target.gameObject.AddComponent<AnimationSerializer>();
-			if ( asScript.loadData() )
+            AnimationSerializer asScript = target.gameObject.AddComponent<AnimationSerializer>();
+            if (asScript.loadData())
             {
                 //register the object in the animation Controller
                 GameObject.Find("AnimationController").GetComponent<AnimationController>().registerAnimatedObject(gameObject.GetComponent<SceneObject>());
@@ -435,14 +316,16 @@ namespace vpet
             }
 
             isPlayingAnimation = false;
+            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
 #endif
+
         }
 
 
-		//!
-		//! Update is called once per frame
-		//!
-		void Update () 
+        //!
+        //! Update is called once per frame
+        //!
+        protected void Update () 
 		{
             if (lastPosition != target.localPosition)
 			{
@@ -467,22 +350,31 @@ namespace vpet
 				tempLock = false;
 			}
 #if !SCENE_HOST
-            if (!locked && !tempLock && !mainController.lockScene)    
+            if (!locked && !tempLock && !mainController.lockScene)
+            {
 #else
             if (!locked && !tempLock)
-            isPlayingAnimation = false;
-#endif
             {
-				//publish translation change
-				if (mainController.liveMode)
+                isPlayingAnimation = false;
+                serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+#endif
+                //publish translation change
+                if (mainController.liveMode)
 				{
 					if (translationStillFrameCount == 0) //position just changed
 					{
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
-                            serverAdapter.SendObjectUpdate( this, ParameterType.POS, !selected && !isPlayingAnimation );
+                            if (!selected && !isPlayingAnimation && !isPhysicsActive)
+                            {
+                                isPhysicsActive = true;
+                                serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                                serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                            }
 
-							lastTranslationUpdateTime = Time.time;
+                            serverAdapter.SendObjectUpdate( this, ParameterType.POS );
+
+                            lastTranslationUpdateTime = Time.time;
 							translationUpdateDelayed = false;
 						}
 						else
@@ -492,15 +384,28 @@ namespace vpet
 					}
 					else if (translationUpdateDelayed) //update delayed, but object not moving
 					{
-                        serverAdapter.SendObjectUpdate( this, ParameterType.POS, !selected && !isPlayingAnimation );
+                        serverAdapter.SendObjectUpdate( this, ParameterType.POS );
 
                         lastTranslationUpdateTime = Time.time;
 						translationUpdateDelayed = false;
-					}
+                        if (isPhysicsActive)
+                        {
+                            isPhysicsActive = false;
+                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                        }
+                    }
 				}
 				else if (translationStillFrameCount == 10) //object is now no longer moving
 				{
-                    serverAdapter.SendObjectUpdate(this, ParameterType.POS, !selected && !isPlayingAnimation);
+                    serverAdapter.SendObjectUpdate(this, ParameterType.POS);
+
+                    if (isPhysicsActive)
+                    {
+                        isPhysicsActive = false;
+                        serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                        serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                    }
                 }
 
                 //publish rotation change
@@ -512,7 +417,14 @@ namespace vpet
                     {
                         if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
                         {
-                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT, !selected && !isPlayingAnimation);
+                            if (!selected && !isPlayingAnimation && !isPhysicsActive)
+                            {
+                                isPhysicsActive = true;
+                                serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                                serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                            }
+
+                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
 
                             lastRotationUpdateTime = Time.time;
                             rotationUpdateDelayed = false;
@@ -524,7 +436,14 @@ namespace vpet
                     }
                     else if (rotationUpdateDelayed) //update delayed, but object not moving
                     {
-                        serverAdapter.SendObjectUpdate(this, ParameterType.ROT, !selected && !isPlayingAnimation);
+                        if (isPhysicsActive)
+                        {
+                            isPhysicsActive = false;
+                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                        }
+
+                        serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
 
                         lastRotationUpdateTime = Time.time;
                         rotationUpdateDelayed = false;
@@ -532,40 +451,38 @@ namespace vpet
                 }
                 else if (rotationStillFrameCount == 10) //object is now no longer moving
                 {
-                    serverAdapter.SendObjectUpdate(this, ParameterType.ROT, !selected && !isPlayingAnimation);
+                    if (isPhysicsActive)
+                    {
+                        isPhysicsActive = false;
+                        serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                        serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                    }
+
+                    serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
                 }
 
             }
 
             //turn on highlight modes
             if (selected && drawGlowAgain)
-			{
-				if (lightGeo)
-				{
-					lightGeo.GetComponent<Renderer>().enabled = true;
-                    this.showHighlighted(lightGeo.gameObject);
+            {
+                if (this.GetType() == typeof(SceneObject))
+                {
+                    this.showHighlighted(this.gameObject);
                 }
-                else
-				{
-					this.showHighlighted(this.gameObject);
-				}
-				drawGlowAgain = false;
-			}
+                if (this.GetType() != typeof(SceneObjectLight))
+                    drawGlowAgain = false;
+            }
 
-			//turn off highlight mode
-			else if (!selected && !drawGlowAgain)
-			{
-				if ( lightGeo )
-				{
-					lightGeo.GetComponent<Renderer>().enabled = false;
-				}
-     
-				this.showNormal(this.gameObject);
-				drawGlowAgain = true;
-			}
+            //turn off highlight mode
+            else if (!selected && !drawGlowAgain && this.GetType() != typeof(SceneObjectLight))
+            {
+                this.showNormal(this.gameObject);
+                drawGlowAgain = true;
+            }
 
-			//execute smooth translate
-			if (smoothTranslationActive)
+            //execute smooth translate
+            if (smoothTranslationActive)
 			{
 				target.position = Vector3.Lerp(target.position, targetTranslation, Time.deltaTime * translationDamping);
 				if (Vector3.Distance(target.position, targetTranslation) < 0.0001f)
@@ -586,53 +503,6 @@ namespace vpet
                     //    animationController.setKeyFrame();
 				}
 			}
-		}
-
-
-		//!
-		//! set the light color of this object, if it is a light
-		//!
-		public Color getLightColor()
-		{
-			if (isDirectionalLight || isPointLight || isSpotLight)
-			{
-				return sourceLight.color;
-			}
-			return Color.black;
-		}
-
-		//!
-		//! get the light intensity
-		//!
-		public float getLightIntensity()
-		{
-            if (sourceLight != null) return sourceLight.intensity / VPETSettings.Instance.lightIntensityFactor; // / VPETSettings.Instance.sceneScale;
-			return 0f;
-		}
-
-
-		//!
-		//! get the light range
-		//!
-		public float getLightRange()
-		{
-			if (isPointLight || isSpotLight)
-			{
-                return sourceLight.range / VPETSettings.Instance.sceneScale;
-			}
-			return float.MaxValue;
-		}
-
-		//!
-		//! get the light range
-		//!
-		public float getLightAngle()
-		{
-			if (isSpotLight)
-			{
-				return sourceLight.spotAngle;
-			}
-			return 360f;
 		}
 
 		//!
@@ -685,7 +555,7 @@ namespace vpet
         //! reset all parameters to inital values present on startup
         //!
         public void resetAll()
-		{
+        {
 			locked = false;
 			serverAdapter.SendObjectUpdate(this, ParameterType.LOCK);
             target.localRotation = initialRotation;
@@ -697,26 +567,6 @@ namespace vpet
 
             target.localScale = initialScale;
             serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
-
-            if (isSpotLight || isPointLight || isDirectionalLight) 
-			{
-				sourceLight.color = initialLightColor;
-                sourceLight.intensity = initialLightIntensity;
-				lightGeo.GetComponent<Renderer>().material.color = initialLightColor;
-                serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
-                serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
-                serverAdapter.SendObjectUpdate(this, ParameterType.EXPOSURE);
-            }
-            if (isSpotLight || isPointLight) 
-			{
-				sourceLight.range = initialLightRange;
-                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
-            }
-            if (isSpotLight) 
-			{
-				sourceLight.spotAngle = initialSpotAngle;
-                serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
-            }
         }
 
 		//!
@@ -751,7 +601,7 @@ namespace vpet
 		//! recursively apply highlight shader to object
 		//! @param  obj    gameObject on which to apply the highlight shader
 		//!
-		private void showHighlighted(GameObject obj)
+		protected void showHighlighted(GameObject obj)
 		{
             //do it for parent object
             if (obj.GetComponent<Renderer>() != null) //is object rendered?
@@ -783,7 +633,7 @@ namespace vpet
         //! recursively delete highlight shader of object
         //! @param  obj    gameObject on which to delete the highlight shader
         //!
-        private void showNormal(GameObject obj)
+        protected void showNormal(GameObject obj)
         {
             //do it for parent object
             if (obj.GetComponent<Renderer>() != null) //is object rendered?
@@ -969,7 +819,24 @@ namespace vpet
             set { target.transform.localRotation = Quaternion.Euler(target.transform.localRotation.eulerAngles.x, target.transform.localRotation.eulerAngles.y, value); }
         }
 
+        //!
+        //! Get the kinematic parameter of the object
+        //! @return The scene objects kinematic status
+        //!
+        public bool getKinematic()
+        {
+            if (!isPhysicsActive)
+            {
+                Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
 
+                if (rigidbody)
+                    return rigidbody.isKinematic;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
 
         //!
         //! set the kinematic parameter of the object
@@ -977,141 +844,40 @@ namespace vpet
         //! @param      send    should this modification be published to the server     
         //!
         public void setKinematic(bool set, bool send = true)
-		{
-			if (!lockKinematic && !isDirectionalLight && !isSpotLight && !isPointLight)
-			{
-				this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
-				if (send)
-					serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
-				if (!set)
-					this.gameObject.GetComponent<Rigidbody>().WakeUp();
-			}
-		}
-
-		//!
-		//! set the light color of this object, if it is a light
-		//! @param      color     new color of the light  
-		//!
-		public void setLightColor(Color color)
-		{
-			if (isDirectionalLight || isPointLight || isSpotLight)
-			{
-				color.a = 0.25f;
-				sourceLight.color = color;
-				lightGeo.GetComponent<Renderer>().material.color = color;
-				lastModifiedLightParameter = LightParameter.Color;
-
-                serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
-            }
-		}
-
-        /*
-        public float LightIntensity
         {
-            get { return getLightIntensity(); }
-            set { setLightIntensity(value);  }
+            if (this.GetType() != typeof(SceneObjectLight))
+            {
+                this.lockKinematic = set;
+
+                this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
+                if (send)
+                    serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                if (!set)
+                    this.gameObject.GetComponent<Rigidbody>().WakeUp();
+            }
         }
-        */
 
-		//!
-		//! set the light intensity of this object, if it is a light
-		//! @param      intensity     new intensity of the light  
-		//!
-		public void setLightIntensity(float intensity)
-		{
-			if (isDirectionalLight || isPointLight || isSpotLight)
-			{
-                sourceLight.intensity = intensity * VPETSettings.Instance.lightIntensityFactor; // * VPETSettings.Instance.sceneScale;
-				lastModifiedLightParameter = LightParameter.Intensity;
-                serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
-            }
-		}
+        public void enableRigidbody(bool set)
+        {
+            Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
+            if (set)
+                rigidbody.isKinematic = lockKinematic;
+            else
+                rigidbody.isKinematic = false;
 
-
-		//!
-		//! set the light range of this object, if it is a light
-		//! @param      range     new range of the light  
-		//!
-		public void setLightRange(float range)
-		{
-			if (isPointLight || isSpotLight)
-			{
-                sourceLight.range = range * VPETSettings.Instance.sceneScale;
-				lastModifiedLightParameter = LightParameter.Range;
-                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
-			}
-		}
-
-		//!
-		//! set the light delta range of this object, if it is a light
-		//! @param      delta     new delta range of the light  
-		//!
-		public void setLightDeltaRange(float delta)
-		{
-			if (isPointLight || isSpotLight)
-			{
-				sourceLight.range += delta;
-				lastModifiedLightParameter = LightParameter.Range;
-                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
-            }
-		}
-
-		//!
-		//! set the light cone angle of this object, if it is a light
-		//! @param      angle     new cone angle of the light  
-		//!
-		public void setLightAngle(float angle)
-		{
-			if (isSpotLight)
-			{
-				sourceLight.spotAngle = angle;
-				lastModifiedLightParameter = LightParameter.Angle;
-                serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
-            }
-		}
-
-		//!
-		//! hide or show the visualization (cone, sphere, arrow) of the light
-		//! @param      set     hide-> true, show->false   
-		//!
-		public void hideLightVisualization(bool set)
-		{
-			if ( lightGeo )
-			{
-				lightGeo.GetComponent<Renderer>().enabled = !set;
-			}
-		}
+        }
 
 #if !SCENE_HOST
         //!
         //! send updates of the last modifications to the network server
         //!
-        public void sendUpdate()
+        protected void sendUpdate()
 		{
 			if (mainController.ActiveMode == MainController.Mode.scaleMode)
 			{
                 serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
             }
-            if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
-            {
-                switch (lastModifiedLightParameter)
-                {
-                    case (LightParameter.Intensity):
-                        serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
-                        break;
-                    case (LightParameter.Color):
-                        serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
-                        break;
-                    case (LightParameter.Angle):
-                        serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
-                        break;
-                    case (LightParameter.Range):
-                        serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            
         }
 
         //!

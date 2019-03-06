@@ -681,7 +681,7 @@ namespace vpet
                 hideParameterMenu();
                 hideRangeSlider();
             }
-            lightSettingsWidget.show( mainController.getCurrentSelection().GetComponent<SceneObject>() );
+            lightSettingsWidget.show( mainController.getCurrentSelection().GetComponent<SceneObjectLight>() );
 	    }
 
 	    //!

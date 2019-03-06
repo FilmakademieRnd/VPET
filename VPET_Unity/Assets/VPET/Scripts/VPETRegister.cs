@@ -38,8 +38,8 @@ namespace vpet
     // Basic, Mocap
     public enum ParameterType
     {
-        POS, ROT, SCALE, LOCK, KINEMATIC, // node
-        FOV, FOCUS, APERTURE,   // camera
+        POS, ROT, SCALE, LOCK, HIDDENLOCK, KINEMATIC, // node
+        FOV, ASPECT, FOCUSDIST, FOCUSSIZE, APERTURE,   // camera
         COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
         BONEANIM, // animation bone
         VERTEXANIM, // animation vertex

@@ -140,13 +140,6 @@ namespace vpet
 	    }
 		*/
 
-        //!
-        //! execute a server update for the currently selected object
-        //!
-        public void sendUpdateToServer()
-	    {
-	        if (currentSelection) currentSceneObject.sendUpdate();
-	    }
 	
 	    //!
 	    //! open light menu when currentSelection is a light otherwise open the objectMenu
@@ -156,9 +149,7 @@ namespace vpet
 	    {
 			if(currentSelection)
 	        {
-	            if (currentSceneObject.isDirectionalLight ||
-	                currentSceneObject.isPointLight ||
-	                currentSceneObject.isSpotLight)
+	            if (currentSceneObject.GetType() == typeof(SceneObjectLight))
 	            {
 	                activeMode = Mode.lightMenuMode;
 	            }
@@ -208,7 +199,11 @@ namespace vpet
 	    {
 	        for(int i = 0; i < obj.childCount; i++)
 	        {
-	            if (obj.GetChild(i).GetComponent<SceneObject>() && obj.GetChild(i).gameObject.activeSelf)
+                SceneObject sco = obj.GetChild(i).GetComponent<SceneObject>();
+                SceneObject scl = obj.GetChild(i).GetComponent<SceneObjectLight>();
+                SceneObject scc = obj.GetChild(i).GetComponent<SceneObjectCamera>();
+
+                if (sco && obj.GetChild(i).gameObject.activeSelf)
 	            {
 	                obj.GetChild(i).GetComponent<SceneObject>().resetAll();
 	            }
@@ -243,14 +238,6 @@ namespace vpet
 			}
 			*/
 		}
-
-        //!
-        //! turn on/off own camera position and rotation publishing
-        //!
-        public void togglePubCam()
-        {
-            serverAdapter.publishCam = !serverAdapter.publishCam;
-        }
 	
 	    //!
 	    //! toggle ignore rotation
@@ -793,8 +780,8 @@ namespace vpet
             // update light params
             foreach (GameObject obj in SceneLoader.SelectableLights)
             {
-                float lightRange = obj.GetComponent<SceneObject>().getLightRange() / sceneScalePrevious * v;
-                obj.GetComponent<SceneObject>().setLightRange(lightRange);
+                float lightRange = obj.GetComponent<SceneObjectLight>().getLightRange() / sceneScalePrevious * v;
+                obj.GetComponent<SceneObjectLight>().setLightRange(lightRange);
                 //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
                 obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
             }
