@@ -166,13 +166,45 @@ namespace vpet
 	            openMenu();
 	        }
 	    }
-	
-	
-	    //!
-	    //! click on the light intensity button
-	    //! @param      active      state that the button dows no have (on or off)
-	    //!
-	    public void buttonLightColorClicked(bool active)
+
+        //!
+        //! click on the camera FOV button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonCamFOVClicked(bool active)
+        {
+            if (active)
+            {
+                activeMode = Mode.cameraSettingsMode;
+            }
+            else
+            {
+                openMenu();
+            }
+        }
+
+        //!
+        //! click on the canera look through button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonLookThroughClicked(bool active) 
+        {
+            currentSelection.GetComponent<SceneObject>().hideVisualization(active);
+            if (active)
+            {
+                activeMode = Mode.lookThroughCamMode;
+            }
+            else
+            {
+                openMenu();
+            }
+        }
+
+        //!
+        //! click on the light intensity button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonLightColorClicked(bool active)
 	    {
 	        if (active)
 	        {

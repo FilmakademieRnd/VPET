@@ -86,7 +86,7 @@ namespace vpet
         //!
         //! cached references to camera adapter
         //!
-        private MoveCamera cameraAdapter;
+        public MoveCamera cameraAdapter;
         //!
         //! cached references to scene adapter
         //!
@@ -219,13 +219,17 @@ namespace vpet
             objectLinkCamera,           // deactivate kinematic and parent to camera
             pointToMoveMode,            // click on ground to move object
             lightSettingsMode,          // show/use light settings widget (intensity, color)
+            cameraSettingsMode,         // show/use camera settings widget
+            cameraLockedMode,           // locked camera scouting mode
             objectMenuMode,             // show centre menu (object or animation icons)
             lightMenuMode,              // show centre menu (light icons depending on light type)
-            addMode,                    // muldtiple selection TODO: not implemented yet
+            cameraMenuMode,             // show centre menu (camera icons)
+            addMode,                    // multiple selection TODO: not implemented yet
             idle,                       // no selection and no action
-            animationEditing            // set animation editing, show translation manipulator
-            // scoutMode
-            };
+            animationEditing,           // set animation editing, show translation manipulator
+            lookThroughCamMode,          //  camera scouting mode
+            lookThroughLightMode        //  light scouting mode
+        };
 
 
 		//!

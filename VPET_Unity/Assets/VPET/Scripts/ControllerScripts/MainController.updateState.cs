@@ -154,12 +154,26 @@ namespace vpet
 	                    break;
 	                case (Mode.lightMenuMode):
 	                    break;
-	                case (Mode.lightSettingsMode):
+                    case (Mode.cameraMenuMode):
+                        break;
+                    case (Mode.lightSettingsMode):
 	                    ui.hideLightSettingsWidget();
                         ui.hideRangeSlider();
                         ui.hideParameterMenu();
                         break;
-	                case (Mode.addMode):
+                    case (Mode.lookThroughCamMode):
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
+                        break;
+                    case (Mode.lookThroughLightMode):
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
+                        break;
+                    case (Mode.cameraSettingsMode):
+                        ui.hideRangeSlider();
+                        ui.hideParameterMenu();
+                        break;
+                    case (Mode.addMode):
 	                    break;
 	                default:
 	                    break;
@@ -249,11 +263,23 @@ namespace vpet
                             */
                         }
                         break;
-	                case (Mode.lightSettingsMode):
+                    case (Mode.cameraMenuMode):
+                        if (currentSelection && ui.LayoutUI != layouts.SCOUT)
+                        {
+                            ui.drawCenterMenu(layouts.CAMERA);
+                        }
+                        break;
+                    case (Mode.cameraLockedMode):
+                        if (currentSelection && ui.LayoutUI != layouts.SCOUT)
+                        {
+                            ui.drawCenterMenu(layouts.CAMERALOCKED);
+                        }
+                        break;
+                    case (Mode.lightSettingsMode):
                         SceneObjectLight sol = (SceneObjectLight) currentSceneObject;
                         if (currentSelection && sol)
                         {
-                            sol.hideLightVisualization(true);
+                            sol.hideVisualization(true);
                         }
                         // ConnectRangeSlider(currentSceneObject, "LightIntensity", 1f);
                         ConnectRangeSlider(sol.setLightIntensity, sol.getLightIntensity(), 0.1f/VPETSettings.Instance.lightIntensityFactor);

@@ -56,6 +56,8 @@ namespace vpet
 
         public float exposure = 3f;
 
+        private Renderer renderer;
+
 
         // Start is called before the first frame update
         void Start()
@@ -100,7 +102,7 @@ namespace vpet
             iconScript.TargetCollider = boxCollider;
             iconScript.TargetScale = target.lossyScale; // target.localScale;
 
-
+            renderer = lightGeo.GetComponent<Renderer>();
         }
 
         // Update is called once per frame
@@ -113,7 +115,7 @@ namespace vpet
             {
                 if (lightGeo)
                 {
-                    lightGeo.GetComponent<Renderer>().enabled = true;
+                    renderer.enabled = true;
                     this.showHighlighted(lightGeo.gameObject);
                 }
                 drawGlowAgain = false;
@@ -123,7 +125,7 @@ namespace vpet
             {
                 if (lightGeo)
                 {
-                    lightGeo.GetComponent<Renderer>().enabled = false;
+                    renderer.enabled = false;
                 }
                 this.showNormal(this.gameObject);
                 drawGlowAgain = true;
@@ -184,7 +186,7 @@ namespace vpet
             {
                 sourceLight.color = initialLightColor;
                 sourceLight.intensity = initialLightIntensity;
-                lightGeo.GetComponent<Renderer>().material.color = initialLightColor;
+                renderer.material.color = initialLightColor;
                 serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
                 serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
                 serverAdapter.SendObjectUpdate(this, ParameterType.EXPOSURE);
@@ -211,7 +213,7 @@ namespace vpet
             {
                 color.a = 0.25f;
                 sourceLight.color = color;
-                lightGeo.GetComponent<Renderer>().material.color = color;
+                renderer.material.color = color;
                 lastModifiedLightParameter = LightParameter.Color;
 
                 serverAdapter.SendObjectUpdate(this, ParameterType.COLOR);
@@ -287,11 +289,11 @@ namespace vpet
         //! hide or show the visualization (cone, sphere, arrow) of the light
         //! @param      set     hide-> true, show->false   
         //!
-        public void hideLightVisualization(bool set)
+        public override void hideVisualization(bool set)
         {
             if (lightGeo)
             {
-                lightGeo.GetComponent<Renderer>().enabled = !set;
+                renderer.enabled = !set;
             }
         }
 

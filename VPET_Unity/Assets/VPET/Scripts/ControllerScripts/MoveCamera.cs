@@ -182,6 +182,11 @@ namespace vpet
         //!
         public bool TangoBuild4LenovoPhab2 = false;
 
+        //!
+        //! Current main camera
+        //!
+        private Camera mainCamera;
+
 #if USE_TANGO || USE_ARKIT
         private Transform trackingTransform;
 #endif
@@ -200,8 +205,8 @@ namespace vpet
         //! set / get camera field of view (vertical)
         public float Fov
         {
-            set { this.GetComponent<Camera>().fieldOfView = value; }
-            get { return this.GetComponent<Camera>().fieldOfView; }
+            set { mainCamera.fieldOfView = value; }
+            get { return mainCamera.fieldOfView; }
         }
 
         void Awake()
@@ -222,22 +227,25 @@ namespace vpet
 #elif (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
 	        // SensorHelper.ActivateRotation();
 #endif
+
+            //!
+            mainCamera = this.GetComponent<Camera>();
             //sync renderInFront camera to mainCamera
             Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
             if (frontCamera)
             {
-                frontCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
-                frontCamera.farClipPlane = this.GetComponent<Camera>().farClipPlane;
-                frontCamera.nearClipPlane = this.GetComponent<Camera>().nearClipPlane;
+                frontCamera.fieldOfView = mainCamera.fieldOfView;
+                frontCamera.farClipPlane = mainCamera.farClipPlane;
+                frontCamera.nearClipPlane = mainCamera.nearClipPlane;
             }
 
             //sync Outline camera to mainCamera
             if (frontCamera.transform.childCount > 0)
             {
                 Camera outlineCamera = frontCamera.transform.GetChild(0).GetComponent<Camera>();
-                outlineCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
-                outlineCamera.farClipPlane = this.GetComponent<Camera>().farClipPlane;
-                outlineCamera.nearClipPlane = this.GetComponent<Camera>().nearClipPlane;
+                outlineCamera.fieldOfView = mainCamera.fieldOfView;
+                outlineCamera.farClipPlane = mainCamera.farClipPlane;
+                outlineCamera.nearClipPlane = mainCamera.nearClipPlane;
             }
 
             scene = GameObject.Find("Scene").transform;
@@ -271,21 +279,7 @@ namespace vpet
         //!
         void Update()
         {
-
-            //Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale);
-            //Camera.main.farClipPlane = Mathf.Max(100f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + VPETSettings.Instance.maxExtend * VPETSettings.Instance.sceneScale));
             mainController.UpdatePropertiesSecondaryCameras();
-
-			//forward changes of the fov to the secondary (render in front) camera
-            Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
-            frontCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
-
-            //forward changes of the fov to the third (overlay) camera
-            if (frontCamera.transform.childCount > 0)
-            {
-                Camera outlineCamera = frontCamera.transform.GetChild(0).GetComponent<Camera>();
-                outlineCamera.fieldOfView = this.GetComponent<Camera>().fieldOfView;
-            }
 
             //get sensor data from native Plugin on Windows
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
@@ -354,22 +348,6 @@ namespace vpet
                 oldPosition = trackingTransform.position;
                 oldRotation = trackingTransform.rotation;
 #endif
-       //         //reset rotation of attached gameObjects and send update to server if neccessary 
-       //         if (this.transform.childCount > 1)
-       //         {
-       //             this.transform.GetChild(1).rotation = childrotationBuffer;
-       //             if (this.transform.GetChild(1).position != lastPosition)
-       //             {
-       //                 //only sends updates every 30 times per second (at most)
-       //                 if ((Time.time - lastUpdateTime) >= updateIntervall)
-       //                 {
-       //                     lastUpdateTime = Time.time;
-       //                     lastPosition = this.transform.GetChild(1).position;
-							//// serverAdapter.sendTranslation(this.transform.GetChild(1) );
-       //                     serverAdapter.SendObjectUpdate(this.transform.GetChild(1));
-       //                 }
-       //             }
-       //         }
 
 				if (joystickAdapter) 
 				{
@@ -406,6 +384,14 @@ namespace vpet
                 {
                     smoothTranslationActive = false;
                 }
+            }
+
+            if (mainController.ActiveMode == MainController.Mode.lookThroughCamMode ||
+                mainController.ActiveMode == MainController.Mode.lookThroughLightMode)
+            {
+                Transform currentSelectedTransform = mainController.getCurrentSelection().transform;
+                currentSelectedTransform.position = this.transform.position;
+                currentSelectedTransform.rotation = this.transform.rotation;
             }
 
             //calculate & display frames per second

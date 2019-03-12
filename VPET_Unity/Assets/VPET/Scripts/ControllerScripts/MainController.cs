@@ -149,10 +149,17 @@ namespace vpet
 	    {
 			if(currentSelection)
 	        {
-	            if (currentSceneObject.GetType() == typeof(SceneObjectLight))
-	            {
-	                activeMode = Mode.lightMenuMode;
-	            }
+                if (currentSceneObject.GetType() == typeof(SceneObjectLight))
+                {
+                    activeMode = Mode.lightMenuMode;
+                }
+                else if (currentSceneObject.GetType() == typeof(SceneObjectCamera))
+                {
+                    if (currentSceneObject.locked)
+                        activeMode = Mode.cameraLockedMode;
+                    else
+                        activeMode = Mode.cameraMenuMode;
+                }
                 else
 				{
                     activeMode = Mode.objectMenuMode;
@@ -281,45 +288,50 @@ namespace vpet
         //! reposition the camera to predefined positions
         //!
         public void repositionCamera()
-	    {
-			if (!arMode) 
-			{
-				setPerspectiveCamera();
-	            if (SceneLoader.SceneCameraList.Count > 0)
-	            {
-						GameObject camObject = SceneLoader.SceneCameraList [camPrefabPosition];
+        {
+            if (!arMode)
+            {
+                setPerspectiveCamera();
+                if (SceneLoader.SceneCameraList.Count > 0)
+                {
+                    GameObject camObject = SceneLoader.SceneCameraList[camPrefabPosition];
+                    SceneObjectCamera soc = camObject.GetComponent<SceneObjectCamera>();
 
-						Camera.main.transform.position = camObject.transform.position; // cameraPositions[camPrefabPosition];
-						Camera.main.transform.rotation = camObject.transform.rotation; // cameraPositions[camPrefabPosition];
+                    Camera.main.transform.position = camObject.transform.position; 
+                    Camera.main.transform.rotation = camObject.transform.rotation;          
+                    Camera.main.nearClipPlane = 36.0f * VPETSettings.Instance.sceneScale;
+                    Camera.main.farClipPlane = soc.far;
+                    Camera.main.fieldOfView = soc.fov;
 
-						// callibrate 
-						cameraAdapter.calibrate (camObject.transform.rotation);		
+                    // callibrate 
+                    cameraAdapter.calibrate(camObject.transform.rotation);
 
-						// set camera properties
-						CameraObject camScript = camObject.GetComponent<CameraObject> ();
-						if (camScript != null) {
-							Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
-                            //Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale;
-                            //Camera.main.farClipPlane = camScript.far * VPETSettings.Instance.sceneScale;
-							UpdatePropertiesSecondaryCameras ();
-						}
-						// set properties for DOF component from CameraObject
-						//Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
-						//Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
-						//Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
-					}
-					if (SceneLoader.SceneCameraList.Count == 0)
-						camPrefabPosition = 0;
-					else
-						camPrefabPosition = (camPrefabPosition + 1) % SceneLoader.SceneCameraList.Count;
-		      }
-	    }
-	
-	    //!
-	    //! getter function for the current selection
-	    //! @return     reference to the currently selected object
-	    //!
-	    public Transform getCurrentSelection()
+                    // set camera properties
+                    CameraObject camScript = camObject.GetComponent<CameraObject>();
+                    if (camScript != null)
+                    {
+                        Camera.main.fieldOfView = camScript.fov; //.hFovToVFov(); // convert horizontal fov from Katana to vertical
+                                                                 //Camera.main.nearClipPlane = camScript.near * VPETSettings.Instance.sceneScale;
+                                                                 //Camera.main.farClipPlane = camScript.far * VPETSettings.Instance.sceneScale;
+                        UpdatePropertiesSecondaryCameras();
+                    }
+                    // set properties for DOF component from CameraObject
+                    //Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
+                    //Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
+                    //Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
+                }
+                if (SceneLoader.SceneCameraList.Count == 0)
+                    camPrefabPosition = 0;
+                else
+                    camPrefabPosition = (camPrefabPosition + 1) % SceneLoader.SceneCameraList.Count;
+            }
+        }
+
+        //!
+        //! getter function for the current selection
+        //! @return     reference to the currently selected object
+        //!
+        public Transform getCurrentSelection()
 	    {
 	        return currentSelection;
 	    }

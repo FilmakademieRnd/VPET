@@ -281,17 +281,15 @@ namespace vpet
 
 
                 // col.isTrigger = true; // not interacting
-
-                if (this.GetType() == typeof(SceneObject))
+                if ((this is SceneObject) && !(this is SceneObjectLight))
                 {
                     boxCollider.center = new Vector3((bounds.center.x - this.transform.position.x) / this.transform.lossyScale.x, (bounds.center.y - this.transform.position.y) / this.transform.lossyScale.y, (bounds.center.z - this.transform.position.z) / this.transform.lossyScale.z);
                     boxCollider.size = new Vector3(bounds.size.x / this.transform.lossyScale.x, bounds.size.y / this.transform.lossyScale.y, bounds.size.z / this.transform.lossyScale.z);
                     boxCollider.material = new PhysicMaterial();
                     boxCollider.material.bounciness = 1.0f;
                 }
-
             }
-            if (this.GetType() == typeof(SceneObject))
+            if (this is SceneObject)
             {
                 Rigidbody rigidbody = this.gameObject.AddComponent<Rigidbody>();
 
@@ -466,7 +464,8 @@ namespace vpet
             //turn on highlight modes
             if (selected && drawGlowAgain)
             {
-                if (this.GetType() == typeof(SceneObject))
+                if ((this.GetType() == typeof(SceneObject)) ||
+                    (this.GetType() == typeof(SceneObjectCamera)))
                 {
                     this.showHighlighted(this.gameObject);
                 }
@@ -948,12 +947,18 @@ namespace vpet
 	    {
 	        animationLooping = set;
 	    }
-	
-	    //!
-	    //! sets the keyframe at the current time of the animation to a new value for the currently animated object
-	    //! automatically adds keyframe if there is none at this time of the animation
-	    //!
-	    public void setKeyframe()
+
+        //!
+        //! hide or show the visualization (cone, sphere, arrow) of the light
+        //! @param      set     hide-> true, show->false   
+        //!
+        public virtual void hideVisualization(bool set) { }
+
+        //!
+        //! sets the keyframe at the current time of the animation to a new value for the currently animated object
+        //! automatically adds keyframe if there is none at this time of the animation
+        //!
+        public void setKeyframe()
 	    {
 	        bool movedSuccessfully = false;
 	        int keyIndex = -1;

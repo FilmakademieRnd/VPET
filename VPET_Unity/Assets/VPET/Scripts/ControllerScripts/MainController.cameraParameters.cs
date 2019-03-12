@@ -57,9 +57,28 @@ namespace vpet
 			return -1.0f;
 		}
 
-        public void setCamParamFov(float focalLength)
+        public void setCamParamFocalLength(float focalLength)
         {
-            cameraAdapter.Fov = focalLength.lensToVFov();
+            float fov = Extensions.lensToVFov(focalLength);
+            SceneObjectCamera currentCamera = (SceneObjectCamera) currentSceneObject;
+            if (currentCamera)
+            {
+                currentCamera.fov = fov;
+            }
+            if (activeMode == Mode.lookThroughCamMode)
+                cameraAdapter.Fov = fov;
+        }
+
+        public void setLightParamAngle(float angle)
+        {
+            SceneObjectLight currentLight = (SceneObjectLight) currentSceneObject;
+
+            if (currentLight)
+            {
+                currentLight.setLightAngle(angle);
+            }
+
+            cameraAdapter.Fov = angle;
         }
 
         //! change the desired camera parameter (usually a callback triggered by the slider changes)

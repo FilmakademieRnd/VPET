@@ -37,6 +37,8 @@ namespace vpet
         //!
         public float aperture = 0.5f;
 
+        private Renderer renderer;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -47,16 +49,30 @@ namespace vpet
             this.gameObject.GetComponent<Rigidbody>().mass = 100.0f;
             this.gameObject.GetComponent<Rigidbody>().drag = 2.5f;
 
-
             // TODO: temporary
             this.gameObject.GetComponent<Rigidbody>().useGravity = false;
 
+            renderer = this.transform.GetChild(0).GetComponent<Renderer>();
+        }
+
+        //!
+        //! hide or show the visualization of the camera
+        //! @param      set     hide-> true, show->false   
+        //!
+        public override void hideVisualization(bool set)
+        {
+            renderer.enabled = !set;
         }
 
         // Update is called once per frame
         void Update()
         {
             base.Update();
+
+            if(!selected && !renderer.enabled)
+            {
+                renderer.enabled = true;
+            }
         }
     }
 }

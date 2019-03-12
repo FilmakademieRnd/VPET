@@ -120,13 +120,12 @@ namespace vpet
         //! @param      sObject     Pointer to the object, selected by user
         //!
         private void select(Transform sObject) {
-
-            if (sObject.GetComponent<SceneObject>().locked || (ui.LayoutUI == layouts.SCOUT))
-                return;
-
             //cache current selection
             currentSelection = sObject;
             currentSceneObject = sObject.GetComponent<SceneObject>();
+
+            if ((currentSceneObject.locked && !(currentSceneObject is SceneObjectCamera)) || (ui.LayoutUI == layouts.SCOUT))
+                return;
 
             //set selection
             currentSceneObject.selected = true;
@@ -138,6 +137,16 @@ namespace vpet
                 if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode || activeMode == Mode.animationEditing || activeMode == Mode.lightSettingsMode))
                 {
                     activeMode = Mode.lightMenuMode;
+                }
+            }
+            else if (currentSceneObject.GetType() == typeof(SceneObjectCamera))
+            {
+                if (!(activeMode == Mode.translationMode || activeMode == Mode.objectLinkCamera || activeMode == Mode.rotationMode || activeMode == Mode.scaleMode || activeMode == Mode.animationEditing))
+                {
+                    if (!getCurrentSelection().GetComponent<SceneObject>().locked)
+                        activeMode = Mode.cameraMenuMode;
+                    else
+                        activeMode = Mode.cameraLockedMode;
                 }
             }
             else

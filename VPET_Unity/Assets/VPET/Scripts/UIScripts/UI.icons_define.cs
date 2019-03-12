@@ -61,6 +61,8 @@ namespace vpet
         private Sprite AssetLight_sel;
         private Sprite AssetObject_nrm;
         private Sprite AssetObject_sel;
+        private Sprite AttatchToCamera_sel;
+        private Sprite AttatchToCamera_nrm;
         private Sprite EditMode_AnnotationsRead_nrm;
         private Sprite EditMode_AnnotationsRead_sel;
         private Sprite EditMode_AnnotationsWrite_nrm;

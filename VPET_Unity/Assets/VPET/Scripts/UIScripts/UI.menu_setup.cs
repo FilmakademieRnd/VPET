@@ -237,32 +237,30 @@ namespace vpet
             buttonTrans.AddAction(EditMode_Translate_sel, EditMode_Translate_nrm, () => editTranslation(buttonTrans));
             centerMenu.addButton(buttonTrans, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHT);
-            centerMenu.addButtonToLayout(buttonTrans, layouts.MOCAP);
+            centerMenu.addButtonToLayout(buttonTrans, layouts.CAMERA);
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
             UI.OnUIChanged.AddListener(() => { buttonRot.Toggled = mainController.ActiveMode == MainController.Mode.rotationMode; });
             centerMenu.addButton(buttonRot, layouts.OBJECT);
-            centerMenu.addButtonToLayout(buttonRot, layouts.MOCAP);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHT);
+            centerMenu.addButtonToLayout(buttonRot, layouts.CAMERA);
             // scale
             IMenuButton buttonScl = Elements.MenuButtonToggle();
             buttonScl.AddAction(EditMode_Scale_sel, EditMode_Scale_nrm, () => editScale(buttonScl));
             centerMenu.addButton(buttonScl, layouts.OBJECT);
-            centerMenu.addButton(buttonScl, layouts.MOCAP);
             // reset
             IMenuButton buttonReset = Elements.MenuButton();
 			buttonReset.AddAction(EditMode_Reset_sel, EditMode_Reset_nrm, call: () => objectReset() );
 			centerMenu.addButton( buttonReset, layouts.OBJECT );
-            centerMenu.addButton(buttonReset, layouts.MOCAP);
             centerMenu.addButtonToLayout(buttonReset, layouts.LIGHT);
-            // graviy/kinematic on off
+            centerMenu.addButtonToLayout(buttonReset, layouts.CAMERA);
+            // gravity/kinematic on off
             IMenuButton buttonKin = Elements.MenuButtonToggle();
 			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic() );
             UI.OnUIChanged.AddListener(() => { buttonKin.Toggled = mainController.HasGravityOn(); });  // register for ui changes 
             centerMenu.OnMenuOpen.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );
-            centerMenu.addButton(buttonKin, layouts.MOCAP);
             // light color
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
             buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 
@@ -271,6 +269,10 @@ namespace vpet
             IMenuButton buttonLightSet = Elements.MenuButtonToggle();
             buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightSettings(buttonLightSet));
             centerMenu.addButton(buttonLightSet, layouts.LIGHT);
+            // light look through
+            IMenuButton buttonLookLight = Elements.MenuButtonToggle();
+            buttonLookLight.AddAction(GeneralMenu_Perspective_sel, GeneralMenu_Perspective_nrm, call: () => lookThroughLight(buttonLookLight));
+            centerMenu.addButton(buttonLookLight, layouts.LIGHT);
 
             /*
             // angle
@@ -309,6 +311,15 @@ namespace vpet
             IMenuButton buttonAniRem = Elements.MenuButton();
             buttonAniRem.AddAction(AnimationMode_DeleteKeyframe_sel, AnimationMode_DeleteKeyframe_nrm, call: () => animationDelete());
             centerMenu.addButton(buttonAniRem, layouts.ANIMATION);
+            // camera look through
+            IMenuButton buttonLookCamera = Elements.MenuButtonToggle();
+            buttonLookCamera.AddAction(GeneralMenu_Perspective_sel, GeneralMenu_Perspective_nrm, call: () => lookThroughCamera(buttonLookCamera));
+            centerMenu.addButton(buttonLookCamera, layouts.CAMERA);
+            centerMenu.addButton(buttonLookCamera, layouts.CAMERALOCKED);
+            // camera field of view
+            IMenuButton buttonCameraFOV = Elements.MenuButtonToggle();
+            buttonCameraFOV.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => cameraFOV(buttonCameraFOV));
+            centerMenu.addButton(buttonCameraFOV, layouts.CAMERA);
         }
 
 

@@ -304,7 +304,17 @@ namespace vpet
 
             // set up object basics
             GameObject objMain = new GameObject();
-	        objMain.name =Encoding.ASCII.GetString(nodeCam.name);
+            objMain.name = Encoding.ASCII.GetString(nodeCam.name);
+
+            // add camera dummy mesh
+            GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
+            GameObject cameraInstance = GameObject.Instantiate(cameraObject);
+            //cameraInstance.SetActive(false);
+            cameraInstance.name = cameraObject.name;
+            cameraInstance.transform.SetParent(objMain.transform, false);
+            cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 100.0f;
+            cameraInstance.transform.localPosition = new Vector3(0, 0, 0);
+            cameraInstance.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
 
             // add camera data script and set values
             //if (nodeCam.editable)
@@ -318,9 +328,9 @@ namespace vpet
 	
 	        // place camera
 	        objMain.transform.parent = parentTransform; 
-	        objMain.transform.localPosition =  pos; 
-	        objMain.transform.localRotation =   rot; 
-	        objMain.transform.localScale =    scl; 
+	        objMain.transform.localPosition = pos; 
+	        objMain.transform.localRotation = rot; 
+	        objMain.transform.localScale = scl; 
 	        
             // Rotate 180 around y-axis because lights and cameras have additional eye space coordinate system
 	        //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
@@ -330,15 +340,6 @@ namespace vpet
             
 	        // add to list for later access as camera location
 	        SceneLoader.SceneCameraList.Add( objMain );
-            
-            // add camera dummy mesh
-            GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
-            GameObject cameraInstance = GameObject.Instantiate(cameraObject);
-            //cameraInstance.SetActive(false);
-            cameraInstance.name = cameraObject.name;
-            cameraInstance.transform.SetParent(objMain.transform, false);
-            cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 2f;
-            cameraInstance.transform.localPosition = new Vector3(0, 0, -.5f * VPETSettings.Instance.sceneScale);
 
             return objMain;
 	    }

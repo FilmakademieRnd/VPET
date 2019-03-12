@@ -152,7 +152,7 @@ namespace vpet
 			mainController.repositionCamera();
 		}
 
-		private void ncamCamera()
+        private void ncamCamera()
 		{
 			secondaryMenu.reset();
 			mainController.toggleNcam();
@@ -185,7 +185,7 @@ namespace vpet
         private void cameraFov(IMenuButton button)
         {
             if (button.Toggled)
-                mainController.ConnectRangeSlider(mainController.setCamParamFov, Camera.main.fieldOfView.vFovToLens());
+                mainController.ConnectRangeSlider(mainController.setCamParamFocalLength, Camera.main.focalLength);
             else
                 hideRangeSlider();
         }
@@ -272,6 +272,72 @@ namespace vpet
             centerMenu.animateActive(((Button)button).gameObject);
             lightSettingsWidget.SetSliderType(LightSettingsWidget.SliderType.RANGE);
             mainController.buttonLightRangeClicked (button.Toggled);
+        }
+
+        //!
+        //! click on light look through
+        //! @param      button      button sent the request
+        //!	
+        private void lookThroughLight(IMenuButton button)
+        {
+            centerMenu.animateActive(((Button)button).gameObject);
+            if (button.Toggled)
+            {
+                Transform currentSelectedTransform = mainController.getCurrentSelection();
+                Camera.main.transform.position = currentSelectedTransform.position;
+                Camera.main.transform.rotation = currentSelectedTransform.rotation;
+                mainController.cameraAdapter.Fov = currentSelectedTransform.GetComponent<SceneObjectLight>().getLightAngle();
+
+                SceneObjectLight sol = mainController.getCurrentSelection().GetComponent<SceneObjectLight>();
+                if (sol && sol.isSpotLight)
+                    mainController.ConnectRangeSlider(mainController.setLightParamAngle, sol.getLightAngle());
+            }
+            else
+                hideRangeSlider();
+
+            mainController.buttonLookThroughClicked(button.Toggled);
+        }
+
+        //!
+        //! click on camera look through
+        //! @param      button      button sent the request
+        //!	
+        private void lookThroughCamera(IMenuButton button)
+        {
+            centerMenu.animateActive(((Button)button).gameObject);
+            if (button.Toggled)
+            {
+                Transform currentSelectedTransform = mainController.getCurrentSelection();
+                Camera.main.transform.position = currentSelectedTransform.position;
+                Camera.main.transform.rotation = currentSelectedTransform.rotation;
+                mainController.cameraAdapter.Fov = currentSelectedTransform.GetComponent<SceneObjectCamera>().fov;
+
+                if (!mainController.getCurrentSelection().GetComponent<SceneObject>().locked)
+                {
+                    mainController.ConnectRangeSlider(mainController.setCamParamFocalLength, Extensions.vFovToLens(currentSelectedTransform.GetComponent<SceneObjectCamera>().fov));
+                }
+            }
+            else
+                hideRangeSlider();
+
+            mainController.buttonLookThroughClicked(button.Toggled);
+        }
+
+        //!
+        //! click on camera FOV
+        //! @param      button      button sent the request
+        //!	
+        private void cameraFOV(IMenuButton button)
+        {
+            centerMenu.animateActive(((Button)button).gameObject);
+            if (button.Toggled)
+            {
+                mainController.ConnectRangeSlider(mainController.setCamParamFocalLength, Extensions.vFovToLens(mainController.getCurrentSelection().GetComponent<SceneObjectCamera>().fov));
+            }
+            else
+                hideRangeSlider();
+
+            mainController.buttonCamFOVClicked(button.Toggled);
         }
 
         //!
