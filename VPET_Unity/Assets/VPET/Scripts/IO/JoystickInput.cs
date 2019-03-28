@@ -63,11 +63,16 @@ LeftStick_X 	|Joystick Axis, X Axis										|
 LeftStick_Y 	|Joystick Axis, Y Axis, invert								|
 RightStick_X 	|Joystick Axis, 3th axis        							|
 RightStick_Y 	|Joystick Axis, 4th axis, invert							|
-L1				|Key or Mouse Button, Positive Button: joystick button 8	|
-R1				|Key or Mouse Button, Positive Button: joystick button 9	|
-R2				|Key or Mouse Button, Positive Button: joystick button 11	|
+L1              |Key or Mouse Button, Positive Button: joystick button 8    |
+L2              |Key or Mouse Button, Positive Button: joystick button 10   |
+R1	            |Key or Mouse Button, Positive Button: joystick button 9    |
+R2	            |Key or Mouse Button, Positive Button: joystick button 11   |
 Settings        |Key or Mouse Button, Positive Button: joystick button 0    |
-	
+
+Note: When setting the type to "Key or Mouse Button" for an input in unitys
+project settings (Edit -> Project Settings... -> Input), the Axis dropdown
+doesn't do anything.
+
 */
 using UnityEngine;
 using System.Collections;
@@ -101,6 +106,10 @@ namespace vpet
         private bool hasPressedL2 = false;
         private int DPADdirection = 0;
 
+        // dictionary to keep track of the status of controller buttons since they
+        // do not behave like the unity API says on iOS
+        private IDictionary<string, bool> buttonPressedState;
+
         private float left, right, bottom, top;
         private Transform worldTransform = null;
         private SceneObject sceneObject = null;
@@ -132,11 +141,46 @@ namespace vpet
         public void getcurrentCrosshairObject()
         {
             previousCrosshairObject = currentCrosshairObject;
-            currentCrosshairObject = inputAdapter.callCameraRaycast(screenCenter, defaultLayermask);
+            currentCrosshairObject = inputAdapter.cameraRaycast(screenCenter, defaultLayermask);
+        }
+
+        //!
+        //! Wrapper for unity API function GetButtonDown() that does not behave like described on iOS.
+        //! Using a dictionary to keep track of the status of controller buttons.
+        //! A bool flag gets kept for every button name this function is called with.
+        //! The function can be probably removed when the iOS unity API issue was fixed.
+        //! @param      buttonName       name of a button like its defined in the Input Manager 
+        //! @return     true only for the first time the function gets called for a certain button after the user stated pressing it.
+        //!
+        private bool buttonPressed(string buttonName)
+        {
+            if (Input.GetButtonDown(buttonName))
+            {
+                bool buttonAlreadyPressed = false;
+                if (buttonPressedState.TryGetValue(buttonName, out buttonAlreadyPressed))
+                {
+                    if (buttonAlreadyPressed) 
+                        return false;
+                    else
+                    {
+                        buttonPressedState[buttonName] = true;
+                        return true;
+                    }
+                }
+                else
+                {
+                    buttonPressedState.Add(buttonName, true);
+                    return true;
+                }
+            }
+            else if (Input.GetButtonUp(buttonName) && buttonPressedState.ContainsKey(buttonName))
+                    buttonPressedState[buttonName] = false;
+            return false;
         }
 
         //!
         //! all possible inputs
+        //! called every frame by MoveCamera (in its update() function)
         //!
         public void getButtonUpdates()
         {
@@ -145,6 +189,7 @@ namespace vpet
 
             if (Input.GetButton("L1"))
             {
+                getcurrentCrosshairObject();
                 // hide center menu
                 mainController.callDeselect();
                 // switch to camera mode
@@ -164,8 +209,7 @@ namespace vpet
                     previousCrosshairObject.GetComponent<SceneObject>().callShowNormal(previousCrosshairObject);
 
                 // highlight current selection
-                else
-                    if (currentCrosshairObject)
+                else if (currentCrosshairObject)
                 {
                     outlineEffect.lineColor0 = new Color(1f, 0.9f, 0.7f);
                     currentCrosshairObject.GetComponent<SceneObject>().callShowHighlighted(currentCrosshairObject);
@@ -176,13 +220,13 @@ namespace vpet
             {
                 if (currentCrosshairObject != null)
                 {
-                    outlineEffect.lineColor0 = new Color(1f, .8f, .3f);
-                    mainController.callSelect(currentCrosshairObject.GetComponent<Transform>());
+                    outlineEffect.lineColor0 = new Color(1.0f, 0.8f, 0.3f);
+                    mainController.handleSelection(currentCrosshairObject.GetComponent<Transform>());
                 }
                 crossHair.SetActive(false);
             }
             // enter translation mode
-            else if (Input.GetButtonDown("Fire3"))
+            else if (buttonPressed("Fire3"))
             {
                 // enter object translation mode
                 if (moveCameraActive && mainController.getCurrentSelection())
@@ -222,11 +266,11 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.handleSelection();
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
             }
             // enter rotation mode
-            else if (Input.GetButtonDown("Fire1"))
+            else if (buttonPressed("Fire1"))
             {
                 // enter object translation mode
                 if (moveCameraActive && mainController.getCurrentSelection())
@@ -267,11 +311,11 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.handleSelection();
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }  
             }
             // enter scale mode
-            else if (Input.GetButtonDown("Fire0"))
+            else if (buttonPressed("Fire0"))
             {
                 // enter object translation mode
                 if (moveCameraActive && mainController.getCurrentSelection())
@@ -330,7 +374,14 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.handleSelection();
+                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().IsLight)
+                    {
+                        mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    }
+                    else
+                    {
+                        mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
+                    }
                 }
             }
             // toggle configuration window	
@@ -340,22 +391,21 @@ namespace vpet
             }
 
             // toggle predefined bookmarks
-            else if (Input.GetButtonDown("R1") && !mainController.arMode)
-            {
+            else if (buttonPressed("R1") && !mainController.arMode)
                 mainController.repositionCamera();
-            }
+
             // disable tracking
 #if UNITY_EDITOR || UNITY_STANDALONE
             else if (Input.GetAxis("R2") < 0 && !hasPressedR2 && !mainController.arMode)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-			else if (Input.GetButtonDown("R2") && !mainController.arMode)
+            else if (buttonPressed("R2") && !mainController.arMode)
 #endif
             {
                 hasPressedR2 = true;
                 mainController.UIAdapter.MainMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
             // reset current selection                                          
-            else if (Input.GetButtonDown("Fire2"))
+            else if (buttonPressed("Fire2"))
             {
                 if (mainController.getCurrentSelection())
                     mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
@@ -364,7 +414,7 @@ namespace vpet
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
             else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-            else if (Input.GetButtonDown("L2"))
+            else if (buttonPressed("L2"))
 #endif
             {
                 hasPressedL2 = true;
@@ -373,25 +423,22 @@ namespace vpet
 
             // cycle through object list                                    
 #if UNITY_EDITOR || UNITY_STANDALONE
-            else if (Input.GetAxis("DPAD_H") != 0 && hasPressedDirectionalPad == false ||
-                        Input.GetAxis("DPAD_V") != 0 && hasPressedDirectionalPad == false)
-#elif UNITY_IOS || UNITY_STANDALONE_OSX
-			else if (   (Input.GetButtonDown("DPAD_H")) ||
-						(Input.GetButtonDown("DPAD_H_neg")) ||
-						(Input.GetButtonDown("DPAD_V")) ||
-						(Input.GetButtonDown("DPAD_V_neg")) )
-#endif
+            else if (Input.GetAxis("DPAD_H") != 0 && !hasPressedDirectionalPad ||
+                     Input.GetAxis("DPAD_V") != 0 && !hasPressedDirectionalPad)
             {
-                
-#if UNITY_EDITOR || UNITY_STANDALONE
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
-                    DPADdirection = 1;
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-				if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V") ) {
-                    DPADdirection = 1;
-				}
+			else if ( (buttonPressed("DPAD_H")) ||
+					  (buttonPressed("DPAD_H_neg")) ||
+					  (buttonPressed("DPAD_V")) ||
+					  (buttonPressed("DPAD_V_neg")) )
+            {
+                if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V"))
 #endif
-                else DPADdirection = -1;
+                    DPADdirection = 1;
+                else
+                    DPADdirection = -1;
+
                 hasPressedDirectionalPad = true;
                 int match = -1;
                 bool cycleLights = false;
@@ -439,8 +486,11 @@ namespace vpet
                 hasPressedR2 = false;
             if (Input.GetAxis("L2") == 0)
                 hasPressedL2 = false;
-#endif
 
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
+            if (!buttonPressed("DPAD_H") && !buttonPressed("DPAD_V"))
+                hasPressedDirectionalPad = false;
+#endif
         }
 
         private void selectObject(int potentialIdx)
@@ -523,6 +573,9 @@ namespace vpet
             right = 1.0f * aspect;
             bottom = -1.0f;
             top = 1.0f;
+
+            // initialize the dictionary that keeps track of the status of controller buttons
+            buttonPressedState = new Dictionary<string, bool>();
 
             //cache reference to main Controller
             mainController = GameObject.Find("MainController").GetComponent<MainController>();

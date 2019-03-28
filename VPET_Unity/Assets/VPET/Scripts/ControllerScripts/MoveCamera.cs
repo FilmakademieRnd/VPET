@@ -387,7 +387,7 @@ namespace vpet
                         if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
                             mainController.AnimationController.setKeyFrame();
                     }
-                    joystickAdapter.getButtonUpdates ();
+                    joystickAdapter.getButtonUpdates();
 				}
             }
 

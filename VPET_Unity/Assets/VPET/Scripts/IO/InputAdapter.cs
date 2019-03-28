@@ -429,7 +429,7 @@ namespace vpet
 		//!                             256 -> RenderInFront Layer (layer 8)
 		//! @return     returns reference to the hit object (null if nothing was hit)             
 		//!
-		private GameObject cameraRaycast(Vector3 pos, int layerMask = 1) {
+		public GameObject cameraRaycast(Vector3 pos, int layerMask = 1) {
 			Ray ray = Camera.main.GetComponent<Camera>().ScreenPointToRay(pos);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 100000f, layerMask)) {
@@ -440,20 +440,6 @@ namespace vpet
 				return null;
 			}
 		}
-
-        //!
-        //! call raycast from other scripts
-        //! raycast through the current position on a specific Unity layer (& ignore other layers)
-        //! @param      pos             screen position of second pointer
-        //! @param      layerMask       layer on which to execute the raycast
-        //!                             3 -> defaul layer
-        //!                             256 -> RenderInFront Layer (layer 8)
-        //! @return     returns reference to the hit object (null if nothing was hit)             
-        //!
-        public GameObject callCameraRaycast(Vector3 pos, int layerMask = 1)
-        {
-            return cameraRaycast(pos, layerMask);
-        }
 
         //!
         //! execute a raycast onto a specific object
@@ -513,9 +499,4 @@ namespace vpet
 			return false;
 		}
 	}
-	
-	
-	
-	
-
 }
