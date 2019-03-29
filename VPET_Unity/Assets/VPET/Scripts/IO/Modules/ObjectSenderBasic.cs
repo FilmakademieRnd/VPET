@@ -61,8 +61,12 @@ namespace vpet
                 if (sendMessageQueue.Count > 0)
                 {
                     //Debug.Log("Send: " + sendMessageQueue[0]);
-                    sender.SendFrame(sendMessageQueue[0], false); // true not wait
-                    sendMessageQueue.RemoveAt(0);
+                    try
+                    {
+                        sender.SendFrame(sendMessageQueue[0], false); // true not wait
+                        sendMessageQueue.RemoveAt(0);
+                    }
+                    catch { }
                 }
             }
 
@@ -85,7 +89,7 @@ namespace vpet
 
 		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType) 
         {
-            byte[] msg;
+            byte[] msg = null;
             switch (paramType)
             {
                 case ParameterType.POS:
@@ -156,7 +160,7 @@ namespace vpet
                         msg[0] = cID;
                         msg[1] = (byte)paramType;
                         Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
-                        msg[6] = Convert.ToByte(sceneObject.getKinematic());
+                        msg[6] = Convert.ToByte(sceneObject.globalKinematic);
                     }
                     break;
                 case ParameterType.FOV:
@@ -319,13 +323,16 @@ namespace vpet
                     }
                     break;
                 default:
-                    Debug.Log("Unknown paramType in ObjectSenderBasic:SendObject");
-                    return;
+                    {
+                        Debug.Log("Unknown paramType in ObjectSenderBasic:SendObject");
+                    }
                     break;
-
+            }
+            if (msg != null)
+            {
                 sendMessageQueue.Add(msg);
             }
-			
+
 		}
 
 	}

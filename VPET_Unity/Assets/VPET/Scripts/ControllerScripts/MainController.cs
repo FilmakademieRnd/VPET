@@ -744,7 +744,7 @@ namespace vpet
         {
             if ( currentSelection && currentSceneObject)
             {
-                return !currentSceneObject.lockKinematic;
+                return !currentSceneObject.globalKinematic;
             }
             return false;
         }

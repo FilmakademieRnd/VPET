@@ -325,7 +325,16 @@ namespace vpet
         //! make current selection receive forces (gravitation etc.) or not
         //!
         public void toggleLockSelectionKinematic(){
-            currentSceneObject.setKinematic(!currentSceneObject.lockKinematic, true);
+            if (!(currentSceneObject is SceneObjectLight || currentSceneObject is SceneObjectCamera))
+            {
+                Rigidbody rigidbody = currentSelection.gameObject.GetComponent<Rigidbody>();
+                rigidbody.isKinematic = !currentSceneObject.globalKinematic;
+                currentSceneObject.globalKinematic = !currentSceneObject.globalKinematic;
+                serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.KINEMATIC);
+
+                if (!currentSceneObject.globalKinematic)
+                    rigidbody.WakeUp();
+            }
 	    }
 	
 	    //!

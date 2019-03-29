@@ -270,7 +270,7 @@ namespace vpet
             }
 
             //register cam sending function
-            InvokeRepeating("sendPing", 0.0f, 5f);
+            InvokeRepeating("sendPing", 0.0f, 2f);
             camObject = GameObject.Find("camera").transform;
 #endif
             if (GameObject.Find("MainController") != null)
@@ -530,7 +530,7 @@ namespace vpet
                     case ParameterType.LOCK:
                         {
                             bool locked = BitConverter.ToBoolean(msg, 6);
-                            sceneObject.enableRigidbody(locked); 
+                            sceneObject.enableRigidbody(!locked); 
                             sceneObject.locked = locked;
                             sceneObject.updateLockView();
                         }
@@ -538,13 +538,13 @@ namespace vpet
                     case ParameterType.HIDDENLOCK:
                         {
                             bool locked = BitConverter.ToBoolean(msg, 6);
-                            sceneObject.enableRigidbody(locked);
+                            sceneObject.enableRigidbody(!locked);
                             sceneObject.locked = locked;
                         }
                         break;
                     case ParameterType.KINEMATIC:
                         {
-                            sceneObject.setKinematic(BitConverter.ToBoolean(msg, 6), false);
+                            sceneObject.globalKinematic = BitConverter.ToBoolean(msg, 6);
                         }
                         break;
                     case ParameterType.FOV:
@@ -681,21 +681,23 @@ namespace vpet
             AsyncIO.ForceDotNet.Force();
             using (var receiver = new SubscriberSocket())
             {
-                receiver.Subscribe("client");
-                receiver.Subscribe("ncam");
-                receiver.Subscribe("record");
+                receiver.SubscribeToAnyTopic();
+
+                //receiver.Subscribe("client");
+                //receiver.Subscribe("ncam");
+                //receiver.Subscribe("record");
 
                 receiver.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
 
                 lastReceiveTime = currentTimeTime;
 
                 Debug.Log("Listener connected: " + "tcp://" + VPETSettings.Instance.serverIP + ":5556");
-                string input;
+                byte[] input;
                 while (isRunning)
                 {
-                    if (receiver.TryReceiveFrameString(out input))
+                    if (receiver.TryReceiveFrameBytes(out input))
                     {
-                        this.receiveMessageQueue.Add(input.Substring(7));
+                        this.receiveMessageQueue.Add(input);
                         lastReceiveTime = currentTimeTime;
                     }
                     else

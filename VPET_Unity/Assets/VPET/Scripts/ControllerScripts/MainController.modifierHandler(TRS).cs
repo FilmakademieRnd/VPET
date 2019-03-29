@@ -53,10 +53,10 @@ namespace vpet
         public void handleModifier(Transform modifier){
 	        // Debug.Log("Hit modifier " + modifier.name + "!");
 	        modifier.parent.GetComponent<Modifier>().isUsed();
-	        if  ( ui.LayoutUI != layouts.ANIMATION ) //  (activeMode != Mode.animationEditing)
-	        {
-	            currentSceneObject.setKinematic(true);
-	        }
+            if (ui.LayoutUI != layouts.ANIMATION) //  (activeMode != Mode.animationEditing)
+            {
+                currentSceneObject.transform.GetComponent<Rigidbody>().isKinematic = true;
+            }
 
             initPosition = currentSelection.position;
             initScale = currentSelection.localScale;
@@ -209,7 +209,8 @@ namespace vpet
 	        scaleModifier.GetComponent<Modifier>().resetColors();
 	        ignoreDrag = false;
 	        initialScaleDistance = float.NaN;
-	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION) currentSceneObject.setKinematic(false);
+	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION)
+                currentSceneObject.setKinematic(currentSceneObject.globalKinematic);
 
             // desable line renderer
             if (lineRenderer)

@@ -53,7 +53,23 @@ public:
     //request this process to stop working
     void requestStop();
 
+    static enum ParameterType
+    {
+        POS, ROT, SCALE, LOCK, HIDDENLOCK, KINEMATIC, // node
+        FOV, ASPECT, FOCUSDIST, FOCUSSIZE, APERTURE,   // camera
+        COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
+        BONEANIM, // animation bone
+        VERTEXANIM, // animation vertex
+        PING, RESENDUPDATE  // sync and ping
+    };
+
+    int CharToInt(const char* buf);
+
 private:
+
+    //id displayed as clientID for messages redistributed through syncServer
+    char targetHostID = '1';
+
     //if true process is stopped
     bool _stop;
 
@@ -74,13 +90,13 @@ private:
     QString IPadress;
 
 	//map of last states
-	QMap<QString, QString> objectStateMap;
+    QMap<QByteArray, QByteArray> objectStateMap;
 
     //map of ping timings
-    QMap<QString, QTime*> pingMap;
+    QMap<char, QTime*> pingMap;
 
     //map of last states
-    QMap<QString, QString> lockMap;
+    QMap<char, int> lockMap;
 
 signals:
     //signal emitted when process requests to work

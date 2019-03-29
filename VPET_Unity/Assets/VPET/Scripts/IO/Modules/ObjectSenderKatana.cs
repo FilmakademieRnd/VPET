@@ -24,6 +24,7 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -53,6 +54,7 @@ namespace vpet
 		private string lightTransRotTemplate = "";
 		private string camTransRotTemplate = "";
 		private string lightIntensityColorTemplate = "";
+        private Transform root;
 
         protected PushSocket sender = null;
 
@@ -71,8 +73,13 @@ namespace vpet
                 if (sendMessageQueue.Count > 0)
                 {
                     // Debug.Log("Send: " + sendMessageQueue[0]);
-                    sender.SendFrame(sendMessageQueue[0], false); // true not wait
-                    sendMessageQueue.RemoveAt(0);
+
+                    try
+                    {
+                        sender.SendFrame(sendMessageQueue[0], false); // true not wait
+                        sendMessageQueue.RemoveAt(0);
+                    }
+                    catch { }
                 }
             }
 
@@ -112,111 +119,135 @@ namespace vpet
 	        binaryData = Resources.Load("VPET/TextTemplates/lightIntensityColorTemplate") as TextAsset;
 	        lightIntensityColorTemplate = binaryData.text;
 
-
-		}
+            root = GameObject.Find("Scene").transform;
+        }
 
 
 		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType)
 		{
-   //         // HACK check missing '/' upstream
-   //         dagPath = "/" + dagPath;
+            if (!sceneObject)
+                return;
 
-	  //      if ( sceneObject.GetType() == typeof(SceneObject) )
-			//{
-			//	if (nodeType == NodeType.LIGHT)
-			//	{
-			//		if (sceneObject.IsLight)
-			//		{
-			//			Light light = sceneObject.SourceLight;
+            string dagPath = getPathString(sceneObject.transform, root);
+            // HACK check missing '/' upstream
+            dagPath = "/" + dagPath;
 
-			//			sendMessageQueue.Add(String.Format(lightIntensityColorTemplate,
-			//				dagPath,
-			//				((LightTypeKatana)(light.type)).ToString(),
-			//				light.intensity / VPETSettings.Instance.lightIntensityFactor,
-			//				light.color.r + " " + light.color.g + " " + light.color.b,
-			//				sceneObject.exposure,
-			//				light.spotAngle	));
-			//		}
-			//	}
-			//	else if (nodeType == NodeType.CAMERA)
-			//	{
+            //Debug.Log(dagPath);
 
-			//	}
-			//	else // send transform
-			//	{
-					
-			//		if (sceneObject.IsLight) // do transform for lights to katana differently
-			//		{
-			//			Transform obj = sceneObject.transform;
+            NodeType nodeType = NodeType.GROUP;
+            if (sceneObject is SceneObjectLight)
+                nodeType = NodeType.LIGHT;
+            else if (sceneObject is SceneObjectCamera)
+                nodeType = NodeType.CAMERA;
+     
+            if (paramType == ParameterType.POS ||
+               paramType == ParameterType.ROT ||
+               paramType == ParameterType.SCALE)
 
-			//			Vector3 pos = obj.localPosition;
-			//			Quaternion rot = obj.localRotation;
-			//			Vector3 scl = obj.localScale;
+            {
+                if (nodeType == NodeType.LIGHT) // do transform for lights to katana differently
+                {
+                    Transform obj = sceneObject.transform;
 
-			//			Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
-			//			rot = rot * rotY180;
-			//			float angle = 0;
-			//			Vector3 axis = Vector3.zero;
-			//			rot.ToAngleAxis( out angle, out axis );
+                    Vector3 pos = obj.localPosition;
+                    Quaternion rot = obj.localRotation;
+                    Vector3 scl = obj.localScale;
 
-			//			sendMessageQueue.Add(String.Format(lightTransRotTemplate,
-			//				dagPath,
-			//				(-pos.x + " " + pos.y + " " + pos.z),
-			//				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
-			//				(scl.x + " " + scl.y + " " + scl.z) ));
+                    Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
+                    rot = rot * rotY180;
+                    float angle = 0;
+                    Vector3 axis = Vector3.zero;
+                    rot.ToAngleAxis(out angle, out axis);
 
-			//		}
-			//		else if (sceneObject.transform.GetComponent<CameraObject>() != null) // do camera different too --> in fact is the same as for lights??
-			//		{
-			//			Transform obj = sceneObject.transform;
+                    sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(lightTransRotTemplate,
+                        dagPath,
+                        (-pos.x + " " + pos.y + " " + pos.z),
+                        (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
+                        (scl.x + " " + scl.y + " " + scl.z))));
 
-			//			Vector3 pos = obj.localPosition;
-			//			Quaternion rot = obj.localRotation;
-			//			Vector3 scl = obj.localScale;
+                }
+                else if (nodeType == NodeType.CAMERA) // do camera different too --> in fact is the same as for lights??
+                {
+                    Transform obj = sceneObject.transform;
+
+                    Vector3 pos = obj.localPosition;
+                    Quaternion rot = obj.localRotation;
+                    Vector3 scl = obj.localScale;
 
 
-			//			Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
-			//			rot = rot * rotY180;
-			//			float angle = 0;
-			//			Vector3 axis = Vector3.zero;
-			//			rot.ToAngleAxis(out angle, out axis);
+                    Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
+                    rot = rot * rotY180;
+                    float angle = 0;
+                    Vector3 axis = Vector3.zero;
+                    rot.ToAngleAxis(out angle, out axis);
 
-			//			sendMessageQueue.Add(String.Format(camTransRotTemplate,
-			//				dagPath,
-			//				(-pos.x + " " + pos.y + " " + pos.z),
-			//				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
-			//				(scl.x + " " + scl.y + " " + scl.z)));
+                    sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(camTransRotTemplate,
+                        dagPath,
+                        (-pos.x + " " + pos.y + " " + pos.z),
+                        (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
+                        (scl.x + " " + scl.y + " " + scl.z))));
 
-			//		}
-			//		else
-			//		{
+                }
+                else
+                {
+                    Transform obj = sceneObject.transform;
 
-			//			Transform obj = sceneObject.transform;
+                    Vector3 pos = obj.localPosition;
+                    Quaternion rot = obj.localRotation;
+                    Vector3 scl = obj.localScale;
 
-			//			Vector3 pos = obj.localPosition;
-			//			Quaternion rot = obj.localRotation;
-			//			Vector3 scl = obj.localScale;
+                    float angle = 0;
+                    Vector3 axis = Vector3.zero;
+                    rot.ToAngleAxis(out angle, out axis);
 
-			//			float angle = 0;
-			//			Vector3 axis = Vector3.zero;
-			//			rot.ToAngleAxis( out angle, out axis );
+                    sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(objTemplateQuat,
+                        dagPath,
+                        (-pos.x + " " + pos.y + " " + pos.z),
+                        (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
+                        (scl.x + " " + scl.y + " " + scl.z))));
+                }
+            }
+            else
+            {
+                if (nodeType == NodeType.LIGHT)
+                {
+                    SceneObjectLight sol = (SceneObjectLight)sceneObject;
+                    Light light = sol.SourceLight;
 
-			//			sendMessageQueue.Add(String.Format(objTemplateQuat,
-			//				dagPath,
-			//				(-pos.x + " " + pos.y + " " + pos.z),
-			//				(angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
-			//				(scl.x + " " + scl.y + " " + scl.z) ) );
-			//		}
-			//	}
-			//}
-			//else //light, camera if ( sobj.GetType() == typeof(SceneObject) )
-			//{
+                    sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(lightIntensityColorTemplate,
+                        dagPath,
+                        ((LightTypeKatana)(light.type)).ToString(),
+                        light.intensity / VPETSettings.Instance.lightIntensityFactor,
+                        light.color.r + " " + light.color.g + " " + light.color.b,
+                        sol.exposure,
+                        light.spotAngle)));
+                }
+            }
+            
+        }
 
-			//}
-			
-		}
+        //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
+        //! @param  obj         Transform of GameObject to find the path for
+        //! @return     path to gameObject started at main scene, separated by "/"
+        private string getPathString(Transform obj, Transform root, string separator = "/")
+        {
+            if (obj.parent)
+            {
+                //if (obj.parent == Camera.main.transform)
+                //{
+                //    return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
+                //}
+                if (obj.transform.parent == root)
+                    return obj.name;
+                else
+                {
+                    return getPathString(obj.parent, root, separator) + separator + obj.name;
+                }
+            }
+            return obj.name;
+        }
 
-	}
+    }
 
 	
 }

@@ -6,6 +6,22 @@ CONFIG += c++11
 TARGET = SyncServer
 CONFIG += console
 
+TEMPLATE = app
+
+
+HEADERS += \
+    ../include/zeroMQHandler.h \
+    ../include/transformationrecorder.h \
+    ../include/recordWriter.h \
+    ../include/printer.h \
+    ../include/mainapp.h \
+    ../include/objectStateHandler.h
+
+win32{
+    HEADERS += \
+        ../include/ncamsimpleclient.h \
+        ../include/ncamadapter.h
+}
 
 SOURCES += \
     ../src/zeroMQHandler.cpp \
@@ -23,29 +39,15 @@ win32{
         ../src/ncamadapter.cpp
 }
 
-HEADERS += \
-    ../include/zeroMQHandler.h \
-    ../include/transformationrecorder.h \
-    ../include/recordWriter.h \
-    ../include/printer.h \
-    ../include/mainapp.h \
-    ../include/objectStateHandler.h
-
-win32{
-    HEADERS += \
-        ../include/ncamsimpleclient.h \
-        ../include/ncamadapter.h
-}
-
 win32{
     INCLUDEPATH += ../include \
-                ../zeromq-4.2.3/include \
+                ../zeromq-4.3.1/build/install/include \
                 ../nzmqt/include \
                 ../nzmqt/3rdparty/cppzmq \
                 ../ncam-2.6/include
 
-    LIBS += -L../zeromq-4.2.3/bin/x64/Release/v140/dynamic -llibzmq \
-            -L../ncam-2.6/lib/Windows/MSVC2013_MT/64bits -lLibNcamDataStreaming
+    LIBS += -L../zeromq-4.3.1/build/install/lib -llibzmq-v141-mt-4_3_1 \
+            -L../ncam-2.6/lib/Windows/MSVC2013_MT/32bits -lLibNcamDataStreaming
 }
 
 macx{

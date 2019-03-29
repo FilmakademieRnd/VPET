@@ -55,11 +55,6 @@ namespace vpet
 
         public virtual void SendObject(byte id, SceneObject sceneObject, ParameterType paramType) {}
 
-		public void SendObject(byte[] msg)
-		{
-			sendMessageQueue.Add(msg);	
-		}
-
 		public void SetTarget(string ip, string port)
 		{
 			if (IP == null)	IP = ip;

@@ -67,6 +67,13 @@ void ZeroMQHandler::requestStop()
     mutex.unlock();
 }
 
+int ZeroMQHandler::CharToInt(const char* buf)
+{
+  int val;
+  std::memcpy(&val, buf, 4);
+  return val;
+}
+
 void ZeroMQHandler::run()
 {
     socket_ = new zmq::socket_t(*context_,ZMQ_SUB);
@@ -96,60 +103,86 @@ void ZeroMQHandler::run()
         //check if recv timed out
         if(message.size() != 0)
         {
-            QString stringMessage = QString::fromStdString(std::string(static_cast<char*>(message.data()), message.size()));
-            QString key = stringMessage.section('|', 1, 2);
-            QString clientId = stringMessage.section('|', 0, 0);
+            char* rawData = static_cast<char*>(message.data());
+            QByteArray msgArray = QByteArray::fromRawData(rawData, static_cast<int>(message.size()));
+
+            char clientID = rawData[0];
+            ParameterType paramType = static_cast<ParameterType>(rawData[1]);
+            int objectID = CharToInt(&rawData[2]);
+            QByteArray msgKey = QByteArray::fromRawData(rawData++, 5); //combination of ParamType & objectID
+
+            //QString debugMsg = "";
+            //foreach (const char c, msgArray){
+            //    debugMsg += QString::number((int)c) + " ";
+            //}
+            //std::cout << debugMsg.toStdString() << std::endl;
 
             //update ping timeout
-            if(pingMap.contains(clientId))
+            if(pingMap.contains(clientID))
             {
-                pingMap[clientId]->restart();
+                pingMap[clientID]->restart();
             }
             else
             {
                 QTime* t = new QTime();
                 t->start();
-                pingMap.insert(clientId,t);
-                std::cout << "New client registered: " << clientId.toStdString() << std::endl;
+                pingMap.insert(clientID,t);
+                std::cout << "New client registered: " << 256 + (int) clientID << std::endl;
             }
 
-            if (key == "udOb") {
+            if (paramType == RESENDUPDATE) {
                 foreach(const QString &objectState, objectStateMap) {
                     const QByteArray osByteArray = objectState.toLocal8Bit();
-                    sender_->send(osByteArray.constData(), osByteArray.length());
+                    sender_->send(osByteArray.constData(), static_cast<size_t>(osByteArray.length()));
                 }
             }
-            else if (key.at(0) == 'l'){
+            else if (paramType == LOCK){
                 //store locked object for each client
-                lockMap.insert(clientId,key.section('|', 1, 1));
-                objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
+                lockMap.insert(clientID,objectID);
+                objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
                 sender_->send(message);
             }
-            else if (key != "ping"){
-                objectStateMap.insert(key, "client 001|" + stringMessage.section('|', 1, -1));
+            else if (paramType != PING){
+                objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
                 sender_->send(message);
             }
         }
 
-
         //check if ping timed out for any client
         foreach(QTime* time, pingMap) {
-            if(time->elapsed() > 10000)
+            if(time->elapsed() > 3000)
             {
                 //connection to client lost
-                QString clientID = pingMap.key(time);
-                std::cout << "Lost connection to: " << clientID.toStdString() << std::endl;
+                char clientID = pingMap.key(time);
+                std::cout << "Lost connection to: " << 256 + (int) clientID << std::endl;
                 pingMap.remove(clientID);
                 //check if client had lock
                 if(lockMap.contains(clientID))
                 {
                     //release lock
-                    QString msg = "client 001|l|" + lockMap[clientID] + "|False";
-                    std::cout << "Resetting lock: " << msg.toStdString() << std::endl;
-                    objectStateMap.insert(msg.section('|', 1, 2), "client 001|" + msg.section('|', 1, -1));
-                    const QByteArray msgData = msg.toLocal8Bit();
-                    sender_->send(msgData.constData(), msgData.length());
+                    char* lockReleaseMsg = static_cast<char*>(malloc(7));
+                    *lockReleaseMsg = 0;
+                    lockReleaseMsg++;
+                    *lockReleaseMsg = static_cast<char>(LOCK);
+                    lockReleaseMsg++;
+                    void* intPtr = (char*) &lockMap[clientID];
+                    memcpy(lockReleaseMsg,intPtr,sizeof(int));
+                    lockReleaseMsg+=4;
+                    *lockReleaseMsg = static_cast<char>(false);
+                    std::cout << "Resetting lock!";
+                    lockReleaseMsg-=6;
+                    QByteArray msgKey = QByteArray::fromRawData(lockReleaseMsg+1, 5);
+                    QByteArray msgArray = QByteArray::fromRawData(lockReleaseMsg, 7);
+
+                    objectStateMap.insert(msgKey, msgArray);
+                    sender_->send(msgArray.constData(), static_cast<size_t>(msgArray.length()));
+
                     lockMap.remove(clientID);
+
+                    if (lockReleaseMsg) {
+                        delete lockReleaseMsg;
+                        lockReleaseMsg = 0;
+                    }
                 }
             }
         }

@@ -167,6 +167,12 @@ namespace vpet
 			if (!currentSelection)
 				return;
 
+            currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
+
+            // make sure its not more locked
+            serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);
+            Debug.Log("Deselect " + currentSelection);
+
             if ( activeMode == Mode.objectLinkCamera)
             {
                 if (currentSceneObject.GetType() == typeof(SceneObjectLight))
@@ -175,15 +181,10 @@ namespace vpet
                 }
                 else
                 {
-                    currentSceneObject.setKinematic(false);
+                    currentSceneObject.setKinematic(currentSceneObject.globalKinematic, false);
                     currentSelection.parent = oldParent;
                 }
             }
-            currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
-            
-            // make sure its not more locked
-            serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);
-            Debug.Log("Deselect " + currentSelection);
 
             // mutex missing, lock objectSender thread first !! 
             currentSelection = null;

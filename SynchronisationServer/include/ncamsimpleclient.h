@@ -141,9 +141,9 @@ protected:
      * @param maxlen The maximum size allowed for the data buffer.
      * @return The number of bytes read.
      */
-    ssize_t InternalRead(uint8_t *data, const size_t &maxlen)
+    int64_t InternalRead(uint8_t *data, const uint64_t& maxlen)
     {
-        ssize_t lSizeRead = -1;
+        int64_t lSizeRead = -1;
         if (IsConnected())
         {
             bool lSuccess = (mSocket->bytesAvailable()>0);
@@ -162,9 +162,9 @@ protected:
      * @param maxlen The size of the buffer.
      * @return The number of bytes written, or -1 if the writting failed.
      */
-    ssize_t InternalWrite(const uint8_t *data, const size_t &maxlen)
+    int64_t InternalWrite(const uint8_t *data, const uint64_t &maxlen)
     {
-        ssize_t lSizeWritten = -1;
+        int64_t lSizeWritten = -1;
         if (IsConnected())
         {
             bool lSuccess = false;

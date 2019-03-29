@@ -150,14 +150,9 @@ namespace vpet
         public bool locked = false;
 
 		//!
-		//! lock for one frame (to avoid resending of incoming messages)
-		//!
-		public bool tempLock = false;
-
-		//!
 		//! allow changes to isKinematic property
 		//!
-		public bool lockKinematic = false;
+		public bool globalKinematic = true;
 
         //smooth Translation variables
 
@@ -220,6 +215,8 @@ namespace vpet
         public bool isPlayingAnimation;
 
         public bool isPhysicsActive;
+
+        private Rigidbody rigidbody;
 
         //!
         //! Use this for initialization
@@ -291,7 +288,7 @@ namespace vpet
             }
             if (this is SceneObject)
             {
-                Rigidbody rigidbody = this.gameObject.AddComponent<Rigidbody>();
+                rigidbody = this.gameObject.AddComponent<Rigidbody>();
 
                 rigidbody.mass = 100f;
                 rigidbody.drag = 2.5f;
@@ -299,7 +296,7 @@ namespace vpet
                 // TODO: temporary
                 rigidbody.useGravity = true;
                 rigidbody.isKinematic = true;
-                this.GetComponent<SceneObject>().lockKinematic = true;
+                globalKinematic = true;
             }
 
 #if !SCENE_HOST
@@ -314,9 +311,25 @@ namespace vpet
             }
 
             isPlayingAnimation = false;
-            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
 #endif
 
+        }
+
+        private bool AlmostEqualPos(Vector3 a, Vector3 b, float precision)
+        {
+            if (Mathf.Abs(a.x - b.x) > precision) 
+                return false;
+            if (Mathf.Abs(a.y - b.y) > precision)
+                return false;
+            if (Mathf.Abs(a.z - b.z) > precision)
+                return false;
+
+            return true;
+        }
+
+        private bool AlmostEqualRot(Quaternion a, Quaternion b, float precision)
+        {
+            return (Quaternion.Angle(a, b) < precision);
         }
 
 
@@ -325,16 +338,16 @@ namespace vpet
         //!
         protected void Update () 
 		{
-            if (lastPosition != target.localPosition)
+            if (!AlmostEqualPos(lastPosition, target.localPosition, 0.1f))
 			{
                 lastPosition = target.localPosition;
 				translationStillFrameCount = 0;
-			}
-			else if (translationStillFrameCount < 11)
+            }
+            else if (translationStillFrameCount < 11)
 			{
 				translationStillFrameCount++;
 			}
-            if (lastRotation != target.localRotation)
+            if (!AlmostEqualRot(lastRotation, target.localRotation, 0.1f))
 			{
                 lastRotation = target.localRotation;
 				rotationStillFrameCount = 0;
@@ -343,15 +356,11 @@ namespace vpet
 			{
 				rotationStillFrameCount++;
 			}
-			if (translationStillFrameCount >= 10 && rotationStillFrameCount >= 10 && tempLock)
-			{
-				tempLock = false;
-			}
 #if !SCENE_HOST
-            if (!locked && !tempLock && !mainController.lockScene)
+            if (!locked && !mainController.lockScene)
             {
 #else
-            if (!locked && !tempLock)
+            if (!locked)
             {
                 isPlayingAnimation = false;
                 serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
@@ -363,11 +372,12 @@ namespace vpet
 					{
 						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
-                            if (!selected && !isPlayingAnimation && !isPhysicsActive)
+                            if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
                             {
                                 isPhysicsActive = true;
                                 serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
                                 serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+
                             }
 
                             serverAdapter.SendObjectUpdate( this, ParameterType.POS );
@@ -380,12 +390,15 @@ namespace vpet
 							translationUpdateDelayed = true;
 						}
 					}
-					else if (translationUpdateDelayed) //update delayed, but object not moving
+					else  //update delayed, but object not moving
 					{
-                        serverAdapter.SendObjectUpdate( this, ParameterType.POS );
+                        if (translationUpdateDelayed)
+                        {
+                            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
 
-                        lastTranslationUpdateTime = Time.time;
-						translationUpdateDelayed = false;
+                            lastTranslationUpdateTime = Time.time;
+                            translationUpdateDelayed = false;
+                        }
                         if (isPhysicsActive)
                         {
                             isPhysicsActive = false;
@@ -415,7 +428,7 @@ namespace vpet
                     {
                         if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
                         {
-                            if (!selected && !isPlayingAnimation && !isPhysicsActive)
+                            if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
                             {
                                 isPhysicsActive = true;
                                 serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
@@ -432,19 +445,21 @@ namespace vpet
                             rotationUpdateDelayed = true;
                         }
                     }
-                    else if (rotationUpdateDelayed) //update delayed, but object not moving
+                    else  //update delayed, but object not moving
                     {
+                        if (rotationUpdateDelayed)
+                        {
+                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
+                            lastRotationUpdateTime = Time.time;
+                            rotationUpdateDelayed = false;
+                        }
+
                         if (isPhysicsActive)
                         {
                             isPhysicsActive = false;
                             serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
                             serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
                         }
-
-                        serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
-
-                        lastRotationUpdateTime = Time.time;
-                        rotationUpdateDelayed = false;
                     }
                 }
                 else if (rotationStillFrameCount == 10) //object is now no longer moving
@@ -818,24 +833,6 @@ namespace vpet
             set { target.transform.localRotation = Quaternion.Euler(target.transform.localRotation.eulerAngles.x, target.transform.localRotation.eulerAngles.y, value); }
         }
 
-        //!
-        //! Get the kinematic parameter of the object
-        //! @return The scene objects kinematic status
-        //!
-        public bool getKinematic()
-        {
-            if (!isPhysicsActive)
-            {
-                Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
-
-                if (rigidbody)
-                    return rigidbody.isKinematic;
-                else
-                    return false;
-            }
-            else
-                return false;
-        }
 
         //!
         //! set the kinematic parameter of the object
@@ -844,25 +841,23 @@ namespace vpet
         //!
         public void setKinematic(bool set, bool send = true)
         {
-            if (this.GetType() != typeof(SceneObjectLight))
+            if (!(this.GetType() == typeof(SceneObjectLight) || this.GetType() == typeof(SceneObjectCamera))) 
             {
-                this.lockKinematic = set;
-
-                this.gameObject.GetComponent<Rigidbody>().isKinematic = set;
+                globalKinematic = set;
+                rigidbody.isKinematic = set;
                 if (send)
                     serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
                 if (!set)
-                    this.gameObject.GetComponent<Rigidbody>().WakeUp();
+                    rigidbody.WakeUp();
             }
         }
 
         public void enableRigidbody(bool set)
         {
-            Rigidbody rigidbody = this.gameObject.GetComponent<Rigidbody>();
             if (set)
-                rigidbody.isKinematic = lockKinematic;
+                rigidbody.isKinematic = globalKinematic;
             else
-                rigidbody.isKinematic = false;
+                rigidbody.isKinematic = true;
 
         }
 
