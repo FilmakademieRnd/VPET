@@ -241,7 +241,6 @@ namespace vpet
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
-            UI.OnUIChanged.AddListener(() => { buttonRot.Toggled = mainController.ActiveMode == MainController.Mode.rotationMode; });
             centerMenu.addButton(buttonRot, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHT);
             centerMenu.addButtonToLayout(buttonRot, layouts.CAMERA);
@@ -251,13 +250,13 @@ namespace vpet
             centerMenu.addButton(buttonScl, layouts.OBJECT);
             // reset
             IMenuButton buttonReset = Elements.MenuButton();
-			buttonReset.AddAction(EditMode_Reset_sel, EditMode_Reset_nrm, call: () => objectReset() );
+			buttonReset.AddAction(EditMode_Reset_sel, EditMode_Reset_nrm, call: () => objectReset());
 			centerMenu.addButton( buttonReset, layouts.OBJECT );
             centerMenu.addButtonToLayout(buttonReset, layouts.LIGHT);
             centerMenu.addButtonToLayout(buttonReset, layouts.CAMERA);
             // gravity/kinematic on off
             IMenuButton buttonKin = Elements.MenuButtonToggle();
-			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic() );
+			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic());
             UI.OnUIChanged.AddListener(() => { buttonKin.Toggled = mainController.HasGravityOn(); });  // register for ui changes 
             centerMenu.OnMenuOpen.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );

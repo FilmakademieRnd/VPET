@@ -425,7 +425,7 @@ namespace vpet
 		//!                             256 -> RenderInFront Layer (layer 8)
 		//! @return     returns reference to the hit object (null if nothing was hit)             
 		//!
-		private GameObject cameraRaycast(Vector3 pos, int layerMask = 1) {
+		public GameObject cameraRaycast(Vector3 pos, int layerMask = 1) {
 			Ray ray = Camera.main.GetComponent<Camera>().ScreenPointToRay(pos);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit, 100000f, layerMask)) {
@@ -436,14 +436,14 @@ namespace vpet
 				return null;
 			}
 		}
-	
-		//!
-		//! execute a raycast onto a specific object
-		//! @param      pos         screen position of second pointer
-		//! @param      target      collider of the gameObject to raycast against
-		//! @return     3D position on the object where the ray hit (nullVector if object was not hit)
-		//!
-		private Vector3 objectRaycast(Vector3 pos, Collider target)
+
+        //!
+        //! execute a raycast onto a specific object
+        //! @param      pos         screen position of second pointer
+        //! @param      target      collider of the gameObject to raycast against
+        //! @return     3D position on the object where the ray hit (nullVector if object was not hit)
+        //!
+        private Vector3 objectRaycast(Vector3 pos, Collider target)
         {
 			Ray ray = Camera.main.ScreenPointToRay(pos);
 			RaycastHit hit;
@@ -495,9 +495,4 @@ namespace vpet
 			return false;
 		}
 	}
-	
-	
-	
-	
-
 }

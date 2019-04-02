@@ -156,13 +156,12 @@ namespace vpet
                     activeMode = Mode.objectMenuMode;
                 }
             }
-
-        }
+		}
 
         //!
         //! unselect an object or reset state
         //!
-        private void deselect()
+        public void deselect()
 	    {
 			if (!currentSelection)
 				return;
