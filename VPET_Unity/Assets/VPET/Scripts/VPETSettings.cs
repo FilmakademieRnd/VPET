@@ -130,7 +130,8 @@ namespace vpet
 	
 	    private VPETSettings()
 		{
-    		GameObject canvas = GameObject.Find("GUI/Canvas");
+#if !SCENE_HOST
+            GameObject canvas = GameObject.Find("GUI/Canvas");
             if (canvas == null) Debug.Log(string.Format("{0}: Cant find Canvas.", this.GetType()));
             else
             {
@@ -143,6 +144,7 @@ namespace vpet
                 float h2 = Screen.height;
                 canvasAspectScaleFactor = ((w / h) / (w2 / h2));
             }
+#endif
 		}
 	
 	    public static VPETSettings Instance

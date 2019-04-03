@@ -457,7 +457,7 @@ namespace vpet
 #if USE_ARKIT
             mainController.ToggleARMatteMode(false);
             mainController.ToggleARKeyMode(true);
-# endif
+#endif
 		}
 
 		public void acceptKeyConfig()

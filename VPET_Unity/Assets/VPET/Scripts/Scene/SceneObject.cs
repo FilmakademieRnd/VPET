@@ -39,12 +39,12 @@ namespace vpet
         //!
         public int id = -1;
 
-#if !SCENE_HOST
+//#if !SCENE_HOST
         //!
         //! cached reference to animation controller
         //!
         private AnimationController animationController;
-#endif
+//#endif
 
         //!
         //! cached reference to animation data (runtime representation)
@@ -365,8 +365,10 @@ namespace vpet
                 isPlayingAnimation = false;
                 serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
 #endif
+#if !SCENE_HOST
                 //publish translation change
                 if (mainController.liveMode)
+#endif
 				{
 					if (translationStillFrameCount == 0) //position just changed
 					{
@@ -407,7 +409,8 @@ namespace vpet
                         }
                     }
 				}
-				else if (translationStillFrameCount == 10) //object is now no longer moving
+#if !SCENE_HOST
+                else if (translationStillFrameCount == 10) //object is now no longer moving
 				{
                     serverAdapter.SendObjectUpdate(this, ParameterType.POS);
 
@@ -420,7 +423,6 @@ namespace vpet
                 }
 
                 //publish rotation change
-#if !SCENE_HOST
                 if (mainController.liveMode)
 #endif
                 {
@@ -462,6 +464,7 @@ namespace vpet
                         }
                     }
                 }
+#if !SCENE_HOST
                 else if (rotationStillFrameCount == 10) //object is now no longer moving
                 {
                     if (isPhysicsActive)
@@ -473,6 +476,7 @@ namespace vpet
 
                     serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
                 }
+#endif
 
             }
 
@@ -878,17 +882,17 @@ namespace vpet
 
         }
 
-#if !SCENE_HOST
         //!
         //! send updates of the last modifications to the network server
         //!
         protected void sendUpdate()
 		{
-			if (mainController.ActiveMode == MainController.Mode.scaleMode)
+#if !SCENE_HOST
+            if (mainController.ActiveMode == MainController.Mode.scaleMode)
 			{
                 serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
             }
-            
+#endif
         }
 
         //!
@@ -1051,7 +1055,6 @@ namespace vpet
 	
 	        updateAnimationCurves();
 	    }
-#endif
 
         /*
         private void OnDrawGizmos()

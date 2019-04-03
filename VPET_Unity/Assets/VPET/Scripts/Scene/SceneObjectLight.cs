@@ -297,12 +297,12 @@ namespace vpet
             }
         }
 
-#if !SCENE_HOST
         //!
         //! send updates of the last modifications to the network server
         //!
         protected void sendUpdate()
         {
+#if !SCENE_HOST
             base.sendUpdate();
 
             if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
@@ -325,7 +325,7 @@ namespace vpet
                         break;
                 }
             }
-        }
 #endif
+        }
     }
 }

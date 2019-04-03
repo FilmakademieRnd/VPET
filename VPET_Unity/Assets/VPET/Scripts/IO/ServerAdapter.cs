@@ -84,11 +84,6 @@ namespace vpet
         Transform currentlyLockedObject = null;
 
         //!
-        //! camera representing object
-        //!
-        Transform camObject;
-
-        //!
         //! is Application running or should threads stop working
         //!
         bool isRunning = false;
@@ -171,10 +166,12 @@ namespace vpet
         //!
         Transform dreamspaceRoot;
 
+//#if !SCENE_HOST
         //!
         //! cached reference to main controller
         //!
         MainController mainController = null;
+//#endif
 
         //!
         //! list containing sceneObjects to sceneObject ID references
@@ -229,7 +226,8 @@ namespace vpet
         void Awake()
         {
 #if SCENE_HOST
-            VPETSettings.Instance.serverIP = IP;
+            VPETSettings.Instance.serverIP = hostIP;
+
             if (!deactivateReceive && receiverThread == null)
             {
                 receiverThread = new Thread(new ThreadStart(listener));
@@ -251,7 +249,7 @@ namespace vpet
         void Start()
         {
 #if SCENE_HOST
-            m_id = Int32.Parse(hostIP.ToString().Split('.')[3]);
+            m_id = byte.Parse(hostIP.ToString().Split('.')[3]);
 #else
 
             //reads the network name of the device
@@ -271,10 +269,10 @@ namespace vpet
 
             //register cam sending function
             InvokeRepeating("sendPing", 0.0f, 2f);
-            camObject = GameObject.Find("camera").transform;
-#endif
+
             if (GameObject.Find("MainController") != null)
                 mainController = GameObject.Find("MainController").GetComponent<MainController>();
+#endif
 
             persistentDataPath = Application.persistentDataPath;
 
@@ -348,8 +346,9 @@ namespace vpet
                 sceneReceiverThread = new Thread(new ThreadStart(sceneReceiver));
                 sceneReceiverThread.Start();
             }
-        }
 #endif
+        }
+
 
 
         //!
@@ -425,11 +424,6 @@ namespace vpet
                 }
                 receiveMessageQueue.RemoveRange(0, count);
             }
-            
-            //if (camObject != null && camObject.GetComponent<Renderer>().enabled && (Time.time - lastNcamReceivedTime) > 10)
-            //{
-            //    camObject.GetComponent<Renderer>().enabled = false;
-            //}  // SEIM WAS HERE (syncprotocol rewrite)
 
             currentTimeTime = Time.time;
 
@@ -644,26 +638,26 @@ namespace vpet
             }
         }
 
-        //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
-        //! @param  obj         Transform of GameObject to find the path for
-        //! @return     path to gameObject started at main scene, separated by "/"
-        private string getPathString(Transform obj, Transform root, string separator = "/")
-        {
-            if (obj.parent)
-            {
-                if (obj.parent == Camera.main.transform)
-                {
-                    return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
-                }
-                if (obj.transform.parent == root)
-                    return obj.name;
-                else
-                {
-                    return getPathString(obj.parent, root, separator) + separator + obj.name;
-                }
-            }
-            return obj.name;
-        }
+        ////! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
+        ////! @param  obj         Transform of GameObject to find the path for
+        ////! @return     path to gameObject started at main scene, separated by "/"
+        //private string getPathString(Transform obj, Transform root, string separator = "/")
+        //{
+        //    if (obj.parent)
+        //    {
+        //        if (obj.parent == Camera.main.transform)
+        //        {
+        //            return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
+        //        }
+        //        if (obj.transform.parent == root)
+        //            return obj.name;
+        //        else
+        //        {
+        //            return getPathString(obj.parent, root, separator) + separator + obj.name;
+        //        }
+        //    }
+        //    return obj.name;
+        //}
 
         //! function searching for gameObject by path
         //! @param  path        path to gameObject started at main scene, separated by "/"

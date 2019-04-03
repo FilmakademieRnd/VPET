@@ -24,7 +24,6 @@ this program; if not go to
 https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
-#define SCENE_HOST
 
 using System.Collections;
 using System.Collections.Generic;
@@ -139,12 +138,13 @@ namespace vpet
         {
             AsyncIO.ForceDotNet.Force();
             using (var dataSender = new ResponseSocket ()) {
-                dataSender.Bind ("tcp://*:5565");
+                dataSender.Bind ("tcp://" + VPETSettings.Instance.serverIP + ":5565");
                 Debug.Log ("Enter while.. ");
 
                 while (isRunning) {
-                    string message = dataSender.ReceiveFrameString ();
-                    print ("Got request message: " + message);
+                    string message = "";
+                    dataSender.TryReceiveFrameString(out message);
+                    //print ("Got request message: " + message);
 
                     // re-run scene iteration if true
                     if (doGatherOnRequest)
@@ -184,11 +184,18 @@ namespace vpet
 
                 }
 
-                dataSender.Unbind ("tcp://127.0.0.1:5565");
-                dataSender.Close();
-                dataSender.Dispose();
+                // TODO: check first if closed
+                try
+                {
+                    dataSender.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5565");
+                    dataSender.Dispose();
+                    dataSender.Close();
+                } finally
+                {
+                    NetMQConfig.Cleanup(false);
+                }
+                
             }
-            //NetMQConfig.Cleanup();
         }
 
 
@@ -357,13 +364,13 @@ namespace vpet
                 node = nodeMocap;
             }
 
-            if (location.gameObject.tag == "editable")
-            {
-                node.editable = true;
-                location.gameObject.AddComponent<SceneObject>();
-            }
-            else
-                node.editable = false;
+            //if (location.gameObject.tag == "editable")
+            //{
+            //    node.editable = true;
+            //    location.gameObject.AddComponent<SceneObject>();
+            //}
+            //else
+            //    node.editable = false;
 
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
             node.scale = new float[3] { location.localScale.x, location.localScale.y, location.localScale.z };
@@ -760,6 +767,8 @@ namespace vpet
         private void OnApplicationQuit()
         {
             isRunning = false;
+
+            serverThread.Join();
             //NetMQConfig.Cleanup();
             serverThread.Abort();
         }

@@ -63,7 +63,6 @@ namespace vpet
         {
             renderer.enabled = !set;
         }
-
         // Update is called once per frame
         void Update()
         {
