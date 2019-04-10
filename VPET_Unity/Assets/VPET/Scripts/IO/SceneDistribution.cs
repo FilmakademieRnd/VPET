@@ -375,7 +375,12 @@ namespace vpet
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
             node.scale = new float[3] { location.localScale.x, location.localScale.y, location.localScale.z };
             node.rotation = new float[4] { location.localRotation.x, location.localRotation.y, location.localRotation.z, location.localRotation.w };
-            node.name = Encoding.ASCII.GetBytes(location.name); //TODO: MAC Naming ccorrupted by this function?
+            node.name = new byte[256];
+            byte[] tmpName = Encoding.ASCII.GetBytes(location.name);
+            for (int i = 0; i < tmpName.Length; i++)
+            {
+                node.name[i] = tmpName[i];
+            }
 
             if(location.name != "root")
             {
