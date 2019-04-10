@@ -299,7 +299,7 @@ namespace vpet
 
                     Camera.main.transform.position = camObject.transform.position; 
                     Camera.main.transform.rotation = camObject.transform.rotation;          
-                    Camera.main.nearClipPlane = 36.0f * VPETSettings.Instance.sceneScale;
+                    Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
                     Camera.main.farClipPlane = soc.far;
                     Camera.main.fieldOfView = soc.fov;
 

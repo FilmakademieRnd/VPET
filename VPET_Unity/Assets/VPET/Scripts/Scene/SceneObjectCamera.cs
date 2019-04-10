@@ -63,6 +63,7 @@ namespace vpet
         {
             renderer.enabled = !set;
         }
+
         // Update is called once per frame
         void Update()
         {
@@ -71,6 +72,18 @@ namespace vpet
             if(!selected && !renderer.enabled)
             {
                 renderer.enabled = true;
+            }
+            //if (this.GetComponent<Renderer>())
+            {
+                Camera camera = Camera.main;
+                Vector3 newScale = new Vector3(0.04f,0.04f,0.04f) * (Vector3.Distance(this.transform.position, camera.transform.position) / 30.0f) * (camera.fieldOfView / 30.0f);
+                this.transform.localScale = newScale;
+
+                // set the same scale to the light's collider
+                if (this.GetComponent<BoxCollider>())
+                {
+                    this.GetComponent<BoxCollider>().size = newScale;
+                }
             }
         }
     }
