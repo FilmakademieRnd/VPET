@@ -46,11 +46,9 @@ namespace vpet
             public int textureId;
             public int materialId; // -1=standard
             public float roughness;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public float[] color;
-
         }
-
 
         public string CacheName;
         public string CacheNameOut;
@@ -61,7 +59,6 @@ namespace vpet
         private SceneDataHandler sceneDataHandler;
 
         Dictionary<string, byte[]> byteDataMap = new Dictionary<string, byte[]>();
-
 
         void Awake()
         {

@@ -301,7 +301,7 @@ namespace vpet
 #endif
                     if (mat.HasProperty("_Color"))
                     {
-                        nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
+                        nodeGeo.color = new float[4] { mat.color.r, mat.color.g, mat.color.b, mat.color.a };
                     }
 
                     if (mat.HasProperty("_Glossiness"))
@@ -335,7 +335,7 @@ namespace vpet
 
                     if (mat.HasProperty("_Color"))
                     {
-                        nodeGeo.color = new float[3] { mat.color.r, mat.color.g, mat.color.b };
+                        nodeGeo.color = new float[4] { mat.color.r, mat.color.g, mat.color.b, mat.color.a };
                     }
 
                     if (mat.HasProperty("_Glossiness"))
@@ -387,7 +387,6 @@ namespace vpet
                 // print("Added: " + location.name);
                 nodeList.Add(node);
             }
-
 
             // recursive children
             int childCounter = 0;

@@ -554,6 +554,19 @@ namespace vpet
                         float a = v.Length > 3 ? v[3] : 1.0f;
                         Color c = new Color(v[0], v[1], v[2], a);
                         material.SetColor(pair.Key, c);
+
+                        if (a < 1.0f)
+                        {
+                            // set rendering mode
+                            material.SetFloat("_Mode", 3);
+                            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                            material.SetInt("_ZWrite", 0);
+                            material.DisableKeyword("_ALPHATEST_ON");
+                            material.DisableKeyword("_ALPHABLEND_ON");
+                            material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                            material.renderQueue = 3000;
+                        }
                     }
                     else if (propertyType == typeof(Texture))
                     {
@@ -570,14 +583,14 @@ namespace vpet
                             if (Textures.hasAlpha(texRef))
                             {
                                 // set rendering mode
-                                material.SetFloat("_Mode", 1);
+                                material.SetFloat("_Mode", 3);
                                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                                material.SetInt("_ZWrite", 1);
-                                material.EnableKeyword("_ALPHATEST_ON");
+                                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                                material.SetInt("_ZWrite", 0);
+                                material.DisableKeyword("_ALPHATEST_ON");
                                 material.DisableKeyword("_ALPHABLEND_ON");
-                                material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                                material.renderQueue = 2450;
+                                material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                                material.renderQueue = 3000;
                             }
                         }
 

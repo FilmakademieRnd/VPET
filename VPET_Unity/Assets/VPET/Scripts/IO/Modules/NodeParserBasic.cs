@@ -56,7 +56,7 @@ namespace vpet
         public int materialId; // -1=standard
 #endif
         public float roughness;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public float[] color;
     };
 
