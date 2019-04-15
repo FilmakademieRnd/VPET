@@ -212,7 +212,10 @@ namespace vpet
 
                 if (sco && obj.GetChild(i).gameObject.activeSelf)
 	            {
-	                obj.GetChild(i).GetComponent<SceneObject>().resetAll();
+                    if (obj.GetChild(i).GetComponent<SceneObject>().GetType() == typeof(SceneObjectLight))
+                        obj.GetChild(i).GetComponent<SceneObjectLight>().resetAll();
+                    else
+                        obj.GetChild(i).GetComponent<SceneObject>().resetAll();
 	            }
 	            recursiveResetChilds(obj.GetChild(i));
 	        }
@@ -299,7 +302,7 @@ namespace vpet
 
                     Camera.main.transform.position = camObject.transform.position; 
                     Camera.main.transform.rotation = camObject.transform.rotation;          
-                    Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
+                    Camera.main.nearClipPlane = 100f * VPETSettings.Instance.sceneScale;
                     Camera.main.farClipPlane = soc.far;
                     Camera.main.fieldOfView = soc.fov;
 

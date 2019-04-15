@@ -53,6 +53,7 @@ namespace vpet
             this.gameObject.GetComponent<Rigidbody>().useGravity = false;
 
             renderer = this.transform.GetChild(0).GetComponent<Renderer>();
+            this.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.maxExtend / 2000.0f;
         }
 
         //!
@@ -73,18 +74,9 @@ namespace vpet
             {
                 renderer.enabled = true;
             }
-            //if (this.GetComponent<Renderer>())
-            {
-                Camera camera = Camera.main;
-                Vector3 newScale = new Vector3(0.04f,0.04f,0.04f) * (Vector3.Distance(this.transform.position, camera.transform.position) / 30.0f) * (camera.fieldOfView / 30.0f);
-                this.transform.localScale = newScale;
-
-                // set the same scale to the light's collider
-                if (this.GetComponent<BoxCollider>())
-                {
-                    this.GetComponent<BoxCollider>().size = newScale;
-                }
-            }
+            //Camera camera = Camera.main;
+            //Vector3 newScale = new Vector3(0.04f,0.04f,0.04f) * (Vector3.Distance(this.transform.position, camera.transform.position) / 30.0f) * (camera.fieldOfView / 30.0f);
+            //this.transform.localScale = newScale;
         }
     }
 }

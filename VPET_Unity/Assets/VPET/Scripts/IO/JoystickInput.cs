@@ -408,7 +408,12 @@ namespace vpet
             else if (buttonPressed("Fire2"))
             {
                 if (mainController.getCurrentSelection())
-                    mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+                {
+                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().GetType() == typeof(SceneObjectLight))
+                        mainController.getCurrentSelection().GetComponent<SceneObjectLight>().resetAll();
+                    else
+                        mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+                }
             }
             // cycle through edit modes
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX

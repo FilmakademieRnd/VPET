@@ -214,8 +214,13 @@ namespace vpet
 	
 	    private void objectReset()
 	    {
-	        if (mainController.getCurrentSelection() != null)   
-	            mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+            if (mainController.getCurrentSelection() != null)
+            {
+                if (mainController.getCurrentSelection().GetComponent<SceneObject>().GetType() == typeof(SceneObjectLight))
+                    mainController.getCurrentSelection().GetComponent<SceneObjectLight>().resetAll();
+                else
+                    mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+            }
 	    }
 
 
