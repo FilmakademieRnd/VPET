@@ -72,7 +72,7 @@ namespace Katana
                 int textureId = -1;
 				int materialId = -1;
                 float roughness = 0.166f;
-                float color[3] = { 1,1,1 };
+                float color[4] = { 1,1,1,1 };
         };
 
         struct NodeLight :  Node
