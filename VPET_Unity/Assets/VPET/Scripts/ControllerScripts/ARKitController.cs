@@ -45,10 +45,17 @@ namespace vpet
         [Header("AR Config Options")]
         public UnityARAlignment startAlignment = UnityARAlignment.UnityARAlignmentGravity;
         public UnityARPlaneDetection planeDetection = UnityARPlaneDetection.Horizontal;
-        public ARReferenceImagesSet detectionImages = null;
+        //public UnityAREnvironmentTexturing environmentTexturing = UnityAREnvironmentTexturing.UnityAREnvironmentTexturingNone;
         public bool getPointCloud = false;
         public bool enableLightEstimation = false;
         public bool enableAutoFocus = true;
+
+        [Header("Image Tracking")]
+        public ARReferenceImagesSet detectionImages = null;
+        public int maximumNumberOfTrackedImages = 0;
+
+        //[Header("Object Tracking")]
+        //public ARReferenceObjectsSetAsset detectionObjects = null;
         private bool sessionStarted = false;
 
         [SerializeField]
@@ -77,9 +84,18 @@ namespace vpet
     		config.getPointCloudData = getPointCloud;
     		config.enableLightEstimation = enableLightEstimation;
             config.enableAutoFocus = enableAutoFocus;
+            //config.maximumNumberOfTrackedImages = maximumNumberOfTrackedImages;
+            //config.environmentTexturing = environmentTexturing;
             if (detectionImages != null) {
+                //config.referenceImagesGroupName = detectionImages.resourceGroupName;
                 config.arResourceGroupName = detectionImages.resourceGroupName;
             }
+
+            //if (detectionObjects != null) 
+            //{
+            //    config.referenceObjectsGroupName = "";  //lets not read from XCode asset catalog right now
+            //    config.dynamicReferenceObjectsPtr = m_session.CreateNativeReferenceObjectsSet(detectionObjects.LoadReferenceObjectsInSet());
+            //}
 
             if (config.IsSupported) {
                 m_session.RunWithConfig (config);
