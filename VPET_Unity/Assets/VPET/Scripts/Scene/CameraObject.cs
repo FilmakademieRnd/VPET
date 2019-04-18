@@ -43,7 +43,7 @@ namespace vpet
         //!
         //! near plane
         //!
-        public float near = 100f;
+        public float near = 0.1f;
         //!
         //! far plane
         //!

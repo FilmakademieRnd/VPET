@@ -193,9 +193,13 @@ namespace vpet
             if (active)
             {
                 activeMode = Mode.lookThroughCamMode;
+                if(currentSelection.GetComponent<SceneObjectCamera>())
+                    camVisualizer.SetActive(true);
             }
             else
             {
+                if (currentSelection.GetComponent<SceneObjectCamera>())
+                    camVisualizer.SetActive(false);
                 openMenu();
             }
         }

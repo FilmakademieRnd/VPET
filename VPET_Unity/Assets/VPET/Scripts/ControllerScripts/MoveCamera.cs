@@ -27,6 +27,7 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 //!
@@ -76,6 +77,11 @@ namespace vpet
         //!
         private Transform scene;
 
+        //!
+        //! Array of objects for which the camera is maintaining their visibility based on the distance to the camera
+        //! this can be considered to be a manual near plane clipping implementation for special objects
+        //!
+        private List<GameObject> supervisedObjects;
 
         //!
         //! Reference to server adapter to send out changes on execution
@@ -228,7 +234,7 @@ namespace vpet
 	        // SensorHelper.ActivateRotation();
 #endif
 
-            //!
+            supervisedObjects = new List<GameObject>(0);
             mainCamera = this.GetComponent<Camera>();
             //sync renderInFront camera to mainCamera
             Camera frontCamera = this.transform.GetChild(0).GetComponent<Camera>();
@@ -428,6 +434,18 @@ namespace vpet
                     timeleft = updateInterval;
                 }
             }
+            if(supervisedObjects.Count > 0)
+            {
+                for(int i = supervisedObjects.Count - 1; i >= 0; i--)
+                {
+                    if (Vector3.Distance(supervisedObjects[i].transform.position, this.transform.position) > 300.0f * VPETSettings.Instance.sceneScale)
+                    {
+                        supervisedObjects[i].SetActive(true);
+                        supervisedObjects.RemoveAt(i);
+                    }
+                }
+            }
+
         }
 
         public void resetCameraOffset()
@@ -496,6 +514,14 @@ namespace vpet
             // HACK TANGO
             mainController.setTangoActive(set);
 
+        }
+
+        //!
+        //!
+        //!
+        public void registerNearObject(GameObject obj)
+        {
+            supervisedObjects.Add(obj);
         }
         
         public void calibrate( Quaternion targetRotation )

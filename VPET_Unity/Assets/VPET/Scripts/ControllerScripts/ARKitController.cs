@@ -52,7 +52,7 @@ namespace vpet
 
         [Header("Image Tracking")]
         public ARReferenceImagesSet detectionImages = null;
-        public int maximumNumberOfTrackedImages = 0;
+        //public int maximumNumberOfTrackedImages = 0;
 
         //[Header("Object Tracking")]
         //public ARReferenceObjectsSetAsset detectionObjects = null;

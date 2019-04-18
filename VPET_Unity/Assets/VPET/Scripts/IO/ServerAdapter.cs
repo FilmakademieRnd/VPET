@@ -395,13 +395,13 @@ namespace vpet
                     sceneObjectRefList[sceneObject.id] = sceneObject;
                 }
 
-                // HACK
-                mainController.repositionCamera();
                 mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
                 // Camera.main.GetComponent<MoveCamera>().calibrate();
 
                 scene.rotation = scenRot;
                 scene.position = scenePos;
+
+                mainController.repositionCamera();
             }
 #endif
 

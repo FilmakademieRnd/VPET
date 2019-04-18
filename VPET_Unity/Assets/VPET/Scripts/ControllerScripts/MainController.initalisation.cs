@@ -117,11 +117,6 @@ namespace vpet
         private InputAdapter inputAdapter;
 
         //!
-        //! cached references to move camera component
-        //!
-        private MoveCamera moveCamera;
-
-        //!
         //! cached Reference to Scene containing all relevant Assets
         //!
         private GameObject scene;
@@ -184,6 +179,12 @@ namespace vpet
         //! currently selected Object (if none = null)
         //!
         private SceneObject currentSceneObject;
+
+        //!
+        //! Reference to UI element visualizing the look through camera mode
+        //! this is the frame on the screen borders
+        //!
+        public GameObject camVisualizer;
 
 		//!
 		//! currently selected Object (if none = null)
@@ -454,6 +455,7 @@ namespace vpet
             rotationModifier = GameObject.Find("RotationModifier");
             scaleModifier = GameObject.Find("ScaleModifier");
             pointToMoveModifier = GameObject.Find("PointToMoveModifier");
+            camVisualizer = GameObject.Find("GUI/Canvas/CamVisualizer");
 
             animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
 

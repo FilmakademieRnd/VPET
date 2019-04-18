@@ -256,7 +256,7 @@ namespace vpet
 
 
                 bool hasBounds = false;
-                Renderer[] renderers = this.gameObject.GetComponentsInChildren<Renderer>();
+                Renderer[] renderers = this.gameObject.GetComponentsInChildren<Renderer>(true);
                 foreach (Renderer render in renderers)
                 {
                     if (!sceneLoader.isEditable(render.gameObject) || render.gameObject == this.gameObject)

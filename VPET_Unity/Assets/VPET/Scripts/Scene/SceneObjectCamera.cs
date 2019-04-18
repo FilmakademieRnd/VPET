@@ -62,7 +62,11 @@ namespace vpet
         //!
         public override void hideVisualization(bool set)
         {
-            renderer.enabled = !set;
+            this.transform.GetChild(0).gameObject.SetActive(!set);
+            if (set)
+            {
+                mainController.cameraAdapter.registerNearObject(this.transform.GetChild(0).gameObject);
+            }
         }
 
         // Update is called once per frame
@@ -70,10 +74,10 @@ namespace vpet
         {
             base.Update();
 
-            if(!selected && !renderer.enabled)
-            {
-                renderer.enabled = true;
-            }
+            //if(!selected && !renderer.enabled)
+            //{
+            //    mainController.cameraAdapter.registerNearObject(this.transform.GetChild(0).gameObject);
+            //}
             //Camera camera = Camera.main;
             //Vector3 newScale = new Vector3(0.04f,0.04f,0.04f) * (Vector3.Distance(this.transform.position, camera.transform.position) / 30.0f) * (camera.fieldOfView / 30.0f);
             //this.transform.localScale = newScale;

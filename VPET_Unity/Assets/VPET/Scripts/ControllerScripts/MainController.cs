@@ -299,10 +299,13 @@ namespace vpet
                 {
                     GameObject camObject = SceneLoader.SceneCameraList[camPrefabPosition];
                     SceneObjectCamera soc = camObject.GetComponent<SceneObjectCamera>();
+                    GameObject camGeometry = camObject.transform.GetChild(0).gameObject;
+                    camGeometry.SetActive(false);
+                    cameraAdapter.registerNearObject(camGeometry);
 
                     Camera.main.transform.position = camObject.transform.position; 
                     Camera.main.transform.rotation = camObject.transform.rotation;          
-                    Camera.main.nearClipPlane = 100f * VPETSettings.Instance.sceneScale;
+                    Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
                     Camera.main.farClipPlane = soc.far;
                     Camera.main.fieldOfView = soc.fov;
 

@@ -167,6 +167,7 @@ namespace vpet
 				return;
 
             currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
+            camVisualizer.SetActive(false);
 
             // make sure its not more locked
             serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);
