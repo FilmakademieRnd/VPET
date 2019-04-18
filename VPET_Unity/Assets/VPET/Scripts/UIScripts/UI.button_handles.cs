@@ -291,7 +291,7 @@ namespace vpet
                 Transform currentSelectedTransform = mainController.getCurrentSelection();
                 Camera.main.transform.position = currentSelectedTransform.position;
                 Camera.main.transform.rotation = currentSelectedTransform.rotation;
-                mainController.cameraAdapter.Fov = currentSelectedTransform.GetComponent<SceneObjectLight>().getLightAngle();
+                mainController.cameraAdapter.Fov = Mathf.Min(currentSelectedTransform.GetComponent<SceneObjectLight>().getLightAngle(), 150f);
 
                 SceneObjectLight sol = mainController.getCurrentSelection().GetComponent<SceneObjectLight>();
                 if (sol && sol.isSpotLight)
@@ -315,6 +315,7 @@ namespace vpet
                 Transform currentSelectedTransform = mainController.getCurrentSelection();
                 Camera.main.transform.position = currentSelectedTransform.position;
                 Camera.main.transform.rotation = currentSelectedTransform.rotation;
+                Quaternion a = Quaternion.FromToRotation(Camera.main.transform.rotation.eulerAngles, currentSelectedTransform.rotation.eulerAngles);
                 mainController.cameraAdapter.Fov = currentSelectedTransform.GetComponent<SceneObjectCamera>().fov;
 
                 if (!mainController.getCurrentSelection().GetComponent<SceneObject>().locked)

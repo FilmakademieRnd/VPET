@@ -339,7 +339,10 @@ namespace vpet
                     mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
-                        mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
+                        if (mainController.arMode)
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT_AR);
+                        else
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     }
                     else
@@ -358,7 +361,10 @@ namespace vpet
                     mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
-                        mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
+                        if (mainController.arMode)
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT_AR);
+                        else
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     }
                     else
