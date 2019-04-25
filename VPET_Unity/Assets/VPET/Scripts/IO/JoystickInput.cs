@@ -436,7 +436,7 @@ namespace vpet
             if (!Input.GetButton("Fire2") && buttonPressedTime("Fire2") > 0f
                                    && buttonPressedTime("Fire2") < deselectHoldDuration)
             {
-                mainController.deselect();
+                mainController.handleSelection();
             }
             else if (Input.GetButton("Fire2") && buttonPressedTime("Fire2") > deselectHoldDuration){
                 if (mainController.getCurrentSelection())
