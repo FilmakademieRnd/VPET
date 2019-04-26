@@ -238,10 +238,6 @@ namespace vpet
                     sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(camFOVTemplate,
                        dagPath,
                        Extensions.vFovToHFov(sol.fov, 16, 9))));
-
-                    Debug.Log((String.Format(camFOVTemplate,
-                       dagPath,
-                       Extensions.vFovToHFov(sol.fov, 16, 9))));
                 }
             }
 
