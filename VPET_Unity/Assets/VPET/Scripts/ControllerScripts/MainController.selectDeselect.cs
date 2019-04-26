@@ -35,8 +35,7 @@ namespace vpet
     public partial class MainController : MonoBehaviour {
 
         //!
-        //! handles the case when a user points to any object on screen
-        //! @param      sObject     Pointer to the object, selected by user
+        //! deselect wrapper
         //!
         public void handleSelection()
         {

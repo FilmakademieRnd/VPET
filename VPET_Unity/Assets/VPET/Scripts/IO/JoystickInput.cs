@@ -28,25 +28,25 @@ https://opensource.org/licenses/MIT
 /*
 Sample Mapping for XBox and GameVice Controller
 
-Command 		|		Windows Xbox  mapping 		| 	
+Command         |       Windows Xbox  mapping       |   
 ----------------|-----------------------------------|
-Fire0 			|Positive Button: joystick button 0	|
-Fire1 			|Positive Button: joystick button 1	|
-Fire2 			|Positive Button: joystick button 2	|
-Fire3 			|Positive Button: joystick button 3	|
-DPAD_H  		|Joystick Axis, 6th axis 			|
-DPAD_V  		|Joystick Axis, 7th axis			|
-LeftStick_X 	|Joystick Axis, X Axis				|
-LeftStick_Y 	|Joystick Axis, Y Axis, invert		|
-RightStick_X 	|Joystick Axis, 4th axis            |
-RightStick_Y 	|Joystick Axis, 5th axis, invert	|
-L1				|Key or Mouse Button,				|
-				|Positive Button: joystick button 4	|
-L2				|Joystick Axis, 3rd axis			|			
-R1				|Key or Mouse Button,				|
-				|Positive Button: joystick button 5	|				
-R2				|Joystick Axis, 3rd axis			|			
-Settings        |Positive Button: joystick button 7 |   
+Fire0           |Positive Button: joystick button 0 |
+Fire1           |Positive Button: joystick button 1 |
+Fire2           |Positive Button: joystick button 2 |
+Fire3           |Positive Button: joystick button 3 |
+DPAD_H          |Joystick Axis, 6th axis            |
+DPAD_V          |Joystick Axis, 7th axis            |
+LeftStick_X     |Joystick Axis, X Axis              |
+LeftStick_Y     |Joystick Axis, Y Axis, invert      |
+RightStick_X    |Joystick Axis, 4th axis            |
+RightStick_Y    |Joystick Axis, 5th axis, invert    |
+L1              |Key or Mouse Button,               |
+                |Positive Button: joystick button 4 |
+L2              |Joystick Axis, 3rd axis            |           
+R1              |Key or Mouse Button,               |
+                |Positive Button: joystick button 5 |               
+R2              |Joystick Axis, 3rd axis            |
+Settings        |Positive Button: joystick button 7 |
 				
 
 Command 		|		iOS GameVice mapping 		 						| 
@@ -93,7 +93,7 @@ namespace vpet
 {
     public class JoystickInput : MonoBehaviour
     {
-        public float speed = 1000f;
+        public float speed = 100f;
         public float speedFov = 1f;
         public float fov = 30f;
         public float aspect = 1.77777f;
@@ -125,7 +125,7 @@ namespace vpet
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
         // Time until the deselect button works for reset
-        private static float deselectHoldDuration = 1.6f;
+        private static float deselectHoldDuration = 1.2f;
 
         //!
         //! Cached reference to the main controller.
@@ -437,6 +437,10 @@ namespace vpet
                                    && buttonPressedTime("Fire2") < deselectHoldDuration)
             {
                 mainController.handleSelection();
+                moveObjectActive = false;
+                rotateObjectActive = false;
+                scaleObjectActive = false;
+                moveCameraActive = true;
             }
             else if (Input.GetButton("Fire2") && buttonPressedTime("Fire2") > deselectHoldDuration){
                 if (mainController.getCurrentSelection())

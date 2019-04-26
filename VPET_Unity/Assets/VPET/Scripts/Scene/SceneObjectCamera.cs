@@ -60,14 +60,16 @@ namespace vpet
         //! hide or show the visualization of the camera
         //! @param      set     hide-> true, show->false   
         //!
+#if !SCENE_HOST
         public override void hideVisualization(bool set)
         {
-            this.transform.GetChild(0).gameObject.SetActive(!set);
             if (set)
             {
+                this.transform.GetChild(0).gameObject.SetActive(false);
                 mainController.cameraAdapter.registerNearObject(this.transform.GetChild(0).gameObject);
             }
         }
+#endif
 
         // Update is called once per frame
         void Update()

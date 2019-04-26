@@ -364,13 +364,13 @@ namespace vpet
                 node = nodeMocap;
             }
 
-            //if (location.gameObject.tag == "editable")
-            //{
-            //    node.editable = true;
-            //    location.gameObject.AddComponent<SceneObject>();
-            //}
-            //else
-            //    node.editable = false;
+            if (location.gameObject.tag == "editable")
+            {
+                node.editable = true;
+                location.gameObject.AddComponent<SceneObject>();
+            }
+            else
+                node.editable = false;
 
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
             node.scale = new float[3] { location.localScale.x, location.localScale.y, location.localScale.z };
@@ -491,7 +491,6 @@ namespace vpet
             }
             
             ObjectPackage objPack = new ObjectPackage();
-
             // vertices, normals, uvs
             objPack.vSize = mesh.vertexCount;
             objPack.nSize = mesh.normals.Length;

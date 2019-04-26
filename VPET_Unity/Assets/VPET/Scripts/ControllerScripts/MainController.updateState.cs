@@ -165,6 +165,7 @@ namespace vpet
                         ui.hideRangeSlider();
                         Camera.main.fieldOfView = 60;
                         ui.hideParameterMenu();
+                        ui.resetCenterMenu();
                         break;
                     case (Mode.lookThroughLightMode):
                         ui.hideRangeSlider();
@@ -300,7 +301,24 @@ namespace vpet
                         ui.drawLightSettingsWidget();
                         //serverAdapter.sendLock(currentSelection, true);
                         break;
-	                case (Mode.addMode):
+                    case (Mode.lookThroughLightMode):
+                        SceneObjectLight s = (SceneObjectLight)currentSceneObject;
+                        if (currentSelection && s)
+                        {
+                            s.hideVisualization(true);
+                        }
+                        // ConnectRangeSlider(currentSceneObject, "LightIntensity", 1f);
+                        ConnectRangeSlider(s.setLightIntensity, s.getLightIntensity(), 0.1f / VPETSettings.Instance.lightIntensityFactor);
+                        if (s.isDirectionalLight)
+                            ui.drawParameterMenu(layouts.LIGHTDIR);
+                        else if (s.isPointLight)
+                            ui.drawParameterMenu(layouts.LIGHTPOINT);
+                        else if (s.isSpotLight)
+                            ui.drawParameterMenu(layouts.LIGHTSPOT);
+                        ui.drawLightSettingsWidget();
+                        //serverAdapter.sendLock(currentSelection, true);
+                        break;
+                    case (Mode.addMode):
 	                    break;
 	                default:
 	                    break;
