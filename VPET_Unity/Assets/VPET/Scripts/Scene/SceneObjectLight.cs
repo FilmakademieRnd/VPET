@@ -103,6 +103,7 @@ namespace vpet
             else if (sourceLight.type == LightType.Area)
             {
                 isAreaLight = true;
+                sourceLight.type = LightType.Spot;
                 initialLightRange = sourceLight.range;
                 initialSpotAngle = sourceLight.spotAngle;
                 lightGeo = lightTarget.Find("Cone");

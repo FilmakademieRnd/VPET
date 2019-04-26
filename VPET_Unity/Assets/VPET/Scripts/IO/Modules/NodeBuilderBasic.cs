@@ -262,9 +262,8 @@ namespace vpet
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
                 // TODO: use are lights when supported in unity
-                lightComponent.type = LightType.Spot;
                 lightComponent.spotAngle = 170;
-                lightComponent.range *= 5;
+                lightComponent.range *= 400;
             }
             else
 	        {

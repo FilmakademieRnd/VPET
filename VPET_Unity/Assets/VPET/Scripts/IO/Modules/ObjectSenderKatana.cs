@@ -217,6 +217,7 @@ namespace vpet
                     SceneObjectLight sol = (SceneObjectLight)sceneObject;
                     Light light = sol.SourceLight;
                     LightTypeKatana lightType = (LightTypeKatana)(light.type);
+                    Debug.Log("+++++ :" + lightType);
 
                     if (sol.isAreaLight)
                         lightType = LightTypeKatana.rect;
