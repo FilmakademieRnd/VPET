@@ -53,6 +53,7 @@ namespace vpet
 		private string objTemplateQuat = "";
 		private string lightTransRotTemplate = "";
 		private string camTransRotTemplate = "";
+		private string camFOVTemplate = "";
 		private string lightIntensityColorTemplate = "";
         private Transform root;
 
@@ -119,6 +120,9 @@ namespace vpet
 	        binaryData = Resources.Load("VPET/TextTemplates/lightIntensityColorTemplate") as TextAsset;
 	        lightIntensityColorTemplate = binaryData.text;
 
+            binaryData = Resources.Load("VPET/TextTemplates/camTemplate") as TextAsset;
+            camFOVTemplate = binaryData.text;
+
             root = GameObject.Find("Scene").transform;
         }
 
@@ -184,12 +188,6 @@ namespace vpet
                         (-pos.x + " " + pos.y + " " + pos.z),
                         (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
                         (scl.x + " " + scl.y + " " + scl.z))));
-
-                    //Debug.Log(String.Format(camTransRotTemplate,
-                    //    dagPath,
-                    //    (-pos.x + " " + pos.y + " " + pos.z),
-                    //    (-angle + " " + -axis.x + " " + axis.y + " " + axis.z),
-                    //    (scl.x + " " + scl.y + " " + scl.z)));
                 }
                 else
                 {
@@ -217,18 +215,9 @@ namespace vpet
                     SceneObjectLight sol = (SceneObjectLight)sceneObject;
                     Light light = sol.SourceLight;
                     LightTypeKatana lightType = (LightTypeKatana)(light.type);
-                    Debug.Log("+++++ :" + lightType);
 
                     if (sol.isAreaLight)
                         lightType = LightTypeKatana.rect;
-
-                    //sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(lightIntensityColorTemplate,
-                    //    dagPath,
-                    //    ((LightTypeKatana)(light.type)).ToString(),
-                    //    light.color.r + " " + light.color.g + " " + light.color.b,
-                    //    light.intensity / VPETSettings.Instance.lightIntensityFactor,
-                    //    sol.exposure,
-                    //    light.spotAngle)));
 
                     sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(lightIntensityColorTemplate,
                         dagPath,
@@ -237,6 +226,18 @@ namespace vpet
                         light.intensity / VPETSettings.Instance.lightIntensityFactor,
                         sol.exposure,
                         light.spotAngle)));
+                }
+                else if (nodeType == NodeType.CAMERA)
+                {
+                    SceneObjectCamera sol = (SceneObjectCamera)sceneObject;
+
+                    sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(camFOVTemplate,
+                       dagPath,
+                       Extensions.vFovToHFov(sol.fov, 16, 9))));
+
+                    Debug.Log((String.Format(camFOVTemplate,
+                       dagPath,
+                       Extensions.vFovToHFov(sol.fov, 16, 9))));
                 }
             }
 

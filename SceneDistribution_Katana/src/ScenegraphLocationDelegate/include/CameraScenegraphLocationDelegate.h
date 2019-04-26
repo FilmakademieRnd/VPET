@@ -46,6 +46,7 @@ public:
 
     virtual std::string getSupportedRenderer() const;
     virtual void fillSupportedLocationList(std::vector<std::string>& supportedLocationList) const;
+	float CameraScenegraphLocationDelegate::hFovToVFov(float hFov, float width = 16.0f, float height = 9.0f);
 
     virtual void* process(FnKat::FnScenegraphIterator sgIterator, void* optionalInput);
 };

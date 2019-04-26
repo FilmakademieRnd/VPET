@@ -60,6 +60,7 @@ namespace vpet
         public void setCamParamFocalLength(float focalLength)
         {
             float fov = Extensions.lensToVFov(focalLength);
+            serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.FOV);
             SceneObjectCamera currentCamera = (SceneObjectCamera) currentSceneObject;
             if (currentCamera)
             {

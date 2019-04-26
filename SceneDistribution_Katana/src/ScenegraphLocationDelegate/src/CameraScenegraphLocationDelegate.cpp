@@ -61,6 +61,11 @@ void CameraScenegraphLocationDelegate::fillSupportedLocationList(std::vector<std
     supportedLocationList.push_back(std::string("camera"));
 }
 
+float CameraScenegraphLocationDelegate::hFovToVFov(float hFov, float width = 16.0f, float height = 9.0f)
+{
+	return glm::degrees(2 * glm::atan(glm::tan(glm::radians(hFov) / 2.0f) * (height / width)));
+}
+
 void* CameraScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sgIterator, void* optionalInput)
 {
 
@@ -82,7 +87,7 @@ void* CameraScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sgIt
         FnAttribute::DoubleAttribute floatAttr = attributesGroup.getChildByName("fov");
         if ( floatAttr.isValid() )
         {
-            nodeCam->fov = floatAttr.getValue(70, false);
+            nodeCam->fov = hFovToVFov(floatAttr.getValue(70, false));
         }
         // Near
         floatAttr = attributesGroup.getChildByName("near");
