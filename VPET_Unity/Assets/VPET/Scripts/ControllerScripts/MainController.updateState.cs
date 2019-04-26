@@ -298,6 +298,8 @@ namespace vpet
                             ui.drawParameterMenu(layouts.LIGHTPOINT);
                         else if (sol.isSpotLight)
                             ui.drawParameterMenu(layouts.LIGHTSPOT);
+                        else if (sol.isAreaLight)
+                            ui.drawParameterMenu(layouts.LIGHTAREA);
                         ui.drawLightSettingsWidget();
                         //serverAdapter.sendLock(currentSelection, true);
                         break;
@@ -315,6 +317,8 @@ namespace vpet
                             ui.drawParameterMenu(layouts.LIGHTPOINT);
                         else if (s.isSpotLight)
                             ui.drawParameterMenu(layouts.LIGHTSPOT);
+                        else if (s.isAreaLight)
+                            ui.drawParameterMenu(layouts.LIGHTAREA);
                         ui.drawLightSettingsWidget();
                         //serverAdapter.sendLock(currentSelection, true);
                         break;

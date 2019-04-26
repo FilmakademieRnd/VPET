@@ -377,6 +377,9 @@ namespace vpet
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTPOINT);
             parameterMenu.addButton(buttonLightRange, layouts.LIGHTPOINT);
             parameterMenu.addButton(buttonLightCol, layouts.LIGHTPOINT);
+            parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTAREA);
+            parameterMenu.addButton(buttonLightRange, layouts.LIGHTAREA);
+            parameterMenu.addButton(buttonLightCol, layouts.LIGHTAREA);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTSPOT);
             parameterMenu.addButtonToLayout(buttonLightRange, layouts.LIGHTSPOT);
             parameterMenu.addButton(buttonLightAngle, layouts.LIGHTSPOT);
