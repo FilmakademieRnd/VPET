@@ -444,7 +444,12 @@ namespace vpet
             }
             else if (Input.GetButton("Fire2") && buttonPressedTime("Fire2") > deselectHoldDuration){
                 if (mainController.getCurrentSelection())
-                    mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+                {
+                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().GetType() == typeof(SceneObjectLight))
+                        mainController.getCurrentSelection().GetComponent<SceneObjectLight>().resetAll();
+                    else
+                        mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+                }
             }
             if (buttonPressed("Fire2")) { }
 

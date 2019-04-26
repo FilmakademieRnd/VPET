@@ -45,6 +45,9 @@ namespace vpet
             set { targetCollider = value; }
         }
 
+        Renderer renderer;
+        Light parentLight;
+
 
         //!
         //! Scene object scale. If game object is scaled, this value is used to keep icon size unique.
@@ -64,7 +67,9 @@ namespace vpet
         //!
         void Start()
         {
-            this.GetComponent<Renderer>().material.color = this.transform.parent.GetComponent<Light>().color;
+            renderer = this.GetComponent<Renderer>();
+            parentLight = this.transform.parent.GetComponent<Light>();
+            renderer.material.color = parentLight.color;
         }
 
         //!
@@ -79,6 +84,7 @@ namespace vpet
 
                 this.transform.rotation = camera.transform.rotation;
                 this.transform.localScale = scale;
+                renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b,1f);
 
                 // set the same scale to the light's collider
                 if (targetCollider)

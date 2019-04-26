@@ -167,6 +167,7 @@ namespace vpet
 
             currentSelection.gameObject.GetComponent<SceneObject>().selected = false;
             camVisualizer.SetActive(false);
+            ui.hideLightSettingsWidget();
 
             // make sure its not more locked
             serverAdapter.SendObjectUpdate(currentSceneObject, ParameterType.LOCK);

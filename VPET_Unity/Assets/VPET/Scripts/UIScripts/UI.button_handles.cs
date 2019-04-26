@@ -166,6 +166,7 @@ namespace vpet
         private void editLinkToCamera(IMenuButton button)
         {
             parameterMenu.reset();
+            button.Toggled = true;
             mainController.toggleObjectLinkCamera(button.Toggled);
             UI.OnUIChanged.Invoke();
         }
@@ -173,6 +174,7 @@ namespace vpet
         private void editPointToMove(IMenuButton button)
         {
             parameterMenu.reset();
+            button.Toggled = true;
             mainController.togglePointToMove(button.Toggled);
             UI.OnUIChanged.Invoke();
         }
