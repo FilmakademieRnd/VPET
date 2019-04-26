@@ -187,19 +187,36 @@ namespace vpet
         //! click on the canera look through button
         //! @param      active      state that the button dows no have (on or off)
         //!
-        public void buttonLookThroughClicked(bool active) 
+        public void buttonLookThroughCamClicked(bool active) 
         {
             currentSelection.GetComponent<SceneObject>().hideVisualization(active);
             if (active)
             {
                 activeMode = Mode.lookThroughCamMode;
-                if(currentSelection.GetComponent<SceneObjectCamera>())
-                    camVisualizer.SetActive(true);
+                camVisualizer.SetActive(true);
             }
             else
             {
-                if (currentSelection.GetComponent<SceneObjectCamera>())
-                    camVisualizer.SetActive(false);
+                camVisualizer.SetActive(false);
+                openMenu();
+            }
+        }
+
+        //!
+        //! click on the canera look through button
+        //! @param      active      state that the button dows no have (on or off)
+        //!
+        public void buttonLookThroughLightClicked(bool active)
+        {
+            currentSelection.GetComponent<SceneObject>().hideVisualization(active);
+            if (active)
+            {
+                activeMode = Mode.lookThroughLightMode;
+                camVisualizer.SetActive(true);
+            }
+            else
+            {
+                camVisualizer.SetActive(false);
                 openMenu();
             }
         }

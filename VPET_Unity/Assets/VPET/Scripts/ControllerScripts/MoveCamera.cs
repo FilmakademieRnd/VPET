@@ -334,8 +334,8 @@ namespace vpet
                     else
                         transform.rotation = rotationOffset * newRotation;
                     // HACK: to block roll
-					if (!mainController.arMode)
-                    	transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
+					//if (!mainController.arMode)
+                    //	transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
                     //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
 		#if USE_TANGO || USE_ARKIT
                     cameraParent.position += rotationOffset * (newPosition - oldPosition);
@@ -534,6 +534,14 @@ namespace vpet
             {
                 rotationFirst = targetRotation * Quaternion.Inverse(newRotation) * newRotation;
             }
+        }
+
+        //!
+        //! Offsets rotation to point towards the given taget rotation
+        //!
+        public void setTargetRotation(Quaternion target)
+        {
+            rotationOffset = target * Quaternion.Inverse(newRotation);
         }
     }
 }

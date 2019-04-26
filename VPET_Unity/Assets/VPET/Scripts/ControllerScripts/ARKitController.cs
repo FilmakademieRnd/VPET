@@ -68,7 +68,7 @@ namespace vpet
         {
             // Initialize some variables
     		m_arMode = false;
-    		
+                		
             m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
 
             UnityARSessionNativeInterface.ARImageAnchorAddedEvent += AddImageAnchor;
@@ -157,11 +157,10 @@ namespace vpet
         // Update is called once per frame
         void Update()
         {
-			//Debug.Log ("movementScale: " + VPETSettings.Instance.trackingScale.ToString());
             Matrix4x4 matrix = m_session.GetCameraPose();
-			//transform.localPosition = UnityARMatrixOps.GetPosition (matrix) * VPETSettings.Instance.trackingScale * m_movementScale;
             transform.localPosition = UnityARMatrixOps.GetPosition(matrix) * m_movementScale;
             transform.localRotation = UnityARMatrixOps.GetRotation(matrix);
+            //Camera.main.projectionMatrix = m_session.GetCameraProjection();
             if (m_arMode)
             {
                 //for AR mode

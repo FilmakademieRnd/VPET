@@ -62,6 +62,7 @@ namespace vpet
             UI.OnUIChanged.AddListener(() => { buttonConfig.Toggled = (configWidget.gameObject.activeSelf == true); } );  // register for ui changes 
             mainMenu.addButton( buttonConfig);
             mainMenu.addButtonToLayout(buttonConfig, layouts.SPLASH);
+
             //help
             IMenuButton buttonHelp = Elements.MenuButton();
             buttonHelp.AddAction(GeneralMenu_Help_sel, GeneralMenu_Help_nrm, call: () => openHelp()); // switch off
@@ -140,18 +141,18 @@ namespace vpet
             //buttonFocus.AddAction(ScoutMode_Focus_sel, ScoutMode_Focus_nrm, call: () => showCameraSlider(CameraObject.CameraParameter.FOCSIZE)); // focal size slider
             //secondaryMenu.addButton(buttonFocus, layouts.SCOUT);
             // field of view / lens
-            IMenuButton buttonFov;
-            if (!mainController.arMode)
-            {
-                buttonFov = Elements.MenuButtonToggle();
-                buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => cameraFov(buttonFov)); // field of view slider            
-            }
-            else
-            {
-                buttonFov = Elements.MenuButton();
-                buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm); // field of view slider            
-            }
-            secondaryMenu.addButton(buttonFov, layouts.SCOUT);
+            //IMenuButton buttonFov;
+            //if (!mainController.arMode)
+            //{
+            //    buttonFov = Elements.MenuButtonToggle();
+            //    buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => cameraFov(buttonFov)); // field of view slider            
+            //}
+            //else
+            //{
+            //    buttonFov = Elements.MenuButton();
+            //    buttonFov.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm); // field of view slider            
+            //}
+            //secondaryMenu.addButton(buttonFov, layouts.SCOUT);
             // aperture
             IMenuButton buttonApert = Elements.MenuButton();
             buttonApert.AddAction(ScoutMode_Aperture_sel, ScoutMode_Aperture_nrm); // aperture slider
@@ -268,10 +269,10 @@ namespace vpet
             centerMenu.OnMenuOpen.AddListener( () => { buttonKin.Toggled = mainController.HasGravityOn(); } );  // register for ui changes 
             centerMenu.addButton( buttonKin, layouts.OBJECT );
             // light color
-            IMenuButton buttonLightCol = Elements.MenuButtonToggle();
-            buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 
-            centerMenu.addButton(buttonLightCol, layouts.LIGHT);
-            centerMenu.addButton(buttonLightCol, layouts.LIGHT_AR);
+            //IMenuButton buttonLightCol = Elements.MenuButtonToggle();
+            //buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol));
+            //centerMenu.addButton(buttonLightCol, layouts.LIGHT);
+            //centerMenu.addButton(buttonLightCol, layouts.LIGHT_AR);
             // light settings
             IMenuButton buttonLightSet = Elements.MenuButtonToggle();
             buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightSettings(buttonLightSet));
@@ -347,6 +348,10 @@ namespace vpet
             buttonLightRange.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, () => parameterButtonHandle(buttonLightRange, 1));
             IMenuButton buttonLightAngle = Elements.MenuButtonToggle();
             buttonLightAngle.AddAction(EditMode_LightConeAngle_sel, EditMode_LightConeAngle_nrm, () => parameterButtonHandle(buttonLightAngle, 2));
+            // light color
+            IMenuButton buttonLightCol = Elements.MenuButtonToggle();
+            buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => parameterButtonHandle(buttonLightCol,3));
+
             // attach to cam
             IMenuButton buttonAttachCam = Elements.MenuButtonToggle();
             buttonAttachCam.AddAction(EditMode_TranslateAttachToCam_sel, EditMode_TranslateAttachToCam_nrm, () => editLinkToCamera(buttonAttachCam)); // 
@@ -368,11 +373,17 @@ namespace vpet
             parameterMenu.addButton(buttonAttachCam, layouts.TRANSLATION);
             parameterMenu.addButton(buttonClickMove, layouts.TRANSLATION);
             parameterMenu.addButton(buttonLightIntensity, layouts.LIGHTDIR);
+            parameterMenu.addButton(buttonLightCol, layouts.LIGHTDIR);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTPOINT);
             parameterMenu.addButton(buttonLightRange, layouts.LIGHTPOINT);
+            parameterMenu.addButton(buttonLightCol, layouts.LIGHTPOINT);
+            parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTAREA);
+            parameterMenu.addButton(buttonLightRange, layouts.LIGHTAREA);
+            parameterMenu.addButton(buttonLightCol, layouts.LIGHTAREA);
             parameterMenu.addButtonToLayout(buttonLightIntensity, layouts.LIGHTSPOT);
             parameterMenu.addButtonToLayout(buttonLightRange, layouts.LIGHTSPOT);
             parameterMenu.addButton(buttonLightAngle, layouts.LIGHTSPOT);
+            parameterMenu.addButton(buttonLightCol, layouts.LIGHTSPOT);
         }
     }
 }

@@ -182,13 +182,13 @@ namespace vpet
             mainController.togglePointToMoveCamera(button.Toggled);
         }
 
-        private void cameraFov(IMenuButton button)
-        {
-            if (button.Toggled)
-                mainController.ConnectRangeSlider(mainController.setCamParamFocalLength, Camera.main.focalLength);
-            else
-                hideRangeSlider();
-        }
+        //private void cameraFov(IMenuButton button)
+        //{
+        //    if (button.Toggled)
+        //        mainController.ConnectRangeSlider(mainController.setCamParamFocalLength, Camera.main.focalLength);
+        //    else
+        //        hideRangeSlider();
+        //}
 
         // Center
         //
@@ -230,7 +230,7 @@ namespace vpet
         //!	
         private void editLightColor(IMenuButton button)
 	    {
-			centerMenu.animateActive(((Button)button).gameObject);
+			//centerMenu.animateActive(((Button)button).gameObject);
             lightSettingsWidget.SetSliderType(LightSettingsWidget.SliderType.COLOR);
             mainController.buttonLightColorClicked(button.Toggled);
 	    }
@@ -286,21 +286,26 @@ namespace vpet
         private void lookThroughLight(IMenuButton button)
         {
             centerMenu.animateActive(((Button)button).gameObject);
+            lightSettingsWidget.SetSliderType(LightSettingsWidget.SliderType.INTENSITY); // TODO: just something but not color
+            mainController.buttonLightSettingsClicked(button.Toggled);
             if (button.Toggled)
             {
                 Transform currentSelectedTransform = mainController.getCurrentSelection();
                 Camera.main.transform.position = currentSelectedTransform.position;
-                Camera.main.transform.rotation = currentSelectedTransform.rotation;
-                mainController.cameraAdapter.Fov = Mathf.Min(currentSelectedTransform.GetComponent<SceneObjectLight>().getLightAngle(), 150f);
+                //Camera.main.transform.parent.position = currentSelectedTransform.position;
+                Vector3 eulerRot = currentSelectedTransform.rotation.eulerAngles;
 
-                SceneObjectLight sol = mainController.getCurrentSelection().GetComponent<SceneObjectLight>();
-                if (sol && sol.isSpotLight)
-                    mainController.ConnectRangeSlider(mainController.setLightParamAngle, sol.getLightAngle());
+                mainController.cameraAdapter.setTargetRotation(Quaternion.Euler(eulerRot.x, eulerRot.y, 0f));// * Quaternion.Inverse(Camera.main.transform.rotation);
+                //Camera.main.transform.parent.rotation = Quaternion.Euler(Camera.main.transform.parent.rotation.eulerAngles.x,Camera.main.transform.parent.rotation.eulerAngles.y,0);
+                mainController.cameraAdapter.Fov = Mathf.Min(currentSelectedTransform.GetComponent<SceneObjectLight>().getLightAngle(), 150f);
             }
             else
+            {
+                //trackingController.resetTargetRotation();
                 hideRangeSlider();
+            }
 
-            mainController.buttonLookThroughClicked(button.Toggled);
+            mainController.buttonLookThroughLightClicked(button.Toggled);
         }
 
         //!
@@ -314,8 +319,9 @@ namespace vpet
             {
                 Transform currentSelectedTransform = mainController.getCurrentSelection();
                 Camera.main.transform.position = currentSelectedTransform.position;
-                Camera.main.transform.rotation = currentSelectedTransform.rotation;
-                Quaternion a = Quaternion.FromToRotation(Camera.main.transform.rotation.eulerAngles, currentSelectedTransform.rotation.eulerAngles);
+                //Camera.main.transform.parent.position = currentSelectedTransform.position;
+                mainController.cameraAdapter.setTargetRotation(currentSelectedTransform.rotation);// * Quaternion.Inverse(Camera.main.transform.rotation);
+                //Camera.main.transform.parent.rotation = Quaternion.Euler(Camera.main.transform.parent.rotation.eulerAngles.x,Camera.main.transform.parent.rotation.eulerAngles.y,0);
                 mainController.cameraAdapter.Fov = currentSelectedTransform.GetComponent<SceneObjectCamera>().fov;
 
                 if (!mainController.getCurrentSelection().GetComponent<SceneObject>().locked)
@@ -324,9 +330,12 @@ namespace vpet
                 }
             }
             else
+            {
+                //trackingController.resetTargetRotation();
                 hideRangeSlider();
+            }
 
-            mainController.buttonLookThroughClicked(button.Toggled);
+            mainController.buttonLookThroughCamClicked(button.Toggled);
         }
 
         //!
@@ -509,11 +518,12 @@ namespace vpet
                         mainController.ConnectRangeSlider(sco, "ScaleX", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
                         mainController.ConnectRangeSlider(sco, "RotateX", 1f);
-                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
+                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode || mainController.ActiveMode == MainController.Mode.lookThroughLightMode)
                     {
                         SceneObjectLight scl = (SceneObjectLight) sco;
                         if (scl)
                         {
+                            lightSettingsWidget.hide();
                             mainController.ConnectRangeSlider(scl.setLightIntensity, scl.getLightIntensity(), 0.1f / VPETSettings.Instance.lightIntensityFactor);
                             rangeSlider.MinValue = 0f;
                         }
@@ -526,11 +536,12 @@ namespace vpet
                         mainController.ConnectRangeSlider(sco, "ScaleY", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
                         mainController.ConnectRangeSlider(sco, "RotateY", 1f);
-                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
+                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode || mainController.ActiveMode == MainController.Mode.lookThroughLightMode)
                     {
                         SceneObjectLight scl = (SceneObjectLight)sco;
                         if (scl)
                         {
+                            lightSettingsWidget.hide();
                             mainController.ConnectRangeSlider(scl.setLightRange, scl.getLightRange(), 10f * VPETSettings.Instance.sceneScale);
                             rangeSlider.MinValue = 0.1f;
                         }
@@ -543,14 +554,28 @@ namespace vpet
                         mainController.ConnectRangeSlider(sco, "ScaleZ", 0.02f);
                     else if (mainController.ActiveMode == MainController.Mode.rotationMode)
                         mainController.ConnectRangeSlider(sco, "RotateZ", 1f);
-                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode)
+                    else if (mainController.ActiveMode == MainController.Mode.lightSettingsMode || mainController.ActiveMode == MainController.Mode.lookThroughLightMode)
                     {
                         SceneObjectLight scl = (SceneObjectLight)sco;
                         if (scl)
                         {
-                            mainController.ConnectRangeSlider(scl.setLightAngle, scl.getLightAngle(), 1f);
+                            lightSettingsWidget.hide();
+                            mainController.ConnectRangeSlider(mainController.setLightParamAngle, scl.getLightAngle());
                             rangeSlider.MinValue = 1f;
                             rangeSlider.MaxValue = 179f;
+                        }
+                    }
+                    break;
+                case 3:
+                    if (mainController.ActiveMode == MainController.Mode.lightSettingsMode || mainController.ActiveMode == MainController.Mode.lookThroughLightMode)
+                    {
+                        SceneObjectLight scl = (SceneObjectLight)sco;
+                        if (scl)
+                        {
+                            hideRangeSlider();
+                            lightSettingsWidget.SetSliderType(LightSettingsWidget.SliderType.COLOR);
+                            lightSettingsWidget.show(mainController.getCurrentSelection().GetComponent<SceneObjectLight>());
+                            //mainController.buttonLightColorClicked(button.Toggled);
                         }
                     }
                     break;

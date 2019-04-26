@@ -32,7 +32,7 @@ using System.Linq;
 
 namespace vpet
 {
-	public enum layouts { SPLASH, DEFAULT, PERSPECTIVES, MODES, FOV, EDIT, SCOUT, TRANSFORM, OBJECT, LIGHT, LIGHT_AR, CAMERA, CAMERA_AR, CAMERALOCKED, LIGHTSPOT, LIGHTDIR, LIGHTPOINT, ANIMATION, TRANSLATION }
+	public enum layouts { SPLASH, DEFAULT, PERSPECTIVES, MODES, FOV, EDIT, SCOUT, TRANSFORM, OBJECT, LIGHT, LIGHT_AR, CAMERA, CAMERA_AR, CAMERALOCKED, LIGHTSPOT, LIGHTDIR, LIGHTPOINT, LIGHTAREA, ANIMATION, TRANSLATION }
 
     // public class MenuBoolEvent : UnityEvent<bool> { }
 
@@ -448,6 +448,7 @@ namespace vpet
 	    //!
 	    public void reset()
 		{
+            activeButton = null;
             for (int i = 0; i < buttons.Count; i++)
 	        {
 				if ( buttons[i] != activeButton && buttons[i].GetComponent<IMenuButton>() != null )

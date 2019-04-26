@@ -491,7 +491,6 @@ namespace vpet
             }
             
             ObjectPackage objPack = new ObjectPackage();
-
             // vertices, normals, uvs
             objPack.vSize = mesh.vertexCount;
             objPack.nSize = mesh.normals.Length;

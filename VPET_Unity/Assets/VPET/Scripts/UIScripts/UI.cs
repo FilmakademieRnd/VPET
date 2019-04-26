@@ -1,3 +1,4 @@
+
 /*
 -----------------------------------------------------------------------------
 This source file is part of VPET - Virtual Production Editing Tool
@@ -371,11 +372,16 @@ namespace vpet
         {
             mainMenu.reset();
         }
-	
-	    //!
-	    //! Receiving function of a button press event on the main menu activation button.
-	    //!
-	    private void mainMenuToggle()
+
+        public void resetCenterMenu()
+        {
+            centerMenu.reset();
+        }
+
+        //!
+        //! Receiving function of a button press event on the main menu activation button.
+        //!
+        private void mainMenuToggle()
 	    {
 			if ( mainMenuButton.GetComponent<IMenuButton>().Toggled )
 			{
@@ -480,6 +486,7 @@ namespace vpet
 	    {
             //if user clicks on config icon while in AR setup, accept setup (same as ok button)
             acceptARConfig();
+            mainController.deselect();
 
             // get radial menu
             // get ProgressWidget
@@ -495,7 +502,8 @@ namespace vpet
             // map values from preferences to config widget
             VPETSettings.mapValuesFromPreferences(configWidget);
 
-			configWidget.Show();           
+			configWidget.Show();
+
             configWidget.initConfigWidget();
             UI.OnUIChanged.Invoke();
             return configWidget;
@@ -676,7 +684,7 @@ namespace vpet
         public void drawLightSettingsWidget()
 	    {
 	        lightSettingsWidget.gameObject.SetActive(true);
-            if ( lightSettingsWidget.GetSliderType() == LightSettingsWidget.SliderType.COLOR )
+            if( lightSettingsWidget.GetSliderType() == LightSettingsWidget.SliderType.COLOR )
             {
                 hideParameterMenu();
                 hideRangeSlider();

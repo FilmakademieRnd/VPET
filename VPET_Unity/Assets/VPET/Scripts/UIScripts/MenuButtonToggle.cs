@@ -91,8 +91,8 @@ namespace vpet
         }
 
         public void reset()
-		{			
-			toggled = false;
+		{
+            toggled = false;
 			setSpriteFromToggle();
 		}
 
