@@ -210,7 +210,10 @@ namespace vpet
                         (scl.x + " " + scl.y + " " + scl.z))));
                 }
             }
-            else
+            else if(paramType == ParameterType.INTENSITY ||
+                    paramType == ParameterType.COLOR ||
+                    paramType == ParameterType.EXPOSURE ||
+                    paramType == ParameterType.ANGLE)
             {
                 if (nodeType == NodeType.LIGHT)
                 {

@@ -51,29 +51,29 @@ Settings        |Positive Button: joystick button 7 |
 
 Command 		|		iOS GameVice mapping 		 						| 
 ----------------|-----------------------------------------------------------|
-Fire0 			|Positive Button: joystick button 14, Axis: 14th 			|
-Fire1 			|Positive Button: joystick button 13, Axis: 13th 			|
-Fire2 			|Positive Button: joystick button 15, Axis: 15th 			|
-Fire3 			|Positive Button: joystick button 12, Axis: 12th 			|
-DPAD_H  		|Positive Button: joystick button 5, Axis: 5th   			|
-DPAD_H_neg 		|Positive Button: joystick button 7, Axis: 7th   			|
-DPAD_V  		|Positive Button: joystick button 4, Axis: 4th   			|
-DPAD_V_neg 		|Positive Button: joystick button 6, Axis: 6th   			|
-LeftStick_X 	|Joystick Axis, X Axis										|
-LeftStick_Y 	|Joystick Axis, Y Axis, invert								|
-RightStick_X 	|Joystick Axis, 3th axis        							|
-RightStick_Y 	|Joystick Axis, 4th axis, invert							|
+Fire0           |Positive Button: joystick button 14, Axis: 14th (A Button) |
+Fire1           |Positive Button: joystick button 13, Axis: 13th (B Button) |
+Fire2           |Positive Button: joystick button 15, Axis: 15th (X Button) |
+Fire3           |Positive Button: joystick button 12, Axis: 12th (Y Button) |
+DPAD_H          |Positive Button: joystick button 5, Axis: 5th              |
+DPAD_H_neg      |Positive Button: joystick button 7, Axis: 7th              |
+DPAD_V          |Positive Button: joystick button 4, Axis: 4th              |
+DPAD_V_neg      |Positive Button: joystick button 6, Axis: 6th              |
+LeftStick_X     |Joystick Axis, X Axis                                      |
+LeftStick_Y     |Joystick Axis, Y Axis, invert                              |
+RightStick_X    |Joystick Axis, 3th axis                                    |
+RightStick_Y    |Joystick Axis, 4th axis, invert                            |
 L1              |Key or Mouse Button, Positive Button: joystick button 8    |
 L2              |Key or Mouse Button, Positive Button: joystick button 10   |
-R1	            |Key or Mouse Button, Positive Button: joystick button 9    |
-R2	            |Key or Mouse Button, Positive Button: joystick button 11   |
+R1              |Key or Mouse Button, Positive Button: joystick button 9    |
+R2              |Key or Mouse Button, Positive Button: joystick button 11   |
 Settings        |Key or Mouse Button, Positive Button: joystick button 0    |
 
 Note: When setting the type to "Key or Mouse Button" for an input in unitys
 project settings (Edit -> Project Settings... -> Input), the Axis dropdown
 doesn't do anything.
-
 */
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -108,7 +108,7 @@ namespace vpet
 
         // dictionary to keep track of the status of controller buttons since they
         // do not behave like the unity API says on iOS
-        private IDictionary<string, bool> buttonPressedState;
+        private IDictionary<string, float> buttonPressedState;
 
         private float left, right, bottom, top;
         private Transform worldTransform = null;
@@ -123,6 +123,9 @@ namespace vpet
         public OutlineEffect outlineEffect;
         static int defaultLayermask = (1 << 0) | (1 << 13);
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+
+        // Time until the deselect button works for reset
+        private static float deselectHoldDuration = 1.6f;
 
         //!
         //! Cached reference to the main controller.
@@ -147,35 +150,53 @@ namespace vpet
         //!
         //! Wrapper for unity API function GetButtonDown() that does not behave like described on iOS.
         //! Using a dictionary to keep track of the status of controller buttons.
-        //! A bool flag gets kept for every button name this function is called with.
+        //! A bool flag gets kept for every button name this function is called for.
         //! The function can be probably removed when the iOS unity API issue was fixed.
-        //! @param      buttonName       name of a button like its defined in the Input Manager 
+        //! @param      buttonName       name of a button like its defined in the Input Manager.
         //! @return     true only for the first time the function gets called for a certain button after the user stated pressing it.
         //!
         private bool buttonPressed(string buttonName)
         {
             if (Input.GetButtonDown(buttonName))
             {
-                bool buttonAlreadyPressed = false;
-                if (buttonPressedState.TryGetValue(buttonName, out buttonAlreadyPressed))
+                float buttonPressedTimestamp = 0f;
+                if (buttonPressedState.TryGetValue(buttonName, out buttonPressedTimestamp))
                 {
-                    if (buttonAlreadyPressed) 
+                    if (buttonPressedTimestamp > 0f) 
                         return false;
                     else
                     {
-                        buttonPressedState[buttonName] = true;
+                        buttonPressedState[buttonName] = Time.time;
                         return true;
                     }
                 }
                 else
                 {
-                    buttonPressedState.Add(buttonName, true);
+                    buttonPressedState.Add(buttonName, Time.time);
                     return true;
                 }
             }
             else if (Input.GetButtonUp(buttonName) && buttonPressedState.ContainsKey(buttonName))
-                    buttonPressedState[buttonName] = false;
+                    buttonPressedState[buttonName] = 0f;
             return false;
+        }
+
+        //!
+        //! Function to mesure for how long a button has already been pressed.
+        //! In case the given button is not pressed at all ...
+        //! @param      buttonName       name of a button like its defined in the Input Manager.
+        //! @return     the time in seconds for how long the button has been already pressed or 0 if the button isn't pressed
+        //!
+        private float buttonPressedTime(string buttonName) {
+            float buttonPressedTimestamp = 0f;
+            if (!buttonPressedState.TryGetValue(buttonName, out buttonPressedTimestamp)) { 
+                buttonPressed(buttonName);
+                return buttonPressedTimestamp; // this should be an exception
+            }
+            else if (buttonPressedTimestamp > 0f)
+                return Time.time - buttonPressedTimestamp;
+            else
+                return buttonPressedTimestamp;
         }
 
         //!
@@ -235,7 +256,7 @@ namespace vpet
                     moveObjectActive = true;
                     rotateObjectActive = false;
                     scaleObjectActive = false;
-                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));                    
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // directly enter rotation mode
                 else if (rotateObjectActive)
@@ -254,7 +275,7 @@ namespace vpet
                     moveCameraActive = false;
                     moveObjectActive = true;
                     rotateObjectActive = false;
-                    scaleObjectActive = false;                    
+                    scaleObjectActive = false;
                     mainController.UIAdapter.CenterMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
                     mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
@@ -279,7 +300,7 @@ namespace vpet
                     moveObjectActive = false;
                     rotateObjectActive = true;
                     scaleObjectActive = false;
-                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));                    
+                    mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                 }
                 // directly enter rotation mode
                 else if (moveObjectActive)
@@ -291,7 +312,7 @@ namespace vpet
                     mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     mainController.UIAdapter.drawCenterMenu(layouts.OBJECT);
                     mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
-                    
+
                 }
                 // directly enter scale mode
                 else if (scaleObjectActive)
@@ -312,7 +333,7 @@ namespace vpet
                     rotateObjectActive = false;
                     scaleObjectActive = false;
                     mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
-                }  
+                }
             }
             // enter scale mode
             else if (buttonPressed("Fire0"))
@@ -339,7 +360,10 @@ namespace vpet
                     mainController.UIAdapter.CenterMenu.transform.GetChild(0).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
-                        mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
+                        if (mainController.arMode)
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT_AR);
+                        else
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     }
                     else
@@ -358,7 +382,10 @@ namespace vpet
                     mainController.UIAdapter.CenterMenu.transform.GetChild(1).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     if (mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     {
-                        mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
+                        if (mainController.arMode)
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT_AR);
+                        else
+                            mainController.UIAdapter.drawCenterMenu(layouts.LIGHT);
                         mainController.UIAdapter.CenterMenu.transform.GetChild(7).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
                     }
                     else
@@ -404,17 +431,19 @@ namespace vpet
                 hasPressedR2 = true;
                 mainController.UIAdapter.MainMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
-            // reset current selection                                          
-            else if (buttonPressed("Fire2"))
+
+            // deselect or reset current selection
+            if (!Input.GetButton("Fire2") && buttonPressedTime("Fire2") > 0f
+                                   && buttonPressedTime("Fire2") < deselectHoldDuration)
             {
-                if (mainController.getCurrentSelection())
-                {
-                    if (mainController.getCurrentSelection().GetComponent<SceneObject>().GetType() == typeof(SceneObjectLight))
-                        mainController.getCurrentSelection().GetComponent<SceneObjectLight>().resetAll();
-                    else
-                        mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
-                }
+                mainController.handleSelection();
             }
+            else if (Input.GetButton("Fire2") && buttonPressedTime("Fire2") > deselectHoldDuration){
+                if (mainController.getCurrentSelection())
+                    mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
+            }
+            if (buttonPressed("Fire2")) { }
+
             // cycle through edit modes
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
             else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
@@ -456,9 +485,9 @@ namespace vpet
 #endif
                 Transform currentSelection = mainController.getCurrentSelection();
                 mainController.handleSelection();
-                if(cycleLights)
+                if (cycleLights)
                 {
-                    if (currentSelection) 
+                    if (currentSelection)
                         match = SceneLoader.SelectableLights.IndexOf(currentSelection.gameObject);
                     if (match < 0)
                         selectLight(0);
@@ -467,7 +496,7 @@ namespace vpet
                 }
                 else
                 {
-                    if (currentSelection) 
+                    if (currentSelection)
                         match = SceneLoader.SceneEditableObjects.IndexOf(currentSelection.gameObject);
                     if (match < 0)
                         selectObject(0);
@@ -580,7 +609,7 @@ namespace vpet
             top = 1.0f;
 
             // initialize the dictionary that keeps track of the status of controller buttons
-            buttonPressedState = new Dictionary<string, bool>();
+            buttonPressedState = new Dictionary<string, float>();
 
             //cache reference to main Controller
             mainController = GameObject.Find("MainController").GetComponent<MainController>();

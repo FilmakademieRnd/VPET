@@ -78,7 +78,7 @@ namespace vpet
                 currentLight.setLightAngle(angle);
             }
 
-            cameraAdapter.Fov = angle;
+            cameraAdapter.Fov = Mathf.Min(angle, 150f);
         }
 
         //! change the desired camera parameter (usually a callback triggered by the slider changes)

@@ -163,10 +163,12 @@ namespace vpet
                         break;
                     case (Mode.lookThroughCamMode):
                         ui.hideRangeSlider();
+                        Camera.main.fieldOfView = 60;
                         ui.hideParameterMenu();
                         break;
                     case (Mode.lookThroughLightMode):
                         ui.hideRangeSlider();
+                        Camera.main.fieldOfView = 60;
                         ui.hideParameterMenu();
                         break;
                     case (Mode.cameraSettingsMode):
@@ -251,7 +253,10 @@ namespace vpet
                             }
                             else
                             {
-                                ui.drawCenterMenu(layouts.LIGHT);
+                                if (arMode)
+                                    ui.drawCenterMenu(layouts.LIGHT_AR);
+                                else
+                                    ui.drawCenterMenu(layouts.LIGHT);
                             }
                             /*
 	                        if (currentSceneObject.isDirectionalLight)
@@ -266,7 +271,10 @@ namespace vpet
                     case (Mode.cameraMenuMode):
                         if (currentSelection && ui.LayoutUI != layouts.SCOUT)
                         {
-                            ui.drawCenterMenu(layouts.CAMERA);
+                            if(arMode)
+                                ui.drawCenterMenu(layouts.CAMERA_AR);
+                            else
+                                ui.drawCenterMenu(layouts.CAMERA);
                         }
                         break;
                     case (Mode.cameraLockedMode):

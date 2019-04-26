@@ -186,7 +186,7 @@ namespace vpet
             {
                 return sourceLight.spotAngle;
             }
-            return 360f;
+            return 150f;
         }
 
         public void resetAll()

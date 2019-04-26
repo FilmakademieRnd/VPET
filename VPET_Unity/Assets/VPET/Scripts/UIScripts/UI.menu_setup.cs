@@ -237,13 +237,18 @@ namespace vpet
             buttonTrans.AddAction(EditMode_Translate_sel, EditMode_Translate_nrm, () => editTranslation(buttonTrans));
             centerMenu.addButton(buttonTrans, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHT);
+            centerMenu.addButtonToLayout(buttonTrans, layouts.LIGHT_AR);
             centerMenu.addButtonToLayout(buttonTrans, layouts.CAMERA);
+            centerMenu.addButtonToLayout(buttonTrans, layouts.CAMERA_AR);
+
             // rotate
             IMenuButton buttonRot = Elements.MenuButtonToggle();
             buttonRot.AddAction(EditMode_Rotate_sel, EditMode_Rotate_nrm, () => editRotation(buttonRot));
             centerMenu.addButton(buttonRot, layouts.OBJECT);
             centerMenu.addButtonToLayout(buttonRot, layouts.LIGHT);
+            centerMenu.addButtonToLayout(buttonRot, layouts.LIGHT_AR);
             centerMenu.addButtonToLayout(buttonRot, layouts.CAMERA);
+            centerMenu.addButtonToLayout(buttonRot, layouts.CAMERA_AR);
             // scale
             IMenuButton buttonScl = Elements.MenuButtonToggle();
             buttonScl.AddAction(EditMode_Scale_sel, EditMode_Scale_nrm, () => editScale(buttonScl));
@@ -254,6 +259,8 @@ namespace vpet
 			centerMenu.addButton( buttonReset, layouts.OBJECT );
             centerMenu.addButtonToLayout(buttonReset, layouts.LIGHT);
             centerMenu.addButtonToLayout(buttonReset, layouts.CAMERA);
+            centerMenu.addButtonToLayout(buttonReset, layouts.LIGHT_AR);
+            centerMenu.addButtonToLayout(buttonReset, layouts.CAMERA_AR);
             // gravity/kinematic on off
             IMenuButton buttonKin = Elements.MenuButtonToggle();
 			buttonKin.AddAction(EditMode_GravityOn_sel, EditMode_GravityOn_nrm,  () => mainController.toggleLockSelectionKinematic());
@@ -264,15 +271,16 @@ namespace vpet
             IMenuButton buttonLightCol = Elements.MenuButtonToggle();
             buttonLightCol.AddAction(EditMode_LightColour_sel, EditMode_LightColour_nrm, () => editLightColor(buttonLightCol)); // 
             centerMenu.addButton(buttonLightCol, layouts.LIGHT);
+            centerMenu.addButton(buttonLightCol, layouts.LIGHT_AR);
             // light settings
             IMenuButton buttonLightSet = Elements.MenuButtonToggle();
             buttonLightSet.AddAction(EditMode_LightSettings_sel, EditMode_LightSettings_nrm, () => editLightSettings(buttonLightSet));
             centerMenu.addButton(buttonLightSet, layouts.LIGHT);
+            centerMenu.addButton(buttonLightSet, layouts.LIGHT_AR);
             // light look through
             IMenuButton buttonLookLight = Elements.MenuButtonToggle();
             buttonLookLight.AddAction(GeneralMenu_Perspective_sel, GeneralMenu_Perspective_nrm, call: () => lookThroughLight(buttonLookLight));
             centerMenu.addButton(buttonLookLight, layouts.LIGHT);
-
             /*
             // angle
             IMenuButton buttonLightAng = Elements.MenuButtonToggle();
@@ -319,6 +327,7 @@ namespace vpet
             IMenuButton buttonCameraFOV = Elements.MenuButtonToggle();
             buttonCameraFOV.AddAction(ScoutMode_FocalLength_sel, ScoutMode_FocalLength_nrm, call: () => cameraFOV(buttonCameraFOV));
             centerMenu.addButton(buttonCameraFOV, layouts.CAMERA);
+            centerMenu.addButton(buttonCameraFOV, layouts.CAMERA_AR);
         }
 
 
