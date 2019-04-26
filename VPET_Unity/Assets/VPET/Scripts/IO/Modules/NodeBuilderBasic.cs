@@ -232,10 +232,11 @@ namespace vpet
 
 	
 	        Light lightComponent = _lightUberInstance.GetComponent<Light>();
+            // instert type here!!!
 	        lightComponent.type = nodeLight.lightType;
 	        lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);            
             lightComponent.intensity = nodeLight.intensity * VPETSettings.Instance.lightIntensityFactor;
-            lightComponent.spotAngle = Mathf.Min(150, nodeLight.angle);
+            lightComponent.spotAngle = nodeLight.angle;
             if (lightComponent.type == LightType.Directional)
             {
                 lightComponent.shadows = LightShadows.Soft;
@@ -255,18 +256,19 @@ namespace vpet
 	        }
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
-                lightComponent.range *= 10;
+                lightComponent.range *= 5;
                 objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
             }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
                 // TODO: use are lights when supported in unity
                 lightComponent.type = LightType.Spot;
-                lightComponent.spotAngle = 120;
-                lightComponent.range *= 10;
+                lightComponent.spotAngle = 170;
+                lightComponent.range *= 5;
             }
             else
 	        {
+                Debug.Log("Unknown Light Type in NodeBuilderBasic::CreateLight");
 	        }
 	
 	

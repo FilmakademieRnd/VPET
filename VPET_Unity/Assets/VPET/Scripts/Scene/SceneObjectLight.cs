@@ -42,6 +42,10 @@ namespace vpet
         //! is this GameObject a point light
         //!
         public bool isPointLight = false;
+        //!
+        //! is this GameObject a area light
+        //!
+        public bool isAreaLight = false;
 
         private Transform lightTarget = null;
 
@@ -96,6 +100,13 @@ namespace vpet
                 initialLightRange = sourceLight.range;
                 lightGeo = lightTarget.Find("Sphere");
             }
+            else if (sourceLight.type == LightType.Area)
+            {
+                isAreaLight = true;
+                initialLightRange = sourceLight.range;
+                initialSpotAngle = sourceLight.spotAngle;
+                lightGeo = lightTarget.Find("Cone");
+            }
 
             boxCollider.isTrigger = true; // not interacting
             LightIcon iconScript = lightTarget.Find("LightQuad").GetComponent<LightIcon>();
@@ -137,7 +148,7 @@ namespace vpet
         //!
         public Color getLightColor()
         {
-            if (isDirectionalLight || isPointLight || isSpotLight)
+            if (isDirectionalLight || isPointLight || isSpotLight || isAreaLight)
             {
                 return sourceLight.color;
             }
@@ -159,7 +170,7 @@ namespace vpet
         //!
         public float getLightRange()
         {
-            if (isPointLight || isSpotLight)
+            if (isPointLight || isSpotLight || isAreaLight)
             {
                 return sourceLight.range / VPETSettings.Instance.sceneScale;
             }
@@ -171,7 +182,7 @@ namespace vpet
         //!
         public float getLightAngle()
         {
-            if (isSpotLight)
+            if (isSpotLight || isAreaLight)
             {
                 return sourceLight.spotAngle;
             }
@@ -182,7 +193,7 @@ namespace vpet
         {
             base.resetAll();
 
-            if (isSpotLight || isPointLight || isDirectionalLight)
+            if (isSpotLight || isPointLight || isDirectionalLight || isAreaLight)
             {
                 sourceLight.color = initialLightColor;
                 sourceLight.intensity = initialLightIntensity;
@@ -191,12 +202,12 @@ namespace vpet
                 serverAdapter.SendObjectUpdate(this, ParameterType.INTENSITY);
                 serverAdapter.SendObjectUpdate(this, ParameterType.EXPOSURE);
             }
-            if (isSpotLight || isPointLight)
+            if (isSpotLight || isPointLight || isAreaLight)
             {
                 sourceLight.range = initialLightRange;
                 serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
             }
-            if (isSpotLight)
+            if (isSpotLight || isAreaLight)
             {
                 sourceLight.spotAngle = initialSpotAngle;
                 serverAdapter.SendObjectUpdate(this, ParameterType.ANGLE);
@@ -209,7 +220,7 @@ namespace vpet
         //!
         public void setLightColor(Color color)
         {
-            if (isDirectionalLight || isPointLight || isSpotLight)
+            if (isDirectionalLight || isPointLight || isSpotLight || isAreaLight)
             {
                 color.a = 0.25f;
                 sourceLight.color = color;
@@ -234,7 +245,7 @@ namespace vpet
         //!
         public void setLightIntensity(float intensity)
         {
-            if (isDirectionalLight || isPointLight || isSpotLight)
+            if (isDirectionalLight || isPointLight || isSpotLight || isAreaLight)
             {
                 sourceLight.intensity = intensity * VPETSettings.Instance.lightIntensityFactor; // * VPETSettings.Instance.sceneScale;
                 lastModifiedLightParameter = LightParameter.Intensity;
@@ -249,7 +260,7 @@ namespace vpet
         //!
         public void setLightRange(float range)
         {
-            if (isPointLight || isSpotLight)
+            if (isPointLight || isSpotLight || isAreaLight)
             {
                 sourceLight.range = range * VPETSettings.Instance.sceneScale;
                 lastModifiedLightParameter = LightParameter.Range;
@@ -263,7 +274,7 @@ namespace vpet
         //!
         public void setLightDeltaRange(float delta)
         {
-            if (isPointLight || isSpotLight)
+            if (isPointLight || isSpotLight || isAreaLight)
             {
                 sourceLight.range += delta;
                 lastModifiedLightParameter = LightParameter.Range;
@@ -277,7 +288,7 @@ namespace vpet
         //!
         public void setLightAngle(float angle)
         {
-            if (isSpotLight)
+            if (isSpotLight || isAreaLight)
             {
                 sourceLight.spotAngle = angle;
                 lastModifiedLightParameter = LightParameter.Angle;

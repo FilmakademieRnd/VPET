@@ -164,7 +164,6 @@ namespace vpet
                         (-pos.x + " " + pos.y + " " + pos.z),
                         (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
                         (scl.x + " " + scl.y + " " + scl.z))));
-
                 }
                 else if (nodeType == NodeType.CAMERA) // do camera different too --> in fact is the same as for lights??
                 {
@@ -173,7 +172,6 @@ namespace vpet
                     Vector3 pos = obj.localPosition;
                     Quaternion rot = obj.localRotation;
                     Vector3 scl = obj.localScale;
-
 
                     Quaternion rotY180 = Quaternion.AngleAxis(180, Vector3.up);
                     rot = rot * rotY180;
@@ -187,6 +185,11 @@ namespace vpet
                         (angle + " " + axis.x + " " + -axis.y + " " + -axis.z),
                         (scl.x + " " + scl.y + " " + scl.z))));
 
+                    //Debug.Log(String.Format(camTransRotTemplate,
+                    //    dagPath,
+                    //    (-pos.x + " " + pos.y + " " + pos.z),
+                    //    (-angle + " " + -axis.x + " " + axis.y + " " + axis.z),
+                    //    (scl.x + " " + scl.y + " " + scl.z)));
                 }
                 else
                 {
@@ -213,17 +216,29 @@ namespace vpet
                 {
                     SceneObjectLight sol = (SceneObjectLight)sceneObject;
                     Light light = sol.SourceLight;
+                    LightTypeKatana lightType = (LightTypeKatana)(light.type);
+
+                    if (sol.isAreaLight)
+                        lightType = LightTypeKatana.rect;
+
+                    //sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(lightIntensityColorTemplate,
+                    //    dagPath,
+                    //    ((LightTypeKatana)(light.type)).ToString(),
+                    //    light.color.r + " " + light.color.g + " " + light.color.b,
+                    //    light.intensity / VPETSettings.Instance.lightIntensityFactor,
+                    //    sol.exposure,
+                    //    light.spotAngle)));
 
                     sendMessageQueue.Add(Encoding.UTF8.GetBytes(String.Format(lightIntensityColorTemplate,
                         dagPath,
-                        ((LightTypeKatana)(light.type)).ToString(),
-                        light.intensity / VPETSettings.Instance.lightIntensityFactor,
+                        (lightType).ToString(),
                         light.color.r + " " + light.color.g + " " + light.color.b,
+                        light.intensity / VPETSettings.Instance.lightIntensityFactor,
                         sol.exposure,
                         light.spotAngle)));
                 }
             }
-            
+
         }
 
         //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path

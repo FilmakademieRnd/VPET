@@ -37,6 +37,7 @@ public class SwitchMode
 
     static void SceneLoaded (UnityEngine.SceneManagement.Scene scene, UnityEditor.SceneManagement.OpenSceneMode mode)
     {
+#if UNITY_EDITOR_OSX
         BuildTargetGroup[] targetGroups = { BuildTargetGroup.Android, BuildTargetGroup.iOS, BuildTargetGroup.Standalone };
 
         foreach (BuildTargetGroup grp in targetGroups)
@@ -58,5 +59,6 @@ public class SwitchMode
             }
             PlayerSettings.SetScriptingDefineSymbolsForGroup(grp, defines);
         }
+#endif
     }
 }
