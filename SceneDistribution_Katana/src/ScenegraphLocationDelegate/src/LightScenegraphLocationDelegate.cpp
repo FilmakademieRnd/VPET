@@ -118,7 +118,7 @@ void* LightScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sgIte
           }
           else //rect
           {
-              nodeLight->type = Dreamspace::Katana::SPOT;
+              nodeLight->type = Dreamspace::Katana::AREA;
               nodeLight->angle = 180.0;
           }
 

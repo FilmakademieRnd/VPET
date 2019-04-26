@@ -101,7 +101,7 @@ namespace Dreamspace
 					//                       matrixData[ 8], matrixData[ 9], matrixData[10], matrixData[11],
 					//                       matrixData[12], matrixData[13], matrixData[14], matrixData[15]);
 
-						  // TODO: Hardcoded handiness
+					// TODO: Hardcoded handiness
 					if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA || sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
 					{
 
@@ -121,14 +121,8 @@ namespace Dreamspace
 
 				}
 
-
-
-
 				// Build scene graps >>
 				sharedState->node = NULL;
-
-				// const std::string &nodeType = sgIterator.getType();
-
 
 				bool pluginFound = FnKat::RenderOutputUtils::processLocation(sgIterator, "sceneDistributor", type, sharedState, NULL);
 
@@ -176,30 +170,20 @@ namespace Dreamspace
 				glm::quat rotation;
 
 				glm::decompose(transform, scale, _rotation, position, skew, persp);
-
-
-				if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA)
+				
+				if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::CAMERA ||
+					sharedState->nodeTypeList[sharedState->nodeTypeList.size() - 1] == Dreamspace::Katana::NodeType::LIGHT)
 				{
-					rotation = glm::rotate(_rotation, glm::pi<float>(), glm::vec3(0, 1, 0));
-				}
-				else if(sharedState->nodeTypeList[sharedState->nodeTypeList.size()-1] == Dreamspace::Katana::NodeType::LIGHT)
-				{
-					_rotation = glm::rotate(_rotation, glm::pi<float>(), glm::vec3(0, 1, 0));
-										
-					rotation[0] = _rotation[0];
-					rotation[1] = _rotation[2];
-					rotation[2] = _rotation[1];
-					rotation[3] = _rotation[3];
-
-					rotation = glm::rotate(rotation, -glm::pi<float>(), glm::vec3(0, 1, 0));
+					rotation = glm::rotate(glm::conjugate(_rotation), glm::pi<float>(), glm::vec3(0, 1, 0));
+					//rotation = _rotation;
 				}
 				else
 				{
-					rotation = _rotation;
+						rotation = glm::conjugate(_rotation);
 				}
 
 				//std::cout << "pos: " << position[0] << " " << position[1] << " " << position[2] << std::endl;
-				// std::cout << "rot: " << rotation[0] << " " << rotation[1] << " " << rotation[2] << " " << rotation[3] << std::endl;
+				//std::cout << "rot: " << rotation[0] << " " << rotation[1] << " " << rotation[2] << " " << rotation[3] << std::endl;
 
 				// TODO: Hardcoded handiness
 				sharedState->node->position[0] = position[0];
@@ -228,26 +212,6 @@ namespace Dreamspace
 
 				std::cout << "[INFO SceneDistributor.SceneIterator] Add Node: " << sharedState->node->name << std::endl;
 				sharedState->nodeList.push_back(sharedState->node);
-
-
-				//std::string fullname = sgIterator.getName();
-				//for ( int i =0; i<fullname.size(); i++ )
-				//{
-				//    node->name[i]  = fullname[i];
-				//}
-				// node->name.resize(40);
-
-				// << Build scene graps
-
-
-				//sharedState->modelTransform = transform;
-
-				// Stack pre-multiplied model matrix
-				//sharedState->modelMatrices.push(sharedState->modelMatrices.top() * transform);
-
-				// Delegate processing of this location type by plugins defined in ScenegraphLocationDelegate
-				//bool pluginFound = FnKat::RenderOutputUtils::processLocation(sgIterator, "sceneDistributor", type, sharedState, NULL);
-
 
 				// Recurse to children
 				for(FnKat::FnScenegraphIterator child = sgIterator.getFirstChild(); child.isValid(); child = child.getNextSibling())
