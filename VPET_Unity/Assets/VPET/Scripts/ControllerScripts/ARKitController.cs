@@ -158,7 +158,10 @@ namespace vpet
         void Update()
         {
             Matrix4x4 matrix = m_session.GetCameraPose();
-            transform.localPosition = UnityARMatrixOps.GetPosition(matrix) * m_movementScale;
+            if(m_arMode)
+                transform.localPosition = UnityARMatrixOps.GetPosition(matrix) * 1f;
+            else
+                transform.localPosition = UnityARMatrixOps.GetPosition(matrix) * 200f; //m_movementScale;
             transform.localRotation = UnityARMatrixOps.GetRotation(matrix);
             //Camera.main.projectionMatrix = m_session.GetCameraProjection();
             if (m_arMode)

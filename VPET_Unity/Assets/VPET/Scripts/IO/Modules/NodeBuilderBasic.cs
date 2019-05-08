@@ -36,13 +36,15 @@ namespace vpet
 
 	public enum LightTypeKatana { disk, directional, sphere, rect }
 
-
-	public class NodeBuilderBasic
+    public class NodeBuilderBasic
 	{
         private static int idCount = 0;
 
-		public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj)
+        public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj, bool resetID)
 		{
+            if (resetID)
+                idCount = 0;
+
 	        if ( node.GetType() == typeof(SceneNodeGeo) )
 	        {
                 SceneNodeGeo nodeGeo = (SceneNodeGeo)Convert.ChangeType( node, typeof(SceneNodeGeo) );
@@ -112,7 +114,6 @@ namespace vpet
 
             return objMain;
 	    }
-
 
 	    //!
 	    //! function create the object from mesh data
@@ -223,12 +224,13 @@ namespace vpet
 			objMain.transform.SetParent(parentTransform, false );
 	        objMain.transform.localPosition = pos; 
 	        objMain.transform.localRotation = rot;
-	        objMain.transform.localScale = scl; 
+	        objMain.transform.localScale = Vector3.one; 
 	
 	        // Add light prefab
 	        GameObject lightUber = Resources.Load<GameObject>("VPET/Prefabs/UberLight");
 	        GameObject _lightUberInstance = GameObject.Instantiate(lightUber);
 	        _lightUberInstance.name = lightUber.name;
+            lightUber.transform.GetChild(0).gameObject.layer = 8;
 
 	
 	        Light lightComponent = _lightUberInstance.GetComponent<Light>();
@@ -257,7 +259,7 @@ namespace vpet
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
                 lightComponent.range *= 5;
-                objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+                //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
             }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
@@ -310,10 +312,10 @@ namespace vpet
             // add camera dummy mesh
             GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
             GameObject cameraInstance = GameObject.Instantiate(cameraObject);
-            //cameraInstance.SetActive(false);
+            cameraInstance.SetActive(false);
             cameraInstance.name = cameraObject.name;
             cameraInstance.transform.SetParent(objMain.transform, false);
-            cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 100.0f;
+            cameraInstance.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.sceneScale * 20.0f;
             cameraInstance.transform.localPosition = new Vector3(0, 0, 0);
             cameraInstance.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
 
@@ -344,12 +346,6 @@ namespace vpet
 
             return objMain;
 	    }
-	
-
-
-
-
-
 	}
 	
 }

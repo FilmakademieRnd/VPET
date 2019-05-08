@@ -87,14 +87,18 @@ namespace vpet
         }
 
 
-		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType) 
+		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType, bool sendParent, Transform parent) 
         {
             byte[] msg = null;
             switch (paramType)
             {
                 case ParameterType.POS:
                     {
-                        Vector3 locPos = sceneObject.transform.localPosition;
+                        Vector3 locPos;
+                        if (sendParent)
+                            locPos = sceneObject.transform.position-parent.position;
+                        else
+                            locPos = sceneObject.transform.localPosition;
                         msg = new byte[18];
 
                         msg[0] = cID;
@@ -108,7 +112,11 @@ namespace vpet
 
                 case ParameterType.ROT:
                     {
-                        Quaternion locRot = sceneObject.transform.localRotation;
+                        Quaternion locRot;
+                        if (sendParent)
+                            locRot = Quaternion.Inverse(parent.rotation) * sceneObject.transform.rotation;
+                        else
+                            locRot = sceneObject.transform.localRotation;
                        msg = new byte[22];
 
                         msg[0] = cID;

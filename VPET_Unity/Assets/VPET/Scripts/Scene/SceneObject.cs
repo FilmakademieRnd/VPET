@@ -274,6 +274,10 @@ namespace vpet
                 }
 
                 boxCollider = this.gameObject.AddComponent<BoxCollider>();
+#if !SCENE_HOST
+                if(this is SceneObjectCamera)
+                    boxCollider.enabled = mainController.showCam;
+#endif
 
 
 
@@ -338,24 +342,50 @@ namespace vpet
         //!
         protected void Update () 
 		{
-            if (!AlmostEqualPos(lastPosition, target.localPosition, 0.1f))
-			{
-                lastPosition = target.localPosition;
-				translationStillFrameCount = 0;
+#if !SCENE_HOST
+            if (mainController.ActiveMode != MainController.Mode.objectLinkCamera)
+            {
+                if(!AlmostEqualPos(lastPosition, target.localPosition, 0.1f))
+                {
+                    lastPosition = target.localPosition;
+                    translationStillFrameCount = 0;
+                }
+                else if (translationStillFrameCount < 11)
+                {
+                    translationStillFrameCount++;
+                }
+                if (!AlmostEqualRot(lastRotation, target.localRotation, 0.1f))
+                {
+                    lastRotation = target.localRotation;
+                    rotationStillFrameCount = 0;
+                }
+                else if (rotationStillFrameCount < 11)
+                {
+                    rotationStillFrameCount++;
+                }
             }
-            else if (translationStillFrameCount < 11)
-			{
-				translationStillFrameCount++;
-			}
-            if (!AlmostEqualRot(lastRotation, target.localRotation, 0.1f))
-			{
-                lastRotation = target.localRotation;
-				rotationStillFrameCount = 0;
-			}
-			else if (rotationStillFrameCount < 11)
-			{
-				rotationStillFrameCount++;
-			}
+            else
+#endif
+            {
+                if (!AlmostEqualPos(lastPosition, target.position, 0.1f))
+                {
+                    lastPosition = target.position;
+                    translationStillFrameCount = 0;
+                }
+                else if (translationStillFrameCount < 11)
+                {
+                    translationStillFrameCount++;
+                }
+                if (!AlmostEqualRot(lastRotation, target.rotation, 0.1f))
+                {
+                    lastRotation = target.rotation;
+                    rotationStillFrameCount = 0;
+                }
+                else if (rotationStillFrameCount < 11)
+                {
+                    rotationStillFrameCount++;
+                }
+            }
 #if !SCENE_HOST
             if (!locked && !mainController.lockScene)
             {
@@ -372,7 +402,7 @@ namespace vpet
 				{
 					if (translationStillFrameCount == 0) //position just changed
 					{
-						if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
+                        if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
 						{
                             if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
                             {
@@ -576,8 +606,8 @@ namespace vpet
         {
 			locked = false;
 			serverAdapter.SendObjectUpdate(this, ParameterType.LOCK);
-            target.localRotation = initialRotation;
 
+            target.localRotation = initialRotation;
             serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
 
             target.localPosition = initialPosition;
@@ -585,6 +615,11 @@ namespace vpet
 
             target.localScale = initialScale;
             serverAdapter.SendObjectUpdate(this, ParameterType.SCALE);
+
+            this.setKinematic(true);
+#if !SCENE_HOST
+            mainController.deselect();
+#endif
         }
 
 		//!

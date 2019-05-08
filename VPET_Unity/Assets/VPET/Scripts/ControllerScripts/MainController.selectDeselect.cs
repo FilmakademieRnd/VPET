@@ -118,13 +118,18 @@ namespace vpet
         //! select an object
         //! @param      sObject     Pointer to the object, selected by user
         //!
-        private void select(Transform sObject) {
+        private void select(Transform sObject) 
+        {
             //cache current selection
             currentSelection = sObject;
             currentSceneObject = sObject.GetComponent<SceneObject>();
 
             if ((currentSceneObject.locked && !(currentSceneObject is SceneObjectCamera)) || (ui.LayoutUI == layouts.SCOUT))
+            {
+                currentSelection = null;
+                currentSceneObject = null;
                 return;
+            }
 
             //set selection
             currentSceneObject.selected = true;

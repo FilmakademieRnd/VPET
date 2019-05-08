@@ -64,7 +64,8 @@ namespace vpet
 
         public void hide()
         {
-            colorWheel.gameObject.SetActive(false);
+            if(colorWheel)
+                colorWheel.gameObject.SetActive(false);
         }
 
         public void show(SceneObjectLight light)

@@ -53,7 +53,7 @@ namespace vpet
 
         protected List<byte[]> sendMessageQueue = new List<byte[]>();
 
-        public virtual void SendObject(byte id, SceneObject sceneObject, ParameterType paramType) {}
+        public virtual void SendObject(byte id, SceneObject sceneObject, ParameterType paramType, bool sendParen, Transform parent) {}
 
 		public void SetTarget(string ip, string port)
 		{

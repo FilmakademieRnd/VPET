@@ -46,6 +46,11 @@ namespace vpet
         public bool helpActive;
 
         //!
+        //! shall camera icons be displayed
+        //!
+        public bool showCam;
+
+        //!
         //! lock all scene objects locally
         //! used to avoid unwanted updates while in ar setup
         //!

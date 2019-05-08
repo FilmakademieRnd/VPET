@@ -64,7 +64,7 @@ namespace vpet
             get { return sceneDataHandler; }
         }
 
-        public delegate GameObject NodeBuilderDelegate(ref SceneNode n, Transform t, GameObject o);
+        public delegate GameObject NodeBuilderDelegate(ref SceneNode n, Transform t, GameObject o, bool resetID);
         public static List<NodeBuilderDelegate> nodeBuilderDelegateList = new List<NodeBuilderDelegate>();
 
         public static void RegisterDelegate(NodeBuilderDelegate call)
@@ -108,7 +108,6 @@ namespace vpet
             SceneCameraList.Clear();
             geometryPassiveList.Clear();
             SelectableLights.Clear();
-
 
             if (scnRoot != null)
             {
@@ -178,7 +177,7 @@ namespace vpet
 			// process all registered build callbacks
 			foreach(NodeBuilderDelegate nodeBuilderDelegate in nodeBuilderDelegateList)
 			{
-				GameObject _obj = nodeBuilderDelegate(ref node, parent, obj);
+				GameObject _obj = nodeBuilderDelegate(ref node, parent, obj,(sceneDataHandler.NodeList.Count == 0));
 				if (_obj != null)
 					obj = _obj;
 			}

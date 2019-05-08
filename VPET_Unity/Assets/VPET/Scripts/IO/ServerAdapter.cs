@@ -379,20 +379,27 @@ namespace vpet
 
                 foreach (GameObject gameObject in SceneLoader.SceneEditableObjects)
                 {
+                    Debug.Log(gameObject.name);
                     SceneObject sceneObject = gameObject.GetComponent<SceneObject>();
-                    sceneObjectRefList[sceneObject.id] = sceneObject;
+                    Debug.Log(sceneObject.id + " " + sceneObject.name);
+                    if(sceneObjectRefList.Length > sceneObject.id)
+                        sceneObjectRefList[sceneObject.id] = sceneObject;
                 }
 
                 foreach(GameObject gameObject in SceneLoader.SelectableLights)
                 {
                     SceneObject sceneObject = gameObject.GetComponent<SceneObjectLight>();
-                    sceneObjectRefList[sceneObject.id] = sceneObject;
+                    if (sceneObjectRefList.Length > sceneObject.id)
+                        sceneObjectRefList[sceneObject.id] = sceneObject;
                 }
 
                 foreach (GameObject gameObject in SceneLoader.SceneCameraList)
                 {
                     SceneObject sceneObject = gameObject.GetComponent<SceneObjectCamera>();
-                    sceneObjectRefList[sceneObject.id] = sceneObject;
+                    GameObject camGeometry = sceneObject.transform.GetChild(0).gameObject;
+                    camGeometry.SetActive(mainController.showCam);
+                    if (sceneObjectRefList.Length > sceneObject.id)
+                        sceneObjectRefList[sceneObject.id] = sceneObject;
                 }
 
                 mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
@@ -447,7 +454,7 @@ namespace vpet
 
             foreach (ObjectSender sender in objectSenderList)
             {
-                sender.SendObject(m_id, sobj, paramType);
+                    sender.SendObject(m_id, sobj, paramType, (mainController.ActiveMode == MainController.Mode.objectLinkCamera), mainController.oldParent);
             }
 
         }

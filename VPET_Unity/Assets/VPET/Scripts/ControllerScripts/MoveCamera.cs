@@ -324,23 +324,23 @@ namespace vpet
                     }
                     //grab sensor reading on current platform
 #if !UNITY_EDITOR
-	#if (UNITY_ANDROID) && !(USE_TANGO || UNITY_IOS)
+#if (UNITY_ANDROID) && !(USE_TANGO || UNITY_IOS)
                     transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation;
-	#elif UNITY_STANDALONE_WIN
+#elif UNITY_STANDALONE_WIN
                     transform.rotation = rotationOffset * newRotation;
-	#else
+#else
                     if (TangoBuild4LenovoPhab2)
                         transform.rotation = rotationOffset * new Quaternion (-newRotation.y, newRotation.x, newRotation.z, newRotation.w) ;
                     else
                         transform.rotation = rotationOffset * newRotation;
                     // HACK: to block roll
-					//if (!mainController.arMode)
-                    //	transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
+					if (!mainController.arMode && mainController.ActiveMode != MainController.Mode.lookThroughLightMode )
+                    	transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
                     //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
-		#if USE_TANGO || USE_ARKIT
+#if USE_TANGO || USE_ARKIT
                     cameraParent.position += rotationOffset * (newPosition - oldPosition);
-		#endif
-	#endif
+#endif
+#endif
 #endif
                 }
                 else if (firstApplyTransform)
@@ -438,9 +438,17 @@ namespace vpet
             {
                 for(int i = supervisedObjects.Count - 1; i >= 0; i--)
                 {
+                    if (!supervisedObjects[i])
+                    {
+                        supervisedObjects.RemoveAt(i);
+                        continue;
+                    }
                     if (Vector3.Distance(supervisedObjects[i].transform.position, this.transform.position) > 300.0f * VPETSettings.Instance.sceneScale)
                     {
-                        supervisedObjects[i].SetActive(true);
+                        supervisedObjects[i].SetActive(mainController.showCam);
+                        BoxCollider[] col = supervisedObjects[i].GetComponentsInParent<BoxCollider>(true);
+                        if(col.Length > 0)
+                            col[0].enabled = mainController.showCam;
                         supervisedObjects.RemoveAt(i);
                     }
                 }

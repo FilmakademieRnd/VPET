@@ -34,7 +34,7 @@ namespace vpet
 
 	public class NodeBuilderMocap
 	{
-		public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj)
+		public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj, bool resetID)
 		{
 	        if ( node.GetType() == typeof(SceneNodeMocap) )
 	        {

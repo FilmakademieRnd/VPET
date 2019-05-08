@@ -68,9 +68,9 @@ namespace vpet
             Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
             while (IsRunning)
             {
-                Thread.Sleep(5);
-                //if (sendMessageQueue.Count > 3)
-                //    sendMessageQueue.RemoveRange(0, sendMessageQueue.Count - 3);
+                Thread.Sleep(50);
+                if (sendMessageQueue.Count > 3)
+                    sendMessageQueue.RemoveRange(0, sendMessageQueue.Count - 3);
                 if (sendMessageQueue.Count > 0)
                 {
                     // Debug.Log("Send: " + sendMessageQueue[0]);
@@ -127,7 +127,7 @@ namespace vpet
         }
 
 
-		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType)
+		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType, bool sendParent, Transform parent)
 		{
             if (!sceneObject)
                 return;
@@ -171,6 +171,7 @@ namespace vpet
                 }
                 else if (nodeType == NodeType.CAMERA) // do camera different too --> in fact is the same as for lights??
                 {
+
                     Transform obj = sceneObject.transform;
 
                     Vector3 pos = obj.localPosition;
@@ -212,7 +213,8 @@ namespace vpet
                     paramType == ParameterType.COLOR ||
                     paramType == ParameterType.INTENSITY ||
                     paramType == ParameterType.RANGE ||
-                    paramType == ParameterType.EXPOSURE)
+                    paramType == ParameterType.EXPOSURE ||
+                    paramType == ParameterType.FOV )
             {
                 if (nodeType == NodeType.LIGHT)
                 {

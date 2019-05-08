@@ -807,7 +807,7 @@ namespace vpet
             ui.updateScaleValue(v);
             Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
             float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
-            QualitySettings.shadowDistance = v * maxExtend * 3f;
+            QualitySettings.shadowDistance = v * maxExtend * 0.15f;
             //Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend * v);
             //Camera.main.farClipPlane = Mathf.Max(100f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend * v));
             Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);

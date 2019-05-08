@@ -100,6 +100,8 @@ namespace vpet
 
         private Toggle arToggle;
 
+        private Toggle showCamToggle;
+
         private Toggle arKeyToggle;
 
         private Toggle arMatteToggle;
@@ -113,6 +115,8 @@ namespace vpet
         private Transform arKeyVideoPlane;
 
         private Image arColorField;
+
+        private MainController mainController;
 
         [Config]
         private Color arkeyColor;
@@ -200,6 +204,19 @@ namespace vpet
 #else
                 childWidget.gameObject.SetActive(false);
 #endif
+            }
+
+            // showCameras toggle
+            childWidget = this.transform.Find("ShowCam_toggle");
+            if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ShowCam_toggle.", this.GetType()));
+            else
+            {
+                showCamToggle = childWidget.GetComponent<Toggle>();
+                if (showCamToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
+                else
+                {
+                    showCamToggle.onValueChanged.AddListener(this.OnToggleCamera);
+                }
             }
 
 
@@ -392,7 +409,8 @@ namespace vpet
 
         void Start()
 		{
-			initUIValues();
+            initUIValues();
+            mainController = GameObject.Find("Controller/MainController").GetComponent<MainController>();
         }
 
 
@@ -544,6 +562,21 @@ namespace vpet
         }
 
 
+        private void OnToggleCamera(bool isOn)
+        {
+            mainController.showCam = isOn;
+            if (SceneLoader.SceneCameraList.Count > 0)
+            {
+                foreach (GameObject camObject in SceneLoader.SceneCameraList)
+                {
+                    GameObject camGeometry = camObject.transform.GetChild(0).gameObject;
+                    BoxCollider[] col = camGeometry.GetComponentsInParent<BoxCollider>(true);
+                    if (col.Length > 0)
+                        col[0].enabled = mainController.showCam;
+                    camGeometry.SetActive(isOn);
+                }
+            }
+        }
 
 #if USE_TANGO || USE_ARKIT
         private void OnToggleAr( bool isOn )

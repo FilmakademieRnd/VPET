@@ -58,7 +58,7 @@ namespace vpet
 		{
 			SceneLoader.RegisterDelegate(NodeBuilderBasic.BuildNode);
 			SceneLoader.RegisterDelegate(NodeBuilderMocap.BuildNode);
-		}
+        }
 
 		public static void RegisterObjectSender()
 		{
