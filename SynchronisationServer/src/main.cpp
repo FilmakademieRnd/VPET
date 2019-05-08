@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     {
         std::cout << "-h, -help:            display this help" << std::endl;
         std::cout << "-ownIP:               IP address of this computer" << std::endl;
+        std::cout << "-d:                   run with debug output" << std::endl;
 #ifdef Q_OS_MACOS
         std::cout << "Note: This SyncServer version does not support NCam input." << std::endl;
 #endif
@@ -77,10 +78,18 @@ int main(int argc, char *argv[])
         QString ownIP = "";
         QString ncamIP = "";
         QString ncamPort = "";
+        bool debug = false;
 
         int k = 1;
-        while(k < cmdlineArgs.length()-1)
+        while(k < cmdlineArgs.length())
         {
+            if(cmdlineArgs[k] == "-d")
+            {
+                std::cout << "Debug output enabled." << std::endl;
+                debug = true;
+                k = k+1;
+                continue;
+            }
             if(cmdlineArgs[k] == "-ownIP")
             {
                 foreach(QHostAddress ipAdress, availableIpAdresses)
@@ -141,7 +150,7 @@ int main(int argc, char *argv[])
                 ncamPort = "38860";
             }
 #endif
-            MainApp* app = new MainApp(ownIP, ncamIP, ncamPort);
+            MainApp* app = new MainApp(ownIP, ncamIP, ncamPort, debug);
             app->run();
 
             return a.exec();

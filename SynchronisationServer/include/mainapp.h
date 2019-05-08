@@ -51,7 +51,7 @@ class MainApp : public QObject
 {
     Q_OBJECT
 public:
-    explicit MainApp(QString ownIP, QString ncamIP, QString ncamPort);
+    explicit MainApp(QString ownIP, QString ncamIP, QString ncamPort, bool debug);
 
     void run();
 
@@ -62,6 +62,7 @@ private:
     QString ownIP_;
     QString ncamIP_;
     QString ncamPort_;
+    bool debug_;
     zmq::context_t* context_;
     QMutex m_mutex;
     bool isRecording;

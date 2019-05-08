@@ -52,11 +52,11 @@ win32{
 
 macx{
     INCLUDEPATH += ../include \
-                $$PWD/../../../../../usr/local/Cellar/zeromq/4.2.5/include \
-                ../nzmqt/include \
-                ../nzmqt/3rdparty/cppzmq \
+                ../../../../../../../../../usr/local/Cellar/zeromq/4.2.5/include \
+                ../../../nzmqt/include \
+                ../../../nzmqt/3rdparty/cppzmq \
 
-    LIBS += -L$$PWD/../../../../../usr/local/Cellar/zeromq/4.2.5/lib/ -lzmq
+    LIBS += -L../../../../../../../../../usr/local/Cellar/zeromq/4.2.5/lib/ -lzmq
 
-    include(../nzmqt-master/nzmqt.pri)
+    include(../../../nzmqt/nzmqt.pri)
 }

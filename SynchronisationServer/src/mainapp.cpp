@@ -34,12 +34,13 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 */
 #include "mainapp.h"
 
-MainApp::MainApp(QString ownIP, QString ncamIP, QString ncamPort)
+MainApp::MainApp(QString ownIP, QString ncamIP, QString ncamPort, bool debug)
 {
     context_ = new  zmq::context_t(1);
     ownIP_ = ownIP;
     ncamIP_ = ncamIP;
     ncamPort_ = ncamPort;
+    debug_ = debug;
     isRecording = false;
 }
 
@@ -47,7 +48,7 @@ void MainApp::run()
 {
     //create Thread to receive zeroMQ messages from tablets
     QThread* zeroMQHandlerThread = new QThread();
-    ZeroMQHandler* zeroMQHandler = new ZeroMQHandler(ownIP_, context_);
+    ZeroMQHandler* zeroMQHandler = new ZeroMQHandler(ownIP_, debug_ , context_);
     zeroMQHandler->moveToThread(zeroMQHandlerThread);
     QObject::connect( zeroMQHandlerThread, SIGNAL(started()), zeroMQHandler, SLOT(run()));
     zeroMQHandlerThread->start();

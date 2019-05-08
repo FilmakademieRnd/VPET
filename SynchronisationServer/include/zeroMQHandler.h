@@ -45,7 +45,7 @@ class ZeroMQHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit ZeroMQHandler(QString IPAdress = "", zmq::context_t* context = NULL);
+    explicit ZeroMQHandler(QString IPAdress = "", bool debug = false, zmq::context_t* context = NULL);
 
     //request this process to start working
     void requestStart();
@@ -73,6 +73,9 @@ private:
     //if true process is stopped
     bool _stop;
 
+    //shall debug messages be printed
+    bool _debug;
+
     //if true process is running
     bool _working;
 
@@ -81,6 +84,7 @@ private:
 
     //zeroMQ socket
     zmq::socket_t* socket_;
+    zmq::socket_t* socketExternal_;
     zmq::socket_t* sender_;
 
     //zeroMQ context

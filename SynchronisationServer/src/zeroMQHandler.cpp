@@ -38,10 +38,11 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include <QDebug>
 #include <iostream>
 
-ZeroMQHandler::ZeroMQHandler(QString ip , zmq::context_t* context)
+ZeroMQHandler::ZeroMQHandler(QString ip , bool debug, zmq::context_t* context)
 {
     IPadress = ip;
     context_ = context;
+    _debug = debug;
     _stop = false;
     _working =false;
 }
@@ -76,13 +77,19 @@ int ZeroMQHandler::CharToInt(const char* buf)
 
 void ZeroMQHandler::run()
 {
+    int timeout = 5;
+
     socket_ = new zmq::socket_t(*context_,ZMQ_SUB);
-    int timeout = 5000;
     socket_->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof (int));
     socket_->bind(QString("tcp://"+IPadress+":5557").toLatin1().data());
     socket_->setsockopt(ZMQ_SUBSCRIBE,"client",0);
     socket_->setsockopt(ZMQ_SUBSCRIBE,"ncam",0);
     socket_->setsockopt(ZMQ_SUBSCRIBE,"recorder",0);
+
+    socketExternal_ = new zmq::socket_t(*context_,ZMQ_ROUTER);
+    socketExternal_->setsockopt(ZMQ_RCVTIMEO, &timeout, sizeof(int));
+    socketExternal_->setsockopt(ZMQ_ROUTER_RAW, 1);
+    socketExternal_->bind(QString("tcp://"+IPadress+":5558").toLatin1().data());
 
     sender_ = new zmq::socket_t(*context_,ZMQ_PUB);
     sender_->bind(QString("tcp://"+IPadress+":5556").toLatin1().data());
@@ -96,20 +103,51 @@ void ZeroMQHandler::run()
         bool stop = _stop;
         mutex.unlock();
 
+        bool msgIsExternal = false;
+
         zmq::message_t message;
 
+        //try to receive a zeroMQ message
         socket_->recv(&message);
+
+        //if there has not been a message received after timeout
+        if(message.size() == 0)
+        {
+            //try to receive an external (standard TCP) message
+            zmq::message_t messageID;
+            socketExternal_->recv(&messageID);
+            socketExternal_->recv(&message);
+            if(message.size() != 0)
+            {
+                msgIsExternal = true;
+                char* rawDataExt = static_cast<char*>(malloc((message.size()-1)*sizeof(char)));
+                memcpy(rawDataExt, message.data(), message.size()-1);
+                QByteArray msgArrayExt = QByteArray(rawDataExt, static_cast<int>(message.size()-1));
+
+                std::cout << "ExtMsg (" << msgArrayExt.length() << "): ";
+                foreach(const char c, msgArrayExt)
+                {
+                    std::cout << c;
+                }
+                std::cout << std::endl;
+            }
+        }
 
         //check if recv timed out
         if(message.size() != 0)
         {
-            char* rawData = static_cast<char*>(message.data());
-            QByteArray msgArray = QByteArray::fromRawData(rawData, static_cast<int>(message.size()));
+            char* rawData = static_cast<char*>(malloc(message.size()*sizeof(char)));
+            memcpy(rawData, message.data(), message.size());
+            QByteArray msgArray = QByteArray(rawData, static_cast<int>(message.size()));
+            if(msgIsExternal)
+                msgArray.remove(msgArray.length()-1,1);
 
             char clientID = rawData[0];
             ParameterType paramType = static_cast<ParameterType>(rawData[1]);
             int objectID = CharToInt(&rawData[2]);
-            QByteArray msgKey = QByteArray::fromRawData(rawData++, 5); //combination of ParamType & objectID
+            QByteArray msgKey = QByteArray(rawData+1, 5); //combination of ParamType & objectID
+
+            //std::cout << (int)clientID << " modifies " << paramType << " on " << objectID << std::endl;
 
             //QString debugMsg = "";
             //foreach (const char c, msgArray){
@@ -118,32 +156,66 @@ void ZeroMQHandler::run()
             //std::cout << debugMsg.toStdString() << std::endl;
 
             //update ping timeout
-            if(pingMap.contains(clientID))
+            if(!msgIsExternal)
             {
-                pingMap[clientID]->restart();
-            }
-            else
-            {
-                QTime* t = new QTime();
-                t->start();
-                pingMap.insert(clientID,t);
-                std::cout << "New client registered: " << 256 + (int) clientID << std::endl;
+                if(pingMap.contains(clientID))
+                {
+                    pingMap[clientID]->restart();
+                }
+                else
+                {
+                    QTime* t = new QTime();
+                    t->start();
+                    pingMap.insert(clientID,t);
+                    std::cout << "New client registered: " << 256 + (int) clientID << std::endl;
+                }
             }
 
             if (paramType == RESENDUPDATE) {
-                foreach(const QString &objectState, objectStateMap) {
-                    const QByteArray osByteArray = objectState.toLocal8Bit();
-                    sender_->send(osByteArray.constData(), static_cast<size_t>(osByteArray.length()));
+                std::cout << "RESENDING UPDATES" << std::endl;
+                foreach(QByteArray objectState, objectStateMap)
+                {
+                    if(_debug)
+                    {
+                        std::cout << "OutMsg (" << objectState.length() << "):";
+                        foreach(const char c, objectState)
+                        {
+                            std::cout << " " << (int)c;
+                        }
+                        std::cout << std::endl;
+                    }
+                    sender_->send(objectState.constData(), static_cast<size_t>(objectState.length()));
                 }
             }
             else if (paramType == LOCK){
                 //store locked object for each client
                 lockMap.insert(clientID,objectID);
                 objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
+                if(_debug)
+                {
+                    QByteArray testMSG = msgArray.replace(0,1,&targetHostID,1);
+                    std::cout << "LockMsg (" << testMSG.length() << "):";
+                    foreach(const char c, testMSG)
+                    {
+                        std::cout << " " << (int)c;
+                    }
+                    std::cout << std::endl;
+                }
                 sender_->send(message);
             }
             else if (paramType != PING){
-                objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
+                if(paramType != HIDDENLOCK)
+                    objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
+                if(_debug)
+                {
+                    QByteArray testMSG = msgArray.replace(0,1,&targetHostID,1);
+                    std::cout << "OtherMsg (" << testMSG.length() << "):";
+                    foreach(const char c, testMSG)
+                    {
+                        std::cout << c;
+                    }
+                    std::cout << std::endl;
+                }
                 sender_->send(message);
             }
         }
@@ -160,7 +232,7 @@ void ZeroMQHandler::run()
                 if(lockMap.contains(clientID))
                 {
                     //release lock
-                    char* lockReleaseMsg = static_cast<char*>(malloc(7));
+                    char* lockReleaseMsg = static_cast<char*>(malloc(7*sizeof(char)));
                     *lockReleaseMsg = 0;
                     lockReleaseMsg++;
                     *lockReleaseMsg = static_cast<char>(LOCK);
@@ -171,8 +243,8 @@ void ZeroMQHandler::run()
                     *lockReleaseMsg = static_cast<char>(false);
                     std::cout << "Resetting lock!";
                     lockReleaseMsg-=6;
-                    QByteArray msgKey = QByteArray::fromRawData(lockReleaseMsg+1, 5);
-                    QByteArray msgArray = QByteArray::fromRawData(lockReleaseMsg, 7);
+                    QByteArray msgArray = QByteArray(lockReleaseMsg, 7);
+                    QByteArray msgKey = QByteArray(lockReleaseMsg+1, 5);
 
                     objectStateMap.insert(msgKey, msgArray);
                     sender_->send(msgArray.constData(), static_cast<size_t>(msgArray.length()));
