@@ -362,11 +362,6 @@ namespace vpet
                 mainMenuButton.GetComponent<MenuButtonToggle>().Toggled = true;
             }
         }
-	
-		public void hideMainMenuButton()
-		{
-			mainMenuButton.SetActive(false);
-		}
 
         public void resetMainMenu()
         {

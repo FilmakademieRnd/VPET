@@ -278,7 +278,6 @@ namespace vpet
 	
 	            if (activeButton)
 	            {
-	                activeButton.SetActive(false);
 	                activeButton = null;
 	            }
                 	

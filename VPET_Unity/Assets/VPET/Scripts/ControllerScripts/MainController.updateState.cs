@@ -254,6 +254,11 @@ namespace vpet
                             }
                             else
                             {
+                                SceneObjectLight solight = (SceneObjectLight)currentSceneObject;
+                                if (currentSelection && solight)
+                                {
+                                    solight.hideVisualization(false);
+                                }
                                 if (arMode)
                                     ui.drawCenterMenu(layouts.LIGHT_AR);
                                 else

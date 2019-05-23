@@ -292,7 +292,7 @@ namespace vpet
         //!
         public void repositionCamera()
         {
-            if (!arMode)
+            if (!arMode && activeMode != Mode.lookThroughLightMode)
             {
                 setPerspectiveCamera();
                 if (SceneLoader.SceneCameraList.Count > 0)

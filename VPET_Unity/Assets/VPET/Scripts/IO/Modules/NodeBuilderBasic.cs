@@ -82,25 +82,33 @@ namespace vpet
 	    //!
 	    public static GameObject CreateNode( SceneNode node, Transform parentTransform )
 	    {
-	        // Tranform
-	        Vector3 pos = new Vector3( node.position[0], node.position[1], node.position[2] );
-	        //print( "Position: " + pos );
-	        Quaternion rot = new Quaternion( node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3] );
-	        // Vector3 euler = rot.eulerAngles;
-	        //print( "Euler: " + euler );
-	        //rot = new Quaternion();
-	        //Vector3 axis = new Vector3(0, 180, 0);
-	        //rot.eulerAngles = euler+axis;
-	        Vector3 scl = new Vector3( node.scale[0], node.scale[1], node.scale[2] );
-	        //print( "Scale: " + scl );
-	
-	
-	        // set up object basics
-	        GameObject objMain = new GameObject();
-	        objMain.name = Encoding.ASCII.GetString( node.name);
-	
-	        //place object
-	        objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
+            GameObject objMain;
+            // Tranform
+            Vector3 pos = new Vector3(node.position[0], node.position[1], node.position[2]);
+            //print( "Position: " + pos );
+            Quaternion rot = new Quaternion(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
+            // Vector3 euler = rot.eulerAngles;
+            //print( "Euler: " + euler );
+            //rot = new Quaternion();
+            //Vector3 axis = new Vector3(0, 180, 0);
+            //rot.eulerAngles = euler+axis;
+            Vector3 scl = new Vector3(node.scale[0], node.scale[1], node.scale[2]);
+            //print( "Scale: " + scl );
+
+            if (!parentTransform.Find(Encoding.ASCII.GetString(node.name)))
+            {
+                // set up object basics
+                objMain = new GameObject();
+                objMain.name = Encoding.ASCII.GetString(node.name);
+
+                //place object
+                objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
+            }
+            else
+            {
+                objMain = parentTransform.Find(Encoding.ASCII.GetString(node.name)).gameObject;
+            }
+
 	        objMain.transform.localPosition =  pos; // new Vector3( 0, 0, 0 );
 	        objMain.transform.localRotation =   rot; //  Quaternion.identity;
 	        objMain.transform.localScale =    scl; // new Vector3( 1, 1, 1 );
@@ -121,72 +129,82 @@ namespace vpet
 	    //!
 	    public static GameObject CreateObject( SceneNodeGeo nodeGeo, Transform parentTransform )
 	    {
-            // Material Properties and Textures
-            Material mat;
-#if TRUNK
-            // assign material from material list
-            if (nodeGeo.materialId > -1 && nodeGeo.materialId < SceneLoader.SceneMaterialList.Count)
-            {
-                mat = SceneLoader.SceneMaterialList[nodeGeo.materialId];
-            }
-            else // or set standard
-            {
-                mat = new Material( Shader.Find( "Standard" ) );
-            }
-#else
-            mat = new Material( Shader.Find( "Standard" ) );
-#endif
-
-            // map properties
-            if (VPETSettings.Instance.doLoadTextures)
-            {
-                SceneLoader.MapMaterialProperties(mat, nodeGeo);
-            }
+            GameObject objMain;
 
             // Transform / convert handiness
-            Vector3 pos = new Vector3( nodeGeo.position[0], nodeGeo.position[1], nodeGeo.position[2] );
+            Vector3 pos = new Vector3(nodeGeo.position[0], nodeGeo.position[1], nodeGeo.position[2]);
 
             // Rotation / convert handiness
-	        Quaternion rot = new Quaternion( nodeGeo.rotation[0], nodeGeo.rotation[1], nodeGeo.rotation[2], nodeGeo.rotation[3] );
-	
-	        // Scale
-	        Vector3 scl = new Vector3( nodeGeo.scale[0], nodeGeo.scale[1], nodeGeo.scale[2] );
-	
-	        // set up object basics
-	        GameObject objMain = new GameObject();
-	        objMain.name = Encoding.ASCII.GetString(nodeGeo.name);
-	
-	        // Add Material
-	        MeshRenderer meshRenderer = objMain.AddComponent<MeshRenderer>();
-	        meshRenderer.material = mat;
+            Quaternion rot = new Quaternion(nodeGeo.rotation[0], nodeGeo.rotation[1], nodeGeo.rotation[2], nodeGeo.rotation[3]);
 
-	        // Add Mesh
-	        if ( nodeGeo.geoId > -1 && nodeGeo.geoId < SceneLoader.SceneMeshList.Count )
-	        {
-	            Mesh[] meshes = SceneLoader.SceneMeshList[nodeGeo.geoId];
-	            objMain.AddComponent<MeshFilter>();
-	            objMain.GetComponent<MeshFilter>().mesh  = meshes[0];
-                VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, meshRenderer.bounds.max);
-                VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, meshRenderer.bounds.min);
+            // Scale
+            Vector3 scl = new Vector3(nodeGeo.scale[0], nodeGeo.scale[1], nodeGeo.scale[2]);
 
-	            for( int i=1; i<meshes.Length; i++ )
-	            {
-	                GameObject subObj = new GameObject( objMain.name+"_part"+i.ToString() );
-	                subObj.AddComponent<MeshFilter>();
-	                subObj.GetComponent<MeshFilter>().mesh = meshes[i];
-	                MeshRenderer subMeshRenderer = subObj.AddComponent<MeshRenderer>();
-	                subMeshRenderer.material = mat;
-	                subObj.transform.parent = objMain.transform;
-                    VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, subMeshRenderer.bounds.max);
-                    VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, subMeshRenderer.bounds.min);
-	            }
+            if (!parentTransform.Find(Encoding.ASCII.GetString(nodeGeo.name)))
+            {
+                // Material Properties and Textures
+                Material mat;
+#if TRUNK
+                // assign material from material list
+                if (nodeGeo.materialId > -1 && nodeGeo.materialId < SceneLoader.SceneMaterialList.Count)
+                {
+                    mat = SceneLoader.SceneMaterialList[nodeGeo.materialId];
+                }
+                else // or set standard
+                {
+                    mat = new Material(Shader.Find("Standard"));
+                }
+#else
+                mat = new Material( Shader.Find( "Standard" ) );
+#endif
 
-                Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
-                VPETSettings.Instance.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
-	        }
-	
-	        //place object
-	        objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
+                // map properties
+                if (VPETSettings.Instance.doLoadTextures)
+                {
+                    SceneLoader.MapMaterialProperties(mat, nodeGeo);
+                }
+
+                // set up object basics
+                objMain = new GameObject();
+                objMain.name = Encoding.ASCII.GetString(nodeGeo.name);
+
+                // Add Material
+                MeshRenderer meshRenderer = objMain.AddComponent<MeshRenderer>();
+                meshRenderer.material = mat;
+
+                // Add Mesh
+                if (nodeGeo.geoId > -1 && nodeGeo.geoId < SceneLoader.SceneMeshList.Count)
+                {
+                    Mesh[] meshes = SceneLoader.SceneMeshList[nodeGeo.geoId];
+                    objMain.AddComponent<MeshFilter>();
+                    objMain.GetComponent<MeshFilter>().mesh = meshes[0];
+                    VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, meshRenderer.bounds.max);
+                    VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, meshRenderer.bounds.min);
+
+                    for (int i = 1; i < meshes.Length; i++)
+                    {
+                        GameObject subObj = new GameObject(objMain.name + "_part" + i.ToString());
+                        subObj.AddComponent<MeshFilter>();
+                        subObj.GetComponent<MeshFilter>().mesh = meshes[i];
+                        MeshRenderer subMeshRenderer = subObj.AddComponent<MeshRenderer>();
+                        subMeshRenderer.material = mat;
+                        subObj.transform.parent = objMain.transform;
+                        VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, subMeshRenderer.bounds.max);
+                        VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, subMeshRenderer.bounds.min);
+                    }
+
+                    Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
+                    VPETSettings.Instance.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+                }
+
+                //place object
+                objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
+            }
+            else 
+            {
+                objMain = parentTransform.Find(Encoding.ASCII.GetString(nodeGeo.name)).gameObject;
+            }
+
 	        objMain.transform.localPosition =  pos; // new Vector3( 0, 0, 0 );
 	        objMain.transform.localRotation =   rot; //  Quaternion.identity;
 	        objMain.transform.localScale =    scl; // new Vector3( 1, 1, 1 );

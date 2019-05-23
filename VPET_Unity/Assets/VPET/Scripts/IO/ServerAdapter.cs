@@ -171,8 +171,8 @@ namespace vpet
         //! cached reference to main controller
         //!
         MainController mainController = null;
-//#endif
-
+        //#endif
+        
         //!
         //! list containing sceneObjects to sceneObject ID references
         //!
@@ -273,7 +273,7 @@ namespace vpet
             if (GameObject.Find("MainController") != null)
                 mainController = GameObject.Find("MainController").GetComponent<MainController>();
 #endif
-
+            
             persistentDataPath = Application.persistentDataPath;
 
             print("persistentDataPath: " + persistentDataPath);
@@ -625,6 +625,24 @@ namespace vpet
                             {
                                 sol.transform.GetChild(0).GetComponent<Light>().spotAngle = BitConverter.ToSingle(msg, 6);
                             }
+                        }
+                        break;
+                    case ParameterType.BONEANIM:
+                        {
+                            sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6),
+                                                                              BitConverter.ToSingle(msg, 10),
+                                                                              BitConverter.ToSingle(msg, 14));
+                            int offset = 12;
+                            Quaternion[] animationState = new Quaternion[25];
+                            for (int i = 0; i < 25; i++)
+                            {
+                                animationState[i] =  new Quaternion(  BitConverter.ToSingle(msg, offset + 6),
+                                                                            BitConverter.ToSingle(msg, offset + 10),
+                                                                            BitConverter.ToSingle(msg, offset + 14),
+                                                                            BitConverter.ToSingle(msg, offset + 18));
+                                offset += 16;
+                            }
+                            sceneObject.gameObject.GetComponent<CharacterAnimationController>().animationState = animationState;
                         }
                         break;
                     case ParameterType.PING:
