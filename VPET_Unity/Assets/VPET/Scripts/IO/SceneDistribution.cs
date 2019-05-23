@@ -81,10 +81,16 @@ namespace vpet
         private int lodHighLayer;
         private int lodMixedLayer;
 
+        private int globalID;
+
+        private ServerAdapter serverAdapter;
+
         private void Awake()
         {
             if (sceneRoot == null)
                 sceneRoot = GameObject.Find("root");
+
+            serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
 
             if (sceneRoot == null) Debug.LogError(string.Format("{0}: Cant find Scene Root: 'root'.", this.GetType()));
 
@@ -92,11 +98,15 @@ namespace vpet
             lodHighLayer = LayerMask.NameToLayer("LodHigh");
             lodMixedLayer = LayerMask.NameToLayer("LodMixed");
 
+            VPETRegister.RegisterObjectSender();
+            serverAdapter.initServerAdapterTransfer();
         }
 
         // Use this for initialization
         void Start()
         {
+            Application.targetFrameRate = 60;
+            globalID = 0;
             if (doDistribute && sceneRoot != null)
             {
                 vpetHeader = new VpetHeader();
@@ -229,6 +239,10 @@ namespace vpet
 
             iterLocation(sceneRoot.transform);
 
+            serverAdapter.sceneObjectRefList = new SceneObject[globalID];
+
+            recursiveIdExtract(sceneRoot.transform);
+
             Debug.Log(string.Format("{0}: Collected number nodes: {1}", this.GetType(), nodeList.Count));
             Debug.Log(string.Format("{0}: Collected number objects: {1}", this.GetType(), objectList.Count));
             Debug.Log(string.Format("{0}: Collected number textures: {1}", this.GetType(), textureList.Count));
@@ -252,6 +266,24 @@ namespace vpet
 #endif
         }
 
+        //!
+        //! Recursively iterates over all scene elements & adds their ID to sceneObjectRefList
+        //!
+        private void recursiveIdExtract(Transform location)
+        {
+            if (location.GetComponent<SceneObject>())
+            {
+                serverAdapter.sceneObjectRefList[location.GetComponent<SceneObject>().id] = location.GetComponent<SceneObject>();
+            }
+
+            foreach (Transform child in location)
+                if (child.gameObject.activeSelf)
+                    recursiveIdExtract(child);
+        }
+
+        //!
+        //! Recursively iterate over scene and prepare data to be send to clients
+        //!
         private bool iterLocation(Transform location)
         {
             // check LOD and retur if not match
@@ -275,6 +307,10 @@ namespace vpet
                 nodeLight.range = light.range;
 
                 node = nodeLight;
+                node.editable = true;
+                SceneObject sObj = location.gameObject.AddComponent<SceneObject>();
+                sObj.id = globalID;
+                globalID++;
             }
             else if (location.GetComponent<Camera>() != null)
             {
@@ -285,6 +321,11 @@ namespace vpet
                 nodeCamera.near = camera.nearClipPlane;
                 nodeCamera.far = camera.farClipPlane;
                 node = nodeCamera;
+
+                node.editable = true;
+                SceneObject sObj = location.gameObject.AddComponent<SceneObject>();
+                sObj.id = globalID;
+                globalID++;
             }
             else if (location.GetComponent<MeshFilter>() != null)
             {
@@ -323,6 +364,30 @@ namespace vpet
                 }
 
                 node = nodeGeo;
+
+                if (location.gameObject.tag == "editable")
+                {
+                    node.editable = true;
+                    bool gotHighLod = false;
+                    foreach (Transform child in location.parent)
+                    {
+                        if (child.name == location.name && child.gameObject.layer == lodHighLayer)
+                        {
+                            SceneObject sObj = child.gameObject.AddComponent<SceneObject>();
+                            sObj.id = globalID;
+                            globalID++;
+                            gotHighLod = true;
+                        }
+                    }
+                    if (!gotHighLod)
+                    {
+                        SceneObject sObj = location.gameObject.AddComponent<SceneObject>();
+                        sObj.id = globalID;
+                        globalID++;
+                    }
+                }
+                else
+                    node.editable = false;
             }
             else if (location.GetComponent<SkinnedMeshRenderer>() != null)
             {
@@ -357,6 +422,30 @@ namespace vpet
                 }
 
                 node = nodeGeo;
+
+                if (location.gameObject.tag == "editable")
+                {
+                    node.editable = true;
+                    bool gotHighLod = false;
+                    foreach (Transform child in location.parent)
+                    {
+                        if (child.name == location.name && child.gameObject.layer == lodHighLayer)
+                        {
+                            SceneObject sObj = child.gameObject.AddComponent<SceneObject>();
+                            sObj.id = globalID;
+                            globalID++;
+                            gotHighLod = true;
+                        }
+                    }
+                    if (!gotHighLod)
+                    {
+                        SceneObject sObj = location.gameObject.AddComponent<SceneObject>();
+                        sObj.id = globalID;
+                        globalID++;
+                    }
+                }
+                else
+                    node.editable = false;
             }
             else if (location.parent.GetComponent<AnimatorObject>() != null)
             {
@@ -364,13 +453,15 @@ namespace vpet
                 node = nodeMocap;
             }
 
-            if (location.gameObject.tag == "editable")
-            {
-                node.editable = true;
-                location.gameObject.AddComponent<SceneObject>();
-            }
-            else
-                node.editable = false;
+            //if (location.gameObject.tag == "editable")
+            //{
+            //    node.editable = true;
+            //    SceneObject sObj = location.gameObject.AddComponent<SceneObject>();
+            //    sObj.id = globalID;
+            //    globalID++;
+            //}
+            //else
+            //    node.editable = false;
 
             node.position = new float[3] { location.localPosition.x, location.localPosition.y, location.localPosition.z };
             node.scale = new float[3] { location.localScale.x, location.localScale.y, location.localScale.z };

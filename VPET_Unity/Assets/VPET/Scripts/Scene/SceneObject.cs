@@ -392,8 +392,6 @@ namespace vpet
 #else
             if (!locked)
             {
-                isPlayingAnimation = false;
-                serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
 #endif
 #if !SCENE_HOST
                 //publish translation change

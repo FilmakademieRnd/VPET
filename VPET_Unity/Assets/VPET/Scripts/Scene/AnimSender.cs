@@ -27,29 +27,29 @@ https://opensource.org/licenses/MIT
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace vpet
 {
-    public class CharacterAnimationController : MonoBehaviour
+    public class AnimSender : MonoBehaviour
     {
-        private Animator animator;
-        public Quaternion[] animationState;
+        private ServerAdapter serverAdapter;
+        private SceneObject ownSceneObject;
 
         // Start is called before the first frame update
         void Start()
         {
-            animator = this.GetComponent<Animator>();
-            animationState = new Quaternion[25];
+            serverAdapter = GameObject.Find("ServerAdapter").GetComponent<ServerAdapter>();
+            InvokeRepeating("sendAnimation", 0.0f, 0.04f);
         }
 
-        // Update is called once per frame
-        void OnAnimatorIK(int layerIndex)
+        void sendAnimation()
         {
-            for(int i = 0; i < 25; i++)
+            if (!ownSceneObject)
             {
-                animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
+                ownSceneObject = this.GetComponent<SceneObject>();
+                ownSceneObject.locked = true;
             }
+                serverAdapter.SendObjectUpdate(ownSceneObject,ParameterType.BONEANIM);
         }
     }
 }

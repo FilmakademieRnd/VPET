@@ -54,7 +54,7 @@ namespace vpet
 
             sender = new PublisherSocket();
             sender.Connect("tcp://" + IP + ":" + Port);
-            //Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
+            Debug.Log("Connect ObjectSender to: " + "tcp://" + IP + ":" + Port);
             while (IsRunning)
             {
                 Thread.Sleep(1);
@@ -314,6 +314,40 @@ namespace vpet
                         }
                     }
                     break;
+                case ParameterType.BONEANIM:
+                    {
+                        Animator animator = sceneObject.gameObject.GetComponent<Animator>();
+
+                        if (animator)
+                        {
+                            msg = new byte[418];
+
+                            Vector3 locPos = sceneObject.transform.localPosition;
+
+                            msg[0] = cID;
+                            msg[1] = (byte)paramType;
+                            Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
+                            int offset = 12;
+                            for(int i = 0; i < 25; i++)
+                            {
+                                Transform t = animator.GetBoneTransform((HumanBodyBones)i);
+                                if((HumanBodyBones)i == HumanBodyBones.LeftUpperLeg)
+                                    Debug.Log(t.localRotation);
+                                if (t)
+                                {
+                                    Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.x), 0, msg, offset + 6, 4);
+                                    Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.y), 0, msg, offset + 10, 4);
+                                    Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.z), 0, msg, offset + 14, 4);
+                                    Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.w), 0, msg, offset + 18, 4);
+                                    offset += 16;
+                                }                              
+                            }
+                        }
+                    }
+                    break;
                 case ParameterType.PING:
                     {
                         msg = new byte[2];
@@ -340,10 +374,6 @@ namespace vpet
             {
                 sendMessageQueue.Add(msg);
             }
-
 		}
-
 	}
-
-	
 }

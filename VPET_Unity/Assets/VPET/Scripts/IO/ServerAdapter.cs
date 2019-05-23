@@ -176,7 +176,7 @@ namespace vpet
         //!
         //! list containing sceneObjects to sceneObject ID references
         //!
-        private SceneObject[] sceneObjectRefList;
+        public SceneObject[] sceneObjectRefList;
 
         //!
         //! none
@@ -273,7 +273,7 @@ namespace vpet
             if (GameObject.Find("MainController") != null)
                 mainController = GameObject.Find("MainController").GetComponent<MainController>();
 #endif
-            
+
             persistentDataPath = Application.persistentDataPath;
 
             print("persistentDataPath: " + persistentDataPath);
@@ -302,9 +302,10 @@ namespace vpet
                 deactivateReceive = true;
                 deactivatePublishKatana = true;
             }
-
+#if !SCENE_HOST
             // clear previous scene
             sceneLoader.ResetScene();
+#endif
 
             // if (!ipAdressFormat.IsMatch(VPETSettings.Instance.katanaIP)) deactivatePublishKatana = true;
 
@@ -320,7 +321,11 @@ namespace vpet
                 // create thread for all registered sender
                 foreach (ObjectSender sender in objectSenderList)
                 {
+#if SCENE_HOST
+                    sender.SetTarget(hostIP, "5557");
+#else
                     sender.SetTarget(VPETSettings.Instance.serverIP, "5557");
+#endif
                     Thread _thread = new Thread(new ThreadStart(sender.Publisher));
                     _thread.Start();
                     if (!senderThreadList.Contains(_thread))
@@ -454,7 +459,11 @@ namespace vpet
 
             foreach (ObjectSender sender in objectSenderList)
             {
-                    sender.SendObject(m_id, sobj, paramType, (mainController.ActiveMode == MainController.Mode.objectLinkCamera), mainController.oldParent);
+#if !SCENE_HOST
+                sender.SendObject(m_id, sobj, paramType, (mainController.ActiveMode == MainController.Mode.objectLinkCamera), mainController.oldParent);
+#else
+                sender.SendObject(m_id, sobj, paramType, false , null);
+#endif
             }
 
         }
@@ -533,7 +542,9 @@ namespace vpet
                             bool locked = BitConverter.ToBoolean(msg, 6);
                             sceneObject.enableRigidbody(!locked); 
                             sceneObject.locked = locked;
+#if !SCENE_HOST
                             sceneObject.updateLockView();
+#endif
                         }
                         break;
                     case ParameterType.HIDDENLOCK:
