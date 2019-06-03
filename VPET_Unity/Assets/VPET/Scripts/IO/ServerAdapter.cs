@@ -102,17 +102,34 @@ namespace vpet
         public bool deactivatePublishKatana = false;
 
         //!
-        //! none
+        //! flag for writing scene to scene cache
         //!
         public bool doWriteScene = false;
         //!
-        //! none
+        //! file path of scene cache
         //!
         public string sceneFileName = "tmp";
         //!
         //! none
         //!
         public bool doAutostartListener = false;
+
+#if SCENE_HOST
+        //!
+        //! file path to file for storing recorded updates
+        //!
+        public string recordFileName = "";
+
+        //!
+        //! record updates
+        //!
+        public bool recordUpdates = false;
+
+        //!
+        //! Array of updates to be recorder to file
+        //!
+        public List<GameObject> recordObjects;
+#endif
 
         //!
         //! none
@@ -140,15 +157,25 @@ namespace vpet
         ArrayList receiveMessageQueue;
 
         //!
+        //! record queue for incoming updates
+        //!
+        ArrayList recordMessageQueue;
+
+        //!
         //! reference to thread receiving all object updates from tablet syncronizing server
         //!
         Thread receiverThread;
 
-#if !SCENE_HOST        
+#if !SCENE_HOST
         //!
         //! reference to thread receiving the scene from Katana
         //!
         Thread sceneReceiverThread;
+#else
+        //!
+        //! reference to thread receiving all object updates from tablet syncronizing server
+        //!
+        Thread recorderThread;
 #endif
 
         //!
@@ -176,7 +203,10 @@ namespace vpet
         //!
         //! list containing sceneObjects to sceneObject ID references
         //!
+        [HideInInspector]
         public SceneObject[] sceneObjectRefList;
+
+
 
         //!
         //! none
@@ -233,6 +263,13 @@ namespace vpet
                 receiverThread = new Thread(new ThreadStart(listener));
                 receiverThread.Start();
                 isRunning = true;
+            }
+
+            if(recordUpdates)
+            {
+                recordMessageQueue = new ArrayList();
+                recorderThread = new Thread(new ThreadStart(recorder));
+                recorderThread.Start();
             }
 #else
             if (doAutostartListener)
@@ -671,29 +708,106 @@ namespace vpet
                         return;
                         break;
                 }
+                if (recordUpdates)
+                    buildRecordMessage(sceneObject, paramType);
             }
         }
 
-        ////! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
-        ////! @param  obj         Transform of GameObject to find the path for
-        ////! @return     path to gameObject started at main scene, separated by "/"
-        //private string getPathString(Transform obj, Transform root, string separator = "/")
-        //{
-        //    if (obj.parent)
-        //    {
-        //        if (obj.parent == Camera.main.transform)
-        //        {
-        //            return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
-        //        }
-        //        if (obj.transform.parent == root)
-        //            return obj.name;
-        //        else
-        //        {
-        //            return getPathString(obj.parent, root, separator) + separator + obj.name;
-        //        }
-        //    }
-        //    return obj.name;
-        //}
+        private void buildRecordMessage(SceneObject sceneObject, ParameterType paramType)
+        {
+            if (recordObjects.Contains(sceneObject.gameObject))
+            {
+                Debug.Log("buildRecordMessage contains");
+
+                Transform objTransform = sceneObject.transform;
+                String messageHead = System.DateTime.Now.ToString("HH:mm:ss:ffff") + " " + getPathString(objTransform, scene) + " " + paramType.ToString("G") + " ";
+                switch (paramType)
+                {
+                    case ParameterType.POS:
+                        {
+                            recordMessageQueue.Add(messageHead + objTransform.position.ToString("F6"));
+                        }
+                        break;
+
+                    case ParameterType.ROT:
+                        {
+                            recordMessageQueue.Add(messageHead + objTransform.rotation.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.SCALE:
+                        {
+                            recordMessageQueue.Add(messageHead + objTransform.lossyScale.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.FOV:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectCamera)sceneObject).fov.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.ASPECT:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectCamera)sceneObject).aspect.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.FOCUSDIST:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectCamera)sceneObject).focDist.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.FOCUSSIZE:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectCamera)sceneObject).focSize.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.APERTURE:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectCamera)sceneObject).aperture.ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.COLOR:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectLight)sceneObject).getLightColor().ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.INTENSITY:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectLight)sceneObject).getLightIntensity().ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.RANGE:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectLight)sceneObject).getLightRange().ToString("F6"));
+                        }
+                        break;
+                    case ParameterType.ANGLE:
+                        {
+                            recordMessageQueue.Add(messageHead + ((SceneObjectLight)sceneObject).getLightAngle().ToString("F6"));
+                        }
+                        break;
+                }
+            }
+        }
+
+        //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
+        //! @param  obj         Transform of GameObject to find the path for
+        //! @return     path to gameObject started at main scene, separated by "/"
+        private string getPathString(Transform obj, Transform root, string separator = "/")
+        {
+            if (obj.parent)
+            {
+                if (obj.parent == Camera.main.transform)
+                {
+                    return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
+                }
+                if (obj.transform.parent == root)
+                    return obj.name;
+                else
+                {
+                    return getPathString(obj.parent, root, separator) + separator + obj.name;
+                }
+            }
+            return obj.name;
+        }
 
         //! function searching for gameObject by path
         //! @param  path        path to gameObject started at main scene, separated by "/"
@@ -941,6 +1055,24 @@ namespace vpet
 		{
 			OnProgressEvent.Invoke(progress, msg);
 		}
+#else
+        //!
+        //! client function, listening for messages in receiveMessageQueue from server (executed in separate thread)
+        //!
+        public void recorder()
+        {
+            StreamWriter writer = new StreamWriter(recordFileName,true);
+            while (isRunning && recordUpdates)
+            {
+                while (recordMessageQueue.Count != 0)
+                {
+                    Debug.Log("Got Message");
+                    writer.WriteLine(recordMessageQueue[0]);
+                    recordMessageQueue.RemoveAt(0);
+                }
+            }
+            writer.Close();
+        }
 #endif
 
         //!
@@ -980,6 +1112,13 @@ namespace vpet
             {
                 receiverThread.Join();
                 receiverThread.Abort();
+            }
+
+            // halt recorder thread
+            if (recorderThread != null && recorderThread.IsAlive)
+            {
+                recorderThread.Join();
+                recorderThread.Abort();
             }
 
         }
