@@ -1,0 +1,27 @@
+var classvpet_1_1_v_p_e_t_settings =
+[
+    [ "ambientLight", "classvpet_1_1_v_p_e_t_settings.html#a73d5c4340bf4c039c61e81b57de3b1ee", null ],
+    [ "cameraOffsetBottom", "classvpet_1_1_v_p_e_t_settings.html#a6e27b0adf203eb155132a796e2475675", null ],
+    [ "cameraOffsetFront", "classvpet_1_1_v_p_e_t_settings.html#aa305fdd32c3de310de66345d6900b81d", null ],
+    [ "cameraOffsetLeft", "classvpet_1_1_v_p_e_t_settings.html#a159f1520e33dc609d73d693ca8e0243f", null ],
+    [ "cameraOffsetRight", "classvpet_1_1_v_p_e_t_settings.html#ac5365af89782a5eae2cbfcf093408a5f", null ],
+    [ "cameraOffsetTop", "classvpet_1_1_v_p_e_t_settings.html#acbb44efe6c1c610d1ad5aadfcd84e121", null ],
+    [ "canvasAspectScaleFactor", "classvpet_1_1_v_p_e_t_settings.html#aa00ef752cc7cac7d2e192b9b70160457", null ],
+    [ "canvasHalfHeight", "classvpet_1_1_v_p_e_t_settings.html#a2808e39afb8ea74366b2479d73dd8b26", null ],
+    [ "canvasHalfWidth", "classvpet_1_1_v_p_e_t_settings.html#a5c229ead303a436694bbb40ffb8746b0", null ],
+    [ "controllerSpeed", "classvpet_1_1_v_p_e_t_settings.html#a0176e127e113ca4439651991611a2c92", null ],
+    [ "debugMsg", "classvpet_1_1_v_p_e_t_settings.html#aac1be74d1ecadaab5da3fc6389d3c622", null ],
+    [ "doLoadFromResource", "classvpet_1_1_v_p_e_t_settings.html#a8079a6ced8a635134a74891e4c789552", null ],
+    [ "doLoadTextures", "classvpet_1_1_v_p_e_t_settings.html#ae91c2c71e22840846bfe61fd6aa75af2", null ],
+    [ "lightIntensityFactor", "classvpet_1_1_v_p_e_t_settings.html#a0d5d48ea6fe814220e770e2b1f079d87", null ],
+    [ "maxExtend", "classvpet_1_1_v_p_e_t_settings.html#af57cd018139ae53a1c1553f13f57e4e9", null ],
+    [ "msg", "classvpet_1_1_v_p_e_t_settings.html#a4cc5cde0123f59360a9484566283842d", null ],
+    [ "sceneBoundsMax", "classvpet_1_1_v_p_e_t_settings.html#a58271194d7bc40d63c92214a3f29efc5", null ],
+    [ "sceneBoundsMin", "classvpet_1_1_v_p_e_t_settings.html#a77f7e29d7933e736aa90d2d2ee4be314", null ],
+    [ "sceneDumpFolderEmpty", "classvpet_1_1_v_p_e_t_settings.html#a14a668be88ae7b1509affc1e2d8d2d3d", null ],
+    [ "sceneFileName", "classvpet_1_1_v_p_e_t_settings.html#aa049b909e543506475eb41c132abccd7", null ],
+    [ "sceneScale", "classvpet_1_1_v_p_e_t_settings.html#a78900a94e72e80e2d5ed10c3d3e9143b", null ],
+    [ "serverIP", "classvpet_1_1_v_p_e_t_settings.html#ad3d6ca988928be7e834189255c7aa97d", null ],
+    [ "textureBinaryType", "classvpet_1_1_v_p_e_t_settings.html#a79c3d7448cebd34759302a6998b51c14", null ],
+    [ "trackingScale", "classvpet_1_1_v_p_e_t_settings.html#ab06d9d5793ca9eb21d47208c9f04ef5b", null ]
+];
