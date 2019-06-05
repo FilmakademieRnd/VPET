@@ -25,63 +25,58 @@ https://opensource.org/licenses/MIT
 Shader "Hidden/OutlineBufferEffect" {
 	Properties
 	{
-		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-		_Color ("Tint", Color) = (1,1,1,1)
-		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
+		_Color ("Color", Color) = (1,1,1,1)
 	}
 
 	SubShader
 	{
 		Tags
 		{ 
-			"Queue"="Transparent" 
 			"IgnoreProjector"="True" 
-			"RenderType"="Transparent" 
-			"PreviewType"="Plane"
-			"CanUseSpriteAtlas"="True"
+			"RenderType"="Opaque" 
 		}
 
-		Cull Off
+		Cull Back
 		Lighting Off
-		ZWrite Off
-		Blend One OneMinusSrcAlpha
+		ZWrite On
+		ZTest LEqual
+		Blend Off
 
-		CGPROGRAM
-		#pragma surface surf Lambert vertex:vert nofog keepalpha
-		#pragma multi_compile _ PIXELSNAP_ON
-
-		sampler2D _MainTex;
-		fixed4 _Color;
-		float _AlphaCutoff;
-
-		struct Input
+		Pass
 		{
-			float2 uv_MainTex;
-			fixed4 color;
-		};
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag 
+			#pragma nofog noshadow
+
+			#include "UnityCG.cginc"
+
+			fixed4 _Color;
+
+			struct input
+			{
+				float4 vertex : POSITION;
+			};
+
+			struct v2f
+			{
+				float4 vertex : SV_POSITION;
+			};
 		
-		void vert (inout appdata_full v, out Input o)
-		{
-			#if defined(PIXELSNAP_ON)
-			v.vertex = UnityPixelSnap (v.vertex);
-			#endif
-			
-			UNITY_INITIALIZE_OUTPUT(Input, o);
-			o.color = v.color;
+			v2f vert (input v)
+			{	
+				v2f o;
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				return o;
+			}
+
+			fixed4 frag (v2f i) : SV_Target
+			{
+				return _Color;
+			}
+			ENDCG
 		}
-
-		void surf (Input IN, inout SurfaceOutput o)
-		{
-			fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * IN.color;
-			if (c.a < _AlphaCutoff) discard;
-
-			half alpha = c.a * 9999;
-
-			o.Albedo = _Color * alpha;
-			o.Alpha = alpha;
-		}
-		ENDCG
 	}
 
-Fallback "Transparent/VertexLit"
+//Fallback "Transparent/VertexLit"
 }

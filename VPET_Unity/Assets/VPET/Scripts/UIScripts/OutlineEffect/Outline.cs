@@ -45,7 +45,7 @@ public class Outline : MonoBehaviour
     void Awake()
     {
         useLineColor = false;
-        lineColor = new Color();
+        lineColor = new Color(Random.value, Random.value,Random.value);
     }
 
     public void setLineColor(Color color)

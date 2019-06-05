@@ -35,31 +35,31 @@ public class OutlineEffect : MonoBehaviour
 {
     public List<Outline> outlines;
 
-    public Camera sourceCamera;
-    public Camera outlineCamera;
-
     public float lineThickness = 1f;
     public float lineIntensity = 1f;
 
     public Color lineColor0 = new Color(1f, .8f, .3f);
 
-    public bool darkOutlines = false;
     public float alphaCutoff = .5f;
 
-    Material outline1Material;
+    private Camera sourceCamera;
+    private Camera outlineCamera;
 
-    Shader outlineShader;
-    Shader outlineBufferShader;
-    Material outlineShaderMaterial;
-    RenderTexture renderTexture;
+    private Material outlineShaderMaterial;
+    private Material outlineMaskMaterial1;
+    private Material outlineMaskMaterial2;
+
+    private Shader outlineShader;
+    private Shader outlineBufferShader;
+    private RenderTexture renderTexture;
 
     Material CreateMaterial(Color emissionColor)
     {
         Material m = new Material(outlineBufferShader);
         m.SetColor("_Color", emissionColor);
-        m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        m.SetInt("_ZWrite", 0);
+        //m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        //m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        //m.SetInt("_ZWrite", 0);
         m.DisableKeyword("_ALPHATEST_ON");
         m.DisableKeyword("_ALPHABLEND_ON");
         m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
@@ -117,17 +117,15 @@ public class OutlineEffect : MonoBehaviour
                         outline.originalMaterial = renderer.sharedMaterial;
                         outline.originalLayer = outlines[i].gameObject.layer;
 
-                        renderer.sharedMaterial = outline1Material;
-
+                        if (outline.useLineColor)
+                            renderer.sharedMaterial = outlineMaskMaterial2;
+                        else
+                            renderer.sharedMaterial = outlineMaskMaterial1;
+                        
                         if (renderer is MeshRenderer)
                         {
                             renderer.sharedMaterial.mainTexture = outline.originalMaterial.mainTexture;
                         }
-
-                        if (outline.useLineColor == true)
-                            outlineShaderMaterial.SetColor("_LineColor1", outline.lineColor);
-                        else
-                            outlineShaderMaterial.SetColor("_LineColor1", lineColor0);
 
                         outline.gameObject.layer = LayerMask.NameToLayer("Outline");
                     }
@@ -177,20 +175,22 @@ public class OutlineEffect : MonoBehaviour
             outlineShaderMaterial.hideFlags = HideFlags.HideAndDontSave;
             UpdateMaterialsPublicProperties();
         }
-        if (outline1Material == null)
-            outline1Material = CreateMaterial(new Color(1, 0, 0, 0));
-
-        outline1Material.SetFloat("_AlphaCutoff", alphaCutoff);
+        if (outlineMaskMaterial1 == null)
+            outlineMaskMaterial1 = CreateMaterial(new Color(1.0f, 0.8f, 0.3f));
+        if (outlineMaskMaterial2 == null)
+            outlineMaskMaterial2 = CreateMaterial(new Color(0.8f, 0.1f, 0.0f));
     }
 
     private void DestroyMaterials()
     {
         DestroyImmediate(outlineShaderMaterial);
-        DestroyImmediate(outline1Material);
+        DestroyImmediate(outlineMaskMaterial1);
+        DestroyImmediate(outlineMaskMaterial2);
         outlineShader = null;
         outlineBufferShader = null;
         outlineShaderMaterial = null;
-        outline1Material = null;
+        outlineMaskMaterial1 = null;
+        outlineMaskMaterial2 = null;
     }
 
     private void UpdateMaterialsPublicProperties()
@@ -200,12 +200,6 @@ public class OutlineEffect : MonoBehaviour
             outlineShaderMaterial.SetFloat("_LineThicknessX", lineThickness / 1000);
             outlineShaderMaterial.SetFloat("_LineThicknessY", lineThickness / 1000);
             outlineShaderMaterial.SetFloat("_LineIntensity", lineIntensity);
-            outlineShaderMaterial.SetColor("_LineColor1", lineColor0);
-            
-            if (darkOutlines)
-                outlineShaderMaterial.SetInt("_Dark", 1);
-            else
-                outlineShaderMaterial.SetInt("_Dark", 0);
         }
     }
 

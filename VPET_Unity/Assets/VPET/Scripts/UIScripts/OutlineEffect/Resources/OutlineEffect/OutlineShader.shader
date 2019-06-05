@@ -30,8 +30,6 @@ Shader "Hidden/OutlineEffect"
 	Properties 
 	{
 		_MainTex ("Base (RGB)", 2D) = "white" {}
-		_LineColor ("Line Color", Color) = (1,1,1,.5)
-		
 	}
 	SubShader 
 	{
@@ -39,14 +37,16 @@ Shader "Hidden/OutlineEffect"
 		{
 			Tags { "RenderType"="Opaque" }
 			LOD 200
-			ZTest Always
+			ZTest Off
 			ZWrite Off
 			Cull Off
+			Lighting Off
 			
 			CGPROGRAM
 
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment frag 
+			#pragma noshadow nofog
 			#pragma target 3.0
 			#include "UnityCG.cginc"
 
@@ -70,8 +70,6 @@ Shader "Hidden/OutlineEffect"
 			float _LineThicknessX;
 			float _LineThicknessY;
 			float _LineIntensity;
-			half4 _LineColor1;
-			int _Dark;
 			uniform float4 _MainTex_TexelSize;
 
 			half4 frag (v2f input) : COLOR
@@ -90,25 +88,20 @@ Shader "Hidden/OutlineEffect"
 				half4 sample3 = tex2D(_OutlineSource, uv + float2(.0,_LineThicknessY) * _MainTex_TexelSize.y * 1000.0f);
 				half4 sample4 = tex2D(_OutlineSource, uv + float2(.0,-_LineThicknessY) * _MainTex_TexelSize.y * 1000.0f);
 				
-				if(outlineSource.a < h)
+				if(outlineSource.a > h)
 				{
-					if (sample1.r > h || sample2.r > h || sample3.r > h || sample4.r > h)
+					if (sample1.a < h || sample2.a < h || sample3.a < h || sample4.a < h)
 					{
-						outline = _LineColor1 * _LineIntensity;
+						outline = half4(outlineSource.rgb, 1.0) * _LineIntensity;
 						hasOutline = true;
 					}
-				}					
-					
-				//return outlineSource;		
-				if (_Dark)
-				{
-					if (hasOutline)
-						return originalPixel * (1 - _LineColor1.a) + outline;
-					else
-						return originalPixel;
-				}
-				else
+				}			
+									
+				if (hasOutline)
 					return originalPixel + outline;
+				else
+					return originalPixel;
+
 			}
 			
 			ENDCG
