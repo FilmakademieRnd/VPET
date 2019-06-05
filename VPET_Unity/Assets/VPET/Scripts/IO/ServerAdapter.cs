@@ -708,11 +708,14 @@ namespace vpet
                         return;
                         break;
                 }
+#if SCENE_HOST 
                 if (recordUpdates)
                     buildRecordMessage(sceneObject, paramType);
+#endif
             }
         }
 
+#if SCENE_HOST
         private void buildRecordMessage(SceneObject sceneObject, ParameterType paramType)
         {
             if (recordObjects.Contains(sceneObject.gameObject))
@@ -808,6 +811,7 @@ namespace vpet
             }
             return obj.name;
         }
+#endif
 
         //! function searching for gameObject by path
         //! @param  path        path to gameObject started at main scene, separated by "/"
@@ -1113,13 +1117,14 @@ namespace vpet
                 receiverThread.Join();
                 receiverThread.Abort();
             }
-
+#if SCENE_HOST
             // halt recorder thread
             if (recorderThread != null && recorderThread.IsAlive)
             {
                 recorderThread.Join();
                 recorderThread.Abort();
             }
+#endif
 
         }
 

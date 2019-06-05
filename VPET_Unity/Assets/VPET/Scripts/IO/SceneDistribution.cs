@@ -594,6 +594,8 @@ namespace vpet
             Vector3[] mNormals = mesh.normals;
             Vector2[] mUV = mesh.uv;
 
+           //BoneWeight[] mWeights = mesh.boneWeights;
+            //mWeights[0].
             // v
             for (int i = 0; i < objPack.vSize; i++)
             {

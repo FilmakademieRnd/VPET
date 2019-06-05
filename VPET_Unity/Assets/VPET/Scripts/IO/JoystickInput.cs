@@ -79,6 +79,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+
 #if UNITY_IOS && UNITY_EDITOR
 using System.IO;
 using UnityEditor;
@@ -628,8 +629,6 @@ namespace vpet
         }
     }
 }
-
-
 
 
 #if UNITY_IOS && UNITY_EDITOR
