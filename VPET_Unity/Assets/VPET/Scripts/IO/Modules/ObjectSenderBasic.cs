@@ -320,9 +320,10 @@ namespace vpet
 
                         if (animator)
                         {
-                            msg = new byte[418];
+                            msg = new byte[434];
 
                             Vector3 locPos = sceneObject.transform.localPosition;
+                            Quaternion locRot = sceneObject.transform.localRotation;
 
                             msg[0] = cID;
                             msg[1] = (byte)paramType;
@@ -330,7 +331,11 @@ namespace vpet
                             Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
                             Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
                             Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
-                            int offset = 12;
+                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.x), 0, msg, 18, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.y), 0, msg, 22, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.z), 0, msg, 26, 4);
+                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.w), 0, msg, 30, 4);
+                            int offset = 28;
                             for(int i = 0; i < 25; i++)
                             {
                                 Transform t = animator.GetBoneTransform((HumanBodyBones)i);

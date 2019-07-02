@@ -680,7 +680,11 @@ namespace vpet
                             sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6),
                                                                               BitConverter.ToSingle(msg, 10),
                                                                               BitConverter.ToSingle(msg, 14));
-                            int offset = 12;
+                            sceneObject.transform.localRotation = new Quaternion(BitConverter.ToSingle(msg, 18),
+                                                  BitConverter.ToSingle(msg, 22),
+                                                  BitConverter.ToSingle(msg, 26),
+                                                  BitConverter.ToSingle(msg, 30));
+                            int offset = 28;
                             Quaternion[] animationState = new Quaternion[25];
                             for (int i = 0; i < 25; i++)
                             {
@@ -688,6 +692,8 @@ namespace vpet
                                                                             BitConverter.ToSingle(msg, offset + 10),
                                                                             BitConverter.ToSingle(msg, offset + 14),
                                                                             BitConverter.ToSingle(msg, offset + 18));
+                                Debug.Log(BitConverter.ToSingle(msg, offset + 6) + " " + BitConverter.ToSingle(msg, offset + 10) + " " + BitConverter.ToSingle(msg, offset + 14)
+                                                                             + " " + BitConverter.ToSingle(msg, offset + 18));
                                 offset += 16;
                             }
                             sceneObject.gameObject.GetComponent<CharacterAnimationController>().animationState = animationState;
