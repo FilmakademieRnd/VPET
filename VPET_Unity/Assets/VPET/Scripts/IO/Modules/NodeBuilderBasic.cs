@@ -276,14 +276,14 @@ namespace vpet
 	        }
 	        else if (nodeLight.lightType == LightType.Spot)
 	        {
-                lightComponent.range *= 5;
+                //lightComponent.range *= 5;
                 //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
             }
 	        else if (nodeLight.lightType == LightType.Area)
 	        {
                 // TODO: use are lights when supported in unity
                 lightComponent.spotAngle = 170;
-                lightComponent.range *= 400;
+                lightComponent.range *= 3;
             }
             else
 	        {
