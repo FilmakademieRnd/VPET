@@ -206,9 +206,6 @@ namespace vpet
         //!
         public void getButtonUpdates()
         {
-            // outline effect
-            outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
-
             if (Input.GetButton("L1"))
             {
                 getcurrentCrosshairObject();
@@ -617,6 +614,9 @@ namespace vpet
             right = 1.0f * aspect;
             bottom = -1.0f;
             top = 1.0f;
+
+            // outline effect
+            outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
 
             // initialize the dictionary that keeps track of the status of controller buttons
             buttonPressedState = new Dictionary<string, float>();
