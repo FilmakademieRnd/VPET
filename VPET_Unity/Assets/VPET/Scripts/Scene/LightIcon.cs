@@ -35,6 +35,8 @@ namespace vpet
 {
     public class LightIcon : MonoBehaviour
     {
+        private Vector3 lastPosition, lastCameraPosition;
+        private Quaternion lastCameraRotation;
 
         //!
         //! Scene object collider. Size is driven by this class.
@@ -77,19 +79,29 @@ namespace vpet
         //!
         void Update()
         {
-            if (this.GetComponent<Renderer>())
+            if (renderer)
             {
                 Camera camera = Camera.main;
-                Vector3 scale = targetScale * (Vector3.Distance(this.transform.position, camera.transform.position) / 30.0f) * (camera.fieldOfView / 30.0f);
-
-                this.transform.rotation = camera.transform.rotation;
-                this.transform.localScale = scale;
-                renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b,1f);
-
-                // set the same scale to the light's collider
-                if (targetCollider)
+                if (lastPosition != this.transform.position ||
+                    lastCameraPosition != camera.transform.position ||
+                    lastCameraRotation != camera.transform.rotation)
                 {
-                    targetCollider.size = scale;
+                    lastPosition = this.transform.position;
+                    lastCameraPosition = camera.transform.position;
+                    lastCameraPosition = camera.transform.position;
+                    lastCameraRotation = camera.transform.rotation;
+
+                    Vector3 scale = targetScale * (Vector3.Distance(lastPosition, lastCameraPosition) / 30.0f) * (camera.fieldOfView / 30.0f);
+
+                    this.transform.rotation = lastCameraRotation;
+                    this.transform.localScale = scale;
+                    renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b, 1f);
+
+                    // set the same scale to the light's collider
+                    if (targetCollider)
+                    {
+                        targetCollider.size = scale;
+                    }
                 }
             }
         }
