@@ -193,13 +193,13 @@ namespace vpet
         //!
         Transform dreamspaceRoot;
 
-//#if !SCENE_HOST
+        //#if !SCENE_HOST
         //!
         //! cached reference to main controller
         //!
         MainController mainController = null;
         //#endif
-        
+
         //!
         //! list containing sceneObjects to sceneObject ID references
         //!
@@ -265,7 +265,7 @@ namespace vpet
                 isRunning = true;
             }
 
-            if(recordUpdates)
+            if (recordUpdates)
             {
                 recordMessageQueue = new ArrayList();
                 recorderThread = new Thread(new ThreadStart(recorder));
@@ -413,8 +413,8 @@ namespace vpet
                 sceneLoader.createSceneGraph();
                 SendObjectUpdate(null, ParameterType.RESENDUPDATE);
 
-                int refListCount = SceneLoader.SceneEditableObjects.Count + 
-                                   SceneLoader.SelectableLights.Count + 
+                int refListCount = SceneLoader.SceneEditableObjects.Count +
+                                   SceneLoader.SelectableLights.Count +
                                    SceneLoader.SceneCameraList.Count;
 
                 sceneObjectRefList = new SceneObject[refListCount];
@@ -424,11 +424,11 @@ namespace vpet
                     Debug.Log(gameObject.name);
                     SceneObject sceneObject = gameObject.GetComponent<SceneObject>();
                     Debug.Log(sceneObject.id + " " + sceneObject.name);
-                    if(sceneObjectRefList.Length > sceneObject.id)
+                    if (sceneObjectRefList.Length > sceneObject.id)
                         sceneObjectRefList[sceneObject.id] = sceneObject;
                 }
 
-                foreach(GameObject gameObject in SceneLoader.SelectableLights)
+                foreach (GameObject gameObject in SceneLoader.SelectableLights)
                 {
                     SceneObject sceneObject = gameObject.GetComponent<SceneObjectLight>();
                     if (sceneObjectRefList.Length > sceneObject.id)
@@ -499,7 +499,7 @@ namespace vpet
 #if !SCENE_HOST
                 sender.SendObject(m_id, sobj, paramType, (mainController.ActiveMode == MainController.Mode.objectLinkCamera), mainController.oldParent);
 #else
-                sender.SendObject(m_id, sobj, paramType, false , null);
+                sender.SendObject(m_id, sobj, paramType, false, null);
 #endif
             }
 
@@ -514,13 +514,13 @@ namespace vpet
         //    {
         //        if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
         //        {
-        //            string msg = "client " + id + "|" + "l" + "|" + this.getPathString(currentlyLockedObject, scene) + "|" + false;
+        //            string msg = "client " + id + "|" + "l" + "|" + vpet.Extensions.getPathString(currentlyLockedObject, scene) + "|" + false;
         //            SendObjectUpdate<ObjectSenderBasic>(msg);
         //            // print("Unlock object " + currentlyLockedObject.gameObject.name );
         //        }
         //        if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
         //        {
-        //            string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + true;
+        //            string msg = "client " + id + "|" + "l" + "|" + vpet.Extensions.getPathString(obj, scene) + "|" + true;
         //            SendObjectUpdate<ObjectSenderBasic>(msg);
         //            // print("Lock object " + obj.gameObject.name);
         //        }
@@ -530,7 +530,7 @@ namespace vpet
         //    {
         //        if (currentlyLockedObject != null && !deactivatePublish) // unlock if locked
         //        {
-        //            string msg = "client " + id + "|" + "l" + "|" + this.getPathString(obj, scene) + "|" + false;
+        //            string msg = "client " + id + "|" + "l" + "|" + vpet.Extensions.getPathString(obj, scene) + "|" + false;
         //            SendObjectUpdate<ObjectSenderBasic>(msg);
         //            // print("Unlock object " + obj.gameObject.name);
         //        }
@@ -545,7 +545,7 @@ namespace vpet
         {
             if (msg[0] != m_id)
             {
-                ParameterType paramType = (ParameterType) msg[1];
+                ParameterType paramType = (ParameterType)msg[1];
                 int objectID = BitConverter.ToInt32(msg, 2);
                 SceneObject sceneObject = sceneObjectRefList[objectID];
 
@@ -553,8 +553,8 @@ namespace vpet
                 {
                     case ParameterType.POS:
                         {
-                            sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6), 
-                                                                              BitConverter.ToSingle(msg, 10), 
+                            sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6),
+                                                                              BitConverter.ToSingle(msg, 10),
                                                                               BitConverter.ToSingle(msg, 14));
                         }
                         break;
@@ -577,7 +577,7 @@ namespace vpet
                     case ParameterType.LOCK:
                         {
                             bool locked = BitConverter.ToBoolean(msg, 6);
-                            sceneObject.enableRigidbody(!locked); 
+                            sceneObject.enableRigidbody(!locked);
                             sceneObject.locked = locked;
 #if !SCENE_HOST
                             sceneObject.updateLockView();
@@ -677,25 +677,21 @@ namespace vpet
                         break;
                     case ParameterType.BONEANIM:
                         {
-                            sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6),
+                            Vector3 rootPosition = new Vector3(BitConverter.ToSingle(msg, 6),
                                                                               BitConverter.ToSingle(msg, 10),
                                                                               BitConverter.ToSingle(msg, 14));
-                            sceneObject.transform.localRotation = new Quaternion(BitConverter.ToSingle(msg, 18),
-                                                  BitConverter.ToSingle(msg, 22),
-                                                  BitConverter.ToSingle(msg, 26),
-                                                  BitConverter.ToSingle(msg, 30));
-                            int offset = 28;
-                            Quaternion[] animationState = new Quaternion[25];
-                            for (int i = 0; i < 25; i++)
+                            int offset = 12;
+                            int numBones = Enum.GetNames(typeof(HumanBodyBones)).Length - 1;
+                            Quaternion[] animationState = new Quaternion[numBones];
+                            for (int i = 0; i < numBones; i++)
                             {
-                                animationState[i] =  new Quaternion(  BitConverter.ToSingle(msg, offset + 6),
+                                animationState[i] = new Quaternion(BitConverter.ToSingle(msg, offset + 6),
                                                                             BitConverter.ToSingle(msg, offset + 10),
                                                                             BitConverter.ToSingle(msg, offset + 14),
                                                                             BitConverter.ToSingle(msg, offset + 18));
-                                Debug.Log(BitConverter.ToSingle(msg, offset + 6) + " " + BitConverter.ToSingle(msg, offset + 10) + " " + BitConverter.ToSingle(msg, offset + 14)
-                                                                             + " " + BitConverter.ToSingle(msg, offset + 18));
                                 offset += 16;
                             }
+                            sceneObject.gameObject.GetComponent<CharacterAnimationController>().rootPosition = rootPosition;
                             sceneObject.gameObject.GetComponent<CharacterAnimationController>().animationState = animationState;
                         }
                         break;
@@ -729,7 +725,7 @@ namespace vpet
                 Debug.Log("buildRecordMessage contains");
 
                 Transform objTransform = sceneObject.transform;
-                String messageHead = System.DateTime.Now.ToString("HH:mm:ss:ffff") + " " + getPathString(objTransform, scene) + " " + paramType.ToString("G") + " ";
+                String messageHead = System.DateTime.Now.ToString("HH:mm:ss:ffff") + " " + vpet.Extensions.getPathString(objTransform, scene) + " " + paramType.ToString("G") + " ";
                 switch (paramType)
                 {
                     case ParameterType.POS:
@@ -795,27 +791,6 @@ namespace vpet
                         break;
                 }
             }
-        }
-
-        //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
-        //! @param  obj         Transform of GameObject to find the path for
-        //! @return     path to gameObject started at main scene, separated by "/"
-        private string getPathString(Transform obj, Transform root, string separator = "/")
-        {
-            if (obj.parent)
-            {
-                if (obj.parent == Camera.main.transform)
-                {
-                    return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
-                }
-                if (obj.transform.parent == root)
-                    return obj.name;
-                else
-                {
-                    return getPathString(obj.parent, root, separator) + separator + obj.name;
-                }
-            }
-            return obj.name;
         }
 #endif
 
@@ -922,54 +897,69 @@ namespace vpet
 #endif
 
                 // Textures
-                if (VPETSettings.Instance.doLoadTextures) {
-                    print ("textures");
+                if (VPETSettings.Instance.doLoadTextures)
+                {
+                    print("textures");
                     sceneReceiver.SendFrame("textures");
                     byteStream = sceneReceiver.ReceiveFrameBytes();
-                    print ("byteStreamTextures size: " + byteStream.Length);
-                    if (doWriteScene) {
-                        writeBinary (byteStream, "textures");
+                    print("byteStreamTextures size: " + byteStream.Length);
+                    if (doWriteScene)
+                    {
+                        writeBinary(byteStream, "textures");
                     }
                     sceneLoader.SceneDataHandler.TexturesByteData = byteStream;
 
-                    OnProgress (0.33f, "..Received Texture..");
+                    OnProgress(0.33f, "..Received Texture..");
                 }
 
-                
+
                 // Objects
-                print ("objects");
+                print("objects");
                 sceneReceiver.SendFrame("objects");
                 byteStream = sceneReceiver.ReceiveFrameBytes();
-                print ("byteStreamObjects size: " + byteStream.Length);
-                if (doWriteScene) {
-                    writeBinary (byteStream, "objects");
+                print("byteStreamObjects size: " + byteStream.Length);
+                if (doWriteScene)
+                {
+                    writeBinary(byteStream, "objects");
                 }
                 sceneLoader.SceneDataHandler.ObjectsByteData = byteStream;
 
-                OnProgress (0.80f, "..Received Objects..");
-                
+                OnProgress(0.80f, "..Received Objects..");
+
 
                 // Nodes
-                print ("nodes");
+                print("nodes");
                 sceneReceiver.SendFrame("nodes");
                 byteStream = sceneReceiver.ReceiveFrameBytes();
-                print ("byteStreamNodess size: " + byteStream.Length);
-                if (doWriteScene) {
-                    writeBinary (byteStream, "nodes");
+                print("byteStreamNodes size: " + byteStream.Length);
+                if (doWriteScene)
+                {
+                    writeBinary(byteStream, "nodes");
                 }
                 sceneLoader.SceneDataHandler.NodesByteData = byteStream;
 
-                OnProgress (0.9f, "..Received Nodes..");
+                OnProgress(0.9f, "..Received Nodes..");
 
+                // Characters
+                print("characters");
+                sceneReceiver.SendFrame("characters");
+                byteStream = sceneReceiver.ReceiveFrameBytes();
+                print("byteStreamCharacters size: " + byteStream.Length);
+                if (doWriteScene)
+                {
+                    writeBinary(byteStream, "characters");
+                }
+                sceneLoader.SceneDataHandler.CharactersByteData = byteStream;
 
-        
-                sceneReceiver.Disconnect ("tcp://" + VPETSettings.Instance.serverIP + ":5565");
+                OnProgress(0.9f, "..Received Characters..");
+
+                sceneReceiver.Disconnect("tcp://" + VPETSettings.Instance.serverIP + ":5565");
                 sceneReceiver.Close();
                 sceneReceiver.Dispose();
             }
             //NetMQConfig.Cleanup();
-    
-            print( "done receive scene" );
+
+            print("done receive scene");
 
             m_sceneTransferDirty = true;
 
@@ -981,12 +971,12 @@ namespace vpet
         //! none
         //!
         public void sceneReceiverResource()
-	    {
-	        print( "Trying to load scene." );
-	
-			OnProgress( 0.1f, "Init Scene Receiver..");
+        {
+            print("Trying to load scene.");
 
-            
+            OnProgress(0.1f, "Init Scene Receiver..");
+
+
             // Header
             byte[] byteStreamHeader = loadBinary("header");
             print("byteStreamHeader size: " + byteStreamHeader.Length);
@@ -1003,10 +993,10 @@ namespace vpet
 
 
             // Textures
-            if (VPETSettings.Instance.doLoadTextures )
-	        {
-	            byte[] byteStreamTextures = loadBinary( "textures" );
-	            print( "byteStreamTextures size: " + byteStreamTextures.Length );
+            if (VPETSettings.Instance.doLoadTextures)
+            {
+                byte[] byteStreamTextures = loadBinary("textures");
+                print("byteStreamTextures size: " + byteStreamTextures.Length);
                 sceneLoader.SceneDataHandler.TexturesByteData = byteStreamTextures;
                 OnProgress(0.33f, "..Received Texture..");
             }
@@ -1014,20 +1004,20 @@ namespace vpet
 
             // Objects
             print("objects");
-	        byte[] byteStreamObjects = loadBinary( "objects" );
-	        print( "byteStreamObjects size: " + byteStreamObjects.Length );
+            byte[] byteStreamObjects = loadBinary("objects");
+            print("byteStreamObjects size: " + byteStreamObjects.Length);
             sceneLoader.SceneDataHandler.ObjectsByteData = byteStreamObjects;
-            OnProgress( 0.80f, "..Received Objects..");
+            OnProgress(0.80f, "..Received Objects..");
 
             // Nodes
-            print( "nodes" );
-	        byte[] byteStreamNodes = loadBinary( "nodes" );
-	        print( "byteStreamNodess size: " + byteStreamNodes.Length );
+            print("nodes");
+            byte[] byteStreamNodes = loadBinary("nodes");
+            print("byteStreamNodess size: " + byteStreamNodes.Length);
             sceneLoader.SceneDataHandler.NodesByteData = byteStreamNodes;
             OnProgress(0.9f, "..Received Nodes..");
 
 
-	        print( "done load scene" );
+            print("done load scene");
             m_sceneTransferDirty = true;
             OnProgress(1.0f, "..Building Scene..");
 
@@ -1037,41 +1027,41 @@ namespace vpet
         //!
         //! none
         //!
-        private void writeBinary( byte[] data, string dataname)
-		{
-			string filesrc = persistentDataPath + "/" + sceneFileName + "_" + dataname + ".bytes";
-			BinaryWriter writer = new BinaryWriter( File.Open( filesrc, FileMode.Create ) );
-			print( "Write binary data: " + filesrc );
-			writer.Write( data );
-			writer.Close();
-		}
+        private void writeBinary(byte[] data, string dataname)
+        {
+            string filesrc = persistentDataPath + "/" + sceneFileName + "_" + dataname + ".bytes";
+            BinaryWriter writer = new BinaryWriter(File.Open(filesrc, FileMode.Create));
+            print("Write binary data: " + filesrc);
+            writer.Write(data);
+            writer.Close();
+        }
 
         //!
         //! none
         //!
-        private byte[] loadBinary( string dataname )
-	    {
-	        string filesrc = "VPET/SceneDumps/" + VPETSettings.Instance.sceneFileName + "_" + dataname;
-	        print( "Load binary data: " + filesrc );
-	        TextAsset asset = Resources.Load( filesrc ) as TextAsset;
-	        return asset.bytes;
-	        /*
+        private byte[] loadBinary(string dataname)
+        {
+            string filesrc = "VPET/SceneDumps/" + VPETSettings.Instance.sceneFileName + "_" + dataname;
+            print("Load binary data: " + filesrc);
+            TextAsset asset = Resources.Load(filesrc) as TextAsset;
+            return asset.bytes;
+            /*
 	        Stream s = new MemoryStream( asset.bytes );
 	        BinaryReader br = new BinaryReader( s );
 	        */
-	    }
+        }
 
-        private void OnProgress( float progress, string msg="")
-		{
-			OnProgressEvent.Invoke(progress, msg);
-		}
+        private void OnProgress(float progress, string msg = "")
+        {
+            OnProgressEvent.Invoke(progress, msg);
+        }
 #else
         //!
         //! client function, listening for messages in receiveMessageQueue from server (executed in separate thread)
         //!
         public void recorder()
         {
-            StreamWriter writer = new StreamWriter(recordFileName,true);
+            StreamWriter writer = new StreamWriter(recordFileName, true);
             while (isRunning && recordUpdates)
             {
                 while (recordMessageQueue.Count != 0)
@@ -1089,11 +1079,11 @@ namespace vpet
         //! Unity build in function beeing called just before Application is closed
         //! closes network Connections & terminates threads
         //!
-        void OnApplicationQuit() 
-	    {
-	        Debug.Log("receiveMessageQueue.Count :" + receiveMessageQueue.Count);
+        void OnApplicationQuit()
+        {
+            Debug.Log("receiveMessageQueue.Count :" + receiveMessageQueue.Count);
 
-	        isRunning = false;
+            isRunning = false;
 
             // finish sender objects
             foreach (ObjectSender sender in objectSenderList)
@@ -1104,17 +1094,17 @@ namespace vpet
             // final clean up after disposing ALL sockets
             NetMQConfig.Cleanup();
 
-			// halt sender threads
-			foreach (Thread _thread in senderThreadList)
-			{
-				if (_thread != null && _thread.IsAlive )
-					_thread.Abort();
-			}
+            // halt sender threads
+            foreach (Thread _thread in senderThreadList)
+            {
+                if (_thread != null && _thread.IsAlive)
+                    _thread.Abort();
+            }
 
 #if !SCENE_HOST
             // halt scene receiver thread
-            if ( sceneReceiverThread != null  && sceneReceiverThread.IsAlive )
-	            sceneReceiverThread.Abort();
+            if (sceneReceiverThread != null && sceneReceiverThread.IsAlive)
+                sceneReceiverThread.Abort();
 #endif
 
             // halt receiver thread

@@ -29,6 +29,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 namespace vpet
@@ -47,11 +50,29 @@ namespace vpet
         public int iSize;
         public int nSize;
         public int uvSize;
+        public int bWSize;
         public Mesh mesh;
         public float[] vertices;
         public int[] indices;
         public float[] normals;
         public float[] uvs;
+        public float[] boneWeights; //caution: contains 4 weights per vertex
+        public int[] boneIndices;
+    };
+
+    public class CharacterPackage
+    {
+        public int bMSize;
+        public int sSize;
+        public int rootDagSize;
+        public string rootDag;
+        public int[] dagSizes;
+        public string[] boneMapping;
+        public int[] sdagSizes;
+        public string[] skeletonMapping;
+        public float[] bonePosition;
+        public float[] boneRotation;
+        public float[] boneScale;
     };
 
     public class TexturePackage
@@ -87,6 +108,11 @@ namespace vpet
         {
             get { return m_objectList; }
         }
+        private List<CharacterPackage> m_characterList;
+        public List<CharacterPackage> CharacterList
+        {
+            get { return m_characterList; }
+        }
         private List<TexturePackage> m_textureList;
         public List<TexturePackage> TextureList
         {
@@ -107,7 +133,13 @@ namespace vpet
         private byte[] m_nodesByteData;
         public byte[] NodesByteData
         {
-            set { m_nodesByteData = value; convertNodesByteStream();  }
+            set { m_nodesByteData = value; convertNodesByteStream(); }
+        }
+
+        private byte[] m_characterByteData;
+        public byte[] CharactersByteData
+        {
+            set { m_characterByteData = value; convertCharacterByteStream(); }
         }
 
         private byte[] m_objectsByteData;
@@ -125,7 +157,7 @@ namespace vpet
         private byte[] m_materialsByteData;
         public byte[] MaterialsByteData
         {
-            set { m_materialsByteData = value;  convertMaterialsByteStream(); }
+            set { m_materialsByteData = value; convertMaterialsByteStream(); }
         }
 
         private int m_textureBinaryType = 0;
@@ -135,7 +167,7 @@ namespace vpet
         }
 
 
-        public delegate SceneNode NodeParserDelegate(NodeType n, ref byte[] b, ref int i);
+        public delegate SceneNode NodeParserDelegate(NodeType n, ref byte[] b, int i, int length);
         public static List<NodeParserDelegate> nodeParserDelegateList = new List<NodeParserDelegate>();
 
         public static void RegisterDelegate(NodeParserDelegate call)
@@ -150,28 +182,25 @@ namespace vpet
             m_materialList = new List<MaterialPackage>();
             m_textureList = new List<TexturePackage>();
             m_objectList = new List<ObjectPackage>();
+            m_characterList = new List<CharacterPackage>();
         }
 
         //!
         //! function to check and reverse the endian order ( assume message from server adapter is little endian )
         //!
-        public static void checkEndian( ref byte[] dataNumber )
+        public static void checkEndian(ref byte[] dataNumber)
         {
-            if ( !BitConverter.IsLittleEndian )
-                Array.Reverse( dataNumber );
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(dataNumber);
         }
 
 
         private void convertHeaderByteStream()
         {
-            int dataIdx = 0;
-            VPETSettings.Instance.lightIntensityFactor = BitConverter.ToSingle(m_headerByteData, dataIdx);
-            dataIdx += sizeof(float);
-            VPETSettings.Instance.textureBinaryType = BitConverter.ToInt32(m_headerByteData, dataIdx);
-
-            //VpetHeader vpetHeader = SceneDataHandler.ByteArrayToStructure<VpetHeader>(byteStream, ref dataIdx);
-            //VPETSettings.Instance.lightIntensityFactor = vpetHeader.lightIntensityFactor;
-            //VPETSettings.Instance.textureBinaryType = vpetHeader.textureBinaryType;
+            VpetHeader header;
+            ByteArrayToStruct<VpetHeader>(ref m_headerByteData, out header, 0, m_headerByteData.Length);
+            VPETSettings.Instance.lightIntensityFactor = header.lightIntensityFactor;
+            VPETSettings.Instance.textureBinaryType = header.textureBinaryType;
         }
 
         private void convertNodesByteStream()
@@ -182,19 +211,21 @@ namespace vpet
             while (dataIdx < m_nodesByteData.Length - 1)
             {
                 SceneNode node = new SceneNode();
-                int numValues = BitConverter.ToInt32(m_nodesByteData, dataIdx);
+
+                int length = BitConverter.ToInt32(m_nodesByteData, dataIdx);
                 dataIdx += size_int;
-                //checkEndian(ref sliceInt);
-                NodeType nodeType = (NodeType)numValues;
 
+                NodeType nodeType = (NodeType)BitConverter.ToInt32(m_nodesByteData, dataIdx);
+                dataIdx += size_int;
 
-    			// process all registered parse callbacks
-                foreach(NodeParserDelegate nodeParserDelegate in nodeParserDelegateList)
+                // process all registered parse callbacks
+                foreach (NodeParserDelegate nodeParserDelegate in nodeParserDelegateList)
                 {
-                    SceneNode _node = nodeParserDelegate(nodeType, ref m_nodesByteData, ref dataIdx);
+                    SceneNode _node = nodeParserDelegate(nodeType, ref m_nodesByteData, dataIdx, length);
                     if (_node != null)
                         node = _node;
                 }
+                dataIdx += length;
 
                 m_nodeList.Add(node);
             }
@@ -202,7 +233,6 @@ namespace vpet
             Array.Clear(m_nodesByteData, 0, m_nodesByteData.Length);
             m_nodesByteData = null;
             GC.Collect();
-
         }
 
         private void convertMaterialsByteStream()
@@ -261,8 +291,8 @@ namespace vpet
             while (dataIdx < m_texturesByteData.Length - 1)
             {
                 TexturePackage texPack = new TexturePackage();
-                
-                if ( m_textureBinaryType == 1)
+
+                if (m_textureBinaryType == 1)
                 {
                     int intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
                     dataIdx += size_int;
@@ -274,7 +304,7 @@ namespace vpet
                     dataIdx += size_int;
                     texPack.format = (TextureFormat)intValue;
                 }
-                
+
                 // pixel data
                 int numValues = BitConverter.ToInt32(m_texturesByteData, dataIdx);
                 dataIdx += size_int;
@@ -288,6 +318,122 @@ namespace vpet
 
             Array.Clear(m_texturesByteData, 0, m_texturesByteData.Length);
             m_texturesByteData = null;
+            GC.Collect();
+        }
+
+        private void convertCharacterByteStream()
+        {
+            m_characterList = new List<CharacterPackage>();
+
+            int dataIdx = 0;
+
+            while (dataIdx < m_characterByteData.Length - 1)
+            {
+                CharacterPackage characterPack = new CharacterPackage();
+
+                // get bone Mapping size
+                int intValue = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                dataIdx += size_int;
+                characterPack.bMSize = intValue;
+
+                // get bone Mapping size
+                intValue = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                dataIdx += size_int;
+                characterPack.sSize = intValue;
+
+                // get root dag size
+                intValue = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                dataIdx += size_int;
+                characterPack.rootDagSize = intValue;
+
+                // get root dag path
+                byte[] rootDagByte = new byte[intValue];
+                Buffer.BlockCopy(m_characterByteData, dataIdx, rootDagByte, 0, intValue);
+                dataIdx += intValue;
+                characterPack.rootDag = Encoding.ASCII.GetString(rootDagByte);
+
+                // get dag sizes
+                characterPack.dagSizes = new int[characterPack.bMSize];
+                for (int i = 0; i < characterPack.bMSize; i++)
+                {
+                    characterPack.dagSizes[i] = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                    dataIdx += size_int;
+                }
+
+                // get bone mapping
+                characterPack.boneMapping = new string[characterPack.bMSize];
+                for (int i = 0; i < characterPack.bMSize; i++)
+                {
+                    int stringSize = characterPack.dagSizes[i];
+                    byte[] dagByte = new byte[stringSize];
+                    Buffer.BlockCopy(m_characterByteData, dataIdx, dagByte, 0, stringSize);
+                    dataIdx += stringSize;
+                    characterPack.boneMapping[i] = Encoding.ASCII.GetString(dagByte);
+                }
+
+                // get dag skeleton sizes
+                characterPack.sdagSizes = new int[characterPack.sSize];
+                for (int i = 0; i < characterPack.sSize; i++)
+                {
+                    characterPack.sdagSizes[i] = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                    dataIdx += size_int;
+                }
+
+                //get skeleton mapping
+                characterPack.skeletonMapping = new string[characterPack.sSize];
+                for (int i = 0; i < characterPack.sSize; i++)
+                {
+                    int stringSize = characterPack.sdagSizes[i];
+                    byte[] sdagByte = new byte[stringSize];
+                    Buffer.BlockCopy(m_characterByteData, dataIdx, sdagByte, 0, stringSize);
+                    dataIdx += stringSize;
+                    characterPack.skeletonMapping[i] = Encoding.ASCII.GetString(sdagByte);
+                }
+
+                //get skeleton bone postions
+                characterPack.bonePosition = new float[characterPack.sSize * 3];
+                for (int i = 0; i < characterPack.sSize; i++)
+                {
+                    characterPack.bonePosition[i * 3] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.bonePosition[i * 3 + 1] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.bonePosition[i * 3 + 2] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                }
+
+                //get skeleton bone rotations
+                characterPack.boneRotation = new float[characterPack.sSize * 4];
+                for (int i = 0; i < characterPack.sSize; i++)
+                {
+                    characterPack.boneRotation[i * 4] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.boneRotation[i * 4 + 1] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.boneRotation[i * 4 + 2] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.boneRotation[i * 4 + 3] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                }
+
+                //get skeleton bone scales
+                characterPack.boneScale = new float[characterPack.sSize * 3];
+                for (int i = 0; i < characterPack.sSize; i++)
+                {
+                    characterPack.boneScale[i * 3] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.boneScale[i * 3 + 1] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                    characterPack.boneScale[i * 3 + 2] = BitConverter.ToSingle(m_characterByteData, dataIdx);
+                    dataIdx += size_float;
+                }
+
+
+                m_characterList.Add(characterPack);
+            }
+
+            Array.Clear(m_characterByteData, 0, m_characterByteData.Length);
+            m_characterByteData = null;
             GC.Collect();
         }
 
@@ -344,7 +490,26 @@ namespace vpet
                     objPack.uvs[i] = BitConverter.ToSingle(m_objectsByteData, dataIdx);
                     dataIdx += size_float;
                 }
-                
+
+                // get boneWeights
+                numValues = BitConverter.ToInt32(m_objectsByteData, dataIdx);
+                dataIdx += size_int;
+                objPack.bWSize = numValues;
+                objPack.boneWeights = new float[numValues * 4];
+                for (int i = 0; i < numValues * 4; i++)
+                {
+                    objPack.boneWeights[i] = BitConverter.ToSingle(m_objectsByteData, dataIdx);
+                    dataIdx += size_float;
+                }
+
+                // get boneIndices
+                objPack.boneIndices = new int[objPack.bWSize * 4];
+                for (int i = 0; i < objPack.bWSize * 4; i++)
+                {
+                    objPack.boneIndices[i] = BitConverter.ToInt32(m_objectsByteData, dataIdx);
+                    dataIdx += size_int;
+                }
+
                 m_objectList.Add(objPack);
 
             }
@@ -356,24 +521,24 @@ namespace vpet
         }
 
 
-        public static byte[] StructureToByteArray<T>(T obj)
-        {
-            IntPtr ptr = IntPtr.Zero;
-            try
-            {
-                int size = Marshal.SizeOf(typeof(T));
-                ptr = Marshal.AllocHGlobal(size);
-                Marshal.StructureToPtr(obj, ptr, true);
-                byte[] bytes = new byte[size];
-                Marshal.Copy(ptr, bytes, 0, size);
-                return bytes;
-            }
-            finally
-            {
-                if (ptr != IntPtr.Zero)
-                    Marshal.FreeHGlobal(ptr);
-            }
-        }
+        //public static byte[] StructureToByteArray<T>(T obj)
+        //{
+        //    IntPtr ptr = IntPtr.Zero;
+        //    try
+        //    {
+        //        int size = Marshal.SizeOf(typeof(T));
+        //        ptr = Marshal.AllocHGlobal(size);
+        //        Marshal.StructureToPtr(obj, ptr, true);
+        //        byte[] bytes = new byte[size];
+        //        Marshal.Copy(ptr, bytes, 0, size);
+        //        return bytes;
+        //    }
+        //    finally
+        //    {
+        //        if (ptr != IntPtr.Zero)
+        //            Marshal.FreeHGlobal(ptr);
+        //    }
+        //}
 
 
         public static T[] Concat<T>(T[] first, params T[][] arrays)
@@ -396,26 +561,81 @@ namespace vpet
         }
 
 
-        public static T ByteArrayToStructure<T>(byte[] bytearray, ref int offset)
+        //public static T ByteArrayToStructure<T>(byte[] bytearray, ref int offset)
+        //{
+        //    // for debug
+        //    string debugString = Encoding.ASCII.GetString(bytearray, 45, 64);
+        //    Debug.Log("ByteArrayToStructure: " + debugString);
+        //    IntPtr i = IntPtr.Zero;
+        //    try
+        //    {
+        //        int len = Marshal.SizeOf(typeof(T));
+        //        i = Marshal.AllocHGlobal(len);
+        //        Marshal.Copy(bytearray, offset, i, len);
+        //        object obj = (SceneNode)Marshal.PtrToStructure(i, typeof(T));
+        //        offset += len;
+        //        return (T)obj;
+        //    }
+        //    finally
+        //    {
+        //        if (i != IntPtr.Zero)
+        //            Marshal.FreeHGlobal(i);
+        //    }
+        //}
+
+        public static byte[] StructToByteArray<T>(T obj)
         {
-            IntPtr i = IntPtr.Zero;
-            try
+            using (MemoryStream ms = new MemoryStream())
             {
-                int len = Marshal.SizeOf(typeof(T));
-                i = Marshal.AllocHGlobal(len);
-                Marshal.Copy(bytearray, offset, i, len);
-                object obj = (SceneNode)Marshal.PtrToStructure(i, typeof(T));
-                offset += len;
-                return (T)obj;
-            }
-            finally
-            {
-                if (i != IntPtr.Zero)
-                    Marshal.FreeHGlobal(i);
+                FieldInfo[] infos = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+                foreach (FieldInfo info in infos)
+                {
+                    BinaryFormatter bf = new BinaryFormatter();
+                    using (MemoryStream inms = new MemoryStream())
+                    {
+
+                        bf.Serialize(inms, info.GetValue(obj));
+                        byte[] ba = inms.ToArray();
+                        // for length
+                        ms.Write(BitConverter.GetBytes(ba.Length), 0, sizeof(int));
+
+                        // for value
+                        ms.Write(ba, 0, ba.Length);
+                    }
+                }
+
+                return ms.ToArray();
             }
         }
+
+        public static void ByteArrayToStruct<T>(ref byte[] data, out T output, int offset, int length)
+        {
+            output = (T)Activator.CreateInstance(typeof(T), null);
+
+            int debug = Marshal.SizeOf(typeof(T));
+            using (MemoryStream ms = new MemoryStream(data, offset, length))
+            {
+                byte[] ba = null;
+                FieldInfo[] infos = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+                foreach (FieldInfo info in infos)
+                {
+                    // for length
+                    ba = new byte[sizeof(int)];
+                    ms.Read(ba, 0, sizeof(int));
+
+                    // for value
+                    int sz = BitConverter.ToInt32(ba, 0);
+                    ba = new byte[sz];
+                    ms.Read(ba, 0, sz);
+
+                    BinaryFormatter bf = new BinaryFormatter();
+                    using (MemoryStream inms = new MemoryStream(ba))
+                    {
+                        info.SetValue(output, bf.Deserialize(inms));
+                    }
+                }
+            }
+            offset += Marshal.SizeOf(typeof(T));
+        }
     }
-
-
-
 }

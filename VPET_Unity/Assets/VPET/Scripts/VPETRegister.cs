@@ -33,7 +33,7 @@ namespace vpet
     // public enum NodeType { GROUP, GEO, LIGHT, CAMERA}
 
     // Basic, Mocap
-    public enum NodeType { GROUP, GEO, LIGHT, CAMERA, MOCAP }
+    public enum NodeType { GROUP, GEO, LIGHT, CAMERA, SKINNEDMESH }
 
     // Basic, Mocap
     public enum ParameterType
@@ -44,28 +44,26 @@ namespace vpet
         BONEANIM, // animation bone
         VERTEXANIM, // animation vertex
         PING, RESENDUPDATE  // sync and ping
-    } 
+    }
 
-    public static class VPETRegister  
-	{
-		public static void RegisterNodeParser()
-		{
-			SceneDataHandler.RegisterDelegate(NodeParserBasic.ParseNode);
-			SceneDataHandler.RegisterDelegate(NodeParserMocap.ParseNode);
-		}
-
-		public static void RegisterNodeBuilder()
-		{
-			SceneLoader.RegisterDelegate(NodeBuilderBasic.BuildNode);
-			SceneLoader.RegisterDelegate(NodeBuilderMocap.BuildNode);
+    public static class VPETRegister
+    {
+        public static void RegisterNodeParser()
+        {
+            SceneDataHandler.RegisterDelegate(NodeParserBasic.ParseNode);
         }
 
-		public static void RegisterObjectSender()
-		{
-			ServerAdapter.RegisterSender(ObjectSenderBasic.Instance);
-			ServerAdapter.RegisterSender(ObjectSenderKatana.Instance);
-		}
+        public static void RegisterNodeBuilder()
+        {
+            SceneLoader.RegisterDelegate(NodeBuilderBasic.BuildNode);
+        }
+
+        public static void RegisterObjectSender()
+        {
+            ServerAdapter.RegisterSender(ObjectSenderBasic.Instance);
+            ServerAdapter.RegisterSender(ObjectSenderKatana.Instance);
+        }
 
 
-	}
+    }
 }

@@ -35,21 +35,27 @@ namespace vpet
     {
         private Animator animator;
         public Quaternion[] animationState;
+        public Vector3 rootPosition;
+        private int numHBones;
 
         // Start is called before the first frame update
         void Start()
         {
             animator = this.GetComponent<Animator>();
-            animationState = new Quaternion[25];
+            numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length - 1;
+            animationState = new Quaternion[numHBones];
         }
 
         // Update is called once per frame
         void OnAnimatorIK(int layerIndex)
         {
-            for(int i = 0; i < 25; i++)
+            for (int i = 0; i < numHBones; i++)
             {
                 animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
             }
+            Vector3 scaledPos = rootPosition;
+            scaledPos.Scale(this.transform.lossyScale);
+            animator.bodyPosition = scaledPos;
         }
     }
 }

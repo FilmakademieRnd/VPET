@@ -320,10 +320,10 @@ namespace vpet
 
                         if (animator)
                         {
-                            msg = new byte[434];
+                            int numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length-1;
+                            msg = new byte[18+ numHBones*16];
 
-                            Vector3 locPos = sceneObject.transform.localPosition;
-                            Quaternion locRot = sceneObject.transform.localRotation;
+                            Vector3 locPos = animator.GetBoneTransform(HumanBodyBones.Hips).localPosition;
 
                             msg[0] = cID;
                             msg[1] = (byte)paramType;
@@ -331,16 +331,11 @@ namespace vpet
                             Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
                             Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
                             Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
-                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.x), 0, msg, 18, 4);
-                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.y), 0, msg, 22, 4);
-                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.z), 0, msg, 26, 4);
-                            Buffer.BlockCopy(BitConverter.GetBytes(locRot.w), 0, msg, 30, 4);
-                            int offset = 28;
-                            for(int i = 0; i < 25; i++)
+                            int offset = 12;
+                            
+                            for (int i = 0; i < numHBones; i++)
                             {
                                 Transform t = animator.GetBoneTransform((HumanBodyBones)i);
-                                if((HumanBodyBones)i == HumanBodyBones.LeftUpperLeg)
-                                    Debug.Log(t.localRotation);
                                 if (t)
                                 {
                                     Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.x), 0, msg, offset + 6, 4);

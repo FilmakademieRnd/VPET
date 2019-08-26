@@ -110,7 +110,7 @@ namespace vpet
             buffer = new byte[byteDataMap["objects"].Length];
             Buffer.BlockCopy(byteDataMap["objects"], 0, buffer, 0, byteDataMap["objects"].Length);
             sceneDataHandler.ObjectsByteData = buffer;
-           
+
             byteDataMap.Add("nodes", loadBinary("nodes"));
             buffer = new byte[byteDataMap["nodes"].Length];
             Buffer.BlockCopy(byteDataMap["nodes"], 0, buffer, 0, byteDataMap["nodes"].Length);
@@ -121,12 +121,12 @@ namespace vpet
 
         private void ExportCache()
         {
-            
+
 
             if (SourceVersion != TargetVersion)
                 convertCache(TargetVersion);
 
-            foreach(KeyValuePair<string, byte[]> pair in byteDataMap )
+            foreach (KeyValuePair<string, byte[]> pair in byteDataMap)
             {
                 writeBinary(pair.Value, pair.Key);
             }
@@ -162,7 +162,7 @@ namespace vpet
 
         private void writeBinary(byte[] data, string dataname)
         {
-            string filesrc = "Assets/Resources/VPET/SceneDumps/" + CacheNameOut + "_" + dataname + ".bytes";;
+            string filesrc = "Assets/Resources/VPET/SceneDumps/" + CacheNameOut + "_" + dataname + ".bytes"; ;
             print("Write binary data: " + filesrc);
             BinaryWriter writer = new BinaryWriter(File.Open(filesrc, FileMode.Create));
             writer.Write(data);
@@ -173,7 +173,7 @@ namespace vpet
         private byte[] getNodesByteArrayV1100()
         {
             Byte[] nodesByteData = new byte[0];
- 
+
             foreach (SceneNode node in sceneDataHandler.NodeList)
             {
                 byte[] nodeBinary;
@@ -185,34 +185,28 @@ namespace vpet
                     SceneNodeGeo nodeGeo = (SceneNodeGeo)Convert.ChangeType(node, typeof(SceneNodeGeo));
 
                     // change to V1100 geo node 
-                    SceneNodeGeoV1100 nodeGeoV1100 = new  SceneNodeGeoV1100();
+                    SceneNodeGeoV1100 nodeGeoV1100 = new SceneNodeGeoV1100();
                     copyProperties(nodeGeo, nodeGeoV1100);
                     nodeGeoV1100.materialId = -1;
                     //PrintProperties(nodeGeoV1100);
-                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeGeoV1100>(nodeGeoV1100);
+                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNodeGeoV1100>(nodeGeoV1100);
                 }
                 else if (node.GetType() == typeof(SceneNodeLight))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.LIGHT);
                     SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType(node, typeof(SceneNodeLight));
-                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeLight>(nodeLight);
+                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNodeLight>(nodeLight);
                 }
                 else if (node.GetType() == typeof(SceneNodeCam))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.CAMERA);
                     SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType(node, typeof(SceneNodeCam));
-                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeCam>(nodeCam);
-                }
-                else if (node.GetType() == typeof(SceneNodeMocap))
-                {
-                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.MOCAP);
-                    SceneNodeMocap nodeMocap = (SceneNodeMocap)Convert.ChangeType(node, typeof(SceneNodeMocap));
-                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNodeMocap>(nodeMocap);
+                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNodeCam>(nodeCam);
                 }
                 else
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GROUP);
-                    nodeBinary = SceneDataHandler.StructureToByteArray<SceneNode>(node);
+                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNode>(node);
                 }
                 // concate arrays
                 nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeTypeBinary);

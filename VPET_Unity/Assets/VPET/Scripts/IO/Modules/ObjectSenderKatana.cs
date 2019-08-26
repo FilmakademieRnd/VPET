@@ -132,7 +132,7 @@ namespace vpet
             if (!sceneObject)
                 return;
 
-            string dagPath = getPathString(sceneObject.transform, root);
+            string dagPath = vpet.Extensions.getPathString(sceneObject.transform, root);
             // HACK check missing '/' upstream
             dagPath = "/" + dagPath;
 
@@ -243,27 +243,6 @@ namespace vpet
                 }
             }
 
-        }
-
-        //! recursive function traversing GameObject hierarchy from Object up to main scene to find object path
-        //! @param  obj         Transform of GameObject to find the path for
-        //! @return     path to gameObject started at main scene, separated by "/"
-        private string getPathString(Transform obj, Transform root, string separator = "/")
-        {
-            if (obj.parent)
-            {
-                //if (obj.parent == Camera.main.transform)
-                //{
-                //    return getPathString(mainController.oldParent, root, separator) + separator + obj.name;
-                //}
-                if (obj.transform.parent == root)
-                    return obj.name;
-                else
-                {
-                    return getPathString(obj.parent, root, separator) + separator + obj.name;
-                }
-            }
-            return obj.name;
         }
 
     }
