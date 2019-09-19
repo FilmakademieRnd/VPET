@@ -287,7 +287,7 @@ namespace vpet
 
                     string rootBoneDagPath = nodeGeo.rootBoneDagPath;
 
-                    skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(renderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray));
+                    skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(renderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray.Split('\r')));
                     VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, renderer.bounds.max);
                     VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, renderer.bounds.min);
                     Bounds bounds = new Bounds(new Vector3(nodeGeo.boundCenter[0], nodeGeo.boundCenter[1], nodeGeo.boundCenter[2]),
@@ -327,7 +327,7 @@ namespace vpet
                         subRenderer = subObj.AddComponent<SkinnedMeshRenderer>();
 
                         rootBoneDagPath = nodeGeo.rootBoneDagPath;
-                        skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(subRenderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray));
+                        skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(subRenderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray.Split('\r')));
                         Matrix4x4[] subBindposes = new Matrix4x4[nodeGeo.bindPoseLength];
                         for (int j = 0; j < nodeGeo.bindPoseLength; j++)
                         {

@@ -451,7 +451,12 @@ namespace vpet
                 List<string> skinnedMeshBones = new List<string>();
                 foreach (Transform t in sRenderer.bones)
                     skinnedMeshBones.Add(Extensions.getPathString(t, scene));
-                nodeGeo.skinnedMeshBonesArray = skinnedMeshBones.ToArray();
+                foreach (string s in skinnedMeshBones)
+                {
+                    nodeGeo.skinnedMeshBonesArray += s;
+                    if (s != skinnedMeshBones[skinnedMeshBones.Count - 1])
+                        nodeGeo.skinnedMeshBonesArray += '\r';
+                }
 
                 if (sRenderer.material != null)
                 {

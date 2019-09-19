@@ -68,7 +68,7 @@ namespace vpet
         public float[] boundExtents;
         public float[] boundCenter;
         public float[] bindPoses;
-        public string[] skinnedMeshBonesArray;
+        public string skinnedMeshBonesArray;
     };
 
 
