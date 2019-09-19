@@ -53,9 +53,7 @@ namespace vpet
             {
                 animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
             }
-            Vector3 scaledPos = rootPosition;
-            scaledPos.Scale(this.transform.lossyScale);
-            animator.bodyPosition = scaledPos;
+            animator.bodyPosition = rootPosition + transform.position;
         }
     }
 }
