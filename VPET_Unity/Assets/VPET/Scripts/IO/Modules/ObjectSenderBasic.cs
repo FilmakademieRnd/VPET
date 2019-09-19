@@ -323,7 +323,7 @@ namespace vpet
                             int numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length-1;
                             msg = new byte[18+ numHBones*16];
 
-                            Vector3 locPos = animator.GetBoneTransform(HumanBodyBones.Hips).localPosition;
+                            Vector3 locPos = animator.bodyPosition-animator.rootPosition;// GetBoneTransform(HumanBodyBones.Hips).localPosition;
 
                             msg[0] = cID;
                             msg[1] = (byte)paramType;
