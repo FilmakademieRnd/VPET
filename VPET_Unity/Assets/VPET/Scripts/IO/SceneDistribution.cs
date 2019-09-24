@@ -521,8 +521,10 @@ namespace vpet
 
 
             Animator animator = location.GetComponent<Animator>();
+
             if (animator != null)
             {
+                animator.logWarnings = false;
                 processCharacter(animator);
             }
 

@@ -460,9 +460,12 @@ namespace vpet
 
             List<Mesh> meshList = new List<Mesh>();
 
+            //Note to commented part below:
+            //Splitting of meshes disabled as we are using 32bit index buffers now!
+
             // TODO: review
             // if more than 65K vertices, split the mesh in submeshs
-            if (vertices.Length > 650000)
+            /*if (vertices.Length > 6500000)
             {
                 // print( String.Format( "Split object: {0}", obj.name ) );
 
@@ -527,10 +530,11 @@ namespace vpet
 
                 }
             }
-            else
+            else*/
             {
                 Mesh mesh = new Mesh();
                 mesh.Clear();
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
                 mesh.vertices = vertices;
                 mesh.normals = normals;
                 mesh.uv = uvs;

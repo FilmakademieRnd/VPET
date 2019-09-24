@@ -318,14 +318,15 @@ namespace vpet
                     meshes[0].bindposes = bindposes;
                     sRenderer.sharedMesh = meshes[0];
                     sRenderer.material = mat;
-
-                    for (int i = 1; i < meshes.Length; i++)
+                    //Note to commented part below:
+                    //Splitting of meshes disabled as we are using 32bit index buffers now!
+                    /*for (int i = 1; i < meshes.Length; i++)
                     {
                         GameObject subObj = new GameObject(objMain.name + "_part" + i.ToString());
 
                         SkinnedMeshRenderer subRenderer;
                         subRenderer = subObj.AddComponent<SkinnedMeshRenderer>();
-
+                        
                         rootBoneDagPath = nodeGeo.rootBoneDagPath;
                         skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(subRenderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray.Split('\r')));
                         Matrix4x4[] subBindposes = new Matrix4x4[nodeGeo.bindPoseLength];
@@ -359,7 +360,7 @@ namespace vpet
                         Bounds subBounds = new Bounds(new Vector3(nodeGeo.boundCenter[0], nodeGeo.boundCenter[1], nodeGeo.boundCenter[2]),
                                                       new Vector3(nodeGeo.boundExtents[0], nodeGeo.boundExtents[1], nodeGeo.boundExtents[2]));
                         subRenderer.localBounds = bounds;
-                    }
+                    }*/
 
                     Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
                     VPETSettings.Instance.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);

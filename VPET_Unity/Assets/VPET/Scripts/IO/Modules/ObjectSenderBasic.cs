@@ -322,9 +322,9 @@ namespace vpet
                         {
                             int numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length-1;
                             msg = new byte[18+ numHBones*16];
-
-                            Vector3 locPos = animator.bodyPosition-animator.rootPosition;// GetBoneTransform(HumanBodyBones.Hips).localPosition;
-
+                            
+                            //TODO: check what needs to be send here to support all character variants
+                            Vector3 locPos = animator.bodyPosition;
                             msg[0] = cID;
                             msg[1] = (byte)paramType;
                             Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
