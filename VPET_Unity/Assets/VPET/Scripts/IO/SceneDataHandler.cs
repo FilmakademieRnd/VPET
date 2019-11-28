@@ -36,12 +36,11 @@ using UnityEngine;
 
 namespace vpet
 {
-
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class VpetHeader
     {
-        public float lightIntensityFactor = 1.0f;
-        public int textureBinaryType = 1;
+        public float lightIntensityFactor;
+        public int textureBinaryType;
     }
 
     public class ObjectPackage
@@ -66,10 +65,10 @@ namespace vpet
         public int sSize;
         public int rootDagSize;
         public string rootDag;
-        public int[] dagSizes;
-        public string[] boneMapping;
-        public int[] sdagSizes;
-        public string[] skeletonMapping;
+        public int mdagSize;
+        public string boneMapping;
+        public int sdagSize;
+        public string skeletonMapping;
         public float[] bonePosition;
         public float[] boneRotation;
         public float[] boneScale;
@@ -167,7 +166,7 @@ namespace vpet
         }
 
 
-        public delegate SceneNode NodeParserDelegate(NodeType n, ref byte[] b, int i, int length);
+        public delegate SceneNode NodeParserDelegate(NodeType n, ref byte[] b, ref int o);
         public static List<NodeParserDelegate> nodeParserDelegateList = new List<NodeParserDelegate>();
 
         public static void RegisterDelegate(NodeParserDelegate call)
@@ -197,8 +196,8 @@ namespace vpet
 
         private void convertHeaderByteStream()
         {
-            VpetHeader header;
-            ByteArrayToStruct<VpetHeader>(ref m_headerByteData, out header, 0, m_headerByteData.Length);
+            int offset = 0;
+            VpetHeader header = ByteArrayToStructure<VpetHeader>(ref m_headerByteData, ref offset);
             VPETSettings.Instance.lightIntensityFactor = header.lightIntensityFactor;
             VPETSettings.Instance.textureBinaryType = header.textureBinaryType;
         }
@@ -221,11 +220,11 @@ namespace vpet
                 // process all registered parse callbacks
                 foreach (NodeParserDelegate nodeParserDelegate in nodeParserDelegateList)
                 {
-                    SceneNode _node = nodeParserDelegate(nodeType, ref m_nodesByteData, dataIdx, length);
+                    SceneNode _node = nodeParserDelegate(nodeType, ref m_nodesByteData, ref dataIdx);
                     if (_node != null)
                         node = _node;
                 }
-                dataIdx += length;
+                //dataIdx += length;
 
                 m_nodeList.Add(node);
             }
@@ -353,42 +352,26 @@ namespace vpet
                 characterPack.rootDag = Encoding.ASCII.GetString(rootDagByte);
 
                 // get dag sizes
-                characterPack.dagSizes = new int[characterPack.bMSize];
-                for (int i = 0; i < characterPack.bMSize; i++)
-                {
-                    characterPack.dagSizes[i] = BitConverter.ToInt32(m_characterByteData, dataIdx);
-                    dataIdx += size_int;
-                }
+                characterPack.mdagSize = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                dataIdx += size_int;
 
                 // get bone mapping
-                characterPack.boneMapping = new string[characterPack.bMSize];
-                for (int i = 0; i < characterPack.bMSize; i++)
-                {
-                    int stringSize = characterPack.dagSizes[i];
-                    byte[] dagByte = new byte[stringSize];
-                    Buffer.BlockCopy(m_characterByteData, dataIdx, dagByte, 0, stringSize);
-                    dataIdx += stringSize;
-                    characterPack.boneMapping[i] = Encoding.ASCII.GetString(dagByte);
-                }
+                int stringSize = characterPack.mdagSize;
+                byte[] dagByte = new byte[stringSize];
+                Buffer.BlockCopy(m_characterByteData, dataIdx, dagByte, 0, stringSize);
+                characterPack.boneMapping = Encoding.ASCII.GetString(dagByte);
+                dataIdx += stringSize;
 
                 // get dag skeleton sizes
-                characterPack.sdagSizes = new int[characterPack.sSize];
-                for (int i = 0; i < characterPack.sSize; i++)
-                {
-                    characterPack.sdagSizes[i] = BitConverter.ToInt32(m_characterByteData, dataIdx);
-                    dataIdx += size_int;
-                }
+                characterPack.sdagSize = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                dataIdx += size_int;
 
                 //get skeleton mapping
-                characterPack.skeletonMapping = new string[characterPack.sSize];
-                for (int i = 0; i < characterPack.sSize; i++)
-                {
-                    int stringSize = characterPack.sdagSizes[i];
-                    byte[] sdagByte = new byte[stringSize];
-                    Buffer.BlockCopy(m_characterByteData, dataIdx, sdagByte, 0, stringSize);
-                    dataIdx += stringSize;
-                    characterPack.skeletonMapping[i] = Encoding.ASCII.GetString(sdagByte);
-                }
+                stringSize = characterPack.sdagSize;
+                dagByte = new byte[stringSize];
+                Buffer.BlockCopy(m_characterByteData, dataIdx, dagByte, 0, stringSize);
+                dataIdx += stringSize;
+                characterPack.skeletonMapping = Encoding.ASCII.GetString(dagByte);
 
                 //get skeleton bone postions
                 characterPack.bonePosition = new float[characterPack.sSize * 3];
@@ -591,9 +574,9 @@ namespace vpet
                 foreach (FieldInfo info in infos)
                 {
                     BinaryFormatter bf = new BinaryFormatter();
+                    BinaryWriter bw = new BinaryWriter(new MemoryStream());
                     using (MemoryStream inms = new MemoryStream())
                     {
-
                         bf.Serialize(inms, info.GetValue(obj));
                         byte[] ba = inms.ToArray();
                         // for length
@@ -606,6 +589,36 @@ namespace vpet
 
                 return ms.ToArray();
             }
+        }
+
+        public static T ByteArrayToStructure<T>(ref byte[] bytearray, ref int offset) where T : new()
+        {
+            T str = new T();
+
+            int size = Marshal.SizeOf(str);
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+
+            Marshal.Copy(bytearray, offset, ptr, size);
+
+            str = (T)Marshal.PtrToStructure(ptr, str.GetType());
+            Marshal.FreeHGlobal(ptr);
+
+            offset += size;
+
+            return str;
+        }
+
+        public static byte[] StructureToByteArray(object str)
+        {
+            int size = Marshal.SizeOf(str);
+            byte[] arr = new byte[size];
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+
+            Marshal.StructureToPtr(str, ptr, true);
+            Marshal.Copy(ptr, arr, 0, size);
+            Marshal.FreeHGlobal(ptr);
+
+            return arr;
         }
 
         public static void ByteArrayToStruct<T>(ref byte[] data, out T output, int offset, int length)

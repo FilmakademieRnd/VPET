@@ -60,14 +60,19 @@ namespace vpet
         public float[] color;
     };
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNodeSkinnedGeo : SceneNodeGeo
     {
         public int bindPoseLength;
-        public string rootBoneDagPath;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] boundExtents;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] boundCenter;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16*52)]
         public float[] bindPoses;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1024)]
+        public string rootBoneDagPath;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20480)]
         public string skinnedMeshBonesArray;
     };
 
@@ -96,34 +101,29 @@ namespace vpet
 
     public class NodeParserBasic
     {
-        public static SceneNode ParseNode(NodeType nodeType, ref byte[] nodesByteData, int dataIdx, int length)
+        public static SceneNode ParseNode(NodeType nodeType, ref byte[] nodesByteData, ref int offset)
         {
 
             switch (nodeType)
             {
                 case NodeType.GROUP:
-                    SceneNode sceneNode = new SceneNode();
-                    SceneDataHandler.ByteArrayToStruct<SceneNode>(ref nodesByteData, out sceneNode, dataIdx, length);
+                    SceneNode sceneNode = SceneDataHandler.ByteArrayToStructure<SceneNode>(ref nodesByteData, ref offset);
                     return sceneNode;
                     break;
                 case NodeType.GEO:
-                    SceneNodeGeo sceneNodeGeo = new SceneNodeGeo();
-                    SceneDataHandler.ByteArrayToStruct<SceneNodeGeo>(ref nodesByteData, out sceneNodeGeo, dataIdx, length);
+                    SceneNodeGeo sceneNodeGeo = SceneDataHandler.ByteArrayToStructure<SceneNodeGeo>(ref nodesByteData, ref offset);
                     return sceneNodeGeo;
                     break;
                 case NodeType.SKINNEDMESH:
-                    SceneNodeSkinnedGeo sceneNodeSkinnedGeo = new SceneNodeSkinnedGeo();
-                    SceneDataHandler.ByteArrayToStruct<SceneNodeSkinnedGeo>(ref nodesByteData, out sceneNodeSkinnedGeo, dataIdx, length);
+                    SceneNodeSkinnedGeo sceneNodeSkinnedGeo = SceneDataHandler.ByteArrayToStructure<SceneNodeSkinnedGeo>(ref nodesByteData, ref offset);
                     return sceneNodeSkinnedGeo;
                     break;
                 case NodeType.LIGHT:
-                    SceneNodeLight sceneNodeLight = new SceneNodeLight();
-                    SceneDataHandler.ByteArrayToStruct<SceneNodeLight>(ref nodesByteData, out sceneNodeLight, dataIdx, length);
+                    SceneNodeLight sceneNodeLight = SceneDataHandler.ByteArrayToStructure<SceneNodeLight>(ref nodesByteData, ref offset);
                     return sceneNodeLight;
                     break;
                 case NodeType.CAMERA:
-                    SceneNodeCam sceneNodeCamera = new SceneNodeCam();
-                    SceneDataHandler.ByteArrayToStruct<SceneNodeCam>(ref nodesByteData, out sceneNodeCamera, dataIdx, length);
+                    SceneNodeCam sceneNodeCamera = SceneDataHandler.ByteArrayToStructure<SceneNodeCam>(ref nodesByteData, ref offset);
                     return sceneNodeCamera;
                     break;
             }

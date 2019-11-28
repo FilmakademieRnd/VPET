@@ -154,7 +154,7 @@ namespace vpet
             createSceneGraphIter(scnRoot.transform, 0);
 
             List<CharacterPackage> characterList = sceneDataHandler.CharacterList;
-
+            
             //setup skinned mesh root bones
             foreach (Tuple<Renderer, string, string[]> t in skinnedMeshRootBones)
             {
@@ -169,17 +169,20 @@ namespace vpet
             }
             skinnedMeshRootBones.Clear();
 
+            Debug.Log("Found " + characterList.Count + " characters in scene.");
+
             //setup characters
             foreach (CharacterPackage cp in characterList)
             {
-
+                Debug.Log("Found Character!");
                 GameObject obj = GameObject.Find(cp.rootDag);
                 Transform parentBackup = obj.transform.parent;
                 obj.transform.parent = GameObject.Find("Scene").transform.parent;
                 HumanBone[] human = new HumanBone[cp.bMSize];
+                string[] boneMapping = cp.boneMapping.Split('\n');
                 for (int i = 0; i < human.Length; i++)
                 {
-                    GameObject boneObj = GameObject.Find(cp.boneMapping[i].Replace("root/world/geo/", ""));
+                    GameObject boneObj = GameObject.Find(boneMapping[i].Replace("root/world/geo/", ""));
                     if (boneObj == null)
                         continue;
                     human[i].boneName = boneObj.name;
@@ -193,16 +196,18 @@ namespace vpet
                 skeleton[0].rotation = new Quaternion(cp.boneRotation[0], cp.boneRotation[1], cp.boneRotation[2], cp.boneRotation[3]);
                 skeleton[0].scale = new Vector3(cp.boneScale[0], cp.boneScale[1], cp.boneScale[2]);
 
-                for (int i = 1; i < cp.skeletonMapping.Length; i++)
+                string[] skeletonMappingList = cp.skeletonMapping.Split('\n');
+
+                for (int i = 1; i < skeletonMappingList.Length; i++)
                 {
-                    skeleton[i].name = cp.skeletonMapping[i];
+                    skeleton[i].name = skeletonMappingList[i];
                     skeleton[i].position = new Vector3(cp.bonePosition[i * 3], cp.bonePosition[i * 3 + 1], cp.bonePosition[i * 3 + 2]);
                     skeleton[i].rotation = new Quaternion(cp.boneRotation[i * 4], cp.boneRotation[i * 4 + 1], cp.boneRotation[i * 4 + 2], cp.boneRotation[i * 4 + 3]);
                     skeleton[i].scale = new Vector3(cp.boneScale[i * 3], cp.boneScale[i * 3 + 1], cp.boneScale[i * 3 + 2]);
                 }
                 HumanDescription humanDescription = new HumanDescription();
                 humanDescription.human = human;
-                humanDescription.skeleton = skeleton;
+                //humanDescription.skeleton = skeleton;
                 humanDescription.upperArmTwist = 0.5f;
                 humanDescription.lowerArmTwist = 0.5f;
                 humanDescription.upperLegTwist = 0.5f;

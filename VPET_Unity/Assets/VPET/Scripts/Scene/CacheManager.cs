@@ -189,24 +189,24 @@ namespace vpet
                     copyProperties(nodeGeo, nodeGeoV1100);
                     nodeGeoV1100.materialId = -1;
                     //PrintProperties(nodeGeoV1100);
-                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNodeGeoV1100>(nodeGeoV1100);
+                    nodeBinary = SceneDataHandler.StructureToByteArray(nodeGeoV1100);
                 }
                 else if (node.GetType() == typeof(SceneNodeLight))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.LIGHT);
                     SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType(node, typeof(SceneNodeLight));
-                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNodeLight>(nodeLight);
+                    nodeBinary = SceneDataHandler.StructureToByteArray(nodeLight);
                 }
                 else if (node.GetType() == typeof(SceneNodeCam))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.CAMERA);
                     SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType(node, typeof(SceneNodeCam));
-                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNodeCam>(nodeCam);
+                    nodeBinary = SceneDataHandler.StructureToByteArray(nodeCam);
                 }
                 else
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GROUP);
-                    nodeBinary = SceneDataHandler.StructToByteArray<SceneNode>(node);
+                    nodeBinary = SceneDataHandler.StructureToByteArray(node);
                 }
                 // concate arrays
                 nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeTypeBinary);
