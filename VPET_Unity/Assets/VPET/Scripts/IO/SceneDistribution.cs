@@ -458,6 +458,7 @@ namespace vpet
                     if (s != skinnedMeshBones[skinnedMeshBones.Count - 1])
                         nodeGeo.skinnedMeshBonesArray += '\r';
                 }
+                Debug.Log("nodeGeo.skinnedMeshBonesArray.length:" + nodeGeo.skinnedMeshBonesArray.Length.ToString());
 
                 if (sRenderer.material != null)
                 {
@@ -871,8 +872,8 @@ namespace vpet
                 else if (node.GetType() == typeof(SceneNodeSkinnedGeo))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.SKINNEDMESH);
-                    SceneNodeSkinnedGeo nodeGeo = (SceneNodeSkinnedGeo)Convert.ChangeType(node, typeof(SceneNodeSkinnedGeo));
-                    nodeBinary = SceneDataHandler.StructureToByteArray(nodeGeo);
+                    SceneNodeSkinnedGeo nodeskinnedGeo = (SceneNodeSkinnedGeo)Convert.ChangeType(node, typeof(SceneNodeSkinnedGeo));
+                    nodeBinary = SceneDataHandler.StructureToByteArray(nodeskinnedGeo);
                 }
                 else if (node.GetType() == typeof(SceneNodeLight))
                 {
@@ -954,14 +955,13 @@ namespace vpet
             charactersByteData = new byte[0];
             foreach (CharacterPackage chrPack in characterList)
             {
-                int skeletonMappingLength = chrPack.skeletonMapping.Length;
                 byte[] characterByteData = new byte[SceneDataHandler.size_int * 3 +
                                                 chrPack.rootDag.Length +
                                                 /* dagSizes */ + SceneDataHandler.size_int +
                                                 chrPack.boneMapping.Length +
                                                 /* sdagSizes */ + SceneDataHandler.size_int +
                                                 chrPack.skeletonMapping.Length +
-                                                chrPack.bMSize * SceneDataHandler.size_float * 10];
+                                                chrPack.sSize * SceneDataHandler.size_float * 10];
                 int dstIdx = 0;
                 // bone mapping size
                 Buffer.BlockCopy(BitConverter.GetBytes(chrPack.bMSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
@@ -1017,16 +1017,16 @@ namespace vpet
                 //}
 
                 //skelton bone positions
-                Buffer.BlockCopy(chrPack.bonePosition, 0, characterByteData, dstIdx, chrPack.bMSize * 3 * SceneDataHandler.size_float);
-                dstIdx += chrPack.bMSize * 3 * SceneDataHandler.size_float;
+                Buffer.BlockCopy(chrPack.bonePosition, 0, characterByteData, dstIdx, chrPack.sSize * 3 * SceneDataHandler.size_float);
+                dstIdx += chrPack.sSize * 3 * SceneDataHandler.size_float;
 
                 //skelton bone rotations
-                Buffer.BlockCopy(chrPack.boneRotation, 0, characterByteData, dstIdx, chrPack.bMSize * 4 * SceneDataHandler.size_float);
-                dstIdx += chrPack.bMSize * 4 * SceneDataHandler.size_float;
+                Buffer.BlockCopy(chrPack.boneRotation, 0, characterByteData, dstIdx, chrPack.sSize * 4 * SceneDataHandler.size_float);
+                dstIdx += chrPack.sSize * 4 * SceneDataHandler.size_float;
 
                 //skelton bone scales
-                Buffer.BlockCopy(chrPack.boneScale, 0, characterByteData, dstIdx, chrPack.bMSize * 3 * SceneDataHandler.size_float);
-                dstIdx += chrPack.bMSize * 3 * SceneDataHandler.size_float;
+                Buffer.BlockCopy(chrPack.boneScale, 0, characterByteData, dstIdx, chrPack.sSize * 3 * SceneDataHandler.size_float);
+                dstIdx += chrPack.sSize * 3 * SceneDataHandler.size_float;
 
                 // concate
                 charactersByteData = SceneDataHandler.Concat<byte>(charactersByteData, characterByteData);
