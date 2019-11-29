@@ -35,7 +35,7 @@ namespace vpet
     {
         private Animator animator;
         public Quaternion[] animationState;
-        public Vector3 rootPosition;
+        public Vector3 hipPosition;
         private int numHBones;
 
         // Start is called before the first frame update
@@ -53,7 +53,9 @@ namespace vpet
             {
                 animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
             }
-            animator.bodyPosition = rootPosition + transform.position;
+            animator.bodyPosition = hipPosition;
+            Vector3 scaleVec = new Vector3(1.0f / transform.lossyScale.x, 1.0f / transform.lossyScale.y, 1.0f / transform.lossyScale.z);
+            GetComponent<BoxCollider>().center = Vector3.Scale((hipPosition - animator.rootPosition),  scaleVec);
         }
     }
 }

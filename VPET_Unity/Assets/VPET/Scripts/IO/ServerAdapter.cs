@@ -677,7 +677,7 @@ namespace vpet
                         break;
                     case ParameterType.BONEANIM:
                         {
-                            Vector3 rootPosition = new Vector3(BitConverter.ToSingle(msg, 6),
+                            Vector3 hipPosition = new Vector3(BitConverter.ToSingle(msg, 6),
                                                                               BitConverter.ToSingle(msg, 10),
                                                                               BitConverter.ToSingle(msg, 14));
                             int offset = 12;
@@ -691,7 +691,8 @@ namespace vpet
                                                                             BitConverter.ToSingle(msg, offset + 18));
                                 offset += 16;
                             }
-                            sceneObject.gameObject.GetComponent<CharacterAnimationController>().rootPosition = rootPosition;
+                            sceneObject.gameObject.GetComponent<CharacterAnimationController>().hipPosition = hipPosition;
+							sceneObject.gameObject.GetComponent<BoxCollider>().center = hipPosition;
                             sceneObject.gameObject.GetComponent<CharacterAnimationController>().animationState = animationState;
                         }
                         break;

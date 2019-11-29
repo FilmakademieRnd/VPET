@@ -207,7 +207,7 @@ namespace vpet
                 }
                 HumanDescription humanDescription = new HumanDescription();
                 humanDescription.human = human;
-                //humanDescription.skeleton = skeleton;
+                humanDescription.skeleton = skeleton;
                 humanDescription.upperArmTwist = 0.5f;
                 humanDescription.lowerArmTwist = 0.5f;
                 humanDescription.upperLegTwist = 0.5f;

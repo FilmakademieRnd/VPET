@@ -53,8 +53,8 @@ namespace vpet
 
                 if (activeMode == Mode.translationMode || activeMode == Mode.animationEditing)
 	            {
-	                translateModifier.transform.position = currentSelection.position;
-                    //translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
+	                //translateModifier.transform.position = currentSelection.position;
+                    translateModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
                     translateModifier.transform.rotation = currentSelection.rotation;
 
                     translateModifier.transform.localScale = modifierScale;
@@ -63,13 +63,14 @@ namespace vpet
 	            else if (activeMode == Mode.rotationMode)
 	            {
 	                rotationModifier.transform.position = currentSelection.position;
+	                //rotationModifier.transform.position = currentSelection.GetComponent<Collider>().bounds.center;
                     rotationModifier.transform.rotation = currentSelection.rotation;
                     rotationModifier.transform.localScale = modifierScale;
 	            }
 	            else if (activeMode == Mode.scaleMode)
 	            {
 	                scaleModifier.transform.position = currentSelection.position;
-	                scaleModifier.transform.rotation = currentSelection.rotation;
+                    scaleModifier.transform.rotation = currentSelection.rotation;
 	                scaleModifier.transform.localScale = modifierScale;
 	            }
 	        }

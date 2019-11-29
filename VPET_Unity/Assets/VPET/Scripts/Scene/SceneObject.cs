@@ -108,7 +108,7 @@ namespace vpet
 		//!
 		//! number of frames after which the object is asumed as steady (no more physically driven rotation changes)
 		//!
-		public int rotationStillFrameCount = 11;
+		int rotationStillFrameCount = 11;
 		//!
 		//! position of object at last server update
 		//! used to track movement
@@ -254,20 +254,32 @@ namespace vpet
                 //calculate bounds
                 bounds = new Bounds(Vector3.zero, Vector3.zero);
 
-
+                bool isSkinned = false;
                 bool hasBounds = false;
                 Renderer[] renderers = this.gameObject.GetComponentsInChildren<Renderer>(true);
-                foreach (Renderer render in renderers)
+                foreach (Renderer renderer in renderers)
                 {
-                    if (!sceneLoader.isEditable(render.gameObject) || render.gameObject == this.gameObject)
+                    if (!sceneLoader.isEditable(renderer.gameObject) || renderer.gameObject == this.gameObject)
                     {
                         if (hasBounds)
                         {
-                            bounds.Encapsulate(render.bounds);
+                            if (typeof(SkinnedMeshRenderer) == renderer.GetType())
+                            {
+                                bounds.Encapsulate(((SkinnedMeshRenderer)renderer).localBounds);
+                                isSkinned = true;
+                            }
+                            else
+                                bounds.Encapsulate(renderer.bounds);
                         }
                         else
                         {
-                            bounds = render.bounds;
+                            if (typeof(SkinnedMeshRenderer) == renderer.GetType())
+                            {
+                                bounds = ((SkinnedMeshRenderer)renderer).localBounds;
+                                isSkinned = true;
+                            }
+                            else
+                                bounds = renderer.bounds;
                             hasBounds = true;
                         }
                     }
@@ -284,8 +296,17 @@ namespace vpet
                 // col.isTrigger = true; // not interacting
                 if ((this is SceneObject) && !(this is SceneObjectLight))
                 {
-                    boxCollider.center = new Vector3((bounds.center.x - this.transform.position.x) / this.transform.lossyScale.x, (bounds.center.y - this.transform.position.y) / this.transform.lossyScale.y, (bounds.center.z - this.transform.position.z) / this.transform.lossyScale.z);
-                    boxCollider.size = new Vector3(bounds.size.x / this.transform.lossyScale.x, bounds.size.y / this.transform.lossyScale.y, bounds.size.z / this.transform.lossyScale.z);
+                    if (isSkinned)
+                    {
+                        boxCollider.center = bounds.center;
+                        boxCollider.size = bounds.size;
+                    }
+                    else
+                    {
+                        boxCollider.center = new Vector3((bounds.center.x - this.transform.position.x) / this.transform.lossyScale.x, (bounds.center.y - this.transform.position.y) / this.transform.lossyScale.y, (bounds.center.z - this.transform.position.z) / this.transform.lossyScale.z);
+                        boxCollider.size = new Vector3(bounds.size.x / this.transform.lossyScale.x, bounds.size.y / this.transform.lossyScale.y, bounds.size.z / this.transform.lossyScale.z);
+                    }
+
                     boxCollider.material = new PhysicMaterial();
                     boxCollider.material.bounciness = 1.0f;
                 }
@@ -367,7 +388,7 @@ namespace vpet
             else
 #endif
             {
-                if (!AlmostEqualPos(lastPosition, target.position, 0.1f))
+                if (!AlmostEqualPos(lastPosition, target.position, 0.01f))
                 {
                     lastPosition = target.position;
                     translationStillFrameCount = 0;
@@ -376,7 +397,7 @@ namespace vpet
                 {
                     translationStillFrameCount++;
                 }
-                if (!AlmostEqualRot(lastRotation, target.rotation, 0.1f))
+                if (!AlmostEqualRot(lastRotation, target.rotation, 0.01f))
                 {
                     lastRotation = target.rotation;
                     rotationStillFrameCount = 0;
