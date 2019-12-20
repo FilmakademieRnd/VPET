@@ -85,26 +85,11 @@ namespace vpet
 		//! maximum update interval for server communication in seconds
 		//!
 		static private float updateIntervall = 1.0f / 30.0f;
-		//!
-		//! is the translation update delayed since the last update was just recently
-		//!
-		bool translationUpdateDelayed = false;
-		//!
-		//! is the rotation update delayed since the last update was just recently
-		//!
-		bool rotationUpdateDelayed = false;
-		//!
-		//! last server update time of translation
-		//!
-		float lastTranslationUpdateTime = -1;
+		
 		//!
 		//! number of frames after which the object is asumed as steady (no more physically driven translation changes)
 		//!
 		int translationStillFrameCount = 11;
-		//!
-		//! last server update time of rotation
-		//!
-		float lastRotationUpdateTime = -1;
 		//!
 		//! number of frames after which the object is asumed as steady (no more physically driven rotation changes)
 		//!
@@ -154,7 +139,10 @@ namespace vpet
 		//!
 		public bool globalKinematic = true;
 
-        //smooth Translation variables
+        //!
+        //! is animated character
+        //!
+        public bool isAnimatedCharacter = false;
 
         //!
         //! slow down factor for smooth translation
@@ -164,6 +152,7 @@ namespace vpet
 		//! final target position of current translation
 		//!
 		private Vector3 targetTranslation = Vector3.zero;
+        
 		//!
 		//! enable / disable smooth translation
 		//!
@@ -247,6 +236,10 @@ namespace vpet
             lastPosition = initialPosition;
             lastRotation = initialRotation;
 
+            InvokeRepeating("checkUpdate", 0.0f, updateIntervall);
+
+            if (gameObject.GetComponent<Animator>())
+                isAnimatedCharacter = true;
 
             //generate colliding volumes
             if (generateBoxCollider)
@@ -285,6 +278,7 @@ namespace vpet
                     }
                 }
 
+
                 boxCollider = this.gameObject.AddComponent<BoxCollider>();
 #if !SCENE_HOST
                 if(this is SceneObjectCamera)
@@ -322,6 +316,7 @@ namespace vpet
                 rigidbody.useGravity = true;
                 rigidbody.isKinematic = true;
                 globalKinematic = true;
+
             }
 
 #if !SCENE_HOST
@@ -357,16 +352,12 @@ namespace vpet
             return (Quaternion.Angle(a, b) < precision);
         }
 
-
-        //!
-        //! Update is called once per frame
-        //!
-        protected void Update () 
-		{
+        private void checkUpdate()
+        {
 #if !SCENE_HOST
             if (mainController.ActiveMode != MainController.Mode.objectLinkCamera)
             {
-                if(!AlmostEqualPos(lastPosition, target.localPosition, 0.1f))
+                if (!AlmostEqualPos(lastPosition, target.localPosition, 0.0001f))
                 {
                     lastPosition = target.localPosition;
                     translationStillFrameCount = 0;
@@ -375,7 +366,7 @@ namespace vpet
                 {
                     translationStillFrameCount++;
                 }
-                if (!AlmostEqualRot(lastRotation, target.localRotation, 0.1f))
+                if (!AlmostEqualRot(lastRotation, target.localRotation, 0.0001f))
                 {
                     lastRotation = target.localRotation;
                     rotationStillFrameCount = 0;
@@ -388,7 +379,7 @@ namespace vpet
             else
 #endif
             {
-                if (!AlmostEqualPos(lastPosition, target.position, 0.01f))
+                if (!AlmostEqualPos(lastPosition, target.position, 0.0001f))
                 {
                     lastPosition = target.position;
                     translationStillFrameCount = 0;
@@ -397,7 +388,7 @@ namespace vpet
                 {
                     translationStillFrameCount++;
                 }
-                if (!AlmostEqualRot(lastRotation, target.rotation, 0.01f))
+                if (!AlmostEqualRot(lastRotation, target.rotation, 0.0001f))
                 {
                     lastRotation = target.rotation;
                     rotationStillFrameCount = 0;
@@ -418,38 +409,30 @@ namespace vpet
                 //publish translation change
                 if (mainController.liveMode)
 #endif
-				{
-					if (translationStillFrameCount == 0) //position just changed
-					{
-                        if ((Time.time - lastTranslationUpdateTime) >= updateIntervall)
-						{
-                            if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
-                            {
-                                isPhysicsActive = true;
-                                serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
-                                serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                {
+                    if (translationStillFrameCount == 0) //position just changed
+                    {
 
-                            }
-
-                            serverAdapter.SendObjectUpdate( this, ParameterType.POS );
-
-                            lastTranslationUpdateTime = Time.time;
-							translationUpdateDelayed = false;
-						}
-						else
-						{
-							translationUpdateDelayed = true;
-						}
-					}
-					else  //update delayed, but object not moving
-					{
-                        if (translationUpdateDelayed)
+                        if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
                         {
-                            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
-
-                            lastTranslationUpdateTime = Time.time;
-                            translationUpdateDelayed = false;
+                            isPhysicsActive = true;
+                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
                         }
+
+#if !SCENE_HOST               
+                        if (isAnimatedCharacter)
+                        {
+                            if (mainController.ActiveMode == MainController.Mode.translationMode &&
+                                mainController.isTranslating)
+                                serverAdapter.SendObjectUpdate(this, ParameterType.POS);
+                        }
+                        else
+#endif
+                            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
+                    }
+                    else  //update delayed, but object not moving
+                    {
                         if (isPhysicsActive)
                         {
                             isPhysicsActive = false;
@@ -457,11 +440,20 @@ namespace vpet
                             serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
                         }
                     }
-				}
+                }
 #if !SCENE_HOST
                 else if (translationStillFrameCount == 10) //object is now no longer moving
-				{
-                    serverAdapter.SendObjectUpdate(this, ParameterType.POS);
+                {
+#if !SCENE_HOST 
+                    if (isAnimatedCharacter)
+                    {
+                        if (mainController.ActiveMode == MainController.Mode.translationMode &&
+                            mainController.isTranslating)
+                            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
+                    }
+                    else
+#endif
+                        serverAdapter.SendObjectUpdate(this, ParameterType.POS);
 
                     if (isPhysicsActive)
                     {
@@ -477,34 +469,28 @@ namespace vpet
                 {
                     if (rotationStillFrameCount == 0) //position just changed
                     {
-                        if ((Time.time - lastRotationUpdateTime) >= updateIntervall)
+
+                        if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
                         {
-                            if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
-                            {
-                                isPhysicsActive = true;
-                                serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
-                                serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
-                            }
+                            isPhysicsActive = true;
+                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                        }
 
-                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
-
-                            lastRotationUpdateTime = Time.time;
-                            rotationUpdateDelayed = false;
+#if !SCENE_HOST
+                        if (isAnimatedCharacter)
+                        {
+                            if (mainController.ActiveMode == MainController.Mode.rotationMode &&
+                                mainController.isRotating)
+                                serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
                         }
                         else
-                        {
-                            rotationUpdateDelayed = true;
-                        }
+#endif
+                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
+
                     }
                     else  //update delayed, but object not moving
                     {
-                        if (rotationUpdateDelayed)
-                        {
-                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
-                            lastRotationUpdateTime = Time.time;
-                            rotationUpdateDelayed = false;
-                        }
-
                         if (isPhysicsActive)
                         {
                             isPhysicsActive = false;
@@ -523,12 +509,26 @@ namespace vpet
                         serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
                     }
 
-                    serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
+#if !SCENE_HOST
+                    if (isAnimatedCharacter)
+                    {
+                        if (mainController.ActiveMode == MainController.Mode.rotationMode &&
+                            mainController.isRotating)
+                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
+                    }
+                    else
+#endif
+                        serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
                 }
 #endif
-
             }
+        }
 
+        //!
+        //! Update is called once per frame
+        //!
+        protected void Update () 
+		{
             //turn on highlight modes
             if (selected && drawGlowAgain)
             {
@@ -820,7 +820,11 @@ namespace vpet
 		//!
 		public void translate(Vector3 pos)
 		{
-			target.transform.position = pos;
+            if (isAnimatedCharacter) {
+                CharacterAnimationController charController = GetComponent<CharacterAnimationController>();
+                charController.bodyPosition = charController.bodyPosition + (pos - target.transform.position);
+            }
+            target.transform.position = pos;
 		}
 
         public float TranslateX

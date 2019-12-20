@@ -96,9 +96,10 @@ namespace vpet
                     {
                         Vector3 locPos;
                         if (sendParent)
-                            locPos = sceneObject.transform.position-parent.position;
+                            locPos = sceneObject.transform.position - parent.position;
                         else
                             locPos = sceneObject.transform.localPosition;
+
                         msg = new byte[18];
 
                         msg[0] = cID;

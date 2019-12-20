@@ -53,23 +53,27 @@ namespace vpet
         public static List<GameObject> SceneEditableObjects = new List<GameObject>();
         public static List<GameObject> SelectableLights = new List<GameObject>();
         public static List<GameObject> SceneCameraList = new List<GameObject>();
+        public static List<GameObject> gameObjectList = new List<GameObject>();
 
         public static GameObject scnRoot;
 
         //!
         //! list of skinnedMeshRootBone Objects
         //!
-        private List<Tuple<Renderer, string, string[]>> skinnedMeshRootBones;
+        private List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones;
 
         private List<GameObject> geometryPassiveList = new List<GameObject>();
         private SceneDataHandler sceneDataHandler;
+
+
+
 
         public SceneDataHandler SceneDataHandler
         {
             get { return sceneDataHandler; }
         }
 
-        public delegate GameObject NodeBuilderDelegate(ref SceneNode n, Transform t, GameObject o, bool resetID, ref List<Tuple<Renderer, string, string[]>> skinnedMeshRootBones);
+        public delegate GameObject NodeBuilderDelegate(ref SceneNode n, Transform t, GameObject o, bool resetID, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones);
         public static List<NodeBuilderDelegate> nodeBuilderDelegateList = new List<NodeBuilderDelegate>();
 
         public static void RegisterDelegate(NodeBuilderDelegate call)
@@ -113,6 +117,7 @@ namespace vpet
             SceneCameraList.Clear();
             geometryPassiveList.Clear();
             SelectableLights.Clear();
+            gameObjectList.Clear();
 
             if (scnRoot != null)
             {
@@ -148,7 +153,7 @@ namespace vpet
             createMeshes();
 
             //initiialize skinnedMeshRootBones
-            skinnedMeshRootBones = new List<Tuple<Renderer, string, string[]>>();
+            skinnedMeshRootBones = new List<Tuple<Renderer, GameObject, int[]>>();
 
             // iterate nodes
             createSceneGraphIter(scnRoot.transform, 0);
@@ -156,13 +161,14 @@ namespace vpet
             List<CharacterPackage> characterList = sceneDataHandler.CharacterList;
             
             //setup skinned mesh root bones
-            foreach (Tuple<Renderer, string, string[]> t in skinnedMeshRootBones)
+            foreach (Tuple<Renderer, GameObject, int[]> t in skinnedMeshRootBones)
             {
-                ((SkinnedMeshRenderer)t.Item1).rootBone = GameObject.Find(t.Item2).transform;
+                ((SkinnedMeshRenderer)t.Item1).rootBone = t.Item2.transform;
                 Transform[] meshBones = new Transform[t.Item3.Length];
                 for (int i = 0; i < t.Item3.Length; i++)
                 {
-                    meshBones[i] = GameObject.Find(t.Item3[i]).transform;
+                    if (t.Item3[i] != -1)
+                        meshBones[i] = SceneLoader.gameObjectList[t.Item3[i]].transform;
                 }
                 ((SkinnedMeshRenderer)t.Item1).bones = meshBones;
 
@@ -174,33 +180,29 @@ namespace vpet
             //setup characters
             foreach (CharacterPackage cp in characterList)
             {
-                Debug.Log("Found Character!");
-                GameObject obj = GameObject.Find(cp.rootDag);
+                GameObject obj = SceneLoader.gameObjectList[cp.rootId];
                 Transform parentBackup = obj.transform.parent;
                 obj.transform.parent = GameObject.Find("Scene").transform.parent;
                 HumanBone[] human = new HumanBone[cp.bMSize];
-                string[] boneMapping = cp.boneMapping.Split('\n');
                 for (int i = 0; i < human.Length; i++)
                 {
-                    GameObject boneObj = GameObject.Find(boneMapping[i].Replace("root/world/geo/", ""));
-                    if (boneObj == null)
+                    int boneMapping = cp.boneMapping[i];
+                    if (boneMapping == -1)
                         continue;
+                    GameObject boneObj = SceneLoader.gameObjectList[boneMapping];
                     human[i].boneName = boneObj.name;
                     human[i].humanName = ((HumanBodyBones)i).ToString();
                     human[i].limit.useDefaultValues = true;
                 }
                 SkeletonBone[] skeleton = new SkeletonBone[cp.sSize];
-                string[] splitRootDag = cp.rootDag.Split('/');
-                skeleton[0].name = splitRootDag[splitRootDag.Length - 1];
+                skeleton[0].name = obj.name;
                 skeleton[0].position = new Vector3(cp.bonePosition[0], cp.bonePosition[1], cp.bonePosition[2]);
                 skeleton[0].rotation = new Quaternion(cp.boneRotation[0], cp.boneRotation[1], cp.boneRotation[2], cp.boneRotation[3]);
                 skeleton[0].scale = new Vector3(cp.boneScale[0], cp.boneScale[1], cp.boneScale[2]);
 
-                string[] skeletonMappingList = cp.skeletonMapping.Split('\n');
-
-                for (int i = 1; i < skeletonMappingList.Length; i++)
+                for (int i = 1; i < cp.skeletonMapping.Length; i++)
                 {
-                    skeleton[i].name = skeletonMappingList[i];
+                    skeleton[i].name = SceneLoader.gameObjectList[cp.skeletonMapping[i]].name;
                     skeleton[i].position = new Vector3(cp.bonePosition[i * 3], cp.bonePosition[i * 3 + 1], cp.bonePosition[i * 3 + 2]);
                     skeleton[i].rotation = new Quaternion(cp.boneRotation[i * 4], cp.boneRotation[i * 4 + 1], cp.boneRotation[i * 4 + 2], cp.boneRotation[i * 4 + 3]);
                     skeleton[i].scale = new Vector3(cp.boneScale[i * 3], cp.boneScale[i * 3 + 1], cp.boneScale[i * 3 + 2]);
@@ -224,7 +226,7 @@ namespace vpet
                     this.enabled = false;
                     return;
                 }
-                avatar.name = cp.rootDag;
+                avatar.name = obj.name;
                 Animator animator = obj.AddComponent<Animator>();
                 animator.avatar = avatar;
                 animator.applyRootMotion = true;
@@ -264,6 +266,8 @@ namespace vpet
                 if (_obj != null)
                     obj = _obj;
             }
+
+            gameObjectList.Add(obj);
 
             // add scene object to editable 
             if (node.editable)

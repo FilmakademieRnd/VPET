@@ -63,12 +63,9 @@ namespace vpet
     {
         public int bMSize;
         public int sSize;
-        public int rootDagSize;
-        public string rootDag;
-        public int mdagSize;
-        public string boneMapping;
-        public int sdagSize;
-        public string skeletonMapping;
+        public int rootId;
+        public int[] boneMapping;
+        public int[] skeletonMapping;
         public float[] bonePosition;
         public float[] boneRotation;
         public float[] boneScale;
@@ -331,47 +328,32 @@ namespace vpet
                 CharacterPackage characterPack = new CharacterPackage();
 
                 // get bone Mapping size
-                int intValue = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                characterPack.bMSize = BitConverter.ToInt32(m_characterByteData, dataIdx);
                 dataIdx += size_int;
-                characterPack.bMSize = intValue;
 
                 // get bone Mapping size
-                intValue = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                characterPack.sSize = BitConverter.ToInt32(m_characterByteData, dataIdx);
                 dataIdx += size_int;
-                characterPack.sSize = intValue;
-
-                // get root dag size
-                intValue = BitConverter.ToInt32(m_characterByteData, dataIdx);
-                dataIdx += size_int;
-                characterPack.rootDagSize = intValue;
 
                 // get root dag path
-                byte[] rootDagByte = new byte[intValue];
-                Buffer.BlockCopy(m_characterByteData, dataIdx, rootDagByte, 0, intValue);
-                dataIdx += intValue;
-                characterPack.rootDag = Encoding.ASCII.GetString(rootDagByte);
-
-                // get dag sizes
-                characterPack.mdagSize = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                characterPack.rootId = BitConverter.ToInt32(m_characterByteData, dataIdx);
                 dataIdx += size_int;
 
                 // get bone mapping
-                int stringSize = characterPack.mdagSize;
-                byte[] dagByte = new byte[stringSize];
-                Buffer.BlockCopy(m_characterByteData, dataIdx, dagByte, 0, stringSize);
-                characterPack.boneMapping = Encoding.ASCII.GetString(dagByte);
-                dataIdx += stringSize;
-
-                // get dag skeleton sizes
-                characterPack.sdagSize = BitConverter.ToInt32(m_characterByteData, dataIdx);
-                dataIdx += size_int;
+                characterPack.boneMapping = new int[characterPack.bMSize];
+                for (int i = 0; i < characterPack.bMSize; i++)
+                {
+                    characterPack.boneMapping[i] = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                    dataIdx += size_int;
+                }
 
                 //get skeleton mapping
-                stringSize = characterPack.sdagSize;
-                dagByte = new byte[stringSize];
-                Buffer.BlockCopy(m_characterByteData, dataIdx, dagByte, 0, stringSize);
-                dataIdx += stringSize;
-                characterPack.skeletonMapping = Encoding.ASCII.GetString(dagByte);
+                characterPack.skeletonMapping = new int[characterPack.sSize];
+                for (int i = 0; i < characterPack.sSize; i++)
+                {
+                    characterPack.skeletonMapping[i] = BitConverter.ToInt32(m_characterByteData, dataIdx);
+                    dataIdx += size_int;
+                }
 
                 //get skeleton bone postions
                 characterPack.bonePosition = new float[characterPack.sSize * 3];
@@ -415,8 +397,12 @@ namespace vpet
                 m_characterList.Add(characterPack);
             }
 
+            Array.Clear(m_objectsByteData, 0, m_objectsByteData.Length);
+            m_objectsByteData = null;
+
             Array.Clear(m_characterByteData, 0, m_characterByteData.Length);
             m_characterByteData = null;
+
             GC.Collect();
         }
 
@@ -497,9 +483,10 @@ namespace vpet
 
             }
 
-            Array.Clear(m_objectsByteData, 0, m_objectsByteData.Length);
-            m_objectsByteData = null;
-            GC.Collect();
+            // disabled because of cleanup shifted to character creation
+            //Array.Clear(m_objectsByteData, 0, m_objectsByteData.Length);
+            //m_objectsByteData = null;
+            //GC.Collect();
 
         }
 

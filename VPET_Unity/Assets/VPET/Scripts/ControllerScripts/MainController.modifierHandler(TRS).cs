@@ -59,6 +59,9 @@ namespace vpet
             }
 
             initPosition = currentSelection.position;
+            //if (currentSceneObject.isAnimatedCharacter) {
+            //    initPosition = currentSceneObject.gameObject.GetComponent<Animator>().bodyPosition;
+            //}
             initScale = currentSelection.localScale;
             initRotation = currentSelection.rotation;
             inverseInitRotation = Quaternion.Inverse(currentSelection.rotation);
@@ -68,6 +71,7 @@ namespace vpet
             lineRenderer.enabled = true;
 
             if (modifier.parent.name == "TranslateModifier"){
+                isTranslating = true;
 	            //translation modifier
 	            modifier.GetComponent<Renderer>().material.color = new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f);
 
@@ -148,6 +152,7 @@ namespace vpet
 				}
 	        }
 	        else if (modifier.parent.name == "RotationModifier"){
+                isRotating = true;
 	            //rotation modifier
 	            rotationModifier.GetComponent<Modifier>().makeTransparent();
                 modifier.GetComponent<Renderer>().material.color = new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f);
@@ -169,6 +174,7 @@ namespace vpet
                 }
             }
 	        else if (modifier.parent.name == "ScaleModifier"){
+                isScaling = true;
 	            //scale modifier
 	            modifier.GetComponent<ModifierComponent>().setColor(new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f));
 
@@ -215,12 +221,17 @@ namespace vpet
             // desable line renderer
             if (lineRenderer)
                 lineRenderer.enabled = false;
-	    }
-	
-	    //!
-	    //! hide all modifiers
-	    //!
-	    public void hideModifiers()
+
+            // reset object movement variables
+            isTranslating = false;
+            isRotating = false;
+            isScaling = false;
+        }
+
+        //!
+        //! hide all modifiers
+        //!
+        public void hideModifiers()
 	    {
 	        translateModifier.GetComponent<Modifier>().setVisible(false);
 	        rotationModifier.GetComponent<Modifier>().setVisible(false);

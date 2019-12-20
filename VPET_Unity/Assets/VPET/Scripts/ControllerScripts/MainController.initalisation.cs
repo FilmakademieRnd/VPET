@@ -191,10 +191,17 @@ namespace vpet
         //!
         public GameObject camVisualizer;
 
-		//!
-		//! currently selected Object (if none = null)
-		//!
-		private View currentCameraView = View.PERSP;
+        //!
+        //! Variables to handle object movement
+        //!
+        public bool isTranslating = false;
+        public bool isRotating = false;
+        public bool isScaling = false;
+
+        //!
+        //! currently selected Object (if none = null)
+        //!
+        private View currentCameraView = View.PERSP;
 
         // Debuging only
         [HideInInspector]

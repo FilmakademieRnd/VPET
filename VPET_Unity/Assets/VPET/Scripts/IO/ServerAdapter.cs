@@ -553,42 +553,69 @@ namespace vpet
                 {
                     case ParameterType.POS:
                         {
-                            sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6),
+#if !SCENE_HOST
+                            if (!mainController.isTranslating)
+#endif
+                            {
+                                sceneObject.transform.localPosition = new Vector3(BitConverter.ToSingle(msg, 6),
                                                                               BitConverter.ToSingle(msg, 10),
                                                                               BitConverter.ToSingle(msg, 14));
+                            }
                         }
                         break;
 
                     case ParameterType.ROT:
                         {
-                            sceneObject.transform.localRotation = new Quaternion(BitConverter.ToSingle(msg, 6),
+#if !SCENE_HOST
+                            if (!mainController.isRotating)
+#endif
+                            {
+                                sceneObject.transform.localRotation = new Quaternion(BitConverter.ToSingle(msg, 6),
                                                                                  BitConverter.ToSingle(msg, 10),
                                                                                  BitConverter.ToSingle(msg, 14),
                                                                                  BitConverter.ToSingle(msg, 18));
+                            }
                         }
                         break;
                     case ParameterType.SCALE:
                         {
-                            sceneObject.transform.localScale = new Vector3(BitConverter.ToSingle(msg, 6),
+#if !SCENE_HOST
+                            if (!mainController.isScaling)
+#endif
+                            {
+                                sceneObject.transform.localScale = new Vector3(BitConverter.ToSingle(msg, 6),
                                                                            BitConverter.ToSingle(msg, 10),
                                                                            BitConverter.ToSingle(msg, 14));
+                            }
                         }
                         break;
                     case ParameterType.LOCK:
                         {
+#if SCENE_HOST
+                            if (!sceneObject.isAnimatedCharacter)
+                            {
+#endif
                             bool locked = BitConverter.ToBoolean(msg, 6);
                             sceneObject.enableRigidbody(!locked);
                             sceneObject.locked = locked;
 #if !SCENE_HOST
                             sceneObject.updateLockView();
 #endif
+#if SCENE_HOST
+                            }
+#endif
                         }
                         break;
                     case ParameterType.HIDDENLOCK:
                         {
-                            bool locked = BitConverter.ToBoolean(msg, 6);
-                            sceneObject.enableRigidbody(!locked);
-                            sceneObject.locked = locked;
+#if SCENE_HOST
+                            if (!sceneObject.isAnimatedCharacter)
+#endif
+                            {
+                                bool locked = BitConverter.ToBoolean(msg, 6);
+                                sceneObject.enableRigidbody(!locked);
+                                sceneObject.locked = locked;
+                            }
                         }
                         break;
                     case ParameterType.KINEMATIC:
@@ -680,6 +707,7 @@ namespace vpet
                             Vector3 hipPosition = new Vector3(BitConverter.ToSingle(msg, 6),
                                                                               BitConverter.ToSingle(msg, 10),
                                                                               BitConverter.ToSingle(msg, 14));
+
                             int offset = 12;
                             int numBones = Enum.GetNames(typeof(HumanBodyBones)).Length - 1;
                             Quaternion[] animationState = new Quaternion[numBones];
@@ -691,8 +719,10 @@ namespace vpet
                                                                             BitConverter.ToSingle(msg, offset + 18));
                                 offset += 16;
                             }
-                            sceneObject.gameObject.GetComponent<CharacterAnimationController>().hipPosition = hipPosition;
-							sceneObject.gameObject.GetComponent<BoxCollider>().center = hipPosition;
+#if !SCENE_HOST
+                            if (!mainController.isTranslating)
+#endif
+                                sceneObject.gameObject.GetComponent<CharacterAnimationController>().bodyPosition = hipPosition;
                             sceneObject.gameObject.GetComponent<CharacterAnimationController>().animationState = animationState;
                         }
                         break;
@@ -711,7 +741,7 @@ namespace vpet
                         return;
                         break;
                 }
-#if SCENE_HOST 
+#if SCENE_HOST
                 if (recordUpdates)
                     buildRecordMessage(sceneObject, paramType);
 #endif

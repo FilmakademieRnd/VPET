@@ -131,7 +131,9 @@ namespace vpet
                     lineRenderer.positionCount = 0;
 
                 if (currentSceneObject)
+                {
                     currentSceneObject.translate(finalTranslation);
+                }
                 else
                 {
                     KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
@@ -283,16 +285,6 @@ namespace vpet
 	        }
 	    }
 	
-	    //!
-	    //! move selection into space pointing away from camera (move on camera local z axis)
-	    //! @param      distanceDelta     new position relative to old one
-	    //!
-	    public void moveSelectionAwayFromCamera(float distanceDelta){
-	        if (currentSelection){
-	            this.translateSelection((currentSelection.position - Camera.main.transform.position).normalized * distanceDelta * 5);
-	        }
-	    }
-
         //!
         //! this is the place where the actual modification is executed
         //! @param      begin       last point on modifier helper

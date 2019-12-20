@@ -64,16 +64,15 @@ namespace vpet
     public class SceneNodeSkinnedGeo : SceneNodeGeo
     {
         public int bindPoseLength;
+        public int rootBoneID;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] boundExtents;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] boundCenter;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16*52)]
         public float[] bindPoses;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 1024)]
-        public string rootBoneDagPath;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20480)]
-        public string skinnedMeshBonesArray;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 82)]
+        public int[] skinnedMeshBoneIDs;
     };
 
 

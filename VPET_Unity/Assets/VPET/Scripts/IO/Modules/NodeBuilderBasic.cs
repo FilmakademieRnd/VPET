@@ -40,7 +40,7 @@ namespace vpet
     {
         private static int idCount = 0;
 
-        public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj, bool resetID, ref List<Tuple<Renderer, string, string[]>> skinnedMeshRootBones)
+        public static GameObject BuildNode(ref SceneNode node, Transform parent, GameObject obj, bool resetID, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones)
         {
             if (resetID)
                 idCount = 0;
@@ -233,7 +233,7 @@ namespace vpet
         //! function to create the object from mesh data for skinned meshes
         //! @param  scnObjKtn   object which holds the data
         //!
-        public static GameObject CreateSkinnedObject(SceneNodeSkinnedGeo nodeGeo, Transform parentTransform, ref List<Tuple<Renderer, string, string[]>> skinnedMeshRootBones)
+        public static GameObject CreateSkinnedObject(SceneNodeSkinnedGeo nodeGeo, Transform parentTransform, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones)
         {
             GameObject objMain;
 
@@ -285,9 +285,7 @@ namespace vpet
 
                     SkinnedMeshRenderer sRenderer = ((SkinnedMeshRenderer)renderer);
 
-                    string rootBoneDagPath = nodeGeo.rootBoneDagPath;
-
-                    skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(renderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray.Split('\r')));
+                    skinnedMeshRootBones.Add(new Tuple<Renderer, GameObject, int[]>(renderer, objMain, nodeGeo.skinnedMeshBoneIDs));
                     VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, renderer.bounds.max);
                     VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, renderer.bounds.min);
                     Bounds bounds = new Bounds(new Vector3(nodeGeo.boundCenter[0], nodeGeo.boundCenter[1], nodeGeo.boundCenter[2]),
@@ -318,50 +316,7 @@ namespace vpet
                     meshes[0].bindposes = bindposes;
                     sRenderer.sharedMesh = meshes[0];
                     sRenderer.material = mat;
-                    //Note to commented part below:
-                    //Splitting of meshes disabled as we are using 32bit index buffers now!
-                    /*for (int i = 1; i < meshes.Length; i++)
-                    {
-                        GameObject subObj = new GameObject(objMain.name + "_part" + i.ToString());
-
-                        SkinnedMeshRenderer subRenderer;
-                        subRenderer = subObj.AddComponent<SkinnedMeshRenderer>();
-                        
-                        rootBoneDagPath = nodeGeo.rootBoneDagPath;
-                        skinnedMeshRootBones.Add(new Tuple<Renderer, string, string[]>(subRenderer, rootBoneDagPath, nodeGeo.skinnedMeshBonesArray.Split('\r')));
-                        Matrix4x4[] subBindposes = new Matrix4x4[nodeGeo.bindPoseLength];
-                        for (int j = 0; j < nodeGeo.bindPoseLength; j++)
-                        {
-                            subBindposes[j] = new Matrix4x4();
-                            subBindposes[j].m00 = nodeGeo.bindPoses[j * 16];
-                            subBindposes[j].m01 = nodeGeo.bindPoses[j * 16 + 1];
-                            subBindposes[j].m02 = nodeGeo.bindPoses[j * 16 + 2];
-                            subBindposes[j].m03 = nodeGeo.bindPoses[j * 16 + 3];
-                            subBindposes[j].m10 = nodeGeo.bindPoses[j * 16 + 4];
-                            subBindposes[j].m11 = nodeGeo.bindPoses[j * 16 + 5];
-                            subBindposes[j].m12 = nodeGeo.bindPoses[j * 16 + 6];
-                            subBindposes[j].m13 = nodeGeo.bindPoses[j * 16 + 7];
-                            subBindposes[j].m20 = nodeGeo.bindPoses[j * 16 + 8];
-                            subBindposes[j].m21 = nodeGeo.bindPoses[j * 16 + 9];
-                            subBindposes[j].m22 = nodeGeo.bindPoses[j * 16 + 10];
-                            subBindposes[j].m23 = nodeGeo.bindPoses[j * 16 + 11];
-                            subBindposes[j].m30 = nodeGeo.bindPoses[j * 16 + 12];
-                            subBindposes[j].m31 = nodeGeo.bindPoses[j * 16 + 13];
-                            subBindposes[j].m32 = nodeGeo.bindPoses[j * 16 + 14];
-                            subBindposes[j].m33 = nodeGeo.bindPoses[j * 16 + 15];
-                        }
-                        meshes[i].bindposes = bindposes;
-                        subRenderer.sharedMesh = meshes[i];
-
-                        subRenderer.material = mat;
-                        subObj.transform.parent = objMain.transform;
-                        VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, subRenderer.bounds.max);
-                        VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, subRenderer.bounds.min);
-                        Bounds subBounds = new Bounds(new Vector3(nodeGeo.boundCenter[0], nodeGeo.boundCenter[1], nodeGeo.boundCenter[2]),
-                                                      new Vector3(nodeGeo.boundExtents[0], nodeGeo.boundExtents[1], nodeGeo.boundExtents[2]));
-                        subRenderer.localBounds = bounds;
-                    }*/
-
+                   
                     Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
                     VPETSettings.Instance.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
                 }

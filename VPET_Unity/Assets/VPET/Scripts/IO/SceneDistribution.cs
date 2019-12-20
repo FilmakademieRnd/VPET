@@ -35,6 +35,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System;
 using System.IO;
+using System.Linq;
 
 
 namespace vpet
@@ -84,10 +85,10 @@ namespace vpet
         private int lodMixedLayer;
 
         private int globalID;
-
         private Transform scene;
-
         private ServerAdapter serverAdapter;
+        private List<GameObject> gameObjectList;
+
 
         private void Awake()
         {
@@ -104,6 +105,7 @@ namespace vpet
 
             VPETRegister.RegisterObjectSender();
             serverAdapter.initServerAdapterTransfer();
+
         }
 
         // Use this for initialization
@@ -249,15 +251,17 @@ namespace vpet
             objectList = new List<ObjectPackage>();
             characterList = new List<CharacterPackage>();
             textureList = new List<TexturePackage>();
+            gameObjectList = new List<GameObject>();
 #if TRUNK
             materialList = new List<MaterialPackage>();
 #endif
+            recursiveGameObjectIdExtract(sceneRoot.transform.GetChild(0));
 
             iterLocation(sceneRoot.transform);
 
             serverAdapter.sceneObjectRefList = new SceneObject[globalID];
 
-            recursiveIdExtract(sceneRoot.transform);
+            recursiveIdExtract(sceneRoot.transform.GetChild(0));
 
             Debug.Log(string.Format("{0}: Collected number nodes: {1}", this.GetType(), nodeList.Count));
             Debug.Log(string.Format("{0}: Collected number objects: {1}", this.GetType(), objectList.Count));
@@ -283,6 +287,19 @@ namespace vpet
 #if TRUNK
             Debug.Log(string.Format("{0}: MaterialsByteArray size: {1}", this.GetType(), materialsByteData.Length));
 #endif
+        }
+
+        //!
+        //! Recursively iterates over all scene elements
+        //!
+        private void recursiveGameObjectIdExtract(Transform location)
+        {
+            // fill game object list
+            gameObjectList.Add(location.gameObject);
+
+            foreach (Transform child in location)
+                if (child.gameObject.activeSelf)
+                    recursiveGameObjectIdExtract(child);
         }
 
         //!
@@ -422,7 +439,7 @@ namespace vpet
 
                 nodeGeo.color = new float[4] { 0, 0, 0, 0 };
                 nodeGeo.geoId = processGeometry(sRenderer.sharedMesh);
-                nodeGeo.rootBoneDagPath = vpet.Extensions.getPathString(sRenderer.rootBone, scene);
+                nodeGeo.rootBoneID = gameObjectList.IndexOf(sRenderer.rootBone.gameObject);
                 nodeGeo.boundCenter = new float[3] { sRenderer.localBounds.center.x, sRenderer.localBounds.center.y, sRenderer.localBounds.center.z };
                 nodeGeo.boundExtents = new float[3] { sRenderer.localBounds.extents.x, sRenderer.localBounds.extents.y, sRenderer.localBounds.extents.z };
                 nodeGeo.bindPoseLength = sRenderer.sharedMesh.bindposes.Length;
@@ -449,16 +466,12 @@ namespace vpet
                     nodeGeo.bindPoses[i * 16 + 15] = sRenderer.sharedMesh.bindposes[i].m33;
                 }
 
-                List<string> skinnedMeshBones = new List<string>();
-                foreach (Transform t in sRenderer.bones)
-                    skinnedMeshBones.Add(Extensions.getPathString(t, scene));
-                foreach (string s in skinnedMeshBones)
+                nodeGeo.skinnedMeshBoneIDs = Enumerable.Repeat(-1, 82).ToArray<int>();
+
+                for (int i = 0; i < sRenderer.bones.Length; i++)
                 {
-                    nodeGeo.skinnedMeshBonesArray += s;
-                    if (s != skinnedMeshBones[skinnedMeshBones.Count - 1])
-                        nodeGeo.skinnedMeshBonesArray += '\r';
+                    nodeGeo.skinnedMeshBoneIDs[i] = gameObjectList.IndexOf(sRenderer.bones[i].gameObject);
                 }
-                Debug.Log("nodeGeo.skinnedMeshBonesArray.length:" + nodeGeo.skinnedMeshBonesArray.Length.ToString());
 
                 if (sRenderer.material != null)
                 {
@@ -729,13 +742,11 @@ namespace vpet
         private void processCharacter(Animator animator)
         {
             CharacterPackage chrPack = new CharacterPackage();
-            chrPack.rootDag = vpet.Extensions.getPathString(animator.transform, scene);
-            chrPack.rootDagSize = chrPack.rootDag.Length;
+            chrPack.rootId = gameObjectList.IndexOf(animator.transform.gameObject);
 
             HumanBone[] boneArray = animator.avatar.humanDescription.human;
             chrPack.bMSize = Enum.GetNames(typeof(HumanBodyBones)).Length;
-            chrPack.boneMapping = "";
-            string []boneMapping = new String[chrPack.bMSize];
+            chrPack.boneMapping = Enumerable.Repeat(-1, chrPack.bMSize).ToArray<int>();
 
             for (int i = 0; i < boneArray.Length; i++)
             {
@@ -745,26 +756,20 @@ namespace vpet
                     HumanBodyBones enumNum;
                     Enum.TryParse<HumanBodyBones>(enumName, true, out enumNum);
                     Transform boneTransform = vpet.Extensions.FindDeepChild(animator.transform, boneArray[i].boneName);
-                    boneMapping[(int)enumNum] = vpet.Extensions.getPathString(boneTransform, scene);
+                    chrPack.boneMapping[(int)enumNum] = gameObjectList.IndexOf(boneTransform.gameObject);
                 }
             }
-            foreach (String pathString in boneMapping)
-            {
-                chrPack.boneMapping += pathString + "\n";
-            }
-            chrPack.boneMapping = chrPack.boneMapping.Remove(chrPack.boneMapping.Length-1);
-            chrPack.mdagSize = chrPack.boneMapping.Length;
 
             SkeletonBone[] skeletonArray = animator.avatar.humanDescription.skeleton;
             chrPack.sSize = skeletonArray.Length;
-            chrPack.skeletonMapping = "";
+            chrPack.skeletonMapping = new int[chrPack.sSize];
             chrPack.bonePosition = new float[chrPack.sSize * 3];
             chrPack.boneRotation = new float[chrPack.sSize * 4];
             chrPack.boneScale = new float[chrPack.sSize * 3];
 
             for (int i = 0; i < skeletonArray.Length; i++)
             {
-                chrPack.skeletonMapping += skeletonArray[i].name + "\n";
+                chrPack.skeletonMapping[i] = gameObjectList.IndexOf(GameObject.Find(skeletonArray[i].name));
 
                 chrPack.bonePosition[i * 3] = skeletonArray[i].position.x;
                 chrPack.bonePosition[i * 3 + 1] = skeletonArray[i].position.y;
@@ -779,8 +784,6 @@ namespace vpet
                 chrPack.boneScale[i * 3 + 1] = skeletonArray[i].scale.y;
                 chrPack.boneScale[i * 3 + 2] = skeletonArray[i].scale.z;
             }
-            chrPack.skeletonMapping = chrPack.skeletonMapping.Remove(chrPack.skeletonMapping.Length - 1);
-            chrPack.sdagSize = chrPack.skeletonMapping.Length;
 
             characterList.Add(chrPack);
         }
@@ -956,11 +959,8 @@ namespace vpet
             foreach (CharacterPackage chrPack in characterList)
             {
                 byte[] characterByteData = new byte[SceneDataHandler.size_int * 3 +
-                                                chrPack.rootDag.Length +
-                                                /* dagSizes */ + SceneDataHandler.size_int +
-                                                chrPack.boneMapping.Length +
-                                                /* sdagSizes */ + SceneDataHandler.size_int +
-                                                chrPack.skeletonMapping.Length +
+                                                chrPack.boneMapping.Length * SceneDataHandler.size_int +
+                                                chrPack.skeletonMapping.Length * SceneDataHandler.size_int +
                                                 chrPack.sSize * SceneDataHandler.size_float * 10];
                 int dstIdx = 0;
                 // bone mapping size
@@ -971,23 +971,12 @@ namespace vpet
                 Buffer.BlockCopy(BitConverter.GetBytes(chrPack.sSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
                 dstIdx += SceneDataHandler.size_int;
 
-                // root dag size
-                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.rootDagSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                // root dag id
+                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.rootId), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
                 dstIdx += SceneDataHandler.size_int;
 
-                // root dag path
-                byte[] nameByte = Encoding.ASCII.GetBytes(chrPack.rootDag);
-                Buffer.BlockCopy(nameByte, 0, characterByteData, dstIdx, chrPack.rootDag.Length);
-                dstIdx += chrPack.rootDag.Length;
-
-                // m dag size
-                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.mdagSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                // bone Mapping
-                nameByte = Encoding.ASCII.GetBytes(chrPack.boneMapping);
-                Buffer.BlockCopy(nameByte, 0, characterByteData, dstIdx, chrPack.boneMapping.Length);
-                dstIdx += chrPack.boneMapping.Length;
+                Buffer.BlockCopy(chrPack.boneMapping, 0, characterByteData, dstIdx, chrPack.bMSize * SceneDataHandler.size_int);
+                dstIdx += chrPack.bMSize * SceneDataHandler.size_int;
                 //foreach (string dag in chrPack.boneMapping)
                 //{
                 //    if (dag != null)
@@ -998,14 +987,9 @@ namespace vpet
                 //    }
                 //}
 
-                // s dag size
-                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.sdagSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
                 // skeleton Mapping
-                nameByte = Encoding.ASCII.GetBytes(chrPack.skeletonMapping);
-                Buffer.BlockCopy(nameByte, 0, characterByteData, dstIdx, chrPack.skeletonMapping.Length);
-                dstIdx += chrPack.skeletonMapping.Length;
+                Buffer.BlockCopy(chrPack.skeletonMapping, 0, characterByteData, dstIdx, chrPack.sSize * SceneDataHandler.size_int);
+                dstIdx += chrPack.sSize * SceneDataHandler.size_int;
                 //foreach (string sdag in chrPack.skeletonMapping)
                 //{
                 //    if (sdag != null)

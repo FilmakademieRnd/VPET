@@ -35,12 +35,14 @@ namespace vpet
     {
         private Animator animator;
         public Quaternion[] animationState;
-        public Vector3 hipPosition;
+        public Vector3 bodyPosition;
         private int numHBones;
+        private MainController mainController;
 
         // Start is called before the first frame update
         void Start()
         {
+            mainController = GameObject.Find("MainController").GetComponent<MainController>();
             animator = this.GetComponent<Animator>();
             numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length - 1;
             animationState = new Quaternion[numHBones];
@@ -49,13 +51,17 @@ namespace vpet
         // Update is called once per frame
         void OnAnimatorIK(int layerIndex)
         {
-            for (int i = 0; i < numHBones; i++)
+            if (!mainController.isRotating)
+                animator.SetBoneLocalRotation(HumanBodyBones.Hips, animationState[0]);
+
+            for (int i = 1; i < numHBones; i++)
             {
                 animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
             }
-            animator.bodyPosition = hipPosition;
+
+            animator.bodyPosition = bodyPosition;
             Vector3 scaleVec = new Vector3(1.0f / transform.lossyScale.x, 1.0f / transform.lossyScale.y, 1.0f / transform.lossyScale.z);
-            GetComponent<BoxCollider>().center = Vector3.Scale((hipPosition - animator.rootPosition),  scaleVec);
+            GetComponent<BoxCollider>().center = Vector3.Scale((bodyPosition - animator.rootPosition), scaleVec);
         }
     }
 }
