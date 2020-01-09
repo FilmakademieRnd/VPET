@@ -865,7 +865,6 @@ namespace vpet
             {
                 byte[] nodeBinary;
                 byte[] nodeTypeBinary;
-                byte[] nodeLengthBinary;
                 if (node.GetType() == typeof(SceneNodeGeo))
                 {
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GEO);
@@ -895,10 +894,8 @@ namespace vpet
                     nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GROUP);
                     nodeBinary = SceneDataHandler.StructureToByteArray(node);
                 }
-                nodeLengthBinary = BitConverter.GetBytes(nodeBinary.Length);
 
                 // concate arrays
-                nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeLengthBinary);
                 nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeTypeBinary);
                 nodesByteData = SceneDataHandler.Concat<byte>(nodesByteData, nodeBinary);
             }

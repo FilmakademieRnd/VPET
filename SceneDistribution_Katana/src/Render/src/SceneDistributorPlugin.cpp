@@ -351,13 +351,15 @@ static void* server(void *scene)
 		{
             std::cout << "[INFO SceneDistributorPlugin.server] Got Objects Request" << std::endl;
             std::cout << "[INFO SceneDistributorPlugin.server] Object count " << sharedState->objPackList.size() << std::endl;
-            responseLength = sizeof(int) * 4 * sharedState->objPackList.size();
+            responseLength = sizeof(int) * 5 * sharedState->objPackList.size();
             for (int i = 0; i < sharedState->objPackList.size(); i++)
             {
                 responseLength += sizeof(float) * sharedState->objPackList[i].vertices.size();
                 responseLength += sizeof(int) * sharedState->objPackList[i].indices.size();
                 responseLength += sizeof(float) * sharedState->objPackList[i].normals.size();
-                responseLength += sizeof(float) * sharedState->objPackList[i].uvs.size();
+				responseLength += sizeof(float) * sharedState->objPackList[i].uvs.size();
+				responseLength += sizeof(float) * sharedState->objPackList[i].boneWeights.size();
+				responseLength += sizeof(int) * sharedState->objPackList[i].boneIndices.size();
             }
 
             messageStart = responseMessageContent = (char*)malloc(responseLength);
@@ -392,6 +394,16 @@ static void* server(void *scene)
                 // uvs
                 memcpy(responseMessageContent, &sharedState->objPackList[i].uvs[0], sizeof(float) * sharedState->objPackList[i].uvs.size());
                 responseMessageContent += sizeof(float) * sharedState->objPackList[i].uvs.size();
+				// bWSize
+				numValues = sharedState->objPackList[i].boneWeights.size()/4.0;
+				memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
+				responseMessageContent += sizeof(int);
+				// bone Weights
+				memcpy(responseMessageContent, &sharedState->objPackList[i].boneWeights[0], sizeof(float) * sharedState->objPackList[i].boneWeights.size());
+				responseMessageContent += sizeof(float) * sharedState->objPackList[i].boneWeights.size();
+				// bone Intices
+				memcpy(responseMessageContent, &sharedState->objPackList[i].boneIndices[0], sizeof(int) * sharedState->objPackList[i].boneIndices.size());
+				responseMessageContent += sizeof(int) * sharedState->objPackList[i].boneIndices.size();
             }
 
         }
@@ -429,7 +441,7 @@ static void* server(void *scene)
             std::cout << "[INFO SceneDistributorPlugin.server] Node count " << sharedState->nodeList.size() << " Node Type count " << sharedState->nodeList.size() << std::endl;
 
             // set the size from type- and namelength
-            responseLength =  sizeof(NodeType) * sharedState->nodeList.size();
+            responseLength = sizeof(NodeType) * sharedState->nodeList.size();
 
             // extend with sizeof node depending on node type
             for (int i = 0; i < sharedState->nodeList.size(); i++)

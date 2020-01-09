@@ -61,7 +61,7 @@ void CameraScenegraphLocationDelegate::fillSupportedLocationList(std::vector<std
     supportedLocationList.push_back(std::string("camera"));
 }
 
-float CameraScenegraphLocationDelegate::hFovToVFov(float hFov, float width = 16.0f, float height = 9.0f)
+float CameraScenegraphLocationDelegate::hFovToVFov(float hFov, float width/* = 16.0f*/, float height/* = 9.0f*/)
 {
 	return glm::degrees(2 * glm::atan(glm::tan(glm::radians(hFov) / 2.0f) * (height / width)));
 }

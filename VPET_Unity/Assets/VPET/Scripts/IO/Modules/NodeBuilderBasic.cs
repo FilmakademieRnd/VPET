@@ -286,6 +286,7 @@ namespace vpet
                     SkinnedMeshRenderer sRenderer = ((SkinnedMeshRenderer)renderer);
 
                     skinnedMeshRootBones.Add(new Tuple<Renderer, GameObject, int[]>(renderer, objMain, nodeGeo.skinnedMeshBoneIDs));
+                    skinnedMeshRootBones.Add(new Tuple<Renderer, GameObject, int[]>(renderer, objMain, nodeGeo.skinnedMeshBoneIDs));
                     VPETSettings.Instance.sceneBoundsMax = Vector3.Max(VPETSettings.Instance.sceneBoundsMax, renderer.bounds.max);
                     VPETSettings.Instance.sceneBoundsMin = Vector3.Min(VPETSettings.Instance.sceneBoundsMin, renderer.bounds.min);
                     Bounds bounds = new Bounds(new Vector3(nodeGeo.boundCenter[0], nodeGeo.boundCenter[1], nodeGeo.boundCenter[2]),

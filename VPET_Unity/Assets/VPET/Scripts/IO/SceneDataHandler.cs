@@ -208,9 +208,6 @@ namespace vpet
             {
                 SceneNode node = new SceneNode();
 
-                int length = BitConverter.ToInt32(m_nodesByteData, dataIdx);
-                dataIdx += size_int;
-
                 NodeType nodeType = (NodeType)BitConverter.ToInt32(m_nodesByteData, dataIdx);
                 dataIdx += size_int;
 
