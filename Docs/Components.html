@@ -10,9 +10,9 @@ body,td,th {
 	font-size: 20px;
 	color: #646464;
 }
-h1 {
+h3 {
 	font-family:Arial;
-	font-size: 30px;
+	font-size: 26px
 	color: #646464;
 }
 a:link {
@@ -32,18 +32,19 @@ a {text-decoration: none}
 </style></head>
 
 <body>
-<img src="Images/General_Header.jpg" width="1420" height="426" border="0" align="left" /><br/>
-<table width="1420" border="0" cellspacing="10">
+<img src="Images/General_Header.jpg" width="1000" height="308" border="0" align="left" /><br/>
+<table width="1000" border="0" cellspacing="10">
   <tr>
     <td colspan="2">
-	<h1>VPET Componenets</h1>
+	<h3>VPET Componenets</h3>
 	VPET consists of 3 major applications: the Unity based client, a scene distribution plugin and a synchronisation server <p>
-	<h1>Unity Client Application</h1>	
+	<h3>Unity Client Application</h3>	
 This is the main application that allows interaction on tablets and head mounted devices. It is currently built to interact with Katana/Live View but could be adapted to any other central development system. Scene objects, lights and animation can now be edited through an simple and intuitive interface. Latest hardware like Google Tango support positional tracking for exploration of the virtual scene in space. When building your Unity client, make sure you use the appropriate Unity version.
 Find more information in the <a href="../VPET_Unity/Docs/html/index.html" target="_new">detailed documentation</a>.<p>
-	<h1>Scene Distribution Plugin</h1>
+As of spring 2018 we provide a precompiled VPET client via the <a href="https://apps.apple.com/de/app/vpet/id1374394388" target="_new">Apple App Store</a>.
+	<h3>Scene Distribution Plugin</h3>
 The scene distribution plugin traverses the Katana/Live View scene and communicates its scene structure, textures, meshes and lights to the VPET Unity client. The scene will be build from scratch each time a client connects. This removes the need for a dedicated export procedure. Scenes might hold a optimized version for mobile devices with low resolution versions of the objects.<p>
-	<h1>Synchronization Server</h1>
+	<h3>Synchronization Server</h3>
 This server synchronizes all updates to the scene either by mobile VPET clients or the central production system (Katana/Live View). This includes updates from tracking devices like the ncam reality system. 
 
 	</td>

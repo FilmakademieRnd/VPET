@@ -11,7 +11,7 @@ body,td,th {
 }
 div.nav_l1 {
 	font-family:Arial;
-	font-size: 26px;	
+	font-size: 22px	
 }
 div.nav_l2 {
 	font-family:Arial;
@@ -37,8 +37,8 @@ a:active {
 	text-decoration: none;
 	color: f8b04e;
 }
-h1 {	
-	font-size: 30px;
+h3 {	
+	font-size: 26px
 	color: #646464;
 }
 .background-img{
@@ -58,7 +58,7 @@ h1 {
 function changeColor(elem)
 {
 // reset all values
-for (i = 1; i < 6; i++) {
+for (i = 1; i < 7; i++) {
     TD_Element = "NavEl"+[i];
 	cell = document.getElementById(TD_Element);
 	cell.style.backgroundColor = '#464d56';
@@ -83,29 +83,36 @@ elem.style.backgroundColor = '#55a9d7';
         <a href="Intro.html" target="mainFrame">
         Introduction</a></div></td>
   </tr>
-    <tr>
+      <tr>
     <td id="NavEl2" onclick="changeColor(this)">
+    	<div class="nav_l1">
+        <img src="Images/Spacer.png" width="10" height="1" />
+        <a href="SAUCE.html" target="mainFrame">
+        Project SAUCE</a></div></td>
+  </tr>
+    <tr>
+    <td id="NavEl3" onclick="changeColor(this)">
     	<div class="nav_l1">
         <img src="Images/Spacer.png" width="10" height="1" />
         <a href="Dreamspace.html" target="mainFrame">
         Project Dreamspace</a></div></td>
   </tr>
   <tr>
-    <td id="NavEl3" onclick="changeColor(this)">
+    <td id="NavEl4" onclick="changeColor(this)">
     	<div class="nav_l1">
         <img src="Images/Spacer.png" width="10" height="1" />
         <a href="Components.html" target="mainFrame">
         VPET Components</a></div></td>
   </tr>
   <tr>
-    <td id="NavEl4" onclick="changeColor(this)">
+    <td id="NavEl5" onclick="changeColor(this)">
     	<div class="nav_l1">
         <img src="Images/Spacer.png" width="10" height="1" />
         <a href="Tutorials.html" target="mainFrame">
-        Tutorials</a></div></td>
+        Demos & Tutorials</a></div></td>
   </tr> 
   <tr>
-    <td id="NavEl5" onclick="changeColor(this)">
+    <td id="NavEl6" onclick="changeColor(this)">
     	<div class="nav_l1">
         <img src="Images/Spacer.png" width="10" height="1" />
         <a href="License.html" target="mainFrame">
