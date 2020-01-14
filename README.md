@@ -11,7 +11,7 @@ the EU funded project  SAUCE (780470) and funds on the own behalf of Filmakademi
 
 [VPET Web Site](http://research.animationsinstitut.de/projects/dreamspace/vpet-virtual-production-editing-tool/)
 
-[![](http://animationsinstitut.de/fileadmin/user_upload/files_forschung/img/Dreamspace/VPET_1.png)](https://www.youtube.com/embed/videoseries?list=PLFSxFMrrXJM4PNNejIBy3ztEnA0xYLBwl)
+[![](http://animationsinstitut.de/fileadmin/user_upload/files_forschung/img/Dreamspace/VPET_1.png)](https://youtu.be/6FssNOPKcnc)
 
 [Youtube Playlist](https://www.youtube.com/embed/videoseries?list=PLFSxFMrrXJM4PNNejIBy3ztEnA0xYLBwl)
 
