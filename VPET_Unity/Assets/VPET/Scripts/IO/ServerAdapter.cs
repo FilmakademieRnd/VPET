@@ -304,12 +304,11 @@ namespace vpet
                 }
             }
 
-            //register cam sending function
-            InvokeRepeating("sendPing", 0.0f, 2f);
-
             if (GameObject.Find("MainController") != null)
                 mainController = GameObject.Find("MainController").GetComponent<MainController>();
 #endif
+            //register ping sending function
+            InvokeRepeating("sendPing", 0.0f, 2f);
 
             persistentDataPath = Application.persistentDataPath;
 
