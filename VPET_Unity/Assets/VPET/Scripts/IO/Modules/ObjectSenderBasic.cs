@@ -365,6 +365,20 @@ namespace vpet
                         msg[1] = (byte)paramType;
                     }
                     break;
+                case ParameterType.CHARACTERTARGET:
+                    {
+                        Vector3 targetPos = sceneObject.targetTranslation;
+
+                        msg = new byte[18];
+
+                        msg[0] = cID;
+                        msg[1] = (byte)paramType;
+                        Buffer.BlockCopy(BitConverter.GetBytes((Int32)sceneObject.id), 0, msg, 2, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(targetPos.x), 0, msg, 6, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(targetPos.y), 0, msg, 10, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(targetPos.z), 0, msg, 14, 4);
+                    }
+                    break;
                 default:
                     {
                         Debug.Log("Unknown paramType in ObjectSenderBasic:SendObject");

@@ -214,6 +214,13 @@ void ZeroMQHandler::run()
                 }
                 sender_->send(message);
             }
+            else if (paramType == CHARACTERTARGET)
+            {
+                //send to all zerMQ clients (most relevant for the scene server)
+                sender_->send(message);
+                //send to animation engine over TCP
+                socketExternal_->send(message);
+            }
             else if (paramType != PING){
                 if(paramType != HIDDENLOCK)
                     objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));

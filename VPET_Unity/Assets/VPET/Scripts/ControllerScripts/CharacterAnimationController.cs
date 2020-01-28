@@ -35,6 +35,7 @@ namespace vpet
     {
         private Animator animator;
         public Quaternion[] animationState;
+        public Quaternion[] animationInitState;
         public Vector3 bodyPosition;
         private int numHBones;
         private MainController mainController;
@@ -46,6 +47,11 @@ namespace vpet
             animator = this.GetComponent<Animator>();
             numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length - 1;
             animationState = new Quaternion[numHBones];
+            animationInitState = new Quaternion[numHBones];
+            for (int i = 1; i < numHBones; i++)
+            {
+                animationInitState[i] = this.GetComponent<Animator>().avatar.humanDescription.skeleton[i].rotation;
+            }
         }
 
         // Update is called once per frame
@@ -56,7 +62,8 @@ namespace vpet
 
             for (int i = 1; i < numHBones; i++)
             {
-                animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
+                if(!(animationState[i] == Quaternion.identity))
+                    animator.SetBoneLocalRotation((HumanBodyBones)i, animationState[i]);
             }
 
             animator.bodyPosition = bodyPosition;

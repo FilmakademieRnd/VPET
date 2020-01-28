@@ -43,7 +43,8 @@ namespace vpet
         COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
         BONEANIM, // animation bone
         VERTEXANIM, // animation vertex
-        PING, RESENDUPDATE  // sync and ping
+        PING, RESENDUPDATE,  // sync and ping
+        CHARACTERTARGET
     }
 
     public static class VPETRegister

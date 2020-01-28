@@ -53,14 +53,15 @@ public:
     //request this process to stop working
     void requestStop();
 
-    static enum ParameterType
+    enum ParameterType
     {
         POS, ROT, SCALE, LOCK, HIDDENLOCK, KINEMATIC, // node
         FOV, ASPECT, FOCUSDIST, FOCUSSIZE, APERTURE,   // camera
         COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
         BONEANIM, // animation bone
         VERTEXANIM, // animation vertex
-        PING, RESENDUPDATE  // sync and ping
+        PING, RESENDUPDATE,  // sync and ping
+        CHARACTERTARGET
     };
 
     int CharToInt(const char* buf);

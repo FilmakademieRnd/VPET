@@ -63,11 +63,14 @@ namespace vpet
 	    }
 	
 	    //!
-	    //!
+	    //! function executing the pointToMove translation and hiding the pointToMoveIdentifier
         //!
-	    public void hidePointToMoveIdentifier(Vector3 pos){
-	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode)){
-	            if (cameraPointMove){
+	    public void hidePointToMoveIdentifier(Vector3 pos)
+        {
+	        if (pos != new Vector3(float.MaxValue, float.MaxValue, float.MaxValue) && (activeMode == Mode.pointToMoveMode))
+            {
+	            if (cameraPointMove)
+                {
 	                //use camera as target for the translation
 	                Camera.main.GetComponent<MoveCamera>().smoothTranslate(new Vector3(pos.x, Camera.main.transform.position.y, pos.z));
 	            }
@@ -84,7 +87,15 @@ namespace vpet
                         }
                         else
                         {
-                            currentSceneObject.smoothTranslate(new Vector3(pos.x, currentSelection.position.y, pos.z));
+                            if (currentSceneObject.isAnimatedCharacter)
+                            {
+                                currentSceneObject.targetTranslation = pos;
+                                serverAdapter.SendObjectUpdate(this.currentSceneObject, ParameterType.CHARACTERTARGET);
+                            }
+                            else
+                            {
+                                currentSceneObject.smoothTranslate(new Vector3(pos.x, currentSelection.position.y, pos.z));
+                            }
                         }
                     }
                     else // TODO: what is this for?

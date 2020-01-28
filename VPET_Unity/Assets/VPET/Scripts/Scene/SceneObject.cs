@@ -151,7 +151,7 @@ namespace vpet
 		//!
 		//! final target position of current translation
 		//!
-		private Vector3 targetTranslation = Vector3.zero;
+		public Vector3 targetTranslation = Vector3.zero;
         
 		//!
 		//! enable / disable smooth translation
