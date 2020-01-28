@@ -77,22 +77,26 @@ int ZeroMQHandler::CharToInt(const char* buf)
 
 void ZeroMQHandler::run()
 {
-    int timeout = 5;
 
     socket_ = new zmq::socket_t(*context_,ZMQ_SUB);
-    socket_->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof (int));
+    //socket_->setsockopt(ZMQ_RCVTIMEO, 0, sizeof(int));
     socket_->bind(QString("tcp://"+IPadress+":5557").toLatin1().data());
     socket_->setsockopt(ZMQ_SUBSCRIBE,"client",0);
     socket_->setsockopt(ZMQ_SUBSCRIBE,"ncam",0);
     socket_->setsockopt(ZMQ_SUBSCRIBE,"recorder",0);
 
     socketExternal_ = new zmq::socket_t(*context_,ZMQ_ROUTER);
-    socketExternal_->setsockopt(ZMQ_RCVTIMEO, &timeout, sizeof(int));
+    //socketExternal_->setsockopt(ZMQ_RCVTIMEO, 0, sizeof(int));
     socketExternal_->setsockopt(ZMQ_ROUTER_RAW, 1);
     socketExternal_->bind(QString("tcp://"+IPadress+":5558").toLatin1().data());
 
     sender_ = new zmq::socket_t(*context_,ZMQ_PUB);
     sender_->bind(QString("tcp://"+IPadress+":5556").toLatin1().data());
+
+    zmq::pollitem_t items [] = {
+            { static_cast<void*>(*socket_), 0, ZMQ_POLLIN, 0 },
+            { static_cast<void*>(*socketExternal_), 0, ZMQ_POLLIN, 0 }
+        };
 
     qDebug()<<"Starting ZeroMQHandler";// in Thread " << thread()->currentThreadId();
 
@@ -108,10 +112,14 @@ void ZeroMQHandler::run()
         zmq::message_t message;
 
         //try to receive a zeroMQ message
-        socket_->recv(&message);
+        zmq::poll (&items [0], 2, -1);
 
-        //if there has not been a message received after timeout
-        if(message.size() == 0)
+        if (items [0].revents & ZMQ_POLLIN)
+        {
+            //try to receive a zeroMQ message
+            socket_->recv(&message);
+        }
+        if (items [1].revents & ZMQ_POLLIN)
         {
             //try to receive an external (standard TCP) message
             zmq::message_t messageID;
@@ -120,16 +128,19 @@ void ZeroMQHandler::run()
             if(message.size() != 0)
             {
                 msgIsExternal = true;
-                char* rawDataExt = static_cast<char*>(malloc((message.size()-1)*sizeof(char)));
-                memcpy(rawDataExt, message.data(), message.size()-1);
-                QByteArray msgArrayExt = QByteArray(rawDataExt, static_cast<int>(message.size()-1));
-
-                std::cout << "ExtMsg (" << msgArrayExt.length() << "): ";
-                foreach(const char c, msgArrayExt)
+                if(_debug)
                 {
-                    std::cout << c;
+                    char* rawDataExt = static_cast<char*>(malloc((message.size()-1)*sizeof(char)));
+                    memcpy(rawDataExt, message.data(), message.size()-1);
+                    QByteArray msgArrayExt = QByteArray(rawDataExt, static_cast<int>(message.size()-1));
+
+                    std::cout << "ExtMsg (" << msgArrayExt.length() << "): ";
+                    foreach(const char c, msgArrayExt)
+                    {
+                        std::cout << c;
+                    }
+                    std::cout << std::endl;
                 }
-                std::cout << std::endl;
             }
         }
 
