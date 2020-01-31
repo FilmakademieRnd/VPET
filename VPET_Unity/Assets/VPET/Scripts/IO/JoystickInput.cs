@@ -643,8 +643,7 @@ public class BuildPostProcessor
             string projectPath = PBXProject.GetPBXProjectPath(path);
             PBXProject project = new PBXProject();
             project.ReadFromFile(projectPath);
-            string targetName = PBXProject.GetUnityTargetName();
-            string targetGUID = project.TargetGuidByName(targetName);
+            string targetGUID = project.GetUnityMainTargetGuid();
 
             project.AddFrameworkToProject(targetGUID, "GameController.framework", false);
 
