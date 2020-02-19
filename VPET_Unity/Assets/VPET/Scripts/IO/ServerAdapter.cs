@@ -25,6 +25,7 @@ https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 using System.Collections;
 using System;
@@ -733,6 +734,17 @@ namespace vpet
                     case ParameterType.RESENDUPDATE:
                         {
                             // only for sync server
+                        }
+                        break;
+                    case ParameterType.CHARACTERTARGET:
+                        {
+#if SCENE_HOST
+                            NavMeshAgent navMeshAgent = sceneObject.transform.GetComponent<NavMeshAgent>();
+                            if (navMeshAgent)
+                                navMeshAgent.destination = new Vector3(BitConverter.ToSingle(msg, 6),
+                                                                        BitConverter.ToSingle(msg, 10),
+                                                                        BitConverter.ToSingle(msg, 14));
+#endif
                         }
                         break;
                     default:

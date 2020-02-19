@@ -466,7 +466,7 @@ namespace vpet
                     nodeGeo.bindPoses[i * 16 + 15] = sRenderer.sharedMesh.bindposes[i].m33;
                 }
 
-                nodeGeo.skinnedMeshBoneIDs = Enumerable.Repeat(-1, 82).ToArray<int>();
+                nodeGeo.skinnedMeshBoneIDs = Enumerable.Repeat(-1, 99).ToArray<int>();
 
                 for (int i = 0; i < sRenderer.bones.Length; i++)
                 {

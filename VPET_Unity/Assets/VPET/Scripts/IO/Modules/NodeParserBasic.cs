@@ -69,9 +69,9 @@ namespace vpet
         public float[] boundExtents;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] boundCenter;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16*80)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16*99)]
         public float[] bindPoses;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 82)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 99)]
         public int[] skinnedMeshBoneIDs;
     };
 
