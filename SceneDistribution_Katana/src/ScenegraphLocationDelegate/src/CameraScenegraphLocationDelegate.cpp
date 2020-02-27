@@ -87,7 +87,8 @@ void* CameraScenegraphLocationDelegate::process(FnKat::FnScenegraphIterator sgIt
         FnAttribute::DoubleAttribute floatAttr = attributesGroup.getChildByName("fov");
         if ( floatAttr.isValid() )
         {
-            nodeCam->fov = hFovToVFov(floatAttr.getValue(70, false));
+            //nodeCam->fov = hFovToVFov(floatAttr.getValue(70, false));
+            nodeCam->fov = floatAttr.getValue(70, false);
         }
         // Near
         floatAttr = attributesGroup.getChildByName("near");
