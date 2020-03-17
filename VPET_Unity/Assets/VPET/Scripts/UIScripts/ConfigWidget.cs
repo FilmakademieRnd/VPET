@@ -35,7 +35,7 @@ namespace vpet
 	public class AmbientIntensityChangedEvent : UnityEvent<float> { }
 	public class VisibilityChangeEvent: UnityEvent<bool> { }
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
     public class FloatChangedEvent : UnityEvent<float> { }
     public class ARColorChangedEvent: UnityEvent<Color> {}
 	public class ToggleARSwitchEvent : UnityEvent<bool> { }
@@ -45,7 +45,7 @@ namespace vpet
 	{
 	    public ConfigEvent SubmitEvent = new ConfigEvent();
 		public AmbientIntensityChangedEvent AmbientChangedEvent = new AmbientIntensityChangedEvent();
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
 		public ToggleARSwitchEvent ToggleAREvent = new ToggleARSwitchEvent();
         public FloatChangedEvent KeyDepthChangedEvent = new FloatChangedEvent();
         public ARColorChangedEvent KeyColorChangedEvent  = new ARColorChangedEvent();
@@ -194,7 +194,7 @@ namespace vpet
             else
             {
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arToggle = childWidget.GetComponent<Toggle>();
                 if (arToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else
@@ -225,7 +225,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKey_toggle.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arKeyToggle = childWidget.GetComponent<Toggle>();
                 if (arKeyToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else
@@ -242,7 +242,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARMatte_toggle.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arMatteToggle = childWidget.GetComponent<Toggle>();
                 if (arMatteToggle == null) Debug.LogError(string.Format("{0}: Cant Component: Toggle.", this.GetType()));
                 else
@@ -260,7 +260,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARKeyPick_button.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arColorPickerButton = childWidget.GetComponent<Button>();
                 if (arColorPickerButton == null) Debug.LogError(string.Format("{0}: Cant Component: Button.", this.GetType()));
 #endif
@@ -284,7 +284,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorPlane.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arColorPicker = childWidget.GetComponent<ColorPicker>();
                 if (arColorPicker == null) Debug.LogError(string.Format("{0}: Cant Component: ColorPicker.", this.GetType()));
                 else
@@ -300,7 +300,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ARColorWheel.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arColorWheel = childWidget.GetComponent<ColorWheel>();
                 if (arColorWheel == null) Debug.LogError(string.Format("{0}: Cant Component: ColorWheel.", this.GetType()));
                 else
@@ -317,7 +317,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: ColorField.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arColorField = childWidget.GetComponent<Image>();
                 if (arColorField == null) Debug.LogError(string.Format("{0}: Cant Component: Image.", this.GetType()));
 #endif                
@@ -329,7 +329,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: KeyRadiusSlider.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arkeyRadiusSlider = childWidget.GetComponent<Slider>();
                 if (arkeyRadiusSlider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
@@ -344,7 +344,7 @@ namespace vpet
             if (childWidget == null) Debug.LogError(string.Format("{0}: Cant Find: KeyThresholdSlider.", this.GetType()));
             else
             {
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 arkeyThresholdSlider = childWidget.GetComponent<Slider>();
                 if (arkeyThresholdSlider == null) Debug.LogError(string.Format("{0}: Cant Component: Slider.", this.GetType()));
                 else
@@ -480,7 +480,7 @@ namespace vpet
                 controllerSpeedSlider.transform.parent.Find("ControllerSpeed_Value").GetComponent<Text>().text = VPETSettings.Instance.controllerSpeed.ToString("n3");
             }
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
 
             // arkey settings
             if (arkeyRadiusSlider)
@@ -578,7 +578,7 @@ namespace vpet
             }
         }
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
         private void OnToggleAr( bool isOn )
         {
             // show/hide ar key toggle

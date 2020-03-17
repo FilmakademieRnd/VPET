@@ -149,8 +149,6 @@ namespace vpet
         private Sprite PerspectiveMenu_PrincipalCam_sel;
         private Sprite PerspectiveMenu_Snapshot_nrm;
         private Sprite PerspectiveMenu_Snapshot_sel;
-        private Sprite PerspectiveMenu_Tango_nrm;
-        private Sprite PerspectiveMenu_Tango_sel;
         private Sprite ScoutMode_Aperture_nrm;
         private Sprite ScoutMode_Aperture_sel;
         private Sprite ScoutMode_CamSettings_nrm;

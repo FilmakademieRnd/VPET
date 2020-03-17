@@ -28,8 +28,8 @@ https://opensource.org/licenses/MIT
 using UnityEngine;
 using UnityEngine.Events;
 using System.Reflection;
-#if USE_ARKIT
-using UnityEngine.XR.iOS;
+#if USE_AR
+using UnityEngine.XR.ARFoundation;
 #endif
 
 //!
@@ -38,9 +38,6 @@ using UnityEngine.XR.iOS;
 //!
 namespace vpet
 {
-	// public class GravityChangeEvent : UnityEvent<bool> { }
-	// public class VPETBoolEvent : UnityEvent<bool> { }
-
 	public partial class MainController : MonoBehaviour
     {
 
@@ -49,27 +46,19 @@ namespace vpet
 
         public GameObject arCoverSphere;
 
+        //is AR currently used
 		public bool arMode;
+        //is AR currently setup (placing scene in camera view)
+        public bool arSetupMode;
+
         public bool lockARRotation;
         public bool lockARScale;
 
 
-#if USE_ARKIT
+#if USE_AR
 		private GameObject m_anchorModifier = null;
 		private GameObject m_anchorPrefab = null;
 #endif
-
-        /*
-	    //!
-	    //! check if screen position is on an active GUI element & get id of the button at screen position
-	    //! @param      pos     position on screen (z is always 0)
-	    //! @return     id of button under screen position, -1 if none
-	    //!
-	    public int getGuiElementId(Vector3 pos)
-	    {
-	        return ui.getButtonId(new Vector2(pos.x, Screen.height - pos.y)); ;
-	    }
-		*/
 
         //!
         //! move the camera relative to last position
@@ -77,7 +66,15 @@ namespace vpet
         //!
         public void moveCameraObject(Vector3 translation)
         {
-            Camera.main.transform.Translate(translation * VPETSettings.Instance.controllerSpeed * VPETSettings.Instance.sceneScale * ( VPETSettings.Instance.maxExtend/ 3000f));
+            Vector3 camSpaceTranslation = translation * VPETSettings.Instance.controllerSpeed * VPETSettings.Instance.sceneScale * (VPETSettings.Instance.maxExtend / 3000f);
+#if USE_AR //&& !UNITY_EDITOR
+            if (!arMode)
+            {
+                GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform,Camera.main.transform.rotation * -camSpaceTranslation);
+            }
+#else
+            Camera.main.transform.Translate(camSpaceTranslation);
+#endif
         }
 
         //!
@@ -93,52 +90,6 @@ namespace vpet
         //! switch wether a standalone windows version will recive klicks or touch events
         //!
         public bool standaloneReceivesClicks = false;
-
-        /*
-	    //!
-	    //! check if screen position is on color or intensity picker (in light mode)
-	    //! @param      pos     position on screen (z is always 0)
-	    //! @return     true if no GUI Element at screen position
-	    //!
-	    public bool isOnLightSettingsPicker(Vector3 pos)
-	    {
-	        return ui.isOnLightSettingsPicker(pos);
-	    }
-		*/
-
-        /*
-	    //!
-	    //! update the light parameters when beeing in lightEditing mode based on the mouse position on GUI
-	    //! @param      pos     position on screen (z is always 0)
-	    //!
-	    public void updateLight(Vector3 pos)
-	    {
-	        Color newColor = ui.getColorPickerValue(pos);
-	        if (newColor != new Color(0, 0, 0, 0))
-	        {
-	            if (currentSelection) currentSceneObject.setLightColor(newColor);
-	            return;
-	        }
-	        float newIntensity = ui.getIntensityPickerValue(pos);
-	        if (newIntensity != -1)
-	        {
-	            if (currentSelection) currentSceneObject.setLightIntensity(newIntensity * 8.0f);
-	            return;
-	        }
-	        float newDeltaRange = ui.getRangePickerDeltaValue(pos);
-	        if (newDeltaRange != 0)
-	        {
-	            if (currentSelection) currentSceneObject.setLightDeltaRange(newDeltaRange);
-	            return;
-	        }
-	        float newAngle = ui.getAnglePickerValue(pos);
-	        if (newAngle != -1)
-	        {
-	            if (currentSelection) currentSceneObject.setLightAngle(newAngle);
-	            return;
-	        }
-	    }
-		*/
 
 	
 	    //!
@@ -232,21 +183,6 @@ namespace vpet
 			cameraAdapter.setMove( isOn );
 
 			VPETSettings.Instance.msg = "Ncam set: " + serverAdapter.receiveNcam.ToString();
-
-			/*
-			if (serverAdapter.receiveNcam) 
-			{
-				serverAdapter.receiveNcam = false;
-	            camObject.GetComponent<Renderer>().enabled = true;
-				cameraAdapter.setMove(true);
-			}
-			else
-			{
-				serverAdapter.receiveNcam = true;
-	            camObject.GetComponent<Renderer>().enabled = false;
-				cameraAdapter.setMove(false);
-			}
-			*/
 		}
 	
 	    //!
@@ -275,12 +211,14 @@ namespace vpet
                 cameraAdapter.setMove(true);
 				currentCameraView = View.PERSP;
             }
-
-			// restore previous view, e.g. when returning from orthographic view
-			Camera.main.transform.position = camPreviousPosition;
+#if USE_AR
+            GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, -camPreviousPosition, camPreviousRotation);
+#else
+            // restore previous view, e.g. when returning from orthographic view
+            Camera.main.transform.position = camPreviousPosition;
 			Camera.main.transform.rotation = camPreviousRotation;
-
-		}
+#endif
+        }
 
         public void resetCameraOffset()
         {
@@ -302,7 +240,18 @@ namespace vpet
                     GameObject camGeometry = camObject.transform.GetChild(0).gameObject;
                     camGeometry.SetActive(false);
                     cameraAdapter.registerNearObject(camGeometry);
-
+#if USE_AR
+                    scene.transform.position = Vector3.zero;
+                    scene.transform.rotation = Quaternion.identity;
+                    GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, Camera.main.transform.position);
+                    Quaternion newRotation = Camera.main.transform.rotation * Quaternion.Inverse(camObject.transform.rotation);
+                    GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, newRotation);
+                    Vector3 newPosition = -(camObject.transform.position + Camera.main.transform.position);
+                    GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, newPosition);
+                    Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
+                    Camera.main.farClipPlane = soc.far;
+                    Camera.main.fieldOfView = soc.fov;
+#else
                     Camera.main.transform.position = camObject.transform.position; 
                     Camera.main.transform.rotation = camObject.transform.rotation;          
                     Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
@@ -311,7 +260,7 @@ namespace vpet
 
                     // callibrate 
                     cameraAdapter.calibrate(camObject.transform.rotation);
-
+#endif
                     // set camera properties
                     CameraObject camScript = camObject.GetComponent<CameraObject>();
                     if (camScript != null)
@@ -321,10 +270,6 @@ namespace vpet
                                                                  //Camera.main.farClipPlane = camScript.far * VPETSettings.Instance.sceneScale;
                         UpdatePropertiesSecondaryCameras();
                     }
-                    // set properties for DOF component from CameraObject
-                    //Camera.main.GetComponent<DepthOfField>().focalLength = camScript.focDist;
-                    //Camera.main.GetComponent<DepthOfField>().focalSize = camScript.focSize;
-                    //Camera.main.GetComponent<DepthOfField>().aperture = camScript.aperture;
                 }
                 if (SceneLoader.SceneCameraList.Count == 0)
                     camPrefabPosition = 0;
@@ -423,20 +368,6 @@ namespace vpet
             // draw main menu 
             ui.drawMainMenuButton(true);
 
-
-
-
-
-			/*
-            // HACK to invoke
-            MenuButton configButton = GameObject.Find("GUI/Canvas/UI/mainMenuObject/3_GeneralMenu_Settings_sel").GetComponent<MenuButton>();
-            configButton.onClick.Invoke();
-            configButton.Toggled = true;
-			*/
-
-
-
-
             // set values in config widget according to vpet setting
 			ConfigWidget configWidget = ui.drawConfigWidget();
 			VPETSettings.mapValuesToObject(configWidget);
@@ -481,7 +412,7 @@ namespace vpet
         //!
         public void hideARWidgets()
         {
-#if USE_ARKIT
+#if USE_AR
             GameObject arPlanes = GameObject.Find("ARPlanes");
             if (arPlanes)
             {
@@ -494,12 +425,6 @@ namespace vpet
                 m_anchorModifier.SetActive(false);
                 GameObject.Destroy(m_anchorModifier);
                 m_anchorModifier = null;
-            }
-
-            GameObject root = GameObject.Find("Scene");
-            if (root)
-            {
-                GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
             }
 #endif
         }
@@ -532,76 +457,43 @@ namespace vpet
             ui.changeARLockScaleButtonImage(lockARScale);
         }
 
+        //! function called when user selects/deselects AR Tobble in ConfigWidget
         public void ToggleArMode(bool active)
         {
 			arMode = active;
+
 			ui.setupSecondaryMenu ();
-#if USE_ARKIT
+#if USE_AR
 			GameObject root = GameObject.Find("Scene");
-			GameObject arPlanes = GameObject.Find("ARPlanes");
-			GameObject arKit = GameObject.Find("ARKit");
-			TouchInput input = inputAdapter.GetComponent<TouchInput>();
+			//TouchInput input = inputAdapter.GetComponent<TouchInput>();
 			GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
 			GameObject rootScene = SceneLoader.scnRoot;
+            GameObject cameraParent = GameObject.Find("Cameras");
+            GameObject arSession = GameObject.Find("ARSession");
 
-			if (m_anchorPrefab == null)
+            //arFoundation.GetComponent<ARSessionOrigin>().enabled = active;
+            //arFoundation.GetComponent<ARRaycastManager>().enabled = active;
+            //arFoundation.GetComponent<ARAnchorManager>().enabled = active;
+            //arFoundation.GetComponent<ARTrackedImageManager>().enabled = active;
+            //arSession.GetComponent<ARSession>().enabled = active;
+            //arSession.GetComponent<ARInputManager>().enabled = active;
+
+            if (m_anchorPrefab == null)
 				m_anchorPrefab = Resources.Load ("VPET/Prefabs/AnchorModifier", typeof(GameObject)) as GameObject;
 
-			if (input)
- 				input.enabled = !active;
+			//if (input)
+ 			//	input.enabled = !active;
 				
 #endif
             if (active)
             {
-#if USE_TANGO
-				sceneAdapter.HideGeometry();
-                tangoApplication.m_enableVideoOverlay = true;
-                tangoApplication.m_videoOverlayUseTextureMethod = true;
-                TangoARScreen tangoArScreen = Camera.main.gameObject.GetComponent<TangoARScreen>();
-                if (tangoArScreen == null) 
-                    tangoArScreen = Camera.main.gameObject.AddComponent<TangoARScreen>();
-                tangoArScreen.enabled = true;
-#elif USE_ARKIT
+#if USE_AR
                 //avoids object updates while placing, scaling, rotating scene in AR setup
                 lockScene = true;
-                // reset camera
-                cameraAdapter.globalCameraReset();
-                //resetCameraOffset();
-                Camera.main.transform.position = Vector3.zero;
-                Camera.main.transform.rotation = Quaternion.identity;
-                //Camera.main.fieldOfView = 60;
-                //Camera.main.nearClipPlane = 0.1f;
-                //Camera.main.farClipPlane = 100000;
+
                 // enable video background
+                cameraAdapter.transform.GetComponent<ARCameraBackground>().enabled = true;
 
-				ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
-                if (arkitScreen == null) 
-					arkitScreen = Camera.main.gameObject.AddComponent<ARScreen>();
-				
-				if (arKit)
-				{
-					ARKitController arController = arKit.GetComponent<ARKitController>();
-					if (arController)
-						arController.setARMode(true);
-				}
-
-				// enable plane alignment
-				if (root)
-				{
-					ARPlaneAlignment hitTest = root.GetComponent<ARPlaneAlignment>();
-					if (hitTest == null) {
-						hitTest = root.AddComponent<ARPlaneAlignment>();
-						hitTest.m_HitTransform = root.transform;
-					}
-				}
-				// enable plane visualisation
-				if (arPlanes)
-				{
-					ARPlane arPlaneComponent = arPlanes.GetComponent<ARPlane>();
-					if (arPlaneComponent == null) {
-						arPlaneComponent = arPlanes.AddComponent<ARPlane>();
-					}
-				}
 				// create anchor modifier
 				if (m_anchorModifier == null) 
 				{
@@ -617,43 +509,31 @@ namespace vpet
 					if (root)
 						m_anchorModifier.transform.SetParent(root.transform, false);
 				}
+
+                //hide config widget
                 ui.hideConfigWidget();
+
 				//hide scene while placing AR anchor
 				//rootScene.SetActive(false);
+
+                //show AR config widget
 				arConfigWidget.SetActive(true);
+                arSetupMode = true;
+
+                //reset scene scale
                 SetSceneScale(VPETSettings.Instance.sceneScale);
-                //arConfigWidget.transform.Find("scale_value").GetComponent<Text>().text;
 
                 //initalize ar lock buttons
                 ui.changeARLockRotationButtonImage(lockARRotation);
                 ui.changeARLockScaleButtonImage(lockARScale);
-
 #endif
             }
             else
             {
-#if USE_TANGO
-                Camera.main.gameObject.GetComponent<TangoARScreen>().enabled = false;
-                GameObject.Destroy(Camera.main.GetComponent<TangoARScreen>());
-                tangoApplication.m_enableVideoOverlay = false;
-#elif USE_ARKIT
-				if (arKit)
-				{
-					ARKitController arController = arKit.GetComponent<ARKitController>();
-					if (arController)
-						arController.setARMode(false);
-				}
-				// destroy video background
-				GameObject.Destroy(Camera.main.GetComponent<ARScreen>());
-				if (root)
-				{
-					GameObject.Destroy(root.GetComponent<ARPlaneAlignment>());
-				}
-				// destroy plane visualisation
-				if (arPlanes)
-				{
-					GameObject.Destroy(arPlanes.GetComponent<ARPlane>());
-				}
+#if USE_AR
+                // destroy video background
+                cameraAdapter.transform.GetComponent<ARCameraBackground>().enabled = false;
+
 				// disable anchor visualisation
 				if (m_anchorModifier) {
 					m_anchorModifier.SetActive(false);
@@ -661,11 +541,21 @@ namespace vpet
 					m_anchorModifier = null;
 				}
 #endif
-				// reset cameras to defaults
-                Camera.main.ResetProjectionMatrix();
+
+                //free scene from AR anchor
+                cameraParent.GetComponent<ARFoundationController>().removeAnchor();
+                /*arSession.GetComponent<ARSession>().enabled = false;
+                arSession.GetComponent<ARSession>().Reset();
+                Camera.main.transform.parent.parent.localPosition = Vector3.zero;
+                Camera.main.transform.parent.parent.localRotation = Quaternion.identity;
+                Camera.main.transform.parent.localPosition = Vector3.zero;
+                Camera.main.transform.parent.localRotation = Quaternion.identity;
+                Camera.main.transform.localPosition = Vector3.zero;
+                Camera.main.transform.localRotation = Quaternion.identity;
+                arSession.GetComponent<ARSession>().enabled = true;*/
                 SetSceneScale(1f);
-				repositionCamera();
-                UpdateProjectionMatrixSecondaryCameras();
+                repositionCamera();
+
                 sceneAdapter.ShowGeometry();
 
             }
@@ -674,31 +564,32 @@ namespace vpet
 
         }
 
-#if USE_ARKIT
+#if USE_AR
 		public void ToggleARKeyMode(bool active)
 		{
-			ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
-            if (arkitScreen == null) 
-				return;
-
-			Shader shader = Shader.Find("VPET/ARCameraShader");
-			if (active)
-				shader = Shader.Find("VPET/ARCameraShaderChromaKey");
-
-			if (shader)
-				arkitScreen.m_ClearMaterial.shader = shader;
-		}
+            if (active)
+            {
+                Camera.main.transform.GetComponent<ARCameraBackground>().enabled = false;
+                Camera.main.transform.GetChild(0).GetComponent<ARCameraBackground>().enabled = true;
+            }
+            else
+            {
+                Camera.main.transform.GetChild(0).GetComponent<ARCameraBackground>().enabled = false;
+                Camera.main.transform.GetComponent<ARCameraBackground>().enabled = true;
+            }
+            //Shader shader = Shader.Find("VPET/ARCameraShader");
+            //if (active)
+            //	shader = Shader.Find("VPET/ARCameraShaderChromaKey");
+            //GameObject.Find("RenderInFrontCamera").GetComponent<ARCameraBackground>().customMaterial.shader = shader;
+        }
 #endif
 
 
 
-#if USE_ARKIT
+#if USE_AR
         public void ToggleARMatteMode(bool active)
         {
-            
-            ARScreen arkitScreen = Camera.main.gameObject.GetComponent<ARScreen>();
-            if (arkitScreen == null)
-                return;
+            Material camMaterial = cameraAdapter.transform.GetComponent<ARCameraBackground>().material;
 
             if (arCoverSphere != null)
                 arCoverSphere.SetActive(active);
@@ -707,9 +598,9 @@ namespace vpet
             {
                 if (matteMaterial != null)
                 {
-                    matteMaterial.SetTexture("_textureY", arkitScreen.m_ClearMaterial.GetTexture("_textureY"));
-                    matteMaterial.SetTexture("_textureCbCr", arkitScreen.m_ClearMaterial.GetTexture("_textureCbCr"));
-                    matteMaterial.SetMatrix("_DisplayTransform", arkitScreen.m_ClearMaterial.GetMatrix("_DisplayTransform"));
+                    matteMaterial.SetTexture("_textureY", camMaterial.GetTexture("_textureY"));
+                    matteMaterial.SetTexture("_textureCbCr", camMaterial.GetTexture("_textureCbCr"));
+                    matteMaterial.SetMatrix("_DisplayTransform", camMaterial.GetMatrix("_DisplayTransform"));
                 }
             }
             else
@@ -743,6 +634,7 @@ namespace vpet
                 cam.fieldOfView = Camera.main.fieldOfView;
                 cam.nearClipPlane =  Camera.main.nearClipPlane;
                 cam.farClipPlane = Camera.main.farClipPlane;
+                cam.projectionMatrix = Camera.main.projectionMatrix;
             }
         }
 
@@ -790,36 +682,37 @@ namespace vpet
         {
             v = Mathf.Max(v,0.00001f);
             // scale the scene
-            SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
+            //SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
+            GameObject.Find("Cameras").transform.GetChild(0).localScale = new Vector3(1f / v, 1f / v, 1f / v);
 
-            float sceneScalePrevious = VPETSettings.Instance.sceneScale;
+            //float sceneScalePrevious = VPETSettings.Instance.sceneScale;
             VPETSettings.Instance.sceneScale = v;
 
             // update light params
-            foreach (GameObject obj in SceneLoader.SelectableLights)
-            {
-                float lightRange = obj.GetComponent<SceneObjectLight>().getLightRange() / sceneScalePrevious * v;
-                obj.GetComponent<SceneObjectLight>().setLightRange(lightRange);
-                //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
-                obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
-            }
+            //foreach (GameObject obj in SceneLoader.SelectableLights)
+            //{
+            //    float lightRange = obj.GetComponent<SceneObjectLight>().getLightRange() / sceneScalePrevious * v;
+            //    obj.GetComponent<SceneObjectLight>().setLightRange(lightRange);
+            //    //obj.GetComponent<SceneObject>().SourceLight.transform.localScale = Vector3.one / VPETSettings.Instance.sceneScale;
+            //    obj.GetComponentInChildren<LightIcon>().TargetScale = obj.transform.lossyScale;
+            //}
 
             ui.updateScaleValue(v);
-            Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
-            float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
-            QualitySettings.shadowDistance = v * maxExtend * 0.15f;
+            //Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
+            //float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+            //QualitySettings.shadowDistance = v * maxExtend * 0.15f;
             //Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend * v);
             //Camera.main.farClipPlane = Mathf.Max(100f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend * v));
-            Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
+            //Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
 
             /*foreach (Rigidbody rigi in FindObjectsOfType<Rigidbody>())
             {
                 rigi.mass = 0.1f * maxExtend * v;
             }*/
 
-            VPETSettings.Instance.maxExtend = maxExtend;
+            //VPETSettings.Instance.maxExtend = maxExtend;
             // update camera params
-            UpdatePropertiesSecondaryCameras();
+            //UpdatePropertiesSecondaryCameras();
         }
 
 
@@ -832,21 +725,15 @@ namespace vpet
             }
         }
 
-#if USE_ARKIT
+#if USE_AR
 		public void setARKeyDepth(float v)
 		{
-            if (Camera.main.GetComponent<ARScreen>() != null)
-            {
-                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Depth", v);
-            }
+            GameObject.Find("RenderInFrontCamera").GetComponent<ARCameraBackground>().customMaterial.SetFloat("_Depth", v);
 		}
 
 		public void setARKeyColor(Color c)
 		{
-            if (Camera.main.GetComponent<ARScreen>() != null)
-            {
-                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetColor("_KeyColor", c);
-            }	
+            GameObject.Find("RenderInFrontCamera").GetComponent<ARCameraBackground>().customMaterial.SetColor("_KeyColor", c);
 
             if (matteMaterial)
                 matteMaterial.SetColor("_KeyColor", c);
@@ -854,20 +741,14 @@ namespace vpet
 
 		public void setARKeyRadius(float v)
 		{
-            if (Camera.main.GetComponent<ARScreen>() != null)
-            {
-                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Radius", v);
-            }						
+            GameObject.Find("RenderInFrontCamera").GetComponent<ARCameraBackground>().customMaterial.SetFloat("_Radius", v);					
             if (matteMaterial)
                 matteMaterial.SetFloat("_Radius", v);
 		}
 
 		public void setARKeyThreshold(float v)
 		{
-            if (Camera.main.GetComponent<ARScreen>() != null)
-            {
-                Camera.main.GetComponent<ARScreen>().m_ClearMaterial.SetFloat("_Threshold", v);
-            }						
+            GameObject.Find("RenderInFrontCamera").GetComponent<ARCameraBackground>().customMaterial.SetFloat("_Threshold", v);			
             if (matteMaterial)
                 matteMaterial.SetFloat("_Threshold", v);
 		}

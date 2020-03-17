@@ -25,6 +25,9 @@ https://opensource.org/licenses/MIT
 -----------------------------------------------------------------------------
 */
 using UnityEngine;
+#if USE_AR
+using UnityEngine.XR.ARFoundation;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -184,16 +187,11 @@ namespace vpet
         public bool doApplyRotation = true;
 
         //!
-        //! Lenovo Phab 2 needs flipped axis
-        //!
-        public bool TangoBuild4LenovoPhab2 = false;
-
-        //!
         //! Current main camera
         //!
         private Camera mainCamera;
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
         private Transform trackingTransform;
 #endif
         private Transform cameraParent;
@@ -271,10 +269,8 @@ namespace vpet
             if (refObject != null) mainController = refObject.GetComponent<MainController>();
             if (mainController == null) Debug.LogError(string.Format("{0}: No MainController found.", this.GetType()));
 
-#if USE_TANGO
-            trackingTransform = GameObject.Find("Tango").transform;
-#elif USE_ARKIT
-            trackingTransform = GameObject.Find("ARKit").transform;
+#if USE_AR
+            trackingTransform = GameObject.Find("Cameras").transform;
 #else
             Camera.main.transform.parent.transform.Rotate(Vector3.right, 90);
 #endif
@@ -285,6 +281,13 @@ namespace vpet
         //!
         void Update()
         {
+            //ArFoundation Hack when Anchors get disabled
+            if (!mainController.arMode)
+            {
+                scene.transform.rotation = Quaternion.identity;
+                scene.transform.position = Vector3.zero;
+            }
+
             mainController.UpdatePropertiesSecondaryCameras();
 
             //get sensor data from native Plugin on Windows
@@ -302,10 +305,7 @@ namespace vpet
 
 #if !UNITY_EDITOR
 #if (UNITY_ANDROID || UNITY_IOS)
-#if USE_TANGO || USE_ARKIT
-                newRotation = trackingTransform.rotation;
-                newPosition = trackingTransform.position;
-#else
+#if !USE_AR
                 newRotation = gyroAdapter.Rotation;
 #endif
 #elif UNITY_STANDALONE_WIN
@@ -322,24 +322,13 @@ namespace vpet
 						}
                         firstApplyTransform = true;
                     }
-                    //grab sensor reading on current platform
-#if !UNITY_EDITOR
-#if (UNITY_ANDROID) && !(USE_TANGO || UNITY_IOS)
-                    transform.localRotation = rotationOffset * Quaternion.Euler(0,0,55) * newRotation;
-#elif UNITY_STANDALONE_WIN
+
+#if !UNITY_EDITOR &&!USE_AR
                     transform.rotation = rotationOffset * newRotation;
-#else
-                    if (TangoBuild4LenovoPhab2)
-                        transform.rotation = rotationOffset * new Quaternion (-newRotation.y, newRotation.x, newRotation.z, newRotation.w) ;
-                    else
-                        transform.rotation = rotationOffset * newRotation;
+#if !UNITY_STANDALONE_WIN
                     // HACK: to block roll
 					if (!mainController.arMode && mainController.ActiveMode != MainController.Mode.lookThroughLightMode )
                     	transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, 0);
-                    //transform.rotation *= newRotation * Quaternion.Inverse(oldRotation);
-#if USE_TANGO || USE_ARKIT
-                    cameraParent.position += rotationOffset * (newPosition - oldPosition);
-#endif
 #endif
 #endif
                 }
@@ -350,7 +339,7 @@ namespace vpet
                     firstApplyTransform = false;
                 }
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
                 oldPosition = trackingTransform.position;
                 oldRotation = trackingTransform.rotation;
 #endif
@@ -462,22 +451,6 @@ namespace vpet
 			cameraParent.position = newPosition;
         }
 
-		public void globalCameraReset()
-		{
-			lastPosition = Vector3.zero;
-			rotationOffset = Quaternion.identity;
-			rotationFirst = Quaternion.identity;
-			positionOffset = Vector3.zero;
-			positionFirst = Vector3.zero;
-			oldPosition = Vector3.zero;
-			oldRotation = Quaternion.identity;
-			newPosition = Vector3.zero;
-			newRotation = Quaternion.identity;
-
-			GameObject scene = GameObject.Find("Scene");
-			scene.transform.position = Vector3.zero;
-		}
-
         //!
         //! initalize a smooth translation of the camera to a given point
         //! @param    position    world position to send the camera to
@@ -518,10 +491,9 @@ namespace vpet
         public void setMove(bool set)
         {
             move = set;
-
-            // HACK TANGO
-            mainController.setTangoActive(set);
-
+#if USE_AR
+            GameObject.Find("ARSession").GetComponent<ARSession>().enabled = set;
+#endif
         }
 
         //!

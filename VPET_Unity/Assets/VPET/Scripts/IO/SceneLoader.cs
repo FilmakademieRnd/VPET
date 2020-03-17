@@ -202,10 +202,13 @@ namespace vpet
 
                 for (int i = 1; i < cp.skeletonMapping.Length; i++)
                 {
-                    skeleton[i].name = SceneLoader.gameObjectList[cp.skeletonMapping[i]].name;
-                    skeleton[i].position = new Vector3(cp.bonePosition[i * 3], cp.bonePosition[i * 3 + 1], cp.bonePosition[i * 3 + 2]);
-                    skeleton[i].rotation = new Quaternion(cp.boneRotation[i * 4], cp.boneRotation[i * 4 + 1], cp.boneRotation[i * 4 + 2], cp.boneRotation[i * 4 + 3]);
-                    skeleton[i].scale = new Vector3(cp.boneScale[i * 3], cp.boneScale[i * 3 + 1], cp.boneScale[i * 3 + 2]);
+                    if (cp.skeletonMapping[i] != -1)
+                    {
+                        skeleton[i].name = SceneLoader.gameObjectList[cp.skeletonMapping[i]].name;
+                        skeleton[i].position = new Vector3(cp.bonePosition[i * 3], cp.bonePosition[i * 3 + 1], cp.bonePosition[i * 3 + 2]);
+                        skeleton[i].rotation = new Quaternion(cp.boneRotation[i * 4], cp.boneRotation[i * 4 + 1], cp.boneRotation[i * 4 + 2], cp.boneRotation[i * 4 + 3]);
+                        skeleton[i].scale = new Vector3(cp.boneScale[i * 3], cp.boneScale[i * 3 + 1], cp.boneScale[i * 3 + 2]);
+                    }
                 }
                 HumanDescription humanDescription = new HumanDescription();
                 humanDescription.human = human;
@@ -305,6 +308,7 @@ namespace vpet
                 }
                 else if (matPack.type == 2)
                 {
+                    Debug.Log(matPack.src);
                     Material mat = new Material(Shader.Find(matPack.src));
                     mat.name = matPack.name;
                     SceneMaterialList.Add(mat);

@@ -30,6 +30,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Reflection;
+using UnityEngine.XR.ARFoundation;
 
 //!
 //! Central UI Adapter that creates and manages all the different widgets and is the only way to access menu events & functionality from other parts of the app.
@@ -85,15 +86,6 @@ namespace vpet
         //! Cached reference to the main controller.
         //!
         private MainController mainController;
-
-        //!
-        //! Cached reference to the Tango controller.
-        //!
-#if USE_TANGO
-        private TangoController trackingController;
-#elif USE_ARKIT
-        private ARKitController trackingController;
-#endif
 
         //!
         //! Cached reference to the animation controller.
@@ -192,13 +184,6 @@ namespace vpet
 	
 		        //cache reference to animation Controller
 		        animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
-
-#if USE_TANGO
-                //cache reference to tracking Controller
-                trackingController = GameObject.Find("Tango").GetComponent<TangoController>();
-#elif USE_ARKIT
-                trackingController = GameObject.Find("ARKit").GetComponent<ARKitController>();
-#endif
             }
             catch
 			{
@@ -263,7 +248,7 @@ namespace vpet
 			// Ambient light listener
 			configWidget.AmbientChangedEvent.AddListener( mainController.setAmbientIntensity );
 
-#if USE_TANGO || USE_ARKIT
+#if USE_AR
 				configWidget.ToggleAREvent.AddListener(mainController.ToggleArMode);
 				// ar key connects
 				configWidget.KeyDepthChangedEvent.AddListener(mainController.setARKeyDepth);
@@ -438,6 +423,8 @@ namespace vpet
             //reset kinematic properties to previous values
             mainController.lockScene = false;
 
+            mainController.arSetupMode = false;
+
             InputAdapter inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();
 
             TouchInput input = inputAdapter.GetComponent<TouchInput>();
@@ -455,7 +442,7 @@ namespace vpet
 			arKeyWidget.SetActive(true);
             arKeyVideoPlane.SetActive(true);
             //temporarely enable standard chroma key to visualize keying while picking
-#if USE_ARKIT
+#if USE_AR
             mainController.ToggleARMatteMode(false);
             mainController.ToggleARKeyMode(true);
 #endif
@@ -471,7 +458,7 @@ namespace vpet
 			drawConfigWidget();
             arKeyVideoPlane.SetActive(false);
             //reset chroma keying settings
-#if USE_ARKIT
+#if USE_AR
             mainController.ToggleARMatteMode(configWidget.mattModeOn);
             mainController.ToggleARKeyMode(configWidget.keyModeOn);
 #endif

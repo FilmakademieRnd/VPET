@@ -265,25 +265,6 @@ namespace vpet
                 }
             }
         }
-
-        //!
-        //! scale currently selected object uniform on all 3 axis
-        //! @param      scale     new scale of object
-        //!
-        public void scaleSelectionUniform(float scale)
-	    {
-	        if (currentSelection)
-	        {
-	            if (!currentSelection.transform.parent.transform.GetComponent<Light>())
-	            {
-	                currentSelection.transform.localScale = Vector3.Scale(currentSelection.transform.localScale, Vector3.one * scale );
-	                if (liveMode)
-	                {
-                        serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
-                    }
-                }
-	        }
-	    }
 	
         //!
         //! this is the place where the actual modification is executed

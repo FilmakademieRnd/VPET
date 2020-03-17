@@ -209,10 +209,6 @@ namespace vpet
         [HideInInspector]
         public bool TouchInputActive = false;
 
-#if USE_TANGO
-        private Tango.TangoApplication tangoApplication;
-#endif
-
         private bool hasUpdatedProjectionMatrix = false;
 
         private PropertyInfo rangeSliderInfo;
@@ -240,8 +236,8 @@ namespace vpet
             addMode,                    // multiple selection TODO: not implemented yet
             idle,                       // no selection and no action
             animationEditing,           // set animation editing, show translation manipulator
-            lookThroughCamMode,          //  camera scouting mode
-            lookThroughLightMode        //  light scouting mode
+            lookThroughCamMode,         // camera scouting mode
+            lookThroughLightMode        // light scouting mode
         };
 
 
@@ -423,25 +419,6 @@ namespace vpet
                 Debug.LogWarning(string.Format("{0}: No CameraAdapter Component found. Create", this.GetType()));
                 cameraAdapter = Camera.main.gameObject.AddComponent<MoveCamera>();
             }
-
-#if USE_TANGO
-            GameObject tangoObject = GameObject.Find("Tango Manager");
-            if ( tangoObject )
-            {
-                tangoApplication = tangoObject.GetComponent<Tango.TangoApplication>();
-            }
-#endif
-        }
-
-        public void setTangoActive(bool isActive)
-        {
-#if USE_TANGO
-
-            if (tangoApplication)
-            {
-                tangoApplication.m_enableMotionTracking = isActive;
-            }
-#endif
         }
 
 
@@ -496,12 +473,6 @@ namespace vpet
             groundPlane.transform.parent = scene.transform;
             groundPlane.transform.localPosition = Vector3.zero;
             groundPlane.transform.localScale = new Vector3(5000,5000,5000);
-
-            // HACK store command buffers
-            // to restore them when disabling AR mode on Tango
-            //bufBeforeForwardOpaque = Camera.main.GetCommandBuffers(CameraEvent.BeforeForwardOpaque);
-            //bufBeforeGBuffer = Camera.main.GetCommandBuffers(CameraEvent.BeforeGBuffer);
-
         }
     }
 }

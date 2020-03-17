@@ -44,6 +44,14 @@ namespace vpet
 		//!
 		private MainController mainController;
 
+		//!
+		//! Cached reference to ARFoundation controller.
+		//!
+
+#if USE_AR
+		private ARFoundationController arFoundation;
+#endif
+
         //!
         //! Cached reference to scene
         //!
@@ -85,11 +93,16 @@ namespace vpet
 		//! plane on wich raycast is executed when in pointToMove mode
 		//!
         private Plane targetPlane;
-	
-		//!
-		//! is the user currently editing lights
-		//!
-		private bool editingLight = false;
+
+        //!
+        //! initial scene scale when rotating it in AR setup
+        //!
+        private float m_initScale;
+
+        //!
+        //! is the user currently editing lights
+        //!
+        private bool editingLight = false;
 	
 		//!
 		//! is currently one pointer down (pressed)
@@ -109,6 +122,9 @@ namespace vpet
 		{
 	
 			mainController = GameObject.Find("MainController").GetComponent<MainController>();
+#if USE_AR
+			arFoundation = GameObject.Find("Cameras").GetComponent<ARFoundationController>();
+#endif
             scene = GameObject.Find("Scene");
             helpMenu = GameObject.Find("GUI/Canvas/HelpScreen").GetComponent<HelpScreen>();
 
@@ -221,7 +237,6 @@ namespace vpet
 			{ //pause is active when avaoiding double interactions
 				if (!pointerOnGUI())
 				{
-
 					//pointToMove active
 					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
@@ -232,7 +247,8 @@ namespace vpet
 					if (!(mainController.ActiveMode == MainController.Mode.translationMode ||
 						mainController.ActiveMode == MainController.Mode.rotationMode ||
 						mainController.ActiveMode == MainController.Mode.scaleMode ||
-						mainController.ActiveMode == MainController.Mode.animationEditing))
+						mainController.ActiveMode == MainController.Mode.animationEditing ||
+                        mainController.arSetupMode))
 					{
 						//selection mode is active
 						GameObject hitObject = cameraRaycast(pos,defaultLayermask);
@@ -284,12 +300,21 @@ namespace vpet
                 helpMenu.moveMenu(pos);
                 return;
             }
-			if (!pointerOnGUI())
+            if (!pointerOnGUI())
 			{
                 if (!pause)
 				{
-					//pointToMove active
-					if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
+#if USE_AR
+					//AR setup
+					if (mainController.arSetupMode && arFoundation)
+                    {
+                        arFoundation.AddAnchor(new Vector2(pos.x, pos.y));
+                        return;
+                    }
+#endif
+
+                    //pointToMove active
+                    if (mainController.ActiveMode == MainController.Mode.pointToMoveMode)
 					{
                         mainController.movePointToMoveIdentifier(planeRaycast(pos, targetPlane));
 						return;
@@ -325,6 +350,10 @@ namespace vpet
             if (!pointerOnGUI())
             {
                 camMovePos = pos;
+            }
+            if (mainController.arSetupMode)
+            {
+                m_initScale = VPETSettings.Instance.sceneScale;
             }
 		}
 	
@@ -365,9 +394,15 @@ namespace vpet
 		//! pinch to zoom gesture (called by Mouse or Touch Input)
 		//! @param      delta     delta distance between fingers since last frame
 		//!
-		public void pinchToZoom(float delta)
+		public void pinchToZoom(float angle, float distance)
         {
-			mainController.scaleSelectionUniform(delta);
+#if USE_AR
+			if (mainController.arSetupMode && arFoundation)
+            {
+                if (!mainController.lockARScale) mainController.SetSceneScale(m_initScale * distance);
+                if (!mainController.lockARRotation) arFoundation.rotateAnchor(Quaternion.Euler(0, angle, 0));
+            }
+#endif
 		}
 	
 		//!

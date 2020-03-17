@@ -454,7 +454,7 @@ namespace vpet
             // cycle through edit modes
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
             else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
-#elif UNITY_IOS || UNITY_STANDALONE_OSX
+#elif UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_ANDROID
             else if (buttonPressed("L2"))
 #endif
             {
@@ -468,7 +468,7 @@ namespace vpet
                      Input.GetAxis("DPAD_V") != 0 && !hasPressedDirectionalPad)
             {
                 if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
-#elif UNITY_IOS || UNITY_STANDALONE_OSX
+#elif UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_ANDROID
 			else if ( (buttonPressed("DPAD_H")) ||
 					  (buttonPressed("DPAD_H_neg")) ||
 					  (buttonPressed("DPAD_V")) ||

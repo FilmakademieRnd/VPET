@@ -63,11 +63,17 @@ namespace vpet
 	    //! e.g. to avoud touchCount = 3 -> touchCount = 2 but allow touchCount = 3 -> touchCount = 0 -> touchCount = 2
 	    //!
 	    private bool pause = false;
-	
-	    //!
-	    //! Use this for initialization
-	    //!
-	    void Start()
+
+        //!
+        //! Initial Delta distance Vector when second finger touches
+        //!
+        private Vector3 m_initVector;
+        private float m_initDistance;
+
+        //!
+        //! Use this for initialization
+        //!
+        void Start()
 	    {
 	        inputAdapter = GameObject.Find("InputAdapter").GetComponent<InputAdapter>();	
 	    }
@@ -114,7 +120,11 @@ namespace vpet
 	                    }
 						inputAdapter.twoPointerStarted(Input.mousePosition);
 	                    twoPointerDrag = true;
-	                }
+                        m_initDistance = Vector2.Distance(Input.GetTouch(1).position, Input.GetTouch(0).position);
+                        Vector2 initVector2D = Input.GetTouch(1).position - Input.GetTouch(0).position;
+                        m_initVector = new Vector3(initVector2D.x, initVector2D.y, 0.0f);
+
+                    }
 	                else if ((Input.GetTouch(0).phase == TouchPhase.Ended ||
 	                            Input.GetTouch(1).phase == TouchPhase.Ended))
 	                {
@@ -125,17 +135,13 @@ namespace vpet
 	                }
 	                else if (twoPointerDrag)
 	                {
-                        //pointer down and moving
-                        Vector2 touchZeroPrevPos = Input.GetTouch(0).position - Input.GetTouch(0).deltaPosition;
-                        Vector2 touchOnePrevPos = Input.GetTouch(1).position - Input.GetTouch(1).deltaPosition;
-                        float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
-	                    float touchDeltaMag = (Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude;
-	                    float deltaMagnitudeScale = touchDeltaMag/prevTouchDeltaMag;
+                        //pinchToZoom
+                        Vector2 touchDelta = Input.GetTouch(1).position - Input.GetTouch(0).position;
+                        float angle = Vector3.SignedAngle(touchDelta, m_initVector, new Vector3(0, 0, 1));
+                        float distance = Vector2.Distance(Input.GetTouch(1).position, Input.GetTouch(0).position) / m_initDistance;
+                        inputAdapter.pinchToZoom(angle, distance);
 
-                        // TODO: add pinchtToZoom at input adapter if needed 
-                        //inputAdapter.pinchToZoom(deltaMagnitudeScale);
-	
-						inputAdapter.twoPointerDrag(Input.mousePosition);
+                        inputAdapter.twoPointerDrag(Input.mousePosition);
 	
 	                }
 	            }

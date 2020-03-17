@@ -298,7 +298,7 @@ namespace vpet
             gameObjectList.Add(location.gameObject);
 
             foreach (Transform child in location)
-                if (child.gameObject.activeSelf)
+                if (child.gameObject.activeSelf && (child.gameObject.layer == lodMixedLayer || child.gameObject.layer == lodLowLayer))
                     recursiveGameObjectIdExtract(child);
         }
 

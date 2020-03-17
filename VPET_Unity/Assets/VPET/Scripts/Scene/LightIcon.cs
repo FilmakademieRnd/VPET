@@ -37,6 +37,7 @@ namespace vpet
     {
         private Vector3 lastPosition, lastCameraPosition;
         private Quaternion lastCameraRotation;
+        private MainController mainController;
 
         //!
         //! Scene object collider. Size is driven by this class.
@@ -72,6 +73,7 @@ namespace vpet
             renderer = this.GetComponent<Renderer>();
             parentLight = this.transform.parent.GetComponent<Light>();
             renderer.material.color = parentLight.color;
+            mainController = GameObject.Find("MainController").GetComponent<MainController>();
         }
 
         //!
@@ -81,26 +83,32 @@ namespace vpet
         {
             if (renderer)
             {
-                Camera camera = Camera.main;
-                if (lastPosition != this.transform.position ||
-                    lastCameraPosition != camera.transform.position ||
-                    lastCameraRotation != camera.transform.rotation)
+                if (mainController.arSetupMode)
+                    renderer.enabled = false;
+                else
                 {
-                    lastPosition = this.transform.position;
-                    lastCameraPosition = camera.transform.position;
-                    lastCameraPosition = camera.transform.position;
-                    lastCameraRotation = camera.transform.rotation;
-
-                    Vector3 scale = targetScale * (Vector3.Distance(lastPosition, lastCameraPosition) / 30.0f) * (camera.fieldOfView / 30.0f);
-
-                    this.transform.rotation = lastCameraRotation;
-                    this.transform.localScale = scale;
-                    renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b, 1f);
-
-                    // set the same scale to the light's collider
-                    if (targetCollider)
+                    renderer.enabled = true;
+                    Camera camera = Camera.main;
+                    if (lastPosition != this.transform.position ||
+                        lastCameraPosition != camera.transform.position ||
+                        lastCameraRotation != camera.transform.rotation)
                     {
-                        targetCollider.size = scale;
+                        lastPosition = this.transform.position;
+                        lastCameraPosition = camera.transform.position;
+                        lastCameraPosition = camera.transform.position;
+                        lastCameraRotation = camera.transform.rotation;
+
+                        Vector3 scale = targetScale * (Vector3.Distance(lastPosition, lastCameraPosition) / 30.0f) * (camera.fieldOfView / 30.0f);
+
+                        this.transform.rotation = lastCameraRotation;
+                        this.transform.localScale = scale;
+                        renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b, 1f);
+
+                        // set the same scale to the light's collider
+                        if (targetCollider)
+                        {
+                            targetCollider.size = scale;
+                        }
                     }
                 }
             }
