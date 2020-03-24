@@ -173,7 +173,7 @@ namespace vpet
         {
             if (isPointLight || isSpotLight || isAreaLight)
             {
-                return sourceLight.range / VPETSettings.Instance.sceneScale;
+                return sourceLight.range;// / VPETSettings.Instance.sceneScale;
             }
             return float.MaxValue;
         }
@@ -263,7 +263,7 @@ namespace vpet
         {
             if (isPointLight || isSpotLight || isAreaLight)
             {
-                sourceLight.range = range * VPETSettings.Instance.sceneScale;
+                sourceLight.range = range;
                 lastModifiedLightParameter = LightParameter.Range;
                 serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
             }
@@ -303,6 +303,7 @@ namespace vpet
         //!
         public override void hideVisualization(bool set)
         {
+            Debug.Log("LightGEO turned " + set);
             if (lightGeo)
             {
                 renderer.enabled = !set;

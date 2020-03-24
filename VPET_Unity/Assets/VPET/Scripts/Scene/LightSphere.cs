@@ -71,9 +71,7 @@ namespace vpet
                               sourceLight.color.b,
                               material.color.a);
 
-            this.transform.localScale = new Vector3(sourceLight.range / VPETSettings.Instance.sceneScale,
-                                                    sourceLight.range / VPETSettings.Instance.sceneScale,
-                                                    sourceLight.range / VPETSettings.Instance.sceneScale);
+            this.transform.localScale = new Vector3(sourceLight.range, sourceLight.range, sourceLight.range);
         }
     }
 }

@@ -544,7 +544,7 @@ namespace vpet
                         if (scl)
                         {
                             lightSettingsWidget.hide();
-                            mainController.ConnectRangeSlider(scl.setLightRange, scl.getLightRange(), 10f * VPETSettings.Instance.sceneScale);
+                            mainController.ConnectRangeSlider(scl.setLightRange, scl.getLightRange(), 10f);
                             rangeSlider.MinValue = 0.1f;
                         }
                     }
