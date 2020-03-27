@@ -540,19 +540,12 @@ namespace vpet
 					GameObject.Destroy(m_anchorModifier);
 					m_anchorModifier = null;
 				}
-#endif
+
 
                 //free scene from AR anchor
                 cameraParent.GetComponent<ARFoundationController>().removeAnchor();
-                /*arSession.GetComponent<ARSession>().enabled = false;
-                arSession.GetComponent<ARSession>().Reset();
-                Camera.main.transform.parent.parent.localPosition = Vector3.zero;
-                Camera.main.transform.parent.parent.localRotation = Quaternion.identity;
-                Camera.main.transform.parent.localPosition = Vector3.zero;
-                Camera.main.transform.parent.localRotation = Quaternion.identity;
-                Camera.main.transform.localPosition = Vector3.zero;
-                Camera.main.transform.localRotation = Quaternion.identity;
-                arSession.GetComponent<ARSession>().enabled = true;*/
+#endif
+
                 SetSceneScale(1f);
                 repositionCamera();
 
