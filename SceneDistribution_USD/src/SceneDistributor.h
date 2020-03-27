@@ -74,7 +74,7 @@ namespace VPET
 			return vFov;
 		}
 
-		inline bool LoadMap(std::string i_filepath, unsigned char* &o_buffer, int* o_bufferSize)
+		inline bool LoadMap(const std::string &i_filepath, unsigned char* &o_buffer, int* o_bufferSize) const
 		{
 			std::ifstream infile;
 			infile.open(i_filepath.c_str(), std::ios::binary | std::ios::in);

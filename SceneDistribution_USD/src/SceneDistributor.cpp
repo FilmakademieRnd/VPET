@@ -477,31 +477,39 @@ namespace VPET
 			objPack.instanceId = instanceID;
 
 			// Faces
-			VtArray<int> faceVIndices;
+			VtArray<int> faceVIndices, faceVCounts;
 			mesh.GetFaceVertexIndicesAttr().Get(&faceVIndices, 0);
-			VtArray<int> faceVCounts;
 			mesh.GetFaceVertexCountsAttr().Get(&faceVCounts, 0);
 
 			// Vertices / Points
-			UsdAttribute pointsAttr = mesh.GetPointsAttr();
 			VtVec3fArray PData;
+			UsdAttribute pointsAttr = mesh.GetPointsAttr();
 			bool getPoints = pointsAttr.Get(&PData, 0);
 
 			// Normal
-			UsdAttribute normalsAttr = mesh.GetNormalsAttr();
+			// 1st regular method
 			VtVec3fArray NData;
+			VtArray<int> NiData;
+			UsdAttribute normalsAttr = mesh.GetNormalsAttr();
 			bool gotNormals = normalsAttr.Get(&NData, 0);
+			bool gotNormalIndices = false;
+			// 2nd try alternative naming
+			if (!gotNormals) {
+				UsdGeomPrimvar normalPrimvar = mesh.GetPrimvar(UsdGeomTokens->normals);
+				gotNormals = normalPrimvar.Get(&NData, 0);
+				gotNormalIndices = normalPrimvar.GetIndices(&NiData, 0);
+			}
 
 			// todo if no normals found, search for prim var normals!
 
-			// ST or UV (STs have their own indices)
+			// ST or UV
 			VtVec2fArray STData;
 			VtArray<int> STindices;
 			UsdGeomPrimvar stPrimvar = mesh.GetPrimvar(TfToken("primvars:UVMap"));
 			if (!stPrimvar)
 				stPrimvar = mesh.GetPrimvar(TfToken("primvars:Texture_uv"));
-			bool gotSTIndices = false;
 			bool gotSTs = stPrimvar.Get(&STData, 0);
+			bool gotSTIndices = false;
 			
 			if (!gotSTs) {
 				stPrimvar = mesh.GetPrimvar(TfToken("primvars:st"));
@@ -525,11 +533,11 @@ namespace VPET
 					for (int i = startIdx + 1; i < endIdx; i++)
 					{
 						// point indices
-						int pIdx1 = faceVIndices[startIdx];
-						int pIdx2 = faceVIndices[i];
-						int pIdx3 = faceVIndices[i+1];
+						int pIdx1, pIdx2, pIdx3;
+						pIdx1 = faceVIndices[startIdx];
+						pIdx2 = faceVIndices[i];
+						pIdx3 = faceVIndices[i+1];
 
-						// TODO: hardcoded handiness
 						// point 1
 						objPack.vertices.push_back(PData[pIdx1][0]);
 						objPack.vertices.push_back(PData[pIdx1][1]);
@@ -548,47 +556,60 @@ namespace VPET
 						objPack.indices.push_back(objPack.vertices.size() / 3 - 2);
 						objPack.indices.push_back(objPack.vertices.size() / 3 - 1);
 
+						// normal indices
+						int nIdx1, nIdx2, nIdx3;
+						if (gotNormalIndices) {
+							nIdx1 = NiData[startIdx];
+							nIdx2 = NiData[i];
+							nIdx3 = NiData[i+1];
+						}
+						else {
+							nIdx1 = startIdx;
+							nIdx2 = i;
+							nIdx3 = i+1;
+						}
+
 						// normals for every vertex
 						// n1
-						objPack.normals.push_back(NData[startIdx][0]);
-						objPack.normals.push_back(NData[startIdx][1]);
-						objPack.normals.push_back(NData[startIdx][2]);
+						objPack.normals.push_back(NData[nIdx1][0]);
+						objPack.normals.push_back(NData[nIdx1][1]);
+						objPack.normals.push_back(NData[nIdx1][2]);
 						// n2
-						objPack.normals.push_back(NData[i][0]);
-						objPack.normals.push_back(NData[i][1]);
-						objPack.normals.push_back(NData[i][2]);
+						objPack.normals.push_back(NData[nIdx2][0]);
+						objPack.normals.push_back(NData[nIdx2][1]);
+						objPack.normals.push_back(NData[nIdx2][2]);
 						// n3
-						objPack.normals.push_back(NData[i+1][0]);
-						objPack.normals.push_back(NData[i+1][1]);
-						objPack.normals.push_back(NData[i+1][2]);
+						objPack.normals.push_back(NData[nIdx3][0]);
+						objPack.normals.push_back(NData[nIdx3][1]);
+						objPack.normals.push_back(NData[nIdx3][2]);
 						
 						if (gotSTs) // get uvs
 						{
 							// same for UVs but two values per index
 							// (use different index map (st.index))
-							int uvIndex0, uvIndex1, uvIndex2;
-							if (!gotSTIndices) {
-								uvIndex0 = faceVIndices[startIdx];
-								uvIndex1 = faceVIndices[i];
-								uvIndex2 = faceVIndices[i+1];
+							int uvIdx0, uvIdx1, uvIdx2;
+							if (gotSTIndices) {
+								uvIdx0 = STindices[startIdx];
+								uvIdx1 = STindices[i];
+								uvIdx2 = STindices[i+1];
 							}
 							else {
-								uvIndex0 = STindices[faceVIndices[startIdx]];
-								uvIndex1 = STindices[faceVIndices[i]];
-								uvIndex2 = STindices[faceVIndices[i+1]];
+								uvIdx0 = startIdx;
+								uvIdx1 = i;
+								uvIdx2 = i+1;
 							}
 
 							// uv1
-							objPack.uvs.push_back(STData[uvIndex0][0]);
-							objPack.uvs.push_back(STData[uvIndex0][1]);
+							objPack.uvs.push_back(STData[uvIdx0][0]);
+							objPack.uvs.push_back(STData[uvIdx0][1]);
 
 							// uv2
-							objPack.uvs.push_back(STData[uvIndex1][0]);
-							objPack.uvs.push_back(STData[uvIndex1][1]);
+							objPack.uvs.push_back(STData[uvIdx1][0]);
+							objPack.uvs.push_back(STData[uvIdx1][1]);
 
 							// uv3
-							objPack.uvs.push_back(STData[uvIndex2][0]);
-							objPack.uvs.push_back(STData[uvIndex2][1]);
+							objPack.uvs.push_back(STData[uvIdx2][0]);
+							objPack.uvs.push_back(STData[uvIdx2][1]);
 						}
 					}
 					startIdx = endIdx + 1;
@@ -602,7 +623,7 @@ namespace VPET
 				VtArray<GfVec3f> normals(PData.size() , GfVec3f(0.0));
 
 				// Uv
-				VtArray<GfVec2f> uvs(PData.size() , GfVec2f(0.0));
+				VtArray<GfVec2f> uvs(faceVIndices.size() , GfVec2f(0.0));
 
 				// Get vertices
 				for (int i = 0; i < PData.size(); i++)
@@ -642,22 +663,21 @@ namespace VPET
 						{
 							// same vor UVs but two values per index
 							// use different index map (st.index)
-							int uvIndex0, uvIndex1, uvIndex2;
-							if (!gotSTIndices) {
-								uvIndex0 = faceVIndices[startIdx];
-								uvIndex1 = faceVIndices[i];
-								uvIndex2 = faceVIndices[i+1];
+							int uvIdx0, uvIdx1, uvIdx2;
+							if (gotSTIndices) {
+								uvIdx0 = STindices[startIdx];
+								uvIdx1 = STindices[i];
+								uvIdx2 = STindices[i + 1];
 							}
 							else { 
-								uvIndex0 = STindices[faceVIndices[startIdx]];
-								uvIndex1 = STindices[faceVIndices[i]];
-								uvIndex2 = STindices[faceVIndices[i+1]];
+								uvIdx0 = startIdx;
+								uvIdx1 = i;
+								uvIdx2 = i+1;
 							}
 
-							uvs[uvIndex0] = GfVec2f(STData[uvIndex0][0], STData[uvIndex0][1]);
-							uvs[uvIndex1] = GfVec2f(STData[uvIndex1][0], STData[uvIndex1][1]);
-							uvs[uvIndex2] = GfVec2f(STData[uvIndex2][0], STData[uvIndex2][1]);
-
+							uvs[uvIdx0] = GfVec2f(STData[uvIdx0][0], STData[uvIdx0][1]);
+							uvs[uvIdx1] = GfVec2f(STData[uvIdx1][0], STData[uvIdx1][1]);
+							uvs[uvIdx2] = GfVec2f(STData[uvIdx2][0], STData[uvIdx2][1]);
 						}
 					}
 					startIdx = endIdx + 1;
