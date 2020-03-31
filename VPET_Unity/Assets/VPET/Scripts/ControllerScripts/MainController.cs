@@ -594,6 +594,8 @@ namespace vpet
                     matteMaterial.SetTexture("_textureY", camMaterial.GetTexture("_textureY"));
                     matteMaterial.SetTexture("_textureCbCr", camMaterial.GetTexture("_textureCbCr"));
                     matteMaterial.SetMatrix("_DisplayTransform", camMaterial.GetMatrix("_DisplayTransform"));
+                    float cropScale = 1.0f-(Camera.main.aspect / (16.0f / 9.0f));
+                    matteMaterial.SetFloat("_ropScale",cropScale);
                 }
             }
             else
