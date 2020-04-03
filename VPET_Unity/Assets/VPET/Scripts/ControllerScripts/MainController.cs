@@ -709,7 +709,7 @@ namespace vpet
         //!
         public void SetSceneScale(float v)
         {
-            v = Mathf.Max(v,0.00001f);
+            v = Mathf.Max(v,0.0001f);
             // scale the scene
             //SceneLoader.scnRoot.transform.localScale = new Vector3(v, v, v);
             GameObject.Find("Cameras").transform.GetChild(0).localScale = new Vector3(1f / v, 1f / v, 1f / v);
@@ -730,8 +730,8 @@ namespace vpet
             Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
             float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
             //QualitySettings.shadowDistance = v * maxExtend * 0.15f;
-            Camera.main.nearClipPlane = Mathf.Max(0.001f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend*5f);
-            Camera.main.farClipPlane = Mathf.Max(1000f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend*10f));
+            Camera.main.nearClipPlane = Mathf.Max(0.01f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend*3f);
+            Camera.main.farClipPlane = Mathf.Max(1000f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend*3f));
             //Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
 
             /*foreach (Rigidbody rigi in FindObjectsOfType<Rigidbody>())
