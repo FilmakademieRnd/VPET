@@ -403,21 +403,21 @@ namespace vpet
                     float fps = accum / frames;
                     string format = System.String.Format("{0:F2} FPS", fps);
                     fpsText = format;
-                    fpsText += " LiveView IP: " + VPETSettings.Instance.serverIP;
-                    fpsText += " State: " + mainController.ActiveMode.ToString();
-                    fpsText += " DeviceType: " + SystemInfo.deviceType.ToString();
-                    fpsText += " DeviceName: " + SystemInfo.deviceName.ToString();
-                    fpsText += " DeviceModel: " + SystemInfo.deviceModel.ToString();
-                    fpsText += " SupportGyro: " + SystemInfo.supportsGyroscope.ToString();
-                    fpsText += " DataPath: " + Application.dataPath;
-                    fpsText += " PersistPath: " + Application.persistentDataPath;
-                    fpsText += " Config1: " + Application.dataPath + "/VPET/editing_tool.cfg";
-                    fpsText += " Config2: " + Application.persistentDataPath + "/editing_tool.cfg";
-                    fpsText += " Mouse Active: " + mainController.MouseInputActive;
-                    fpsText += " Touch Active: " + mainController.TouchInputActive;
-                    fpsText += " Renderpath:" + Camera.main.renderingPath;
-                    fpsText += " ActualRenderpath:" + Camera.main.actualRenderingPath;
-                    fpsText += " Msg:" + VPETSettings.Instance.msg;
+                    fpsText += " | Server IP: " + VPETSettings.Instance.serverIP + "\n";
+                    fpsText += "State: " + mainController.ActiveMode.ToString();
+                    fpsText += " | DeviceType: " + SystemInfo.deviceType.ToString();
+                    //fpsText += " DeviceName: " + SystemInfo.deviceName.ToString();
+                    //fpsText += " DeviceModel: " + SystemInfo.deviceModel.ToString();
+                    fpsText += " | SupportGyro: " + SystemInfo.supportsGyroscope.ToString() + "\n";
+                    fpsText += "DataPath: " + Application.dataPath + "\n";
+                    fpsText += "PersistPath: " + Application.persistentDataPath + "\n";
+                    //fpsText += " Config1: " + Application.dataPath + "/VPET/editing_tool.cfg";
+                    //fpsText += " Config2: " + Application.persistentDataPath + "/editing_tool.cfg";
+                    fpsText += "Mouse Active: " + mainController.MouseInputActive;
+                    fpsText += " | Touch Active: " + mainController.TouchInputActive;
+                    //fpsText += " | Renderpath:" + Camera.main.renderingPath;
+                    fpsText += " | Renderpath:" + Camera.main.actualRenderingPath;
+                    //fpsText += " Msg:" + VPETSettings.Instance.msg;
                     accum = 0.0f;
                     frames = 0;
                     timeleft = updateInterval;
@@ -479,7 +479,7 @@ namespace vpet
         {
             if (VPETSettings.Instance.debugMsg)
             {
-                GUI.Label(new Rect(10, 10, 800, 200), fpsText);
+                GUI.Label(new Rect(100, 10, 800, 200), fpsText);
             }
         }
 

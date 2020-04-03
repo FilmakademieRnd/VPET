@@ -163,19 +163,23 @@ namespace vpet
             mainController.buttonTranslationClicked(button.Toggled);
         }
 
+        private bool linkToCameraActive = false;
         private void editLinkToCamera(IMenuButton button)
         {
             parameterMenu.reset();
-            button.Toggled = true;
-            mainController.toggleObjectLinkCamera(button.Toggled);
+            linkToCameraActive = !linkToCameraActive;
+            button.Toggled = linkToCameraActive;
+            mainController.toggleObjectLinkCamera(linkToCameraActive);
             UI.OnUIChanged.Invoke();
         }
 
+        private bool pointToMoveActive = false;
         private void editPointToMove(IMenuButton button)
         {
             parameterMenu.reset();
-            button.Toggled = true;
-            mainController.togglePointToMove(button.Toggled);
+            pointToMoveActive = !pointToMoveActive;
+            button.Toggled = pointToMoveActive;
+            mainController.togglePointToMove(pointToMoveActive);
             UI.OnUIChanged.Invoke();
         }
 

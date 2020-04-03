@@ -246,14 +246,14 @@ namespace vpet
             }
             else
             {
-                //if (arMode)
+                if (arMode)
+                {
+                    return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 50) * (Camera.main.fieldOfView / 8);
+                }
+                else
                 {
                     return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 30) * (Camera.main.fieldOfView / 8);
                 }
-                //else
-                //{
-                //    return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 15) * (Camera.main.fieldOfView / 8);
-                //}
             }
         }
 

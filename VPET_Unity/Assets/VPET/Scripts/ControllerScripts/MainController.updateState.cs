@@ -44,8 +44,12 @@ namespace vpet
 		//!
 	    void Update ()
 	    {
-	        //position modifiers if neccessary
-	        if (currentSelection)
+            //compensate gravity vector based on AR scene rotation
+            if(arMode)
+                Physics.gravity = scene.transform.rotation * new Vector3(0f, -981f, 0f);
+
+            //position modifiers if neccessary
+            if (currentSelection)
 	        {
                 Vector3 modifierScale = getModifierScale();
                 if (lineRenderer)

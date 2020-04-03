@@ -190,8 +190,24 @@ namespace vpet
 	    //!
 	    public void toggleCameraRotation()
 	    {
-	        cameraAdapter.doApplyRotation = !cameraAdapter.doApplyRotation; 
-	    }
+	        cameraAdapter.doApplyRotation = !cameraAdapter.doApplyRotation;
+#if USE_AR
+            if (!arMode)
+                GameObject.Find("ARSession").GetComponent<ARSession>().enabled = cameraAdapter.doApplyRotation;
+            if (cameraAdapter.doApplyRotation)
+            {
+                GameObject camObject = SceneLoader.SceneCameraList[(camPrefabPosition-1) % SceneLoader.SceneCameraList.Count];
+
+                scene.transform.position = Vector3.zero;
+                scene.transform.rotation = Quaternion.identity;
+                GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, Camera.main.transform.position);
+                Quaternion newRotation = Camera.main.transform.rotation * Quaternion.Inverse(camObject.transform.rotation);
+                GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, newRotation);
+                Vector3 newPosition = -(camObject.transform.position + Camera.main.transform.position);
+                GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, newPosition);
+            }
+#endif
+        }
 	
 	
 		//!
@@ -248,14 +264,14 @@ namespace vpet
                     GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, newRotation);
                     Vector3 newPosition = -(camObject.transform.position + Camera.main.transform.position);
                     GameObject.Find("Cameras").GetComponent<ARSessionOrigin>().MakeContentAppearAt(scene.transform, newPosition);
-                    Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
-                    Camera.main.farClipPlane = soc.far;
+                    Camera.main.nearClipPlane = 0.01f;
+                    Camera.main.farClipPlane = soc.far * 2f;
                     Camera.main.fieldOfView = soc.fov;
 #else
                     Camera.main.transform.position = camObject.transform.position; 
                     Camera.main.transform.rotation = camObject.transform.rotation;          
-                    Camera.main.nearClipPlane = 0.1f * VPETSettings.Instance.sceneScale;
-                    Camera.main.farClipPlane = soc.far;
+                    Camera.main.nearClipPlane = 0.01f;
+                    Camera.main.farClipPlane = soc.far * 2f;
                     Camera.main.fieldOfView = soc.fov;
 
                     // callibrate 
@@ -594,8 +610,26 @@ namespace vpet
                     matteMaterial.SetTexture("_textureY", camMaterial.GetTexture("_textureY"));
                     matteMaterial.SetTexture("_textureCbCr", camMaterial.GetTexture("_textureCbCr"));
                     matteMaterial.SetMatrix("_DisplayTransform", camMaterial.GetMatrix("_DisplayTransform"));
-                    float cropScale = 1.0f-(Camera.main.aspect / (16.0f / 9.0f));
-                    matteMaterial.SetFloat("_ropScale",cropScale);
+
+                    float displayRatio = Camera.main.aspect;  //2.1653
+                    float videoRatio = 16.0f / 9.0f;
+                    if (camMaterial)
+                        videoRatio = (float)camMaterial.GetTexture("_textureY").width / (float)camMaterial.GetTexture("_textureY").height;
+                    float cropScaleHorizontal = 0, cropScaleVertical = 0;
+
+                    if (displayRatio < videoRatio)
+                    {
+                        cropScaleHorizontal = 1.0f - (displayRatio / videoRatio);
+                        cropScaleVertical = 0.0f;
+                    }
+                    else
+                    {
+                        cropScaleHorizontal = 0.0f;
+                        cropScaleVertical = 1.0f - ( videoRatio / displayRatio);
+                    }
+
+                    matteMaterial.SetFloat("_cropScaleX", cropScaleHorizontal);
+                    matteMaterial.SetFloat("_cropScaleY", cropScaleVertical);
                 }
             }
             else
@@ -693,11 +727,11 @@ namespace vpet
             //}
 
             ui.updateScaleValue(v);
-            //Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
-            //float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+            Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
+            float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
             //QualitySettings.shadowDistance = v * maxExtend * 0.15f;
-            //Camera.main.nearClipPlane = Mathf.Max(0.1f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend * v);
-            //Camera.main.farClipPlane = Mathf.Max(100f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend * v));
+            Camera.main.nearClipPlane = Mathf.Max(0.001f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend*5f);
+            Camera.main.farClipPlane = Mathf.Max(1000f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend*10f));
             //Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
 
             /*foreach (Rigidbody rigi in FindObjectsOfType<Rigidbody>())
