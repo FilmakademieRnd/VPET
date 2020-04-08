@@ -181,9 +181,19 @@ namespace vpet
 						//Modifier object was hit
 						if (hitObject.tag == "Modifier")
 						{
-							//modifier was hit
-							mainController.handleModifier(hitObject.transform);
-                            hitPositionBuffer = planeRaycast(pos, mainController.helperPlane);
+                            //modifier was hit
+                            Modifier.Types type = mainController.handleModifier(hitObject.transform);
+
+                            Quaternion rotation = hitObject.transform.rotation;
+                            if (type == Modifier.Types.TRANS) {
+                                hitPositionBuffer = rotation * Vector3.Scale(Quaternion.Inverse(rotation) * planeRaycast(pos, mainController.helperPlane), mainController.axisLocker) - mainController.getCurrentSelection().position;
+                            }
+                            else if (type == Modifier.Types.SCALE) {
+                                hitPositionBuffer = Vector3.Scale(planeRaycast(pos, mainController.helperPlane), mainController.axisLocker) ;
+                            }
+                            else
+                                hitPositionBuffer = planeRaycast(pos, mainController.helperPlane);
+
                             pointerOnModifier = true;
 						}
 						hitObject = null;

@@ -36,6 +36,17 @@ using System.Collections;
 namespace vpet
 {
 	public class Modifier : MonoBehaviour {
+
+        [HideInInspector]
+        public enum Types {
+            TRANS,
+            ROT,
+            SCALE
+        };
+
+        //! Identifier to figure out if modifier is a translate modifier
+        [HideInInspector]
+        public Types type { get; set; }
 	
 	    //!
 	    //! if pause is set to true all repositioning / rotating of the modifers is avoided
@@ -67,8 +78,10 @@ namespace vpet
 	        lastPosition = this.transform.position;
             lastCamPosition = Camera.main.transform.position;
 
-            if (this.name == "TranslateModifier")
+            if (name == "TranslateModifier")
             {
+                type = Types.TRANS;
+
                 c0 = this.transform.GetChild(0);
                 c1 = this.transform.GetChild(1);
                 c2 = this.transform.GetChild(2);
@@ -79,14 +92,19 @@ namespace vpet
                 c7 = this.transform.GetChild(7);
                 c8 = this.transform.GetChild(8);
             }
+            else if (name == "RotationModifier")
+                type = Types.ROT;
+            else if (name == "ScaleModifier")
+                type = Types.SCALE;
+
         }
-	
-	    //!
-	    //! Update is called once per frame
-	    //!
-		void Update () 
+
+        //!
+        //! Update is called once per frame
+        //!
+        void Update () 
 	    {
-            if (this.name == "TranslateModifier")
+            if (type == Types.TRANS)
             {
                 if (!pause && (lastPosition != this.transform.position || lastCamPosition != Camera.main.transform.position))
                 {

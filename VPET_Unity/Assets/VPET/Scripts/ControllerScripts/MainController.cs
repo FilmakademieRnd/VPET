@@ -125,10 +125,10 @@ namespace vpet
 	    //!
 	    public Vector3 getSelectionPosition()
 	    {
-	        if(currentSelection)
-                return currentSelection.position;
+            if (currentSelection)
+                return currentSelection.GetComponent<Collider>().bounds.center;
             else
-	            return Vector3.zero;
+                return Vector3.zero;
 	    }
 
         //!

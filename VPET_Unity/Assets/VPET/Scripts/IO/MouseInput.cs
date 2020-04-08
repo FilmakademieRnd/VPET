@@ -75,7 +75,7 @@ namespace vpet
             if (Input.touchCount == 0) // no touch input needed for devices with touch and mouse
             {
                 //single mouse gesture
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !drag)
                 {
                     //left mouse Button down
                     if (Input.GetKey(KeyCode.Alpha3))

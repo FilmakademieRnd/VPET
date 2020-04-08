@@ -50,18 +50,22 @@ namespace vpet
         //! lock the axis for modifications according to the selected modifier
         //! @param      modifier        link to currently active modifier
         //!
-        public void handleModifier(Transform modifier){
-	        // Debug.Log("Hit modifier " + modifier.name + "!");
-	        modifier.parent.GetComponent<Modifier>().isUsed();
+        public Modifier.Types handleModifier(Transform modifier){
+            // Debug.Log("Hit modifier " + modifier.name + "!");
+
+            Modifier modifierComponent = modifier.parent.GetComponent<Modifier>();
+            modifierComponent.isUsed();
             if (ui.LayoutUI != layouts.ANIMATION) //  (activeMode != Mode.animationEditing)
             {
                 currentSceneObject.transform.GetComponent<Rigidbody>().isKinematic = true;
             }
 
-            initPosition = currentSelection.position;
+            //initPosition = currentSelection.position;
+            //initPosition = currentSelection.GetComponent<Collider>().bounds.center;
             //if (currentSceneObject.isAnimatedCharacter) {
             //    initPosition = currentSceneObject.gameObject.GetComponent<Animator>().bodyPosition;
             //}
+
             initScale = currentSelection.localScale;
             initRotation = currentSelection.rotation;
             inverseInitRotation = Quaternion.Inverse(currentSelection.rotation);
@@ -70,44 +74,45 @@ namespace vpet
                 lineRenderer = trsGroup.GetComponent<LineRenderer>();
             lineRenderer.enabled = true;
 
-            if (modifier.parent.name == "TranslateModifier"){
+            if (modifierComponent.type == Modifier.Types.TRANS)
+            {
                 isTranslating = true;
 	            //translation modifier
 	            modifier.GetComponent<Renderer>().material.color = new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f);
 
-				// HACK for orthographic view
-				if ( Camera.main.orthographic )
+                Vector3 planeVec = Vector3.zero;
+                axisLocker = Vector3.one;
+
+                // HACK for orthographic view
+                if ( Camera.main.orthographic )
 				{
                     // same orientation as camera 
                     if (modifier.name == "X-Axis")
                     {
-                        helperPlane = new Plane(currentSelection.forward, currentSelection.position);
+                        planeVec = currentSelection.forward;
                         axisLocker = Vector3.right;
                     }
                     else if (modifier.name == "Y-Axis")
                     {
-                        helperPlane = new Plane(currentSelection.forward, currentSelection.position);
+                        planeVec = currentSelection.forward;
                         axisLocker = Vector3.up;
                     }
                     else if (modifier.name == "Z-Axis")
                     {
-                        helperPlane = new Plane(currentSelection.right, currentSelection.position);
+                        planeVec = currentSelection.right;
                         axisLocker = Vector3.forward;
                     }
                     else if (modifier.name == "XYAxis")
                     {
-                        helperPlane = new Plane(currentSelection.forward, currentSelection.position);
-                        axisLocker = new Vector3(1, 1, 0);
+                        planeVec = currentSelection.forward;
                     }
                     else if (modifier.name == "YZAxis")
                     {
-                        helperPlane = new Plane(currentSelection.right, currentSelection.position);
-                        axisLocker = new Vector3(0, 1, 1);
+                        planeVec = currentSelection.right;
                     }
                     else if (modifier.name == "XZAxis")
                     {
-                        helperPlane = new Plane(currentSelection.up, currentSelection.position);
-                        axisLocker = new Vector3(1, 0, 1);
+                        planeVec = currentSelection.up;
                     }
                     else if (modifier.name == "MoveToFloorQuad"){
 						currentSceneObject.moveToFloor();
@@ -115,33 +120,29 @@ namespace vpet
 						translateModifier.transform.GetChild(9).position = new Vector3(currentSelection.position.x, 0.001f, currentSelection.position.z);
 						ignoreDrag = true;
 					}
-
 				}
 				else
 				{
 		            if (modifier.name == "X-Axis"){
-		                helperPlane = new Plane(currentSelection.forward, currentSelection.position);
+                        planeVec = currentSelection.forward;
                         axisLocker = Vector3.right;
 		            }
 		            else if (modifier.name == "Y-Axis"){
-		                helperPlane = new Plane(currentSelection.forward, currentSelection.position);
+                        planeVec = currentSelection.forward;
                         axisLocker = Vector3.up;
 		            }
 		            else if (modifier.name == "Z-Axis"){
-		                helperPlane = new Plane(currentSelection.right, currentSelection.position);
+                        planeVec = currentSelection.right;
                         axisLocker = Vector3.forward;
 		            }
 		            else if (modifier.name == "XYAxis"){
-                        helperPlane = new Plane(currentSelection.forward, currentSelection.position);
-		                axisLocker = new Vector3(1, 1, 0);
+                        planeVec = currentSelection.forward;
 		            }
 		            else if (modifier.name == "YZAxis"){
-                        helperPlane = new Plane(currentSelection.right, currentSelection.position);
-                        axisLocker = new Vector3(0, 1, 1);
+                        planeVec = currentSelection.right;
 		            }
 		            else if (modifier.name == "XZAxis"){
-                        helperPlane = new Plane(currentSelection.up, currentSelection.position);
-                        axisLocker = new Vector3(1, 0, 1);
+                        planeVec = currentSelection.up;
 		            }
 		            else if (modifier.name == "MoveToFloorQuad"){
 		                currentSceneObject.moveToFloor();
@@ -150,8 +151,10 @@ namespace vpet
 		                ignoreDrag = true;
 		            }
 				}
-	        }
-	        else if (modifier.parent.name == "RotationModifier"){
+                //helperPlane = new Plane(planeVec, currentSelection.position);
+                helperPlane = new Plane(planeVec, currentSelection.GetComponent<Collider>().bounds.center);
+            }
+            else if (modifierComponent.type == Modifier.Types.ROT) {
                 isRotating = true;
 	            //rotation modifier
 	            rotationModifier.GetComponent<Modifier>().makeTransparent();
@@ -173,33 +176,34 @@ namespace vpet
                     axisLocker = (cff > 0f) ? Vector3.forward : -Vector3.forward;
                 }
             }
-	        else if (modifier.parent.name == "ScaleModifier"){
+            else if (modifierComponent.type == Modifier.Types.SCALE) { 
                 isScaling = true;
 	            //scale modifier
 	            modifier.GetComponent<ModifierComponent>().setColor(new Color(1.0f, 185.0f / 255.0f, 55.0f / 255.0f, 1.0f));
 
-                helperPlane = new Plane(Camera.main.transform.forward, currentSelection.position);
-                Vector3 camToObj = currentSelection.position - Camera.main.transform.position;
+                Vector3 planeVec;
 
                 if (modifier.name == "xScale"){
-                    helperPlane = new Plane(currentSelection.up, currentSelection.position);
-                    axisLocker = currentSelection.right;
+                    planeVec = currentSelection.forward;
+                    axisLocker = Vector3.right;
                 }
 	            else if (modifier.name == "yScale"){
-                    helperPlane = new Plane(currentSelection.forward, currentSelection.position);
-                    axisLocker = currentSelection.up;
+                    planeVec = currentSelection.forward;
+                    axisLocker = Vector3.up;
                 }
 	            else if (modifier.name == "zScale"){
-                    helperPlane = new Plane(currentSelection.right, currentSelection.position);
-                    axisLocker = -currentSelection.forward;
+                    planeVec = currentSelection.right;
+                    axisLocker = -Vector3.forward;
                 }
                 else
                 {
-                    helperPlane = new Plane(Camera.main.transform.forward, currentSelection.position);
+                    planeVec = Camera.main.transform.forward;
                     axisLocker = Vector3.one; 
                 }
+                helperPlane = new Plane(planeVec, currentSelection.position);
 	        }
-	    }
+            return modifierComponent.type;
+        }
 
         //!
         //! reset modifiers and push changes to server if neccessary

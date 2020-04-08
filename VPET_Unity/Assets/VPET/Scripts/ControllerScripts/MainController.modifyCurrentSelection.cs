@@ -37,19 +37,12 @@ namespace vpet
 	    //!
 	    //! lock axis Vector (1 if on, 0 if off)
 	    //!
-	    Vector3 axisLocker = new Vector3(0, 0, 0);
+	    public Vector3 axisLocker = new Vector3(0, 0, 0);
 	
 	    //!
 	    //! scale modifier initial distance between pointer origin
 	    //!
 	    float initialScaleDistance = float.NaN;
-	
-		//!
-	    //! axis locker
-	    //!
-		public void setAxisLockerXYZ() {
-			axisLocker = new Vector3(1, 1, 1);
-		}
 	    
         //!
 	    //! translate currently selected object
@@ -115,30 +108,17 @@ namespace vpet
 
         public void translateSelection(Vector3 begin, Vector3 end)
         {
-            if (currentSelection)
-            {
-                Vector3 finalTranslation =  initRotation * Vector3.Scale(inverseInitRotation * (end-begin), axisLocker) + initPosition;
+            if (currentSelection) {
+                lineRenderer.positionCount = 0;
 
-                if (axisLocker != new Vector3(0, 1, 1) &&
-                    axisLocker != new Vector3(1, 0, 1) &&
-                    axisLocker != new Vector3(1, 1, 0))
-                {
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.SetPosition(0, currentSelection.position);
-                    lineRenderer.SetPosition(1, currentSelection.position + initRotation * axisLocker * 10000);
-                }
-                else
-                    lineRenderer.positionCount = 0;
+                //Vector3 finalTranslation =  initRotation * Vector3.Scale(inverseInitRotation * (end-begin), axisLocker) + initPosition;
+                Vector3 finalTranslation = initRotation * Vector3.Scale(inverseInitRotation * end, axisLocker) - begin;
 
                 if (currentSceneObject)
-                {
                     currentSceneObject.translate(finalTranslation);
-                }
-                else
-                {
+                else {
                     KeyframeScript keyframeScript = currentSelection.GetComponent<KeyframeScript>();
-                    if (keyframeScript)
-                    {
+                    if (keyframeScript) {
                         currentSelection.transform.position = finalTranslation;
                         currentSelection.GetComponent<KeyframeScript>().updateKeyInCurve();
                     }
@@ -151,22 +131,23 @@ namespace vpet
         //! @param      begin       last position on rotation sphere
         //! @param      end         current position on rotation sphere
         //!
-        public void rotateSelection(Vector3 begin, Vector3 end){
-	        if (currentSelection){
+        public void rotateSelection(Vector3 begin, Vector3 end)
+        {
+            if (currentSelection) {
                 Vector3 v1 = (currentSelection.position - begin).normalized;
                 Vector3 v2 = (currentSelection.position - end).normalized;
                 float angle = Vector3.SignedAngle(v1, v2, helperPlane.normal);
-                Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);                
+                Quaternion rotation = Quaternion.AngleAxis(angle, axisLocker);
 
                 lineRenderer.positionCount = 4;
                 lineRenderer.SetPosition(0, currentSelection.position);
                 lineRenderer.SetPosition(1, begin);
                 lineRenderer.SetPosition(2, currentSelection.position);
-                lineRenderer.SetPosition(3, end);                
+                lineRenderer.SetPosition(3, end);
 
                 currentSceneObject.transform.rotation = initRotation * rotation;
             }
-	    }
+        }
 
         //!
         //! rotate currently selected object
@@ -202,19 +183,16 @@ namespace vpet
         //! scale currently selected object
         //! @param      scale     new scale of object
         //!
-        public void scaleSelection(Vector3 scale)
+        public void scaleSelection(Vector3 begin, Vector3 end)
         {
+            lineRenderer.positionCount = 0;
+
             if (currentSelection) {
-                if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1) {
-                    scale = Vector3.one * scale.x;
-                }
-                else {
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.SetPosition(0, currentSelection.position);
-                    lineRenderer.SetPosition(1, currentSelection.position + axisLocker * 10000);
-                }
                 if (!currentSelection.transform.parent.transform.GetComponent<Light>()) {
-                    currentSelection.transform.localScale = Vector3.Scale(scale, inverseInitRotation * axisLocker) / 1000f + initScale;
+                    if (axisLocker.x == 1 && axisLocker.y == 1 && axisLocker.z == 1)
+                        currentSelection.transform.localScale = Vector3.one * (end - begin).x / 1000f + initScale;
+                    else
+                        currentSelection.transform.localScale = (Vector3.Scale(end, axisLocker) - begin) / 1000f + initScale;
                     if (liveMode)
                         serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
                 }
@@ -287,7 +265,7 @@ namespace vpet
 	            }
 	            
 	            if (activeMode == Mode.scaleMode){
-                    this.scaleSelection(end - begin);
+                    this.scaleSelection(begin, end);
                     return;
 	            }
 	        }
