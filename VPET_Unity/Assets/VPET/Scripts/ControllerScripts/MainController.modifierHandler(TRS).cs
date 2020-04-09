@@ -38,7 +38,6 @@ namespace vpet
 	    //! ignore dragging
 	    //!
 	    private bool ignoreDrag = false;
-
         private Vector3 initPosition = Vector3.zero;
         private Vector3 initScale = Vector3.zero;
         private Quaternion initRotation = Quaternion.identity;
@@ -59,12 +58,6 @@ namespace vpet
             {
                 currentSceneObject.transform.GetComponent<Rigidbody>().isKinematic = true;
             }
-
-            //initPosition = currentSelection.position;
-            //initPosition = currentSelection.GetComponent<Collider>().bounds.center;
-            //if (currentSceneObject.isAnimatedCharacter) {
-            //    initPosition = currentSceneObject.gameObject.GetComponent<Animator>().bodyPosition;
-            //}
 
             initScale = currentSelection.localScale;
             initRotation = currentSelection.rotation;
@@ -218,7 +211,6 @@ namespace vpet
 	        rotationModifier.GetComponent<Modifier>().resetColors();
 	        scaleModifier.GetComponent<Modifier>().resetColors();
 	        ignoreDrag = false;
-	        initialScaleDistance = float.NaN;
 	        if (currentSelection && AnimationData.Data.getAnimationClips(currentSelection.gameObject) == null && ui.LayoutUI != layouts.ANIMATION)
                 currentSceneObject.setKinematic(currentSceneObject.globalKinematic);
 
@@ -256,7 +248,7 @@ namespace vpet
                 }
                 else
                 {
-                    return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 30) * (Camera.main.fieldOfView / 8);
+                    return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 50) * (Camera.main.fieldOfView / 8);
                 }
             }
         }

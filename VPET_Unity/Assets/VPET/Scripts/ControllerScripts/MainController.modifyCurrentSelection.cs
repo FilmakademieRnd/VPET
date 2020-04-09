@@ -38,12 +38,7 @@ namespace vpet
 	    //! lock axis Vector (1 if on, 0 if off)
 	    //!
 	    public Vector3 axisLocker = new Vector3(0, 0, 0);
-	
-	    //!
-	    //! scale modifier initial distance between pointer origin
-	    //!
-	    float initialScaleDistance = float.NaN;
-	    
+
         //!
 	    //! translate currently selected object
 	    //! @param      translation     relative translation beeing applied on current selection
@@ -110,8 +105,7 @@ namespace vpet
         {
             if (currentSelection) {
                 lineRenderer.positionCount = 0;
-
-                //Vector3 finalTranslation =  initRotation * Vector3.Scale(inverseInitRotation * (end-begin), axisLocker) + initPosition;
+                float scaleCompansation = Vector3.Distance(Camera.main.transform.position, end) * (Camera.main.fieldOfView);
                 Vector3 finalTranslation = initRotation * Vector3.Scale(inverseInitRotation * end, axisLocker) - begin;
 
                 if (currentSceneObject)
