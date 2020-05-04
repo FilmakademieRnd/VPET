@@ -294,6 +294,8 @@ namespace vpet
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 	        Marshal.Copy(getOrientationSensorData(), orientationSensorData, 0, 4);
 #endif
+            if(joystickAdapter.move != move)
+                joystickAdapter.move = move;
 
             if (move)
             {
@@ -343,25 +345,6 @@ namespace vpet
                 oldPosition = trackingTransform.position;
                 oldRotation = trackingTransform.rotation;
 #endif
-
-				if (joystickAdapter) 
-				{
-                    Vector3 val = joystickAdapter.getTranslation();
-                    if (val.magnitude > 0.01)                    
-                    {
-                        if (joystickAdapter.moveCameraActive && !mainController.arMode)
-                            mainController.moveCameraObject(val); 
-                        if (joystickAdapter.moveObjectActive)
-                            mainController.translateSelectionJoystick(val);
-                        if (joystickAdapter.rotateObjectActive)
-                            mainController.rotateSelectionJoystick(val);
-                        if (joystickAdapter.scaleObjectActive)
-                            mainController.scaleSelectionJoystick(val);
-                        if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
-                            mainController.AnimationController.setKeyFrame();
-                    }
-                    joystickAdapter.getButtonUpdates();
-				}
             }
 
             //smoothly "fly" the camera to a given position
@@ -416,8 +399,47 @@ namespace vpet
                     fpsText += "Mouse Active: " + mainController.MouseInputActive;
                     fpsText += " | Touch Active: " + mainController.TouchInputActive;
                     //fpsText += " | Renderpath:" + Camera.main.renderingPath;
-                    fpsText += " | Renderpath:" + Camera.main.actualRenderingPath;
+                    fpsText += " | Renderpath:" + Camera.main.actualRenderingPath + "\n";
                     //fpsText += " Msg:" + VPETSettings.Instance.msg;
+
+                    System.Array values = System.Enum.GetValues(typeof(KeyCode));
+                    foreach (KeyCode code in values)
+                    {
+                        if (Input.GetKeyDown(code))
+                        {
+                            fpsText += "\n" + (System.Enum.GetName(typeof(KeyCode), code));
+                        }
+                    }
+
+                    if (Input.GetAxis("L1") != 0)
+                        fpsText += "Button L1 \n";
+                    else if (Input.GetButtonUp("L2"))
+                        fpsText += "Button L2 \n";
+                    else if (Input.GetButton("R1"))
+                        fpsText += "Button R1 \n";
+                    else if (Input.GetButtonUp("R2"))
+                        fpsText += "Button R2 \n";
+                    else if (Input.GetButtonDown("Fire3"))
+                        fpsText += "Button Fire3 \n";
+                    else if (Input.GetButtonDown("Fire2"))
+                        fpsText += "Button Fire2 \n";
+                    else if (Input.GetButtonDown("Fire1"))
+                        fpsText += "Button Fire1 \n";
+                    else if (Input.GetButtonDown("Fire0"))
+                        fpsText += "Button Fire0 \n";
+                    else if (Input.GetButtonDown("Settings"))
+                        fpsText += "Button Settings \n";
+                    else if (Input.GetAxis("DPAD_H") != 0)
+                        fpsText += "Button DPAD_H \n";
+                    else if (Input.GetAxis("DPAD_V") != 0)
+                        fpsText += "Button DPAD_V \n";
+                    else if (Input.GetAxis("DPAD_H_neg") != 0)
+                        fpsText += "Button DPAD_H_neg \n";
+                    else if (Input.GetAxis("DPAD_V_neg") != 0)
+                        fpsText += "Button DPAD_V_neg \n";
+
+
+
                     accum = 0.0f;
                     frames = 0;
                     timeleft = updateInterval;
