@@ -45,11 +45,15 @@ namespace vpet
 		protected override void arrange()
 		{
 			int i = 0;
-            foreach (GameObject button in ButtonsActive())
+			if (VPETSettings.Instance.canvasAspectScaleFactor < 1)
+				offset = offset - new Vector2(0,35);
+
+			foreach (GameObject button in ButtonsActive())
             {
                 button.GetComponent<RectTransform>().localPosition = getButtonPosition(i) + offset;
 				i++;
 			}
+			Debug.Log("OFF " + offset);
 		}
 
 		//!
@@ -59,12 +63,16 @@ namespace vpet
 		//!
 		private Vector2 getButtonPosition(int index)
 		{
+			int spacingVertical = UI.ButtonOffset;
+			if (VPETSettings.Instance.canvasAspectScaleFactor < 1)
+                spacingVertical = UI.ButtonOffset - 12;
+
 			switch (dirToExpand)
 			{
 			case (direction.TOP):
-				return new Vector2( 0, UI.ButtonOffset + index * UI.ButtonOffset );
+				return new Vector2( 0, spacingVertical + index * spacingVertical);
 			case (direction.BOTTOM):
-				return new Vector2( 0, -UI.ButtonOffset - index * UI.ButtonOffset );
+				return new Vector2( 0, -spacingVertical - index * spacingVertical);
 			case (direction.LEFT):
 				return new Vector2( -UI.ButtonOffset - index * UI.ButtonOffset, 0 );
 			case (direction.RIGHT):

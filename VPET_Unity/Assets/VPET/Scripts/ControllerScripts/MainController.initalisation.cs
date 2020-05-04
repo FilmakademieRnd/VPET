@@ -277,7 +277,7 @@ namespace vpet
         void Awake()
         {
             QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = 40;
+            Application.targetFrameRate = 30;
 
             // read settings from inspector values
             VPETSettings.mapValuesFromObject(this);
@@ -376,9 +376,6 @@ namespace vpet
                 Debug.LogWarning(string.Format("{0}: No JoystickAdapter Component found. Create", this.GetType()));
                 joystickAdapter = refObject.AddComponent<JoystickInput>();
             }
-
-			// set properties
-			joystickAdapter.SceneLoader = sceneAdapter;
 
             // get InputAdapter adapter
             refObject = GameObject.Find("InputAdapter");

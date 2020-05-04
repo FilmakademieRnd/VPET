@@ -50,11 +50,13 @@ namespace vpet
             buttonModes.AddAction(ModeMenu_AnimationMode_sel, ModeMenu_AnimationMode_nrm, () => changeMode(layouts.ANIMATION)); // anim
             buttonModes.AddAction(ModeMenu_ScoutMode_sel, ModeMenu_ScoutMode_nrm, () => changeMode(layouts.SCOUT)); //scout
             mainMenu.addButton(buttonModes);
+
             // gyro toggle
             IMenuButton buttonGyro = Elements.MenuButtonToggle();
             buttonGyro.AddAction(GeneralMenu_Gyro_sel, GeneralMenu_Gyro_nrm, () => mainController.toggleCameraRotation()); // for toggle
             buttonGyro.AddHoldAction(() => mainController.resetCameraOffset());
             mainMenu.addButton(buttonGyro);
+
             // config
             IMenuButton buttonConfig = Elements.MenuButtonToggle();
             buttonConfig.AddAction(GeneralMenu_Settings_sel, GeneralMenu_Settings_nrm, () => drawConfigWidget());

@@ -71,8 +71,13 @@ namespace vpet
 				newSprites.pressedSprite = active;
 				spriteState = newSprites;
 				this.GetComponent<Image>().sprite = idle;
-				highlightedSprite = idle;
-				onToggle = call;
+                highlightedSprite = idle;
+                /*if (call != null)
+                {
+                    interactable = true;
+                    onClick.AddListener(call);
+                }*/
+                onToggle = call;
 			}
 			else
 			{
@@ -143,11 +148,13 @@ namespace vpet
 			if (toggled) 
 			{
 				spriteStateTmp.highlightedSprite = spriteStateTmp.pressedSprite;
-			}
+                this.InstantClearState();
+            }
 			else
 			{
 				spriteStateTmp.highlightedSprite= highlightedSprite;
-			}
+                this.InstantClearState();
+            }
 			spriteState = spriteStateTmp;
 
 			GetComponent<Image>().sprite = spriteState.highlightedSprite;

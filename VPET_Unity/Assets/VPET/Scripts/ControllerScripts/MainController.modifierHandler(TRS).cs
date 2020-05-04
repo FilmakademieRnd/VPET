@@ -244,11 +244,19 @@ namespace vpet
             {
                 if (arMode)
                 {
-                    return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 50) * (Camera.main.fieldOfView / 8);
+                    //return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.GetComponent<Collider>().bounds.center) / 50) * (Camera.main.fieldOfView / 8) * (Screen.dpi / 300);
+                    return Vector3.one
+                        * (Vector3.Distance(Camera.main.transform.position, currentSelection.GetComponent<Collider>().bounds.center)
+                        * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+                        * Screen.dpi / 2000);
                 }
                 else
                 {
-                    return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.position) / 50) * (Camera.main.fieldOfView / 8);
+                    //return Vector3.one * (Vector3.Distance(Camera.main.transform.position, currentSelection.GetComponent<Collider>().bounds.center) / 30) * (Camera.main.fieldOfView / 8) * (Screen.dpi / 300);
+                    return Vector3.one
+                            * (Vector3.Distance(Camera.main.transform.position, currentSelection.GetComponent<Collider>().bounds.center)
+                            * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+                            * Screen.dpi / 2000);
                 }
             }
         }

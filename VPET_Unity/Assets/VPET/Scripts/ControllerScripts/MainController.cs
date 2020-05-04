@@ -659,11 +659,14 @@ namespace vpet
         {
             foreach (Camera cam in Camera.main.transform.GetComponentsInChildren<Camera>())
             {
-                cam.orthographic = Camera.main.orthographic;
-                cam.fieldOfView = Camera.main.fieldOfView;
-                cam.nearClipPlane =  Camera.main.nearClipPlane;
-                cam.farClipPlane = Camera.main.farClipPlane;
-                cam.projectionMatrix = Camera.main.projectionMatrix;
+                if (cam != Camera.main) // fix for GetComponentsInChildren also returning own component
+                {
+                    cam.orthographic = Camera.main.orthographic;
+                    cam.fieldOfView = Camera.main.fieldOfView;
+                    cam.nearClipPlane = Camera.main.nearClipPlane;
+                    cam.farClipPlane = Camera.main.farClipPlane;
+                    cam.projectionMatrix = Camera.main.projectionMatrix;
+                }
             }
         }
 
@@ -730,8 +733,8 @@ namespace vpet
             Vector3 sceneExtends = VPETSettings.Instance.sceneBoundsMax - VPETSettings.Instance.sceneBoundsMin;
             float maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
             //QualitySettings.shadowDistance = v * maxExtend * 0.15f;
-            Camera.main.nearClipPlane = Mathf.Max(0.01f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend*3f);
-            Camera.main.farClipPlane = Mathf.Max(1000f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend*3f));
+            Camera.main.nearClipPlane = Mathf.Max(0.5f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) - maxExtend*3f);
+            Camera.main.farClipPlane = Mathf.Max(100f,Mathf.Min(100000f, Vector3.Distance(Camera.main.transform.position, scene.transform.position) + maxExtend*3f));
             //Physics.gravity = new Vector3(0, -0.24525f * VPETSettings.Instance.sceneScale * maxExtend, 0);
 
             /*foreach (Rigidbody rigi in FindObjectsOfType<Rigidbody>())

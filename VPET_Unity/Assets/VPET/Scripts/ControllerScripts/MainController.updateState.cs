@@ -48,6 +48,9 @@ namespace vpet
             if(arMode)
                 Physics.gravity = scene.transform.rotation * new Vector3(0f, -981f, 0f);
 
+            if (Application.targetFrameRate != 30)
+                Application.targetFrameRate = 30;
+
             //position modifiers if neccessary
             if (currentSelection)
 	        {
