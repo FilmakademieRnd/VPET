@@ -103,16 +103,15 @@ namespace vpet
         public bool moveObjectActive = false;
         public bool rotateObjectActive = false;
         public bool scaleObjectActive = false;
-        private bool hasPressedDirectionalPad = false;
-        private bool hasPressedR2 = false;
-        private bool hasPressedL2 = false;
+        //private bool hasPressedDirectionalPad = false;
+        //private bool hasPressedR2 = false;
         private int DPADdirection = 0;
 
         public bool move = true;
 
         // dictionary to keep track of the status of controller buttons since they
         // do not behave like the unity API says on iOS
-        private IDictionary<string, float> buttonPressedState;
+        //private IDictionary<string, float> buttonPressedState;
 
         private float left, right, bottom, top;
         private Transform worldTransform = null;
@@ -155,7 +154,7 @@ namespace vpet
             outlineEffect = Camera.main.transform.GetChild(0).GetComponent<Camera>().GetComponent<OutlineEffect>();
 
             // initialize the dictionary that keeps track of the status of controller buttons
-            buttonPressedState = new Dictionary<string, float>();
+            //buttonPressedState = new Dictionary<string, float>();
 
             //cache references
             mainController = GameObject.Find("MainController").GetComponent<MainController>();
@@ -286,7 +285,7 @@ namespace vpet
                 }
 
             }
-            else if (gamepad.xButton.wasReleasedThisFrame)
+            else if (gamepad.leftShoulder.wasReleasedThisFrame)
             //else if (Input.GetButtonUp("L1"))
             {
                 if (currentCrosshairObject != null)
@@ -297,7 +296,7 @@ namespace vpet
                 crossHair.SetActive(false);
             }
             // enter translation mode
-            else if (gamepad.yButton.wasPressedThisFrame)
+            else if (gamepad.buttonNorth.wasPressedThisFrame)
             //else if (buttonPressed("Fire3"))
             {
                 // enter object translation mode
@@ -342,7 +341,7 @@ namespace vpet
                 }
             }
             // enter rotation mode
-            else if (gamepad.bButton.wasPressedThisFrame)
+            else if (gamepad.buttonEast.wasPressedThisFrame)
             //else if (buttonPressed("Fire1"))
             {
                 // enter object translation mode
@@ -388,7 +387,7 @@ namespace vpet
                 }
             }
             // enter scale mode
-            else if (gamepad.aButton.wasPressedThisFrame)
+            else if (gamepad.buttonSouth.wasPressedThisFrame)
             //else if (buttonPressed("Fire0"))
             {
                 // enter object translation mode
@@ -465,7 +464,7 @@ namespace vpet
                 }
             }
             // toggle configuration window
-            else if (gamepad.circleButton.wasPressedThisFrame)
+            else if (gamepad.startButton.wasPressedThisFrame)
             //else if (Input.GetButtonDown("Settings"))
             {
                 mainController.UIAdapter.MainMenu.transform.GetChild(3).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
@@ -477,21 +476,15 @@ namespace vpet
                 mainController.repositionCamera();
 
             // disable tracking
-#if UNITY_EDITOR || UNITY_STANDALONE
-            else if (gamepad.rightTrigger.ReadValue() < 0 && !hasPressedR2 && !mainController.arMode)
-            //else if (Input.GetAxis("R2") < 0 && !hasPressedR2 && !mainController.arMode)
-#elif UNITY_IOS || UNITY_STANDALONE_OSX
             else if (gamepad.rightTrigger.wasPressedThisFrame && !mainController.arMode)
             //else if (buttonPressed("R2") && !mainController.arMode)
-#endif
             {
-                hasPressedR2 = true;
                 mainController.UIAdapter.MainMenu.transform.GetChild(2).GetComponent<MenuButtonToggle>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
 
             // deselect or reset current selection
             //TODO: reimplement hold
-            if (!gamepad.xButton.wasPressedThisFrame /*&& buttonPressedTime("Fire2") > 0f && buttonPressedTime("Fire2") < deselectHoldDuration*/)
+            if (gamepad.buttonWest.wasPressedThisFrame /*&& buttonPressedTime("Fire2") > 0f && buttonPressedTime("Fire2") < deselectHoldDuration*/)
             //if (!Input.GetButton("Fire2") && buttonPressedTime("Fire2") > 0f && buttonPressedTime("Fire2") < deselectHoldDuration)
             {
                 mainController.handleSelection();
@@ -510,48 +503,31 @@ namespace vpet
                         mainController.getCurrentSelection().GetComponent<SceneObject>().resetAll();
                 }
             }*/
-            if (gamepad.xButton.wasPressedThisFrame) { }
+            if (gamepad.bButton.wasPressedThisFrame) { }
 
             // cycle through edit modes
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
-            else if (gamepad.leftTrigger.ReadValue() > 0 && !hasPressedL2)
-            //else if (Input.GetAxis("L2") > 0 && !hasPressedL2)
-#elif UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_ANDROID
             else if (gamepad.leftTrigger.wasPressedThisFrame)
             //else if (buttonPressed("L2"))
-#endif
             {
-                hasPressedL2 = true;
                 mainController.UIAdapter.MainMenu.transform.GetChild(1).GetComponent<MenuButtonList>().OnPointerClick(new PointerEventData(EventSystem.current));
             }
 
             // cycle through object list                                    
-#if UNITY_EDITOR || UNITY_STANDALONE
-            else if (gamepad.dpad.x.ReadValue() != 0 && !hasPressedDirectionalPad ||
-                     gamepad.dpad.y.ReadValue() != 0 && !hasPressedDirectionalPad)
-            //else if (Input.GetAxis("DPAD_H") != 0 && !hasPressedDirectionalPad ||
-            //         Input.GetAxis("DPAD_V") != 0 && !hasPressedDirectionalPad)
-            {
-                if (gamepad.dpad.x.ReadValue() == 1 || gamepad.dpad.y.ReadValue() == 1)
-                    //if (Input.GetAxis("DPAD_H") == 1 || Input.GetAxis("DPAD_V") == 1)
-#elif UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_ANDROID
-            else if ( (gamepad.dpad.up.wasPressedThisFrame) ||
-					  (gamepad.dpad.down.wasPressedThisFrame) ||
-					  (gamepad.dpad.left.wasPressedThisFrame) ||
-					  (gamepad.dpad.right.wasPressedThisFrame) )
+            else if ( gamepad.dpad.up.wasPressedThisFrame ||
+					  gamepad.dpad.down.wasPressedThisFrame ||
+					  gamepad.dpad.left.wasPressedThisFrame ||
+					  gamepad.dpad.right.wasPressedThisFrame )
 			//else if ( (buttonPressed("DPAD_H")) ||
 			//		  (buttonPressed("DPAD_H_neg")) ||
 			//		  (buttonPressed("DPAD_V")) ||
 			//		  (buttonPressed("DPAD_V_neg")) )
             {
-                if (gamepad.dpad.right.isPressed || gamepad.dpad.up.isPressed)
+                if (gamepad.dpad.right.wasPressedThisFrame || gamepad.dpad.up.wasPressedThisFrame)
                 //if (Input.GetButtonDown("DPAD_H") || Input.GetButtonDown("DPAD_V"))
-#endif
                     DPADdirection = 1;
                 else
                     DPADdirection = -1;
 
-                hasPressedDirectionalPad = true;
                 int match = -1;
                 bool cycleLights = false;
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -559,7 +535,7 @@ namespace vpet
                 //if (Input.GetAxis("DPAD_V") != 0)
                     cycleLights = true;
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-                if (gamepad.dpad.up.isPressed || gamepad.dpad.down.isPressed )
+                if (gamepad.dpad.up.wasPressedThisFrame || gamepad.dpad.down.wasPressedThisFrame )
 				//if (Input.GetButtonDown("DPAD_V") || Input.GetButtonDown("DPAD_V_neg") )
                     cycleLights = true;
 #endif
@@ -592,23 +568,6 @@ namespace vpet
                 else if (scaleObjectActive & !mainController.getCurrentSelection().GetComponent<SceneObjectLight>())
                     mainController.buttonScaleClicked(true);
             }
-            // Dpad and R2 reset 
-#if UNITY_EDITOR || UNITY_STANDALONE
-            if (gamepad.dpad.x.ReadValue() == 0 && (gamepad.dpad.y.ReadValue() == 0))
-            //if (Input.GetAxis("DPAD_H") == 0 && (Input.GetAxis("DPAD_V") == 0))
-                hasPressedDirectionalPad = false;
-            if (gamepad.rightTrigger.ReadValue() == 0)
-            //if (Input.GetAxis("R2") == 0)
-                hasPressedR2 = false;
-            if (gamepad.leftTrigger.ReadValue() == 0)
-            //if (Input.GetAxis("L2") == 0)
-                hasPressedL2 = false;
-
-#elif UNITY_IOS || UNITY_STANDALONE_OSX
-            if (!gamepad.dpad.up.wasPressedThisFrame && !gamepad.dpad.right.wasPressedThisFrame)
-            //if (!buttonPressed("DPAD_H") && !buttonPressed("DPAD_V"))
-                hasPressedDirectionalPad = false;
-#endif
         }
 
         private void selectObject(int potentialIdx)
@@ -664,7 +623,6 @@ namespace vpet
             Vector3 pos = Vector3.zero;
             pos = new Vector3(x_axis, y_axis, z_axis);
 
-            Debug.Log(pos);
             return (VPETSettings.Instance.controllerSpeed) * pos * Time.deltaTime;
         }
 
