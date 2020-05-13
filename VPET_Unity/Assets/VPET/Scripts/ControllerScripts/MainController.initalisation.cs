@@ -112,10 +112,14 @@ namespace vpet
         {
             get { return ui; }
         }
+
+#if !SCENE_HOST
         //!
         //! cached references to joystic adapter
         //!
         private JoystickInput joystickAdapter;
+#endif
+
         //!
         //! cached references to input adapter
         //!
@@ -370,12 +374,15 @@ namespace vpet
                 Debug.LogWarning(string.Format("{0}: No JoystickAdapter Object found. Create.", this.GetType()));
                 refObject = new GameObject("JoystickAdapter");
             }
+
+#if !SCENE_HOST
             joystickAdapter = refObject.GetComponent<JoystickInput>();
             if (joystickAdapter == null)
             {
                 Debug.LogWarning(string.Format("{0}: No JoystickAdapter Component found. Create", this.GetType()));
                 joystickAdapter = refObject.AddComponent<JoystickInput>();
             }
+#endif
 
             // get InputAdapter adapter
             refObject = GameObject.Find("InputAdapter");

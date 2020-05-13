@@ -43,6 +43,7 @@ namespace vpet
             if (active)
             {
                 activeMode = Mode.translationMode;
+#if !SCENE_HOST
                 if (joystickAdapter != null)
                 {
                     joystickAdapter.moveCameraActive = false;
@@ -50,6 +51,7 @@ namespace vpet
                     joystickAdapter.rotateObjectActive = false;
                     joystickAdapter.scaleObjectActive = false;
                 }
+#endif
             }
             else
             {
@@ -66,6 +68,7 @@ namespace vpet
             if (active)
             {
                 activeMode = Mode.rotationMode;
+#if !SCENE_HOST
                 if (joystickAdapter != null)
                 {
                     joystickAdapter.moveCameraActive = false;
@@ -73,6 +76,7 @@ namespace vpet
                     joystickAdapter.rotateObjectActive = true;
                     joystickAdapter.scaleObjectActive = false;
                 }
+#endif
             }
             else
             {
@@ -89,6 +93,7 @@ namespace vpet
             if (active)
             {
                 activeMode = Mode.scaleMode;
+#if !SCENE_HOST
                 if (joystickAdapter != null)
                 {
                     joystickAdapter.moveCameraActive = false;
@@ -96,6 +101,7 @@ namespace vpet
                     joystickAdapter.rotateObjectActive = false;
                     joystickAdapter.scaleObjectActive = true;
                 }
+#endif
             }
             else
             {

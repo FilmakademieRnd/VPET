@@ -73,7 +73,7 @@ Note: When setting the type to "Key or Mouse Button" for an input in unitys
 project settings (Edit -> Project Settings... -> Input), the Axis dropdown
 doesn't do anything.
 */
-
+#if !SCENE_HOST
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -665,4 +665,5 @@ public class BuildPostProcessor
         }
     }
 }
+#endif
 #endif

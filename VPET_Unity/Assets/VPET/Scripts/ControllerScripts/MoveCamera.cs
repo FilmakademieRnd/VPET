@@ -91,11 +91,12 @@ namespace vpet
         //!
         private ServerAdapter serverAdapter = null;
 
-
+#if !SCENE_HOST
         //!
         //! Reference to server adapter to send out changes on execution
         //!
         private JoystickInput joystickAdapter = null;
+#endif
 
 
         //!
@@ -259,10 +260,12 @@ namespace vpet
             if (refObject != null) serverAdapter = refObject.GetComponent<ServerAdapter>();
             if (serverAdapter == null) Debug.LogError(string.Format("{0}: No ServerAdapter found.", this.GetType()));
 
+#if !SCENE_HOST
             // get joystick adapter
             refObject = GameObject.Find("JoystickAdapter");
             if (refObject != null) joystickAdapter = refObject.GetComponent<JoystickInput>();
             if (joystickAdapter == null) Debug.LogError(string.Format("{0}: No JoystickInput found.", this.GetType()));
+#endif
 
             // get mainController
             refObject = GameObject.Find("MainController");
@@ -294,8 +297,11 @@ namespace vpet
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
 	        Marshal.Copy(getOrientationSensorData(), orientationSensorData, 0, 4);
 #endif
+
+#if !SCENE_HOST
             if(joystickAdapter.move != move)
                 joystickAdapter.move = move;
+#endif
 
             if (move)
             {
@@ -325,7 +331,7 @@ namespace vpet
                         firstApplyTransform = true;
                     }
 
-#if !UNITY_EDITOR &&!USE_AR
+#if !UNITY_EDITOR && !USE_AR
                     transform.rotation = rotationOffset * newRotation;
 #if !UNITY_STANDALONE_WIN
                     // HACK: to block roll
