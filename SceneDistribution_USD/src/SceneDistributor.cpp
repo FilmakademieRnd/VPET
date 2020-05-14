@@ -623,7 +623,7 @@ namespace VPET
 				VtArray<GfVec3f> normals(PData.size() , GfVec3f(0.0));
 
 				// Uv
-				VtArray<GfVec2f> uvs(faceVIndices.size() , GfVec2f(0.0));
+				VtArray<GfVec2f> uvs(PData.size() , GfVec2f(0.0));
 
 				// Get vertices
 				for (int i = 0; i < PData.size(); i++)
@@ -665,14 +665,14 @@ namespace VPET
 							// use different index map (st.index)
 							int uvIdx0, uvIdx1, uvIdx2;
 							if (gotSTIndices) {
-								uvIdx0 = STindices[startIdx];
-								uvIdx1 = STindices[i];
-								uvIdx2 = STindices[i + 1];
+								uvIdx0 = STindices[pIdx1];
+								uvIdx1 = STindices[pIdx2];
+								uvIdx2 = STindices[pIdx3];
 							}
 							else { 
-								uvIdx0 = startIdx;
-								uvIdx1 = i;
-								uvIdx2 = i+1;
+								uvIdx0 = pIdx1;
+								uvIdx1 = pIdx2;
+								uvIdx2 = pIdx3;
 							}
 
 							uvs[uvIdx0] = GfVec2f(STData[uvIdx0][0], STData[uvIdx0][1]);
