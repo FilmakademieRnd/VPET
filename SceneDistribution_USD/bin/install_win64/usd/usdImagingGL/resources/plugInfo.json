@@ -1,0 +1,30 @@
+{
+    "Plugins": [
+        {
+            "Info": {
+                "Types": {
+                    "UsdImagingGLDomeLightAdapter" : {
+                        "bases": ["UsdImagingDomeLightAdapter"],
+                        "isInternal": true,
+                        "primTypeName": "PreviewDomeLight"
+                    },
+                    "UsdImagingGLDrawModeAdapter" : {
+                        "bases": ["UsdImagingPrimAdapter"],
+                        "isInternal": true,
+                        "primTypeName": "__drawModeAdapter"
+                    },
+                    "UsdImagingGLMaterialTextureAdapter" : {
+                        "bases": ["UsdImagingMaterialAdapter"],
+                        "isInternal": true,
+                        "primTypeName": "MaterialTexture"
+                    }
+                }
+            },
+            "LibraryPath": "../../usdImagingGL.dll",
+            "Name": "usdImagingGL",
+            "ResourcePath": "resources",
+            "Root": "..",
+            "Type": "library"
+        }
+    ]
+}

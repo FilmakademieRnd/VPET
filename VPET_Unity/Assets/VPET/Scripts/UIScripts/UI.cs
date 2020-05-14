@@ -30,7 +30,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Reflection;
-using UnityEngine.XR.ARFoundation;
+//using UnityEngine.XR.ARFoundation;
 
 //!
 //! Central UI Adapter that creates and manages all the different widgets and is the only way to access menu events & functionality from other parts of the app.
