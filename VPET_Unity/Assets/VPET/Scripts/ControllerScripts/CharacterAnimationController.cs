@@ -48,9 +48,10 @@ namespace vpet
             numHBones = Enum.GetNames(typeof(HumanBodyBones)).Length - 1;
             animationState = new Quaternion[numHBones];
             animationInitState = new Quaternion[numHBones];
-            for (int i = 1; i < numHBones; i++)
+            HumanDescription humanDescription = this.GetComponent<Animator>().avatar.humanDescription;
+            for (int i = 1; i < Math.Min(numHBones, humanDescription.skeleton.Length); i++)
             {
-                animationInitState[i] = this.GetComponent<Animator>().avatar.humanDescription.skeleton[i].rotation;
+                animationInitState[i] = humanDescription.skeleton[i].rotation;
             }
         }
 

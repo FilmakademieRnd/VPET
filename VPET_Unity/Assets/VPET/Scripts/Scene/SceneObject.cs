@@ -89,11 +89,11 @@ namespace vpet
 		//!
 		//! number of frames after which the object is asumed as steady (no more physically driven translation changes)
 		//!
-		int translationStillFrameCount = 11;
-		//!
-		//! number of frames after which the object is asumed as steady (no more physically driven rotation changes)
-		//!
-		int rotationStillFrameCount = 11;
+		protected int translationStillFrameCount = 11;
+        //!
+        //! number of frames after which the object is asumed as steady (no more physically driven rotation changes)
+        //!
+        protected int rotationStillFrameCount = 11;
 		//!
 		//! position of object at last server update
 		//! used to track movement
