@@ -26,6 +26,10 @@ https://opensource.org/licenses/MIT
 */
 ﻿using UnityEngine;
 using System.Collections;
+#if SCENE_HOST
+using UnityEditor;
+using System;
+#endif
 
 //! 
 //! This script should be applied to any gameObject that is able to move in the scene, is selectable by the user and should receive all physics (collisions & gravity).
@@ -134,10 +138,18 @@ namespace vpet
         //!
         public bool locked = false;
 
-		//!
-		//! allow changes to isKinematic property
-		//!
-		public bool globalKinematic = true;
+#if SCENE_HOST
+        //!
+        //! time until unlock is send
+        //!
+        [HideInInspector]
+        public float unlockTime = -1;
+#endif
+
+        //!
+        //! allow changes to isKinematic property
+        //!
+        public bool globalKinematic = true;
 
         //!
         //! is animated character
@@ -402,6 +414,15 @@ namespace vpet
             if (!locked && !mainController.lockScene)
             {
 #else
+            if (Array.Exists(UnityEditor.Selection.gameObjects, selection => selection == this.gameObject) && !selected
+                && (translationStillFrameCount == 0 || rotationStillFrameCount == 0))
+            {
+                this.unlockTime = 0.5f;
+                locked = false;
+                selected = true;
+                serverAdapter.SendObjectUpdate(this, ParameterType.LOCK);
+            }
+
             if (!locked)
             {
 #endif
@@ -529,6 +550,19 @@ namespace vpet
         //!
         protected void Update () 
 		{
+#if SCENE_HOST
+            //Automatically unlock object on all clients after
+            if (unlockTime > 0)
+            {
+                unlockTime -= Time.deltaTime;
+                if (unlockTime < 0)
+                {
+                    selected = false;
+                    serverAdapter.SendObjectUpdate(this, ParameterType.LOCK);
+                }               
+            }
+#else
+
             //turn on highlight modes
             if (selected && drawGlowAgain)
             {
@@ -570,12 +604,13 @@ namespace vpet
                     //    animationController.setKeyFrame();
 				}
 			}
-		}
+#endif
+        }
 
-		//!
-		//! move this object to the floor (the lowest point of the object will be set to have y position = 0)
-		//!
-		public void moveToFloor()
+        //!
+        //! move this object to the floor (the lowest point of the object will be set to have y position = 0)
+        //!
+        public void moveToFloor()
 		{
 			target.position = new Vector3(target.position.x, this.GetComponent<BoxCollider>().bounds.size.y / 2, target.position.z);
 		}

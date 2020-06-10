@@ -121,7 +121,7 @@ namespace vpet
         void Update()
         {
             base.Update();
-
+#if !SCENE_HOST
             //turn on highlight modes
             if (selected && drawGlowAgain)
             {
@@ -142,6 +142,7 @@ namespace vpet
                 this.showNormal(this.gameObject);
                 drawGlowAgain = true;
             }
+#endif
         }
 
         //!
