@@ -89,6 +89,17 @@ namespace vpet
 
 		public override void SendObject(byte cID, SceneObject sceneObject, ParameterType paramType, bool sendParent, Transform parent) 
         {
+#if SCENE_HOST
+            if (sceneObject && paramType != ParameterType.LOCK)
+            {
+                if (!sceneObject.selected)
+                {
+                    sceneObject.unlockTime = 0.5f;
+                    sceneObject.selected = true;
+                    SendObject(cID, sceneObject, ParameterType.LOCK, sendParent, parent);
+                }
+             }
+#endif
             byte[] msg = null;
             switch (paramType)
             {
@@ -344,7 +355,7 @@ namespace vpet
                                     Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.z), 0, msg, offset + 14, 4);
                                     Buffer.BlockCopy(BitConverter.GetBytes(t.localRotation.w), 0, msg, offset + 18, 4);
                                     offset += 16;
-                                }                              
+                                }
                             }
                         }
                     }
