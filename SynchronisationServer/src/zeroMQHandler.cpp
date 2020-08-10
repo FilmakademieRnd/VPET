@@ -222,8 +222,8 @@ void ZeroMQHandler::run()
                 socketExternal_->send(message);
             }
             else if (paramType != PING){
-                if(paramType != HIDDENLOCK)
-                    objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
+                //if(paramType != HIDDENLOCK)
+                objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
                 if(_debug)
                 {
                     QByteArray testMSG = msgArray.replace(0,1,&targetHostID,1);
