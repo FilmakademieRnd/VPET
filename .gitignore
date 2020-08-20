@@ -63,7 +63,10 @@ sysinfo.txt
 *.meta
 
 #VPET specific
-/VPET_Unity/Assets
+/VPET_Unity/Assets/*
+!/VPET_Unity/Assets/VPET
+/VPET_Unity/Assets/VPET/*
+!/VPET_Unity/Assets/VPET/Scripts
 *.asset
 /VPET_Unity/Packages
 /VPET_Unity/Projectsettings
