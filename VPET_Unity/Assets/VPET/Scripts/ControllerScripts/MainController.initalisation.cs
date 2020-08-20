@@ -282,6 +282,7 @@ namespace vpet
         {
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 30;
+            //Screen.SetResolution(1112, 834, true);
 
             // read settings from inspector values
             VPETSettings.mapValuesFromObject(this);

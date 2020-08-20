@@ -29,6 +29,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 //!
 //! Script creating the scene received from the server (providing XML3D) within Unity 
@@ -665,12 +666,13 @@ namespace vpet
                         float[] v = (float[])fieldInfo.GetValue(nodeGeo);
                         float a = v.Length > 3 ? v[3] : 1.0f;
                         Color c = new Color(v[0], v[1], v[2], a);
+                        string name = Encoding.UTF8.GetString(nodeGeo.name, 0, nodeGeo.name.Length);
                         material.SetColor(pair.Key, c);
 
                         if (a < 1.0f)
                         {
                             // set rendering mode
-                            material.SetFloat("_Mode", 3);
+                            material.SetFloat("_Mode", 1);
                             material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                             material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                             material.SetInt("_ZWrite", 0);
@@ -695,7 +697,7 @@ namespace vpet
                             if (Textures.hasAlpha(texRef))
                             {
                                 // set rendering mode
-                                material.SetFloat("_Mode", 3);
+                                material.SetFloat("_Mode", 1);
                                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                                 material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                                 material.SetInt("_ZWrite", 0);

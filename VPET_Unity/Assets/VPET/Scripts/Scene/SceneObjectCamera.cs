@@ -75,11 +75,13 @@ namespace vpet
         void Update()
         {
             base.Update();
+#if !SCENE_HOST
             if (mainController.ActiveMode == MainController.Mode.lookThroughCamMode && this.selected && (this.translationStillFrameCount == 0 || this.rotationStillFrameCount == 0))
             {
                 Camera.main.transform.position = this.transform.position;
                 Camera.main.transform.rotation = this.transform.rotation;
             }
+#endif
 
 
             //if(!selected && !renderer.enabled)

@@ -599,7 +599,8 @@ namespace vpet
                             sceneObject.enableRigidbody(!locked);
                             sceneObject.locked = locked;
 #if !SCENE_HOST
-                            sceneObject.updateLockView();
+                            if(!sceneObject.isAnimatedCharacter)
+                                sceneObject.updateLockView();
 #endif
 #if SCENE_HOST
                             }
@@ -722,7 +723,8 @@ namespace vpet
 #if !SCENE_HOST
                             if (!mainController.isTranslating)
 #endif
-                                sceneObject.gameObject.GetComponent<CharacterAnimationController>().bodyPosition = hipPosition;
+                            sceneObject.gameObject.GetComponent<CharacterAnimationController>().bodyPosition = hipPosition;
+                            sceneObject.transform.position = hipPosition;
                             sceneObject.gameObject.GetComponent<CharacterAnimationController>().animationState = animationState;
                         }
                         break;
@@ -868,7 +870,10 @@ namespace vpet
                 {
                     if (receiver.TryReceiveFrameBytes(out input))
                     {
+                        //Thread.Sleep(100);
+                        //this.receiveMessageQueue.Clear();
                         this.receiveMessageQueue.Add(input);
+
                         lastReceiveTime = currentTimeTime;
                     }
                     else
