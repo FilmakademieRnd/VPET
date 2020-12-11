@@ -507,7 +507,7 @@ namespace vpet
         {
             Ray ray = Camera.main.ScreenPointToRay(pos);
 
-            float distance;
+            float distance=0.0f;
             if (target.Raycast(ray, out distance))
                 return ray.GetPoint(distance);
             else
