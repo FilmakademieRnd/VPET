@@ -64,7 +64,7 @@ handles scene distribution and synchronization;
 
 - `VPETWindow` - an editor extension for assisting scene setup.
 
-An example minimal scene is also provided for quick testing: [`VPET_DemoContent.zip`](../../../raw/main/SceneDistribution_Unreal/VPET_DemoContent.zip)
+An example minimal scene is also provided for quick testing: [`VPET_DemoContent.zip`](../../../raw/master/SceneDistribution_Unreal/VPET_DemoContent.zip)
 
 
 ## Supported Platforms

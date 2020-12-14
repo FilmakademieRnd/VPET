@@ -25,22 +25,22 @@ Its development is open-source, with growing support for diverse film and VFX pi
 Application for maintaining synchronization between the host server (computer) and VPET clients (mobile devices)  
 <!--[Quick intro]()-->
 
-- **VPET_Unity**  
+- [**VPET_Unity**](VPET_Unity)  
 Unity project and assets for using Unity as a VPET host application  
 (Note: also contains the source application for the VPET clients)  
 [Tutorial video](https://youtu.be/XlwlEHVnbbI?list=PLFSxFMrrXJM4PNNejIBy3ztEnA0xYLBwl)
 
-- **SceneDistribution_Unreal**  
+- [**SceneDistribution_Unreal**](SceneDistribution_Unreal)  
 Plug-in for using Unreal Engine as a VPET host application  
 [Teaser video](https://youtu.be/ROlDiYnoEPc?list=PLFSxFMrrXJM4PNNejIBy3ztEnA0xYLBwl)  
 [Quick-start guide](.doc/VPET_Unreal_Quickstart.md)
 
-- **SceneDistribution_Katana**  
+- [**SceneDistribution_Katana**](SceneDistribution_Katana)  
 Application for distributing a Katana scene to VPET mobile clients  
 Synchronization is supported  
 [Tutorial video](https://youtu.be/z3BAYGiIeC8?list=PLFSxFMrrXJM4PNNejIBy3ztEnA0xYLBwl)
 
-- **SceneDistribution_USD**  
+- [**SceneDistribution_USD**](SceneDistribution_USD)  
 Application for distributing USD files to VPET mobile clients  
 Note: does not support realtime synchronization  
 
