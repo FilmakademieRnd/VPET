@@ -1,0 +1,29 @@
+VPET Unreal Scene Distribution
+
+The VPET component Unreal Scene Distribution Plugin is intended 
+for research and development purposes only. 
+Commercial use of any kind is not permitted.
+
+There is no support by Filmakademie. Since the VPET Unreal Plugin is available
+for free, Filmakademie shall only be liable for intent and gross negligence;
+warranty is limited to malice. VPET Unreal Plugin may under no circumstances
+be used for racist, sexual or any illegal purposes. In all non-commercial productions, 
+scientific publications, prototypical non-commercial software tools, etc. 
+using VPET Unreal Plugin, Filmakademie has to be named as follows: 
+“VPET-Virtual Production Editing Tool by Filmakademie Baden-Württemberg, 
+Animationsinstitut (http://research.animationsinstitut.de)“.
+
+In case a company or individual would like to use the VPET Unreal Plugin
+in a commercial surrounding or for commercial purposes, software based on 
+these components or any part thereof, the company/individual will have to 
+contact Filmakademie (research<at>filmakademie.de).
+
+VPET Unreal Scene Distribution Plugin binaries incorporate the following resources:
+
+ZeroMQ
+LGPLv3
+http://wiki.zeromq.org/area:licensing
+
+cppzmq
+MIT License
+https://github.com/zeromq/cppzmq/blob/master/LICENSE
