@@ -279,47 +279,10 @@ namespace vpet
 	    void Update()
 	    {
 	
-	        if (playing ) // && !dragging)
+	        if (playing) 
 	        {
 	            setTime( currentAnimationTime + Time.deltaTime );
 	        }
-	
-	        /*
-	        if (isActive)
-	        {
-	            // timeline.GetComponent<TimelineScript>().setTime(currentAnimationTime, animationTarget.GetComponent<SceneObject>().animationDuration);
-	            timeLine.setTime(currentAnimationTime);
-	
-	            if (editingPosition)
-	            {
-	                if (!mainController.getCurrentSelection().GetComponent<KeyframeScript>())
-	                {
-	                    print("set/add keframe value");
-	                    animationTarget.GetComponent<SceneObject>().setKeyframe();
-	                }
-	                else
-	                {
-	                    print("updateAnimationCurves");
-	                    animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
-	                }
-	            }
-	
-	            if (dragging)
-	            {
-	                currentAnimationTime = animationTimeDragStart + ((initialDragPositionX - Input.mousePosition.x) / (25 * (Screen.dpi / 15.0f)));
-	                foreach (SceneObject animatedObject in animatedObjects)
-	                {
-	                    animatedObject.setAnimationState(currentAnimationTime);
-	                }
-	                if (Input.GetMouseButtonUp(0))
-	                {
-	                    stopDrag();
-	                }
-	            }
-	
-	            updateLine();
-	        }
-	        */
 	    }
 	
 	    private void setTime(float x)
@@ -399,8 +362,6 @@ namespace vpet
 
                 }
 
-                // TODO: cheesy
-                // animationTarget.GetComponent<SceneObject>().setKeyframe();
                 animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
                 updateTimelineKeys();
                 updateLine();
@@ -533,7 +494,6 @@ namespace vpet
 	        }
 
             timeLine.setTime(currentAnimationTime);
-
 	    }
 	
 	
@@ -544,7 +504,6 @@ namespace vpet
 	    {
 	        timeLine.StartTime = s;
 	        timeLine.EndTime =  e > 0f ? e : 5;
-            // setTime(timeLine.StartTime);
         }
 
         private void setStartEndTimeline()
@@ -565,10 +524,9 @@ namespace vpet
                 }
             }
             setStartEndTimeline(timeStart, timeEnd);
+           
             // triger set time to clamp to [start,end]
             setTime(currentAnimationTime);
-
-            
         }
 
         public void activate( bool updateTimeLine = true )
@@ -598,43 +556,8 @@ namespace vpet
                                                          animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleZ") };
             animationInstance = animationTarget.GetComponent<SceneObject>();
 
-            //
-			// this was created on request to keep keys individually from current selection mode but turned out to be not practical,
-            // keep for potential future keying options
-			//
-			
-            /*
-            switch (mainController.ActiveMode)
-            {
-                case MainController.Mode.translationMode: case MainController.Mode.pointToMoveMode: case MainController.Mode.objectLinkCamera:
-                    animationProperties = new string[] { "m_LocalPosition.x", "m_LocalPosition.y", "m_LocalPosition.z" };
-                    animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateX")  ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateY") ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("TranslateZ") };
-                    animationInstance = animationTarget.GetComponent<SceneObject>();
-                    break;
-                case MainController.Mode.rotationMode:
-                    animationProperties = new string[] { "m_LocalRotation.x", "m_LocalRotation.y", "m_LocalRotation.z", "m_LocalRotation.w" };
-                    animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatX")  ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatY") ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatZ") ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("RotateQuatW") };
-                    animationInstance = animationTarget.GetComponent<SceneObject>();
-                    break;
-                case MainController.Mode.scaleMode:
-                    animationProperties = new string[] { "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z" };
-                    animationFields = new PropertyInfo[] { animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleX")  ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleY") ,
-                                                         animationTarget.GetComponent<SceneObject>().GetType().GetProperty("ScaleZ") };
-                    animationInstance = animationTarget.GetComponent<SceneObject>();
-                    break;
-            }
-            print("Activate Animation in Mode: " + mainController.ActiveMode);
-            */
-
-
-            if ( updateTimeLine ) setStartEndTimeline();
-
+            if ( updateTimeLine )
+                setStartEndTimeline();
 
             animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
 
@@ -646,8 +569,6 @@ namespace vpet
             updateLine();
 
             updateTimelineKeys();
-
-
         }
 
         private AnimationClip initAnimationClip()
@@ -697,7 +618,6 @@ namespace vpet
 	        animationTarget = null;
 
             timeLine.clearFrames();
-
 	    }
 	
 	    //!
@@ -712,11 +632,10 @@ namespace vpet
 	            mainController.hideModifiers();
 	            playing = true;
 	            systemTimeOffset = Time.time - currentAnimationTime;
-                // mainController.liveMode = true;
 	        }
 	        else
 	        {
-                // mainController.liveMode = false;
+                playing = false;
                 playing = false;
                 // stop all layers
                 foreach ( AnimationLayer animLayer in animationLayers )
@@ -829,7 +748,6 @@ namespace vpet
 	        currentAnimationTime = newTime;
 	
 	        timeChanged();
-	
 	    }
 	
 	
@@ -874,34 +792,8 @@ namespace vpet
 	        currentAnimationTime = newTime;
 	
 	        timeChanged();
-	
 	    }
 	
-	
-	    /*
-	    //!
-	    //! starts timeline drag (shifts the time on the timeline)
-	    //!
-	    public void startDrag()
-	    {
-	        initialDragPositionX = Input.mousePosition.x;
-	        animationTimeDragStart = currentAnimationTime;
-	        dragArea.SetActive(true);
-	        dragging = true;
-	        editingPosition = false;
-	        mainController.hideModifiers();
-	    }
-	
-	    //!
-	    //! stop timeline drag (shifts the time on the timeline)
-	    //!
-	    public void stopDrag()
-	    {
-	        dragging = false;
-	        initialDragPositionX = 0;
-	        dragArea.SetActive(false);
-	    }
-        */
 	
 	    //!
 	    //! calculate an array of interpolated waypoints of a Hermit curve defined by two keyframes
@@ -934,28 +826,7 @@ namespace vpet
 	
 	        return outPointArray;
 	    }
-	
-        /*
-	    //!
-	    //! starts the tracking of the currently selected sceneObject's keyframe
-	    //!
-	    public void enablePositionEditing()
-	    {
-	        editingPosition = true;
-	        playing = false;
-            if ( animationTarget )
-    	        animationTarget.GetComponent<SceneObject>().setKeyframe();
-	    }
-	    */
 
-        
-	    //!
-	    //! updates the curves applied on the current animation target
-	    //!
-	    public void updateAnimationTarget()
-	    {
-	        animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
-	    }
 	
 	    //!
 	    //! registers an animated object
@@ -1083,60 +954,5 @@ namespace vpet
 	        animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
             deactivate();
         }
-	
-		/*
-	    //!
-	    //! delete a keyframe
-	    //! @param  index   index of the keyframe to be deleted
-	    //!
-	    public void deleteKeyframe(int index)
-	    {
-	        AnimationCurve[] transCurves = new AnimationCurve[3];
-	        if (animData.getAnimationClips(animationTarget) != null)
-	        {
-	            transCurves[0] = animData.getAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], "m_LocalPosition.x");
-	            transCurves[1] = animData.getAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], "m_LocalPosition.y");
-	            transCurves[2] = animData.getAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], "m_LocalPosition.z");
-	            transCurves[0].RemoveKey(index);
-	            transCurves[1].RemoveKey(index);
-	            transCurves[2].RemoveKey(index);
-	            animData.changeAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], typeof(Transform), "m_LocalPosition.x", transCurves[0]);
-	            animData.changeAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], typeof(Transform), "m_LocalPosition.y", transCurves[1]);
-	            animData.changeAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], typeof(Transform), "m_LocalPosition.z", transCurves[2]);
-	
-	            animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
-	            timeline.GetComponent<TimelineScript>().updateFrames(transCurves[0], animData.getAnimationClips(animationTarget.gameObject)[0]);
-	            updateLine();
-	        }
-	    }
-		*/
-
-		/*
-	    //!
-	    //! smooth the tangents of a keyframe
-	    //! @param  index   index of the keyframe to be deleted
-	    //!
-	    public void smoothKeyframeTangents(int index)
-	    {
-	        AnimationCurve[] transCurves = new AnimationCurve[3];
-	        if (animData.getAnimationClips(animationTarget) != null)
-	        {
-	            transCurves[0] = animData.getAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], "m_LocalPosition.x");
-	            transCurves[1] = animData.getAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], "m_LocalPosition.y");
-	            transCurves[2] = animData.getAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], "m_LocalPosition.z");
-	            transCurves[0].SmoothTangents(index,0);
-	            transCurves[1].SmoothTangents(index,0);
-	            transCurves[2].SmoothTangents(index,0);
-	            animData.changeAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], typeof(Transform), "m_LocalPosition.x", transCurves[0]);
-	            animData.changeAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], typeof(Transform), "m_LocalPosition.y", transCurves[1]);
-	            animData.changeAnimationCurve(animData.getAnimationClips(animationTarget.gameObject)[0], typeof(Transform), "m_LocalPosition.z", transCurves[2]);
-	
-	            animationTarget.GetComponent<SceneObject>().updateAnimationCurves();
-	            timeline.GetComponent<TimelineScript>().updateFrames(transCurves[0], animData.getAnimationClips(animationTarget.gameObject)[0]);
-	            updateLine();
-	        }
-
-	    }
-		*/
 }
 }

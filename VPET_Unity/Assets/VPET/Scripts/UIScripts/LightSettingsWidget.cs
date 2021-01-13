@@ -87,22 +87,5 @@ namespace vpet
         {
             currentLight.setLightColor(color);
         }
-
-
-        private void updateIntensity(float intensity)
-        {
-            currentLight.setLightIntensity(intensity);
-        }
-
-        private void updateRange(float range)
-        {
-            currentLight.setLightRange(range);
-        }
-
-        private void updateAngle(float angle)
-        {
-            currentLight.setLightAngle(angle);
-        }
-
     }
 }

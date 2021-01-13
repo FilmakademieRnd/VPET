@@ -272,14 +272,6 @@ namespace vpet
                                 else
                                     ui.drawCenterMenu(layouts.LIGHT);
                             }
-                            /*
-	                        if (currentSceneObject.isDirectionalLight)
-	                            ui.drawCenterMenu(layouts.LIGHTDIR);
-	                        else if (currentSceneObject.isPointLight)
-	                            ui.drawCenterMenu(layouts.LIGHTPOINT);
-	                        else if (currentSceneObject.isSpotLight)
-	                            ui.drawCenterMenu(layouts.LIGHTSPOT);
-                            */
                         }
                         break;
                     case (Mode.cameraMenuMode):

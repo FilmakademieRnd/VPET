@@ -53,8 +53,6 @@ namespace vpet
 
 		private string text;
 
-
-
         private Text textIndicatorComponent;
         private Text textLoadingComponent;
         private Image lodaingBarComponent;
@@ -142,25 +140,11 @@ namespace vpet
         }
 		
 	    //!
-	    //! map from [a1,b1] to [0,1], note this will not clamp values below a1 or greater b1
-	    //! @param    x    value to map
-	    //! @param    a1    intervall start
-	    //! @param    b1    intervall end
-	    //! @return   mapped value betweem 0 and 1
-	    //!
-		public float mapTo01( float x, float a1, float b1 )
-		{
-			return ( x - a1 ) / (b1-a1);
-		}
-	
-	
-	    //!
 		//! Draws (animated) placeholder and progress
 	    //!
 		protected virtual void draw()
 		{
             // animate something here
-
             Vector3 rotation =  AnimatedGroup.localEulerAngles;
             rotation.z = (rotation.z - animationSpeed * Time.deltaTime) % 360;
             AnimatedGroup.localEulerAngles = rotation;

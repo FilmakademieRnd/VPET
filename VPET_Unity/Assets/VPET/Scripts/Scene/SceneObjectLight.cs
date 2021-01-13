@@ -233,13 +233,6 @@ namespace vpet
             }
         }
 
-        /*
-        public float LightIntensity
-        {
-            get { return getLightIntensity(); }
-            set { setLightIntensity(value);  }
-        }
-        */
 
         //!
         //! set the light intensity of this object, if it is a light
@@ -265,20 +258,6 @@ namespace vpet
             if (isPointLight || isSpotLight || isAreaLight)
             {
                 sourceLight.range = range;
-                lastModifiedLightParameter = LightParameter.Range;
-                serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
-            }
-        }
-
-        //!
-        //! set the light delta range of this object, if it is a light
-        //! @param      delta     new delta range of the light  
-        //!
-        public void setLightDeltaRange(float delta)
-        {
-            if (isPointLight || isSpotLight || isAreaLight)
-            {
-                sourceLight.range += delta;
                 lastModifiedLightParameter = LightParameter.Range;
                 serverAdapter.SendObjectUpdate(this, ParameterType.RANGE);
             }

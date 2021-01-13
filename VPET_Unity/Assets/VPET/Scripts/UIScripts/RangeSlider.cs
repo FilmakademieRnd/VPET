@@ -35,14 +35,13 @@ using System;
 namespace vpet
 {
 
-    public class RangeSlider : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class RangeSlider : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
     {
         public class OnValueChangedEvent : UnityEvent<float> { };
 
         public enum SliderDirection { VERTICAL, HORIZONTAL };
 
         public OnValueChangedEvent OnValueChanged = new OnValueChangedEvent();
-
 
         public Text ValueField = null;
 
@@ -56,11 +55,9 @@ namespace vpet
             {
                 currentValue = value;
                 ValueField.text = String.Format("{0:##0.#}", currentValue); 
-                // onValueChange();
             }
         }
         public float velocity = 0f;
-
         public float Sensitivity = 1f;
 
 
@@ -87,11 +84,6 @@ namespace vpet
         public UnityAction<float> Callback
         {
             set { callback = value; }
-        }
-
-        void Awake()
-        {
-
         }
 
         void Start()
@@ -139,15 +131,6 @@ namespace vpet
         public void OnPointerDown(PointerEventData eventData)
         {
             velocity = 0;
-            //ValueField.gameObject.SetActive(true);
-        }
-
-
-        // DRAG
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            // Debug.Log("BEGIN DRAG");
-            //ValueField.transform.parent.gameObject.SetActive(true);
         }
 
         public void OnDrag(PointerEventData data)
@@ -163,17 +146,10 @@ namespace vpet
             }
         }
 
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            // Debug.Log("END DRAG");
-            //ValueField.transform.parent.gameObject.SetActive(false);
-        }
-
         public void OnPointerUp(PointerEventData eventData)
         {
             velocity = 0;
             OnValueChanged.Invoke(currentValue);
-            // ValueField.gameObject.SetActive(false);
         }
     }
 }

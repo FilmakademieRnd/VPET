@@ -166,9 +166,7 @@ namespace vpet
 	        if (currentSelection){
 	            if (!currentSelection.parent.GetComponent<Light>()){
                     currentSelection.localScale += (axisLocker * scale);                    
-                    if (liveMode){
-                        serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
-	                }
+                    serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
 	            }
 	        }
 	    }
@@ -187,8 +185,7 @@ namespace vpet
                         currentSelection.transform.localScale = Vector3.one * (end - begin).x / 1000f + initScale;
                     else
                         currentSelection.transform.localScale = (Vector3.Scale(end, axisLocker) - begin) / 1000f + initScale;
-                    if (liveMode)
-                        serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
+                    serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
                 }
             }
         }
@@ -231,8 +228,7 @@ namespace vpet
                     {
                         float scaleFactor = (8f * Vector3.Distance(Camera.main.transform.position, currentSelection.position) / VPETSettings.Instance.maxExtend);
                         currentSelection.transform.localScale += Vector3.Scale(scale / currentSelection.transform.parent.lossyScale.x * scaleFactor / VPETSettings.Instance.controllerSpeed, axisLocker) / 100f;
-                        if (liveMode)
-                            serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
+                        serverAdapter.SendObjectUpdate(currentSelection.GetComponent<SceneObject>(), ParameterType.SCALE);
                     }
                 }
             }

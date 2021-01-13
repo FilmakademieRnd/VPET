@@ -65,13 +65,6 @@ namespace vpet
 				if (button.GetComponent<IMenuButton>() == null ) // other objects (e.g. timeline
 				{
 					button.GetComponent<RectTransform>().localPosition = getButtonPosition(i, (int)( button.GetComponent<RectTransform>().sizeDelta.x / 2));	
-					// HACK use event instead
-					/*
-					if ( button.GetComponent<TimeLineWidget>())
-					{
-						button.GetComponent<TimeLineWidget>().initMappingValues();
-					}
-					*/
 					space = (int)( (button.GetComponent<RectTransform>().sizeDelta.x  ) );
 				}
 				else

@@ -117,8 +117,6 @@ namespace vpet
 
                     if (IsYCBCR)
                     {
-                        //m_readableTexture = (Texture2D)m_material.GetTexture("_textureY"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureY"), RenderTextureFormat.R8, TextureFormat.R8, "Y");
-                        //m_readableTextureB = (Texture2D)m_material.GetTexture("_textureCbCr"); //getRenderTexture((Texture2D)image.material.GetTexture("_textureCbCr"), RenderTextureFormat.RG16, TextureFormat.RG16, "CBCR");
                         m_readableTexture = getRenderTexture(m_material.GetTexture("_textureY"), RenderTextureFormat.Default, TextureFormat.R8);
                         m_readableTextureB = getRenderTexture(m_material.GetTexture("_textureCbCr"), RenderTextureFormat.ARGB32, TextureFormat.RG16);
                         float _y = m_readableTexture.GetPixelBilinear(x, y)[0];

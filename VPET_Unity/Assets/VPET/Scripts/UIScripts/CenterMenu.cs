@@ -95,64 +95,6 @@ namespace vpet
 	    }
 
 	    //!
-	    //! move the center of the menu relative to the last position
-	    //! @param    pos     xy position offset
-	    //!
-	    public override void moveRelative(Vector2 pos){
-	        centerPoint += pos;
-	        arrange();
-	    }
-	
-	    //!
-	    //! move the center of the menu relative to the last position but only on x axis
-	    //! @param    posX     x position offset
-	    //!
-	    public override void moveRelativeX(float posX)
-	    {
-	        centerPoint.x += posX;
-	        arrange();
-	    }
-	
-	    //!
-	    //! move the center of the menu relative to the last position but only on y axis
-	    //! @param    posY     y position offset
-	    //!
-	    public override void moveRelativeY(float posY)
-	    {
-	        centerPoint.y += posY;
-	        arrange();
-	    }
-	
-	    //!
-	    //! move the center of the menu to the given position
-	    //! @param    pos     new xy position of the menu
-	    //!
-	    public override void moveAbsolute(Vector2 pos){
-	        centerPoint = pos;
-	        arrange();
-	    }
-	
-	    //!
-	    //! move the center of the menu to the given position only on the x axis
-	    //! @param    pos     new x position of the menu
-	    //!
-	    public override void moveAbsoluteX(float posX)
-	    {
-	        centerPoint.x = posX;
-	        arrange();
-	    }
-	
-	    //!
-	    //! move the center of the menu to the given position only on the y axis
-	    //! @param    pos     new y position of the menu
-	    //!
-	    public override void moveAbsoluteY(float posY)
-	    {
-	        centerPoint.y = posY;
-	        arrange();
-	    }
-	
-	    //!
 	    //! place all available buttons on a circle around the center of this menu, with equal spacing
 	    //!
 	    protected override void arrange()

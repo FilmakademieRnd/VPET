@@ -190,7 +190,6 @@ namespace vpet
                 Array.Reverse(dataNumber);
         }
 
-
         private void convertHeaderByteStream()
         {
             int offset = 0;
@@ -480,32 +479,7 @@ namespace vpet
 
             }
 
-            // disabled because of cleanup shifted to character creation
-            //Array.Clear(m_objectsByteData, 0, m_objectsByteData.Length);
-            //m_objectsByteData = null;
-            //GC.Collect();
-
         }
-
-
-        //public static byte[] StructureToByteArray<T>(T obj)
-        //{
-        //    IntPtr ptr = IntPtr.Zero;
-        //    try
-        //    {
-        //        int size = Marshal.SizeOf(typeof(T));
-        //        ptr = Marshal.AllocHGlobal(size);
-        //        Marshal.StructureToPtr(obj, ptr, true);
-        //        byte[] bytes = new byte[size];
-        //        Marshal.Copy(ptr, bytes, 0, size);
-        //        return bytes;
-        //    }
-        //    finally
-        //    {
-        //        if (ptr != IntPtr.Zero)
-        //            Marshal.FreeHGlobal(ptr);
-        //    }
-        //}
 
 
         public static T[] Concat<T>(T[] first, params T[][] arrays)
@@ -527,28 +501,6 @@ namespace vpet
             return result;
         }
 
-
-        //public static T ByteArrayToStructure<T>(byte[] bytearray, ref int offset)
-        //{
-        //    // for debug
-        //    string debugString = Encoding.ASCII.GetString(bytearray, 45, 64);
-        //    Debug.Log("ByteArrayToStructure: " + debugString);
-        //    IntPtr i = IntPtr.Zero;
-        //    try
-        //    {
-        //        int len = Marshal.SizeOf(typeof(T));
-        //        i = Marshal.AllocHGlobal(len);
-        //        Marshal.Copy(bytearray, offset, i, len);
-        //        object obj = (SceneNode)Marshal.PtrToStructure(i, typeof(T));
-        //        offset += len;
-        //        return (T)obj;
-        //    }
-        //    finally
-        //    {
-        //        if (i != IntPtr.Zero)
-        //            Marshal.FreeHGlobal(i);
-        //    }
-        //}
 
         public static byte[] StructToByteArray<T>(T obj)
         {
@@ -603,36 +555,6 @@ namespace vpet
             Marshal.FreeHGlobal(ptr);
 
             return arr;
-        }
-
-        public static void ByteArrayToStruct<T>(ref byte[] data, out T output, int offset, int length)
-        {
-            output = (T)Activator.CreateInstance(typeof(T), null);
-
-            int debug = Marshal.SizeOf(typeof(T));
-            using (MemoryStream ms = new MemoryStream(data, offset, length))
-            {
-                byte[] ba = null;
-                FieldInfo[] infos = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
-                foreach (FieldInfo info in infos)
-                {
-                    // for length
-                    ba = new byte[sizeof(int)];
-                    ms.Read(ba, 0, sizeof(int));
-
-                    // for value
-                    int sz = BitConverter.ToInt32(ba, 0);
-                    ba = new byte[sz];
-                    ms.Read(ba, 0, sz);
-
-                    BinaryFormatter bf = new BinaryFormatter();
-                    using (MemoryStream inms = new MemoryStream(ba))
-                    {
-                        info.SetValue(output, bf.Deserialize(inms));
-                    }
-                }
-            }
-            offset += Marshal.SizeOf(typeof(T));
         }
     }
 }

@@ -91,9 +91,7 @@ public class SplashWidget : MonoBehaviour
     //!
     void Awake()
     {
-
         foreground = transform.Find("Foreground").GetComponent<Image>();
-
         background = transform.Find("Background").GetComponent<Image>();
     }
 

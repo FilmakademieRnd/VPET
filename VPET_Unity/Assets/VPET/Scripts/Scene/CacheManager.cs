@@ -34,11 +34,8 @@ using UnityEngine;
 
 namespace vpet
 {
-
-
     public class CacheManager : MonoBehaviour
     {
-
         [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
         private class SceneNodeGeoV1100 : SceneNode
         {
@@ -79,9 +76,7 @@ namespace vpet
             VPETRegister.RegisterObjectSender();
 
 
-
             ImportCache();
-
             ExportCache();
         }
 
@@ -115,14 +110,10 @@ namespace vpet
             buffer = new byte[byteDataMap["nodes"].Length];
             Buffer.BlockCopy(byteDataMap["nodes"], 0, buffer, 0, byteDataMap["nodes"].Length);
             sceneDataHandler.NodesByteData = buffer;
-
         }
-
 
         private void ExportCache()
         {
-
-
             if (SourceVersion != TargetVersion)
                 convertCache(TargetVersion);
 
@@ -130,8 +121,6 @@ namespace vpet
             {
                 writeBinary(pair.Value, pair.Key);
             }
-
-
         }
 
         private void convertCache(Version currentTargetVersion)
@@ -147,10 +136,7 @@ namespace vpet
 
             }
 
-            //if (currentTargetVersion < TargetVersion)
-            //    convertCache(currentTargetVersion++);
         }
-
 
         private byte[] loadBinary(string dataname)
         {
@@ -168,7 +154,6 @@ namespace vpet
             writer.Write(data);
             writer.Close();
         }
-
 
         private byte[] getNodesByteArrayV1100()
         {
@@ -216,8 +201,6 @@ namespace vpet
 
             return nodesByteData;
         }
-
-
 
         public static void copyProperties(object source, object target)
         {

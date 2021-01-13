@@ -37,8 +37,6 @@ namespace vpet
         //!
         public float aperture = 0.5f;
 
-        private Renderer renderer;
-
         // Start is called before the first frame update
         void Start()
         {
@@ -52,7 +50,6 @@ namespace vpet
             // TODO: temporary
             this.gameObject.GetComponent<Rigidbody>().useGravity = false;
 
-            renderer = this.transform.GetChild(0).GetComponent<Renderer>();
             this.transform.localScale = new Vector3(1, 1, 1) * VPETSettings.Instance.maxExtend / 2000.0f;
         }
 
@@ -82,15 +79,6 @@ namespace vpet
                 Camera.main.transform.rotation = this.transform.rotation;
             }
 #endif
-
-
-            //if(!selected && !renderer.enabled)
-            //{
-            //    mainController.cameraAdapter.registerNearObject(this.transform.GetChild(0).gameObject);
-            //}
-            //Camera camera = Camera.main;
-            //Vector3 newScale = new Vector3(0.04f,0.04f,0.04f) * (Vector3.Distance(this.transform.position, camera.transform.position) / 30.0f) * (camera.fieldOfView / 30.0f);
-            //this.transform.localScale = newScale;
         }
     }
 }

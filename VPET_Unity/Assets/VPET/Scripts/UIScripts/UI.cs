@@ -143,7 +143,8 @@ namespace vpet
 	    {
 	        // read icons from resouces and assign to class properties
 	        FieldInfo[] fi = this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance );
-	        foreach (FieldInfo info in fi)
+            
+            foreach (FieldInfo info in fi)
 	        {
 	            Sprite sprite = Resources.Load<Sprite>("VPET/Icons/" + info.Name );
 	            if ( sprite != null )
@@ -153,21 +154,19 @@ namespace vpet
 	            }
 	            else
 	            {
-	                // print("Not Found " + "Icons/" + info.Name);
+	                //print("Not Found " + "Icons/" + info.Name);
 	            }
 	        }
 
             // set canvas
             canvas = transform.parent;
-
-	
+            	
 			print("Screen.width " + Screen.width);
 			print("Screen.height " + Screen.height);
 			print("VPETSettings.Instance.canvasHalfWidth " + VPETSettings.Instance.canvasHalfWidth);
 			print("VPETSettings.Instance.canvasHalfHeight " + VPETSettings.Instance.canvasHalfHeight);
 	        print("VPETSettings.Instance.canvasAspectScaleFactor " + VPETSettings.Instance.canvasAspectScaleFactor);
-	
-	    }
+		    }
 	
 	    //!
 	    //! Use this for initialization
@@ -411,11 +410,6 @@ namespace vpet
             return splashWidget;
         }
 
-        public void hideSplashWidget()
-        {
-            // splashWidget.Hide();
-        }
-
 		public void acceptARConfig()
 		{
             GameObject arConfigWidget = GameObject.Find("GUI/Canvas/ARConfigWidget");
@@ -434,35 +428,6 @@ namespace vpet
             mainController.hideARWidgets();
 		}
 
-		public void requestKeyConfig()
-		{
-			hideConfigWidget();
-			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
-            GameObject.Find("GUI/Canvas/ARColorPlane").SetActive(true);
-			arKeyWidget.SetActive(true);
-            arKeyVideoPlane.SetActive(true);
-            //temporarely enable standard chroma key to visualize keying while picking
-#if USE_AR
-            mainController.ToggleARMatteMode(false);
-            mainController.ToggleARKeyMode(true);
-#endif
-		}
-
-		public void acceptKeyConfig()
-		{
-			GameObject arKeyWidget = GameObject.Find("GUI/Canvas/ARKeyWidget");
-            GameObject.Find("GUI/Canvas/ARColorPlane").SetActive(false);
-			arKeyWidget.SetActive(false);
-            // save values to preferences
-            VPETSettings.mapValuesToPreferences(configWidget);
-			drawConfigWidget();
-            arKeyVideoPlane.SetActive(false);
-            //reset chroma keying settings
-#if USE_AR
-            mainController.ToggleARMatteMode(configWidget.mattModeOn);
-            mainController.ToggleARKeyMode(configWidget.keyModeOn);
-#endif
-		}
 
         public ConfigWidget drawConfigWidget()
 	    {
@@ -512,15 +477,6 @@ namespace vpet
 
             UI.OnUIChanged.Invoke();
         }
-
-
-        // TODO: create generic widget class
-        /*
-        public void hideConfigWidget( ConfigWidget widget)
-        {
-            widget.Hide();
-        }
-        */
 
 
         public RoundProgressBar drawProgressWidget()
@@ -602,63 +558,6 @@ namespace vpet
             parameterMenu.hide();
         }
 
-        /*
-	    //!
-	    //! Display the object modification menu with an intial animation.
-	    //! @param      isKinematic     is the objects kinematic state true or false (needed to visualize the kinematic button acordingly)
-	    //! @param      hasAnimation    is the currently selected object animated
-	    //!
-	    public void drawObjectModificationMenu(bool hasAnimation, bool isKinematic)
-	    {
-	        activeMenu = sceneObjectCenterMenu;
-	        activeMenu.reset();
-	        if (!hasAnimation) activeMenu.deactivateButton(8);
-	        if (isKinematic) activeMenu.swapSprites(4);
-	        if (AnimationData.Data.getAnimationClips(mainController.getCurrentSelection().gameObject) != null) activeMenu.deactivateButton(4);
-	        activeMenu.animatedDraw();
-	    }
-	
-	
-	    //!
-	    //! Display the keyframe menu with an intial animation.
-	    //!
-	    public void drawKeyframeMenu()
-	    {
-	        activeMenu = keyframeCenterMenu;
-	        activeMenu.reset();
-	        keyframeCenterMenu.deactivateButton(3);
-	        keyframeCenterMenu.deactivateButton(4);
-	        activeMenu.animatedDraw();
-	    }
-	
-	    //!
-	    //! Display the directional light modification menu with an intial animation.
-	    //!
-	    public void drawDirectionLightModificationMenu()
-	    {
-	        activeMenu = directionalLightCenterMenu;
-	        activeMenu.animatedDraw();
-	    }
-	
-	    //!
-	    //! Display the point light modification menu with an intial animation.
-	    //!
-	    public void drawPointLightModificationMenu()
-	    {
-	        activeMenu = pointLightCenterMenu;
-	        activeMenu.animatedDraw();
-	    }
-	
-	    //!
-	    //! Display the spot light modification menu with an intial animation.
-	    //!
-	    public void drawSpotLightModificationMenu()
-	    {
-	        activeMenu = spotLightCenterMenu;
-	        activeMenu.animatedDraw();
-	    }
-	    */
-
 
         //!
         //! Display the light parameters modification menu.
@@ -682,115 +581,5 @@ namespace vpet
 	        lightSettingsWidget.hide();
 	        lightSettingsWidget.gameObject.SetActive(false);
 	    }
-
-	
-	    /*
-	    //!
-	    //! Hide the currently active center or light parameter menu and move the activated menu button to the active position.
-	    //!
-	    public void hideActiveMenu()
-	    {
-	        if(activeMenu) activeMenu.hide(activeMenuButton);
-	        if (ciPickerMenu.active) ciPickerMenu.active = false;
-	    }
-	
-	    //!
-	    //! Hide the currently active center or light parameter menu entirely.
-	    //!
-	    public void forceHideActiveMenu()
-	    {
-	        if (activeMenu) activeMenu.hide(-1);
-	        activeMenuButton = -1;
-	        activeMenu = null;
-	        if (ciPickerMenu.active) ciPickerMenu.active = false;
-	    }
-	    */
-	
-		/*
-	    //!
-	    //! Reset the currently active menu.
-	    //!
-	    public void reset()
-	    {
-	        if (activeMenu != null)
-	        {
-	            activeMenu.reset();
-	        }
-	    }
-		*/
-	
-		/*
-	    //!
-	    //! Returns the id of a button at a screen position.
-	    //! @param      pos     position on screen
-	    //! @return     id of the Button at the screen position, if none returns -1
-	    //!
-	    public int getButtonId(Vector3 pos)
-	    {
-	        int val = -1;
-	        if (activeMenu) val =  activeMenu.contains(pos);
-	        if (mainMenuActive && val == -1) val = mainMenu.contains(pos);
-	        return val;
-	    }
-		*/
-	
-		/*
-	    //!
-	    //! checks if the given screen position is on the light parameters menu.
-	    //! @param      pos     position on screen
-	    //! @return     true if on the menu
-	    //!
-	    public bool isOnLightSettingsPicker(Vector3 pos)
-	    {
-	        return ciPickerMenu.contains(new Vector2(pos.x, Screen.height - pos.y));
-	    }
-		*/
-	
-		/*
-	    //!
-	    //! Forwards the color request to the menu and returns the answer.
-	    //! @param      pos     position on screen
-	    //! @return     color returned by menu evaluation
-	    //!
-	    public Color getColorPickerValue(Vector3 pos)
-	    {
-	        return ciPickerMenu.getColor(pos);
-	    }
-		*/
-	
-		/*
-	    //!
-	    //! Forwards the intensity request to the menu and returns the answer.
-	    //! @param      pos     position on screen
-	    //! @return     intensity returned by menu evaluation
-	    //!
-	    public float getIntensityPickerValue(Vector3 pos)
-	    {
-	        return ciPickerMenu.getIntensity(pos);
-	    }
-		*/
-		/*
-	    //!
-	    //! Forwards the range request to the menu and returns the answer.
-	    //! @param      pos     position on screen
-	    //! @return     range returned by menu evaluation
-	    //!
-	    public float getRangePickerDeltaValue(Vector3 pos)
-	    {
-	        return ciPickerMenu.getDeltaRange(pos);
-	    }
-		*/
-	
-		/*
-	    //!
-	    //! Forwards the cone angle request to the menu and returns the answer.
-	    //! @param      pos     position on screen
-	    //! @return     cone angle returned by menu evaluation
-	    //!
-	    public float getAnglePickerValue(Vector3 pos)
-	    {
-	        return ciPickerMenu.getAngle(pos);
-	    }
-		*/
-	
-}}
+    }
+}

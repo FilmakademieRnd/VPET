@@ -31,7 +31,6 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Reflection;
-// using UnityEngine.Rendering;
 
 //!
 //! MainController part handling initalization of MainController
@@ -56,10 +55,6 @@ namespace vpet
         //!
         public bool lockScene;
 
-        //!
-        //! are changes reported to server immediatelly (while dragging)
-        //!
-        public bool liveMode = true;
         //!
         //! shall we ignore config file 
         //!
@@ -258,11 +253,6 @@ namespace vpet
             BACK,
 			NCAM };
 
-        //!
-        //! available edit paramters
-        //!
-        public enum Parameter { X, Y, Z, INTENSITY, ANGLE };
-
         [HideInInspector]
         //!
         //! currently active mode
@@ -273,7 +263,6 @@ namespace vpet
             get { return activeMode; }
             set { activeMode = value; }
         }
-
 
         //!
         //! Use this for pre initialization 
@@ -426,7 +415,6 @@ namespace vpet
                 cameraAdapter = Camera.main.gameObject.AddComponent<MoveCamera>();
             }
         }
-
 
 
         //!

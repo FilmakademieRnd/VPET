@@ -59,9 +59,6 @@ namespace vpet
 
         private Image image = null;
 
-        public bool UseMaterial = false;
-
-
         private bool isActive = false;
         public bool IsActive
         {
@@ -105,14 +102,7 @@ namespace vpet
                 y /= radius + .05f;
             }
 
-            if (UseMaterial)
-            {
-                //callback(((Texture2D)image.material.GetTexture("_textureY")).GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));
-            }
-            else
-            {
-                callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));                
-            }
+            callback(image.sprite.texture.GetPixelBilinear(x * 0.5f + 0.5f, y * 0.5f + 0.5f));                
         }
 
         public void OnEndDrag(PointerEventData eventData)

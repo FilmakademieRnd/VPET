@@ -194,12 +194,10 @@ namespace vpet
         //!
         Transform dreamspaceRoot;
 
-        //#if !SCENE_HOST
         //!
         //! cached reference to main controller
         //!
         MainController mainController = null;
-        //#endif
 
         //!
         //! list containing sceneObjects to sceneObject ID references
@@ -207,10 +205,8 @@ namespace vpet
         [HideInInspector]
         public SceneObject[] sceneObjectRefList;
 
-
-
         //!
-        //! none
+        //! none SUPER!!
         //!
         private SceneLoader sceneLoader;
         public SceneLoader SceneLoader
@@ -445,7 +441,6 @@ namespace vpet
                 }
 
                 mainController.SetSceneScale(VPETSettings.Instance.sceneScale);
-                // Camera.main.GetComponent<MoveCamera>().calibrate();
 
                 scene.rotation = scenRot;
                 scene.position = scenePos;
@@ -504,39 +499,6 @@ namespace vpet
             }
 
         }
-
-        ////! function to be called to send a lock signal to server
-        ////! @param  obj             Transform of GameObject to be locked
-        ////! @param  locked          should it be locked or unlocked
-        //public void sendLock(Transform obj, bool locked)
-        //{
-        //    if (locked) // lock it
-        //    {
-        //        if (currentlyLockedObject != null && currentlyLockedObject != obj && !deactivatePublish) // is another object already locked, release it first
-        //        {
-        //            string msg = "client " + id + "|" + "l" + "|" + vpet.Extensions.getPathString(currentlyLockedObject, scene) + "|" + false;
-        //            SendObjectUpdate<ObjectSenderBasic>(msg);
-        //            // print("Unlock object " + currentlyLockedObject.gameObject.name );
-        //        }
-        //        if (currentlyLockedObject != obj && !deactivatePublish) // lock the object if it is not locked yet
-        //        {
-        //            string msg = "client " + id + "|" + "l" + "|" + vpet.Extensions.getPathString(obj, scene) + "|" + true;
-        //            SendObjectUpdate<ObjectSenderBasic>(msg);
-        //            // print("Lock object " + obj.gameObject.name);
-        //        }
-        //        currentlyLockedObject = obj;
-        //    }
-        //    else // unlock it
-        //    {
-        //        if (currentlyLockedObject != null && !deactivatePublish) // unlock if locked
-        //        {
-        //            string msg = "client " + id + "|" + "l" + "|" + vpet.Extensions.getPathString(obj, scene) + "|" + false;
-        //            SendObjectUpdate<ObjectSenderBasic>(msg);
-        //            // print("Unlock object " + obj.gameObject.name);
-        //        }
-        //        currentlyLockedObject = null;
-        //    }
-        //}  // commented at sync update rewrite 
 
 
         //! function parsing received message and executing change
@@ -838,13 +800,6 @@ namespace vpet
         }
 #endif
 
-        //! function searching for gameObject by path
-        //! @param  path        path to gameObject started at main scene, separated by "/"
-        //! @return             Transform of GameObject
-        private Transform getOjectFromString(string path)
-        {
-            return scene.Find(path);
-        }
 
         //!
         //! client function, listening for messages in receiveMessageQueue from server (executed in separate thread)
@@ -855,10 +810,6 @@ namespace vpet
             using (var receiver = new SubscriberSocket())
             {
                 receiver.SubscribeToAnyTopic();
-
-                //receiver.Subscribe("client");
-                //receiver.Subscribe("ncam");
-                //receiver.Subscribe("record");
 
                 receiver.Connect("tcp://" + VPETSettings.Instance.serverIP + ":5556");
 
@@ -890,7 +841,6 @@ namespace vpet
                 receiver.Close();
                 receiver.Dispose();
             }
-            //NetMQConfig.Cleanup();
         }
 
 #if !SCENE_HOST

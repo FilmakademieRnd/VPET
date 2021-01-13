@@ -33,7 +33,6 @@ namespace vpet
 {
 	public class ConfigEvent : UnityEvent<ConfigWidget> { }
 	public class AmbientIntensityChangedEvent : UnityEvent<float> { }
-	public class VisibilityChangeEvent: UnityEvent<bool> { }
 
 #if USE_AR
     public class FloatChangedEvent : UnityEvent<float> { }
@@ -507,7 +506,6 @@ namespace vpet
 
         void readUIValues()
 	    {
-
 			// Textfield Server IP
 			if ( serverIPField )
 			{
@@ -531,14 +529,6 @@ namespace vpet
 			{
 				ambientLight = ambientIntensitySlider.value;
             }
-
-
-            // Checkbox Load Local
-            //if (loadCacheToggle != null)
-            //{
-            //    doLoadFromResource = loadCacheToggle.isOn;
-            //}
-	
 	    }
 	
 	    public void OnSubmit()
@@ -587,8 +577,6 @@ namespace vpet
 
             if (arToggle)
             {
-                //MainController mainCtrl = GameObject.Find("MainController").GetComponent<MainController>();
-                //mainCtrl.ToggleArMode(isOn);
 				ToggleAREvent.Invoke (isOn);
 
                 // make sure state is correct to toggle button
@@ -702,13 +690,6 @@ namespace vpet
                 VPETSettings.Instance.controllerSpeed = v * 48f - 23f;
             }
         }
-
-        public void ToggleColorWheel()
-        {
-            if (arColorWheel != null)
-                arColorWheel.gameObject.SetActive(!arColorWheel.gameObject.activeSelf);
-        }
-
     }
 
 }

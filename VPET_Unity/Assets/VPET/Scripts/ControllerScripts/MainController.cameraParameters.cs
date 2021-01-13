@@ -34,29 +34,6 @@ namespace vpet
 {
 	public partial class MainController : MonoBehaviour {
 
-		//! return current camera parameter value for slider value
-		public float getCamParamValue(CameraObject.CameraParameter param)
-		{
-			switch (param) 
-			{
-			case CameraObject.CameraParameter.LENS:
-				return cameraAdapter.Fov.vFovToLens();
-			case CameraObject.CameraParameter.FOV:
-				return cameraAdapter.Fov;
-			//case CameraObject.CameraParameter.APERTURE:
-			//	return cameraAdapter.Aperture;
-			//	break;
-			//case CameraObject.CameraParameter.FOCDIST:
-			//	return cameraAdapter.focDist;
-			//	break;
-			//case CameraObject.CameraParameter.FOCSIZE:
-			//	return cameraAdapter.focSize;
-			//	break;
-			}
-
-			return -1.0f;
-		}
-
         public void setCamParamFocalLength(float focalLength)
         {
             float fov = Extensions.lensToVFov(focalLength);
@@ -82,56 +59,34 @@ namespace vpet
                 cameraAdapter.Fov = Mathf.Min(angle, 150f);
         }
 
-        //! change the desired camera parameter (usually a callback triggered by the slider changes)
-        public void setCamParamValue(CameraObject.CameraParameter param, float value)
-		{
-			switch (param) 
-			{
-			case CameraObject.CameraParameter.LENS:
-				cameraAdapter.Fov = value.lensToVFov();
-				break;
-			case CameraObject.CameraParameter.FOV:
-				cameraAdapter.Fov = value;
-				break;
-			//case CameraObject.CameraParameter.APERTURE:
-			//	cameraAdapter.Aperture = value;
-			//	break;
-			//case CameraObject.CameraParameter.FOCDIST:
-			//	cameraAdapter.focDist = value;
-			//	break;
-			//case CameraObject.CameraParameter.FOCSIZE:
-			//	cameraAdapter.focSize = value;
-			//	break;
-			}
-		}
 
-		////! Callback: enable / disable focus visualizer of DOF component
-		//public void toggleVisualizer()
-		//{
-		//	if (cameraAdapter.visualizeFocus) {
-		//		cameraAdapter.visualizeFocus = false;
-		//	} else 
-		//	{
-		//		cameraAdapter.visualizeFocus = true;
-		//	}
-		//}
-		
-		////! Callback: enable / disable DOF component for main camera
-		//public void toggleDOF()
-		//{
-		//	if (cameraAdapter.depthOfField) 
-		//	{
-		//		cameraAdapter.depthOfField = false;
-		//		// disable DOF related menu buttons and hide sliders
-		//		//ui.dofButtonsInteractable(false);
-		//	} 
-		//	else 
-		//	{
-		//		cameraAdapter.depthOfField = true;
-		//		// enable DOF related menu buttons
-		//		//ui.dofButtonsInteractable(true);
-		//	}
-		//}
+        ////! Callback: enable / disable focus visualizer of DOF component
+        //public void toggleVisualizer()
+        //{
+        //	if (cameraAdapter.visualizeFocus) {
+        //		cameraAdapter.visualizeFocus = false;
+        //	} else 
+        //	{
+        //		cameraAdapter.visualizeFocus = true;
+        //	}
+        //}
 
-	}
+        ////! Callback: enable / disable DOF component for main camera
+        //public void toggleDOF()
+        //{
+        //	if (cameraAdapter.depthOfField) 
+        //	{
+        //		cameraAdapter.depthOfField = false;
+        //		// disable DOF related menu buttons and hide sliders
+        //		//ui.dofButtonsInteractable(false);
+        //	} 
+        //	else 
+        //	{
+        //		cameraAdapter.depthOfField = true;
+        //		// enable DOF related menu buttons
+        //		//ui.dofButtonsInteractable(true);
+        //	}
+        //}
+
+    }
 }

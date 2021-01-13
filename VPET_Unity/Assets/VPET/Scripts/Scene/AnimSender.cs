@@ -49,7 +49,7 @@ namespace vpet
                 ownSceneObject = this.GetComponent<SceneObject>();
                 //ownSceneObject.locked = true;
             }
-                serverAdapter.SendObjectUpdate(ownSceneObject,ParameterType.BONEANIM);
+            serverAdapter.SendObjectUpdate(ownSceneObject,ParameterType.BONEANIM);
         }
     }
 }

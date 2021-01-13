@@ -84,7 +84,7 @@ namespace vpet
         //! function create the object from mesh data
         //! @param  scnObjKtn   object which holds the data
         //!
-        public static GameObject CreateNode(SceneNode node, Transform parentTransform)
+        private static GameObject CreateNode(SceneNode node, Transform parentTransform)
         {
             GameObject objMain;
             // Tranform
@@ -131,7 +131,7 @@ namespace vpet
         //! function to create the object from mesh data for non-skinned meshes
         //! @param  scnObjKtn   object which holds the data
         //!
-        public static GameObject CreateObject(SceneNodeGeo nodeGeo, Transform parentTransform)
+        private static GameObject CreateObject(SceneNodeGeo nodeGeo, Transform parentTransform)
         {
             GameObject objMain;
 
@@ -233,7 +233,7 @@ namespace vpet
         //! function to create the object from mesh data for skinned meshes
         //! @param  scnObjKtn   object which holds the data
         //!
-        public static GameObject CreateSkinnedObject(SceneNodeSkinnedGeo nodeGeo, Transform parentTransform, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones)
+        private static GameObject CreateSkinnedObject(SceneNodeSkinnedGeo nodeGeo, Transform parentTransform, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones)
         {
             GameObject objMain;
 
@@ -350,7 +350,7 @@ namespace vpet
         //! @param  node   object which holds the data
         //! @param  parentTransform   parent object
         //!
-        public static GameObject CreateLight(SceneNodeLight nodeLight, Transform parentTransform)
+        private static GameObject CreateLight(SceneNodeLight nodeLight, Transform parentTransform)
         {
 
             // Tranform
@@ -440,7 +440,7 @@ namespace vpet
         //! @param  node   object which holds the data
         //! @param  parentTransform   parent object
         //!
-        public static GameObject CreateCamera(SceneNodeCam nodeCam, Transform parentTransform)
+        private static GameObject CreateCamera(SceneNodeCam nodeCam, Transform parentTransform)
         {
             // Tranform
             Vector3 pos = new Vector3(nodeCam.position[0], nodeCam.position[1], nodeCam.position[2]);

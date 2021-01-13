@@ -29,9 +29,6 @@ using System.Collections.Generic;
 
 namespace vpet
 {
-    // Basic 
-    // public enum NodeType { GROUP, GEO, LIGHT, CAMERA}
-
     // Basic, Mocap
     public enum NodeType { GROUP, GEO, LIGHT, CAMERA, SKINNEDMESH }
 

@@ -328,8 +328,9 @@ namespace vpet
                 rigidbody.useGravity = true;
                 rigidbody.isKinematic = true;
                 globalKinematic = true;
-
             }
+            else
+                rigidbody = null;
 
 #if !SCENE_HOST
             //Initalize animation loading if animation available
@@ -426,46 +427,17 @@ namespace vpet
             if (!locked)
             {
 #endif
-#if !SCENE_HOST
-                //publish translation change
-                if (mainController.liveMode)
-#endif
+                if (translationStillFrameCount == 0) //position just changed
                 {
-                    if (translationStillFrameCount == 0) //position just changed
-                    {
 
-                        if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
-                        {
-                            isPhysicsActive = true;
-                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
-                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
-                        }
+                    if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
+                    {
+                        isPhysicsActive = true;
+                        serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                        serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                    }
 
 #if !SCENE_HOST               
-                        if (isAnimatedCharacter)
-                        {
-                            if (mainController.ActiveMode == MainController.Mode.translationMode &&
-                                mainController.isTranslating)
-                                serverAdapter.SendObjectUpdate(this, ParameterType.POS);
-                        }
-                        else
-#endif
-                            serverAdapter.SendObjectUpdate(this, ParameterType.POS);
-                    }
-                    else  //update delayed, but object not moving
-                    {
-                        if (isPhysicsActive)
-                        {
-                            isPhysicsActive = false;
-                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
-                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
-                        }
-                    }
-                }
-#if !SCENE_HOST
-                else if (translationStillFrameCount == 10) //object is now no longer moving
-                {
-#if !SCENE_HOST 
                     if (isAnimatedCharacter)
                     {
                         if (mainController.ActiveMode == MainController.Mode.translationMode &&
@@ -475,7 +447,9 @@ namespace vpet
                     else
 #endif
                         serverAdapter.SendObjectUpdate(this, ParameterType.POS);
-
+                }
+                else  //update delayed, but object not moving
+                {
                     if (isPhysicsActive)
                     {
                         isPhysicsActive = false;
@@ -484,48 +458,13 @@ namespace vpet
                     }
                 }
 
-                //publish rotation change
-                if (mainController.liveMode)
-#endif
+                
+                if (rotationStillFrameCount == 0) //position just changed
                 {
-                    if (rotationStillFrameCount == 0) //position just changed
-                    {
 
-                        if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
-                        {
-                            isPhysicsActive = true;
-                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
-                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
-                        }
-
-#if !SCENE_HOST
-                        if (isAnimatedCharacter)
-                        {
-                            if (mainController.ActiveMode == MainController.Mode.rotationMode &&
-                                mainController.isRotating)
-                                serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
-                        }
-                        else
-#endif
-                            serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
-
-                    }
-                    else  //update delayed, but object not moving
+                    if (!selected && !isPlayingAnimation && !isPhysicsActive && !rigidbody.isKinematic)
                     {
-                        if (isPhysicsActive)
-                        {
-                            isPhysicsActive = false;
-                            serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
-                            serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
-                        }
-                    }
-                }
-#if !SCENE_HOST
-                else if (rotationStillFrameCount == 10) //object is now no longer moving
-                {
-                    if (isPhysicsActive)
-                    {
-                        isPhysicsActive = false;
+                        isPhysicsActive = true;
                         serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
                         serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
                     }
@@ -540,8 +479,17 @@ namespace vpet
                     else
 #endif
                         serverAdapter.SendObjectUpdate(this, ParameterType.ROT);
+
                 }
-#endif
+                else  //update delayed, but object not moving
+                {
+                    if (isPhysicsActive)
+                    {
+                        isPhysicsActive = false;
+                        serverAdapter.SendObjectUpdate(this, ParameterType.HIDDENLOCK);
+                        serverAdapter.SendObjectUpdate(this, ParameterType.KINEMATIC);
+                    }
+                }
             }
         }
 
@@ -589,19 +537,11 @@ namespace vpet
 				if (Vector3.Distance(target.position, targetTranslation) < 0.0001f)
 				{
                     target.position = targetTranslation;
-                    // HACK: to key pointToMove
-                    //
-                    //if ( mainController.UIAdapter.LayoutUI == layouts.ANIMATION )
-                     //   animationController.setKeyFrame();
 					smoothTranslationActive = false;
 				}
 				if ((Time.time - smoothTranslateTime) > 3.0f)
 				{
 					smoothTranslationActive = false;
-                    // HACK: to key pointToMove
-                    //
-                    //if (mainController.UIAdapter.LayoutUI == layouts.ANIMATION)
-                    //    animationController.setKeyFrame();
 				}
 			}
 #endif
@@ -615,16 +555,6 @@ namespace vpet
 			target.position = new Vector3(target.position.x, this.GetComponent<BoxCollider>().bounds.size.y / 2, target.position.z);
 		}
 
-		//!
-		//! rotate object based on arc ball rotation
-		//! @param  velocity    velocity (amount) of rotation on given axis
-		//! @param  axis        rotation axis
-		//!
-		public void setArcBallRotation(float velocity, Vector3 axis)
-		{
-			target.Rotate(axis, velocity, Space.World);
-			// if (this.isDirectionalLight || isSpotLight) rotateChilds(velocity, axis);
-		}
 
 		//!
 		//! reset rotation to values present on startup
@@ -676,21 +606,6 @@ namespace vpet
 #endif
         }
 
-		//!
-		//! rotate childs of this object based on arc ball rotation
-		//! @param  velocity    velocity (amount) of rotation on given axis
-		//! @param  axis        rotation axis
-		//!
-		private void rotateChilds(float velocity, Vector3 axis)
-		{
-			for (int i = 0; i < this.transform.childCount; i++)
-			{
-				if (!this.transform.GetChild(i).GetComponent<SceneObject>())
-				{
-					this.transform.GetChild(i).Rotate(axis, -velocity, Space.World);
-				}
-			}
-		}
 
 		//void OnDrawGizmos()
 		//{
@@ -708,17 +623,11 @@ namespace vpet
 		//! recursively apply highlight shader to object
 		//! @param  obj    gameObject on which to apply the highlight shader
 		//!
-		protected void showHighlighted(GameObject obj)
+		public void showHighlighted(GameObject obj)
 		{
             //do it for parent object
             if (obj.GetComponent<Renderer>() != null) //is object rendered?
             {
-                ////add makeBrighter Material
-                //Material[] newMaterials = new Material[obj.GetComponent<Renderer>().materials.GetLength(0) + 1];
-                //obj.GetComponent<Renderer>().materials.CopyTo(newMaterials, 0);
-                //newMaterials[newMaterials.GetLength(0) - 1] = Resources.Load("VPET/Materials/makeBrighter", typeof(Material)) as Material;
-                //obj.GetComponent<Renderer>().materials = newMaterials;
-
                 if (Camera.main.transform.GetChild(0).GetComponent<OutlineEffect>())
                 {
                     Outline outline = obj.GetComponent<Outline>();
@@ -736,31 +645,16 @@ namespace vpet
             }
         }
 
-        //!
-        //! recursively apply highlight shader to object from other scripts
-        //! @param  obj    gameObject on which to apply the highlight shader
-        //!
-        public void callShowHighlighted(GameObject obj) {
-            showHighlighted(obj);
-        }
 
         //!
         //! recursively delete highlight shader of object
         //! @param  obj    gameObject on which to delete the highlight shader
         //!
-        protected void showNormal(GameObject obj)
+        public void showNormal(GameObject obj)
         {
             //do it for parent object
             if (obj.GetComponent<Renderer>() != null) //is object rendered?
             {
-                ////remove makeBrighter Material
-                //Material[] oldMaterials = new Material[obj.GetComponent<Renderer>().materials.GetLength(0) - 1];
-                //for (int i = 0; i < obj.GetComponent<Renderer>().materials.GetLength(0) - 1; i++)
-                //{
-                //    oldMaterials[i] = obj.GetComponent<Renderer>().materials[i];
-                //}
-                //obj.GetComponent<Renderer>().materials = oldMaterials;
-
                 Outline outline = obj.GetComponent<Outline>();
                 if (outline != null)
                     outline.enabled = false;
@@ -772,14 +666,6 @@ namespace vpet
             }
         }
 
-        //!
-        //! recursively delete highlight shader of object from other script
-        //! @param  obj    gameObject on which to delete the highlight shader
-        //!
-        public void callShowNormal(GameObject obj)
-        {
-            showNormal(obj);
-        }
 
         //!
         //!
@@ -1048,14 +934,7 @@ namespace vpet
 	            setAnimationState(animationController.currentAnimationTime);
 	        }
 	    }
-	
-	    //!
-	    //! enable/disable looping for the current animation
-	    //!
-	    public void enableLooping(bool set)
-	    {
-	        animationLooping = set;
-	    }
+
 
         //!
         //! hide or show the visualization (cone, sphere, arrow) of the light
@@ -1149,20 +1028,5 @@ namespace vpet
 	        updateAnimationCurves();
 	    }
 
-        /*
-        private void OnDrawGizmos()
-        {
-            BoxCollider col = this.gameObject.GetComponent<BoxCollider>();
-            if (col != null)
-            {
-                Vector3 min = col.bounds.min;
-                Vector3 max = col.bounds.max;
-                //min =  transform.localToWorldMatrix * min;
-                //max = transform.localToWorldMatrix * max;
-                Gizmos.DrawWireSphere(min, 1f);
-                Gizmos.DrawWireSphere(max, 1f);
-            }
-        }
-        */
     }
 }

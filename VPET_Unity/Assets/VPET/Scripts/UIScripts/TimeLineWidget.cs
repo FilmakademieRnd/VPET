@@ -145,7 +145,7 @@ namespace vpet
 	        frameContainer = this.GetComponent<RectTransform>();
 	        
 	        // get keyframe prefab
-	        keyframeImagePrefab = Resources.Load<GameObject>("VPET/KeyFrameTemplate");
+	        keyframeImagePrefab = Resources.Load<GameObject>("VPET/Prefabs/KeyFrameTemplate");
 	        if (keyframeImagePrefab == null) Debug.LogError(string.Format("{0}: Cant find Resources: KeyFrameTemplate.", this.GetType()));
 	
 	        // get redline component

@@ -271,17 +271,17 @@ namespace vpet
 
                 // initial state, previousCrosshairObject == some object, currentCrosshairObject == null
                 if (previousCrosshairObject != null && currentCrosshairObject == null)
-                    previousCrosshairObject.GetComponent<SceneObject>().callShowNormal(previousCrosshairObject);
+                    previousCrosshairObject.GetComponent<SceneObject>().showNormal(previousCrosshairObject);
 
                 // initial state, previousCrosshairObject == some object (previous), currentCrosshairObject == some object new
                 else if (currentCrosshairObject != null && previousCrosshairObject != null && currentCrosshairObject != previousCrosshairObject)
-                    previousCrosshairObject.GetComponent<SceneObject>().callShowNormal(previousCrosshairObject);
+                    previousCrosshairObject.GetComponent<SceneObject>().showNormal(previousCrosshairObject);
 
                 // highlight current selection
                 else if (currentCrosshairObject)
                 {
                     outlineEffect.lineColor0 = new Color(1f, 0.9f, 0.7f);
-                    currentCrosshairObject.GetComponent<SceneObject>().callShowHighlighted(currentCrosshairObject);
+                    currentCrosshairObject.GetComponent<SceneObject>().showHighlighted(currentCrosshairObject);
                 }
 
             }
@@ -577,7 +577,7 @@ namespace vpet
                 int realIdx = mod((potentialIdx + offset * DPADdirection), SceneLoader.SceneEditableObjects.Count);
                 if (!SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObject>().locked && 
                     !SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObjectLight>() &&
-                    SceneLoader.SceneEditableObjects[realIdx].GetComponent<CameraObject>() == null)
+                    !SceneLoader.SceneEditableObjects[realIdx].GetComponent<SceneObjectCamera>())
                 {
                     mainController.callSelect(SceneLoader.SceneEditableObjects[realIdx].transform);
                     break;

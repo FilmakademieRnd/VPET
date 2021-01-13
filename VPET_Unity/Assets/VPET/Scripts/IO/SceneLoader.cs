@@ -393,73 +393,7 @@ namespace vpet
 
                 createSplitMesh(vertices, normals, uv, objPack.indices, weights);
             }
-            /*
-            for ( int k = 0; k<sceneDataHandler.ObjectList; k++ )
-	        {
-	
-	            // vertices
-	            Vector3[] verts = new Vector3[scnObjKtn.rawVertexList[k].Length/3];
-	            for ( int i = 0; i < verts.Length; i++ )
-	            {
-	                // convert handiness
-	                verts[i] = new Vector3( -scnObjKtn.rawVertexList[k][i * 3], scnObjKtn.rawVertexList[k][i * 3 + 1], scnObjKtn.rawVertexList[k][i * 3 + 2] );
-	            }
-	
-	            // uvs Vector2 per vertex point
-	            Vector2[] uvs = new Vector2[verts.Length];
-	            for ( int i = 0; i < verts.Length; i++ )
-	            {
-	                uvs[i] = new Vector2( scnObjKtn.rawUvList[k][i * 2], scnObjKtn.rawUvList[k][i * 2 + 1] );
-	            }
-	
-	            // normals Vector3 per vertex point
-	            Vector3[] norms = new Vector3[verts.Length];
-	            for ( int i = 0; i < verts.Length; i++ )
-	            {
-	                // convert handiness
-	                norms[i] = new Vector3( -scnObjKtn.rawNormalList[k][i * 3], scnObjKtn.rawNormalList[k][i * 3 + 1], scnObjKtn.rawNormalList[k][i * 3 + 2] );
-	            }
-	
-	            // Triangles
-	            int[] tris = new int[scnObjKtn.rawIndexList[k].Length];
-	            tris = scnObjKtn.rawIndexList[k];
-	
-	            //print( " verts length " + verts.Length );
-	
-	        }
-	        */
         }
-
-
-
-
-        //! function creating game objects and build hierarchy identical to dagpath
-        //! @param  nodes           node array to the leaf object including the leaf object
-        //! @param  dagpathPrefix   where to place in existing scene hierarchy
-        //! @return                 Transform leaf parent
-        private Transform createHierarchy(string[] nodes, string dagpathPrefix = "/")
-        {
-            Transform parentTransform = null;
-            GameObject parentGO = GameObject.Find(dagpathPrefix);
-            if (parentGO)
-                parentTransform = parentGO.transform;
-            int idx = 0;
-            while (idx <= nodes.Length - 2)
-            {
-                string path = dagpathPrefix + string.Join("/", nodes, 0, idx + 1);
-                GameObject g = GameObject.Find(path);
-                if (g == null)
-                {
-                    g = new GameObject(nodes[idx]);
-                    g.transform.parent = parentTransform;
-                }
-                parentTransform = g.transform;
-                idx++;
-            }
-
-            return parentTransform;
-        }
-
 
 
         //! function create mesh at the given gameobject and split if necessary
@@ -471,7 +405,6 @@ namespace vpet
         //! @param  material        
         private void createSplitMesh(Vector3[] vertices, Vector3[] normals, Vector2[] uvs, int[] triangles, BoneWeight[] weights)
         {
-
             List<Mesh> meshList = new List<Mesh>();
 
             //Note to commented part below:
@@ -598,7 +531,6 @@ namespace vpet
             }
         }
 
-
         public bool HasHiddenGeo
         {
             get
@@ -645,7 +577,6 @@ namespace vpet
             // test texture
             // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
             // Texture2D texture = www.texture;
-
             foreach (KeyValuePair<string, KeyValuePair<string, Type>> pair in VPETSettings.ShaderPropertyMap)
             {
                 FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Key, BindingFlags.Instance | BindingFlags.Public);

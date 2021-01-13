@@ -28,6 +28,41 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
+
+[InitializeOnLoad]
+public class SwitchMode
+{
+    static SwitchMode()
+    {
+        UnityEditor.SceneManagement.EditorSceneManager.sceneOpened += SceneLoaded;
+    }
+
+    static void SceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEditor.SceneManagement.OpenSceneMode mode)
+    {
+        BuildTargetGroup[] targetGroups = { BuildTargetGroup.Android, BuildTargetGroup.iOS, BuildTargetGroup.Standalone };
+
+        foreach (BuildTargetGroup grp in targetGroups)
+        {
+            string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(grp);
+            if (scene.name.Contains("Server"))
+            {
+                if (defines != "")
+                    defines += ";";
+                defines += "SCENE_HOST";
+            }
+            else
+            {
+                if (defines.Contains("SCENE_HOST"))
+                {
+                    defines = defines.Replace(";SCENE_HOST", "");
+                    defines = defines.Replace("SCENE_HOST", "");
+                }
+            }
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(grp, defines);
+        }
+    }
+}
+
 namespace vpet
 {
 	public static class ExportVpetPackage

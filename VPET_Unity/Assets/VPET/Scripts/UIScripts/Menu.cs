@@ -210,19 +210,6 @@ namespace vpet
 			addObjectToLayout( obj,  layout);
 	    }
 
-        /*
-	    //!
-	    //! Return generator 
-	    //!
-	    public System.Collections.IEnumerator GetEnumerator()
-	    {
-	        foreach (int i in layoutList[currentLayout.ToString()])
-	        {
-	            yield return buttons[i];
-	        }
-	    }
-	    */
-
 
         //!
         //! Generator to access all buttons
@@ -360,17 +347,6 @@ namespace vpet
                     _color.a = currentDelta;
                     m.color = _color;
                 }
-
-                /*
-                // fade all text children (eg. animation layer index)
-                Text[] textChilds = button.GetComponentsInChildren<Text>();
-                foreach(Text text in textChilds)
-                {
-                    Color textColor = text.color;
-                    textColor.a = currentDelta;
-                    text.color = textColor;
-                }
-                */
             }
 
         }
@@ -400,42 +376,7 @@ namespace vpet
         //! @param      button      currently active button, to be moved
         //!
         public virtual void animateActive(GameObject button) {}
-	
-	    //!
-	    //! move the center of the menu relative to the last position (need to be overwritten)
-	    //! @param    pos     xy position offset
-	    //!
-		public virtual void moveRelative(Vector2 pos) {}
-	
-	    //!
-	    //! move the center of the menu relative to the last position but only on x axis (need to be overwritten)
-	    //! @param    posX     x position offset
-	    //!
-		public virtual void moveRelativeX(float posX) {}
-	
-	    //! 
-	    //! move the center of the menu relative to the last position but only on y axis (need to be overwritten)
-	    //! @param    posY     y position offset
-	    //!
-		public virtual void moveRelativeY(float posY) {}
-	
-	    //!
-	    //! move the center of the menu to the given position (need to be overwritten)
-	    //! @param    pos     new xy position of the menu
-	    //!
-		public virtual void moveAbsolute(Vector2 pos) {}
-	
-	    //!
-	    //! move the center of the menu to the given position only on the x axis (need to be overwritten)
-	    //! @param    pos     new x position of the menu
-	    //!
-		public virtual void moveAbsoluteX(float posX) {}
-	
-	    //!
-	    //! move the center of the menu to the given position only on the y axis (need to be overwritten)
-	    //! @param    pos     new y position of the menu
-	    //!
-		public virtual void moveAbsoluteY(float posY) {}
+
 	
 	    //!
 	    //! place all available buttons (need to be overwritten)

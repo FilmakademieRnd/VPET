@@ -196,7 +196,6 @@ namespace vpet
         private Transform trackingTransform;
 #endif
         private Transform cameraParent;
-        private GyroAdapter gyroAdapter;
         private bool firstApplyTransform = true;
         private Quaternion rotationOffset = Quaternion.identity;
         private Quaternion rotationFirst = Quaternion.identity;
@@ -216,7 +215,6 @@ namespace vpet
 
         void Awake()
         {
-            gyroAdapter = new GyroAdapter();
             cameraParent = this.transform.parent;
         }
 
@@ -312,11 +310,7 @@ namespace vpet
                 }
 
 #if !UNITY_EDITOR
-#if (UNITY_ANDROID || UNITY_IOS)
-#if !USE_AR
-                newRotation = gyroAdapter.Rotation;
-#endif
-#elif UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN
                 newRotation = Quaternion.Euler(90,90,0) * convertRotation(new Quaternion(orientationSensorData[0], orientationSensorData[1], orientationSensorData[2], orientationSensorData[3]));
 #endif
 #endif
@@ -400,8 +394,6 @@ namespace vpet
                     fpsText += " | SupportGyro: " + SystemInfo.supportsGyroscope.ToString() + "\n";
                     fpsText += "DataPath: " + Application.dataPath + "\n";
                     fpsText += "PersistPath: " + Application.persistentDataPath + "\n";
-                    //fpsText += " Config1: " + Application.dataPath + "/VPET/editing_tool.cfg";
-                    //fpsText += " Config2: " + Application.persistentDataPath + "/editing_tool.cfg";
                     fpsText += "Mouse Active: " + mainController.MouseInputActive;
                     fpsText += " | Touch Active: " + mainController.TouchInputActive;
                     //fpsText += " | Renderpath:" + Camera.main.renderingPath;

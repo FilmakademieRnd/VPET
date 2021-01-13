@@ -482,27 +482,6 @@ namespace vpet
 			}
 		}
 
-        //!
-        //! execute a raycast onto a specific object
-        //! @param      pos         screen position of second pointer
-        //! @param      target      collider of the gameObject to raycast against
-        //! @return     3D position on the object where the ray hit (nullVector if object was not hit)
-        //!
-        private Vector3 objectRaycast(Vector3 pos, Collider target)
-        {
-			Ray ray = Camera.main.ScreenPointToRay(pos);
-			RaycastHit hit;
-		
-			if ( target.Raycast( ray, out hit, 100000f ) )
-			{
-				//raycast was executed and hit an object
-				return hit.point;
-			}
-			else {
-				return nullVector;
-			}
-		}
-
         private Vector3 planeRaycast(Vector3 pos, Plane target)
         {
             Ray ray = Camera.main.ScreenPointToRay(pos);
