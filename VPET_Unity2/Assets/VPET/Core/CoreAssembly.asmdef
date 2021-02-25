@@ -1,0 +1,16 @@
+{
+    "name": "VPETAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1c123fd68cd144c1db0f16867e918c51"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
