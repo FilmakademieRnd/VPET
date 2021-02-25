@@ -17,21 +17,16 @@ namespace vpet
     //! Central class for VPET initalization.
     //! Manages all VPETManagers and their modules.
     //!
-    public class VPET : MonoBehaviour
+    public class VPET : CoreInterface
     {
-        //!
-        //! List of all registered VPETManagers.
-        //!
-        private List<Manager> managerList;
-
         //!
         //! Initialization of all Managers and modules.
         //!
         void Awake()
         {
             //Create scene manager
-            Manager sceneManager = new Manager("SceneManager", typeof(SceneManagerModule));
-
+            Manager sceneManager = new Manager(typeof(SceneManager), this);
+            managerList.Add(typeof(SceneManager), sceneManager);
         }
     }
 }

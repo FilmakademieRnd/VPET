@@ -10,12 +10,12 @@ using System.Collections.Generic;
 using System;
 using System.Reflection;
 
-namespace vpet.helpers
+namespace vpet
 {
     //!
     //! implementation class for assembly helpers
     //!
-    public class AssemblyHelpers
+    public class Helpers
     {
         //!
         //! searches and returns types in an assembly

@@ -71,10 +71,9 @@ sysinfo.txt
 *.asset
 /VPET_Unity/Packages
 /VPET_Unity/Projectsettings
+
 /VPET_Unity2/Assets/*
 !/VPET_Unity2/Assets/VPET
-/VPET_Unity2/Assets/VPET/*
-!/VPET_Unity2/Assets/VPET/Scripts
 /VPET_Unity2/Packages
 /VPET_Unity2/Projectsettings
 

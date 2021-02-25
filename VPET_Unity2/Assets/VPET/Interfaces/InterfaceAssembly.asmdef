@@ -1,9 +1,8 @@
 {
-    "name": "ModulesAssembly",
+    "name": "InterfaceAssembly",
     "rootNamespace": "",
     "references": [
-        "GUID:9867b9482b83c481b87a1e665e04ef9f",
-        "GUID:1e187ed655f2849e8b637d2f1801456a"
+        "GUID:e68ca7efc843d4f229551541f12e73a9"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

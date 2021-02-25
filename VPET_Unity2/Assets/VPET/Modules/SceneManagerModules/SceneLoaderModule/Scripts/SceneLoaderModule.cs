@@ -13,12 +13,21 @@ namespace vpet
     //!
     //! implementation of unity scene loader module
     //!
-    public class UnitySceneLoaderModule : Module
+    public class SceneLoaderModule : Module
     {
         //!
         //! constructor
         //! @param   name    Name of this module
         //!
-        public UnitySceneLoaderModule(string name) : base(name) => name = base.name;
+        public SceneLoaderModule(string name) : base(name) => name = base.name;
+
+        //! to be replaced
+        public void Test()
+        {
+            UnitySceneLoaderModule m = (UnitySceneLoaderModule)manager.getModule(typeof(UnitySceneLoaderModule));
+            manager.core.getManager(typeof(SceneManager)).getModule(typeof(UnitySceneLoaderModule));
+
+        }
+
     }
 }

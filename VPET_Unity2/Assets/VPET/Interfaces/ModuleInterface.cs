@@ -23,6 +23,20 @@ namespace vpet
     //!
     public class Module : ModuleInterface
     {
+        //!
+        //! manager of this module
+        //! assigned in addModule function in Manager
+        //!
+        private Manager _manager;
+
+        //!
+        //! set the manager of this module
+        //!
+        public Manager manager
+        {
+            get => _manager;
+            set => _manager = value;
+        }
 
         //!
         //! constructor

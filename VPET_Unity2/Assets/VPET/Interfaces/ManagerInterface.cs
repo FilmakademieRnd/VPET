@@ -25,28 +25,37 @@ namespace vpet
     public class Manager : ManagerInterface
     {
         //!
-        //! name of the manager
+        //! reference to vpet uberManager
         //!
-        protected string name;
+        private CoreInterface _core;
+
+        //!
+        //! get the vpet core
+        //!
+        public CoreInterface core
+        {
+            get => _core;
+
+        }
 
         //!
         //! dictionary of loaded modules
         //!
-        private Dictionary<string, Module> modules;
+        private Dictionary<Type, Module> modules;
 
         //!
         //! constructor
         //! @param  name    name of the manager
         //! @param  moduleType  type of modules to be loaded by this manager
         //!
-        public Manager(string name, Type moduleType)
+        public Manager(Type moduleType, CoreInterface vpetCore)
         {
-            this.name = name;
-            Type[] modules = helpers.AssemblyHelpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
+            _core = vpetCore;
+            Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
             foreach (Type t in modules)
             {
                 Module module = (Module)Activator.CreateInstance(t);
-                addModule(module, module.name);
+                addModule(module, moduleType);
             }
         }
 
@@ -56,13 +65,14 @@ namespace vpet
         //! @param  name    name of module
         //! @return returns false if module with same name already exists, otherwise true
         //!
-        protected bool addModule(Module module, string name)
+        protected bool addModule(Module module, Type type)
         {
-            if (modules.ContainsKey(name))
+            if (modules.ContainsKey(type))
                 return false;
             else
             {
-                modules.Add(name, module);
+                modules.Add(type, module);
+                module.manager = this;
                 return true;
             }
         }
@@ -72,10 +82,10 @@ namespace vpet
         //! @param  name    name of module
         //! @return requested module or null
         //!
-        protected Module getModule(string name)
+        public Module getModule(Type type)
         {
             Module module;
-            modules.TryGetValue(name, out module);
+            modules.TryGetValue(type, out module);
             return module;
         }
 
@@ -84,9 +94,9 @@ namespace vpet
         //! @param  name    name of module
         //! @return returns false if module does not exist, otherwise true
         //!
-        protected bool removeModule(string name)
+        protected bool removeModule(Type type)
         {
-            return modules.Remove(name);
+            return modules.Remove(type);
         }
     }
 }
