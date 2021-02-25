@@ -2,7 +2,7 @@
     "name": "VPETAssembly",
     "rootNamespace": "",
     "references": [
-        "GUID:1c123fd68cd144c1db0f16867e918c51"
+        "ModulesAssembly"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
