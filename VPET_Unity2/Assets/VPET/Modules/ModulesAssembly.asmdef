@@ -1,9 +1,7 @@
 {
     "name": "ModulesAssembly",
-    "rootNamespace": "",
     "references": [
-        "GUID:9867b9482b83c481b87a1e665e04ef9f",
-        "GUID:1e187ed655f2849e8b637d2f1801456a"
+        "GUID:728a1331bd2dc4148bca1fce10d1cca4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

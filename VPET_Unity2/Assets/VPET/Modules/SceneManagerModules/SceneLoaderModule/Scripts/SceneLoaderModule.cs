@@ -24,8 +24,7 @@ namespace vpet
         //! to be replaced
         public void Test()
         {
-            UnitySceneLoaderModule m = (UnitySceneLoaderModule)manager.getModule(typeof(UnitySceneLoaderModule));
-            manager.core.getManager(typeof(SceneManager)).getModule(typeof(UnitySceneLoaderModule));
+            UnitySceneLoaderModule m = (UnitySceneLoaderModule)manager.getModule(typeof(UnitySceneLoaderModule));        
 
         }
 
