@@ -1,4 +1,4 @@
-//! @file "vpet.cs"
+//! @file "core.cs"
 //! @brief VPET core implementation
 //! @author Simon Spielmann
 //! @author Jonas Trottnow

@@ -1,7 +1,8 @@
 {
     "name": "ModulesAssembly",
+    "rootNamespace": "",
     "references": [
-        "GUID:728a1331bd2dc4148bca1fce10d1cca4"
+        "VPETAssembly"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
