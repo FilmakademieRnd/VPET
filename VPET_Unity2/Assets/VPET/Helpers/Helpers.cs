@@ -18,6 +18,20 @@ namespace vpet
     public class Helpers
     {
         //!
+        //! global id counter for generating unique sceneObject IDs
+        //!
+        private static int s_id = 0;
+
+        //!
+        //! provide a unique id
+        //! @return     unique id as int
+        //!
+        public static int getUniqueID()
+        {
+            return s_id++;
+        }
+
+        //!
         //! searches and returns types in an assembly
         //! @param  appDomain   domain to be searched in for assemblies
         //! @param  type    type to be searched
