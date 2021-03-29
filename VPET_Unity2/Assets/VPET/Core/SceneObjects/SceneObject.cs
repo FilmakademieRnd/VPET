@@ -15,33 +15,20 @@ namespace vpet
         //!
         //! is the sceneObject reacting to physics
         //!
-        private bool physicsActive;
+        public bool physicsActive;
 
         //!
         //! Position of the SceneObject
         //!
-        private Parameters.Vec3 position;
+        private Parameter<Vector3> position;
         //!
         //! Rotation of the SceneObject
         //!
-        private Parameters.Quat rotation;
+        private Parameter<Quaternion> rotation;
         //!
         //! Scale of the SceneObject
         //!
-        private Parameters.Vec3 scale;
-
-        //!
-        //! Event to communicate that the sceneObject position changed
-        //!
-        private event EventHandler<Parameters.Vec3.changeEventArgs> positionChanged;
-        //!
-        //! Event to communicate that the sceneObject rotation changed
-        //!
-        private event EventHandler<Parameters.Quat.changeEventArgs> rotationChanged;
-        //!
-        //! Event to communicate that the sceneObject scale changed
-        //!
-        private event EventHandler<Parameters.Vec3.changeEventArgs> scaleChanged;
+        private Parameter<Vector3> scale;
 
 
         //!
@@ -51,10 +38,19 @@ namespace vpet
         {
             id = Helpers.getUniqueID();
             physicsActive = false;
+            position = new Parameter<Vector3>();
+            position.hasChanged += printDebug;
 
-            position.connectToChangeValue(positionChanged);
-            rotation.connectToChangeValue(rotationChanged);
-            scale.connectToChangeValue(scaleChanged);
+        }
+
+        //!
+        //! Debug print of a Vector3 parameter
+        //! @param   sender     Object calling the print function
+        //! @param   a          Values to be passed to the print function
+        //!
+        private void printDebug(object sender, Parameter<Vector3>.TEventArgs a)
+        {
+            Debug.Log(a._eventValue);
         }
 
         //!
@@ -72,11 +68,11 @@ namespace vpet
         private void updateTransform()
         {
             if (transform.position != position.value)
-                positionChanged(this,new Parameters.Vec3.vec3EventArgs { _value = transform.position});
-            if (transform.rotation != rotation.value)
-                rotationChanged(this, new Parameters.Quat.quatEventArgs { _value = transform.rotation });
+                position.setValue(transform.position);
+            /*if (transform.rotation != rotation.value)
+                rotation.setValue(transform.rotation);
             if (transform.localScale != scale.value)
-                scaleChanged(this, new Parameters.Vec3.vec3EventArgs { _value = transform.localScale });
+                scale.setValue(transform.localScale);*/
         }
     }
 }
