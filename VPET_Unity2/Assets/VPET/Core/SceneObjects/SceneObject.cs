@@ -50,7 +50,7 @@ namespace vpet
         //!
         private void printDebug(object sender, Parameter<Vector3>.TEventArgs a)
         {
-            Debug.Log(a._eventValue);
+            Debug.Log(a.value);
         }
 
         //!

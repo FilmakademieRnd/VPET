@@ -235,9 +235,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1751737977}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3760d9893f302452e805cb5e490592c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 1670795a5fcc82448b8671efff655fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  physicsActive: 0
 --- !u!65 &1751737979
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -321,7 +322,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
-  serializedVersion: 3
+  serializedVersion: 2
   m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 0
   m_EnableRealtimeLightmaps: 0
@@ -360,7 +361,7 @@ LightingSettings:
   m_PVREnvironmentReferencePointCount: 2048
   m_LightProbeSampleCountMultiplier: 4
   m_PVRBounces: 2
-  m_PVRMinBounces: 1
+  m_PVRRussianRouletteStartBounce: 2
   m_PVREnvironmentMIS: 0
   m_PVRFilteringMode: 2
   m_PVRDenoiserTypeDirect: 0

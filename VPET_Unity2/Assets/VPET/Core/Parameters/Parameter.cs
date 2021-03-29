@@ -41,17 +41,17 @@ namespace vpet
         //!
         public class TEventArgs : EventArgs
         {
-            public T _eventValue;
+            public T value;
         }
 
-        //!
-        //! Wrapper function to emit value changed event.
-        //!
-        protected void callValueChanged()
-        {
-            if (hasChanged != null)
-                hasChanged(this, new TEventArgs { _eventValue = _value});
-        }
+        ////!
+        ////! Wrapper function to emit value changed event.
+        ////!
+        //protected void callValueChanged()
+        //{
+        //    if (hasChanged != null)
+        //        hasChanged(this, new TEventArgs { _eventValue = _value});
+        //}
 
         //!
         //! Abstract definition of the function called to change a parameters value.
@@ -61,7 +61,8 @@ namespace vpet
         public void setValue(T v)
         {
             _value = v;
-            callValueChanged();
+            hasChanged?.Invoke(this, new TEventArgs { value = _value });
+            //callValueChanged();
         }
     }
 }
