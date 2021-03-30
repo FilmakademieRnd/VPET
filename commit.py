@@ -76,8 +76,6 @@ for line in gitLines:
 				print (filePath)
 				addHeader(filePath)
 
-			
-headerFile.close()
 		
 		
 		
