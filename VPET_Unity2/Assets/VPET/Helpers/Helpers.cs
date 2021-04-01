@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
+using UnityEngine;
 
 namespace vpet
 {
@@ -29,6 +30,11 @@ namespace vpet
         public static int getUniqueID()
         {
             return s_id++;
+        }
+
+        public static void Log(string objName, string msg)
+        {
+            Debug.Log("VPET: " + msg + " in " + objName);
         }
 
         //!

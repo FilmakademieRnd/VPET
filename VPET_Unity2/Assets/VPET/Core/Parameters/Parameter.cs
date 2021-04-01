@@ -17,6 +17,12 @@ namespace vpet
     //!
     public class Parameter<T>
     {
+        public Parameter() {}
+
+        public Parameter(T value)
+        {
+            _value = value;
+        }
 
         //!
         //! Parameters member value
@@ -44,14 +50,6 @@ namespace vpet
             public T value;
         }
 
-        ////!
-        ////! Wrapper function to emit value changed event.
-        ////!
-        //protected void callValueChanged()
-        //{
-        //    if (hasChanged != null)
-        //        hasChanged(this, new TEventArgs { _eventValue = _value});
-        //}
 
         //!
         //! Abstract definition of the function called to change a parameters value.
@@ -62,7 +60,6 @@ namespace vpet
         {
             _value = v;
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
-            //callValueChanged();
         }
     }
 }
