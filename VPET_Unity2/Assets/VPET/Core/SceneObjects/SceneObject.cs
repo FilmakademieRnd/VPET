@@ -47,7 +47,7 @@ namespace vpet
             rotation = new Parameter<Quaternion>();
             scale = new Parameter<Vector3>();
 
-            position.hasChanged += printDebug;
+            //position.hasChanged += printDebug;
         }
 
         //!
@@ -73,7 +73,7 @@ namespace vpet
         //!
         //! updates the scene objects transforms and informs all connected parameters about the change
         //!
-        protected void updateTransform()
+        private void updateTransform()
         {
             if (transform.position != position.value)
                 position.setValue(transform.position);

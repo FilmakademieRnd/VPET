@@ -32,9 +32,36 @@ namespace vpet
             return s_id++;
         }
 
-        public static void Log(string objName, string msg)
+        //!
+        //! Types for the debug message logs
+        //!
+        public enum logMsgType
         {
-            Debug.Log("VPET: " + msg + " in " + objName);
+            NONE,
+            WARNING,
+            ERROR
+        }
+        //!
+        //! Function for message loggin in VPET
+        //! @param objName the name of the script or object sending the message
+        //! @param msg the message to be logged
+        //!
+        public static void Log(string objName, string msg, logMsgType type = 0)
+        {
+            string log = "VPET: " + msg + " in " + objName;
+
+            switch (type)
+            {
+                case logMsgType.WARNING:
+                    Debug.LogWarning(log);
+                    break;
+                case logMsgType.ERROR:
+                    Debug.LogError(log);
+                    break;
+                default:
+                    Debug.Log(log);
+                    break;
+            }
         }
 
         //!
