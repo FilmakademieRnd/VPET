@@ -1,8 +1,8 @@
 {
     "name": "ModulesAssembly",
-    "rootNamespace": "",
     "references": [
-        "VPETAssembly"
+        "VPETAssembly",
+        "HelperAssembly"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

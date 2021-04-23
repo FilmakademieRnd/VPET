@@ -46,9 +46,9 @@ namespace vpet
         //! @param objName the name of the script or object sending the message
         //! @param msg the message to be logged
         //!
-        public static void Log(string objName, string msg, logMsgType type = 0)
+        public static void Log(string msg, logMsgType type = 0)
         {
-            string log = "VPET: " + msg + " in " + objName;
+            string log = "VPET: " + msg;
 
             switch (type)
             {
