@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.04.2021
+//! @date 26.04.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -35,10 +35,15 @@ using System.Runtime.InteropServices;
 
 namespace vpet
 {
+    //!
+    //! Enumeration defining VPET node Types.
+    //!
     public enum NodeType { GROUP, GEO, LIGHT, CAMERA, SKINNEDMESH }
 
     //!
-    //! Data structure for serialising basic SceneNodes
+    //! Data structure for serialising basic SceneNodes.
+    //! The struct layout and array size for mashaling  has to be fixed
+    //! to be compatible with unmanaged code.
     //!
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNode
@@ -56,7 +61,8 @@ namespace vpet
     };
 
     //!
-    //! Data structure for serialising geo SceneNodes
+    //! Data structure for serialising SceneNodes representing Unity
+    //! game objects containing 3d scene components like meshes and materials.
     //!
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNodeGeo : SceneNode
@@ -70,7 +76,8 @@ namespace vpet
     };
 
     //!
-    //! Data structure for serialising skinned geo SceneNodes
+    //! Data structure for serialising SceneNodes representing Unity
+    //! game objects containing skinned mesh components.
     //!
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNodeSkinnedGeo : SceneNodeGeo
@@ -87,6 +94,10 @@ namespace vpet
         public int[] skinnedMeshBoneIDs;
     };
 
+    //!
+    //! Data structure for serialising SceneNodes representing Unity
+    //! game objects containing light components.
+    //!
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNodeLight : SceneNode
     {
@@ -99,6 +110,10 @@ namespace vpet
         public float[] color;
     };
 
+    //!
+    //! Data structure for serialising SceneNodes representing Unity
+    //! game objects containing camera components.
+    //!
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class SceneNodeCam : SceneNode
     {
@@ -107,6 +122,10 @@ namespace vpet
         public float far;
     };
 
+    //!
+    //! Data structure for serialising the VPET header,
+    //! containing scene relevant informations.
+    //!
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Auto)]
     public class VpetHeader
     {
@@ -115,7 +134,8 @@ namespace vpet
     }
 
     //!
-    //! Node Data
+    //! VPET structure used to hold mesh data.
+    //! This sructure is used for saving to disk or sending via network.
     //!
     public class ObjectPackage
     {
@@ -133,6 +153,10 @@ namespace vpet
         public int[] boneIndices;
     };
 
+    //!
+    //! VPET structure used to hold additional skinned mesh data.
+    //! This sructure is used for saving to disk or sending via network.
+    //!
     public class CharacterPackage
     {
         public int bMSize;
@@ -145,6 +169,10 @@ namespace vpet
         public float[] boneScale;
     };
 
+    //!
+    //! VPET structure used to hold texture data.
+    //! This sructure is used for saving to disk or sending via network.
+    //!
     public class TexturePackage
     {
         public int colorMapDataSize;
@@ -155,6 +183,10 @@ namespace vpet
         public byte[] colorMapData;
     };
 
+    //!
+    //! VPET structure used to hold material data.
+    //! This sructure is used for saving to disk or sending via network.
+    //!
     public class MaterialPackage
     {
         public int type; // 0=standard, 1=load by name, 2=new with shader by name,  3=new with shader from source, 4= .. 
