@@ -187,16 +187,6 @@ namespace vpet
             set { convertMaterialsByteStream(ref value); }
         }
 
-        // [REVIEW]
-        public delegate SceneNode NodeParserDelegate(NodeType n, ref byte[] b, ref int o);
-        public static List<NodeParserDelegate> nodeParserDelegateList = new List<NodeParserDelegate>();
-
-        public static void RegisterDelegate(NodeParserDelegate call)
-        {
-            if (!nodeParserDelegateList.Contains(call))
-                nodeParserDelegateList.Add(call);
-        }
-
         //!
         //! Initialisation of the lists storing deserialised the scene data.
         //!

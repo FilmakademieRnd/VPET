@@ -14,7 +14,7 @@ namespace vpet
         //!
         //! unique id of this sceneObject
         //!
-        private int id;
+        public int id;
 
         //!
         //! is the sceneObject reacting to physics

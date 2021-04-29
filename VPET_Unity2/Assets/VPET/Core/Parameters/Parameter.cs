@@ -35,6 +35,7 @@ namespace vpet
         public T value
         {
             get => _value;
+            set { setValue(value); }
         }
 
         //!
@@ -56,7 +57,7 @@ namespace vpet
         //! @param   sender     Object calling the change function
         //! @param   a          Values to be passed to the change function
         //!
-        public void setValue(T v)
+        private void setValue(T v)
         {
             _value = v;
             hasChanged?.Invoke(this, new TEventArgs { value = _value });

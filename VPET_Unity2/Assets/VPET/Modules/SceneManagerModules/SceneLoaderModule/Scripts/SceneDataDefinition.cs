@@ -105,7 +105,6 @@ namespace vpet
         public float intensity;
         public float angle;
         public float range;
-        public float exposure;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] color;
     };

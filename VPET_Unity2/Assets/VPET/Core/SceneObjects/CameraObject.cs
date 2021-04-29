@@ -12,22 +12,22 @@ namespace vpet
         //!
         //! field of view (horizonal value from Katana)
         //!
-        private Parameter<float> fov;
+        public Parameter<float> fov;
 
         //!
         //! aspect ratio
         //!
-        private Parameter<float> aspect;
+        public Parameter<float> aspect;
 
         //!
         //! near plane
         //!
-        private Parameter<float> near;
+        public Parameter<float> near;
 
         //!
         //! far plane
         //!
-        private Parameter<float> far;
+        public Parameter<float> far;
 
         //!
         //! focus distance (in world space, meter)

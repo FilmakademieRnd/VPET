@@ -31,6 +31,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace vpet
@@ -99,26 +100,18 @@ namespace vpet
                 scnRoot.transform.parent = scnPrtGO.transform;
             }
 
-            // [REVIEW]
-            //VPETSettings.Instance.sceneBoundsMax = Vector3.negativeInfinity;
-            //VPETSettings.Instance.sceneBoundsMin = Vector3.positiveInfinity;
-
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneDataHandler.ObjectList.Count, sceneDataHandler.TextureList.Count, sceneDataHandler.MaterialList.Count, sceneDataHandler.NodeList.Count));
 
             createMaterials(ref sceneDataHandler);
             
-            // [REVIEW]
-            //if (VPETSettings.Instance.doLoadTextures)
-            createTextures(ref sceneDataHandler);
+            if (SceneManager.Settings.loadTextures)
+                createTextures(ref sceneDataHandler);
 
             createMeshes(ref sceneDataHandler);
 
-            //initiialize skinnedMeshRootBones
-            List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones = new List<Tuple<Renderer, GameObject, int[]>>();
+            createSceneGraphIter(ref sceneDataHandler, scnRoot.transform);
 
-            createSceneGraphIter(ref sceneDataHandler, ref skinnedMeshRootBones, scnRoot.transform);
-
-            createSkinnedMeshes(ref sceneDataHandler, ref skinnedMeshRootBones);
+            createSkinnedMeshes(ref sceneDataHandler, scnRoot.transform);
         }
 
         //!
@@ -246,23 +239,15 @@ namespace vpet
         //! Function that recusively creates the gameObjects in the Unity scene.
         //!
         //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
-        //! @param skinnedMeshRootBones A reference to a list containing the skinned mesh root bones.
         //! @param parent the parent Unity transform.
         //! @param idx The index for referencing into the node list.
         //!
-        private int createSceneGraphIter(ref SceneDataHandler sceneDataHandler, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones, Transform parent, int idx = 0)
+        private int createSceneGraphIter(ref SceneDataHandler sceneDataHandler, Transform parent, int idx = 0)
         {
-            GameObject obj = null; // = new GameObject( scnObjKtn.rawNodeList[idx].name );
-
             SceneNode node = sceneDataHandler.NodeList[idx];
 
             // process all registered build callbacks
-            foreach (NodeBuilderDelegate nodeBuilderDelegate in nodeBuilderDelegateList)
-            {
-                GameObject _obj = nodeBuilderDelegate(ref node, parent, obj, (sceneDataHandler.NodeList.Count == 0), ref skinnedMeshRootBones);
-                if (_obj != null)
-                    obj = _obj;
-            }
+            GameObject obj = CreateObject(node, parent);
 
             gameObjectList.Add(obj);
 
@@ -276,34 +261,23 @@ namespace vpet
             int idxChild = idx;
             for (int k = 1; k <= node.childCount; k++)
             {
-                idxChild = createSceneGraphIter(obj.transform, idxChild + 1);
+                idxChild = createSceneGraphIter(ref sceneDataHandler, obj.transform, idxChild + 1);
             }
 
             return idxChild;
         }
 
-        // [REVIEW]
         //!
         //! Function that recusively creates the gameObjects in the Unity scene.
         //!
+        //! @param sceneDataHandler A reference to the scene data handler.
         //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
-        //! @param skinnedMeshRootBones A reference to a list containing the skinned mesh root bones.
         //!
-        private void createSkinnedMeshes(ref SceneDataHandler sceneDataHandler, ref List<Tuple<Renderer, GameObject, int[]>> skinnedMeshRootBones)
+        private void createSkinnedMeshes(ref SceneDataHandler sceneDataHandler, Transform root)
         {
             List<CharacterPackage> characterList = sceneDataHandler.CharacterList;
 
-            foreach (Tuple<Renderer, GameObject, int[]> t in skinnedMeshRootBones)
-            {
-                ((SkinnedMeshRenderer)t.Item1).rootBone = t.Item2.transform;
-                Transform[] meshBones = new Transform[t.Item3.Length];
-                for (int i = 0; i < t.Item3.Length; i++)
-                {
-                    if (t.Item3[i] != -1)
-                        meshBones[i] = gameObjectList[t.Item3[i]].transform;
-                }
-                ((SkinnedMeshRenderer)t.Item1).bones = meshBones;
-            }
+            createSkinnedRendererIter(ref sceneDataHandler, root);
 
             //setup characters
             foreach (CharacterPackage cp in characterList)
@@ -354,7 +328,6 @@ namespace vpet
                 if (avatar.isValid == false || avatar.isHuman == false)
                 {
                     Debug.LogError(GetType().FullName + ": Unable to create source Avatar for retargeting. Check that your Skeleton Asset Name and Bone Naming Convention are configured correctly.", this);
-                    this.enabled = false;
                     return;
                 }
                 avatar.name = obj.name;
@@ -368,6 +341,363 @@ namespace vpet
                 obj.transform.parent = parentBackup;
             }
 
+        }
+
+        //!
+        //!
+        //!
+        private GameObject CreateObject(SceneNode node, Transform parentTransform)
+        {
+            GameObject objMain;
+
+            // Transform / convert handiness
+            Vector3 pos = new Vector3(node.position[0], node.position[1], node.position[2]);
+
+            // Rotation / convert handiness
+            Quaternion rot = new Quaternion(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
+
+            // Scale
+            Vector3 scl = new Vector3(node.scale[0], node.scale[1], node.scale[2]);
+
+            if (!parentTransform.Find(Encoding.ASCII.GetString(node.name)))
+            {
+                // set up object basics
+                objMain = new GameObject();
+                objMain.name = Encoding.ASCII.GetString(node.name);
+
+                if (node.GetType() == typeof(SceneNodeGeo) || node.GetType() == typeof(SceneNodeSkinnedGeo))
+                {
+                    SceneNodeGeo nodeGeo = (SceneNodeGeo)node;
+                    // Material Properties and Textures
+                    Material mat;
+                    // assign material from material list
+                    if (nodeGeo.materialId > -1 && nodeGeo.materialId < SceneMaterialList.Count)
+                    {
+                        mat = SceneMaterialList[nodeGeo.materialId];
+                    }
+                    else // or set standard
+                    {
+                        mat = new Material(Shader.Find("Standard"));
+                    }
+
+                    // map properties
+                    if (SceneManager.Settings.loadSampleScene)
+                    {
+                        MapMaterialProperties(mat, nodeGeo);
+                    }
+
+                    // Add Material
+                    Renderer renderer;
+                    if (nodeGeo.GetType() == typeof(SceneNodeSkinnedGeo))
+                        renderer = objMain.AddComponent<SkinnedMeshRenderer>();
+                    else
+                        renderer = objMain.AddComponent<MeshRenderer>();
+
+                    renderer.material = mat;
+
+                    // Add Mesh
+                    if (nodeGeo.geoId > -1 && nodeGeo.geoId < SceneMeshList.Count)
+                    {
+                        Mesh mesh = SceneMeshList[nodeGeo.geoId];
+
+                        SceneManager.Settings.sceneBoundsMax = Vector3.Max(SceneManager.Settings.sceneBoundsMax, renderer.bounds.max);
+                        SceneManager.Settings.sceneBoundsMin = Vector3.Min(SceneManager.Settings.sceneBoundsMin, renderer.bounds.min);
+
+                        if (node.GetType() == typeof(SceneNodeSkinnedGeo))
+                        {
+                            SkinnedMeshRenderer sRenderer = (SkinnedMeshRenderer)renderer;
+                            SceneNodeSkinnedGeo sNodeGeo = (SceneNodeSkinnedGeo)node;
+                            Bounds bounds = new Bounds(new Vector3(sNodeGeo.boundCenter[0], sNodeGeo.boundCenter[1], sNodeGeo.boundCenter[2]),
+                                                   new Vector3(sNodeGeo.boundExtents[0] * 2f, sNodeGeo.boundExtents[1] * 2f, sNodeGeo.boundExtents[2] * 2f));
+                            sRenderer.localBounds = bounds;
+                            Matrix4x4[] bindposes = new Matrix4x4[sNodeGeo.bindPoseLength];
+                            for (int i = 0; i < sNodeGeo.bindPoseLength; i++)
+                            {
+                                bindposes[i] = new Matrix4x4();
+                                bindposes[i][0, 0] = sNodeGeo.bindPoses[i * 16];
+                                bindposes[i][0, 1] = sNodeGeo.bindPoses[i * 16 + 1];
+                                bindposes[i][0, 2] = sNodeGeo.bindPoses[i * 16 + 2];
+                                bindposes[i][0, 3] = sNodeGeo.bindPoses[i * 16 + 3];
+                                bindposes[i][1, 0] = sNodeGeo.bindPoses[i * 16 + 4];
+                                bindposes[i][1, 1] = sNodeGeo.bindPoses[i * 16 + 5];
+                                bindposes[i][1, 2] = sNodeGeo.bindPoses[i * 16 + 6];
+                                bindposes[i][1, 3] = sNodeGeo.bindPoses[i * 16 + 7];
+                                bindposes[i][2, 0] = sNodeGeo.bindPoses[i * 16 + 8];
+                                bindposes[i][2, 1] = sNodeGeo.bindPoses[i * 16 + 9];
+                                bindposes[i][2, 2] = sNodeGeo.bindPoses[i * 16 + 10];
+                                bindposes[i][2, 3] = sNodeGeo.bindPoses[i * 16 + 11];
+                                bindposes[i][3, 0] = sNodeGeo.bindPoses[i * 16 + 12];
+                                bindposes[i][3, 1] = sNodeGeo.bindPoses[i * 16 + 13];
+                                bindposes[i][3, 2] = sNodeGeo.bindPoses[i * 16 + 14];
+                                bindposes[i][3, 3] = sNodeGeo.bindPoses[i * 16 + 15];
+                            }
+                            mesh.bindposes = bindposes;
+                            sRenderer.sharedMesh = mesh;
+
+                        }
+                        else
+                        {
+                            objMain.AddComponent<MeshFilter>();
+                            objMain.GetComponent<MeshFilter>().mesh = mesh;
+                        }
+                    }
+
+                    if (nodeGeo.editable)
+                    {
+                        SceneObject sceneObject = objMain.AddComponent<SceneObject>();
+                    }
+                }
+                else if (node.GetType() == typeof(SceneNodeLight))
+                {
+                    SceneNodeLight nodeLight = (SceneNodeLight)node;
+
+                    // Add light prefab
+                    GameObject lightUber = Resources.Load<GameObject>("VPET/Prefabs/UberLight");
+                    GameObject _lightUberInstance = GameObject.Instantiate(lightUber);
+                    _lightUberInstance.name = lightUber.name;
+                    lightUber.transform.GetChild(0).gameObject.layer = 8;
+
+
+                    Light lightComponent = _lightUberInstance.GetComponent<Light>();
+                    // instert type here!!!
+                    lightComponent.type = nodeLight.lightType;
+                    lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);
+                    lightComponent.intensity = nodeLight.intensity * SceneManager.Settings.lightIntensityFactor;
+                    lightComponent.spotAngle = nodeLight.angle;
+                    if (lightComponent.type == LightType.Directional)
+                    {
+                        lightComponent.shadows = LightShadows.Soft;
+                        lightComponent.shadowStrength = 0.8f;
+                    }
+                    else
+                        lightComponent.shadows = LightShadows.None;
+                    lightComponent.shadowBias = 0f;
+                    lightComponent.shadowNormalBias = 1f;
+                    lightComponent.range = nodeLight.range * SceneManager.Settings.sceneScale;
+
+                    Debug.Log("Create Light: " + nodeLight.name + " of type: " + nodeLight.lightType.ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos);
+
+                    // Add light specific settings
+                    if (nodeLight.lightType == LightType.Directional)
+                    {
+                    }
+                    else if (nodeLight.lightType == LightType.Spot)
+                    {
+                        lightComponent.range *= 2;
+                        //objMain.transform.Rotate(new Vector3(0, 180f, 0), Space.Self);
+                    }
+                    else if (nodeLight.lightType == LightType.Area)
+                    {
+                        // TODO: use are lights when supported in unity
+                        lightComponent.spotAngle = 170;
+                        lightComponent.range *= 4;
+                    }
+                    else
+                    {
+                        Debug.Log("Unknown Light Type in NodeBuilderBasic::CreateLight");
+                    }
+
+                    // parent 
+                    _lightUberInstance.transform.SetParent(objMain.transform, false);
+
+                    LightObject sco = objMain.AddComponent<LightObject>();
+
+                    SelectableLights.Add(objMain);
+
+                }
+                else if (node.GetType() == typeof(SceneNodeCam))
+                {
+                    SceneNodeCam nodeCam = (SceneNodeCam)node;
+
+                    // add camera dummy mesh
+                    GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
+                    GameObject cameraInstance = GameObject.Instantiate(cameraObject);
+                    cameraInstance.SetActive(false);
+                    cameraInstance.name = cameraObject.name;
+                    cameraInstance.transform.SetParent(objMain.transform, false);
+                    cameraInstance.transform.localScale = new Vector3(1, 1, 1) * SceneManager.Settings.sceneScale;
+                    cameraInstance.transform.localPosition = new Vector3(0, 0, 0);
+                    cameraInstance.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
+
+                    // add camera data script and set values
+                    //if (nodeCam.editable)
+                    //{
+                    CameraObject sco = objMain.AddComponent<CameraObject>();
+                    sco.fov.value = nodeCam.fov;
+                    sco.near.value = nodeCam.near;
+                    sco.far.value = nodeCam.far;
+
+                    SceneCameraList.Add(objMain);
+                }
+
+                Vector3 sceneExtends = SceneManager.Settings.sceneBoundsMax - SceneManager.Settings.sceneBoundsMin;
+                SceneManager.Settings.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+
+                //place object
+                objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
+            }
+            else
+            {
+                objMain = parentTransform.Find(Encoding.ASCII.GetString(node.name)).gameObject;
+            }
+
+            objMain.transform.localPosition = pos;
+            objMain.transform.localRotation = rot;
+            objMain.transform.localScale = scl;
+
+            return objMain;
+
+        }
+
+        //! 
+        //! [REVIEW]
+        //!
+        public static void MapMaterialProperties(Material material, SceneNodeGeo nodeGeo)
+        {
+            /*
+            //available parameters in this physically based standard shader:
+            // _Color                   diffuse color (color including alpha)
+            // _MainTex                 diffuse texture (2D texture)
+            // _MainTex_ST
+            // _Cutoff                  alpha cutoff
+            // _Glossiness              smoothness of surface
+            // _Metallic                matallic look of the material
+            // _MetallicGlossMap        metallic texture (2D texture)
+            // _BumpScale               scale of the bump map (float)
+            // _BumpMap                 bumpmap (2D texture)
+            // _Parallax                scale of height map
+            // _ParallaxMap             height map (2D texture)
+            // _OcclusionStrength       scale of occlusion
+            // _OcclusionMap            occlusionMap (2D texture)
+            // _EmissionColor           color of emission (color without alpha)
+            // _EmissionMap             emission strength map (2D texture)
+            // _DetailMask              detail mask (2D texture)
+            // _DetailAlbedoMap         detail diffuse texture (2D texture)
+            // _DetailAlbedoMap_ST
+            // _DetailNormalMap
+            // _DetailNormalMapScale    scale of detail normal map (float)
+            // _DetailAlbedoMap         detail normal map (2D texture)
+            // _UVSec                   UV Set for secondary textures (float)
+            // _Mode                    rendering mode (float) 0 -> Opaque , 1 -> Cutout , 2 -> Transparent
+            // _SrcBlend                source blend mode (enum is UnityEngine.Rendering.BlendMode)
+            // _DstBlend                destination blend mode (enum is UnityEngine.Rendering.BlendMode)
+            // test texture
+            // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
+            // Texture2D texture = www.texture;
+            foreach (KeyValuePair<string, KeyValuePair<string, Type>> pair in VPETSettings.ShaderPropertyMap)
+            {
+                FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Key, BindingFlags.Instance | BindingFlags.Public);
+                Type propertyType = pair.Value.Value;
+
+                if (material.HasProperty(pair.Key) && fieldInfo != null)
+                {
+                    if (propertyType == typeof(int))
+                    {
+                        material.SetInt(pair.Key, (int)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), propertyType));
+                    }
+                    else if (propertyType == typeof(float))
+                    {
+                        material.SetFloat(pair.Key, (float)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), propertyType));
+                    }
+                    else if (propertyType == typeof(Color))
+                    {
+                        float[] v = (float[])fieldInfo.GetValue(nodeGeo);
+                        float a = v.Length > 3 ? v[3] : 1.0f;
+                        Color c = new Color(v[0], v[1], v[2], a);
+                        string name = Encoding.UTF8.GetString(nodeGeo.name, 0, nodeGeo.name.Length);
+                        material.SetColor(pair.Key, c);
+
+                        if (a < 1.0f)
+                        {
+                            // set rendering mode
+                            material.SetFloat("_Mode", 1);
+                            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                            material.SetInt("_ZWrite", 0);
+                            material.DisableKeyword("_ALPHATEST_ON");
+                            material.DisableKeyword("_ALPHABLEND_ON");
+                            material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                            material.renderQueue = 3000;
+                        }
+                    }
+                    else if (propertyType == typeof(Texture))
+                    {
+                        int id = (int)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int));
+
+                        if (id > -1 && id < SceneLoader.SceneTextureList.Count)
+                        {
+                            Texture2D texRef = SceneLoader.SceneTextureList[nodeGeo.textureId];
+
+                            material.SetTexture(pair.Key, texRef);
+
+                            // set materials render mode to fate to senable alpha blending
+                            // TODO these values should be part of the geo node or material package !?
+                            if (Textures.hasAlpha(texRef))
+                            {
+                                // set rendering mode
+                                material.SetFloat("_Mode", 1);
+                                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                                material.SetInt("_ZWrite", 0);
+                                material.DisableKeyword("_ALPHATEST_ON");
+                                material.DisableKeyword("_ALPHABLEND_ON");
+                                material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                                material.renderQueue = 3000;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Can not map material property " + pair.Key);
+                    }
+
+
+                    // TODO implement the rest
+                    // .
+                    // .
+                    // .
+                }
+
+            }*/
+
+        }
+
+        //!
+        //! Function that recusively adds bone transforms to renderers of SkinnedMesh objects.
+        //!
+        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
+        //! @param parent the parent Unity transform.
+        //! @param idx The index for referencing into the node list.
+        //!
+        private int createSkinnedRendererIter(ref SceneDataHandler sceneDataHandler, Transform parent, int idx = 0)
+        {
+
+            SceneNodeSkinnedGeo node = (SceneNodeSkinnedGeo)sceneDataHandler.NodeList[idx];
+            Transform trans = parent.Find(Encoding.ASCII.GetString(node.name));
+
+            SkinnedMeshRenderer renderer = trans.gameObject.GetComponent<SkinnedMeshRenderer>();
+
+            if (renderer)
+            {
+                renderer.rootBone = trans;
+                Transform[] meshBones = new Transform[node.skinnedMeshBoneIDs.Length];
+                for (int i = 0; i < node.skinnedMeshBoneIDs.Length; i++)
+                {
+                    if (node.skinnedMeshBoneIDs[i] != -1)
+                        meshBones[i] = gameObjectList[node.skinnedMeshBoneIDs[i]].transform;
+                }
+                renderer.bones = meshBones;
+            }
+
+            // recursive call
+            int idxChild = idx;
+            for (int k = 1; k <= node.childCount; k++)
+            {
+                idxChild = createSkinnedRendererIter(ref sceneDataHandler, trans, idxChild + 1);
+            }
+
+            return idxChild;
         }
 
         //!
