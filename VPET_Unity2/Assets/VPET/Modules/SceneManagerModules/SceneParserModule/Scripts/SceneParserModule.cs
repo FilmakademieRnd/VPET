@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace vpet
             m_globalID = 0;
         }
 
-        public bool ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true)
+        public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true)
         {
             vpetHeader = new VpetHeader();
             vpetHeader.lightIntensityFactor = 1f;
@@ -49,7 +50,41 @@ namespace vpet
             List<TexturePackage> textureList = new List<TexturePackage>();
             List<MaterialPackage> materialList = new List<MaterialPackage>();
 
-            iterLocation(scene.parent, getLowLayer, getHighLayer, getMixedLayer);
+            List<GameObject> gameObjects = new List<GameObject>();
+            recursiveGameObjectIdExtract(scene.parent.GetChild(0), ref gameObjects, getLowLayer, getHighLayer, getMixedLayer);
+
+            foreach (GameObject gameObject in gameObjects)
+            {
+                SceneNode node = new SceneNode();
+                Transform trans = gameObject.transform;
+                if (trans.GetComponent<Light>() != null)
+                    node = ParseLight(trans.GetComponent<Light>());
+                else if (trans.GetComponent<Camera>() != null)
+                    node = ParseCamera(trans.GetComponent<Camera>());
+                else if (trans.GetComponent<MeshFilter>() != null)
+                    node = ParseMesh(trans);
+                else if (trans.GetComponent<SkinnedMeshRenderer>() != null)
+                    node = ParseSkinnedMesh(trans);
+
+                Animator animator = trans.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    animator.logWarnings = false;
+                    processCharacter(animator);
+                }
+
+                node.position = new float[3] { trans.localPosition.x, trans.localPosition.y, trans.localPosition.z };
+                node.scale = new float[3] { trans.localScale.x, trans.localScale.y, trans.localScale.z };
+                node.rotation = new float[4] { trans.localRotation.x, trans.localRotation.y, trans.localRotation.z, trans.localRotation.w };
+                node.name = new byte[256];
+                byte[] tmpName = Encoding.ASCII.GetBytes(trans.name);
+                Buffer.BlockCopy(tmpName, 0, node.name, 0, Math.Min(tmpName.Length, 256));
+
+                node.childCount = trans.childCount;
+
+                if (trans.name != "root")
+                    nodeList.Add(node);
+            }
 
             // create byte arrays
             headerByteData = StructureToByteArray(vpetHeader);
@@ -58,33 +93,6 @@ namespace vpet
             getCharacterByteArray();
             getTexturesByteArray();
             getMaterialsByteArray();
-
-            return false;
-        }
-
-        //!
-        //! Recursively iterate over scene and prepare data to be send to clients
-        //!
-        private bool iterLocation(Transform location, bool getLowLayer, bool getHighLayer, bool getMixedLayer)
-        {
-            if (!((location.gameObject.layer == m_lodLowLayer && getLowLayer) ||
-                  (location.gameObject.layer == m_lodHighLayer && getHighLayer) ||
-                  (location.gameObject.layer == m_lodMixedLayer && getMixedLayer)))
-                return false;
-
-            SceneNode node = new SceneNode();
-
-            if (location.GetComponent<Light>() != null)
-                node = ParseLight(location.GetComponent<Light>());
-            else if (location.GetComponent<Camera>() != null)
-                node = ParseCamera(location.GetComponent<Camera>());
-            else if (location.GetComponent<MeshFilter>() != null)
-                node = ParseMesh(location);
-            else if (location.GetComponent<SkinnedMeshRenderer>() != null)
-                node = ParseSkinnedMesh(location);
-
-
-            return true;
         }
 
         private SceneNode ParseLight(Light light)
@@ -128,7 +136,6 @@ namespace vpet
             SceneNodeSkinnedGeo nodeGeo = new SceneNodeSkinnedGeo();
 
             SkinnedMeshRenderer sRenderer = location.GetComponent<SkinnedMeshRenderer>();
-            Material mat = location.GetComponent<Renderer>().sharedMaterial;
 
             nodeGeo.color = new float[4] { 0, 0, 0, 1 };
             nodeGeo.geoId = processGeometry(sRenderer.sharedMesh);
@@ -199,6 +206,22 @@ namespace vpet
                     node.textureId = -1;
                 }
             }
+        }
+
+        //!
+        //! Recursively iterates over all scene elements
+        //!
+        private void recursiveGameObjectIdExtract(Transform location, ref List<GameObject> gameObjects, bool getLowLayer, bool getHighLayer, bool getMixedLayer)
+        {
+            // fill game object list
+            gameObjects.Add(location.gameObject);
+
+            foreach (Transform child in location)
+                if (child.gameObject.activeSelf &&
+                    ((location.gameObject.layer == m_lodLowLayer && getLowLayer) ||
+                    (location.gameObject.layer == m_lodHighLayer && getHighLayer) ||
+                    (location.gameObject.layer == m_lodMixedLayer && getMixedLayer)))
+                    recursiveGameObjectIdExtract(child, ref gameObjects, getLowLayer, getHighLayer, getMixedLayer);
         }
 
         /*
