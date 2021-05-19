@@ -76,13 +76,13 @@ namespace vpet
         private void updateCameraParameters()
         {
             if (_camera.fieldOfView != fov.value)
-                fov.setValue(_camera.fieldOfView);
+                fov.value = _camera.fieldOfView;
             if (_camera.aspect != aspect.value)
-                aspect.setValue(_camera.aspect);
+                aspect.value = _camera.aspect;
             if (_camera.nearClipPlane != near.value)
-                near.setValue(_camera.nearClipPlane);
+                near.value = _camera.nearClipPlane;
             if (_camera.farClipPlane != far.value)
-                far.setValue(_camera.farClipPlane);
+                far.value = _camera.farClipPlane;
         }
     }
 }

@@ -344,7 +344,10 @@ namespace vpet
         }
 
         //!
-        //!
+        //! Creates an GameObject from an VPET SceneNode beneath the parent transform.
+        //! @param node VPET SceneNode to be parsed.
+        //! @param parentTransform Unity parent transform of the GameObject to-be created.
+        //! @return The created GameObject.
         //!
         private GameObject CreateObject(SceneNode node, Transform parentTransform)
         {

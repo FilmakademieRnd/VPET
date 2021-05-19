@@ -230,14 +230,24 @@ namespace vpet
                 NodeType nodeType = (NodeType) BitConverter.ToInt32(nodesByteData, dataIdx);
                 dataIdx += size_int;
 
-                // process all registered parse callbacks
-                foreach (NodeParserDelegate nodeParserDelegate in nodeParserDelegateList)
+                switch (nodeType)
                 {
-                    SceneNode _node = nodeParserDelegate(nodeType, ref nodesByteData, ref dataIdx);
-                    if (_node != null)
-                        node = _node;
+                    case NodeType.GROUP:
+                        node = SceneDataHandler.ByteArrayToStructure<SceneNode>(ref nodesByteData, ref dataIdx);
+                        break;
+                    case NodeType.GEO:
+                        node = SceneDataHandler.ByteArrayToStructure<SceneNodeGeo>(ref nodesByteData, ref dataIdx);
+                        break;
+                    case NodeType.SKINNEDMESH:
+                        node = SceneDataHandler.ByteArrayToStructure<SceneNodeSkinnedGeo>(ref nodesByteData, ref dataIdx);
+                        break;
+                    case NodeType.LIGHT:
+                        node = SceneDataHandler.ByteArrayToStructure<SceneNodeLight>(ref nodesByteData, ref dataIdx);
+                        break;
+                    case NodeType.CAMERA:
+                        node = SceneDataHandler.ByteArrayToStructure<SceneNodeCam>(ref nodesByteData, ref dataIdx);
+                        break;
                 }
-                //dataIdx += length;
 
                 m_nodeList.Add(node);
             }
@@ -546,24 +556,6 @@ namespace vpet
             offset += size;
 
             return str;
-        }
-
-        //! 
-        //! Template function for serialising arbitrary structures in to byte streams.
-        //! 
-        //! @param obj The object to be serialised.
-        //!
-        private static byte[] StructureToByteArray(object obj)
-        {
-            int size = Marshal.SizeOf(obj);
-            byte[] arr = new byte[size];
-            IntPtr ptr = Marshal.AllocHGlobal(size);
-
-            Marshal.StructureToPtr(obj, ptr, true);
-            Marshal.Copy(ptr, arr, 0, size);
-            Marshal.FreeHGlobal(ptr);
-
-            return arr;
         }
     }
 }

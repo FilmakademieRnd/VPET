@@ -58,11 +58,11 @@ namespace vpet
         private void updateLightParameters()
         {
             if (_light.color != color.value)
-                color.setValue(_light.color);
+                color.value = _light.color;
             if (_light.intensity != intensity.value)
-                intensity.setValue(_light.intensity);
+                intensity.value = _light.intensity;
             if (_light.range != intensity.value)
-                range.setValue(_light.range);
+                range.value = _light.range;
         }
     }
 }

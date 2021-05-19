@@ -28,7 +28,7 @@ namespace vpet
         {
             base.Update();
             if (_light.spotAngle != spotAngle.value)
-                spotAngle.setValue(_light.spotAngle);
+                spotAngle.value = _light.spotAngle;
         }
     }
 }

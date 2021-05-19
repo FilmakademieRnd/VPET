@@ -76,11 +76,11 @@ namespace vpet
         private void updateTransform()
         {
             if (transform.position != position.value)
-                position.setValue(transform.position);
+                position.value = transform.position;
             if (transform.rotation != rotation.value)
-                rotation.setValue(transform.rotation);
+                rotation.value = transform.rotation;
             if (transform.localScale != scale.value)
-                scale.setValue(transform.localScale);
+                scale.value = transform.localScale;
         }
     }
 }
