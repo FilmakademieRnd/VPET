@@ -129,7 +129,6 @@ namespace vpet
     public class VpetHeader
     {
         public float lightIntensityFactor;
-        public int textureBinaryType;
     }
 
     //!

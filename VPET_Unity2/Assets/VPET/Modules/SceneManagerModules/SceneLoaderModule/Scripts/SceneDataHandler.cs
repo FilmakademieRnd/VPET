@@ -509,32 +509,6 @@ namespace vpet
             }
         }
 
-        // [REVIEW] should be in helpers or anywhere else. Originally used in SceneDistribution.cs
-        //!
-        //! Template function for concatination of arrays. 
-        //!
-        //! @param first The array field to be appended to.
-        //! @param arrays The arrays to be append.
-        //!
-        private static T[] Concat<T>(T[] first, params T[][] arrays)
-        {
-            int length = first.Length;
-            foreach (T[] array in arrays)
-            {
-                length += array.Length;
-            }
-            T[] result = new T[length];
-
-            length = first.Length;
-            Array.Copy(first, 0, result, 0, first.Length);
-            foreach (T[] array in arrays)
-            {
-                Array.Copy(array, 0, result, length, array.Length);
-                length += array.Length;
-            }
-            return result;
-        }
-
         //! 
         //! Template function for deserialising byte streams into arbitrary structures. 
         //! 

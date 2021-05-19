@@ -1,9 +1,32 @@
-//! @file "AssemblyHelpers.cs"
-//! @brief additional helper functions for assembly handling
+/*
+-------------------------------------------------------------------------------
+VPET - Virtual Production Editing Tools
+vpet.research.animationsinstitut.de
+https://github.com/FilmakademieRnd/VPET
+ 
+Copyright (c) 2021 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+ 
+This project has been initiated in the scope of the EU funded project 
+Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
+ 
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
+ 
+In 2018 some features (Character Animation Interface and USD support) were
+addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
+under grant agreement no 780470, 2018-2020
+ 
+VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
+Syncronisation Server. They are licensed under the following terms:
+-------------------------------------------------------------------------------
+*/
+
+//! @file "SceneDataDefinition.cs"
+//! @brief definition of VPET scene data structure
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.02.2021
+//! @date 26.04.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +39,7 @@ namespace vpet
     //!
     //! implementation class for assembly helpers
     //!
-    public class Helpers
+    public static class Helpers
     {
         //!
         //! global id counter for generating unique sceneObject IDs
@@ -84,6 +107,28 @@ namespace vpet
                 }
             }
             return result.ToArray();
+        }
+
+        //!
+        //! Searches and returns a child transform in a tree of transforms by name
+        //!
+        //! @param aParent The Transform of the parent game object.
+        //! @param name The name of the child to be searched for.
+        //! @return Retuens the transform of the child if exist, null otherwise. 
+        //!
+        public static Transform FindDeepChild(this Transform aParent, string aName)
+        {
+            Queue<Transform> queue = new Queue<Transform>();
+            queue.Enqueue(aParent);
+            while (queue.Count > 0)
+            {
+                var c = queue.Dequeue();
+                if (c.name == aName)
+                    return c;
+                foreach (Transform t in c)
+                    queue.Enqueue(t);
+            }
+            return null;
         }
     }
 }
