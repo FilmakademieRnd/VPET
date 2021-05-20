@@ -172,9 +172,9 @@ namespace vpet
         //!
         //! Parses the Unity scene filtered by LOD layers and creates binary streams from it.
         //!
-        //! @param getLowLayer Gether only scene elements from LOD low layer.
-        //! @param getLowLayer Gether only scene elements from LOD low layer.
-        //! @param getLowLayer Gether only scene elements from LOD low layer.
+        //! @param getLowLayer Gather only scene elements from LOD low layer.
+        //! @param getLowLayer Gather only scene elements from LOD low layer.
+        //! @param getLowLayer Gather only scene elements from LOD low layer.
         //!
         public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true)
         {
@@ -358,9 +358,9 @@ namespace vpet
         //!
         //! @location The transform of the Unity Game Object to start at.
         //! @gameObjects The list to be filld with the Game Objects.
-        //! @param getLowLayer Gether only scene elements from LOD low layer.
-        //! @param getHighLayer Gether only scene elements from LOD high layer.
-        //! @param getMixedLayer Gether only scene elements from LOD mixed layer.
+        //! @param getLowLayer Gather only scene elements from LOD low layer.
+        //! @param getHighLayer Gather only scene elements from LOD high layer.
+        //! @param getMixedLayer Gather only scene elements from LOD mixed layer.
         //!
         private void recursiveGameObjectIdExtract(Transform location, ref List<GameObject> gameObjects, bool getLowLayer, bool getHighLayer, bool getMixedLayer)
         {
