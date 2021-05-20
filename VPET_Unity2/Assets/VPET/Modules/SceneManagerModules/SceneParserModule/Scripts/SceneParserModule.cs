@@ -44,6 +44,18 @@ namespace vpet
     public class SceneParserModule
     {
         //!
+        //! Data type for storing scene object information.
+        //!
+        private struct SceneData
+        {
+            public List<SceneNode> nodeList;
+            public List<ObjectPackage> objectList;
+            public List<CharacterPackage> characterList;
+            public List<TexturePackage> textureList;
+            public List<MaterialPackage> materialList;
+        }
+
+        //!
         //! The scenes root transform.
         //!
         private Transform scene;
@@ -53,26 +65,85 @@ namespace vpet
         //!
         private byte[] m_headerByteData;
         //!
+        //! Getter function returning a reference to the byte array  
+        //! containing the serialised header data.
+        //!
+        //! @return A reference to the serialised header data.
+        //!
+        public ref byte[] headerByteData
+        {
+            get { return ref m_headerByteData; }
+        }
+        //!
         //! The list containing the serialised nodes.
         //!
         private byte[] m_nodesByteData;
+        //!
+        //! Getter function returning a reference to the byte array  
+        //! containing the serialised nodes data.
+        //!
+        //! @return A reference to the serialised nodes data.
+        //!
+        public ref byte[] nodesByteData
+        {
+            get { return ref m_nodesByteData; }
+        }
         //!
         //! The list containing the serialised meshes.
         //!
         private byte[] m_objectsByteData;
         //!
+        //! Getter function returning a reference to the byte array  
+        //! containing the serialised objects data.
+        //!
+        //! @return A reference to the serialised objects data.
+        //!
+        public ref byte[] objectsByteData
+        {
+            get { return ref m_objectsByteData; }
+        }
+        //!
         //! The list containing the serialised skinned meshes.
         //!
         private byte[] m_charactersByteData;
+        //!
+        //! Getter function returning a reference to the byte array  
+        //! containing the serialised characters data.
+        //!
+        //! @return A reference to the serialised characters data.
+        //!
+        public ref byte[] charactersByteData
+        {
+            get { return ref m_charactersByteData; }
+        }
         //!
         //! The list containing the serialised textures.
         //!
         private byte[] m_texturesByteData;
         //!
+        //! Getter function returning a reference to the byte array  
+        //! containing the serialised textures data.
+        //!
+        //! @return A reference to the serialised textures data.
+        //!
+        public ref byte[] texturesByteData
+        {
+            get { return ref m_texturesByteData; }
+        }
+        //!
         //! The list containing the serialised materials.
         //!
         private byte[] m_materialsByteData;
-
+        //!
+        //! Getter function returning a reference to the byte array  
+        //! containing the serialised materials data.
+        //!
+        //! @return A reference to the serialised materials data.
+        //!
+        public ref byte[] materialsByteData
+        {
+            get { return ref m_materialsByteData; }
+        }
         //!
         //! The layer ID tacked as LOD low.
         //!
@@ -110,11 +181,13 @@ namespace vpet
             VpetHeader vpetHeader = new VpetHeader();
             vpetHeader.lightIntensityFactor = 1f;
 
-            List<SceneNode> nodeList = new List<SceneNode>(); ;
-            List<ObjectPackage> objectList = new List<ObjectPackage>();
-            List<CharacterPackage> characterList = new List<CharacterPackage>();
-            List<TexturePackage> textureList = new List<TexturePackage>();
-            List<MaterialPackage> materialList = new List<MaterialPackage>();
+            SceneData sceneData = new SceneData();
+
+            sceneData.nodeList = new List<SceneNode>();
+            sceneData.objectList = new List<ObjectPackage>();
+            sceneData.characterList = new List<CharacterPackage>();
+            sceneData.textureList = new List<TexturePackage>();
+            sceneData.materialList = new List<MaterialPackage>();
 
             List<GameObject> gameObjects = new List<GameObject>();
             recursiveGameObjectIdExtract(scene.parent.GetChild(0), ref gameObjects, getLowLayer, getHighLayer, getMixedLayer);
@@ -128,15 +201,15 @@ namespace vpet
                 else if (trans.GetComponent<Camera>() != null)
                     node = ParseCamera(trans.GetComponent<Camera>());
                 else if (trans.GetComponent<MeshFilter>() != null)
-                    node = ParseMesh(trans, ref objectList, ref materialList, ref textureList);
+                    node = ParseMesh(trans, ref sceneData);
                 else if (trans.GetComponent<SkinnedMeshRenderer>() != null)
-                    node = ParseSkinnedMesh(trans, ref gameObjects, ref objectList, ref materialList, ref textureList);
+                    node = ParseSkinnedMesh(trans, ref gameObjects , ref sceneData);
 
                 Animator animator = trans.GetComponent<Animator>();
                 if (animator != null)
                 {
                     animator.logWarnings = false;
-                    processCharacter(animator, ref characterList, ref gameObjects);
+                    processCharacter(animator, ref gameObjects, ref sceneData.characterList);
                 }
 
                 node.position = new float[3] { trans.localPosition.x, trans.localPosition.y, trans.localPosition.z };
@@ -149,16 +222,25 @@ namespace vpet
                 node.childCount = trans.childCount;
 
                 if (trans.name != "root")
-                    nodeList.Add(node);
+                    sceneData.nodeList.Add(node);
             }
 
-            // create byte arrays
+            // create byte arrays and clear buffers
             m_headerByteData = StructureToByteArray(vpetHeader);
-            getNodesByteArray(ref nodeList);
-            getObjectsByteArray(ref objectList);
-            getCharacterByteArray(ref characterList);
-            getTexturesByteArray(ref textureList);
-            getMaterialsByteArray(ref materialList);
+            getNodesByteArray(ref sceneData.nodeList);
+            sceneData.nodeList.Clear();
+
+            getObjectsByteArray(ref sceneData.objectList);
+            sceneData.objectList.Clear();
+
+            getCharacterByteArray(ref sceneData.characterList);
+            sceneData.characterList.Clear();
+
+            getTexturesByteArray(ref sceneData.textureList);
+            sceneData.textureList.Clear();
+
+            getMaterialsByteArray(ref sceneData.materialList);
+            sceneData.materialList.Clear();
         }
 
         //!
@@ -199,23 +281,18 @@ namespace vpet
         //! Function for creating a VPET geo node out of an Unity object.
         //!
         //! @param transform The transform from the Unity mesh object.
-        //! @param objectList A reference to the list that will store the serialised meshes. 
-        //! @param materialList A reference to the list that will store the serialised materials. 
-        //! @param textureList A reference to the list that will store the serialised textures. 
+        //! @param sceneData A reference to the structure that will store the serialised scene data. 
+        //! @return Created scene node.
         //!
-        private SceneNode ParseMesh(
-            Transform location, 
-            ref List<ObjectPackage> objectList, 
-            ref List<MaterialPackage> materialList, 
-            ref List<TexturePackage> textureList)
+        private SceneNode ParseMesh(Transform location, ref SceneData sceneData)
         {
             SceneNodeGeo nodeGeo = new SceneNodeGeo();
             nodeGeo.color = new float[4] { 0, 0, 0, 1 };
-            nodeGeo.geoId = processGeometry(location.GetComponent<MeshFilter>().sharedMesh, ref objectList);
+            nodeGeo.geoId = processGeometry(location.GetComponent<MeshFilter>().sharedMesh, ref sceneData);
 
             if (location.GetComponent<Renderer>() != null)
             {
-                addMaterial(nodeGeo, location.GetComponent<Renderer>().material, ref materialList, ref textureList);
+                processMaterial(nodeGeo, location.GetComponent<Renderer>().material, ref sceneData);
             }
 
             return nodeGeo;
@@ -225,24 +302,18 @@ namespace vpet
         //! Function for creating a VPET skinned geo node out of an skinned Unity object.
         //!
         //! @param transform The transform from the Unity mesh object.
-        //! @param gameObjectList A reference to the list of the traversed Unity Game Object tree. 
-        //! @param objectList A reference to the list that will store the serialised meshes. 
-        //! @param materialList A reference to the list that will store the serialised materials. 
-        //! @param textureList A reference to the list that will store the serialised textures. 
+        //! @param gameObjectList A reference to the list of the traversed Unity Game Object tree.       
+        //! @param sceneData A reference to the structure that will store the serialised scene data. 
+        //! @return Created scene node.
         //!
-        private SceneNode ParseSkinnedMesh(
-            Transform location, 
-            ref List<GameObject> gameObjectList, 
-            ref List<ObjectPackage> objectList, 
-            ref List<MaterialPackage> materialList, 
-            ref List<TexturePackage> textureList)
+        private SceneNode ParseSkinnedMesh(Transform location, ref List<GameObject> gameObjectList, ref SceneData sceneData)
         {
             SceneNodeSkinnedGeo nodeGeo = new SceneNodeSkinnedGeo();
 
             SkinnedMeshRenderer sRenderer = location.GetComponent<SkinnedMeshRenderer>();
 
             nodeGeo.color = new float[4] { 0, 0, 0, 1 };
-            nodeGeo.geoId = processGeometry(sRenderer.sharedMesh, ref objectList);
+            nodeGeo.geoId = processGeometry(sRenderer.sharedMesh, ref sceneData);
             nodeGeo.rootBoneID = gameObjectList.IndexOf(sRenderer.rootBone.gameObject);
             nodeGeo.boundCenter = new float[3] { sRenderer.localBounds.center.x, sRenderer.localBounds.center.y, sRenderer.localBounds.center.z };
             nodeGeo.boundExtents = new float[3] { sRenderer.localBounds.extents.x, sRenderer.localBounds.extents.y, sRenderer.localBounds.extents.z };
@@ -277,47 +348,9 @@ namespace vpet
                 nodeGeo.skinnedMeshBoneIDs[i] = gameObjectList.IndexOf(sRenderer.bones[i].gameObject);
             }
 
-            addMaterial(nodeGeo, sRenderer.material, ref materialList, ref textureList);
+            processMaterial(nodeGeo, sRenderer.material, ref sceneData);
 
             return nodeGeo;
-        }
-
-        //!
-        //! Function that adds a VPET nods material properties.
-        //!
-        //! @param node The node to which the properties will be added.
-        //! @material The Unity material containing the properties to be added.
-        //! @param materialList A reference to the list that will store the serialised materials. 
-        //! @param textureList A reference to the list that will store the serialised textures.
-        //!
-        private void addMaterial(SceneNodeGeo node, Material material, ref List<MaterialPackage> materialList, ref List<TexturePackage> textureList)
-        {
-            if (material = null)
-                node.textureId = -1;
-            else
-            {
-                // if materials's shader is not standard, add this material to material package. 
-                // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
-                node.materialId = processMaterial(material, ref materialList);
-
-                if (material.HasProperty("_Color"))
-                {
-                    node.color = new float[4] { material.color.r, material.color.g, material.color.b, material.color.a };
-                }
-
-                if (material.HasProperty("_Glossiness"))
-                    node.roughness = material.GetFloat("_Glossiness");
-
-                if (material.mainTexture != null)
-                {
-                    Texture2D mainTex = (Texture2D)material.mainTexture;
-                    node.textureId = processTexture(mainTex, ref textureList);
-                }
-                else
-                {
-                    node.textureId = -1;
-                }
-            }
         }
 
         //!
@@ -326,8 +359,8 @@ namespace vpet
         //! @location The transform of the Unity Game Object to start at.
         //! @gameObjects The list to be filld with the Game Objects.
         //! @param getLowLayer Gether only scene elements from LOD low layer.
-        //! @param getLowLayer Gether only scene elements from LOD low layer.
-        //! @param getLowLayer Gether only scene elements from LOD low layer.
+        //! @param getHighLayer Gether only scene elements from LOD high layer.
+        //! @param getMixedLayer Gether only scene elements from LOD mixed layer.
         //!
         private void recursiveGameObjectIdExtract(Transform location, ref List<GameObject> gameObjects, bool getLowLayer, bool getHighLayer, bool getMixedLayer)
         {
@@ -343,19 +376,56 @@ namespace vpet
         }
 
         //!
+        //! Function that adds a VPET nods material properties.
+        //!
+        //! @param node The node to which the properties will be added.
+        //! @material The Unity material containing the properties to be added.
+        //! @param sceneData A reference to the structure that will store the serialised scene data. 
+        //!
+        private void processMaterial(SceneNodeGeo node, Material material, ref SceneData sceneData)
+        {
+            if (material = null)
+                node.textureId = -1;
+            else
+            {
+                // if materials's shader is not standard, add this material to material package. 
+                // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
+                node.materialId = processMaterial(material, ref sceneData.materialList);
+
+                if (material.HasProperty("_Color"))
+                {
+                    node.color = new float[4] { material.color.r, material.color.g, material.color.b, material.color.a };
+                }
+
+                if (material.HasProperty("_Glossiness"))
+                    node.roughness = material.GetFloat("_Glossiness");
+
+                if (material.mainTexture != null)
+                {
+                    Texture2D mainTex = (Texture2D)material.mainTexture;
+                    node.textureId = processTexture(mainTex, ref sceneData.textureList);
+                }
+                else
+                {
+                    node.textureId = -1;
+                }
+            }
+        }
+
+        //!
         //! Serialises a Unity mesh into a VPET Object Package and adds it to the given 
         //! list, if it does not already contain the mesh. Otherweise returns the reference ID of the
         //! already existing mesh. 
         //!
         //! @mesh The mesh to be serialized
-        //! @objectList The list to add the serialised mesh to.
+        //! @param sceneData A reference to the structure that will store the serialised scene data. 
         //! @return The reference ID for mesh. 
         //!
-        private int processGeometry(Mesh mesh, ref List<ObjectPackage> objectList)
+        private int processGeometry(Mesh mesh, ref SceneData sceneData)
         {
-            for (int i = 0; i < objectList.Count; i++)
+            for (int i = 0; i < sceneData.objectList.Count; i++)
             {
-                if (objectList[i].mesh == mesh)
+                if (sceneData.objectList[i].mesh == mesh)
                 {
                     return i;
                 }
@@ -424,9 +494,9 @@ namespace vpet
             }
 
             objPack.mesh = mesh;
-            objectList.Add(objPack);
+            sceneData.objectList.Add(objPack);
 
-            return objectList.Count - 1;
+            return sceneData.objectList.Count - 1;
         }
 
         //!
@@ -519,7 +589,7 @@ namespace vpet
         //! @characterList The list to add the serialised skinned object to.
         //! @param gameObjectList A reference to the list of the traversed Unity Game Object tree. 
         //!
-        private void processCharacter(Animator animator, ref List<CharacterPackage> characterList, ref List<GameObject> gameObjectList)
+        private void processCharacter(Animator animator, ref List<GameObject> gameObjectList, ref List<CharacterPackage> characterList)
         {
             CharacterPackage chrPack = new CharacterPackage();
             chrPack.rootId = gameObjectList.IndexOf(animator.transform.gameObject);

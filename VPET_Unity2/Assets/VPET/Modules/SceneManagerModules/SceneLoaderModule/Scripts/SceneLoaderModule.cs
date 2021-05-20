@@ -327,7 +327,7 @@ namespace vpet
                 Avatar avatar = AvatarBuilder.BuildHumanAvatar(obj, humanDescription);
                 if (avatar.isValid == false || avatar.isHuman == false)
                 {
-                    Debug.LogError(GetType().FullName + ": Unable to create source Avatar for retargeting. Check that your Skeleton Asset Name and Bone Naming Convention are configured correctly.", this);
+                    Helpers.Log(GetType().FullName + ": Unable to create source Avatar for retargeting. Check that your Skeleton Asset Name and Bone Naming Convention are configured correctly.", Helpers.logMsgType.ERROR);
                     return;
                 }
                 avatar.name = obj.name;

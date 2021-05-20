@@ -55,7 +55,7 @@ namespace vpet
         //!
         private List<SceneNode> m_nodeList;
         //!
-        //! Getter function returning a refarence to the list containing 
+        //! Getter function returning a reference to the list containing 
         //! the scene nodes for de/serialisation.
         //!
         //! @return A reference to the scene nodes list.
@@ -70,7 +70,7 @@ namespace vpet
         //!
         private List<ObjectPackage> m_objectList;
         //!
-        //! Getter function returning a refarence to the list containing 
+        //! Getter function returning a reference to the list containing 
         //! the object packages (mesh data) for de/serialisation.
         //!
         //! @return A reference to the object package list.
@@ -85,7 +85,7 @@ namespace vpet
         //!
         private List<CharacterPackage> m_characterList;
         //!
-        //! Getter function returning a refarence to the list containing 
+        //! Getter function returning a reference to the list containing 
         //! the character packages (skeleton data) for de/serialisation.
         //!
         //! @return A reference to the character package list.
@@ -100,7 +100,7 @@ namespace vpet
         //!
         private List<TexturePackage> m_textureList;
         //!
-        //! Getter function returning a refarence to the list containing 
+        //! Getter function returning a reference to the list containing 
         //! the texture packages for de/serialisation.
         //!
         //! @return A reference to the texture package list.
@@ -115,7 +115,7 @@ namespace vpet
         //!
         private List<MaterialPackage> m_materialList;
         //!
-        //! Getter function returning a refarence to the list containing 
+        //! Getter function returning a reference to the list containing 
         //! the material packages for de/serialisation.
         //!
         //! @return A reference to the material package list.
