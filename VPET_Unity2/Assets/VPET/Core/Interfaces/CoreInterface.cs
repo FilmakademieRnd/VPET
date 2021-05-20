@@ -24,7 +24,6 @@ namespace vpet
         //!
         protected Dictionary<Type,Manager> managerList;
 
-
         //!
         //! get a manager from the core
         //! @param  name    name of manager
