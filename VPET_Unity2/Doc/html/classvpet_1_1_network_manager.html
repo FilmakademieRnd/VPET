@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET 2.0: vpet.NetworkManager Class Reference</title>
+<title>VPET: vpet.NetworkManager Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,8 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">VPET 2.0
+   <div id="projectname">VPET
+   &#160;<span id="projectnumber">2.0</span>
    </div>
+   <div id="projectbrief">VPET is a collaborative tool that allows realtime scene editing via an intuitive interface.</div>
   </td>
  </tr>
  </tbody>
@@ -45,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('classvpet_1_1_network_manager.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -59,15 +82,12 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_network_manager.html">NetworkManager</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classvpet_1_1_network_manager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.NetworkManager Class Reference</div>  </div>
@@ -83,6 +103,13 @@ Inheritance diagram for vpet.NetworkManager:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_receiver.html">NetworkReceiver</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_sender.html">NetworkSender</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7acbde9aedd87493315be517be8331a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a7acbde9aedd87493315be517be8331a4">NetworkManager</a> ()</td></tr>
@@ -99,6 +126,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afe5d182ccaa116007713f45a8529cdf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab90f3a934d754ce980e5a7234c950987"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#ab90f3a934d754ce980e5a7234c950987">stopSender</a> (int senderID)</td></tr>
 <tr class="separator:ab90f3a934d754ce980e5a7234c950987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a898cadb85dab4271294a13db57c58d2c"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; int, <a class="el" href="classvpet_1_1_network_manager_1_1_network_receiver.html">NetworkReceiver</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a898cadb85dab4271294a13db57c58d2c">m_receiverDict</a></td></tr>
+<tr class="separator:a898cadb85dab4271294a13db57c58d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc8a235cba3a0988bce7d350de38691d"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; int, <a class="el" href="classvpet_1_1_network_manager_1_1_network_sender.html">NetworkSender</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#adc8a235cba3a0988bce7d350de38691d">m_senderDict</a></td></tr>
+<tr class="separator:adc8a235cba3a0988bce7d350de38691d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a00c131d79fd02d3e41454bd85f1b8f59"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a00c131d79fd02d3e41454bd85f1b8f59">m_receiverID</a></td></tr>
+<tr class="separator:a00c131d79fd02d3e41454bd85f1b8f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a776a5f8bc0dafc39eb4363e29c4e3539"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a776a5f8bc0dafc39eb4363e29c4e3539">m_senderID</a></td></tr>
+<tr class="separator:a776a5f8bc0dafc39eb4363e29c4e3539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class implementing the network manager and netMQ sender/receiver. </p>
@@ -304,13 +345,110 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a898cadb85dab4271294a13db57c58d2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a898cadb85dab4271294a13db57c58d2c">&#9670;&nbsp;</a></span>m_receiverDict</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt;int, <a class="el" href="classvpet_1_1_network_manager_1_1_network_receiver.html">NetworkReceiver</a>&gt; vpet.NetworkManager.m_receiverDict</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Dictionary storing all registered network receivers and their global IDs. </p>
+
+</div>
+</div>
+<a id="a00c131d79fd02d3e41454bd85f1b8f59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00c131d79fd02d3e41454bd85f1b8f59">&#9670;&nbsp;</a></span>m_receiverID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vpet.NetworkManager.m_receiverID</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Next unique receiver ID. </p>
+
+</div>
+</div>
+<a id="adc8a235cba3a0988bce7d350de38691d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc8a235cba3a0988bce7d350de38691d">&#9670;&nbsp;</a></span>m_senderDict</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt;int, <a class="el" href="classvpet_1_1_network_manager_1_1_network_sender.html">NetworkSender</a>&gt; vpet.NetworkManager.m_senderDict</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Dictionary storing all registered network senders and their global IDs. </p>
+
+</div>
+</div>
+<a id="a776a5f8bc0dafc39eb4363e29c4e3539"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a776a5f8bc0dafc39eb4363e29c4e3539">&#9670;&nbsp;</a></span>m_senderID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vpet.NetworkManager.m_senderID</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Next unique sender ID. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/jt/Documents/GitHub/VPET/VPET_Unity2/Assets/VPET/Core/Managers/NetworkManager/NetworkManager.cs</li>
+<li>C:/Users/sspielmann/Desktop/VPET/VPET_Unity2/Assets/VPET/Core/Managers/NetworkManager/<a class="el" href="_network_manager_8cs.html">NetworkManager.cs</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_network_manager.html">NetworkManager</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

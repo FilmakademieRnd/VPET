@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['removemodule_170',['removeModule',['../classvpet_1_1_manager.html#aaedf4eb371f9c8f0e7f11a025c8d2828',1,'vpet::Manager']]],
-  ['resetscene_171',['ResetScene',['../classvpet_1_1_scene_loader_module.html#a45c03c91e263092a1984722bd9aaf0c3',1,'vpet::SceneLoaderModule']]]
+  ['manager_395',['Manager',['../classvpet_1_1_manager.html#a704d6ec73bda400ca656bd6b988f21f5',1,'vpet::Manager']]],
+  ['mapmaterialproperties_396',['MapMaterialProperties',['../classvpet_1_1_scene_loader_module.html#a09e8db7ef44803752e9107e7a45be5d6',1,'vpet::SceneLoaderModule']]],
+  ['module_397',['Module',['../classvpet_1_1_module.html#a059bbc95559d4cecdc9aaaa61e4cd387',1,'vpet::Module']]]
 ];

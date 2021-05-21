@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET 2.0: Member List</title>
+<title>VPET: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,8 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">VPET 2.0
+   <div id="projectname">VPET
+   &#160;<span id="projectnumber">2.0</span>
    </div>
+   <div id="projectbrief">VPET is a collaborative tool that allows realtime scene editing via an intuitive interface.</div>
   </td>
  </tr>
  </tbody>
@@ -45,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('classvpet_1_1_scene_parser_module.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -59,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_scene_parser_module.html">SceneParserModule</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">vpet.SceneParserModule Member List</div>  </div>
@@ -73,17 +91,47 @@ $(function() {
 <p>This is the complete list of members for <a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a>, including all inherited members.</p>
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#af01ddce585d1c013c9098505cf8f9cf3">charactersByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aa6d295749668339449326f5c6edfbf9c">Concat&lt; T &gt;</a>(T[] first, params T[][] arrays)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ae0325e4ce62552ccc7bc5dd75ab31ba9">getCharacterByteArray</a>(ref List&lt; CharacterPackage &gt; characterList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ad31bed2548174158fe96028fdfd95d01">getMaterialsByteArray</a>(ref List&lt; MaterialPackage &gt; materialList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#af47ea36543c88579ccbcc116c061a717">getNodesByteArray</a>(ref List&lt; SceneNode &gt; nodeList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a604cf880bd7beccce6362faac589191d">getObjectsByteArray</a>(ref List&lt; ObjectPackage &gt; objectList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a6f234f0731395fdf30434fe8cc0ffbd0">getTexturesByteArray</a>(ref List&lt; TexturePackage &gt; textureList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a070510d1fdb51dd087427bf0a7ad64c5">headerByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ab513e870029b40f265c9ecc303d9be43">materialsByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aa01f25bf65368837920ae9096cd54c04">nodesByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a640009bc0203770117bd11dd5d82dd0f">objectsByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a37f2db037b5e7f784fbb1382bab639f7">m_charactersByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a9b511c8db416f50a5f74ae3ccbd149d4">m_headerByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aebb2ed41ff3a7bc3e72e14f597709820">m_lodHighLayer</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a101fd8467f3a2d0739025dae28d66f59">m_lodLowLayer</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a7aae82d955dcba5251796c5119f6ea6c">m_lodMixedLayer</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a15c96154fb45e5d7fbf0b0307a7b5858">m_materialsByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a67f911d25568fb144395caf8f4a4b0f4">m_nodesByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ae26ccb61bce56bc3aff3eca6528c71fe">m_objectsByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a9d17b720fa04039b6796f36c323af987">m_texturesByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ab513e870029b40f265c9ecc303d9be43">materialsByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aa01f25bf65368837920ae9096cd54c04">nodesByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a640009bc0203770117bd11dd5d82dd0f">objectsByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a3301b3800ec92fd508b6514e3bc7faa7">ParseCamera</a>(Camera camera)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ac53a865cf5f6d12bcc74865eb7065177">ParseLight</a>(Light light)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aadb25436a307529b61566f9c0121a9e6">ParseMesh</a>(Transform location, ref SceneData sceneData)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a23c4e8de1a55b4ad1f35698632c7907e">ParseScene</a>(bool getLowLayer=true, bool getHighLayer=false, bool getMixedLayer=true)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a4f1555b776da70ff3badfc4ad8bdb462">ParseSkinnedMesh</a>(Transform location, ref List&lt; GameObject &gt; gameObjectList, ref SceneData sceneData)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#ae3bb1ab10faffbe831af5e76850bc128">processCharacter</a>(Animator animator, ref List&lt; GameObject &gt; gameObjectList, ref List&lt; CharacterPackage &gt; characterList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a7fff1db7c8311f7e7b0a534b8ffd5ded">processGeometry</a>(Mesh mesh, ref SceneData sceneData)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#abf6ac41f33505e7b201b789b25f9f8de">processMaterial</a>(SceneNodeGeo node, Material material, ref SceneData sceneData)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aed2866374dd6f98418e22ddacbc10209">processMaterial</a>(Material mat, ref List&lt; MaterialPackage &gt; materialList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#aa5c91d9fb3fcda39890f7aa2e16d7145">processTexture</a>(Texture2D texture, ref List&lt; TexturePackage &gt; textureList)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a03c0d07f1fdf9b91a72330b880e44e9e">recursiveGameObjectIdExtract</a>(Transform location, ref List&lt; GameObject &gt; gameObjects, bool getLowLayer, bool getHighLayer, bool getMixedLayer)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a9fdefbfffb130c707e8b8517d7c35460">scene</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#af3d8137fb2d382d1a533018a6e8a7bd6">SceneParserModule</a>()</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a8630dad5e08ad571f9ad1624b97a6176">texturesByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a8088ddb5a0150e6e952e6577afb0c496">StructureToByteArray</a>(object obj)</td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html#a8630dad5e08ad571f9ad1624b97a6176">texturesByteData</a></td><td class="entry"><a class="el" href="classvpet_1_1_scene_parser_module.html">vpet.SceneParserModule</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

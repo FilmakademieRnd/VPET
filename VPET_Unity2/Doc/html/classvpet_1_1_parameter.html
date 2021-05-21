@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET 2.0: vpet.Parameter&lt; T &gt; Class Template Reference</title>
+<title>VPET: vpet.Parameter&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,8 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">VPET 2.0
+   <div id="projectname">VPET
+   &#160;<span id="projectnumber">2.0</span>
    </div>
+   <div id="projectbrief">VPET is a collaborative tool that allows realtime scene editing via an intuitive interface.</div>
   </td>
  </tr>
  </tbody>
@@ -45,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('classvpet_1_1_parameter.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -59,17 +82,14 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="#events">Events</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_parameter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.Parameter&lt; T &gt; Class Template Reference</div>  </div>
@@ -83,8 +103,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a925caf8b5070aa70e6de43b11d598520"><td class="memItemLeft" align="right" valign="top"><a id="a925caf8b5070aa70e6de43b11d598520"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Parameter</b> (T <a class="el" href="classvpet_1_1_parameter.html#a2474931632671ebc215c24460f1f0e8a">value</a>)</td></tr>
+<tr class="memitem:a420af1601147504657db528df39a1c9b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a420af1601147504657db528df39a1c9b">Parameter</a> ()</td></tr>
+<tr class="separator:a420af1601147504657db528df39a1c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a925caf8b5070aa70e6de43b11d598520"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a925caf8b5070aa70e6de43b11d598520">Parameter</a> (T <a class="el" href="classvpet_1_1_parameter.html#a2474931632671ebc215c24460f1f0e8a">value</a>)</td></tr>
 <tr class="separator:a925caf8b5070aa70e6de43b11d598520"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
@@ -96,10 +117,114 @@ Properties</h2></td></tr>
 Events</h2></td></tr>
 <tr class="memitem:a06728d718f2ad586e8d9de55a837ad6e"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_parameter_1_1_t_event_args.html">TEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a06728d718f2ad586e8d9de55a837ad6e">hasChanged</a></td></tr>
 <tr class="separator:a06728d718f2ad586e8d9de55a837ad6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aed2371ae2bbb599a2d1d2baa935de95e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#aed2371ae2bbb599a2d1d2baa935de95e">setValue</a> (T v)</td></tr>
+<tr class="separator:aed2371ae2bbb599a2d1d2baa935de95e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:abe2e8f21fccb16b4603b3586b9eb35aa"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#abe2e8f21fccb16b4603b3586b9eb35aa">_value</a></td></tr>
+<tr class="separator:abe2e8f21fccb16b4603b3586b9eb35aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classvpet_1_1_parameter.html">Parameter</a> class defining the fundamental functionality and interface </p>
-</div><h2 class="groupheader">Property Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a420af1601147504657db528df39a1c9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a420af1601147504657db528df39a1c9b">&#9670;&nbsp;</a></span>Parameter() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;.<a class="el" href="classvpet_1_1_parameter.html">Parameter</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a925caf8b5070aa70e6de43b11d598520"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a925caf8b5070aa70e6de43b11d598520">&#9670;&nbsp;</a></span>Parameter() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;.<a class="el" href="classvpet_1_1_parameter.html">Parameter</a> </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aed2371ae2bbb599a2d1d2baa935de95e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed2371ae2bbb599a2d1d2baa935de95e">&#9670;&nbsp;</a></span>setValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;.setValue </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Abstract definition of the function called to change a parameters value. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Object calling the change function </td></tr>
+    <tr><td class="paramname">a</td><td>Values to be passed to the change function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="abe2e8f21fccb16b4603b3586b9eb35aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe2e8f21fccb16b4603b3586b9eb35aa">&#9670;&nbsp;</a></span>_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T <a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;._value</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Parameters member value </p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
 <a id="a2474931632671ebc215c24460f1f0e8a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2474931632671ebc215c24460f1f0e8a">&#9670;&nbsp;</a></span>value</h2>
 
@@ -140,12 +265,16 @@ Events</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/jt/Documents/GitHub/VPET/VPET_Unity2/Assets/VPET/Core/Parameters/<a class="el" href="_parameter_8cs.html">Parameter.cs</a></li>
+<li>C:/Users/sspielmann/Desktop/VPET/VPET_Unity2/Assets/VPET/Core/Parameters/<a class="el" href="_parameter_8cs.html">Parameter.cs</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

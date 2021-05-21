@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2020
+under grant agreement no 780470, 2018-2021
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -271,7 +271,7 @@ namespace vpet
         //! Function that recusively creates the gameObjects in the Unity scene.
         //!
         //! @param sceneDataHandler A reference to the scene data handler.
-        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
+        //! @param root The transform of the root object.
         //!
         private void createSkinnedMeshes(ref SceneDataHandler sceneDataHandler, Transform root)
         {

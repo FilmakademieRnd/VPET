@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET 2.0: vpet.SceneObject Class Reference</title>
+<title>VPET: vpet.SceneObject Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,8 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">VPET 2.0
+   <div id="projectname">VPET
+   &#160;<span id="projectnumber">2.0</span>
    </div>
+   <div id="projectbrief">VPET is a collaborative tool that allows realtime scene editing via an intuitive interface.</div>
   </td>
  </tr>
  </tbody>
@@ -45,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('classvpet_1_1_scene_object.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -59,15 +82,12 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_scene_object-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.SceneObject Class Reference</div>  </div>
@@ -100,10 +120,69 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a72551608a109fd75090927ad8e190878"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae833358759ebc9100da484783bf0cb09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ae833358759ebc9100da484783bf0cb09">physicsActive</a></td></tr>
 <tr class="separator:ae833358759ebc9100da484783bf0cb09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a2779571068ea8728bcee4dcdfc4d1c0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a2779571068ea8728bcee4dcdfc4d1c0e">printDebug</a> (object sender, <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;.TEventArgs a)</td></tr>
+<tr class="separator:a2779571068ea8728bcee4dcdfc4d1c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6954b6cce593fde13d41f040221f5c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#af6954b6cce593fde13d41f040221f5c7">updateTransform</a> ()</td></tr>
+<tr class="separator:af6954b6cce593fde13d41f040221f5c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a2cafaa3e0caff78cfd037ebac870e3b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a2cafaa3e0caff78cfd037ebac870e3b5">position</a></td></tr>
+<tr class="separator:a2cafaa3e0caff78cfd037ebac870e3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93b45e0046ad81f8cbe362d9d7c04c2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Quaternion &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a93b45e0046ad81f8cbe362d9d7c04c2b">rotation</a></td></tr>
+<tr class="separator:a93b45e0046ad81f8cbe362d9d7c04c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacb374ef907129febcdaf92c6c708f7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#aacb374ef907129febcdaf92c6c708f7b">scale</a></td></tr>
+<tr class="separator:aacb374ef907129febcdaf92c6c708f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of the <a class="el" href="classvpet_1_1_v_p_e_t.html">VPET</a> <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a>, connecting Unity and <a class="el" href="classvpet_1_1_v_p_e_t.html">VPET</a> functionalty around 3D scene specific objects. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2779571068ea8728bcee4dcdfc4d1c0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2779571068ea8728bcee4dcdfc4d1c0e">&#9670;&nbsp;</a></span>printDebug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SceneObject.printDebug </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;.TEventArgs&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Debug print of a Vector3 parameter </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Object calling the print function </td></tr>
+    <tr><td class="paramname">a</td><td>Values to be passed to the print function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ab05cccb08e83b75da9a7c40a5355ae4d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab05cccb08e83b75da9a7c40a5355ae4d">&#9670;&nbsp;</a></span>Start()</h2>
 
@@ -160,6 +239,32 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="af6954b6cce593fde13d41f040221f5c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6954b6cce593fde13d41f040221f5c7">&#9670;&nbsp;</a></span>updateTransform()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SceneObject.updateTransform </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>updates the scene objects transforms and informs all connected parameters about the change </p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a72551608a109fd75090927ad8e190878"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72551608a109fd75090927ad8e190878">&#9670;&nbsp;</a></span>id</h2>
@@ -191,13 +296,86 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a2cafaa3e0caff78cfd037ebac870e3b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cafaa3e0caff78cfd037ebac870e3b5">&#9670;&nbsp;</a></span>position</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt;Vector3&gt; vpet.SceneObject.position</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Position of the <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> </p>
+
+</div>
+</div>
+<a id="a93b45e0046ad81f8cbe362d9d7c04c2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93b45e0046ad81f8cbe362d9d7c04c2b">&#9670;&nbsp;</a></span>rotation</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt;Quaternion&gt; vpet.SceneObject.rotation</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Rotation of the <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> </p>
+
+</div>
+</div>
+<a id="aacb374ef907129febcdaf92c6c708f7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacb374ef907129febcdaf92c6c708f7b">&#9670;&nbsp;</a></span>scale</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt;Vector3&gt; vpet.SceneObject.scale</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Scale of the <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/Users/jt/Documents/GitHub/VPET/VPET_Unity2/Assets/VPET/Core/SceneObjects/SceneObject.cs</li>
+<li>C:/Users/sspielmann/Desktop/VPET/VPET_Unity2/Assets/VPET/Core/SceneObjects/<a class="el" href="_scene_object_8cs.html">SceneObject.cs</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

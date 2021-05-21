@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2020
+under grant agreement no 780470, 2018-2021
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -173,8 +173,8 @@ namespace vpet
         //! Parses the Unity scene filtered by LOD layers and creates binary streams from it.
         //!
         //! @param getLowLayer Gather only scene elements from LOD low layer.
-        //! @param getLowLayer Gather only scene elements from LOD low layer.
-        //! @param getLowLayer Gather only scene elements from LOD low layer.
+        //! @param getHighLayer Gather only scene elements from LOD high layer.
+        //! @param getMixedLayer Gather only scene elements from LOD mixed layer.
         //!
         public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true)
         {
@@ -641,7 +641,7 @@ namespace vpet
         //!
         //! Function that concatinates all serialised VPET nodes to a byte array.
         //!
-        //! @nodeList The list that contains the serialised nodes to be concatinated.
+        //! @param nodeList The list that contains the serialised nodes to be concatinated.
         //!
         private void getNodesByteArray(ref List<SceneNode> nodeList)
         {
@@ -689,7 +689,7 @@ namespace vpet
         //!
         //! Function that concatinates all serialised VPET meshes to a byte array.
         //!
-        //! @objectList The list that contains the serialised meshes to be concatinated.
+        //! @param objectList The list that contains the serialised meshes to be concatinated.
         //!
         private void getObjectsByteArray(ref List<ObjectPackage> objectList)
         {
@@ -742,7 +742,7 @@ namespace vpet
         //!
         //! Function that concatinates all serialised VPET skinned meshes to a byte array.
         //!
-        //! @characterList The list that contains the serialised skinned meshes to be concatinated.
+        //! @param characterList The list that contains the serialised skinned meshes to be concatinated.
         //!
         private void getCharacterByteArray(ref List<CharacterPackage> characterList)
         {
@@ -793,7 +793,7 @@ namespace vpet
         //!
         //! Function that concatinates all serialised VPET textures to a byte array.
         //!
-        //! @textureList The list that contains the serialised textures to be concatinated.
+        //! @param textureList The list that contains the serialised textures to be concatinated.
         //!
         private void getTexturesByteArray(ref List<TexturePackage> textureList)
         {
@@ -826,7 +826,7 @@ namespace vpet
         //!
         //! Function that concatinates all serialised VPET materials to a byte array.
         //!
-        //! @materialList The list that contains the serialised materials to be concatinated.
+        //! @param materialList The list that contains the serialised materials to be concatinated.
         //!
         private void getMaterialsByteArray(ref List<MaterialPackage> materialList)
         {

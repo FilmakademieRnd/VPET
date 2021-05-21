@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nodetype_199',['NodeType',['../namespacevpet.html#ac8097e91df3683be4446d9d52c7da3fd',1,'vpet']]]
+  ['logmsgtype_562',['logMsgType',['../classvpet_1_1_helpers.html#a268dcad2193184ec6c7d5928f17d3fbb',1,'vpet::Helpers']]]
 ];

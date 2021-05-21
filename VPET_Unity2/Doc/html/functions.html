@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET 2.0: Class Members</title>
+<title>VPET: Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,8 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">VPET 2.0
+   <div id="projectname">VPET
+   &#160;<span id="projectnumber">2.0</span>
    </div>
+   <div id="projectbrief">VPET is a collaborative tool that allows realtime scene editing via an intuitive interface.</div>
   </td>
  </tr>
  </tbody>
@@ -46,6 +52,22 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('functions.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,277 +83,35 @@ $(function() {
 </div>
 
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
+<div class="textblock">Here is a list of all class members with links to the classes they belong to:</div>
 
 <h3><a id="index__5F"></a>- _ -</h3><ul>
+<li>_camera
+: <a class="el" href="classvpet_1_1_camera_object.html#a4a090dff667a2693f5f7f74b685cbe3b">vpet.CameraObject</a>
+</li>
+<li>_core
+: <a class="el" href="classvpet_1_1_manager.html#a07a19b9c164b76520e1a4f9c54273a17">vpet.Manager</a>
+</li>
 <li>_light
 : <a class="el" href="classvpet_1_1_light_object.html#a09a938575528119156e9350b35896bb5">vpet.LightObject</a>
+</li>
+<li>_manager
+: <a class="el" href="classvpet_1_1_module.html#a5ed0476b24de940046bf8b4ec059e59e">vpet.Module</a>
 </li>
 <li>_name
 : <a class="el" href="classvpet_1_1_module.html#ae12dceeaebb0a890e0e8e8bb8726cecd">vpet.Module</a>
 </li>
-</ul>
-
-
-<h3><a id="index_a"></a>- a -</h3><ul>
-<li>addModule()
-: <a class="el" href="classvpet_1_1_manager.html#ad5e118d1e323304f289b3d5ab970e8a1">vpet.Manager</a>
-</li>
-<li>addReceiver()
-: <a class="el" href="classvpet_1_1_network_manager.html#a69800c4d1303c6c21b80f57b6be685ba">vpet.NetworkManager</a>
-</li>
-<li>addSender()
-: <a class="el" href="classvpet_1_1_network_manager.html#afcd6747f201ee7ad4748bb9cff412907">vpet.NetworkManager</a>
-</li>
-<li>aspect
-: <a class="el" href="classvpet_1_1_camera_object.html#a2e15c00b32feb870b27b5790f3992754">vpet.CameraObject</a>
-</li>
-</ul>
-
-
-<h3><a id="index_c"></a>- c -</h3><ul>
-<li>CharacterList
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#aa9c979920f36d1850842e2f7a70a8b53">vpet.SceneDataHandler</a>
-</li>
-<li>CharactersByteData
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a23457c285f1a14beb585eef78d7fb254">vpet.SceneDataHandler</a>
-</li>
-<li>charactersByteData
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#af01ddce585d1c013c9098505cf8f9cf3">vpet.SceneParserModule</a>
-</li>
-<li>core
-: <a class="el" href="classvpet_1_1_manager.html#a9ec26fa1fea8448514a39798c682ba0a">vpet.Manager</a>
-</li>
-</ul>
-
-
-<h3><a id="index_f"></a>- f -</h3><ul>
-<li>far
-: <a class="el" href="classvpet_1_1_camera_object.html#aa7d566986453cb7359e3a9035da84ef6">vpet.CameraObject</a>
-</li>
-<li>fov
-: <a class="el" href="classvpet_1_1_camera_object.html#a4f82ba53928afc014bc6811f03bfba43">vpet.CameraObject</a>
-</li>
-</ul>
-
-
-<h3><a id="index_g"></a>- g -</h3><ul>
-<li>gameObjectList
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#a216e39f478fa38bbeb93b2297ea9b6e8">vpet.SceneLoaderModule</a>
-</li>
-<li>getManager()
-: <a class="el" href="classvpet_1_1_core_interface.html#abbfa713f6456c72303deed8c1967e78a">vpet.CoreInterface</a>
-</li>
-<li>getModule()
-: <a class="el" href="classvpet_1_1_manager.html#a5bb2677ecd3e8b0c79ca1e3ccf6709cf">vpet.Manager</a>
-</li>
-</ul>
-
-
-<h3><a id="index_h"></a>- h -</h3><ul>
-<li>hasChanged
-: <a class="el" href="classvpet_1_1_parameter.html#a06728d718f2ad586e8d9de55a837ad6e">vpet.Parameter&lt; T &gt;</a>
-</li>
-<li>HeaderByteData
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a8b0dcf24f0cad8ce6afc4d99d63ab243">vpet.SceneDataHandler</a>
-</li>
-<li>headerByteData
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#a070510d1fdb51dd087427bf0a7ad64c5">vpet.SceneParserModule</a>
-</li>
-</ul>
-
-
-<h3><a id="index_i"></a>- i -</h3><ul>
-<li>id
-: <a class="el" href="classvpet_1_1_scene_object.html#a72551608a109fd75090927ad8e190878">vpet.SceneObject</a>
-</li>
-</ul>
-
-
-<h3><a id="index_l"></a>- l -</h3><ul>
-<li>LoadScene()
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#ab07d85039637d703b4a2213e69cebb11">vpet.SceneLoaderModule</a>
-</li>
-</ul>
-
-
-<h3><a id="index_m"></a>- m -</h3><ul>
-<li>Manager()
-: <a class="el" href="classvpet_1_1_manager.html#a704d6ec73bda400ca656bd6b988f21f5">vpet.Manager</a>
-</li>
-<li>manager
-: <a class="el" href="classvpet_1_1_module.html#a31c5fd47b1fa39fbdee742fee2dc7603">vpet.Module</a>
-</li>
-<li>managerList
-: <a class="el" href="classvpet_1_1_core_interface.html#a1f36b2d66a25e7e22568b31563798865">vpet.CoreInterface</a>
-</li>
-<li>MapMaterialProperties()
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#a09e8db7ef44803752e9107e7a45be5d6">vpet.SceneLoaderModule</a>
-</li>
-<li>MaterialList
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a63fdd2dedbec78f4a1077db05e8239da">vpet.SceneDataHandler</a>
-</li>
-<li>MaterialsByteData
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a9c1101abbde3ceb1ba768da389ba1e22">vpet.SceneDataHandler</a>
-</li>
-<li>materialsByteData
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#ab513e870029b40f265c9ecc303d9be43">vpet.SceneParserModule</a>
-</li>
-<li>Module()
-: <a class="el" href="classvpet_1_1_module.html#a059bbc95559d4cecdc9aaaa61e4cd387">vpet.Module</a>
-</li>
-</ul>
-
-
-<h3><a id="index_n"></a>- n -</h3><ul>
-<li>name
-: <a class="el" href="classvpet_1_1_module.html#a57008ce094309ba9806e796d1bdf78be">vpet.Module</a>
-</li>
-<li>near
-: <a class="el" href="classvpet_1_1_camera_object.html#a542a59fa08fccf897316cacd9f94f934">vpet.CameraObject</a>
-</li>
-<li>NetworkManager()
-: <a class="el" href="classvpet_1_1_network_manager.html#a7acbde9aedd87493315be517be8331a4">vpet.NetworkManager</a>
-</li>
-<li>NodeList
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a56b39e0b3b4b657fae83395c2cbfa98d">vpet.SceneDataHandler</a>
-</li>
-<li>NodesByteData
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a4d59e2c5e73dc7eab20932ae7b0ee43c">vpet.SceneDataHandler</a>
-</li>
-<li>nodesByteData
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#aa01f25bf65368837920ae9096cd54c04">vpet.SceneParserModule</a>
-</li>
-</ul>
-
-
-<h3><a id="index_o"></a>- o -</h3><ul>
-<li>ObjectList
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#ab19e663befe13d7a7bcea03cb5b7b4d8">vpet.SceneDataHandler</a>
-</li>
-<li>ObjectsByteData
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#abc916c55183ec93c6085f381791d0c70">vpet.SceneDataHandler</a>
-</li>
-<li>objectsByteData
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#a640009bc0203770117bd11dd5d82dd0f">vpet.SceneParserModule</a>
-</li>
-</ul>
-
-
-<h3><a id="index_p"></a>- p -</h3><ul>
-<li>ParseScene()
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#a23c4e8de1a55b4ad1f35698632c7907e">vpet.SceneParserModule</a>
-</li>
-<li>physicsActive
-: <a class="el" href="classvpet_1_1_scene_object.html#ae833358759ebc9100da484783bf0cb09">vpet.SceneObject</a>
-</li>
-</ul>
-
-
-<h3><a id="index_r"></a>- r -</h3><ul>
-<li>removeModule()
-: <a class="el" href="classvpet_1_1_manager.html#aaedf4eb371f9c8f0e7f11a025c8d2828">vpet.Manager</a>
-</li>
-<li>ResetScene()
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#a45c03c91e263092a1984722bd9aaf0c3">vpet.SceneLoaderModule</a>
-</li>
-</ul>
-
-
-<h3><a id="index_s"></a>- s -</h3><ul>
-<li>SceneCameraList
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#a4281fae29880979a8a34af36795dfc11">vpet.SceneLoaderModule</a>
-</li>
-<li>SceneDataHandler()
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#acdc1653b5593645c41859d1c6ded1c07">vpet.SceneDataHandler</a>
-</li>
-<li>SceneEditableObjects
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#aeedb34301b2beb9ca99ca56b888dee8c">vpet.SceneLoaderModule</a>
-</li>
-<li>SceneMaterialList
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#ac45d3e87c9b61e6f4c4331c51de09041">vpet.SceneLoaderModule</a>
-</li>
-<li>SceneMeshList
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#a85fe201182fae29f1c782d59d041dbcc">vpet.SceneLoaderModule</a>
-</li>
-<li>SceneParserModule()
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#af3d8137fb2d382d1a533018a6e8a7bd6">vpet.SceneParserModule</a>
-</li>
-<li>SceneTextureList
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#af3a933fcd45f2df33fcd543472d58142">vpet.SceneLoaderModule</a>
-</li>
-<li>SelectableLights
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#a798cfd767703126947a2d73a370c00e6">vpet.SceneLoaderModule</a>
-</li>
-<li>size_float
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#ae005ea19b5439b5fd541a03d59e66d45">vpet.SceneDataHandler</a>
-</li>
-<li>size_int
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a97ccb03b4f78c22c83c376f1f4d7a499">vpet.SceneDataHandler</a>
-</li>
-<li>Start()
-: <a class="el" href="classvpet_1_1_camera_object.html#aa3e3d655039df191afcfeb27e5d44395">vpet.CameraObject</a>
-, <a class="el" href="classvpet_1_1_directional_light_object.html#a9c877899742d99879125147bf4126f08">vpet.DirectionalLightObject</a>
-, <a class="el" href="classvpet_1_1_light_object.html#a316ec64e99d8dc4741706742ad991a9b">vpet.LightObject</a>
-, <a class="el" href="classvpet_1_1_point_light_object.html#a025072eddf1bd2fceaf5de4633725c27">vpet.PointLightObject</a>
-, <a class="el" href="classvpet_1_1_scene_object.html#ab05cccb08e83b75da9a7c40a5355ae4d">vpet.SceneObject</a>
-, <a class="el" href="classvpet_1_1_spot_light_object.html#a11ae7c769b97449daecd9e491e048b0f">vpet.SpotLightObject</a>
-</li>
-<li>startReceiver()
-: <a class="el" href="classvpet_1_1_network_manager.html#a1d43c61b4856929c88c4f10aa93fdf9e">vpet.NetworkManager</a>
-</li>
-<li>startSender()
-: <a class="el" href="classvpet_1_1_network_manager.html#afe5d182ccaa116007713f45a8529cdf0">vpet.NetworkManager</a>
-</li>
-<li>stopReceiver()
-: <a class="el" href="classvpet_1_1_network_manager.html#a39ee42d52e32fadd65b724f8624392ac">vpet.NetworkManager</a>
-</li>
-<li>stopSender()
-: <a class="el" href="classvpet_1_1_network_manager.html#ab90f3a934d754ce980e5a7234c950987">vpet.NetworkManager</a>
-</li>
-</ul>
-
-
-<h3><a id="index_t"></a>- t -</h3><ul>
-<li>Test()
-: <a class="el" href="classvpet_1_1_scene_loader_module.html#aaf01cecc0836d88d3ffce7eb642afbe2">vpet.SceneLoaderModule</a>
-</li>
-<li>TextureBinaryType
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a61c3f20b62c5afbb084734911d350ae1">vpet.SceneDataHandler</a>
-</li>
-<li>TextureList
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a5a0b5ad25bfc23f12c88484194731f3c">vpet.SceneDataHandler</a>
-</li>
-<li>TexturesByteData
-: <a class="el" href="classvpet_1_1_scene_data_handler.html#a20fe3e3125ec401854a17360e3c3b952">vpet.SceneDataHandler</a>
-</li>
-<li>texturesByteData
-: <a class="el" href="classvpet_1_1_scene_parser_module.html#a8630dad5e08ad571f9ad1624b97a6176">vpet.SceneParserModule</a>
-</li>
-</ul>
-
-
-<h3><a id="index_u"></a>- u -</h3><ul>
-<li>Update()
-: <a class="el" href="classvpet_1_1_camera_object.html#a17cbe59529f5a3ed2b11c52301c92844">vpet.CameraObject</a>
-, <a class="el" href="classvpet_1_1_directional_light_object.html#a60fd8c86441f4c6041073cdaaaa34b3a">vpet.DirectionalLightObject</a>
-, <a class="el" href="classvpet_1_1_light_object.html#a3c901e8a3814f5c6d8ab1ddbedea557b">vpet.LightObject</a>
-, <a class="el" href="classvpet_1_1_point_light_object.html#a6a7fb38dbe4425320d02613d7d318d8c">vpet.PointLightObject</a>
-, <a class="el" href="classvpet_1_1_scene_object.html#a11925ee76c58d4a403956a7e698ca432">vpet.SceneObject</a>
-, <a class="el" href="classvpet_1_1_spot_light_object.html#a79768cb706a68b0b38f61b0917925486">vpet.SpotLightObject</a>
-</li>
-</ul>
-
-
-<h3><a id="index_v"></a>- v -</h3><ul>
-<li>value
-: <a class="el" href="classvpet_1_1_parameter.html#a2474931632671ebc215c24460f1f0e8a">vpet.Parameter&lt; T &gt;</a>
+<li>_value
+: <a class="el" href="classvpet_1_1_parameter.html#abe2e8f21fccb16b4603b3586b9eb35aa">vpet.Parameter&lt; T &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

@@ -5,10 +5,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET 2.0: Member List</title>
+<title>VPET: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -21,8 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">VPET 2.0
+   <div id="projectname">VPET
+   &#160;<span id="projectnumber">2.0</span>
    </div>
+   <div id="projectbrief">VPET is a collaborative tool that allows realtime scene editing via an intuitive interface.</div>
   </td>
  </tr>
  </tbody>
@@ -45,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('classvpet_1_1_network_manager.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -59,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="namespacevpet.html">vpet</a></li><li class="navelem"><a class="el" href="classvpet_1_1_network_manager.html">NetworkManager</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">vpet.NetworkManager Member List</div>  </div>
@@ -74,15 +92,22 @@ $(function() {
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a69800c4d1303c6c21b80f57b6be685ba">addReceiver</a>(string ip, string port, out List&lt; byte[]&gt; receiveMessageQueue)</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#afcd6747f201ee7ad4748bb9cff412907">addSender</a>(string ip, string port, out List&lt; byte[]&gt; senderMessageQueue)</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a898cadb85dab4271294a13db57c58d2c">m_receiverDict</a></td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a00c131d79fd02d3e41454bd85f1b8f59">m_receiverID</a></td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#adc8a235cba3a0988bce7d350de38691d">m_senderDict</a></td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a776a5f8bc0dafc39eb4363e29c4e3539">m_senderID</a></td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"><span class="mlabel">private</span><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a7acbde9aedd87493315be517be8331a4">NetworkManager</a>()</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a1d43c61b4856929c88c4f10aa93fdf9e">startReceiver</a>(int receiverID)</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#afe5d182ccaa116007713f45a8529cdf0">startSender</a>(int senderID)</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#a39ee42d52e32fadd65b724f8624392ac">stopReceiver</a>(int receiverID)</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html#ab90f3a934d754ce980e5a7234c950987">stopSender</a>(int senderID)</td><td class="entry"><a class="el" href="classvpet_1_1_network_manager.html">vpet.NetworkManager</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['far_15',['far',['../classvpet_1_1_camera_object.html#aa7d566986453cb7359e3a9035da84ef6',1,'vpet::CameraObject']]],
-  ['fov_16',['fov',['../classvpet_1_1_camera_object.html#a4f82ba53928afc014bc6811f03bfba43',1,'vpet::CameraObject']]]
+  ['directionallightobject_56',['DirectionalLightObject',['../classvpet_1_1_directional_light_object.html',1,'vpet']]],
+  ['directionallightobject_2ecs_57',['DirectionalLightObject.cs',['../_directional_light_object_8cs.html',1,'']]]
 ];
