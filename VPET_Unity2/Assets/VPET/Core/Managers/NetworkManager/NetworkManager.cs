@@ -32,6 +32,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
+using System;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -40,7 +41,7 @@ namespace vpet
     //!
     //! Class implementing the network manager and netMQ sender/receiver.
     //!
-    public class NetworkManager : ManagerInterface
+    public class NetworkManager : Manager
     {
         //!
         //! Dictionary storing all registered network receivers and their global IDs.
@@ -63,9 +64,19 @@ namespace vpet
         private static int m_senderID;
 
         //!
+        //! Dictionary storing all registered network responders and their global IDs.
+        //!
+        private Dictionary<int, NetworkResponder> m_responderDict;
+
+        //!
+        //! Next unique responder ID.
+        //!
+        private static int m_responderID;
+
+        //!
         //! Constructor initializing member variables.
         //!
-        public NetworkManager()
+        public NetworkManager(Type moduleType, CoreInterface vpetCore) : base(moduleType, vpetCore)
         {
             m_receiverDict = new Dictionary<int, NetworkReceiver>();
             m_receiverID = 0;
@@ -82,7 +93,7 @@ namespace vpet
         //!
         public int addReceiver(string ip, string port, out List<byte[]> receiveMessageQueue)
         {
-            NetworkReceiver receiver = new NetworkReceiver(ip, port, out receiveMessageQueue);
+            NetworkReceiver receiver = new NetworkReceiver(out receiveMessageQueue);
             m_receiverDict.Add(m_receiverID++,receiver);
             return m_receiverID;
         }
@@ -91,8 +102,9 @@ namespace vpet
         //! Function to start a new receiver thread.
         //! @param receiverID Global ID of the receiver to be started.
         //!
-        public void startReceiver(int receiverID)
+        public void startReceiver(int receiverID, string ip, string port)
         {
+            m_receiverDict[receiverID].configure(ip, port);
             Thread receiverThread = new Thread(new ThreadStart(m_receiverDict[receiverID].run));
             receiverThread.Start();
         }
@@ -113,10 +125,10 @@ namespace vpet
         //! @param senderMessageQueue List of byte[] to be sent by the sender.
         //! @return Global ID of the added sender.
         //!
-        public int addSender(string ip, string port, out List<byte[]> senderMessageQueue)
+        public int addSender(out List<byte[]> senderMessageQueue)
         {
-            NetworkReceiver sender = new NetworkReceiver(ip, port, out senderMessageQueue);
-            m_receiverDict.Add(m_senderID++, sender);
+            NetworkSender sender = new NetworkSender(out senderMessageQueue);
+            m_senderDict.Add(m_senderID++, sender);
             return m_senderID;
         }
 
@@ -124,8 +136,9 @@ namespace vpet
         //! Function to start a new sender thread.
         //! @param receiverID Global ID of the sender to be started.
         //!
-        public void startSender(int senderID)
+        public void startSender(int senderID,string ip, string port)
         {
+            m_senderDict[senderID].configure(ip, port);
             Thread senderThread = new Thread(new ThreadStart(m_senderDict[senderID].run));
             senderThread.Start();
         }
@@ -141,47 +154,112 @@ namespace vpet
         }
 
         //!
-        //! Class implementing the network receiver.
+        //! Function to create and add new network responder.
+        //! @param ip IP address of the network interface the responder shall use.
+        //! @param port Port number the responder shall use.
+        //! @return Global ID of the added responder.
         //!
-        private class NetworkReceiver
+        public int addResponder(ref Dictionary<string, byte[]> responses)
+        {
+            NetworkResponder responder = new NetworkResponder(ref responses);
+            m_responderDict.Add(m_senderID++, responder);
+            return m_senderID;
+        }
+
+        //!
+        //! Function to start a new  responder thread.
+        //! @param receiverID Global ID of the  responder to be started.
+        //!
+        public void startResponder(int responderID, string ip, string port)
+        {
+            m_responderDict[responderID].configure(ip, port);
+            Thread responderThread = new Thread(new ThreadStart(m_responderDict[responderID].run));
+            responderThread.Start();
+        }
+
+        //!
+        //! Function to stop a  responder.
+        //! @param receiverID Global ID of the  responder to be stopped.
+        //!
+        public void stopResponder(int responderID)
+        {
+            //TODO: send disconnect message
+            m_responderDict[responderID].stop();
+        }
+
+        //!
+        //! Class implementing the network base class.
+        //!
+        private abstract class NetworkBase
         {
             //!
-            //! IP address of the network interface the receiver uses.
+            //! IP address of the network interface to be used.
             //!
-            private string m_ip;
+            protected string m_ip;
 
             //!
-            //! Port number the receiver uses.
+            //! Port number to be used.
             //!
-            private string m_port;
+            protected string m_port;
 
             //!
-            //! List of byte[] storing the received messages.
+            //! List of byte[] storing the messages.
             //!
-            private List<byte[]> m_receiveMessageQueue;
+            protected List<byte[]> m_messageQueue;
 
             //!
-            //! Flag specifing if the receiver should stop running.
+            //! Flag specifing if the thread should stop running.
             //!
-            private bool m_isRunning;
+            protected bool m_isRunning;
 
             //!
             //! Constructor
-            //! @param ip IP address of the network interface the receiver shall use.
-            //! @param port Port number the receiver shall use.
-            //! @param receiveMessageQueue List of byte[] to be filled by the receiver.
+            //! @param messageQueue List of byte[] to be used.
             //!
-            public NetworkReceiver(string ip, string port, out List<byte[]> receiveMessageQueue)
+            public NetworkBase(out List<byte[]> messageQueue)
+            {
+                messageQueue = m_messageQueue;
+            }
+
+            //!
+            //! Function for setting the ip address and port.
+            //! @param ip IP address of the network interface.
+            //! @param port Port number to be used.
+            //!
+            public void configure(string ip, string port)
             {
                 m_ip = ip;
                 m_port = port;
-                receiveMessageQueue = m_receiveMessageQueue;
             }
 
             //!
             //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
             //!
-            public void run()
+            public abstract void run();
+
+            //!
+            //! Stop the receiver.
+            //!
+            public void stop()
+            {
+                m_isRunning = false;
+            }
+        }
+
+        //!
+        //! Class implementing the network receiver.
+        //!
+        private class NetworkReceiver : NetworkBase
+        {
+            //!
+            //! Constructor
+            //! @param messageQueue List of byte[] to be received by the receiver.
+            //!
+            public NetworkReceiver(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
+            //!
+            //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
+            //!
+            public override void run()
             {
                 m_isRunning = true;
                 AsyncIO.ForceDotNet.Force();
@@ -197,7 +275,7 @@ namespace vpet
                     {
                         if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(5), out input))
                         {
-                            m_receiveMessageQueue.Add(input);
+                            m_messageQueue.Add(input);
                         }
                     }
                     receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
@@ -205,58 +283,23 @@ namespace vpet
                     receiver.Dispose();
                 }
             }
-
-            //!
-            //! Stop the receiver.
-            //!
-            public void stop()
-            {
-                m_isRunning = false;
-            }
         }
 
         //!
+        //! Class implementing the network sender.
         //!
-        //!
-        private class NetworkSender
+        private class NetworkSender : NetworkBase
         {
             //!
-            //! IP address of the network interface the sender uses.
-            //!
-            private string m_ip;
-
-            //!
-            //! Port number the sender uses.
-            //!
-            private string m_port;
-
-            //!
-            //! List of byte[] storing messages to be sent.
-            //!
-            private List<byte[]> m_sendMessageQueue;
-
-            //!
-            //! Flag specifing if the sender should stop running.
-            //!
-            private bool m_isRunning;
-
-            //!
             //! Constructor
-            //! @param ip IP address of the network interface the sender shall use.
-            //! @param port Port number the sender shall use.
-            //! @param sendMessageQueue List of byte[] to be sent by the sender.
+            //! @param messageQueue List of byte[] to be sent by the sender.
             //!
-            public NetworkSender(string ip, string port, out List<byte[]> sendMessageQueue)
-            {
-                m_ip = ip;
-                m_port = port;
-                sendMessageQueue = m_sendMessageQueue;
-            }
+            public NetworkSender(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
 
             //!
             //! Function, sending messages in m_sendMessageQueue (executed in separate thread).
             //!
-            public void run()
+            public override void run()
             {
                 m_isRunning = true;
                 AsyncIO.ForceDotNet.Force();
@@ -267,12 +310,12 @@ namespace vpet
                     Helpers.Log("Sender connected: " + "tcp://" + m_ip + ":" + m_port);
                     while (m_isRunning)
                     {
-                        if (m_sendMessageQueue.Count > 0)
+                        if (m_messageQueue.Count > 0)
                         {
                             try
                             {
-                                sender.SendFrame(m_sendMessageQueue[0], false); // true not wait
-                                m_sendMessageQueue.RemoveAt(0);
+                                sender.SendFrame(m_messageQueue[0], false); // true not wait
+                                m_messageQueue.RemoveAt(0);
                             }
                             catch { }
                         }
@@ -282,14 +325,57 @@ namespace vpet
                     sender.Dispose();
                 }
             }
+        }
+        //!
+        //! Class implementing the network responder.
+        //!
+        private class NetworkResponder : NetworkBase
+        {
+            private Dictionary<string, byte[]> m_responses;
+            //!
+            //! Constructor
+            //! @param messageQueue List of byte[] to be sent by the sender.
+            //!
+            public NetworkResponder(ref Dictionary<string, byte[]> responses, List<byte[]> messageQueue = null) : base(out messageQueue)
+            {
+                base.m_messageQueue = messageQueue;
+                m_responses = responses;
+            }
 
             //!
-            //! Stop the sender.
+            //! Function, sending messages in m_sendMessageQueue (executed in separate thread).
             //!
-            public void stop()
+            public override void run()
             {
-                m_isRunning = false;
+                AsyncIO.ForceDotNet.Force();
+                using (var dataSender = new ResponseSocket())
+                {
+                    dataSender.Bind("tcp://" + m_ip + ":" + m_port);
+                    Debug.Log("Enter while.. ");
+
+                    while (m_isRunning)
+                    {
+                        string message = "";
+                        dataSender.TryReceiveFrameString(out message);
+                        if (m_responses.ContainsKey(message))
+                            dataSender.SendFrame(m_responses[message]);
+                    }
+
+                    // TODO: check first if closed
+                    try
+                    {
+                        dataSender.Disconnect("tcp://" + m_ip + ":" + m_port);
+                        dataSender.Dispose();
+                        dataSender.Close();
+                    }
+                    finally
+                    {
+                        NetMQConfig.Cleanup(false);
+                    }
+
+                }
             }
+
         }
     }
 }

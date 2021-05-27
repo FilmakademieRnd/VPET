@@ -27,7 +27,7 @@ namespace vpet
         //! manager of this module
         //! assigned in addModule function in Manager
         //!
-        private Manager _manager;
+        protected Manager _manager;
 
         //!
         //! set the manager of this module

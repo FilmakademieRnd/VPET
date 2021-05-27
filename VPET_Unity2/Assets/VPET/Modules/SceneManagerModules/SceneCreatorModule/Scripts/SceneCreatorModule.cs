@@ -21,8 +21,8 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "SceneLoaderModule.cs"
-//! @brief implementation of VPET scene loader module
+//! @file "SceneCreatorModule.cs"
+//! @brief implementation of VPET scene creator module
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
@@ -37,9 +37,9 @@ using UnityEngine;
 namespace vpet
 {
     //!
-    //! implementation of unity scene loader module
+    //! implementation of unity scene creator module
     //!
-    public class SceneLoaderModule : Module
+    public class SceneCreatorModule : SceneManagerModule
     {
         //! The list storing Unity materials in scene.
         public static List<Material> SceneMaterialList = new List<Material>();
@@ -68,7 +68,7 @@ namespace vpet
         //! constructor
         //! @param   name    Name of this module
         //!
-        public SceneLoaderModule(string name) : base(name) => name = base.name;
+        public SceneCreatorModule(string name) : base(name) => name = base.name;
 
         //!
         //! Function that creates the Unity scene content.
