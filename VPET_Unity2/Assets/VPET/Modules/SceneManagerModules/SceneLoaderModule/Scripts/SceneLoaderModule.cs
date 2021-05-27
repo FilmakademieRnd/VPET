@@ -50,7 +50,6 @@ namespace vpet
         //! The list storing Unity meshes in scene.
         public static List<Mesh> SceneMeshList = new List<Mesh>();
         
-        // [REVIEW]
         //! The list storing editable Unity game objects in scene.
         public static List<GameObject> SceneEditableObjects = new List<GameObject>();
         
@@ -71,20 +70,13 @@ namespace vpet
         //!
         public SceneLoaderModule(string name) : base(name) => name = base.name;
 
-        // [REVIEW]
-        //! to be replaced
-        public void Test()
-        {
-            UnitySceneLoaderModule m = (UnitySceneLoaderModule)manager.getModule(typeof(UnitySceneLoaderModule));        
-
-        }
-
         //!
         //! Function that creates the Unity scene content.
         //!
         public void LoadScene()
         {
-            SceneDataHandler sceneDataHandler = new SceneDataHandler();
+            SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager) manager).sceneDataHandler;
+            SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 
             // create scene parent if not there
             GameObject scnPrtGO = GameObject.Find("Scene");
@@ -100,18 +92,18 @@ namespace vpet
                 scnRoot.transform.parent = scnPrtGO.transform;
             }
 
-            Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneDataHandler.ObjectList.Count, sceneDataHandler.TextureList.Count, sceneDataHandler.MaterialList.Count, sceneDataHandler.NodeList.Count));
+            Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
 
-            createMaterials(ref sceneDataHandler);
+            createMaterials(ref sceneData);
             
             if (SceneManager.Settings.loadTextures)
-                createTextures(ref sceneDataHandler);
+                createTextures(ref sceneData);
 
-            createMeshes(ref sceneDataHandler);
+            createMeshes(ref sceneData);
 
-            createSceneGraphIter(ref sceneDataHandler, scnRoot.transform);
+            createSceneGraphIter(ref sceneData, scnRoot.transform);
 
-            createSkinnedMeshes(ref sceneDataHandler, scnRoot.transform);
+            createSkinnedMeshes(ref sceneData, scnRoot.transform);
         }
 
         //!
@@ -119,9 +111,9 @@ namespace vpet
         //!
         //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
         //!
-        private void createMaterials(ref SceneDataHandler sceneDataHandler)
+        private void createMaterials(ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            foreach (MaterialPackage matPack in sceneDataHandler.MaterialList)
+            foreach (SceneManager.MaterialPackage matPack in sceneData.materialList)
             {
                 if (matPack.type == 1)
                 {
@@ -151,11 +143,11 @@ namespace vpet
         //!
         //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
         //!
-        private void createTextures(ref SceneDataHandler sceneDataHandler)
+        private void createTextures(ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            foreach (TexturePackage texPack in sceneDataHandler.TextureList)
+            foreach (SceneManager.TexturePackage texPack in sceneData.textureList)
             {
-                if (sceneDataHandler.TextureBinaryType == 1)
+                if (sceneData.header.textureBinaryType == 1)
                 {
                     Texture2D tex_2d = new Texture2D(texPack.width, texPack.height, texPack.format, false);
                     tex_2d.LoadRawTextureData(texPack.colorMapData);
@@ -181,9 +173,9 @@ namespace vpet
         //!
         //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
         //!
-        private void createMeshes(ref SceneDataHandler sceneDataHandler)
+        private void createMeshes(ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            foreach (ObjectPackage objPack in sceneDataHandler.ObjectList)
+            foreach (SceneManager.ObjectPackage objPack in sceneData.objectList)
             {
                 Vector3[] vertices = new Vector3[objPack.vSize];
                 Vector3[] normals = new Vector3[objPack.nSize];
@@ -242,9 +234,9 @@ namespace vpet
         //! @param parent the parent Unity transform.
         //! @param idx The index for referencing into the node list.
         //!
-        private int createSceneGraphIter(ref SceneDataHandler sceneDataHandler, Transform parent, int idx = 0)
+        private int createSceneGraphIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
         {
-            SceneNode node = sceneDataHandler.NodeList[idx];
+            SceneManager.SceneNode node = sceneData.nodeList[idx];
 
             // process all registered build callbacks
             GameObject obj = CreateObject(node, parent);
@@ -261,7 +253,7 @@ namespace vpet
             int idxChild = idx;
             for (int k = 1; k <= node.childCount; k++)
             {
-                idxChild = createSceneGraphIter(ref sceneDataHandler, obj.transform, idxChild + 1);
+                idxChild = createSceneGraphIter(ref sceneData, obj.transform, idxChild + 1);
             }
 
             return idxChild;
@@ -273,14 +265,14 @@ namespace vpet
         //! @param sceneDataHandler A reference to the scene data handler.
         //! @param root The transform of the root object.
         //!
-        private void createSkinnedMeshes(ref SceneDataHandler sceneDataHandler, Transform root)
+        private void createSkinnedMeshes(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform root)
         {
-            List<CharacterPackage> characterList = sceneDataHandler.CharacterList;
+            List<SceneManager.CharacterPackage> characterList = sceneData.characterList;
 
-            createSkinnedRendererIter(ref sceneDataHandler, root);
+            createSkinnedRendererIter(ref sceneData, root);
 
             //setup characters
-            foreach (CharacterPackage cp in characterList)
+            foreach (SceneManager.CharacterPackage cp in characterList)
             {
                 GameObject obj = gameObjectList[cp.rootId];
                 Transform parentBackup = obj.transform.parent;
@@ -349,7 +341,7 @@ namespace vpet
         //! @param parentTransform Unity parent transform of the GameObject to-be created.
         //! @return The created GameObject.
         //!
-        private GameObject CreateObject(SceneNode node, Transform parentTransform)
+        private GameObject CreateObject(SceneManager.SceneNode node, Transform parentTransform)
         {
             GameObject objMain;
 
@@ -368,9 +360,9 @@ namespace vpet
                 objMain = new GameObject();
                 objMain.name = Encoding.ASCII.GetString(node.name);
 
-                if (node.GetType() == typeof(SceneNodeGeo) || node.GetType() == typeof(SceneNodeSkinnedGeo))
+                if (node.GetType() == typeof(SceneManager.SceneNodeGeo) || node.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                 {
-                    SceneNodeGeo nodeGeo = (SceneNodeGeo)node;
+                    SceneManager.SceneNodeGeo nodeGeo = (SceneManager.SceneNodeGeo)node;
                     // Material Properties and Textures
                     Material mat;
                     // assign material from material list
@@ -391,7 +383,7 @@ namespace vpet
 
                     // Add Material
                     Renderer renderer;
-                    if (nodeGeo.GetType() == typeof(SceneNodeSkinnedGeo))
+                    if (nodeGeo.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                         renderer = objMain.AddComponent<SkinnedMeshRenderer>();
                     else
                         renderer = objMain.AddComponent<MeshRenderer>();
@@ -406,10 +398,10 @@ namespace vpet
                         SceneManager.Settings.sceneBoundsMax = Vector3.Max(SceneManager.Settings.sceneBoundsMax, renderer.bounds.max);
                         SceneManager.Settings.sceneBoundsMin = Vector3.Min(SceneManager.Settings.sceneBoundsMin, renderer.bounds.min);
 
-                        if (node.GetType() == typeof(SceneNodeSkinnedGeo))
+                        if (node.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                         {
                             SkinnedMeshRenderer sRenderer = (SkinnedMeshRenderer)renderer;
-                            SceneNodeSkinnedGeo sNodeGeo = (SceneNodeSkinnedGeo)node;
+                            SceneManager.SceneNodeSkinnedGeo sNodeGeo = (SceneManager.SceneNodeSkinnedGeo)node;
                             Bounds bounds = new Bounds(new Vector3(sNodeGeo.boundCenter[0], sNodeGeo.boundCenter[1], sNodeGeo.boundCenter[2]),
                                                    new Vector3(sNodeGeo.boundExtents[0] * 2f, sNodeGeo.boundExtents[1] * 2f, sNodeGeo.boundExtents[2] * 2f));
                             sRenderer.localBounds = bounds;
@@ -450,9 +442,9 @@ namespace vpet
                         SceneObject sceneObject = objMain.AddComponent<SceneObject>();
                     }
                 }
-                else if (node.GetType() == typeof(SceneNodeLight))
+                else if (node.GetType() == typeof(SceneManager.SceneNodeLight))
                 {
-                    SceneNodeLight nodeLight = (SceneNodeLight)node;
+                    SceneManager.SceneNodeLight nodeLight = (SceneManager.SceneNodeLight)node;
 
                     // Add light prefab
                     GameObject lightUber = Resources.Load<GameObject>("VPET/Prefabs/UberLight");
@@ -508,9 +500,9 @@ namespace vpet
                     SelectableLights.Add(objMain);
 
                 }
-                else if (node.GetType() == typeof(SceneNodeCam))
+                else if (node.GetType() == typeof(SceneManager.SceneNodeCam))
                 {
-                    SceneNodeCam nodeCam = (SceneNodeCam)node;
+                    SceneManager.SceneNodeCam nodeCam = (SceneManager.SceneNodeCam)node;
 
                     // add camera dummy mesh
                     GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
@@ -555,7 +547,7 @@ namespace vpet
         //! 
         //! [REVIEW]
         //!
-        public static void MapMaterialProperties(Material material, SceneNodeGeo nodeGeo)
+        public static void MapMaterialProperties(Material material, SceneManager.SceneNodeGeo nodeGeo)
         {
             /*
             //available parameters in this physically based standard shader:
@@ -673,10 +665,10 @@ namespace vpet
         //! @param parent the parent Unity transform.
         //! @param idx The index for referencing into the node list.
         //!
-        private int createSkinnedRendererIter(ref SceneDataHandler sceneDataHandler, Transform parent, int idx = 0)
+        private int createSkinnedRendererIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
         {
 
-            SceneNodeSkinnedGeo node = (SceneNodeSkinnedGeo)sceneDataHandler.NodeList[idx];
+            SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo) sceneData.nodeList[idx];
             Transform trans = parent.Find(Encoding.ASCII.GetString(node.name));
 
             SkinnedMeshRenderer renderer = trans.gameObject.GetComponent<SkinnedMeshRenderer>();
@@ -697,7 +689,7 @@ namespace vpet
             int idxChild = idx;
             for (int k = 1; k <= node.childCount; k++)
             {
-                idxChild = createSkinnedRendererIter(ref sceneDataHandler, trans, idxChild + 1);
+                idxChild = createSkinnedRendererIter(ref sceneData, trans, idxChild + 1);
             }
 
             return idxChild;

@@ -41,109 +41,12 @@ namespace vpet
     //!
     //! Class handling Unity scene parsing and serialisation.
     //!
-    public class SceneParserModule
+    public class SceneParserModule : SceneManagerModule
     {
-        //!
-        //! Data type for storing scene object information.
-        //!
-        private struct SceneData
-        {
-            public List<SceneNode> nodeList;
-            public List<ObjectPackage> objectList;
-            public List<CharacterPackage> characterList;
-            public List<TexturePackage> textureList;
-            public List<MaterialPackage> materialList;
-        }
-
         //!
         //! The scenes root transform.
         //!
         private Transform scene;
-
-        //!
-        //! The list containing the serialised header.
-        //!
-        private byte[] m_headerByteData;
-        //!
-        //! Getter function returning a reference to the byte array  
-        //! containing the serialised header data.
-        //!
-        //! @return A reference to the serialised header data.
-        //!
-        public ref byte[] headerByteData
-        {
-            get { return ref m_headerByteData; }
-        }
-        //!
-        //! The list containing the serialised nodes.
-        //!
-        private byte[] m_nodesByteData;
-        //!
-        //! Getter function returning a reference to the byte array  
-        //! containing the serialised nodes data.
-        //!
-        //! @return A reference to the serialised nodes data.
-        //!
-        public ref byte[] nodesByteData
-        {
-            get { return ref m_nodesByteData; }
-        }
-        //!
-        //! The list containing the serialised meshes.
-        //!
-        private byte[] m_objectsByteData;
-        //!
-        //! Getter function returning a reference to the byte array  
-        //! containing the serialised objects data.
-        //!
-        //! @return A reference to the serialised objects data.
-        //!
-        public ref byte[] objectsByteData
-        {
-            get { return ref m_objectsByteData; }
-        }
-        //!
-        //! The list containing the serialised skinned meshes.
-        //!
-        private byte[] m_charactersByteData;
-        //!
-        //! Getter function returning a reference to the byte array  
-        //! containing the serialised characters data.
-        //!
-        //! @return A reference to the serialised characters data.
-        //!
-        public ref byte[] charactersByteData
-        {
-            get { return ref m_charactersByteData; }
-        }
-        //!
-        //! The list containing the serialised textures.
-        //!
-        private byte[] m_texturesByteData;
-        //!
-        //! Getter function returning a reference to the byte array  
-        //! containing the serialised textures data.
-        //!
-        //! @return A reference to the serialised textures data.
-        //!
-        public ref byte[] texturesByteData
-        {
-            get { return ref m_texturesByteData; }
-        }
-        //!
-        //! The list containing the serialised materials.
-        //!
-        private byte[] m_materialsByteData;
-        //!
-        //! Getter function returning a reference to the byte array  
-        //! containing the serialised materials data.
-        //!
-        //! @return A reference to the serialised materials data.
-        //!
-        public ref byte[] materialsByteData
-        {
-            get { return ref m_materialsByteData; }
-        }
         //!
         //! The layer ID tacked as LOD low.
         //!
@@ -160,8 +63,9 @@ namespace vpet
         //!
         //! Constructor
         //!
-        public SceneParserModule()
+        public SceneParserModule(string name) : base(name)
         {
+            name = base.name;
             scene = GameObject.Find("Scene").transform;
 
             m_lodLowLayer = LayerMask.NameToLayer("LodLow");
@@ -178,23 +82,18 @@ namespace vpet
         //!
         public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true)
         {
-            VpetHeader vpetHeader = new VpetHeader();
-            vpetHeader.lightIntensityFactor = 1f;
+            SceneManager.SceneDataHandler.SceneData sceneData = new SceneManager.SceneDataHandler.SceneData();
 
-            SceneData sceneData = new SceneData();
-
-            sceneData.nodeList = new List<SceneNode>();
-            sceneData.objectList = new List<ObjectPackage>();
-            sceneData.characterList = new List<CharacterPackage>();
-            sceneData.textureList = new List<TexturePackage>();
-            sceneData.materialList = new List<MaterialPackage>();
+            sceneData.header = new SceneManager.VpetHeader();
+            sceneData.header.lightIntensityFactor = 1f;
+            sceneData.header.textureBinaryType = 0;
 
             List<GameObject> gameObjects = new List<GameObject>();
             recursiveGameObjectIdExtract(scene.parent.GetChild(0), ref gameObjects, getLowLayer, getHighLayer, getMixedLayer);
 
             foreach (GameObject gameObject in gameObjects)
             {
-                SceneNode node = new SceneNode();
+                SceneManager.SceneNode node = new SceneManager.SceneNode();
                 Transform trans = gameObject.transform;
                 if (trans.GetComponent<Light>() != null)
                     node = ParseLight(trans.GetComponent<Light>());
@@ -225,22 +124,7 @@ namespace vpet
                     sceneData.nodeList.Add(node);
             }
 
-            // create byte arrays and clear buffers
-            m_headerByteData = StructureToByteArray(vpetHeader);
-            getNodesByteArray(ref sceneData.nodeList);
-            sceneData.nodeList.Clear();
-
-            getObjectsByteArray(ref sceneData.objectList);
-            sceneData.objectList.Clear();
-
-            getCharacterByteArray(ref sceneData.characterList);
-            sceneData.characterList.Clear();
-
-            getTexturesByteArray(ref sceneData.textureList);
-            sceneData.textureList.Clear();
-
-            getMaterialsByteArray(ref sceneData.materialList);
-            sceneData.materialList.Clear();
+            
         }
 
         //!
@@ -249,9 +133,9 @@ namespace vpet
         //! @param light The Unity light for which a VPET node will be created.
         //! @return The created light node.
         //!
-        private SceneNode ParseLight(Light light)
+        private SceneManager.SceneNode ParseLight(Light light)
         {
-            SceneNodeLight nodeLight = new SceneNodeLight();
+            SceneManager.SceneNodeLight nodeLight = new SceneManager.SceneNodeLight();
 
             nodeLight.intensity = light.intensity;
             nodeLight.color = new float[3] { light.color.r, light.color.g, light.color.b };
@@ -267,9 +151,9 @@ namespace vpet
         //! @param camera The Unity light for which a VPET node will be created.
         //! @return The created camera node.
         //!
-        private SceneNode ParseCamera(Camera camera)
+        private SceneManager.SceneNode ParseCamera(Camera camera)
         {
-            SceneNodeCam nodeCamera = new SceneNodeCam();
+            SceneManager.SceneNodeCam nodeCamera = new SceneManager.SceneNodeCam();
 
             nodeCamera.fov = camera.fieldOfView;
             nodeCamera.near = camera.nearClipPlane;
@@ -284,9 +168,9 @@ namespace vpet
         //! @param sceneData A reference to the structure that will store the serialised scene data. 
         //! @return Created scene node.
         //!
-        private SceneNode ParseMesh(Transform location, ref SceneData sceneData)
+        private SceneManager.SceneNode ParseMesh(Transform location, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            SceneNodeGeo nodeGeo = new SceneNodeGeo();
+            SceneManager.SceneNodeGeo nodeGeo = new SceneManager.SceneNodeGeo();
             nodeGeo.color = new float[4] { 0, 0, 0, 1 };
             nodeGeo.geoId = processGeometry(location.GetComponent<MeshFilter>().sharedMesh, ref sceneData);
 
@@ -306,9 +190,9 @@ namespace vpet
         //! @param sceneData A reference to the structure that will store the serialised scene data. 
         //! @return Created scene node.
         //!
-        private SceneNode ParseSkinnedMesh(Transform location, ref List<GameObject> gameObjectList, ref SceneData sceneData)
+        private SceneManager.SceneNode ParseSkinnedMesh(Transform location, ref List<GameObject> gameObjectList, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            SceneNodeSkinnedGeo nodeGeo = new SceneNodeSkinnedGeo();
+            SceneManager.SceneNodeSkinnedGeo nodeGeo = new SceneManager.SceneNodeSkinnedGeo();
 
             SkinnedMeshRenderer sRenderer = location.GetComponent<SkinnedMeshRenderer>();
 
@@ -382,7 +266,7 @@ namespace vpet
         //! @material The Unity material containing the properties to be added.
         //! @param sceneData A reference to the structure that will store the serialised scene data. 
         //!
-        private void processMaterial(SceneNodeGeo node, Material material, ref SceneData sceneData)
+        private void processMaterial(SceneManager.SceneNodeGeo node, Material material, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
             if (material = null)
                 node.textureId = -1;
@@ -421,7 +305,7 @@ namespace vpet
         //! @param sceneData A reference to the structure that will store the serialised scene data. 
         //! @return The reference ID for mesh. 
         //!
-        private int processGeometry(Mesh mesh, ref SceneData sceneData)
+        private int processGeometry(Mesh mesh, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
             for (int i = 0; i < sceneData.objectList.Count; i++)
             {
@@ -431,7 +315,7 @@ namespace vpet
                 }
             }
 
-            ObjectPackage objPack = new ObjectPackage();
+            SceneManager.ObjectPackage objPack = new SceneManager.ObjectPackage();
             // vertices, normals, uvs, weights
             objPack.vSize = mesh.vertexCount;
             objPack.nSize = mesh.normals.Length;
@@ -508,7 +392,7 @@ namespace vpet
         //! @materialList The list to add the serialised material to.
         //! @return The reference ID for material. 
         //!
-        private int processMaterial(Material mat, ref List<MaterialPackage> materialList)
+        private int processMaterial(Material mat, ref List<SceneManager.MaterialPackage> materialList)
         {
             if (mat == null || mat.shader == null)
                 return -1;
@@ -523,7 +407,7 @@ namespace vpet
             }
 
             // create
-            MaterialPackage matPack = new MaterialPackage();
+            SceneManager.MaterialPackage matPack = new SceneManager.MaterialPackage();
             matPack.mat = mat;
             matPack.name = mat.name;
 
@@ -556,7 +440,7 @@ namespace vpet
         //! @textureList The list to add the serialised texture to.
         //! @return The reference ID for texture. 
         //!
-        private int processTexture(Texture2D texture, ref List<TexturePackage> textureList)
+        private int processTexture(Texture2D texture, ref List<SceneManager.TexturePackage> textureList)
         {
             for (int i = 0; i < textureList.Count; i++)
             {
@@ -566,7 +450,7 @@ namespace vpet
                 }
             }
 
-            TexturePackage texPack = new TexturePackage();
+            SceneManager.TexturePackage texPack = new SceneManager.TexturePackage();
 
             texPack.width = texture.width;
             texPack.height = texture.height;
@@ -589,9 +473,9 @@ namespace vpet
         //! @characterList The list to add the serialised skinned object to.
         //! @param gameObjectList A reference to the list of the traversed Unity Game Object tree. 
         //!
-        private void processCharacter(Animator animator, ref List<GameObject> gameObjectList, ref List<CharacterPackage> characterList)
+        private void processCharacter(Animator animator, ref List<GameObject> gameObjectList, ref List<SceneManager.CharacterPackage> characterList)
         {
-            CharacterPackage chrPack = new CharacterPackage();
+            SceneManager.CharacterPackage chrPack = new SceneManager.CharacterPackage();
             chrPack.rootId = gameObjectList.IndexOf(animator.transform.gameObject);
 
             HumanBone[] boneArray = animator.avatar.humanDescription.human;
@@ -638,232 +522,6 @@ namespace vpet
             characterList.Add(chrPack);
         }
 
-        //!
-        //! Function that concatinates all serialised VPET nodes to a byte array.
-        //!
-        //! @param nodeList The list that contains the serialised nodes to be concatinated.
-        //!
-        private void getNodesByteArray(ref List<SceneNode> nodeList)
-        {
-            m_nodesByteData = new byte[0];
-            foreach (SceneNode node in nodeList)
-            {
-                byte[] nodeBinary;
-                byte[] nodeTypeBinary;
-                if (node.GetType() == typeof(SceneNodeGeo))
-                {
-                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GEO);
-                    SceneNodeGeo nodeGeo = (SceneNodeGeo)Convert.ChangeType(node, typeof(SceneNodeGeo));
-                    nodeBinary = StructureToByteArray(nodeGeo);
-                }
-                else if (node.GetType() == typeof(SceneNodeSkinnedGeo))
-                {
-                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.SKINNEDMESH);
-                    SceneNodeSkinnedGeo nodeskinnedGeo = (SceneNodeSkinnedGeo)Convert.ChangeType(node, typeof(SceneNodeSkinnedGeo));
-                    nodeBinary = StructureToByteArray(nodeskinnedGeo);
-                }
-                else if (node.GetType() == typeof(SceneNodeLight))
-                {
-                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.LIGHT);
-                    SceneNodeLight nodeLight = (SceneNodeLight)Convert.ChangeType(node, typeof(SceneNodeLight));
-                    nodeBinary = StructureToByteArray(nodeLight);
-                }
-                else if (node.GetType() == typeof(SceneNodeCam))
-                {
-                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.CAMERA);
-                    SceneNodeCam nodeCam = (SceneNodeCam)Convert.ChangeType(node, typeof(SceneNodeCam));
-                    nodeBinary = StructureToByteArray(nodeCam);
-                }
-                else
-                {
-                    nodeTypeBinary = BitConverter.GetBytes((int)NodeType.GROUP);
-                    nodeBinary = StructureToByteArray(node);
-                }
-
-                // concate arrays
-                m_nodesByteData = Concat<byte>(m_nodesByteData, nodeTypeBinary);
-                m_nodesByteData = Concat<byte>(m_nodesByteData, nodeBinary);
-            }
-        }
-
-        //!
-        //! Function that concatinates all serialised VPET meshes to a byte array.
-        //!
-        //! @param objectList The list that contains the serialised meshes to be concatinated.
-        //!
-        private void getObjectsByteArray(ref List<ObjectPackage> objectList)
-        {
-            m_objectsByteData = new byte[0];
-
-            foreach (ObjectPackage objPack in objectList)
-            {
-                byte[] objByteData = new byte[5 * SceneDataHandler.size_int +
-                                                    objPack.vSize * 3 * SceneDataHandler.size_float +
-                                                    objPack.iSize * SceneDataHandler.size_int +
-                                                    objPack.nSize * 3 * SceneDataHandler.size_float +
-                                                    objPack.uvSize * 2 * SceneDataHandler.size_float +
-                                                    objPack.bWSize * 4 * SceneDataHandler.size_float +
-                                                    objPack.bWSize * 4 * SceneDataHandler.size_int];
-                int dstIdx = 0;
-                // vertices
-                Buffer.BlockCopy(BitConverter.GetBytes(objPack.vSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                Buffer.BlockCopy(objPack.vertices, 0, objByteData, dstIdx, objPack.vSize * 3 * SceneDataHandler.size_float);
-                dstIdx += objPack.vSize * 3 * SceneDataHandler.size_float;
-                // indices
-                Buffer.BlockCopy(BitConverter.GetBytes(objPack.iSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                Buffer.BlockCopy(objPack.indices, 0, objByteData, dstIdx, objPack.iSize * SceneDataHandler.size_int);
-                dstIdx += objPack.iSize * SceneDataHandler.size_int;
-                // normals
-                Buffer.BlockCopy(BitConverter.GetBytes(objPack.nSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                Buffer.BlockCopy(objPack.normals, 0, objByteData, dstIdx, objPack.nSize * 3 * SceneDataHandler.size_float);
-                dstIdx += objPack.nSize * 3 * SceneDataHandler.size_float;
-                // uvs
-                Buffer.BlockCopy(BitConverter.GetBytes(objPack.uvSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                Buffer.BlockCopy(objPack.uvs, 0, objByteData, dstIdx, objPack.uvSize * 2 * SceneDataHandler.size_float);
-                dstIdx += objPack.uvSize * 2 * SceneDataHandler.size_float;
-                // bone weights
-                Buffer.BlockCopy(BitConverter.GetBytes(objPack.bWSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                Buffer.BlockCopy(objPack.boneWeights, 0, objByteData, dstIdx, objPack.bWSize * 4 * SceneDataHandler.size_float);
-                dstIdx += objPack.bWSize * 4 * SceneDataHandler.size_float;
-                // bone indices
-                Buffer.BlockCopy(objPack.boneIndices, 0, objByteData, dstIdx, objPack.bWSize * 4 * SceneDataHandler.size_int);
-                dstIdx += objPack.bWSize * 4 * SceneDataHandler.size_int;
-
-                // concate
-                m_objectsByteData = Concat<byte>(m_objectsByteData, objByteData);
-            }
-        }
-
-        //!
-        //! Function that concatinates all serialised VPET skinned meshes to a byte array.
-        //!
-        //! @param characterList The list that contains the serialised skinned meshes to be concatinated.
-        //!
-        private void getCharacterByteArray(ref List<CharacterPackage> characterList)
-        {
-            m_charactersByteData = new byte[0];
-            foreach (CharacterPackage chrPack in characterList)
-            {
-                byte[] characterByteData = new byte[SceneDataHandler.size_int * 3 +
-                                                chrPack.boneMapping.Length * SceneDataHandler.size_int +
-                                                chrPack.skeletonMapping.Length * SceneDataHandler.size_int +
-                                                chrPack.sSize * SceneDataHandler.size_float * 10];
-                int dstIdx = 0;
-                // bone mapping size
-                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.bMSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                // skeleton mapping size
-                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.sSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                // root dag id
-                Buffer.BlockCopy(BitConverter.GetBytes(chrPack.rootId), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                Buffer.BlockCopy(chrPack.boneMapping, 0, characterByteData, dstIdx, chrPack.bMSize * SceneDataHandler.size_int);
-                dstIdx += chrPack.bMSize * SceneDataHandler.size_int;
-
-                // skeleton Mapping
-                Buffer.BlockCopy(chrPack.skeletonMapping, 0, characterByteData, dstIdx, chrPack.sSize * SceneDataHandler.size_int);
-                dstIdx += chrPack.sSize * SceneDataHandler.size_int;
-
-                //skelton bone positions
-                Buffer.BlockCopy(chrPack.bonePosition, 0, characterByteData, dstIdx, chrPack.sSize * 3 * SceneDataHandler.size_float);
-                dstIdx += chrPack.sSize * 3 * SceneDataHandler.size_float;
-
-                //skelton bone rotations
-                Buffer.BlockCopy(chrPack.boneRotation, 0, characterByteData, dstIdx, chrPack.sSize * 4 * SceneDataHandler.size_float);
-                dstIdx += chrPack.sSize * 4 * SceneDataHandler.size_float;
-
-                //skelton bone scales
-                Buffer.BlockCopy(chrPack.boneScale, 0, characterByteData, dstIdx, chrPack.sSize * 3 * SceneDataHandler.size_float);
-                dstIdx += chrPack.sSize * 3 * SceneDataHandler.size_float;
-
-                // concate
-                m_charactersByteData = Concat<byte>(m_charactersByteData, characterByteData);
-            }
-        }
-
-        //!
-        //! Function that concatinates all serialised VPET textures to a byte array.
-        //!
-        //! @param textureList The list that contains the serialised textures to be concatinated.
-        //!
-        private void getTexturesByteArray(ref List<TexturePackage> textureList)
-        {
-            m_texturesByteData = new byte[0];
-
-            foreach (TexturePackage texPack in textureList)
-            {
-                byte[] texByteData = new byte[4 * SceneDataHandler.size_int + texPack.colorMapDataSize];
-                int dstIdx = 0;
-                // width
-                Buffer.BlockCopy(BitConverter.GetBytes(texPack.width), 0, texByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                // height
-                Buffer.BlockCopy(BitConverter.GetBytes(texPack.height), 0, texByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                // format
-                Buffer.BlockCopy(BitConverter.GetBytes((int)texPack.format), 0, texByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                // pixel data
-                Buffer.BlockCopy(BitConverter.GetBytes(texPack.colorMapDataSize), 0, texByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-                Buffer.BlockCopy(texPack.colorMapData, 0, texByteData, dstIdx, texPack.colorMapDataSize);
-                dstIdx += texPack.colorMapDataSize;
-
-                // concate
-                m_texturesByteData = Concat<byte>(m_texturesByteData, texByteData);
-            }
-        }
-
-        //!
-        //! Function that concatinates all serialised VPET materials to a byte array.
-        //!
-        //! @param materialList The list that contains the serialised materials to be concatinated.
-        //!
-        private void getMaterialsByteArray(ref List<MaterialPackage> materialList)
-        {
-            m_materialsByteData = new byte[0];
-
-            foreach (MaterialPackage matPack in materialList)
-            {
-                byte[] matByteData = new byte[SceneDataHandler.size_int + SceneDataHandler.size_int + matPack.name.Length + SceneDataHandler.size_int + matPack.src.Length];
-                int dstIdx = 0;
-
-                // type
-                Buffer.BlockCopy(BitConverter.GetBytes(matPack.type), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                // name length
-                Buffer.BlockCopy(BitConverter.GetBytes(matPack.name.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                // name
-                byte[] nameByte = Encoding.ASCII.GetBytes(matPack.name);
-                Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.name.Length);
-                dstIdx += matPack.name.Length;
-
-                // src length
-                Buffer.BlockCopy(BitConverter.GetBytes(matPack.src.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                dstIdx += SceneDataHandler.size_int;
-
-                // src
-                nameByte = Encoding.ASCII.GetBytes(matPack.src);
-                Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.src.Length);
-                dstIdx += matPack.src.Length;
-
-                // concate
-                m_materialsByteData = Concat<byte>(m_materialsByteData, matByteData);
-            }
-        }
-
 
         /*
          * [REVIEW]
@@ -885,48 +543,5 @@ namespace vpet
         }
          
          */
-
-        //!
-        //! Template function for concatination of arrays. 
-        //!
-        //! @param first The array field to be appended to.
-        //! @param arrays The arrays to be append.
-        //!
-        private static T[] Concat<T>(T[] first, params T[][] arrays)
-        {
-            int length = first.Length;
-            foreach (T[] array in arrays)
-            {
-                length += array.Length;
-            }
-            T[] result = new T[length];
-
-            length = first.Length;
-            Array.Copy(first, 0, result, 0, first.Length);
-            foreach (T[] array in arrays)
-            {
-                Array.Copy(array, 0, result, length, array.Length);
-                length += array.Length;
-            }
-            return result;
-        }
-
-        //! 
-        //! Template function for serialising arbitrary structures in to byte streams.
-        //! 
-        //! @param obj The object to be serialised.
-        //!
-        private static byte[] StructureToByteArray(object obj)
-        {
-            int size = Marshal.SizeOf(obj);
-            byte[] arr = new byte[size];
-            IntPtr ptr = Marshal.AllocHGlobal(size);
-
-            Marshal.StructureToPtr(obj, ptr, true);
-            Marshal.Copy(ptr, arr, 0, size);
-            Marshal.FreeHGlobal(ptr);
-
-            return arr;
-        }
     }
 }

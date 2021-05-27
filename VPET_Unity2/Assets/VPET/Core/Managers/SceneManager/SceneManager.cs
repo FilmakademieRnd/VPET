@@ -16,8 +16,13 @@ namespace vpet
     //!
     //! class managing all scene related aspects
     //!
-    public class SceneManager : Manager
+    public partial class SceneManager : Manager
     {
+        protected SceneDataHandler m_sceneDataHandler;
+        public ref SceneDataHandler sceneDataHandler
+        {
+            get { return ref m_sceneDataHandler; }
+        }
         public static class Settings
         {
             //!
@@ -56,6 +61,7 @@ namespace vpet
         //!
         SceneManager(Type moduleType, CoreInterface vpetCore) : base(moduleType, vpetCore)
         {
+            m_sceneDataHandler = new SceneDataHandler();
         }
     }
 }
