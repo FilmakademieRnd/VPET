@@ -25,12 +25,12 @@ namespace vpet
     {
         //!
         //! manager of this module
-        //! assigned in addModule function in Manager
+        //! assigned in addModule function in Manager.
         //!
         protected Manager _manager;
 
         //!
-        //! set the manager of this module
+        //! set/get the manager of this module.
         //!
         public Manager manager
         {
@@ -40,7 +40,7 @@ namespace vpet
 
         //!
         //! constructor
-        //! @param  name    name of the module
+        //! @param  name    name of the module.
         //!
         public Module(string name) => name = this.name;
 
@@ -50,8 +50,8 @@ namespace vpet
         protected string _name;
 
         //!
-        //! get the name of the module
-        //! @return name of the module
+        //! get the name of the module.
+        //! @return name of the module.
         //!
         public string name
         {

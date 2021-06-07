@@ -17,7 +17,7 @@ namespace vpet
     public class NetworkManagerModule : Module
     {
         //!
-        //! set the manager of this module
+        //! set/get the manager of this module.
         //!
         new public NetworkManager manager
         {
@@ -26,7 +26,7 @@ namespace vpet
         }
         //!
         //! constructor
-        //! @param  name    name of the module
+        //! @param  name    name of the module.
         //!
         public NetworkManagerModule(string name) : base(name) => name = base.name;
     }

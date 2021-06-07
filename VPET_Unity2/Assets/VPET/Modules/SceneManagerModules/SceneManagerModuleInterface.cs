@@ -17,8 +17,16 @@ namespace vpet
     public class SceneManagerModule : Module
     {
         //!
+        //! set/get the manager of this module.
+        //!
+        new public SceneManager manager
+        {
+            get => (SceneManager)_manager;
+            set => _manager = value;
+        }
+        //!
         //! constructor
-        //! @param  name    name of the module
+        //! @param  name    name of the module.
         //!
         public SceneManagerModule(string name) : base(name) => name = base.name;
     }
