@@ -44,138 +44,133 @@ namespace vpet
     public class NetworkManager : Manager
     {
         //!
-        //! Dictionary storing all registered network receivers and their global IDs.
+        //! Dictionary storing all registered network subscribers and their global IDs.
         //!
-        private Dictionary<int, NetworkReceiver> m_receiverDict;
+        private NetworkSubscriber m_subscriber;
 
         //!
-        //! Next unique receiver ID.
+        //! Dictionary storing all registered network requesters and their global IDs.
         //!
-        private static int m_receiverID;
+        private NetworkRequester m_requester;
 
         //!
-        //! Dictionary storing all registered network senders and their global IDs.
+        //! Dictionary storing all registered network publishers and their global IDs.
         //!
-        private Dictionary<int, NetworkSender> m_senderDict;
-
-        //!
-        //! Next unique sender ID.
-        //!
-        private static int m_senderID;
+        private NetworkPublisher m_publisher;
 
         //!
         //! Dictionary storing all registered network responders and their global IDs.
         //!
-        private Dictionary<int, NetworkResponder> m_responderDict;
-
-        //!
-        //! Next unique responder ID.
-        //!
-        private static int m_responderID;
+        private NetworkResponder m_responder;
 
         //!
         //! Constructor initializing member variables.
         //!
         public NetworkManager(Type moduleType, CoreInterface vpetCore) : base(moduleType, vpetCore)
         {
-            m_receiverDict = new Dictionary<int, NetworkReceiver>();
-            m_receiverID = 0;
-            m_senderDict = new Dictionary<int, NetworkSender>();
-            m_senderID = 0;
         }
 
         //!
-        //! Function to create and add new network receiver.
-        //! @param ip IP address of the network interface the receiver shall use.
-        //! @param port Port number the receiver shall use.
-        //! @param receiveMessageQueue List of byte[] to be filled by the receiver.
-        //! @return Global ID of the added receiver.
+        //! Function to start a new subscriber thread.
+        //! @param ip IP address of the network interface the subscriber shall use.
+        //! @param port Port number the subscriber shall use.
+        //! @param subscriberMessageQueue List of byte[] to be filled by the subscriber.
         //!
-        public int addReceiver(string ip, string port, out List<byte[]> receiveMessageQueue)
+        public void startSubscriber(string ip, string port, out List<byte[]> subscriberMessageQueue)
         {
-            NetworkReceiver receiver = new NetworkReceiver(out receiveMessageQueue);
-            m_receiverDict.Add(m_receiverID++,receiver);
-            return m_receiverID;
+            if (m_subscriber != null)
+                m_subscriber.stop();
+
+            m_subscriber = new NetworkSubscriber(out subscriberMessageQueue);
+            m_subscriber.configure(ip, port);
+            Thread subscriberThread = new Thread(new ThreadStart(m_subscriber.run));
+            subscriberThread.Start();
         }
 
         //!
-        //! Function to start a new receiver thread.
-        //! @param receiverID Global ID of the receiver to be started.
+        //! Function to stop a subscriber.
+        //! @param receiverID Global ID of the subscriber to be stopped.
         //!
-        public void startReceiver(int receiverID, string ip, string port)
+        public void stopSubscriber(int receiverID)
         {
-            m_receiverDict[receiverID].configure(ip, port);
-            Thread receiverThread = new Thread(new ThreadStart(m_receiverDict[receiverID].run));
-            receiverThread.Start();
+            m_subscriber.stop();
         }
 
         //!
-        //! Function to stop a receiver.
-        //! @param receiverID Global ID of the receiver to be stopped.
+        //! Function to start a new requester thread.
+        //! @param ip IP address of the network interface the requester shall use.
+        //! @param port Port number the requester shall use.
+        //! @param subscriberMessageQueue List of byte[] to be filled by the requester.
         //!
-        public void stopReceiver(int receiverID)
+        public void startRequester(string ip, string port, out List<byte[]> requesterMessageQueue, ref List<string> requests)
         {
-            m_receiverDict[receiverID].stop();
+            if (m_requester != null)
+                m_requester.stop();
+
+            m_requester = new NetworkRequester(out requesterMessageQueue, ref requests);
+            m_requester.configure(ip, port);
+            Thread requesterThread = new Thread(new ThreadStart(m_requester.run));
+            requesterThread.Start();
         }
 
         //!
-        //! Function to create and add new network sender.
-        //! @param ip IP address of the network interface the sender shall use.
-        //! @param port Port number the sender shall use.
-        //! @param senderMessageQueue List of byte[] to be sent by the sender.
-        //! @return Global ID of the added sender.
+        //! Function to stop a requester.
+        //! @param receiverID Global ID of the requester to be stopped.
         //!
-        public int addSender(out List<byte[]> senderMessageQueue)
+        public void stopRequester(int requesterID)
         {
-            NetworkSender sender = new NetworkSender(out senderMessageQueue);
-            m_senderDict.Add(m_senderID++, sender);
-            return m_senderID;
+            m_requester.stop();
         }
 
-        //!
-        //! Function to start a new sender thread.
-        //! @param receiverID Global ID of the sender to be started.
-        //!
-        public void startSender(int senderID,string ip, string port)
+        public bool requesterDone()
         {
-            m_senderDict[senderID].configure(ip, port);
-            Thread senderThread = new Thread(new ThreadStart(m_senderDict[senderID].run));
-            senderThread.Start();
+            return m_requester.done;
         }
 
         //!
-        //! Function to stop a sender.
-        //! @param receiverID Global ID of the sender to be stopped.
+        //! Function to start a new publisher thread.
+        //! @param ip IP address of the network interface the publisher shall use.
+        //! @param port Port number the publisher shall use.
+        //! @param subscriberMessageQueue List of byte[] to be filled by the publisher.
         //!
-        public void stopSender(int senderID)
+        public void startPublisher(string ip, string port, out List<byte[]> publisherMessageQueue)
+        {
+            if (m_publisher != null)
+                m_publisher.stop();
+
+            m_publisher = new NetworkPublisher(out publisherMessageQueue);
+            m_publisher.configure(ip, port);
+            Thread publisherThread = new Thread(new ThreadStart(m_publisher.run));
+            publisherThread.Start();
+        }
+
+        //!
+        //! Function to stop a publisher.
+        //! @param receiverID Global ID of the publisher to be stopped.
+        //!
+        public void stopPublisher(int senderID)
         {
             //TODO: send disconnect message
-            m_senderDict[senderID].stop();
+            m_publisher.stop();
         }
 
         //!
-        //! Function to create and add new network responder.
+        //! Function to start a new responder thread.
         //! @param ip IP address of the network interface the responder shall use.
         //! @param port Port number the responder shall use.
-        //! @return Global ID of the added responder.
+        //! @param subscriberMessageQueue List of byte[] to be filled by the responder.
         //!
-        public int addResponder(ref Dictionary<string, byte[]> responses)
+        public void startResponder(string ip, string port, ref Dictionary<string, byte[]> responses, out List<byte[]> responderMessageQueue)
         {
-            NetworkResponder responder = new NetworkResponder(ref responses);
-            m_responderDict.Add(m_senderID++, responder);
-            return m_senderID;
-        }
+            if (m_responder != null)
+                m_responder.stop();
 
-        //!
-        //! Function to start a new  responder thread.
-        //! @param receiverID Global ID of the  responder to be started.
-        //!
-        public void startResponder(int responderID, string ip, string port)
-        {
-            m_responderDict[responderID].configure(ip, port);
-            Thread responderThread = new Thread(new ThreadStart(m_responderDict[responderID].run));
+            m_responder = new NetworkResponder(ref responses, out responderMessageQueue);
+            m_responder.configure(ip, port);
+            Thread responderThread = new Thread(new ThreadStart(m_responder.run));
             responderThread.Start();
         }
+
 
         //!
         //! Function to stop a  responder.
@@ -184,7 +179,7 @@ namespace vpet
         public void stopResponder(int responderID)
         {
             //TODO: send disconnect message
-            m_responderDict[responderID].stop();
+            m_responder.stop();
         }
 
         //!
@@ -249,13 +244,13 @@ namespace vpet
         //!
         //! Class implementing the network receiver.
         //!
-        private class NetworkReceiver : NetworkBase
+        private class NetworkSubscriber : NetworkBase
         {
             //!
             //! Constructor
             //! @param messageQueue List of byte[] to be received by the receiver.
             //!
-            public NetworkReceiver(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
+            public NetworkSubscriber(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
             //!
             //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
             //!
@@ -286,15 +281,58 @@ namespace vpet
         }
 
         //!
+        //! Class implementing the network receiver.
+        //!
+        private class NetworkRequester : NetworkBase
+        {
+            private bool m_done;
+            public bool done { get => m_done; }
+            private List<string> m_requests;
+
+            //!
+            //! Constructor
+            //! @param messageQueue List of byte[] to be received by the receiver.
+            //!
+            public NetworkRequester(out List<byte[]> messageQueue, ref List<string> requests) : base(out messageQueue)
+            { 
+                base.m_messageQueue = messageQueue;
+
+                m_done = false;
+                m_requests = requests;
+            }
+            //!
+            //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
+            //!
+            public override void run()
+            {
+                AsyncIO.ForceDotNet.Force();
+                using (var sceneReceiver = new RequestSocket())
+                {
+                    sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
+
+                    foreach (string request in m_requests)
+                    {
+                        sceneReceiver.SendFrame(request);
+                        m_messageQueue.Add(sceneReceiver.ReceiveFrameBytes());
+                    }
+                    m_done = true;
+                    sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                    sceneReceiver.Close();
+                    sceneReceiver.Dispose();
+                }
+            }
+        }
+
+        //!
         //! Class implementing the network sender.
         //!
-        private class NetworkSender : NetworkBase
+        private class NetworkPublisher : NetworkBase
         {
             //!
             //! Constructor
             //! @param messageQueue List of byte[] to be sent by the sender.
             //!
-            public NetworkSender(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
+            public NetworkPublisher(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
 
             //!
             //! Function, sending messages in m_sendMessageQueue (executed in separate thread).
@@ -336,7 +374,7 @@ namespace vpet
             //! Constructor
             //! @param messageQueue List of byte[] to be sent by the sender.
             //!
-            public NetworkResponder(ref Dictionary<string, byte[]> responses, List<byte[]> messageQueue = null) : base(out messageQueue)
+            public NetworkResponder(ref Dictionary<string, byte[]> responses, out List<byte[]> messageQueue) : base(out messageQueue)
             {
                 base.m_messageQueue = messageQueue;
                 m_responses = responses;
@@ -359,6 +397,8 @@ namespace vpet
                         dataSender.TryReceiveFrameString(out message);
                         if (m_responses.ContainsKey(message))
                             dataSender.SendFrame(m_responses[message]);
+                        else
+                            dataSender.SendFrame(new byte[0]);
                     }
 
                     // TODO: check first if closed

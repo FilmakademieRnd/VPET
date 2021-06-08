@@ -34,8 +34,19 @@ using UnityEngine;
 
 namespace vpet
 {
-    public class SceneReceiverModule
+    public class SceneReceiverModule : NetworkManagerModule
     {
+        public string ip;
+        public string port;
+        public SceneReceiverModule(string name) : base(name) => name = base.name;
 
+        public void receiveScene()
+        {
+            List<byte[]> receivedData;
+            List<string> requests = new List<string>() { "header", "nodes", "objects", "characters", "textures", "materials" };
+            manager.startRequester(ip, port, out receivedData, ref requests);
+
+        }
     }
+
 }

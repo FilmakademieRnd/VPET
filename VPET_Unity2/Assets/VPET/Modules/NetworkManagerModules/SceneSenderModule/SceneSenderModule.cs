@@ -72,7 +72,7 @@ namespace vpet
         //!
         public void start(string ip, string port)
         {
-            manager.startResponder(m_responderId, ip, port);
+           // manager.startResponder(m_responderId, ip, port);
         }
 
         //!

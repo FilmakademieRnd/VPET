@@ -19,14 +19,30 @@ namespace vpet
     //!
     public class VPET : CoreInterface
     {
+        bool server = true;
         //!
         //! Initialization of all Managers and modules.
         //!
         void Awake()
         {
+            // Create network manager
+            Manager networkManager = new Manager(typeof(NetworkManager), this);
+            managerList.Add(typeof(NetworkManager), networkManager);
+
             //Create scene manager
             Manager sceneManager = new Manager(typeof(SceneManager), this);
             managerList.Add(typeof(SceneManager), sceneManager);
+
+            if (server)
+            {
+                networkManager.getModule();
+            }
+            else
+            { }
+
+
+
+
         }
     }
 }
