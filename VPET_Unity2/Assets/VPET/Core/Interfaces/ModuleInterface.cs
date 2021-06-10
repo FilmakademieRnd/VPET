@@ -13,7 +13,7 @@ namespace vpet
     //!
     //! module interface definition
     //!
-    interface ModuleInterface
+    interface ModuleInterface 
     {
 
     }

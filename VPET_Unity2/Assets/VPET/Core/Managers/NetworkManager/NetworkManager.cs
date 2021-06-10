@@ -160,11 +160,14 @@ namespace vpet
         //! @param port Port number the responder shall use.
         //! @param subscriberMessageQueue List of byte[] to be filled by the responder.
         //!
-        public void startResponder(string ip, string port, ref Dictionary<string, byte[]> responses, out List<byte[]> responderMessageQueue)
+        public void startResponder(string ip, string port, ref Dictionary<string, byte[]> responses)
         {
             if (m_responder != null)
                 m_responder.stop();
 
+            // never used message queue
+            List<byte[]> responderMessageQueue;
+            
             m_responder = new NetworkResponder(ref responses, out responderMessageQueue);
             m_responder.configure(ip, port);
             Thread responderThread = new Thread(new ThreadStart(m_responder.run));
@@ -176,7 +179,7 @@ namespace vpet
         //! Function to stop a  responder.
         //! @param receiverID Global ID of the  responder to be stopped.
         //!
-        public void stopResponder(int responderID)
+        public void stopResponder()
         {
             //TODO: send disconnect message
             m_responder.stop();
@@ -385,6 +388,7 @@ namespace vpet
             //!
             public override void run()
             {
+                m_isRunning = true;
                 AsyncIO.ForceDotNet.Force();
                 using (var dataSender = new ResponseSocket())
                 {
@@ -394,11 +398,14 @@ namespace vpet
                     while (m_isRunning)
                     {
                         string message = "";
-                        dataSender.TryReceiveFrameString(out message);
-                        if (m_responses.ContainsKey(message))
-                            dataSender.SendFrame(m_responses[message]);
-                        else
-                            dataSender.SendFrame(new byte[0]);
+                        dataSender.TryReceiveFrameString(out message);       // TryReceiveFrameString returns null if no message has been received!
+                        if (message != null)
+                        {
+                            if (m_responses.ContainsKey(message))
+                                dataSender.SendFrame(m_responses[message]);
+                            else
+                                dataSender.SendFrame(new byte[0]);
+                        }
                     }
 
                     // TODO: check first if closed

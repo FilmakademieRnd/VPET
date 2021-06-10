@@ -40,11 +40,6 @@ namespace vpet
     public class SceneSenderModule : NetworkManagerModule
     {
         //!
-        //! The unique ID of the network responder the scene sender uses.
-        //!
-        private int m_responderId;
-
-        //!
         //! Constructor.
         //! Initialisation of all members and setup of the response messages.
         //!
@@ -52,8 +47,18 @@ namespace vpet
         {
             name = base.name;
 
+         
+        }
+
+        //!
+        //! Function to start the scene sender module.
+        //! @param ip The IP address to be used from the sender.
+        //! @param port The port number to be used from the sender.
+        //!
+        public void sendScene(string ip, string port)
+        {
             Dictionary<string, byte[]> responses = new Dictionary<string, byte[]>();
-            SceneManager.SceneDataHandler dataHandler = ((SceneManager) manager.core.getManager(typeof(SceneManager))).sceneDataHandler;
+            SceneManager.SceneDataHandler dataHandler = ((SceneManager)manager.core.getManager(typeof(SceneManager))).sceneDataHandler;
 
             responses.Add("header", dataHandler.headerByteData);
             responses.Add("nodes", dataHandler.nodesByteData);
@@ -62,17 +67,7 @@ namespace vpet
             responses.Add("textures", dataHandler.texturesByteData);
             responses.Add("materials", dataHandler.materialsByteData);
 
-            m_responderId = manager.addResponder(ref responses);
-        }
-
-        //!
-        //! Function to start the scene sender module.
-        //! @param ip The IP address to be used from the sender.
-        //! @param port The port number to be used from the sender.
-        //!
-        public void start(string ip, string port)
-        {
-           // manager.startResponder(m_responderId, ip, port);
+            manager.startResponder(ip, port, ref responses);
         }
 
         //!
@@ -80,7 +75,7 @@ namespace vpet
         //!
         public void stop()
         {
-            manager.stopResponder(m_responderId);
+            manager.stopResponder();
         }
 
     }

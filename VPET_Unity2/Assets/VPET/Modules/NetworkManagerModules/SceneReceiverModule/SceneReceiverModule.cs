@@ -36,11 +36,9 @@ namespace vpet
 {
     public class SceneReceiverModule : NetworkManagerModule
     {
-        public string ip;
-        public string port;
         public SceneReceiverModule(string name) : base(name) => name = base.name;
 
-        public void receiveScene()
+        public void receiveScene(string ip, string port)
         {
             List<byte[]> receivedData;
             List<string> requests = new List<string>() { "header", "nodes", "objects", "characters", "textures", "materials" };

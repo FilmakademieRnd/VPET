@@ -41,7 +41,7 @@ namespace vpet
         //!
         //! dictionary of loaded modules
         //!
-        private Dictionary<Type, Module> modules;
+        private Dictionary<Type, Module> m_modules;
 
         //!
         //! constructor
@@ -50,12 +50,13 @@ namespace vpet
         //!
         public Manager(Type moduleType, CoreInterface vpetCore)
         {
+            m_modules = new Dictionary<Type, Module>();
             _core = vpetCore;
             Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
             foreach (Type t in modules)
             {
-                Module module = (Module)Activator.CreateInstance(t);
-                addModule(module, moduleType);
+                Module module = (Module)Activator.CreateInstance(t, t.ToString());
+                addModule(module, t);
             }
         }
 
@@ -67,11 +68,11 @@ namespace vpet
         //!
         protected bool addModule(Module module, Type type)
         {
-            if (modules.ContainsKey(type))
+            if (m_modules.ContainsKey(type))
                 return false;
             else
             {
-                modules.Add(type, module);
+                m_modules.Add(type, module);
                 module.manager = this;
                 return true;
             }
@@ -85,7 +86,8 @@ namespace vpet
         public Module getModule(Type type)
         {
             Module module;
-            modules.TryGetValue(type, out module);
+            if (!m_modules.TryGetValue(type, out module))
+                Helpers.Log(this.GetType().ToString() + " could not find " + type.ToString(), Helpers.logMsgType.ERROR);
             return module;
         }
 
@@ -96,7 +98,7 @@ namespace vpet
         //!
         protected bool removeModule(Type type)
         {
-            return modules.Remove(type);
+            return m_modules.Remove(type);
         }
     }
 }

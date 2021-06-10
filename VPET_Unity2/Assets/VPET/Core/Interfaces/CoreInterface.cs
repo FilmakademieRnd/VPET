@@ -22,7 +22,15 @@ namespace vpet
         //!
         //! List of all registered VPETManagers.
         //!
-        protected Dictionary<Type,Manager> managerList;
+        protected Dictionary<Type,Manager> m_managerList;
+
+        //!
+        //! Constructor
+        //!
+        public CoreInterface()
+        {
+            m_managerList = new Dictionary<Type, Manager>();
+        }
 
         //!
         //! get a manager from the core
@@ -32,7 +40,7 @@ namespace vpet
         public Manager getManager(Type type)
         {
             Manager manager;
-            managerList.TryGetValue(type, out manager);
+            m_managerList.TryGetValue(type, out manager);
             return manager;
         }
     }

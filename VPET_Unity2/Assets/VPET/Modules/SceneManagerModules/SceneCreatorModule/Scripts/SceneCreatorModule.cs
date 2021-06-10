@@ -73,7 +73,7 @@ namespace vpet
         //!
         //! Function that creates the Unity scene content.
         //!
-        public void LoadScene()
+        public void CreateScene()
         {
             SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager) manager).sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
@@ -327,8 +327,9 @@ namespace vpet
                 animator.avatar = avatar;
                 animator.applyRootMotion = true;
 
-                animator.runtimeAnimatorController = (RuntimeAnimatorController)Instantiate(Resources.Load("VPET/Prefabs/AnimatorController"));
-                obj.AddComponent<CharacterAnimationController>();
+                //[REVIEW]
+                //.runtimeAnimatorController = (RuntimeAnimatorController)Instantiate(Resources.Load("VPET/Prefabs/AnimatorController"));
+                //obj.AddComponent<CharacterAnimationController>();
 
                 obj.transform.parent = parentBackup;
             }

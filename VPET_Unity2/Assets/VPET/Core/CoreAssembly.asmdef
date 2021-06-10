@@ -1,6 +1,5 @@
 {
     "name": "VPETAssembly",
-    "rootNamespace": "",
     "references": [
         "HelperAssembly"
     ],
