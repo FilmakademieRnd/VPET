@@ -60,12 +60,12 @@ namespace vpet
             Dictionary<string, byte[]> responses = new Dictionary<string, byte[]>();
             SceneManager.SceneDataHandler dataHandler = ((SceneManager)manager.core.getManager(typeof(SceneManager))).sceneDataHandler;
 
-            responses.Add("header", dataHandler.headerByteData);
-            responses.Add("nodes", dataHandler.nodesByteData);
-            responses.Add("objects", dataHandler.objectsByteData);
-            responses.Add("characters", dataHandler.characterByteData);
-            responses.Add("textures", dataHandler.texturesByteData);
-            responses.Add("materials", dataHandler.materialsByteData);
+            responses.Add("header", dataHandler.headerByteDataRef);
+            responses.Add("nodes", dataHandler.nodesByteDataRef);
+            responses.Add("objects", dataHandler.objectsByteDataRef);
+            responses.Add("characters", dataHandler.characterByteDataRef);
+            responses.Add("textures", dataHandler.texturesByteDataRef);
+            responses.Add("materials", dataHandler.materialsByteDataRef);
 
             manager.startResponder(ip, port, ref responses);
         }

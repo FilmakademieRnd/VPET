@@ -65,15 +65,21 @@ namespace vpet
         public static GameObject scnRoot;
 
         //!
-        //! constructor
-        //! @param   name    Name of this module
+        //! Constructor
+        //! Creates an reference to the networ manager and connects the scene creation method to the scene received event in the network requester.
+        //! @param name Name of this module
         //!
-        public SceneCreatorModule(string name) : base(name) => name = base.name;
+        public SceneCreatorModule(string name) : base(name)
+        {
+            base._name = name;
+            NetworkManager networkManager = (NetworkManager) manager.core.getManager(typeof(NetworkManager));
+            networkManager.requester.m_sceneReceived += CreateScene;
+        }
 
         //!
         //! Function that creates the Unity scene content.
         //!
-        public void CreateScene()
+        public void CreateScene(object o, EventArgs e)
         {
             SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager) manager).sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
@@ -104,6 +110,8 @@ namespace vpet
             createSceneGraphIter(ref sceneData, scnRoot.transform);
 
             createSkinnedMeshes(ref sceneData, scnRoot.transform);
+
+            sceneDataHandler.clearSceneByteData();
         }
 
         //!

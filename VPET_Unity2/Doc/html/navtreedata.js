@@ -26,11 +26,7 @@ var NAVTREE =
 [
   [ "VPET", "index.html", [
     [ "Packages", "namespaces.html", [
-      [ "Packages", "namespaces.html", "namespaces_dup" ],
-      [ "Package Functions", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Enumerations", "namespacemembers_enum.html", null ]
-      ] ]
+      [ "Packages", "namespaces.html", "namespaces_dup" ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -54,7 +50,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_camera_object_8cs.html",
-"classvpet_1_1_scene_node_cam.html#a60ce568746cf17ecad04df3f26dbcba0"
+"classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a81d432f70cee3ca4bf46fd96513beac3"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

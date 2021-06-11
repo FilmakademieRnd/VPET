@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VPET: C:/Users/sspielmann/Desktop/VPET/VPET_Unity2/Assets/VPET/Modules/SceneManagerModules/SceneLoaderModule/Scripts/SceneDataHandler.cs File Reference</title>
+<title>VPET: C:/Users/sspielmann/Desktop/VPET/VPET_Unity2/Assets/VPET/Core/Managers/SceneManager/SceneDataHandler.cs File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -91,12 +91,16 @@ $(document).ready(function(){initNavTree('_scene_data_handler_8cs.html',''); ini
 </div><!--header-->
 <div class="contents">
 
-<p>Implementation of the network manager and netMQ sender/receiver.  
+<p>implementation scene data deserialisation  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_data_handler.html">vpet.SceneDataHandler</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html">vpet.SceneManager</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler.html">vpet.SceneManager.SceneDataHandler</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html">vpet.SceneManager.SceneDataHandler.SceneData</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -105,18 +109,18 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Implementation of the network manager and netMQ sender/receiver. </p>
-<p>implementation scene data deserialisation</p>
-<dl class="section author"><dt>Author</dt><dd>Simon Spielmann </dd>
-<dd>
-Jonas Trottnow </dd></dl>
-<dl class="section version"><dt>Version</dt><dd>0 </dd></dl>
-<dl class="section date"><dt>Date</dt><dd>20.05.2021</dd></dl>
+<div class="textblock"><p>implementation scene data deserialisation </p>
+<p>Implementation of the scene sender module, listening to scene requests and sending scene data.</p>
 <dl class="section author"><dt>Author</dt><dd>Simon Spielmann </dd>
 <dd>
 Jonas Trottnow </dd></dl>
 <dl class="section version"><dt>Version</dt><dd>0 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>23.04.2021</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Simon Spielmann </dd>
+<dd>
+Jonas Trottnow </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>0 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>20.05.2021</dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Simon Spielmann </dd>
 <dd>
 Jonas Trottnow </dd></dl>
@@ -127,7 +131,7 @@ Jonas Trottnow </dd></dl>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_f7ca291ec9e5f1fbd7bdeb46a76bf42e.html">VPET</a></li><li class="navelem"><a class="el" href="dir_44d1ed6a07b25cdf655134faaa49621d.html">VPET_Unity2</a></li><li class="navelem"><a class="el" href="dir_9458da360223e7c361a3c32884f1dba4.html">Assets</a></li><li class="navelem"><a class="el" href="dir_18507ed9c91f753f19789a694b96c0e5.html">VPET</a></li><li class="navelem"><a class="el" href="dir_d4ec18ef48f2e7c099b4110faa0375b5.html">Modules</a></li><li class="navelem"><a class="el" href="dir_808d41454a4ab47db2808e45bf7e00ec.html">SceneManagerModules</a></li><li class="navelem"><a class="el" href="dir_bf137fb485926c3330379f6d6a5b3b67.html">SceneLoaderModule</a></li><li class="navelem"><a class="el" href="dir_04f205a0a88f57e0a67acf868da55696.html">Scripts</a></li><li class="navelem"><a class="el" href="_scene_data_handler_8cs.html">SceneDataHandler.cs</a></li>
+    <li class="navelem"><a class="el" href="dir_f7ca291ec9e5f1fbd7bdeb46a76bf42e.html">VPET</a></li><li class="navelem"><a class="el" href="dir_44d1ed6a07b25cdf655134faaa49621d.html">VPET_Unity2</a></li><li class="navelem"><a class="el" href="dir_9458da360223e7c361a3c32884f1dba4.html">Assets</a></li><li class="navelem"><a class="el" href="dir_18507ed9c91f753f19789a694b96c0e5.html">VPET</a></li><li class="navelem"><a class="el" href="dir_2d362e09ec9e2b9053e31d372c4f79a5.html">Core</a></li><li class="navelem"><a class="el" href="dir_fd8bb5cf8a0036cd8bc2075985322c46.html">Managers</a></li><li class="navelem"><a class="el" href="dir_001d777a713c575c0bb91c8763919220.html">SceneManager</a></li><li class="navelem"><a class="el" href="_scene_data_handler_8cs.html">SceneDataHandler.cs</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>

@@ -84,13 +84,6 @@ namespace vpet
         {
             SceneManager.SceneDataHandler.SceneData sceneData = new SceneManager.SceneDataHandler.SceneData();
 
-            sceneData.header = new SceneManager.VpetHeader();
-            sceneData.nodeList = new List<SceneManager.SceneNode>();
-            sceneData.objectList = new List<SceneManager.ObjectPackage>();
-            sceneData.characterList = new List<SceneManager.CharacterPackage>();
-            sceneData.textureList = new List<SceneManager.TexturePackage>();
-            sceneData.materialList = new List<SceneManager.MaterialPackage>();
-
             sceneData.header.lightIntensityFactor = 1f;
             sceneData.header.textureBinaryType = 0;
 

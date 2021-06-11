@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['objectlist_168',['objectList',['../structvpet_1_1_scene_parser_module_1_1_scene_data.html#a67ca0cf4ebef59e0ea44f70a41a3883e',1,'vpet::SceneParserModule::SceneData']]],
-  ['objectlist_169',['ObjectList',['../classvpet_1_1_scene_data_handler.html#ab19e663befe13d7a7bcea03cb5b7b4d8',1,'vpet::SceneDataHandler']]],
-  ['objectpackage_170',['ObjectPackage',['../classvpet_1_1_object_package.html',1,'vpet']]],
-  ['objectsbytedata_171',['ObjectsByteData',['../classvpet_1_1_scene_data_handler.html#abc916c55183ec93c6085f381791d0c70',1,'vpet::SceneDataHandler']]],
-  ['objectsbytedata_172',['objectsByteData',['../classvpet_1_1_scene_parser_module.html#a640009bc0203770117bd11dd5d82dd0f',1,'vpet::SceneParserModule']]]
+  ['objectlist_172',['objectList',['../classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a0921f4b6f7fe7dad9ce9cf0dbfc4d867',1,'vpet::SceneManager::SceneDataHandler::SceneData']]],
+  ['objectpackage_173',['ObjectPackage',['../classvpet_1_1_scene_manager_1_1_object_package.html',1,'vpet::SceneManager']]],
+  ['objectsbytedata_174',['objectsByteData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#adb4dc11b6dba8465a823d4b50e67d489',1,'vpet::SceneManager::SceneDataHandler']]],
+  ['objectsbytedataref_175',['objectsByteDataRef',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#ac3e1dd4a357987585d0b858aa43529f5',1,'vpet::SceneManager::SceneDataHandler']]]
 ];

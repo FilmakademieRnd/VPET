@@ -21,7 +21,7 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "SceneDataHandler.cs"
+//! @file "NetworkManager.cs"
 //! @brief Implementation of the network manager and netMQ sender/receiver.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
@@ -53,6 +53,11 @@ namespace vpet
         //!
         private NetworkRequester m_requester;
 
+        public ref NetworkRequester requester
+        {
+            get { return ref m_requester; }
+        }
+
         //!
         //! Dictionary storing all registered network publishers and their global IDs.
         //!
@@ -72,6 +77,7 @@ namespace vpet
 
         //!
         //! Function to start a new subscriber thread.
+        //!
         //! @param ip IP address of the network interface the subscriber shall use.
         //! @param port Port number the subscriber shall use.
         //! @param subscriberMessageQueue List of byte[] to be filled by the subscriber.
@@ -81,7 +87,7 @@ namespace vpet
             if (m_subscriber != null)
                 m_subscriber.stop();
 
-            m_subscriber = new NetworkSubscriber(out subscriberMessageQueue);
+            m_subscriber = new NetworkSubscriber(out subscriberMessageQueue, this);
             m_subscriber.configure(ip, port);
             Thread subscriberThread = new Thread(new ThreadStart(m_subscriber.run));
             subscriberThread.Start();
@@ -89,6 +95,7 @@ namespace vpet
 
         //!
         //! Function to stop a subscriber.
+        //!
         //! @param receiverID Global ID of the subscriber to be stopped.
         //!
         public void stopSubscriber(int receiverID)
@@ -98,6 +105,7 @@ namespace vpet
 
         //!
         //! Function to start a new requester thread.
+        //!
         //! @param ip IP address of the network interface the requester shall use.
         //! @param port Port number the requester shall use.
         //! @param subscriberMessageQueue List of byte[] to be filled by the requester.
@@ -107,7 +115,7 @@ namespace vpet
             if (m_requester != null)
                 m_requester.stop();
 
-            m_requester = new NetworkRequester(out requesterMessageQueue, ref requests);
+            m_requester = new NetworkRequester(out requesterMessageQueue, ref requests, this);
             m_requester.configure(ip, port);
             Thread requesterThread = new Thread(new ThreadStart(m_requester.run));
             requesterThread.Start();
@@ -115,6 +123,7 @@ namespace vpet
 
         //!
         //! Function to stop a requester.
+        //!
         //! @param receiverID Global ID of the requester to be stopped.
         //!
         public void stopRequester(int requesterID)
@@ -122,13 +131,9 @@ namespace vpet
             m_requester.stop();
         }
 
-        public bool requesterDone()
-        {
-            return m_requester.done;
-        }
-
         //!
         //! Function to start a new publisher thread.
+        //!
         //! @param ip IP address of the network interface the publisher shall use.
         //! @param port Port number the publisher shall use.
         //! @param subscriberMessageQueue List of byte[] to be filled by the publisher.
@@ -138,7 +143,7 @@ namespace vpet
             if (m_publisher != null)
                 m_publisher.stop();
 
-            m_publisher = new NetworkPublisher(out publisherMessageQueue);
+            m_publisher = new NetworkPublisher(out publisherMessageQueue, this);
             m_publisher.configure(ip, port);
             Thread publisherThread = new Thread(new ThreadStart(m_publisher.run));
             publisherThread.Start();
@@ -146,6 +151,7 @@ namespace vpet
 
         //!
         //! Function to stop a publisher.
+        //!
         //! @param receiverID Global ID of the publisher to be stopped.
         //!
         public void stopPublisher(int senderID)
@@ -156,6 +162,7 @@ namespace vpet
 
         //!
         //! Function to start a new responder thread.
+        //!
         //! @param ip IP address of the network interface the responder shall use.
         //! @param port Port number the responder shall use.
         //! @param subscriberMessageQueue List of byte[] to be filled by the responder.
@@ -168,7 +175,7 @@ namespace vpet
             // never used message queue
             List<byte[]> responderMessageQueue;
             
-            m_responder = new NetworkResponder(ref responses, out responderMessageQueue);
+            m_responder = new NetworkResponder(ref responses, out responderMessageQueue, this);
             m_responder.configure(ip, port);
             Thread responderThread = new Thread(new ThreadStart(m_responder.run));
             responderThread.Start();
@@ -177,6 +184,7 @@ namespace vpet
 
         //!
         //! Function to stop a  responder.
+        //!
         //! @param receiverID Global ID of the  responder to be stopped.
         //!
         public void stopResponder()
@@ -188,8 +196,9 @@ namespace vpet
         //!
         //! Class implementing the network base class.
         //!
-        private abstract class NetworkBase
+        public abstract class NetworkBase
         {
+            protected NetworkManager m_networkManager;
             //!
             //! IP address of the network interface to be used.
             //!
@@ -214,9 +223,10 @@ namespace vpet
             //! Constructor
             //! @param messageQueue List of byte[] to be used.
             //!
-            public NetworkBase(out List<byte[]> messageQueue)
+            public NetworkBase(out List<byte[]> messageQueue, NetworkManager networkManager)
             {
                 messageQueue = m_messageQueue;
+                m_networkManager = networkManager;
             }
 
             //!
@@ -231,7 +241,7 @@ namespace vpet
             }
 
             //!
-            //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
+            //! Function, listening for messages and adds them to m_messageQueue (executed in separate thread).
             //!
             public abstract void run();
 
@@ -245,17 +255,22 @@ namespace vpet
         }
 
         //!
-        //! Class implementing the network receiver.
+        //! Class implementing the network subscriber.
         //!
         private class NetworkSubscriber : NetworkBase
         {
             //!
             //! Constructor
+            //!
             //! @param messageQueue List of byte[] to be received by the receiver.
             //!
-            public NetworkSubscriber(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
+            public NetworkSubscriber(out List<byte[]> messageQueue, NetworkManager networkManager) : base(out messageQueue, networkManager)
+            {
+                base.m_messageQueue = messageQueue;
+                base.m_networkManager = networkManager;
+            }
             //!
-            //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
+            //! Function, listening for messages and adds them to m_messageQueue (executed in separate thread).
             //!
             public override void run()
             {
@@ -286,39 +301,76 @@ namespace vpet
         //!
         //! Class implementing the network receiver.
         //!
-        private class NetworkRequester : NetworkBase
+        public class NetworkRequester : NetworkBase
         {
-            private bool m_done;
-            public bool done { get => m_done; }
+            //!
+            //! The list of request the reqester uses to request the packages.
+            //!
             private List<string> m_requests;
+            //!
+            //! The event that is triggerd, when the scene has been received.
+            //!
+            public event EventHandler m_sceneReceived;
 
             //!
             //! Constructor
-            //! @param messageQueue List of byte[] to be received by the receiver.
             //!
-            public NetworkRequester(out List<byte[]> messageQueue, ref List<string> requests) : base(out messageQueue)
+            //! @param messageQueue List of byte[] to be received by the receiver.
+            //! @param requests The string list containing the types of packages to be requested.
+            //! @param networkManager The network manager as parent of the class.
+            //!
+            public NetworkRequester(out List<byte[]> messageQueue, ref List<string> requests, NetworkManager networkManager) : base(out messageQueue, networkManager)
             { 
                 base.m_messageQueue = messageQueue;
+                base.m_networkManager = networkManager;
 
-                m_done = false;
                 m_requests = requests;
             }
             //!
-            //! Function, listening for messages and adds them to m_receiveMessageQueue (executed in separate thread).
+            //! Function, requesting scene packages and receiving package data (executed in separate thread).
+            //! As soon as all requested packages are received, a signal is emited that triggers the scene cration.
             //!
             public override void run()
             {
                 AsyncIO.ForceDotNet.Force();
                 using (var sceneReceiver = new RequestSocket())
                 {
+                    SceneManager sceneManager = (SceneManager)m_networkManager.core.getManager(typeof(SceneManager));
+                    
                     sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
 
+                    SceneManager.SceneDataHandler sceneDataHandler = sceneManager.sceneDataHandler;
                     foreach (string request in m_requests)
                     {
                         sceneReceiver.SendFrame(request);
-                        m_messageQueue.Add(sceneReceiver.ReceiveFrameBytes());
+                        switch (request)
+                        {
+                            case "header":
+                                sceneDataHandler.headerByteData = sceneReceiver.ReceiveFrameBytes();
+                                break;
+                            case "nodes":
+                                sceneDataHandler.nodesByteData = sceneReceiver.ReceiveFrameBytes();
+                                break;
+                            case "objects":
+                                sceneDataHandler.objectsByteData = sceneReceiver.ReceiveFrameBytes();
+                                break;
+                            case "characters":
+                                sceneDataHandler.characterByteData = sceneReceiver.ReceiveFrameBytes();
+                                break;
+                            case "textures":
+                                sceneDataHandler.texturesByteData = sceneReceiver.ReceiveFrameBytes();
+                                break;
+                            case "materials":
+                                sceneDataHandler.materialsByteData = sceneReceiver.ReceiveFrameBytes();
+                                break;
+                        }
+                        
+                        //sceneDataHandler.setByteData(request, sceneReceiver.ReceiveFrameBytes());
                     }
-                    m_done = true;
+
+                    // emit sceneReceived signal to trigger scene cration in the sceneCreator module
+                    m_sceneReceived?.Invoke(this, new EventArgs());
+
                     sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                     sceneReceiver.Close();
                     sceneReceiver.Dispose();
@@ -327,18 +379,24 @@ namespace vpet
         }
 
         //!
-        //! Class implementing the network sender.
+        //! Class implementing the network publisher.
         //!
         private class NetworkPublisher : NetworkBase
         {
             //!
             //! Constructor
-            //! @param messageQueue List of byte[] to be sent by the sender.
             //!
-            public NetworkPublisher(out List<byte[]> messageQueue) : base(out messageQueue) => base.m_messageQueue = messageQueue;
+            //! @param messageQueue List of byte[] to be sent by the sender.
+            //! @param networkManager The network manager as parent of the class.
+            //!
+            public NetworkPublisher(out List<byte[]> messageQueue, NetworkManager networkManager) : base(out messageQueue, networkManager)
+            {
+                base.m_messageQueue = messageQueue;
+                base.m_networkManager = networkManager;
+            }
 
             //!
-            //! Function, sending messages in m_sendMessageQueue (executed in separate thread).
+            //! Function, sending messages in m_messageQueue (executed in separate thread).
             //!
             public override void run()
             {
@@ -375,16 +433,20 @@ namespace vpet
             private Dictionary<string, byte[]> m_responses;
             //!
             //! Constructor
-            //! @param messageQueue List of byte[] to be sent by the sender.
             //!
-            public NetworkResponder(ref Dictionary<string, byte[]> responses, out List<byte[]> messageQueue) : base(out messageQueue)
+            //! @param responses A dictionary containing the message type and the corresponding byte data.
+            //! @param messageQueue List of byte[] to be received by the receiver.
+            //! @param networkManager The network manager as parent of the class.
+            //!
+            public NetworkResponder(ref Dictionary<string, byte[]> responses, out List<byte[]> messageQueue, NetworkManager networkManager) : base(out messageQueue, networkManager)
             {
                 base.m_messageQueue = messageQueue;
+                base.m_networkManager = networkManager;
                 m_responses = responses;
             }
 
             //!
-            //! Function, sending messages in m_sendMessageQueue (executed in separate thread).
+            //! Function, sending messages containing the scene data as reponces to the requested package (executed in separate thread).
             //!
             public override void run()
             {

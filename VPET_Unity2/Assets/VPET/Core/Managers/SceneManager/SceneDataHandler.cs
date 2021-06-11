@@ -44,9 +44,9 @@ namespace vpet
         public class SceneDataHandler
         {
             //!
-            //! Data type for storing scene object information.
+            //! Class for storing VPET scene object information.
             //!
-            public struct SceneData
+            public class SceneData
             {
                 public VpetHeader header;
                 public List<SceneNode> nodeList;
@@ -54,6 +54,16 @@ namespace vpet
                 public List<CharacterPackage> characterList;
                 public List<TexturePackage> textureList;
                 public List<MaterialPackage> materialList;
+
+                public SceneData()
+                {
+                    VpetHeader header = new VpetHeader();
+                    List<SceneNode> nodeList = new List<SceneNode>();
+                    List<ObjectPackage> objectList = new List<ObjectPackage>();
+                    List<CharacterPackage> characterList = new List<CharacterPackage>();
+                    List<TexturePackage> textureList = new List<TexturePackage>();
+                    List<MaterialPackage> materialList = new List<MaterialPackage>();
+                }
             }
 
             //!
@@ -74,9 +84,13 @@ namespace vpet
             //!
             //! @return A reference to the serialised header data.
             //!
-            public ref byte[] headerByteData
+            public ref byte[] headerByteDataRef
             {
                 get { return ref m_headerByteData; }
+            }
+            public byte[] headerByteData
+            {
+                set { m_headerByteData = value; }
             }
 
             //!
@@ -89,9 +103,13 @@ namespace vpet
             //!
             //! @return A reference to the serialised nodes data.
             //!
-            public ref byte[] nodesByteData
+            public ref byte[] nodesByteDataRef
             {
                 get { return ref m_nodesByteData; }
+            }
+            public byte[] nodesByteData
+            {
+                set { m_nodesByteData = value; }
             }
             //!
             //! The list containing the serialised meshes.
@@ -103,9 +121,13 @@ namespace vpet
             //!
             //! @return A reference to the serialised objects data.
             //!
-            public ref byte[] objectsByteData
+            public ref byte[] objectsByteDataRef
             {
                 get { return ref m_objectsByteData; }
+            }
+            public byte[] objectsByteData
+            {
+                set { m_objectsByteData = value; }
             }
             //!
             //! The list containing the serialised skinned meshes.
@@ -117,9 +139,13 @@ namespace vpet
             //!
             //! @return A reference to the serialised characters data.
             //!
-            public ref byte[] characterByteData
+            public ref byte[] characterByteDataRef
             {
                 get { return ref m_characterByteData; }
+            }
+            public byte[] characterByteData
+            {
+                set { m_characterByteData = value; }
             }
             //!
             //! The list containing the serialised textures.
@@ -131,9 +157,13 @@ namespace vpet
             //!
             //! @return A reference to the serialised textures data.
             //!
-            public ref byte[] texturesByteData
+            public ref byte[] texturesByteDataRef
             {
                 get { return ref m_texturesByteData; }
+            }
+            public byte[] texturesByteData
+            {
+                set { m_texturesByteData = value; }
             }
             //!
             //! The list containing the serialised materials.
@@ -145,9 +175,13 @@ namespace vpet
             //!
             //! @return A reference to the serialised materials data.
             //!
-            public ref byte[] materialsByteData
+            public ref byte[] materialsByteDataRef
             {
                 get { return ref m_materialsByteData; }
+            }
+            public byte[] materialsByteData
+            {
+                set { m_materialsByteData = value; }
             }
             //!
             //! Initialisation of the lists storing deserialised the scene data.
@@ -156,6 +190,9 @@ namespace vpet
             {
             }
 
+            //!
+            //! Deletes all scene byte data stored in the SceneDataHandler.
+            //!
             public void clearSceneByteData()
             {
                 m_headerByteData = new byte[0];
@@ -166,16 +203,43 @@ namespace vpet
                 m_materialsByteData = new byte[0];
             }
 
+            //!
+            //! Function to convert byte arrays into VPET SceneData.
+            //! Make shure to set the respective byte arrays before calling this function!
+            //!
             public SceneData getSceneData()
             {
                 SceneData sceneData = new SceneData();
 
-                sceneData.header = convertHeaderByteStream();
-                sceneData.nodeList = convertNodesByteStream();
-                sceneData.objectList = convertObjectsByteStream();
-                sceneData.characterList = convertCharacterByteStream();
-                sceneData.textureList = convertTexturesByteStream(ref sceneData);
-                sceneData.materialList = convertMaterialsByteStream();
+                if (m_headerByteData != null && m_headerByteData.Length > 0)
+                    sceneData.header = convertHeaderByteStream();
+                else
+                    Helpers.Log("SceneDataHandler: Header byte array null or empty!", Helpers.logMsgType.WARNING);
+
+                if (m_nodesByteData != null && m_nodesByteData.Length > 0)
+                    sceneData.nodeList = convertNodesByteStream();
+                else
+                    Helpers.Log("SceneDataHandler: Nodes byte array null or empty!", Helpers.logMsgType.WARNING);
+
+                if (m_objectsByteData != null && m_objectsByteData.Length > 0)
+                    sceneData.objectList = convertObjectsByteStream();
+                else
+                    Helpers.Log("SceneDataHandler: Objects byte array null or empty!", Helpers.logMsgType.WARNING);
+
+                if (m_characterByteData != null && m_characterByteData.Length > 0)
+                    sceneData.characterList = convertCharacterByteStream();
+                else
+                    Helpers.Log("SceneDataHandler: Character byte array null or empty!", Helpers.logMsgType.WARNING);
+
+                if (m_texturesByteData != null && m_texturesByteData.Length > 0)
+                    sceneData.textureList = convertTexturesByteStream(ref sceneData);
+                else
+                    Helpers.Log("SceneDataHandler: Textures byte array null or empty!", Helpers.logMsgType.WARNING);
+
+                if (m_materialsByteData != null && m_materialsByteData.Length > 0)
+                    sceneData.materialList = convertMaterialsByteStream();
+                else
+                    Helpers.Log("SceneDataHandler: Materieal byte array null or empty!", Helpers.logMsgType.WARNING);
 
                 // [REVIEW]
                 //VPETSettings.Instance.lightIntensityFactor = header.lightIntensityFactor;
@@ -184,6 +248,12 @@ namespace vpet
                 return sceneData;
             }
 
+            //!
+            //! Function to convert SceneData into byte arrays.
+            //! SceneData will be deleted during this process!
+            //! 
+            //! @param sceneData the scruct containing the VPET scene data.
+            //!
             public void setSceneData(ref SceneData sceneData)
             {
                 // create byte arrays and clear buffers
@@ -206,9 +276,38 @@ namespace vpet
             }
 
             //!
-            //! The function deserialises a header byte stream and stores it as scene defaults.
+            //! Function that sets based on the package type the corresponding byte data.
             //!
-            //! @param headerByteData The byte stream containing header data.
+            //! @param packageType The package type as a string.
+            //! @param package The corresponding package data as a byte array.
+            //!
+            public void setByteData(string packageType, byte[] package)
+            {
+                switch (packageType)
+                {
+                    case "header":
+                        m_headerByteData = package;
+                        break;
+                    case "nodes":
+                        m_nodesByteData = package;
+                        break;
+                    case "objects":
+                        m_objectsByteData = package;
+                        break;
+                    case "characters":
+                        m_characterByteData = package;
+                        break;
+                    case "textures":
+                        m_texturesByteData = package;
+                        break;
+                    case "materials":
+                        m_materialsByteData = package;
+                        break;
+                }
+            }
+
+            //!
+            //! The function deserialises a header byte stream and stores it as scene defaults.
             //!
             private VpetHeader convertHeaderByteStream()
             {
@@ -218,8 +317,6 @@ namespace vpet
 
             //!
             //! The function deserialises a node byte stream and stores it into the sceneNode list.
-            //!
-            //! @param nodesByteData The byte stream containing scene node data.
             //!
             private List<SceneNode> convertNodesByteStream()
             {
@@ -259,8 +356,6 @@ namespace vpet
 
             //!
             //! The function deserialises a material byte stream and stores it into the material list.
-            //!
-            //! @param materialsByteData The byte stream containing material data.
             //!
             private List<MaterialPackage> convertMaterialsByteStream()
             {
@@ -306,7 +401,7 @@ namespace vpet
             //!
             //! The function deserialises a texture byte stream and stores it into the texture list.
             //!
-            //! @param texturesByteData The byte stream containing texture data.
+            //! @param sceneData The scene data for checking the tyture type.
             //!
             private List<TexturePackage> convertTexturesByteStream(ref SceneData sceneData)
             {
@@ -343,11 +438,8 @@ namespace vpet
                 return textureList;
             }
 
-            //[REVIEW]
             //!
             //! The function deserialises a character byte stream and stores it into the character list.
-            //!
-            //! @param characterByteData The byte stream containing character data.
             //!
             private List<CharacterPackage> convertCharacterByteStream()
             {
@@ -433,8 +525,6 @@ namespace vpet
             //!
             //! The function deserialises a mesh byte stream and stores it into the object list.
             //!
-            //! @param objectsByteData The byte stream containing mesh data.
-            //!
             private List<ObjectPackage> convertObjectsByteStream()
             {
                 List<ObjectPackage> objectList = new List<ObjectPackage>();
@@ -515,8 +605,6 @@ namespace vpet
 
             //!
             //! Function that concatinates all serialised VPET nodes to a byte array.
-            //!
-            //! @param nodeList The list that contains the serialised nodes to be concatinated.
             //!
             private void getNodesByteArray(ref List<SceneManager.SceneNode> nodeList)
             {
