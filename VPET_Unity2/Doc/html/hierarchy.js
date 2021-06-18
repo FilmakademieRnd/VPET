@@ -19,7 +19,9 @@ var hierarchy =
       [ "vpet.Module", "classvpet_1_1_module.html", [
         [ "vpet.NetworkManagerModule", "classvpet_1_1_network_manager_module.html", [
           [ "vpet.SceneReceiverModule", "classvpet_1_1_scene_receiver_module.html", null ],
-          [ "vpet.SceneSenderModule", "classvpet_1_1_scene_sender_module.html", null ]
+          [ "vpet.SceneSenderModule", "classvpet_1_1_scene_sender_module.html", null ],
+          [ "vpet.UpdateReceiverModule", "classvpet_1_1_update_receiver_module.html", null ],
+          [ "vpet.UpdateSenderModule", "classvpet_1_1_update_sender_module.html", null ]
         ] ],
         [ "vpet.SceneManagerModule", "classvpet_1_1_scene_manager_module.html", [
           [ "vpet.SceneCreatorModule", "classvpet_1_1_scene_creator_module.html", null ],
@@ -31,7 +33,7 @@ var hierarchy =
     ] ],
     [ "MonoBehaviour", null, [
       [ "vpet.CoreInterface", "classvpet_1_1_core_interface.html", [
-        [ "vpet.VPET", "classvpet_1_1_v_p_e_t.html", null ]
+        [ "vpet.Core", "classvpet_1_1_core.html", null ]
       ] ],
       [ "vpet.DummyModule", "classvpet_1_1_dummy_module.html", null ],
       [ "vpet.LightArrow", "classvpet_1_1_light_arrow.html", null ],
@@ -46,12 +48,6 @@ var hierarchy =
           [ "vpet.SpotLightObject", "classvpet_1_1_spot_light_object.html", null ]
         ] ]
       ] ]
-    ] ],
-    [ "vpet.NetworkManager.NetworkBase", "classvpet_1_1_network_manager_1_1_network_base.html", [
-      [ "vpet.NetworkManager.NetworkPublisher", "classvpet_1_1_network_manager_1_1_network_publisher.html", null ],
-      [ "vpet.NetworkManager.NetworkRequester", "classvpet_1_1_network_manager_1_1_network_requester.html", null ],
-      [ "vpet.NetworkManager.NetworkResponder", "classvpet_1_1_network_manager_1_1_network_responder.html", null ],
-      [ "vpet.NetworkManager.NetworkSubscriber", "classvpet_1_1_network_manager_1_1_network_subscriber.html", null ]
     ] ],
     [ "vpet.SceneManager.ObjectPackage", "classvpet_1_1_scene_manager_1_1_object_package.html", null ],
     [ "vpet.Parameter< T >", "classvpet_1_1_parameter.html", null ],

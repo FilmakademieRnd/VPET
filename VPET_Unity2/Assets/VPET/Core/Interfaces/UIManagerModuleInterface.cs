@@ -21,13 +21,12 @@ namespace vpet
         //!
         new public UIManager manager
         {
-            get => (UIManager)_manager;
-            set => _manager = value;
+            get => m_core.getManager<UIManager>();
         }
         //!
         //! constructor
         //! @param  name    name of the module.
         //!
-        public UIManagerModule(string name) : base(name) => name = base.name;
+        public UIManagerModule(string name, Core core) : base(name, core) { }
     }
 }

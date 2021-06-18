@@ -13,6 +13,6 @@ var dir_002300f751dd2d959a5bf4adeea77925 =
       [ "LightSphere", "classvpet_1_1_light_sphere.html", "classvpet_1_1_light_sphere" ]
     ] ],
     [ "UnitySceneLoaderModule.cs", "_unity_scene_loader_module_8cs.html", [
-      [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", null ]
+      [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", "classvpet_1_1_unity_scene_loader_module" ]
     ] ]
 ];

@@ -179,7 +179,7 @@ namespace vpet
             public int bWSize;
             //! The additionally stored Unity mesh.
             public Mesh mesh;
-            //! The array of floats storing the vertex positions as x,y,z,w.
+            //! The array of floats storing the vertex positions as x,y,z.
             public float[] vertices;
             //! The array of ints storing the indices.
             public int[] indices;

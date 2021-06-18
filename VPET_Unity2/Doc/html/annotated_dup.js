@@ -1,6 +1,7 @@
 var annotated_dup =
 [
     [ "vpet", "namespacevpet.html", [
+      [ "Core", "classvpet_1_1_core.html", "classvpet_1_1_core" ],
       [ "CoreInterface", "classvpet_1_1_core_interface.html", "classvpet_1_1_core_interface" ],
       [ "ManagerInterface", "interfacevpet_1_1_manager_interface.html", null ],
       [ "Manager", "classvpet_1_1_manager.html", "classvpet_1_1_manager" ],
@@ -20,17 +21,18 @@ var annotated_dup =
       [ "SceneObject", "classvpet_1_1_scene_object.html", "classvpet_1_1_scene_object" ],
       [ "SpotLightObject", "classvpet_1_1_spot_light_object.html", "classvpet_1_1_spot_light_object" ],
       [ "VPETSettings", "classvpet_1_1_v_p_e_t_settings.html", "classvpet_1_1_v_p_e_t_settings" ],
-      [ "VPET", "classvpet_1_1_v_p_e_t.html", "classvpet_1_1_v_p_e_t" ],
       [ "Helpers", "classvpet_1_1_helpers.html", "classvpet_1_1_helpers" ],
       [ "SceneReceiverModule", "classvpet_1_1_scene_receiver_module.html", "classvpet_1_1_scene_receiver_module" ],
       [ "SceneSenderModule", "classvpet_1_1_scene_sender_module.html", "classvpet_1_1_scene_sender_module" ],
+      [ "UpdateReceiverModule", "classvpet_1_1_update_receiver_module.html", "classvpet_1_1_update_receiver_module" ],
+      [ "UpdateSenderModule", "classvpet_1_1_update_sender_module.html", "classvpet_1_1_update_sender_module" ],
       [ "SceneCreatorModule", "classvpet_1_1_scene_creator_module.html", "classvpet_1_1_scene_creator_module" ],
       [ "SceneParserModule", "classvpet_1_1_scene_parser_module.html", "classvpet_1_1_scene_parser_module" ],
       [ "LightArrow", "classvpet_1_1_light_arrow.html", "classvpet_1_1_light_arrow" ],
       [ "LightCone", "classvpet_1_1_light_cone.html", "classvpet_1_1_light_cone" ],
       [ "LightIcon", "classvpet_1_1_light_icon.html", "classvpet_1_1_light_icon" ],
       [ "LightSphere", "classvpet_1_1_light_sphere.html", "classvpet_1_1_light_sphere" ],
-      [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", null ],
+      [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", "classvpet_1_1_unity_scene_loader_module" ],
       [ "DummyModule", "classvpet_1_1_dummy_module.html", "classvpet_1_1_dummy_module" ]
     ] ]
 ];

@@ -17,7 +17,7 @@ namespace vpet
     //! Central class for VPET initalization.
     //! Manages all VPETManagers and their modules.
     //!
-    public class VPET : CoreInterface
+    public class Core : CoreInterface
     {
 
         //!

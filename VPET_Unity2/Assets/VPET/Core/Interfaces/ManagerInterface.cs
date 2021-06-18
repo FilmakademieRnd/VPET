@@ -25,17 +25,16 @@ namespace vpet
     public class Manager : ManagerInterface
     {
         //!
-        //! reference to vpet uberManager
+        //! reference to vpet core.
         //!
-        private CoreInterface _core;
+        private Core m_core;
 
         //!
         //! get the vpet core
         //!
-        public CoreInterface core
+        public ref Core core
         {
-            get => _core;
-
+            get => ref m_core;
         }
 
         //!
@@ -48,14 +47,14 @@ namespace vpet
         //! @param  name    name of the manager
         //! @param  moduleType  type of modules to be loaded by this manager
         //!
-        public Manager(Type moduleType, CoreInterface vpetCore)
+        public Manager(Type moduleType, Core vpetCore)
         {
             m_modules = new Dictionary<Type, Module>();
-            _core = vpetCore;
+            m_core = vpetCore;
             Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
             foreach (Type t in modules)
             {
-                Module module = (Module)Activator.CreateInstance(t, t.ToString());
+                Module module = (Module)Activator.CreateInstance(t, t.ToString(), this);
                 addModule(module, t);
             }
         }
@@ -73,22 +72,21 @@ namespace vpet
             else
             {
                 m_modules.Add(type, module);
-                module.manager = this;
                 return true;
             }
         }
 
         //!
         //! get a module from the manager
-        //! @param  name    name of module
-        //! @return requested module or null
+        //! @tparam T The type of module to be requested.
+        //! @return requested module or null if no module of this type is registered.
         //!
-        public Module getModule(Type type)
+        public T getModule<T>()
         {
             Module module;
-            if (!m_modules.TryGetValue(type, out module))
-                Helpers.Log(this.GetType().ToString() + " could not find " + type.ToString(), Helpers.logMsgType.ERROR);
-            return module;
+            if (!m_modules.TryGetValue(typeof(T), out module))
+                Helpers.Log(this.GetType().ToString() + " no module of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.ERROR);
+            return (T)(object) module;
         }
 
         //!

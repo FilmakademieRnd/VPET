@@ -31,6 +31,10 @@ Syncronisation Server. They are licensed under the following terms:
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
+using System;
+using NetMQ;
+using NetMQ.Sockets;
 
 namespace vpet
 {
@@ -39,15 +43,56 @@ namespace vpet
     //!
     public class SceneSenderModule : NetworkManagerModule
     {
+        private Dictionary<string, byte[]> m_responses;
         //!
-        //! Constructor.
-        //! Initialisation of all members and setup of the response messages.
+        //! Constructor
         //!
-        public SceneSenderModule(string name) : base(name)
+        //! @param responses A dictionary containing the message type and the corresponding byte data.
+        //! @param messageQueue List of byte[] to be received by the receiver.
+        //! @param networkManager The network manager as parent of the class.
+        //!
+        public SceneSenderModule(string name, Core core, out List<byte[]> messageQueue) : base(name, core, out messageQueue)
         {
-            name = base.name;
+        }
 
-         
+        //!
+        //! Function, sending messages containing the scene data as reponces to the requested package (executed in separate thread).
+        //!
+        protected override void run()
+        {
+            m_isRunning = true;
+            AsyncIO.ForceDotNet.Force();
+            using (var dataSender = new ResponseSocket())
+            {
+                dataSender.Bind("tcp://" + m_ip + ":" + m_port);
+                Debug.Log("Enter while.. ");
+
+                while (m_isRunning)
+                {
+                    string message = "";
+                    dataSender.TryReceiveFrameString(out message);       // TryReceiveFrameString returns null if no message has been received!
+                    if (message != null)
+                    {
+                        if (m_responses.ContainsKey(message))
+                            dataSender.SendFrame(m_responses[message]);
+                        else
+                            dataSender.SendFrame(new byte[0]);
+                    }
+                }
+
+                // TODO: check first if closed
+                try
+                {
+                    dataSender.Disconnect("tcp://" + m_ip + ":" + m_port);
+                    dataSender.Dispose();
+                    dataSender.Close();
+                }
+                finally
+                {
+                    NetMQConfig.Cleanup(false);
+                }
+
+            }
         }
 
         //!
@@ -57,26 +102,18 @@ namespace vpet
         //!
         public void sendScene(string ip, string port)
         {
-            Dictionary<string, byte[]> responses = new Dictionary<string, byte[]>();
-            SceneManager.SceneDataHandler dataHandler = ((SceneManager)manager.core.getManager(typeof(SceneManager))).sceneDataHandler;
+            // [REVIEW]
+            m_responses = new Dictionary<string, byte[]>();
+            SceneManager.SceneDataHandler dataHandler = m_core.getManager<SceneManager>().sceneDataHandler;
 
-            responses.Add("header", dataHandler.headerByteDataRef);
-            responses.Add("nodes", dataHandler.nodesByteDataRef);
-            responses.Add("objects", dataHandler.objectsByteDataRef);
-            responses.Add("characters", dataHandler.characterByteDataRef);
-            responses.Add("textures", dataHandler.texturesByteDataRef);
-            responses.Add("materials", dataHandler.materialsByteDataRef);
+            m_responses.Add("header", dataHandler.headerByteDataRef);
+            m_responses.Add("nodes", dataHandler.nodesByteDataRef);
+            m_responses.Add("objects", dataHandler.objectsByteDataRef);
+            m_responses.Add("characters", dataHandler.characterByteDataRef);
+            m_responses.Add("textures", dataHandler.texturesByteDataRef);
+            m_responses.Add("materials", dataHandler.materialsByteDataRef);
 
-            manager.startResponder(ip, port, ref responses);
+            start(ip, port);
         }
-
-        //!
-        //! Function to stop the scene sender module.
-        //!
-        public void stop()
-        {
-            manager.stopResponder();
-        }
-
     }
 }

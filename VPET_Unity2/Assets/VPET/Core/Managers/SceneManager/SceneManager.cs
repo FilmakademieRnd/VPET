@@ -59,7 +59,7 @@ namespace vpet
         //! @param  name    Name of the scene manager
         //! @param  moduleType  Type of module to add to this manager 
         //!
-        public SceneManager(Type moduleType, CoreInterface vpetCore) : base(moduleType, vpetCore)
+        public SceneManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_sceneDataHandler = new SceneDataHandler();
         }

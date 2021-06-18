@@ -19,15 +19,14 @@ namespace vpet
         //!
         //! set/get the manager of this module.
         //!
-        new public SceneManager manager
+        public SceneManager manager
         {
-            get => (SceneManager)_manager;
-            set => _manager = value;
+            get => m_core.getManager<SceneManager>();
         }
         //!
         //! constructor
         //! @param  name    name of the module.
         //!
-        public SceneManagerModule(string name) : base(name) => name = base.name;
+        public SceneManagerModule(string name, Core core) : base(name, core) {}
     }
 }

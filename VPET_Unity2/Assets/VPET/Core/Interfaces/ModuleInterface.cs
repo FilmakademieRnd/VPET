@@ -27,27 +27,22 @@ namespace vpet
         //! manager of this module
         //! assigned in addModule function in Manager.
         //!
-        protected Manager _manager;
-
-        //!
-        //! set/get the manager of this module.
-        //!
-        public Manager manager
-        {
-            get => _manager;
-            set => _manager = value;
-        }
+        protected Core m_core;
 
         //!
         //! constructor
         //! @param  name    name of the module.
         //!
-        public Module(string name) => name = this.name;
+        public Module(string name, Core core)
+        {
+            m_name = name;
+            m_core = core;
+        }
 
         //!
         //! name of the module
         //!
-        protected string _name;
+        protected string m_name;
 
         //!
         //! get the name of the module.
@@ -55,7 +50,7 @@ namespace vpet
         //!
         public string name
         {
-            get => _name;
+            get => m_name;
         }
     }
 }

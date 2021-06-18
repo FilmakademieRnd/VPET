@@ -84,10 +84,7 @@ $(document).ready(function(){initNavTree('classvpet_1_1_network_manager.html',''
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#properties">Properties</a> &#124;
-<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_network_manager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.NetworkManager Class Reference</div>  </div>
@@ -104,63 +101,15 @@ Inheritance diagram for vpet.NetworkManager:</div>
   </map>
 </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_base.html">NetworkBase</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_publisher.html">NetworkPublisher</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_requester.html">NetworkRequester</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_responder.html">NetworkResponder</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_1_1_network_subscriber.html">NetworkSubscriber</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8de9d7a16b6066bb499f507448324114"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a8de9d7a16b6066bb499f507448324114">NetworkManager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core_interface.html">CoreInterface</a> vpetCore)</td></tr>
-<tr class="separator:a8de9d7a16b6066bb499f507448324114"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f9aa5a5a769e10a1f0aed1a6f8aebe1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a7f9aa5a5a769e10a1f0aed1a6f8aebe1">startSubscriber</a> (string ip, string port, out List&lt; byte[]&gt; subscriberMessageQueue)</td></tr>
-<tr class="separator:a7f9aa5a5a769e10a1f0aed1a6f8aebe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b68b5ece3947d0381d78c5e3a503897"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a3b68b5ece3947d0381d78c5e3a503897">stopSubscriber</a> (int receiverID)</td></tr>
-<tr class="separator:a3b68b5ece3947d0381d78c5e3a503897"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86abebd830220c95a36dd8a913550829"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a86abebd830220c95a36dd8a913550829">startRequester</a> (string ip, string port, out List&lt; byte[]&gt; requesterMessageQueue, ref List&lt; string &gt; requests)</td></tr>
-<tr class="separator:a86abebd830220c95a36dd8a913550829"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5344fac80c50b05a15f3336e5d8af45f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a5344fac80c50b05a15f3336e5d8af45f">stopRequester</a> (int requesterID)</td></tr>
-<tr class="separator:a5344fac80c50b05a15f3336e5d8af45f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0feeaabd7f35d1f1d16e0745c95b0ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#ae0feeaabd7f35d1f1d16e0745c95b0ac">startPublisher</a> (string ip, string port, out List&lt; byte[]&gt; publisherMessageQueue)</td></tr>
-<tr class="separator:ae0feeaabd7f35d1f1d16e0745c95b0ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1817d34ed8a3ae4dd7b8f91580ac5ca7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a1817d34ed8a3ae4dd7b8f91580ac5ca7">stopPublisher</a> (int senderID)</td></tr>
-<tr class="separator:a1817d34ed8a3ae4dd7b8f91580ac5ca7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4784e64a1208546becc229af79b11a6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a4784e64a1208546becc229af79b11a6a">startResponder</a> (string ip, string port, ref Dictionary&lt; string, byte[]&gt; responses)</td></tr>
-<tr class="separator:a4784e64a1208546becc229af79b11a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a834e0f6b436fb1188fe7db00ede3912e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a834e0f6b436fb1188fe7db00ede3912e">stopResponder</a> ()</td></tr>
-<tr class="separator:a834e0f6b436fb1188fe7db00ede3912e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcd37f825763f41b3ece6eec81e1b3e0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#afcd37f825763f41b3ece6eec81e1b3e0">NetworkManager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core.html">Core</a> vpetCore)</td></tr>
+<tr class="separator:afcd37f825763f41b3ece6eec81e1b3e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
-<tr class="memitem:a704d6ec73bda400ca656bd6b988f21f5 inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a704d6ec73bda400ca656bd6b988f21f5">Manager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core_interface.html">CoreInterface</a> vpetCore)</td></tr>
-<tr class="separator:a704d6ec73bda400ca656bd6b988f21f5 inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bb2677ecd3e8b0c79ca1e3ccf6709cf inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_module.html">Module</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a5bb2677ecd3e8b0c79ca1e3ccf6709cf">getModule</a> (Type type)</td></tr>
-<tr class="separator:a5bb2677ecd3e8b0c79ca1e3ccf6709cf inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
-Properties</h2></td></tr>
-<tr class="memitem:a00d748579753f4f93eafff689b3e8004"><td class="memItemLeft" align="right" valign="top">ref <a class="el" href="classvpet_1_1_network_manager_1_1_network_requester.html">NetworkRequester</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a00d748579753f4f93eafff689b3e8004">requester</a><code> [get]</code></td></tr>
-<tr class="separator:a00d748579753f4f93eafff689b3e8004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header properties_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('properties_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
-<tr class="memitem:a9ec26fa1fea8448514a39798c682ba0a inherit properties_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_core_interface.html">CoreInterface</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a9ec26fa1fea8448514a39798c682ba0a">core</a><code> [get]</code></td></tr>
-<tr class="separator:a9ec26fa1fea8448514a39798c682ba0a inherit properties_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a47f5c2c72e39c8d7562a302e193874fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_network_manager_1_1_network_subscriber.html">NetworkSubscriber</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a47f5c2c72e39c8d7562a302e193874fd">m_subscriber</a></td></tr>
-<tr class="separator:a47f5c2c72e39c8d7562a302e193874fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1521044441d1412aba520a5d9e77f40"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_network_manager_1_1_network_requester.html">NetworkRequester</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#ad1521044441d1412aba520a5d9e77f40">m_requester</a></td></tr>
-<tr class="separator:ad1521044441d1412aba520a5d9e77f40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47bfbaec5c7ac3799c3b5515a57325fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_network_manager_1_1_network_publisher.html">NetworkPublisher</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a47bfbaec5c7ac3799c3b5515a57325fb">m_publisher</a></td></tr>
-<tr class="separator:a47bfbaec5c7ac3799c3b5515a57325fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a500e9e2bd2760c559ca9932f4a8429ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_network_manager_1_1_network_responder.html">NetworkResponder</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager.html#a500e9e2bd2760c559ca9932f4a8429ba">m_responder</a></td></tr>
-<tr class="separator:a500e9e2bd2760c559ca9932f4a8429ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36ad7cc7d92c772fc5e898dd93bca6a0 inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a36ad7cc7d92c772fc5e898dd93bca6a0">Manager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core.html">Core</a> vpetCore)</td></tr>
+<tr class="separator:a36ad7cc7d92c772fc5e898dd93bca6a0 inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fc56919bb0603dc2ddf2c409828dcec inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a9fc56919bb0603dc2ddf2c409828dcec">getModule&lt; T &gt;</a> ()</td></tr>
+<tr class="separator:a9fc56919bb0603dc2ddf2c409828dcec inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -169,12 +118,15 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#aaedf4eb371f9c8f0e7f11a025c8d2828">removeModule</a> (Type type)</td></tr>
 <tr class="separator:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header properties_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('properties_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
+<tr class="memitem:ac86f85618bfd52fc204aa30fddff74a8 inherit properties_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">ref <a class="el" href="classvpet_1_1_core.html">Core</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ac86f85618bfd52fc204aa30fddff74a8">core</a><code> [get]</code></td></tr>
+<tr class="separator:ac86f85618bfd52fc204aa30fddff74a8 inherit properties_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class implementing the network manager and netMQ sender/receiver. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8de9d7a16b6066bb499f507448324114"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8de9d7a16b6066bb499f507448324114">&#9670;&nbsp;</a></span>NetworkManager()</h2>
+<a id="afcd37f825763f41b3ece6eec81e1b3e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcd37f825763f41b3ece6eec81e1b3e0">&#9670;&nbsp;</a></span>NetworkManager()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,7 +140,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classvpet_1_1_core_interface.html">CoreInterface</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_core.html">Core</a>&#160;</td>
           <td class="paramname"><em>vpetCore</em>&#160;</td>
         </tr>
         <tr>
@@ -199,400 +151,6 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Constructor initializing member variables. </p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae0feeaabd7f35d1f1d16e0745c95b0ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0feeaabd7f35d1f1d16e0745c95b0ac">&#9670;&nbsp;</a></span>startPublisher()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.startPublisher </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>ip</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>port</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">out List&lt; byte[]&gt;&#160;</td>
-          <td class="paramname"><em>publisherMessageQueue</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to start a new publisher thread.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ip</td><td>IP address of the network interface the publisher shall use. </td></tr>
-    <tr><td class="paramname">port</td><td>Port number the publisher shall use. </td></tr>
-    <tr><td class="paramname">subscriberMessageQueue</td><td>List of byte[] to be filled by the publisher. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a86abebd830220c95a36dd8a913550829"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86abebd830220c95a36dd8a913550829">&#9670;&nbsp;</a></span>startRequester()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.startRequester </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>ip</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>port</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">out List&lt; byte[]&gt;&#160;</td>
-          <td class="paramname"><em>requesterMessageQueue</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ref List&lt; string &gt;&#160;</td>
-          <td class="paramname"><em>requests</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to start a new requester thread.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ip</td><td>IP address of the network interface the requester shall use. </td></tr>
-    <tr><td class="paramname">port</td><td>Port number the requester shall use. </td></tr>
-    <tr><td class="paramname">subscriberMessageQueue</td><td>List of byte[] to be filled by the requester. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a4784e64a1208546becc229af79b11a6a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4784e64a1208546becc229af79b11a6a">&#9670;&nbsp;</a></span>startResponder()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.startResponder </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>ip</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>port</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">ref Dictionary&lt; string, byte[]&gt;&#160;</td>
-          <td class="paramname"><em>responses</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to start a new responder thread.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ip</td><td>IP address of the network interface the responder shall use. </td></tr>
-    <tr><td class="paramname">port</td><td>Port number the responder shall use. </td></tr>
-    <tr><td class="paramname">subscriberMessageQueue</td><td>List of byte[] to be filled by the responder. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a7f9aa5a5a769e10a1f0aed1a6f8aebe1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f9aa5a5a769e10a1f0aed1a6f8aebe1">&#9670;&nbsp;</a></span>startSubscriber()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.startSubscriber </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>ip</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>port</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">out List&lt; byte[]&gt;&#160;</td>
-          <td class="paramname"><em>subscriberMessageQueue</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to start a new subscriber thread.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ip</td><td>IP address of the network interface the subscriber shall use. </td></tr>
-    <tr><td class="paramname">port</td><td>Port number the subscriber shall use. </td></tr>
-    <tr><td class="paramname">subscriberMessageQueue</td><td>List of byte[] to be filled by the subscriber. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a1817d34ed8a3ae4dd7b8f91580ac5ca7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1817d34ed8a3ae4dd7b8f91580ac5ca7">&#9670;&nbsp;</a></span>stopPublisher()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.stopPublisher </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>senderID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to stop a publisher.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">receiverID</td><td>Global ID of the publisher to be stopped. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a5344fac80c50b05a15f3336e5d8af45f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5344fac80c50b05a15f3336e5d8af45f">&#9670;&nbsp;</a></span>stopRequester()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.stopRequester </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>requesterID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to stop a requester.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">receiverID</td><td>Global ID of the requester to be stopped. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a834e0f6b436fb1188fe7db00ede3912e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a834e0f6b436fb1188fe7db00ede3912e">&#9670;&nbsp;</a></span>stopResponder()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.stopResponder </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to stop a responder.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">receiverID</td><td>Global ID of the responder to be stopped. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a3b68b5ece3947d0381d78c5e3a503897"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b68b5ece3947d0381d78c5e3a503897">&#9670;&nbsp;</a></span>stopSubscriber()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.NetworkManager.stopSubscriber </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>receiverID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Function to stop a subscriber.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">receiverID</td><td>Global ID of the subscriber to be stopped. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a47bfbaec5c7ac3799c3b5515a57325fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47bfbaec5c7ac3799c3b5515a57325fb">&#9670;&nbsp;</a></span>m_publisher</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_network_manager_1_1_network_publisher.html">NetworkPublisher</a> vpet.NetworkManager.m_publisher</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Dictionary storing all registered network publishers and their global IDs. </p>
-
-</div>
-</div>
-<a id="ad1521044441d1412aba520a5d9e77f40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1521044441d1412aba520a5d9e77f40">&#9670;&nbsp;</a></span>m_requester</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_network_manager_1_1_network_requester.html">NetworkRequester</a> vpet.NetworkManager.m_requester</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Dictionary storing all registered network requesters and their global IDs. </p>
-
-</div>
-</div>
-<a id="a500e9e2bd2760c559ca9932f4a8429ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a500e9e2bd2760c559ca9932f4a8429ba">&#9670;&nbsp;</a></span>m_responder</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_network_manager_1_1_network_responder.html">NetworkResponder</a> vpet.NetworkManager.m_responder</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Dictionary storing all registered network responders and their global IDs. </p>
-
-</div>
-</div>
-<a id="a47f5c2c72e39c8d7562a302e193874fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47f5c2c72e39c8d7562a302e193874fd">&#9670;&nbsp;</a></span>m_subscriber</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_network_manager_1_1_network_subscriber.html">NetworkSubscriber</a> vpet.NetworkManager.m_subscriber</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Dictionary storing all registered network subscribers and their global IDs. </p>
-
-</div>
-</div>
-<h2 class="groupheader">Property Documentation</h2>
-<a id="a00d748579753f4f93eafff689b3e8004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a00d748579753f4f93eafff689b3e8004">&#9670;&nbsp;</a></span>requester</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">ref <a class="el" href="classvpet_1_1_network_manager_1_1_network_requester.html">NetworkRequester</a> vpet.NetworkManager.requester</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

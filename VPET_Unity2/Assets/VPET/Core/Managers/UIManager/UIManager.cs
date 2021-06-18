@@ -10,7 +10,7 @@ namespace vpet
         //!
         //! Constructor initializing member variables.
         //!
-        public UIManager(Type moduleType, CoreInterface vpetCore) : base(moduleType, vpetCore)
+        public UIManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
 
         }

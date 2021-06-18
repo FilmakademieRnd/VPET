@@ -33,15 +33,19 @@ namespace vpet
         }
 
         //!
-        //! get a manager from the core
-        //! @param  name    name of manager
-        //! @return requested manager or null
+        //! Returns the VPET manager with the given type.
         //!
-        public Manager getManager(Type type)
+        //! @tparam T The type of manager to be requested.
+        //! @return The requested manager or null if not registered. 
+        //!
+        public T getManager<T>()
         {
             Manager manager;
-            m_managerList.TryGetValue(type, out manager);
-            return manager;
+
+            if (!m_managerList.TryGetValue(typeof(T), out manager))
+                Helpers.Log(this.GetType().ToString() + " no manager of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.ERROR);
+
+            return (T)(object) manager;
         }
     }
 }

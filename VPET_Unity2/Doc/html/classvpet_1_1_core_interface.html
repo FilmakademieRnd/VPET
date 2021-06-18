@@ -97,7 +97,7 @@ Inheritance diagram for vpet.CoreInterface:</div>
  <div class="center">
   <img src="classvpet_1_1_core_interface.png" usemap="#vpet.CoreInterface_map" alt=""/>
   <map id="vpet.CoreInterface_map" name="vpet.CoreInterface_map">
-<area href="classvpet_1_1_v_p_e_t.html" alt="vpet.VPET" shape="rect" coords="0,112,118,136"/>
+<area href="classvpet_1_1_core.html" alt="vpet.Core" shape="rect" coords="0,112,118,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -105,8 +105,8 @@ Inheritance diagram for vpet.CoreInterface:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8d3ec3ef78b40f93551d127b6b33a00e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_core_interface.html#a8d3ec3ef78b40f93551d127b6b33a00e">CoreInterface</a> ()</td></tr>
 <tr class="separator:a8d3ec3ef78b40f93551d127b6b33a00e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbfa713f6456c72303deed8c1967e78a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_manager.html">Manager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_core_interface.html#abbfa713f6456c72303deed8c1967e78a">getManager</a> (Type type)</td></tr>
-<tr class="separator:abbfa713f6456c72303deed8c1967e78a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6309d2590764608f9d8537f28680df7d"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_core_interface.html#a6309d2590764608f9d8537f28680df7d">getManager&lt; T &gt;</a> ()</td></tr>
+<tr class="separator:a6309d2590764608f9d8537f28680df7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -114,7 +114,7 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ade8deca313b2c1709e7621c199ba492a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Central class for <a class="el" href="classvpet_1_1_v_p_e_t.html">VPET</a> initalization. Manages all VPETManagers and their modules. </p>
+<div class="textblock"><p>Central class for VPET initalization. Manages all VPETManagers and their modules. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8d3ec3ef78b40f93551d127b6b33a00e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8d3ec3ef78b40f93551d127b6b33a00e">&#9670;&nbsp;</a></span>CoreInterface()</h2>
@@ -135,28 +135,28 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="abbfa713f6456c72303deed8c1967e78a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbfa713f6456c72303deed8c1967e78a">&#9670;&nbsp;</a></span>getManager()</h2>
+<a id="a6309d2590764608f9d8537f28680df7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6309d2590764608f9d8537f28680df7d">&#9670;&nbsp;</a></span>getManager&lt; T &gt;()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_manager.html">Manager</a> vpet.CoreInterface.getManager </td>
+          <td class="memname">T vpet.CoreInterface.getManager&lt; T &gt; </td>
           <td>(</td>
-          <td class="paramtype">Type&#160;</td>
-          <td class="paramname"><em>type</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>get a manager from the core </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>name of manager </td></tr>
+<p>Returns the VPET manager with the given type.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type of manager to be requested. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>requested manager or null </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The requested manager or null if not registered. </dd></dl>
 
 </div>
 </div>

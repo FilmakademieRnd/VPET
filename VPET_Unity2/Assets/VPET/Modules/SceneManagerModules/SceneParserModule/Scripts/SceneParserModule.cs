@@ -63,9 +63,8 @@ namespace vpet
         //!
         //! Constructor
         //!
-        public SceneParserModule(string name) : base(name)
+        public SceneParserModule(string name, Core core) : base(name, core) 
         {
-            name = base.name;
             scene = GameObject.Find("Scene").transform;
 
             m_lodLowLayer = LayerMask.NameToLayer("LodLow");

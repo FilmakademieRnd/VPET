@@ -19,7 +19,7 @@ var classvpet_1_1_scene_manager =
       [ "CAMERA", "classvpet_1_1_scene_manager.html#a2c1705c6da485e79240ed574012ed51baddf0d6b21537d984fea6544f58101fa8", null ],
       [ "SKINNEDMESH", "classvpet_1_1_scene_manager.html#a2c1705c6da485e79240ed574012ed51ba19f345b5d10d757944fefc64c414a4e4", null ]
     ] ],
-    [ "SceneManager", "classvpet_1_1_scene_manager.html#a3c25922065a231bdab1cabb0486b35e0", null ],
+    [ "SceneManager", "classvpet_1_1_scene_manager.html#ada328ea9180f1aaa5ecad7c2732c1bbe", null ],
     [ "m_sceneDataHandler", "classvpet_1_1_scene_manager.html#a1a5a12ca81106d8eaa82f5f977d374c0", null ],
     [ "sceneDataHandler", "classvpet_1_1_scene_manager.html#af07466dcd1a4211d428aec631084c384", null ]
 ];

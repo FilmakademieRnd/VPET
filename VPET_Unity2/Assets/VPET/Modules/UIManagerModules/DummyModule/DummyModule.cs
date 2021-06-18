@@ -7,19 +7,19 @@ namespace vpet
 {
     public class DummyModule : MonoBehaviour
     {
-        private VPET m_vpet;
+        private Core m_vpet;
 
         public void Awake()
         {
-            m_vpet = GameObject.Find("VPET").GetComponent<VPET>();
+            m_vpet = GameObject.Find("VPET").GetComponent<Core>();
         }
         public void send()
         {
-            SceneManager sceneManager = (SceneManager) m_vpet.getManager(typeof(SceneManager));
-            NetworkManager networkManager = (NetworkManager) m_vpet.getManager(typeof(NetworkManager));
+            SceneManager sceneManager = m_vpet.getManager<SceneManager>();
+            NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
-            SceneParserModule sceneParserModule = (SceneParserModule) sceneManager.getModule(typeof(SceneParserModule));
-            SceneSenderModule sceneSenderModule = (SceneSenderModule) networkManager.getModule(typeof(SceneSenderModule));
+            SceneParserModule sceneParserModule = sceneManager.getModule<SceneParserModule>();
+            SceneSenderModule sceneSenderModule = networkManager.getModule<SceneSenderModule>();
 
             sceneParserModule.ParseScene();
             sceneSenderModule.sendScene("172.18.2.101", "5555");
@@ -27,11 +27,11 @@ namespace vpet
 
         public void receive()
         {
-            SceneManager sceneManager = (SceneManager)m_vpet.getManager(typeof(SceneManager));
-            NetworkManager networkManager = (NetworkManager)m_vpet.getManager(typeof(NetworkManager));
+            SceneManager sceneManager = m_vpet.getManager<SceneManager>();
+            NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
-            SceneReceiverModule sceneReceiverModule = (SceneReceiverModule) networkManager.getModule(typeof(SceneReceiverModule));
-            SceneCreatorModule sceneCreatorModule = (SceneCreatorModule) sceneManager.getModule(typeof(SceneCreatorModule));
+            SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
+            SceneCreatorModule sceneCreatorModule = sceneManager.getModule<SceneCreatorModule>();
 
             sceneReceiverModule.receiveScene("172.18.1.177", "5555");
         }

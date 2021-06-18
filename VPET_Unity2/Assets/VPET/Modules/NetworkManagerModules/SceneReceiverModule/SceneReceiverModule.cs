@@ -30,7 +30,9 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
+using NetMQ;
+using NetMQ.Sockets;
 
 namespace vpet
 {
@@ -40,6 +42,15 @@ namespace vpet
     public class SceneReceiverModule : NetworkManagerModule
     {
         //!
+        //! The list of request the reqester uses to request the packages.
+        //!
+        private List<string> m_requests;
+        //!
+        //! The event that is triggerd, when the scene has been received.
+        //!
+        public event EventHandler m_sceneReceived;
+
+        //!
         //! Dummy list, will be emty all the time!
         //!
         private List<byte[]> receivedData;
@@ -47,8 +58,60 @@ namespace vpet
         //!
         //! Constructor
         //!
-        public SceneReceiverModule(string name) : base(name) => name = base.name;
+        public SceneReceiverModule(string name, Core core, out List<byte[]> messageQueue, ref List<string> requests) : base(name, core, out messageQueue)
+        {
+            m_requests = requests;
+        }
+        //!
+        //! Function, requesting scene packages and receiving package data (executed in separate thread).
+        //! As soon as all requested packages are received, a signal is emited that triggers the scene cration.
+        //!
+        protected override void run()
+        {
+            AsyncIO.ForceDotNet.Force();
+            using (var sceneReceiver = new RequestSocket())
+            {
+                SceneManager sceneManager = m_core.getManager<SceneManager>();
 
+                sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
+
+                SceneManager.SceneDataHandler sceneDataHandler = sceneManager.sceneDataHandler;
+                foreach (string request in m_requests)
+                {
+                    sceneReceiver.SendFrame(request);
+                    switch (request)
+                    {
+                        case "header":
+                            sceneDataHandler.headerByteData = sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "nodes":
+                            sceneDataHandler.nodesByteData = sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "objects":
+                            sceneDataHandler.objectsByteData = sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "characters":
+                            sceneDataHandler.characterByteData = sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "textures":
+                            sceneDataHandler.texturesByteData = sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "materials":
+                            sceneDataHandler.materialsByteData = sceneReceiver.ReceiveFrameBytes();
+                            break;
+                    }
+
+                    //sceneDataHandler.setByteData(request, sceneReceiver.ReceiveFrameBytes());
+                }
+
+                // emit sceneReceived signal to trigger scene cration in the sceneCreator module
+                m_sceneReceived?.Invoke(this, new EventArgs());
+
+                sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                sceneReceiver.Close();
+                sceneReceiver.Dispose();
+            }
+        }
         //! 
         //! Function that triggers the scene receiving process.
         //! @param ip The IP address to the server.
@@ -56,8 +119,8 @@ namespace vpet
         //! 
         public void receiveScene(string ip, string port)
         {
-            List<string> requests = new List<string>() { "header", "nodes", "objects", "characters", "textures", "materials" };
-            manager.startRequester(ip, port, out receivedData, ref requests);
+            m_requests = new List<string>() { "header", "nodes", "objects", "characters", "textures", "materials" };
+            start(ip, port);
         }
     }
 

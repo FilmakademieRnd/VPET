@@ -19,6 +19,6 @@ namespace vpet
         //! constructor
         //! @param   name    Name of this module
         //!
-        public UnitySceneLoaderModule(string name) : base(name) => name = base.name;
+        public UnitySceneLoaderModule(string name, Core core) : base(name, core) { }
     }
 }
