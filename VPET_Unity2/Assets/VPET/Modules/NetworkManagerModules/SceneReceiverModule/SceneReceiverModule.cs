@@ -58,10 +58,10 @@ namespace vpet
         //!
         //! Constructor
         //!
-        public SceneReceiverModule(string name, Core core, out List<byte[]> messageQueue, ref List<string> requests) : base(name, core, out messageQueue)
+        public SceneReceiverModule(string name, Core core) : base(name, core)
         {
-            m_requests = requests;
         }
+
         //!
         //! Function, requesting scene packages and receiving package data (executed in separate thread).
         //! As soon as all requested packages are received, a signal is emited that triggers the scene cration.

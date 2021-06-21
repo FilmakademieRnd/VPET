@@ -73,7 +73,7 @@ namespace vpet
         {
             NetworkManager networkManager = core.getManager<NetworkManager>();
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
-            sceneReceiverModule.m_sceneReceived += CreateScene;
+            //sceneReceiverModule.m_sceneReceived += CreateScene;
         }
 
         //!

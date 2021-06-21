@@ -54,7 +54,7 @@ namespace vpet
             Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
             foreach (Type t in modules)
             {
-                Module module = (Module)Activator.CreateInstance(t, t.ToString(), this);
+                Module module = (Module)Activator.CreateInstance(t, t.ToString(), core);
                 addModule(module, t);
             }
         }

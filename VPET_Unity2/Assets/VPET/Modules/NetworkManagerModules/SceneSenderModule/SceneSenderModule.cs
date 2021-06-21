@@ -51,7 +51,7 @@ namespace vpet
         //! @param messageQueue List of byte[] to be received by the receiver.
         //! @param networkManager The network manager as parent of the class.
         //!
-        public SceneSenderModule(string name, Core core, out List<byte[]> messageQueue) : base(name, core, out messageQueue)
+        public SceneSenderModule(string name, Core core) : base(name, core)
         {
         }
 

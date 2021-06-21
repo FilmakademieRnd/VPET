@@ -48,8 +48,17 @@ namespace vpet
         //!
         //! @param messageQueue List of byte[] to be received by the receiver.
         //!
-        public UpdateReceiverModule(string name, Core core, out List<byte[]> messageQueue) : base(name, core, out messageQueue)
+        public UpdateReceiverModule(string name, Core core) : base(name, core)
         {
+        }
+
+        //!
+        //! Function for custom initialisation.
+        //! 
+        public override void initialise(out List<byte[]> messageQueue)
+        {
+            base.initialise(out messageQueue);
+            messageQueue = m_messageQueue;
         }
 
         //!

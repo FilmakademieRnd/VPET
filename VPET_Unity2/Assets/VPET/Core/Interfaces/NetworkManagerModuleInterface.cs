@@ -70,7 +70,7 @@ namespace vpet
         //!
         //! set/get the manager of this module.
         //!
-        new public NetworkManager manager
+        public NetworkManager manager
         {
             get => (NetworkManager) m_core.getManager<NetworkManager>();
         }
@@ -80,7 +80,13 @@ namespace vpet
         //! @param core A reference to the VPET core.
         //! @param messageQueue List of byte[] to be used.
         //!
-        public NetworkManagerModule(string name, Core core, out List<byte[]> messageQueue) : base(name, core)
+        public NetworkManagerModule(string name, Core core) : base(name, core)
+        {
+        }
+        //!
+        //! Function for custom initialisation.
+        //! 
+        public virtual void initialise(out List<byte[]> messageQueue)
         {
             messageQueue = m_messageQueue;
         }

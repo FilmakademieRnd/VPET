@@ -24,6 +24,11 @@ namespace vpet
     public class Module : ModuleInterface
     {
         //!
+        //! name of the module
+        //!
+        protected string m_name;
+
+        //!
         //! manager of this module
         //! assigned in addModule function in Manager.
         //!
@@ -38,11 +43,6 @@ namespace vpet
             m_name = name;
             m_core = core;
         }
-
-        //!
-        //! name of the module
-        //!
-        protected string m_name;
 
         //!
         //! get the name of the module.
