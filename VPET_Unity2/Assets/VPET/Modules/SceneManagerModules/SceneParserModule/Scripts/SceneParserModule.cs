@@ -245,15 +245,16 @@ namespace vpet
         //!
         private void recursiveGameObjectIdExtract(Transform location, ref List<GameObject> gameObjects, bool getLowLayer, bool getHighLayer, bool getMixedLayer)
         {
-            // fill game object list
-            gameObjects.Add(location.gameObject);
-
             foreach (Transform child in location)
                 if (child.gameObject.activeSelf &&
                     ((location.gameObject.layer == m_lodLowLayer && getLowLayer) ||
                     (location.gameObject.layer == m_lodHighLayer && getHighLayer) ||
                     (location.gameObject.layer == m_lodMixedLayer && getMixedLayer)))
+                {
+                    // fill game object list
+                    gameObjects.Add(child.gameObject);
                     recursiveGameObjectIdExtract(child, ref gameObjects, getLowLayer, getHighLayer, getMixedLayer);
+                }
         }
 
         //!
@@ -265,7 +266,7 @@ namespace vpet
         //!
         private void processMaterial(SceneManager.SceneNodeGeo node, Material material, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            if (material = null)
+            if (material == null)
                 node.textureId = -1;
             else
             {
