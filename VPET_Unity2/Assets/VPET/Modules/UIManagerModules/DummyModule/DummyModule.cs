@@ -22,7 +22,7 @@ namespace vpet
             SceneSenderModule sceneSenderModule = networkManager.getModule<SceneSenderModule>();
 
             sceneParserModule.ParseScene();
-            sceneSenderModule.sendScene("127.0.0.1", "5555");
+            sceneSenderModule.sendScene("172.18.1.177", "5555");
         }
 
         public void receive()
@@ -33,7 +33,7 @@ namespace vpet
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
             SceneCreatorModule sceneCreatorModule = sceneManager.getModule<SceneCreatorModule>();
 
-            sceneReceiverModule.receiveScene("127.0.0.1", "5555");
+            sceneReceiverModule.receiveScene("172.18.1.177", "5555");
         }
     }
 }

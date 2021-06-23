@@ -58,6 +58,7 @@ namespace vpet
 
             Thread requesterThread = new Thread(new ThreadStart(run));
             requesterThread.Start();
+            //run();
         }
 
         //!

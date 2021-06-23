@@ -57,12 +57,12 @@ namespace vpet
 
                 public SceneData()
                 {
-                    VpetHeader header = new VpetHeader();
-                    List<SceneNode> nodeList = new List<SceneNode>();
-                    List<ObjectPackage> objectList = new List<ObjectPackage>();
-                    List<CharacterPackage> characterList = new List<CharacterPackage>();
-                    List<TexturePackage> textureList = new List<TexturePackage>();
-                    List<MaterialPackage> materialList = new List<MaterialPackage>();
+                    header = new VpetHeader();
+                    nodeList = new List<SceneNode>();
+                    objectList = new List<ObjectPackage>();
+                    characterList = new List<CharacterPackage>();
+                    textureList = new List<TexturePackage>();
+                    materialList = new List<MaterialPackage>();
                 }
             }
 
