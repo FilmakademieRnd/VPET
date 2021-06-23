@@ -91,6 +91,7 @@ namespace vpet
             }
         }
 
+
         //!
         //! Function to start the scene sender module.
         //! @param ip The IP address to be used from the sender.

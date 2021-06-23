@@ -63,6 +63,23 @@ namespace vpet
         }
 
         //!
+        //! Function that overrides the default start function.
+        //! That prevents that the system creates a new thread.
+        //!
+        //! @param ip IP address of the network interface.
+        //! @param port Port number to be used.
+        //!
+        protected override void start(string ip, string port)
+        {
+            stop();
+
+            m_ip = ip;
+            m_port = port;
+
+            run();
+        }
+
+        //!
         //! Function, requesting scene packages and receiving package data (executed in separate thread).
         //! As soon as all requested packages are received, a signal is emited that triggers the scene cration.
         //!
@@ -112,6 +129,8 @@ namespace vpet
                 sceneReceiver.Dispose();
             }
         }
+
+
         //! 
         //! Function that triggers the scene receiving process.
         //! @param ip The IP address to the server.

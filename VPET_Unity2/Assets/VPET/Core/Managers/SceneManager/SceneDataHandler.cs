@@ -57,12 +57,12 @@ namespace vpet
 
                 public SceneData()
                 {
-                    VpetHeader header = new VpetHeader();
-                    List<SceneNode> nodeList = new List<SceneNode>();
-                    List<ObjectPackage> objectList = new List<ObjectPackage>();
-                    List<CharacterPackage> characterList = new List<CharacterPackage>();
-                    List<TexturePackage> textureList = new List<TexturePackage>();
-                    List<MaterialPackage> materialList = new List<MaterialPackage>();
+                    header = new VpetHeader();
+                    nodeList = new List<SceneNode>();
+                    objectList = new List<ObjectPackage>();
+                    characterList = new List<CharacterPackage>();
+                    textureList = new List<TexturePackage>();
+                    materialList = new List<MaterialPackage>();
                 }
             }
 
@@ -213,7 +213,7 @@ namespace vpet
 
                 if (m_headerByteData != null && m_headerByteData.Length > 0)
                     sceneData.header = convertHeaderByteStream();
-                else
+                else  
                     Helpers.Log("SceneDataHandler: Header byte array null or empty!", Helpers.logMsgType.WARNING);
 
                 if (m_nodesByteData != null && m_nodesByteData.Length > 0)

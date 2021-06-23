@@ -47,17 +47,19 @@ namespace vpet
         //!
         //! @param ip IP address of the network interface.
         //! @param port Port number to be used.
-        //! @param messageQueue List of byte[] to be filled.
         //!
-        protected void start(string ip, string port)
+        protected virtual void start(string ip, string port)
         {
             stop();
 
             m_ip = ip;
             m_port = port;
 
-            Thread requesterThread = new Thread(new ThreadStart(run));
+            ThreadStart starter = new ThreadStart(run);
+
+            Thread requesterThread = new Thread(starter);
             requesterThread.Start();
+
         }
 
         //!

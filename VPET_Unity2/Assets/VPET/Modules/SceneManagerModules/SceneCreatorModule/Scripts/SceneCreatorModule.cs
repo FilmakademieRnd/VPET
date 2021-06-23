@@ -73,7 +73,7 @@ namespace vpet
         {
             NetworkManager networkManager = core.getManager<NetworkManager>();
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
-            //sceneReceiverModule.m_sceneReceived += CreateScene;
+            sceneReceiverModule.m_sceneReceived += CreateScene;
         }
 
         //!
@@ -85,17 +85,10 @@ namespace vpet
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 
             // create scene parent if not there
-            GameObject scnPrtGO = GameObject.Find("Scene");
-            if (scnPrtGO == null)
-            {
-                scnPrtGO = new GameObject("Scene");
-            }
-
-            GameObject scnRoot = scnPrtGO.transform.Find("root").gameObject;
+            GameObject scnRoot = GameObject.Find("VPETScene");
             if (scnRoot == null)
             {
-                scnRoot = new GameObject("root");
-                scnRoot.transform.parent = scnPrtGO.transform;
+                scnRoot = new GameObject("VPETScene");
             }
 
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
@@ -277,7 +270,8 @@ namespace vpet
         {
             List<SceneManager.CharacterPackage> characterList = sceneData.characterList;
 
-            createSkinnedRendererIter(ref sceneData, root);
+            if (characterList.Count > 0)
+                createSkinnedRendererIter(ref sceneData, root);
 
             //setup characters
             foreach (SceneManager.CharacterPackage cp in characterList)
@@ -678,6 +672,10 @@ namespace vpet
         {
 
             SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo) sceneData.nodeList[idx];
+
+            if (node == null)
+                return -1;
+
             Transform trans = parent.Find(Encoding.ASCII.GetString(node.name));
 
             SkinnedMeshRenderer renderer = trans.gameObject.GetComponent<SkinnedMeshRenderer>();
