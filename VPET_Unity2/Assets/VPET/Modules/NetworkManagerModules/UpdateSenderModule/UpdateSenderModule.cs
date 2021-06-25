@@ -46,7 +46,8 @@ namespace vpet
         //!
         //! Constructor
         //!
-        //! @param messageQueue List of byte[] to be received by the receiver.
+        //! @param  name  The  name of the module.
+        //! @param core A reference to the VPET core.
         //!
         public UpdateSenderModule(string name, Core core) : base(name, core)
         {
@@ -54,7 +55,8 @@ namespace vpet
 
         //!
         //! Function for custom initialisation.
-        //! 
+        //! @param messageQueue List of byte[] to be received by the receiver.
+        //!
         public override void initialise(out List<byte[]> messageQueue)
         {
             base.initialise(out messageQueue);

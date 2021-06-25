@@ -21,12 +21,12 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "SceneDataHandler.cs"
+//! @file "SceneSenderModule.cs"
 //! @brief Implementation of the scene sender module, listening to scene requests and sending scene data. 
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 20.05.2021
+//! @date 20.06.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -47,9 +47,8 @@ namespace vpet
         //!
         //! Constructor
         //!
-        //! @param responses A dictionary containing the message type and the corresponding byte data.
-        //! @param messageQueue List of byte[] to be received by the receiver.
-        //! @param networkManager The network manager as parent of the class.
+        //! @param  name  The  name of the module.
+        //! @param core A reference to the VPET core.
         //!
         public SceneSenderModule(string name, Core core) : base(name, core)
         {

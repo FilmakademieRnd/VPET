@@ -3,7 +3,7 @@
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.02.2021
+//! @date 23.06.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -70,7 +70,7 @@ namespace vpet
             m_isRunning = false;
         }
         //!
-        //! set/get the manager of this module.
+        //! Ret the manager of this module.
         //!
         public NetworkManager manager
         {
@@ -80,7 +80,6 @@ namespace vpet
         //! constructor
         //! @param  name  The  name of the module.
         //! @param core A reference to the VPET core.
-        //! @param messageQueue List of byte[] to be used.
         //!
         public NetworkManagerModule(string name, Core core) : base(name, core)
         {
@@ -88,6 +87,8 @@ namespace vpet
         //!
         //! Function for custom initialisation.
         //! 
+        //! Reference to tist of byte[] storing the messages.
+        //!
         public virtual void initialise(out List<byte[]> messageQueue)
         {
             messageQueue = m_messageQueue;

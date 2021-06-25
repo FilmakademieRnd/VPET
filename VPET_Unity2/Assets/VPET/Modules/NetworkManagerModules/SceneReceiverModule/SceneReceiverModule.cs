@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 10.06.2021
+//! @date 25.06.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -57,6 +57,9 @@ namespace vpet
 
         //!
         //! Constructor
+        //!
+        //! @param  name  The  name of the module.
+        //! @param core A reference to the VPET core.
         //!
         public SceneReceiverModule(string name, Core core) : base(name, core)
         {
@@ -117,8 +120,6 @@ namespace vpet
                             sceneDataHandler.materialsByteData = sceneReceiver.ReceiveFrameBytes();
                             break;
                     }
-
-                    //sceneDataHandler.setByteData(request, sceneReceiver.ReceiveFrameBytes());
                 }
 
                 // emit sceneReceived signal to trigger scene cration in the sceneCreator module

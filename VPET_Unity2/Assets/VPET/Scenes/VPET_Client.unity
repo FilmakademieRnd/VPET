@@ -205,7 +205,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1023117103
 Light:
   m_ObjectHideFlags: 0
@@ -367,7 +367,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1286581210}
         m_TargetAssemblyTypeName: vpet.DummyModule, ModulesAssembly
-        m_MethodName: send
+        m_MethodName: receive
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -587,7 +587,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1286581208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c57e6ad849f22634295098ee82675da6, type: 3}
+  m_Script: {fileID: 11500000, guid: 04491e308f767db4090fabad9647c2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1320808352
@@ -909,7 +909,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1672782514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d314a381ac5b84498b507706bd5bc83, type: 3}
+  m_Script: {fileID: 11500000, guid: 3405a2328a6eb6e4eb6ba7778f68c8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1751737977
@@ -931,7 +931,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1751737978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -944,6 +944,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1670795a5fcc82448b8671efff655fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
+  physicsActive: 0
 --- !u!65 &1751737979
 BoxCollider:
   m_ObjectHideFlags: 0

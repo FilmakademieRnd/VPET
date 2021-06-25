@@ -3,7 +3,7 @@
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.02.2021
+//! @date 25.06.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -25,12 +25,12 @@ namespace vpet
     public class Manager : ManagerInterface
     {
         //!
-        //! reference to vpet core.
+        //! A reference to VPET core.
         //!
         private Core m_core;
 
         //!
-        //! get the vpet core
+        //! Returns a reference to the VPET core.
         //!
         public ref Core core
         {
@@ -38,14 +38,14 @@ namespace vpet
         }
 
         //!
-        //! dictionary of loaded modules
+        //! Dictionary of loaded modules.
         //!
         private Dictionary<Type, Module> m_modules;
 
         //!
-        //! constructor
-        //! @param  name    name of the manager
-        //! @param  moduleType  type of modules to be loaded by this manager
+        //! Constructor
+        //! @param  moduleType The type of modules to be loaded by this manager.
+        //! @param vpetCore A reference to the VPET core.
         //!
         public Manager(Type moduleType, Core vpetCore)
         {
@@ -60,10 +60,9 @@ namespace vpet
         }
 
         //!
-        //! adds a module to the manager
+        //! Function to add a module to the manager.
         //! @param  module  module to be added
-        //! @param  name    name of module
-        //! @return returns false if module with same name already exists, otherwise true
+        //! @return returns false if a module of same type already exists, true otherwise. 
         //!
         protected bool addModule(Module module, Type type)
         {
@@ -77,7 +76,7 @@ namespace vpet
         }
 
         //!
-        //! get a module from the manager
+        //! Function that returns a module based on a given type <T>.
         //! @tparam T The type of module to be requested.
         //! @return requested module or null if no module of this type is registered.
         //!
@@ -90,9 +89,8 @@ namespace vpet
         }
 
         //!
-        //! remove a module from the manager
-        //! @param  name    name of module
-        //! @return returns false if module does not exist, otherwise true
+        //! Removes a module from the manager.
+        //! @return returns false if module does not exist, true otherwise.
         //!
         protected bool removeModule(Type type)
         {

@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.04.2021
+//! @date 23.06.2021
 
 using System;
 using System.Collections.Generic;
@@ -88,6 +88,10 @@ namespace vpet
             {
                 get { return ref m_headerByteData; }
             }
+            //!
+            //! Setter function for setting a the byte array,
+            //! containing the serialised header data.
+            //!
             public byte[] headerByteData
             {
                 set { m_headerByteData = value; }
@@ -107,6 +111,10 @@ namespace vpet
             {
                 get { return ref m_nodesByteData; }
             }
+            //!
+            //! Setter function for setting a the byte array,
+            //! containing the serialised nodes data.
+            //!
             public byte[] nodesByteData
             {
                 set { m_nodesByteData = value; }
@@ -125,6 +133,10 @@ namespace vpet
             {
                 get { return ref m_objectsByteData; }
             }
+            //!
+            //! Setter function for setting a the byte array,
+            //! containing the serialised object data.
+            //!
             public byte[] objectsByteData
             {
                 set { m_objectsByteData = value; }
@@ -143,6 +155,10 @@ namespace vpet
             {
                 get { return ref m_characterByteData; }
             }
+            //!
+            //! Setter function for setting a the byte array,
+            //! containing the serialised skinned mesh data.
+            //!
             public byte[] characterByteData
             {
                 set { m_characterByteData = value; }
@@ -161,6 +177,10 @@ namespace vpet
             {
                 get { return ref m_texturesByteData; }
             }
+            //!
+            //! Setter function for setting a the byte array,
+            //! containing the serialised texture data.
+            //!
             public byte[] texturesByteData
             {
                 set { m_texturesByteData = value; }
@@ -179,6 +199,10 @@ namespace vpet
             {
                 get { return ref m_materialsByteData; }
             }
+            //!
+            //! Setter function for setting a the byte array,
+            //! containing the serialised material data.
+            //!
             public byte[] materialsByteData
             {
                 set { m_materialsByteData = value; }
@@ -273,37 +297,6 @@ namespace vpet
 
                 getMaterialsByteArray(ref sceneData.materialList);
                 sceneData.materialList.Clear();
-            }
-
-            //!
-            //! Function that sets based on the package type the corresponding byte data.
-            //!
-            //! @param packageType The package type as a string.
-            //! @param package The corresponding package data as a byte array.
-            //!
-            public void setByteData(string packageType, byte[] package)
-            {
-                switch (packageType)
-                {
-                    case "header":
-                        m_headerByteData = package;
-                        break;
-                    case "nodes":
-                        m_nodesByteData = package;
-                        break;
-                    case "objects":
-                        m_objectsByteData = package;
-                        break;
-                    case "characters":
-                        m_characterByteData = package;
-                        break;
-                    case "textures":
-                        m_texturesByteData = package;
-                        break;
-                    case "materials":
-                        m_materialsByteData = package;
-                        break;
-                }
             }
 
             //!

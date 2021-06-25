@@ -18,7 +18,15 @@ namespace vpet
     //!
     public partial class SceneManager : Manager
     {
+        //!
+        //! The VPET SceneDataHandler, handling all VPET scene data relevant conversion.
+        //!
         protected SceneDataHandler m_sceneDataHandler;
+        //!
+        //! A reference to the VPET SceneDataHandler.
+        //!
+        //! @return A reference to the VPET SceneDataHandler.
+        //!
         public ref SceneDataHandler sceneDataHandler
         {
             get { return ref m_sceneDataHandler; }

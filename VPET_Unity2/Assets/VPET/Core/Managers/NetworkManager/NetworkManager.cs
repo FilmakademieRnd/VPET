@@ -46,6 +46,9 @@ namespace vpet
         //!
         //! Constructor initializing member variables.
         //!
+        //! @param  moduleType  type of modules to be loaded by this manager
+        //! @param vpetCore A reference to the VPET core.
+        //!
         public NetworkManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
         }    

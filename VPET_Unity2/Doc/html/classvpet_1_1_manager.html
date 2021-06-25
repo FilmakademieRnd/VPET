@@ -162,10 +162,10 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>constructor </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Constructor </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">name</td><td>name of the manager </td></tr>
-    <tr><td class="paramname">moduleType</td><td>type of modules to be loaded by this manager </td></tr>
+    <tr><td class="paramname">moduleType</td><td>The type of modules to be loaded by this manager. </td></tr>
+    <tr><td class="paramname">vpetCore</td><td>A reference to the VPET core. </td></tr>
   </table>
   </dd>
 </dl>
@@ -206,14 +206,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>adds a module to the manager </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Function to add a module to the manager. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">module</td><td>module to be added </td></tr>
-    <tr><td class="paramname">name</td><td>name of module </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns false if module with same name already exists, otherwise true </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns false if a module of same type already exists, true otherwise. </dd></dl>
 
 </div>
 </div>
@@ -231,7 +230,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>get a module from the manager </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+<p>Function that returns a module based on a given type &lt;T&gt;. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>The type of module to be requested. </td></tr>
   </table>
@@ -264,13 +263,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>remove a module from the manager </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>name of module </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>returns false if module does not exist, otherwise true </dd></dl>
+<p>Removes a module from the manager. </p><dl class="section return"><dt>Returns</dt><dd>returns false if module does not exist, true otherwise. </dd></dl>
 
 </div>
 </div>
@@ -294,7 +287,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>reference to vpet core. </p>
+<p>A reference to VPET core. </p>
 
 </div>
 </div>
@@ -317,7 +310,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>dictionary of loaded modules </p>
+<p>Dictionary of loaded modules. </p>
 
 </div>
 </div>
@@ -341,7 +334,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>get the vpet core </p>
+<p>Returns a reference to the VPET core. </p>
 
 </div>
 </div>

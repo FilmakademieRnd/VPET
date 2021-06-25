@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['networkmanager_422',['NetworkManager',['../classvpet_1_1_network_manager.html#afcd37f825763f41b3ece6eec81e1b3e0',1,'vpet::NetworkManager']]],
-  ['networkmanagermodule_423',['NetworkManagerModule',['../classvpet_1_1_network_manager_module.html#afe32062ee6dd26f2cba808cafbcffd10',1,'vpet::NetworkManagerModule']]]
+  ['manager_421',['Manager',['../classvpet_1_1_manager.html#a36ad7cc7d92c772fc5e898dd93bca6a0',1,'vpet::Manager']]],
+  ['mapmaterialproperties_422',['MapMaterialProperties',['../classvpet_1_1_scene_creator_module.html#a26a0105906bebdc0ed5f243e47780b78',1,'vpet::SceneCreatorModule']]],
+  ['module_423',['Module',['../classvpet_1_1_module.html#a0c5deeec62853b99ba5a819758358836',1,'vpet::Module']]]
 ];

@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.04.2021
+//! @date 24.06.2021
 
 using System;
 using System.Collections;
@@ -67,6 +67,7 @@ namespace vpet
         //!
         //! Constructor
         //! Creates an reference to the networ manager and connects the scene creation method to the scene received event in the network requester.
+        //!
         //! @param name Name of this module
         //!
         public SceneCreatorModule(string name, Core core) : base(name, core)
@@ -110,7 +111,7 @@ namespace vpet
         //!
         //! Function that creates the materials in the Unity scene.
         //!
-        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
+        //! @param sceneData A reference to the VPET sceneData.
         //!
         private void createMaterials(ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
@@ -142,7 +143,7 @@ namespace vpet
         //!
         //! Function that creates the textures in the Unity scene.
         //!
-        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
+        //! @param sceneData A reference to the VPET sceneData.
         //!
         private void createTextures(ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
@@ -172,7 +173,7 @@ namespace vpet
         //!
         //! Function that creates the meshes in the Unity scene.
         //!
-        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
+        //! @param sceneData A reference to the VPET sceneData.
         //!
         private void createMeshes(ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
@@ -231,8 +232,8 @@ namespace vpet
         //!
         //! Function that recusively creates the gameObjects in the Unity scene.
         //!
-        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
-        //! @param parent the parent Unity transform.
+        //! @param sceneData A reference to the VPET sceneData.
+        //! @param parent The transform of the parant node.
         //! @param idx The index for referencing into the node list.
         //!
         private int createSceneGraphIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
@@ -257,13 +258,17 @@ namespace vpet
                 idxChild = createSceneGraphIter(ref sceneData, obj.transform, idxChild + 1);
             }
 
+            // if there are more nodes on one level
+            if (idxChild < sceneData.nodeList.Count)
+                idxChild = createSceneGraphIter(ref sceneData, parent, idxChild + 1);
+
             return idxChild;
         }
 
         //!
         //! Function that recusively creates the gameObjects in the Unity scene.
         //!
-        //! @param sceneDataHandler A reference to the scene data handler.
+        //! @param sceneData A reference to the VPET sceneData.
         //! @param root The transform of the root object.
         //!
         private void createSkinnedMeshes(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform root)
@@ -450,7 +455,7 @@ namespace vpet
                     SceneManager.SceneNodeLight nodeLight = (SceneManager.SceneNodeLight)node;
 
                     // Add light prefab
-                    GameObject lightUber = Resources.Load<GameObject>("VPET/Prefabs/UberLight");
+                    GameObject lightUber = Resources.Load<GameObject>("UberLight");
                     GameObject _lightUberInstance = GameObject.Instantiate(lightUber);
                     _lightUberInstance.name = lightUber.name;
                     lightUber.transform.GetChild(0).gameObject.layer = 8;
@@ -508,7 +513,7 @@ namespace vpet
                     SceneManager.SceneNodeCam nodeCam = (SceneManager.SceneNodeCam)node;
 
                     // add camera dummy mesh
-                    GameObject cameraObject = Resources.Load<GameObject>("VPET/Prefabs/cameraObject");
+                    GameObject cameraObject = Resources.Load<GameObject>("cameraObject");
                     GameObject cameraInstance = GameObject.Instantiate(cameraObject);
                     cameraInstance.SetActive(false);
                     cameraInstance.name = cameraObject.name;
@@ -664,7 +669,7 @@ namespace vpet
         //!
         //! Function that recusively adds bone transforms to renderers of SkinnedMesh objects.
         //!
-        //! @param sceneDataHandler A reference to the actual VPET sceneDataHandler.
+        //! @param sceneData A reference to the VPET sceneData.
         //! @param parent the parent Unity transform.
         //! @param idx The index for referencing into the node list.
         //!

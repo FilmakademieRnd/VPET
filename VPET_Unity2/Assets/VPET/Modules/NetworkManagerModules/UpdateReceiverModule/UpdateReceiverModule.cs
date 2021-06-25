@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 20.05.2021
+//! @date 25.06.2021
 
 using System.Collections;
 using System.Collections.Generic;
@@ -46,7 +46,8 @@ namespace vpet
         //!
         //! Constructor
         //!
-        //! @param messageQueue List of byte[] to be received by the receiver.
+        //! @param  name  The  name of the module.
+        //! @param core A reference to the VPET core.
         //!
         public UpdateReceiverModule(string name, Core core) : base(name, core)
         {
@@ -55,6 +56,8 @@ namespace vpet
         //!
         //! Function for custom initialisation.
         //! 
+        //! @param messageQueue List of byte[] to be received by the receiver.
+        //!
         public override void initialise(out List<byte[]> messageQueue)
         {
             base.initialise(out messageQueue);
