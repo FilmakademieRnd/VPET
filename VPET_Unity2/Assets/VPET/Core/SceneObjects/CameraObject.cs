@@ -82,12 +82,24 @@ namespace vpet
 
             if (_camera)
             {
-                fov = new Parameter<float>(_camera.fieldOfView);
-                aspect = new Parameter<float>(_camera.aspect);
-                near = new Parameter<float>(_camera.nearClipPlane);
-                far = new Parameter<float>(_camera.farClipPlane);
-                focDist = new Parameter<float>(1f);
-                aperture = new Parameter<float>(2.8f);
+                fov = new Parameter<float>(_camera.fieldOfView, "fov");
+                fov.hasChanged += updateFov;
+                _parameterList.Add(fov);
+                aspect = new Parameter<float>(_camera.aspect, "aspectRatio");
+                aspect.hasChanged += updateAspect;
+                _parameterList.Add(aspect);
+                near = new Parameter<float>(_camera.nearClipPlane, "nearClipPlane");
+                near.hasChanged += updateNearClipPlane;
+                _parameterList.Add(near);
+                far = new Parameter<float>(_camera.farClipPlane, "farClipPlane");
+                far.hasChanged += updateFarClipPlane;
+                _parameterList.Add(far);
+                focDist = new Parameter<float>(1f, "focalDistance");
+                focDist.hasChanged += updateFocalDistance;
+                _parameterList.Add(focDist);
+                aperture = new Parameter<float>(2.8f, "aperture");
+                aperture.hasChanged += updateAperture;
+                _parameterList.Add(aperture);
             }
             else
                 Helpers.Log("no camera component found!");
@@ -99,6 +111,67 @@ namespace vpet
             base.Update();
             updateCameraParameters();
         }
+
+        //!
+        //! Update the camera fov of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new fov value
+        //!
+        private void updateFov(object sender, Parameter<float>.TEventArgs a)
+        {
+            _camera.fieldOfView = a.value;
+        }
+
+        //!
+        //! Update the camera aspect ratio of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new aspect ratio value
+        //!
+        private void updateAspect(object sender, Parameter<float>.TEventArgs a)
+        {
+            _camera.aspect = a.value;
+        }
+
+        //!
+        //! Update the camera near clip plane of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new near clip plane value
+        //!
+        private void updateNearClipPlane(object sender, Parameter<float>.TEventArgs a)
+        {
+            _camera.nearClipPlane = a.value;
+        }
+
+        //!
+        //! Update the camera far clip plane of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new far clip plane value
+        //!
+        private void updateFarClipPlane(object sender, Parameter<float>.TEventArgs a)
+        {
+            _camera.farClipPlane = a.value;
+        }
+
+        //!
+        //! Update the camera focal distance of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new focal distance value
+        //!
+        private void updateFocalDistance(object sender, Parameter<float>.TEventArgs a)
+        {
+            //ToDO: Use this in PostEffect.
+        }
+
+        //!
+        //! Update the camera aperture of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new aperture value
+        //!
+        private void updateAperture(object sender, Parameter<float>.TEventArgs a)
+        {
+            //ToDO: Use this in PostEffect.
+        }
+
 
         //!
         //! updates the Unity camera component specific parameters and informs all connected VPET parameters about the change

@@ -36,15 +36,34 @@ using UnityEngine;
 namespace vpet
 {
     //!
+    //! Parameter base class.
+    //!
+    public abstract class AbstractParameter{ }
+
+    //!
     //! Parameter class defining the fundamental functionality and interface
     //!
-    public class Parameter<T>
+    public class Parameter<T> : AbstractParameter
     {
         public Parameter() {}
 
-        public Parameter(T value)
+        public Parameter(T value, string name)
         {
             _value = value;
+            _name = name;
+        }
+
+        //!
+        //! The name of the parameter.
+        //!
+        private string _name;
+
+        //!
+        //! Getter for name.
+        //!
+        public string name
+        {
+            get => _name;
         }
 
         //!
@@ -53,7 +72,7 @@ namespace vpet
         private T _value;
 
         //!
-        //! Getter for value
+        //! Getter and setter for value
         //!
         public T value
         {

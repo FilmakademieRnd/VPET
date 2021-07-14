@@ -66,9 +66,15 @@ namespace vpet
             _light = this.GetComponent<Light>();
             if (_light)
             {
-                color = new Parameter<Color>(_light.color);
-                intensity = new Parameter<float>(_light.intensity);
-                range = new Parameter<float>(_light.range);
+                color = new Parameter<Color>(_light.color, "color");
+                color.hasChanged += updateColor;
+                _parameterList.Add(color);
+                intensity = new Parameter<float>(_light.intensity, "intensity");
+                intensity.hasChanged += updateIntensity;
+                _parameterList.Add(intensity);
+                range = new Parameter<float>(_light.range, "range");
+                range.hasChanged += updateRange;
+                _parameterList.Add(range);
             }
             else
                 Helpers.Log("no light component found!");
@@ -79,13 +85,43 @@ namespace vpet
         public override void Update()
         {
             base.Update();
-            updateLightParameters();
+            updateSceneObjectLightParameters();
+        }
+
+        //!
+        //! Update the light color of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new color value
+        //!
+        private void updateColor(object sender, Parameter<Color>.TEventArgs a)
+        {
+            _light.color = a.value;
+        }
+
+        //!
+        //! Update the light intensity of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new intensity value
+        //!
+        private void updateIntensity(object sender, Parameter<float>.TEventArgs a)
+        {
+            _light.intensity = a.value;
+        }
+
+        //!
+        //! Update the light range of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new range value
+        //!
+        private void updateRange(object sender, Parameter<float>.TEventArgs a)
+        {
+            _light.range = a.value;
         }
 
         //!
         //! updates the Unity light component specific parameters and informs all connected VPET parameters about the change
         //!
-        private void updateLightParameters()
+        private void updateSceneObjectLightParameters()
         {
             if (_light.color != color.value)
                 color.value = _light.color;

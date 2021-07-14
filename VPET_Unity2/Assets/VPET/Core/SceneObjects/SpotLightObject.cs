@@ -47,7 +47,9 @@ namespace vpet
             base.Start();
             if (_light)
             {
-                spotAngle = new Parameter<float>(_light.spotAngle);
+                spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle");
+                spotAngle.hasChanged += updateAngle;
+                _parameterList.Add(spotAngle);
             }
             else
                 Helpers.Log("no light component found!");
@@ -59,6 +61,16 @@ namespace vpet
             base.Update();
             if (_light.spotAngle != spotAngle.value)
                 spotAngle.value = _light.spotAngle;
+        }
+
+        //!
+        //! Update the spot light angle of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new angle value
+        //!
+        private void updateAngle(object sender, Parameter<float>.TEventArgs a)
+        {
+            _light.spotAngle = a.value;
         }
     }
 }

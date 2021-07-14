@@ -64,6 +64,18 @@ namespace vpet
         //!
         private Parameter<Vector3> scale;
 
+        //!
+        //! List storing all parameters of this SceneObject.
+        //!
+        protected List<AbstractParameter> _parameterList;
+
+        //!
+        //! Getter for parameter list
+        //!
+        public ref List<AbstractParameter> parameterList
+        {
+            get => ref _parameterList;
+        }
 
         //!
         //! Start is called before the first frame update
@@ -73,21 +85,45 @@ namespace vpet
             id = Helpers.getUniqueID();
             physicsActive = false;
 
-            position = new Parameter<Vector3>();
-            rotation = new Parameter<Quaternion>();
-            scale = new Parameter<Vector3>();
-
-            //position.hasChanged += printDebug;
+            position = new Parameter<Vector3>(this.transform.localPosition, "position");
+            position.hasChanged += updatePosition;
+            _parameterList.Add(position);
+            rotation = new Parameter<Quaternion>(this.transform.localRotation, "rotation");
+            rotation.hasChanged += updateRotation;
+            _parameterList.Add(rotation);
+            scale = new Parameter<Vector3>(this.transform.localScale, "scale");
+            scale.hasChanged += updateScale;
+            _parameterList.Add(scale);
         }
 
         //!
-        //! Debug print of a Vector3 parameter
-        //! @param   sender     Object calling the print function
-        //! @param   a          Values to be passed to the print function
+        //! Update GameObject local position.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new position value
         //!
-        private void printDebug(object sender, Parameter<Vector3>.TEventArgs a)
+        private void updatePosition(object sender, Parameter<Vector3>.TEventArgs a)
         {
-            Debug.Log(a.value);
+            this.transform.localPosition = a.value;
+        }
+
+        //!
+        //! Update GameObject local rotation.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new rotation value
+        //!
+        private void updateRotation(object sender, Parameter<Quaternion>.TEventArgs a)
+        {
+            this.transform.localRotation = a.value;
+        }
+
+        //!
+        //! Update GameObject local scale.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new scale value
+        //!
+        private void updateScale(object sender, Parameter<Vector3>.TEventArgs a)
+        {
+            this.transform.localScale = a.value;
         }
 
         //!
@@ -97,13 +133,13 @@ namespace vpet
         {
             // ToDo: implement a clever way to figure out when the transforms need to be updated 
             if(physicsActive)
-                updateTransform();
+                updateSceneObjectTransform();
         }
 
         //!
         //! updates the scene objects transforms and informs all connected parameters about the change
         //!
-        private void updateTransform()
+        private void updateSceneObjectTransform()
         {
             if (transform.position != position.value)
                 position.value = transform.position;
