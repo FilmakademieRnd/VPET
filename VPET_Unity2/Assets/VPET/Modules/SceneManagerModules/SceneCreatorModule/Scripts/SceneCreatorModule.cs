@@ -37,7 +37,7 @@ using UnityEngine;
 namespace vpet
 {
     //!
-    //! implementation of unity scene creator module
+    //! implementation of VPET scene creator module
     //!
     public class SceneCreatorModule : SceneManagerModule
     {
@@ -66,9 +66,10 @@ namespace vpet
 
         //!
         //! Constructor
-        //! Creates an reference to the networ manager and connects the scene creation method to the scene received event in the network requester.
+        //! Creates an reference to the network manager and connects the scene creation method to the scene received event in the network requester.
         //!
         //! @param name Name of this module
+        //! @param core Reference to the VPET core
         //!
         public SceneCreatorModule(string name, Core core) : base(name, core)
         {

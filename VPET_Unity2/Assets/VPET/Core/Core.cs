@@ -19,6 +19,15 @@ namespace vpet
     //!
     public class Core : CoreInterface
     {
+        //!
+        //! Reference to the selection component.
+        //!
+        private Selector _selector;
+
+        //!
+        //! Getter for the selector.
+        //!
+        public Selector selector { get => _selector; }
 
         //!
         //! Initialization of all Managers and modules.
@@ -36,6 +45,10 @@ namespace vpet
             //Create UI manager
             UIManager uiManager = new UIManager(typeof(UIManagerModule), this);
             m_managerList.Add(typeof(UIManager), sceneManager);
+
+            //Initializing core components
+            //Create Selector
+            _selector = new Selector();
 
         }
     }
