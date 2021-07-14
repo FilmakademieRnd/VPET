@@ -452,7 +452,7 @@ namespace vpet
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeLight))
                 {
-                    SceneManager.SceneNodeLight nodeLight = (SceneManager.SceneNodeLight)node;
+                    SceneManager.SceneNodeLight nodeLight = (SceneManager.SceneNodeLight) node;
 
                     // Add light prefab
                     GameObject lightUber = Resources.Load<GameObject>("UberLight");
