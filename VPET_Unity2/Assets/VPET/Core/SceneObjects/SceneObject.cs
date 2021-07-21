@@ -82,6 +82,8 @@ namespace vpet
         //!
         public virtual void Start()
         {
+            _parameterList = new List<AbstractParameter>();
+
             id = Helpers.getUniqueID();
             physicsActive = false;
 

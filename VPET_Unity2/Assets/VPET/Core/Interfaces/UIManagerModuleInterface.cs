@@ -19,7 +19,7 @@ namespace vpet
         //!
         //! set/get the manager of this module.
         //!
-        new public UIManager manager
+        public UIManager manager
         {
             get => m_core.getManager<UIManager>();
         }

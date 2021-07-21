@@ -38,21 +38,8 @@ namespace vpet
     //!
     //! Parameter base class.
     //!
-    public abstract class AbstractParameter{ }
-
-    //!
-    //! Parameter class defining the fundamental functionality and interface
-    //!
-    public class Parameter<T> : AbstractParameter
+    public abstract class AbstractParameter
     {
-        public Parameter() {}
-
-        public Parameter(T value, string name)
-        {
-            _value = value;
-            _name = name;
-        }
-
         //!
         //! The name of the parameter.
         //!
@@ -64,6 +51,21 @@ namespace vpet
         public string name
         {
             get => _name;
+            protected set => _name = value;
+        }
+    }
+
+    //!
+    //! Parameter class defining the fundamental functionality and interface
+    //!
+    public class Parameter<T> : AbstractParameter
+    {
+        public Parameter() {}
+
+        public Parameter(T value, string name)
+        {
+            _value = value;
+            this.name = name;
         }
 
         //!

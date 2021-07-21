@@ -30,7 +30,6 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,8 +48,11 @@ namespace vpet
         //!
         public UICreator2DModule(string name, Core core) : base(name, core)
         {
-            core.selector.selectionChanged += createUI;
+            //core.selector.selectionChanged += createUI;
+            Selector selector = core.GetComponent<Selector>();
+            selector.selectionChanged += createUI;
         }
+
 
         //!
         //! Function that recreates the UI Layout.
@@ -58,23 +60,23 @@ namespace vpet
         //!
         private void createUI(object sender, Selector.SEventArgs a)
         {
-            List<AbstractParameter> paramList = a.value;
-            foreach (AbstractParameter param in paramList)
+            foreach (SceneObject sceneObject in a.value)
             {
-                Type type = param.GetType();
-                if (type == typeof(Parameter<float>))
+                foreach (AbstractParameter param in sceneObject.parameterList)
                 {
-                    /*var button = Instantiate(RoomButton, Vector3.zero, Quaternion.identity) as Button;
-                    var rectTransform = button.GetComponent<RectTransform>();
-                    rectTransform.SetParent(Canvas.transform);
-                    rectTransform.offsetMin = Vector2.zero;
-                    rectTransform.offsetMax = Vector2.zero;
-                    button.onClick.AddListener(SpawnPlayer);*/
+                    Type type = param.GetType();
+                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + type);
+                    if (type == typeof(Parameter<float>))
+                    {
+                        //var slider = Instantiate(RoomButton, Vector3.zero, Quaternion.identity) as Button;
+                        //var rectTransform = button.GetComponent<RectTransform>();
+                        //rectTransform.SetParent(Canvas.transform);
+                        //rectTransform.offsetMin = Vector2.zero;
+                        //rectTransform.offsetMax = Vector2.zero;
+                        //button.onClick.AddListener(SpawnPlayer);
+                    }
                 }
-
-
             }
-
         }
     }
 }
