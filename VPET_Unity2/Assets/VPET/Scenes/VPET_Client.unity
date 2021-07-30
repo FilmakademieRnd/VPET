@@ -570,7 +570,7 @@ GameObject:
   - component: {fileID: 1331304643}
   m_Layer: 9
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -794,6 +794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b563b7ef39b2bcd4ea62039d6a98e04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_selectedObjects: []
 --- !u!114 &1672782517
 MonoBehaviour:
   m_ObjectHideFlags: 0

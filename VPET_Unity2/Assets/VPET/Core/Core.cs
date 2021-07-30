@@ -25,15 +25,8 @@ namespace vpet
             //Create Selector
             //_selector = new Selector();
         }
-        //!
-        //! Reference to the selection component.
-        //!
-        private Selector _selector;
 
-        //!
-        //! Getter for the selector.
-        //!
-        public Selector selector { get => _selector; }
+        public event EventHandler updateEvent;
 
         //!
         //! Initialization of all Managers and modules.
@@ -53,5 +46,11 @@ namespace vpet
             m_managerList.Add(typeof(UIManager), sceneManager);
 
         }
+
+        private void Update()
+        {
+            updateEvent?.Invoke(this, new EventArgs() );
+        }
+
     }
 }
