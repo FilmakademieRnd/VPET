@@ -18,6 +18,35 @@ namespace vpet
     //!
     public partial class SceneManager : Manager
     {
+        public GameObject scnRoot;
+
+        //! The list storing editable Unity game objects in scene.
+        private List<SceneObject> m_sceneObjects = new List<SceneObject>();
+
+        //! The list storing selectable Unity lights in scene.
+        public List<SceneObjectLight> m_sceneLightList = new List<SceneObjectLight>();
+
+        //! The list storing Unity cameras in scene.
+        public List<SceneObjectCamera> m_sceneCameraList = new List<SceneObjectCamera>();
+
+        //!
+        //! Event emitted when scene is prepared.
+        //!
+        public event EventHandler<EventArgs> sceneReady;
+
+        public void emitSceneReady()
+        {
+            sceneReady?.Invoke(this, new EventArgs());
+        }
+
+        //!
+        //! Setter and getter to List holding references to all VPET sceneObjects.
+        //!
+        public List<SceneObject> sceneObjects
+        {
+            get { return m_sceneObjects; }
+            set { m_sceneObjects = value; }
+        }
         //!
         //! The VPET SceneDataHandler, handling all VPET scene data relevant conversion.
         //!
@@ -31,6 +60,7 @@ namespace vpet
         {
             get { return ref m_sceneDataHandler; }
         }
+        
         public static class Settings
         {
             //!
@@ -70,6 +100,42 @@ namespace vpet
         public SceneManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_sceneDataHandler = new SceneDataHandler();
+
+            // create scene parent if not there
+            GameObject scnRoot = GameObject.Find("VPETScene");
+            if (scnRoot == null)
+            {
+                scnRoot = new GameObject("VPETScene");
+            }
+        }
+
+
+        public SceneObject getSceneObject(int id)
+        {
+            return sceneObjects[id];
+        }
+
+        public int getSceneObjectId(SceneObject sceneObject)
+        {
+            return sceneObjects.IndexOf(sceneObject);
+        }
+
+        //!
+        //! Function that deletes all Unity scene content and clears the VPET scene object lists.
+        //!
+        public void ResetScene()
+        {
+            m_sceneObjects.Clear();
+            m_sceneCameraList.Clear();
+            m_sceneLightList.Clear();
+            
+            if (scnRoot != null)
+            {
+                foreach (Transform child in scnRoot.transform)
+                {
+                    GameObject.Destroy(child.gameObject);
+                }
+            }
         }
     }
 }

@@ -60,6 +60,7 @@ namespace vpet
         //!
         private int m_lodMixedLayer;
 
+
         //!
         //! Constructor
         //!
@@ -93,14 +94,27 @@ namespace vpet
             {
                 SceneManager.SceneNode node = new SceneManager.SceneNode();
                 Transform trans = gameObject.transform;
-                if (trans.GetComponent<Light>() != null)
+                SceneObject sceneObject = null;
+                if (trans.GetComponent<Light>() != null) {
                     node = ParseLight(trans.GetComponent<Light>());
-                else if (trans.GetComponent<Camera>() != null)
+                    sceneObject = gameObject.AddComponent<SceneObjectLight>();
+                    manager.m_sceneLightList.Add((SceneObjectLight) sceneObject);
+                }
+                else if (trans.GetComponent<Camera>() != null) {
                     node = ParseCamera(trans.GetComponent<Camera>());
-                else if (trans.GetComponent<MeshFilter>() != null)
+                    sceneObject = gameObject.AddComponent<SceneObjectCamera>();
+                    manager.m_sceneCameraList.Add((SceneObjectCamera)sceneObject);
+                }
+                else if (trans.GetComponent<MeshFilter>() != null) {
                     node = ParseMesh(trans, ref sceneData);
-                else if (trans.GetComponent<SkinnedMeshRenderer>() != null)
-                    node = ParseSkinnedMesh(trans, ref gameObjects , ref sceneData);
+                    if (gameObject.tag == "editable")
+                        sceneObject = gameObject.AddComponent<SceneObject>();
+                }
+                else if (trans.GetComponent<SkinnedMeshRenderer>() != null) {
+                    node = ParseSkinnedMesh(trans, ref gameObjects, ref sceneData);
+                    if (gameObject.tag == "editable")
+                        sceneObject = gameObject.AddComponent<SceneObject>();
+                }
 
                 Animator animator = trans.GetComponent<Animator>();
                 if (animator != null)
@@ -118,10 +132,19 @@ namespace vpet
 
                 node.childCount = trans.childCount;
 
+                if (gameObject.tag == "editable")
+                {
+                    manager.sceneObjects.Add(sceneObject);
+                    node.editable = true;
+                }
+                else
+                    node.editable = false;
+
                 if (trans.name != "root")
                     sceneData.nodeList.Add(node);
             }
             manager.sceneDataHandler.setSceneData(ref sceneData);
+            manager.emitSceneReady();
         }
 
         //!

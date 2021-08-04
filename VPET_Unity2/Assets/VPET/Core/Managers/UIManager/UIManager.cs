@@ -9,11 +9,6 @@ namespace vpet
     {
 
         //!
-        //! The List holding the currently selected objects.
-        //!
-        private List<SceneObject> m_selectedObjects;
-
-        //!
         //! Event emitted when parameter changed.
         //!
         public event EventHandler<SEventArgs> selectionChanged;
@@ -23,7 +18,6 @@ namespace vpet
         //!
         public UIManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
-            m_selectedObjects = new List<SceneObject>();
         }
 
         //!

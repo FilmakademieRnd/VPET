@@ -14,7 +14,7 @@ namespace vpet
     //!
     //! manager class interface definition
     //!
-    interface ManagerInterface
+    interface ManagerInterface 
     {
 
     }

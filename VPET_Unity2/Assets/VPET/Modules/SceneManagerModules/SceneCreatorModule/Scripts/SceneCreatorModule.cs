@@ -41,28 +41,18 @@ namespace vpet
     //!
     public class SceneCreatorModule : SceneManagerModule
     {
-        //! The list storing Unity materials in scene.
-        public static List<Material> SceneMaterialList = new List<Material>();
-        
-        //! The list storing Unity textures in scene.
-        public static List<Texture2D> SceneTextureList = new List<Texture2D>();
-       
-        //! The list storing Unity meshes in scene.
-        public static List<Mesh> SceneMeshList = new List<Mesh>();
-        
-        //! The list storing editable Unity game objects in scene.
-        public static List<GameObject> SceneEditableObjects = new List<GameObject>();
-        
-        //! The list storing selectable Unity lights in scene.
-        public static List<GameObject> SelectableLights = new List<GameObject>();
-        
-        //! The list storing Unity cameras in scene.
-        public static List<GameObject> SceneCameraList = new List<GameObject>();
-       
         //! The list storing all Unity gameObjects in scene.
-        public static List<GameObject> gameObjectList = new List<GameObject>();
+        private List<GameObject> gameObjectList = new List<GameObject>();
 
-        public static GameObject scnRoot;
+        //! The list storing Unity materials in scene.
+        private List<Material> SceneMaterialList = new List<Material>();
+
+        //! The list storing Unity textures in scene.
+        private List<Texture2D> SceneTextureList = new List<Texture2D>();
+
+        //! The list storing Unity meshes in scene.
+        private List<Mesh> SceneMeshList = new List<Mesh>();
+
 
         //!
         //! Constructor
@@ -86,12 +76,7 @@ namespace vpet
             SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager) manager).sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 
-            // create scene parent if not there
-            GameObject scnRoot = GameObject.Find("VPETScene");
-            if (scnRoot == null)
-            {
-                scnRoot = new GameObject("VPETScene");
-            }
+           
 
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
 
@@ -102,11 +87,14 @@ namespace vpet
 
             createMeshes(ref sceneData);
 
-            createSceneGraphIter(ref sceneData, scnRoot.transform);
+            createSceneGraphIter(ref sceneData, manager.scnRoot.transform);
 
-            createSkinnedMeshes(ref sceneData, scnRoot.transform);
+            createSkinnedMeshes(ref sceneData, manager.scnRoot.transform);
 
             sceneDataHandler.clearSceneByteData();
+            clearData();
+
+            manager.emitSceneReady();
         }
 
         //!
@@ -245,12 +233,6 @@ namespace vpet
             GameObject obj = CreateObject(node, parent);
 
             gameObjectList.Add(obj);
-
-            // add scene object to editable 
-            if (node.editable)
-            {
-                SceneEditableObjects.Add(obj);
-            }
 
             // recursive call
             int idxChild = idx;
@@ -448,7 +430,8 @@ namespace vpet
 
                     if (nodeGeo.editable)
                     {
-                        SceneObject sceneObject = objMain.AddComponent<SceneObject>();
+                        SceneObject sco = objMain.AddComponent<SceneObject>();
+                        manager.sceneObjects.Add(sco);
                     }
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeLight))
@@ -504,9 +487,10 @@ namespace vpet
                     // parent 
                     _lightUberInstance.transform.SetParent(objMain.transform, false);
 
-                    LightObject sco = objMain.AddComponent<LightObject>();
+                    SceneObjectLight sco = objMain.AddComponent<SceneObjectLight>();
 
-                    SelectableLights.Add(objMain);
+                    manager.m_sceneLightList.Add(sco);
+                    manager.sceneObjects.Add(sco);
 
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeCam))
@@ -526,12 +510,13 @@ namespace vpet
                     // add camera data script and set values
                     //if (nodeCam.editable)
                     //{
-                    CameraObject sco = objMain.AddComponent<CameraObject>();
+                    SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
                     sco.fov.value = nodeCam.fov;
                     sco.near.value = nodeCam.near;
                     sco.far.value = nodeCam.far;
 
-                    SceneCameraList.Add(objMain);
+                    manager.m_sceneCameraList.Add(sco);
+                    manager.sceneObjects.Add(sco);
                 }
 
                 Vector3 sceneExtends = SceneManager.Settings.sceneBoundsMax - SceneManager.Settings.sceneBoundsMin;
@@ -711,23 +696,12 @@ namespace vpet
         //!
         //! Function that deletes all Unity scene content and clears the VPET scene object lists.
         //!
-        public void ResetScene()
+        public void clearData()
         {
-            SceneEditableObjects.Clear();
             SceneMaterialList.Clear();
             SceneTextureList.Clear();
             SceneMeshList.Clear();
-            SceneCameraList.Clear();
-            SelectableLights.Clear();
             gameObjectList.Clear();
-
-            if (scnRoot != null)
-            {
-                foreach (Transform child in scnRoot.transform)
-                {
-                    GameObject.Destroy(child.gameObject);
-                }
-            }
         }
 
     }
