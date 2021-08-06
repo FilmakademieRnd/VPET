@@ -5,7 +5,7 @@
 //! @version 0
 //! @date 23.06.2021
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -37,10 +37,47 @@ namespace vpet
         //!
         protected bool m_isRunning;
 
+        private Thread m_requesterThread;
+        
         //!
         //! Function, listening for messages and adds them to m_messageQueue (executed in separate thread).
         //!
         protected abstract void run();
+
+
+
+        //!
+        //! Ret the manager of this module.
+        //!
+        public NetworkManager manager
+        {
+            get => (NetworkManager) m_core.getManager<NetworkManager>();
+        }
+
+        //!
+        //! constructor
+        //! @param  name  The  name of the module.
+        //! @param core A reference to the VPET core.
+        //!
+        public NetworkManagerModule(string name, Core core) : base(name, core)
+        {
+            core.destroyEvent += stopThread;
+        }
+
+        private void stopThread(object sender, EventArgs e)
+        {
+            stop();
+        }
+
+        //!
+        //! Function for custom initialisation.
+        //! 
+        //! Reference to tist of byte[] storing the messages.
+        //!
+        public virtual void initialise(out List<byte[]> messageQueue)
+        {
+            messageQueue = m_messageQueue;
+        }
 
         //!
         //! Function to start a new thread.
@@ -57,8 +94,8 @@ namespace vpet
 
             ThreadStart starter = new ThreadStart(run);
 
-            Thread requesterThread = new Thread(starter);
-            requesterThread.Start();
+            m_requesterThread = new Thread(starter);
+            m_requesterThread.Start();
 
         }
 
@@ -68,30 +105,6 @@ namespace vpet
         public void stop()
         {
             m_isRunning = false;
-        }
-        //!
-        //! Ret the manager of this module.
-        //!
-        public NetworkManager manager
-        {
-            get => (NetworkManager) m_core.getManager<NetworkManager>();
-        }
-        //!
-        //! constructor
-        //! @param  name  The  name of the module.
-        //! @param core A reference to the VPET core.
-        //!
-        public NetworkManagerModule(string name, Core core) : base(name, core)
-        {
-        }
-        //!
-        //! Function for custom initialisation.
-        //! 
-        //! Reference to tist of byte[] storing the messages.
-        //!
-        public virtual void initialise(out List<byte[]> messageQueue)
-        {
-            messageQueue = m_messageQueue;
         }
     }
 }

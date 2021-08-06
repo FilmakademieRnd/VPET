@@ -48,16 +48,7 @@ namespace vpet
         //!
         public UICreator2DModule(string name, Core core) : base(name, core)
         {
-            core.updateEvent += writeLog;
         }
-
-        public void writeLog (object sender, EventArgs e)
-        {
-            Helpers.Log("Render Event received!");
-
-            Camera.main.transform.position += new Vector3(1, 0, 0);
-        }
-
 
 
         //!

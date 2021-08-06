@@ -18,9 +18,15 @@ namespace vpet
     //!
     public partial class SceneManager : Manager
     {
-        public GameObject scnRoot;
+        private GameObject m_scnRoot;
 
-        //! The list storing editable Unity game objects in scene.
+        public ref GameObject scnRoot
+        {
+            get { return ref m_scnRoot; }
+        }
+
+
+        //! The list storing editable VPET scene objects in scene.
         private List<SceneObject> m_sceneObjects = new List<SceneObject>();
 
         //! The list storing selectable Unity lights in scene.
@@ -40,7 +46,7 @@ namespace vpet
         }
 
         //!
-        //! Setter and getter to List holding references to all VPET sceneObjects.
+        //! Setter and getter to List holding references to all editable VPET sceneObjects.
         //!
         public List<SceneObject> sceneObjects
         {
@@ -102,7 +108,7 @@ namespace vpet
             m_sceneDataHandler = new SceneDataHandler();
 
             // create scene parent if not there
-            GameObject scnRoot = GameObject.Find("VPETScene");
+            scnRoot = GameObject.Find("Scene");
             if (scnRoot == null)
             {
                 scnRoot = new GameObject("VPETScene");
@@ -112,12 +118,16 @@ namespace vpet
 
         public SceneObject getSceneObject(int id)
         {
-            return sceneObjects[id];
+            Helpers.Log(id.ToString());
+            if (id < 1)
+                return null;
+            else
+                return sceneObjects[id -1];
         }
 
         public int getSceneObjectId(SceneObject sceneObject)
         {
-            return sceneObjects.IndexOf(sceneObject);
+            return sceneObjects.IndexOf(sceneObject) + 1;  // +1 because 0 is non selectable object or background
         }
 
         //!
@@ -129,9 +139,9 @@ namespace vpet
             m_sceneCameraList.Clear();
             m_sceneLightList.Clear();
             
-            if (scnRoot != null)
+            if (m_scnRoot != null)
             {
-                foreach (Transform child in scnRoot.transform)
+                foreach (Transform child in m_scnRoot.transform)
                 {
                     GameObject.Destroy(child.gameObject);
                 }

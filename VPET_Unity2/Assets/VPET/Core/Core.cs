@@ -27,6 +27,7 @@ namespace vpet
         }
 
         public event EventHandler updateEvent;
+        public event EventHandler destroyEvent;
 
         //!
         //! Initialization of all Managers and modules.
@@ -45,6 +46,11 @@ namespace vpet
             UIManager uiManager = new UIManager(typeof(UIManagerModule), this);
             m_managerList.Add(typeof(UIManager), sceneManager);
 
+        }
+
+        private void OnDestroy()
+        {
+            destroyEvent?.Invoke(this, new EventArgs());
         }
 
         private void Update()

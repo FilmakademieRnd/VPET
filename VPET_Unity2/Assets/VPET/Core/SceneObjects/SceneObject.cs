@@ -39,6 +39,7 @@ namespace vpet
     //! Implementation of the VPET SceneObject, connecting Unity and VPET functionalty 
     //! around 3D scene specific objects.
     //!
+    [DisallowMultipleComponent]
     public class SceneObject : MonoBehaviour
     {
         //!
