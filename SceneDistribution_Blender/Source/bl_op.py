@@ -45,6 +45,7 @@ from .sceneDistribution import gatherSceneData
 class SetupScene(bpy.types.Operator):
     bl_idname = "object.setup_vpet"
     bl_label = "VPET Scene Setup"
+    bl_description = 'Create collections for objects to send to VPET clients'
 
     def execute(self, context):
         print('setup scene')
@@ -55,6 +56,7 @@ class SetupScene(bpy.types.Operator):
 class DoDistribute(bpy.types.Operator):
     bl_idname = "object.zmq_distribute"
     bl_label = "VPET Do Distribute"
+    bl_description = 'Distribute the scene to VPET clients'
 
     def execute(self, context):
         print("do distribute")
@@ -74,6 +76,7 @@ class DoDistribute(bpy.types.Operator):
 class StopDistribute(bpy.types.Operator):
     bl_idname = "object.zmq_stopdistribute"
     bl_label = "VPET Stop Distribute"
+    bl_description = 'Stop the distribution'
 
     def execute(self, context):
         print('stop distribute')
@@ -84,6 +87,7 @@ class StopDistribute(bpy.types.Operator):
 class InstallZMQ(bpy.types.Operator):
     bl_idname = "object.zmq_install"
     bl_label = "Install ZMQ"
+    bl_description = 'Pip install ZMQ. You need admin rights for this!'
 
     def execute(self, context):
         print('installing ZMQ')

@@ -36,11 +36,11 @@ from bpy.types import SceneObjects
 
 ## Class to keep editable parameters
 class VpetProperties(bpy.types.PropertyGroup):
-    server_ip: bpy.props.StringProperty(default = '127.0.0.1')
+    server_ip: bpy.props.StringProperty(name='Server IP', default = '127.0.0.1', description='IP adress of the machine you are running Blender on. \'127.0.0.1\' for tests only on this machine.')
     dist_port: bpy.props.StringProperty(default = '5565')
     sync_port: bpy.props.StringProperty(default = '5556')
 
-    vpet_collection: bpy.props.StringProperty(name = 'VPET Collection', default = 'VPET_static', maxlen=30)
+    vpet_collection: bpy.props.StringProperty(name = 'Static Collection', default = 'VPET_static', maxlen=30)
     edit_collection: bpy.props.StringProperty(name = 'Editable Collection', default = 'VPET_editable', maxlen=30)
 
 ## Class to keep data

@@ -62,6 +62,8 @@ sysinfo.txt
 #Unity Meta files
 *.meta
 
+*pycache*
+
 #VPET specific
 /VPET_Unity/Assets/*
 !/VPET_Unity/Assets/VPET
