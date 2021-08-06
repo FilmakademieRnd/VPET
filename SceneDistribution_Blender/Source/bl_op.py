@@ -87,16 +87,19 @@ class StopDistribute(bpy.types.Operator):
 class InstallZMQ(bpy.types.Operator):
     bl_idname = "object.zmq_install"
     bl_label = "Install ZMQ"
-    bl_description = 'Pip install ZMQ. You need admin rights for this!'
 
     def execute(self, context):
-        print('installing ZMQ')
+        print('Installing ZMQ')
         zmq_result = installZmq()
-        if zmq_result == True:
+        if zmq_result == 'admin error':
+            self.report({'ERROR'}, f'You need to be Admin to install ZMQ')
+            return {'FINISHED'}
+        if zmq_result == 'success':
+            self.report({'INFO'}, f'Successfully Installed ZMQ')
             return {'FINISHED'}
         else:
             self.report({'ERROR'}, str(zmq_result))
-            return {'FAILED'}
+            return {'FINISHED'}
 
 def reset():
     close_socket_d()

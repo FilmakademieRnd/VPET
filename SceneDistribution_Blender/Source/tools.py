@@ -61,23 +61,26 @@ def setupCollections():
         bpy.context.scene.collection.children.link(editColl)
         #bpy.data.collections[v_prop.vpet_collection].children.link(editColl)
 
-def cleanUp():
-    vpet.objectsToTransfer = [] #list of all objects
-    vpet.nodeList = [] #list of all nodes
-    vpet.geoList = [] #list of geometry data
-    vpet.materialList = [] # list of materials
-    vpet.textureList = [] #list of textures
+def cleanUp(level):
+    if level > 0:
+        vpet.objectsToTransfer = [] #list of all objects
+        vpet.nodeList = [] #list of all nodes
+        vpet.geoList = [] #list of geometry data
+        vpet.materialList = [] # list of materials
+        vpet.textureList = [] #list of textures
 
-    vpet.headerByteData = bytearray([]) # header data as bytes
-    vpet.nodesByteData = bytearray([]) # nodes data as bytes
-    vpet.geoByteData = bytearray([]) # geo data as bytes
-    vpet.texturesByteData = bytearray([]) # texture data as bytes
+    if level > 1:
+        vpet.editableList = []
+        vpet.headerByteData = bytearray([]) # header data as bytes
+        vpet.nodesByteData = bytearray([]) # nodes data as bytes
+        vpet.geoByteData = bytearray([]) # geo data as bytes
+        vpet.texturesByteData = bytearray([]) # texture data as bytes
 
-    vpet.rootChildCount = 0
+        vpet.rootChildCount = 0
 
 def installZmq():
     if checkZMQ():
-        return True
+        return 'ZMQ is already installed'
     else:
         if bpy.app.version[0] == 2 and bpy.app.version[1] < 81:
             return 'This only works with Blender versions > 2.81'
@@ -112,10 +115,12 @@ def installZmq():
         # pyzmq pip install
         try:
             print("Trying pyzmq install")
-            output = subprocess.check_output([py_exec, '-m', 'pip', 'install', 'pyzmq'])
+            output = subprocess.check_output([py_exec, '-m', 'pip', 'install', '--ignore-installed', 'pyzmq'])
             print(output)
+            if (str(output).find('not writeable') > -1):
+                return 'admin error'
+            else:
+                return 'success'
         except subprocess.CalledProcessError as e:
             print("ERROR: Couldn't install pyzmq.")
             return (e.output)
-
-        return True
