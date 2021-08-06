@@ -45,7 +45,7 @@ from .sceneDistribution import gatherSceneData
 class SetupScene(bpy.types.Operator):
     bl_idname = "object.setup_vpet"
     bl_label = "VPET Scene Setup"
-    bl_description = 'Create collections for objects to send to VPET clients'
+    bl_description = 'Create Collections for static and editable objects'
 
     def execute(self, context):
         print('setup scene')
@@ -63,6 +63,7 @@ class DoDistribute(bpy.types.Operator):
         if checkZMQ():
             reset()
             objCount = gatherSceneData()
+            cleanUp(level=1)
             if objCount > 0:
                 set_up_thread()
                 self.report({'INFO'}, f'Sending {str(objCount)} Objects to VPET')
@@ -76,7 +77,7 @@ class DoDistribute(bpy.types.Operator):
 class StopDistribute(bpy.types.Operator):
     bl_idname = "object.zmq_stopdistribute"
     bl_label = "VPET Stop Distribute"
-    bl_description = 'Stop the distribution'
+    bl_description = 'Stop the distribution and free the sockets. Important!'
 
     def execute(self, context):
         print('stop distribute')
@@ -87,6 +88,7 @@ class StopDistribute(bpy.types.Operator):
 class InstallZMQ(bpy.types.Operator):
     bl_idname = "object.zmq_install"
     bl_label = "Install ZMQ"
+    bl_description = 'Install Zero MQ. You need admin rights for this to work!'
 
     def execute(self, context):
         print('Installing ZMQ')
@@ -104,4 +106,4 @@ class InstallZMQ(bpy.types.Operator):
 def reset():
     close_socket_d()
     close_socket_s()
-    cleanUp()
+    cleanUp(level=2)
