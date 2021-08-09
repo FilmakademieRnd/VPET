@@ -528,11 +528,14 @@ def getGeoBytesArray():
 
 ## pack texture data into byte array        
 def getTexturesByteArray():
-    for tex in vpet.textureList:
-        texBinary = bytearray([])
-        
-        texBinary.extend(struct.pack('i', 0)) #type
-        texBinary.extend(struct.pack('i', tex.colorMapDataSize))
-        texBinary.extend(tex.colorMapData)
-        
-        vpet.texturesByteData.extend(texBinary)
+    if len(vpet.textureList) > 0:
+        for tex in vpet.textureList:
+            texBinary = bytearray([])
+            
+            texBinary.extend(struct.pack('i', 0)) #type
+            texBinary.extend(struct.pack('i', tex.colorMapDataSize))
+            texBinary.extend(tex.colorMapData)
+            
+            vpet.texturesByteData.extend(texBinary)
+    else:
+        vpet.texturesByteData.extend(struct.pack('i', 0))
