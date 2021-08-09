@@ -5,8 +5,7 @@
 //! @version 0
 //! @date 23.02.2021
 
-using System.Collections;
-using System.Collections.Generic;
+using System;
 
 namespace vpet
 {
@@ -42,6 +41,9 @@ namespace vpet
         {
             m_name = name;
             m_core = core;
+
+            core.awakeEvent += Init;
+            core.destroyEvent += Cleanup;
         }
 
         //!
@@ -52,5 +54,8 @@ namespace vpet
         {
             get => m_name;
         }
+
+        protected virtual void Init(object sender, EventArgs e) { }
+        protected virtual void Cleanup(object sender, EventArgs e) { }
     }
 }

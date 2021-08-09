@@ -437,13 +437,13 @@ namespace vpet
             Material _mat = Resources.Load(string.Format("VPET/Materials/{0}", matName), typeof(Material)) as Material;
             if (_mat)
             {
-                Helpers.Log("mat tyoe" + 1 + " material " + mat.name);
+                Helpers.Log("mat type" + 1 + " material " + mat.name);
                 matPack.type = 1;
                 matPack.src = matName;
             }
             else
             {
-                Helpers.Log("mat tyoe" + 2 + " shader " + mat.shader.name);
+                Helpers.Log("mat type" + 2 + " shader " + mat.shader.name);
                 matPack.type = 2;
                 matPack.src = mat.shader.name;
             }

@@ -1,8 +1,39 @@
+/*
+-------------------------------------------------------------------------------
+VPET - Virtual Production Editing Tools
+vpet.research.animationsinstitut.de
+https://github.com/FilmakademieRnd/VPET
+ 
+Copyright (c) 2021 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+ 
+This project has been initiated in the scope of the EU funded project 
+Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
+ 
+Post Dreamspace the project has been further developed on behalf of the 
+research and development activities of Animationsinstitut.
+ 
+In 2018 some features (Character Animation Interface and USD support) were
+addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
+under grant agreement no 780470, 2018-2021
+ 
+VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
+Syncronisation Server. They are licensed under the following terms:
+-------------------------------------------------------------------------------
+*/
+
+//! @file "PexelSelectorModule.cs"
+//! @brief implementation of the VPET PexelSelectorModule, a pixel precise selection method.
+//! @author Simon Spielmann
+//! @author Jonas Trottnow
+//! @version 0
+//! @date 08.08.2021
+
 using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.InputSystem;
 
 namespace vpet
 {
@@ -12,28 +43,22 @@ namespace vpet
     //!
     public class PixelSelectorModule : UIManagerModule
     {
+        //!
+        //! Name of the shader tag for the selection shader.
+        //!
         private const string SelectableType = "SelectableType";
+        //!
+        //! Value od the shader tag for the selection shader.
+        //!
         public const string Selectable = "Selectable";
         //!
         //! Name of the shader property holding the selectable id.
         //!
         private const string m_SelectableIdPropertyName = "_SelectableId";
         //!
-        //! Divides the screen resolution for the selection.
-        //!
-        private int scaleDivisor = 4;
-        //!
         //! The shater to be used for object ID rendering.
         //!
         private Shader objectIdShader;
-        //!
-        //! A reference to the VPET scene manager.
-        //!
-        private SceneManager m_sceneManager;
-        //!
-        //! Scaled width and height of render texture.
-        //!
-        private int dataWidth, dataHeight;
         //!
         //! The render texture for the selection.
         //!
@@ -43,26 +68,40 @@ namespace vpet
         //!
         private NativeArray<Color32> cpuData;
         //!
-        //! Flag to determine a selection render request. 
+        //! Tracked materials with selectable tag.
         //!
-        private bool hasAsyncRequest;
+        private readonly Dictionary<Material, Material> m_materials;
+        //!
+        //! A reference to the VPET scene manager.
+        //!
+        private SceneManager m_sceneManager;
         //!
         //! The async redner request.
         //!
         private AsyncGPUReadbackRequest request;
         //!
-        //! Tracked materials with selectable tag.
-        //!
-        private readonly Dictionary<Material, Material> m_materials;
-        //!
         //! Re-used property block used to set selectable id.
         //!
         private MaterialPropertyBlock m_properties;
+
+        private InputManager m_inputManager;
 
         //!
         //! Cached shader property id of selectable id.
         //!
         private int m_selectableIdPropertyId;
+        //!
+        //! Scaled width and height of render texture.
+        //!
+        private int dataWidth, dataHeight;
+        //!
+        //! Divides the screen resolution for the selection.
+        //!
+        private int scaleDivisor = 4;
+        //!
+        //! Flag to determine a selection render request. 
+        //!
+        private bool hasAsyncRequest;
 
         //!
         //! Constructor
@@ -72,31 +111,30 @@ namespace vpet
         public PixelSelectorModule(string name, Core core) : base(name, core)
         {
             objectIdShader = Resources.Load<Shader>("Shader/SelectableId");
-
-            m_sceneManager = core.getManager<SceneManager>();
-            core.updateEvent += renderUpdate;
-            core.destroyEvent += Cleanup;
             m_materials = new Dictionary<Material, Material>();
-
             m_selectableIdPropertyId = Shader.PropertyToID(m_SelectableIdPropertyName);
-
-            m_sceneManager.sceneReady += modifyMaterials;
         }
 
-        private void Cleanup(object sender, EventArgs e)
+        protected override void Init(object sender, EventArgs e)
         {
-            dataWidth = 0;
-            dataHeight = 0;
-
-            if (gpuTexture != null)
-                gpuTexture.Release();
-
-            if (cpuData.IsCreated) 
-                cpuData.Dispose();
-
-            hasAsyncRequest = false;
-            request = default(AsyncGPUReadbackRequest);
+            m_core.updateEvent += renderUpdate;
+           
+            m_sceneManager = m_core.getManager<SceneManager>();
+            m_sceneManager.sceneReady += modifyMaterials;
+            
+            m_inputManager = m_core.getManager<InputManager>();
+            m_inputManager.touchInputs.Touch.TouchPress.started += ctx => InputFunction(ctx);
         }
+
+        private void InputFunction(InputAction.CallbackContext c)
+        {
+            Vector2 pos = m_inputManager.touchInputs.Touch.TouchPosition.ReadValue<Vector2>();
+
+            SceneObject scneObject = GetSelectableAt(pos);
+            if (scneObject != null)
+                manager.addSelectedObject(scneObject);
+        }
+
 
         //!
         //! Retrieve the selectable present at the current location in camera screenspace, if any.
@@ -117,6 +155,26 @@ namespace vpet
             return m_sceneManager.getSceneObject(id);
         }
 
+        //!
+        //! Callback from VPET core when Unity calls OnDestroy.
+        //! Used to cleanup resources used by the PixelSelector module.
+        //!
+        protected override void Cleanup(object sender, EventArgs e)
+        {
+            dataWidth = 0;
+            dataHeight = 0;
+
+            if (gpuTexture != null)
+                gpuTexture.Release();
+
+            if (cpuData.IsCreated) 
+                cpuData.Dispose();
+
+            hasAsyncRequest = false;
+            request = default(AsyncGPUReadbackRequest);
+        }
+
+
 
         //! 
         //! Gets a cached adjusted material or creates a new one based on the specified material.
@@ -129,7 +187,7 @@ namespace vpet
         //! @param material The material to be changed for selection rendering.
         //! @return An adjusted m_instance of the specified material with the selectable tag set.
         //!
-        internal Material GetSelectableMaterial(Material material)
+        private Material GetSelectableMaterial(Material material)
         {
             Material selectableMaterial;
             if (!m_materials.TryGetValue(material, out selectableMaterial))
@@ -142,6 +200,11 @@ namespace vpet
             return selectableMaterial;
         }
 
+        //!
+        //! Callback from VPET core when Unity calls it's render update.
+        //! Used setup render texture, render the object ID pass and copy
+        //! it asyncron into a Color32 array. 
+        //!
         private void renderUpdate(object sender, EventArgs e)
         {
             Camera camera = Camera.main;
@@ -202,12 +265,12 @@ namespace vpet
                 request = AsyncGPUReadback.Request(gpuTexture);
             }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                SceneObject sceneObject = GetSelectableAt(Input.mousePosition);
-                if (sceneObject)
-                    Helpers.Log(sceneObject.name);
-            }
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    SceneObject sceneObject = GetSelectableAt(Input.mousePosition);
+            //    if (sceneObject)
+            //        Helpers.Log(sceneObject.name);
+            //}
 
         }
 
@@ -246,7 +309,7 @@ namespace vpet
         //! @param id The selectable id to be encoded.
         //! @return The color representing the encoded id.
         //!
-        public Color32 EncodeId(int id)
+        private Color32 EncodeId(int id)
         {
             return new Color32(
                 (byte)(id >> (3 * 8)),
@@ -261,7 +324,7 @@ namespace vpet
         //! @param color The color to decode into a selectable id.
         //! @return The decoded selectable id.
         //!
-        public int DecodeId(Color32 color)
+        private int DecodeId(Color32 color)
         {
             return (color.r << (3 * 8)) |
                    (color.g << (2 * 8)) |

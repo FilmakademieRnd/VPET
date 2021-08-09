@@ -1,4 +1,4 @@
-﻿/*
+/*
 -------------------------------------------------------------------------------
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
@@ -21,48 +21,21 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "UIManager.cs"
-//! @brief Implementation of the VPET UI Manager, managing creation of UI elements.
+//! @file "InputManagerModuleInterface.cs"
+//! @brief Implementation of the input manager module interface.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 09.07.2021
-
-using System.Collections.Generic;
-using System;
+//! @date 23.06.2021
 
 namespace vpet
 {
-    public class UIManager : Manager
+    public class InputManagerModule : Module
     {
-        private List<SceneObject> m_selectedObjects;
-
         //!
-        //! Event emitted when parameter changed.
+        //! constructor
+        //! @param  name The name of the module.
         //!
-        public event EventHandler<SEventArgs> selectionChanged;
-
-        //!
-        //! Constructor initializing member variables.
-        //!
-        public UIManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
-        {
-            m_selectedObjects = new List<SceneObject>();
-        }
-        public void addSelectedObject(SceneObject sceneObject)
-        {
-            m_selectedObjects.Clear();
-            m_selectedObjects.Add(sceneObject);
-
-            selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
-        }
-
-        //!
-        //! Definition of change function parameters.
-        //!
-        public class SEventArgs : EventArgs
-        {
-            public List<SceneObject> _value;
-        }
+        public InputManagerModule(string name, Core core) : base(name, core) { }
     }
 }

@@ -47,7 +47,7 @@ namespace vpet
             set { targetCollider = value; }
         }
 
-        Renderer renderer;
+        Renderer m_renderer;
         Light parentLight;
 
 
@@ -69,9 +69,9 @@ namespace vpet
         //!
         void Start()
         {
-            renderer = this.GetComponent<Renderer>();
+            m_renderer = this.GetComponent<Renderer>();
             parentLight = this.transform.parent.GetComponent<Light>();
-            renderer.material.color = parentLight.color;
+            m_renderer.material.color = parentLight.color;
         }
 
         //!
@@ -79,9 +79,9 @@ namespace vpet
         //!
         void Update()
         {
-            if (renderer)
+            if (m_renderer)
             {
-                renderer.enabled = true;
+                m_renderer.enabled = true;
                 Camera camera = Camera.main;
                 if (lastPosition != this.transform.position ||
                     lastCameraPosition != camera.transform.position ||
@@ -96,7 +96,7 @@ namespace vpet
 
                     this.transform.rotation = lastCameraRotation;
                     this.transform.localScale = scale;
-                    renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b, 1f);
+                    m_renderer.material.color = new Color(parentLight.color.r, parentLight.color.g, parentLight.color.b, 1f);
 
                     // set the same scale to the light's collider
                     if (targetCollider)

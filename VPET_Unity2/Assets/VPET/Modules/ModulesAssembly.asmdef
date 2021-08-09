@@ -1,8 +1,10 @@
 {
     "name": "ModulesAssembly",
+    "rootNamespace": "",
     "references": [
-        "VPETAssembly",
-        "HelperAssembly"
+        "Core",
+        "HelperAssembly",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

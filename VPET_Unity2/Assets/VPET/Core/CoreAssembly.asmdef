@@ -1,7 +1,9 @@
 {
-    "name": "VPETAssembly",
+    "name": "Core",
+    "rootNamespace": "",
     "references": [
-        "HelperAssembly"
+        "GUID:7e30fd56ec844a64bbc7bfeb025fc7c6",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

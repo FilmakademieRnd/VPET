@@ -48,6 +48,12 @@ namespace vpet
         //!
         public UICreator2DModule(string name, Core core) : base(name, core)
         {
+
+        }
+
+        protected override void Init(object sender, EventArgs e)
+        {
+            manager.selectionChanged += createUI;
         }
 
 
@@ -57,7 +63,7 @@ namespace vpet
         //!
         private void createUI(object sender, UIManager.SEventArgs a)
         {
-            foreach (SceneObject sceneObject in a.value)
+            foreach (SceneObject sceneObject in a._value)
             {
                 foreach (AbstractParameter param in sceneObject.parameterList)
                 {

@@ -1,4 +1,4 @@
-﻿/*
+/*
 -------------------------------------------------------------------------------
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
@@ -21,48 +21,32 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "UIManager.cs"
-//! @brief Implementation of the VPET UI Manager, managing creation of UI elements.
+//! @file "InputManager.cs"
+//! @brief Implementation of the VPET Input Manager, managing all user inupt sytems and mapping.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 09.07.2021
+//! @date 09.08.2021
 
-using System.Collections.Generic;
+
 using System;
 
 namespace vpet
 {
-    public class UIManager : Manager
+    public class InputManager : Manager
     {
-        private List<SceneObject> m_selectedObjects;
-
-        //!
-        //! Event emitted when parameter changed.
-        //!
-        public event EventHandler<SEventArgs> selectionChanged;
-
+        private TouchInputs m_touchInputs;
+        public ref TouchInputs touchInputs
+        {
+            get { return ref m_touchInputs; }
+        }
         //!
         //! Constructor initializing member variables.
         //!
-        public UIManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
+        public InputManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
-            m_selectedObjects = new List<SceneObject>();
-        }
-        public void addSelectedObject(SceneObject sceneObject)
-        {
-            m_selectedObjects.Clear();
-            m_selectedObjects.Add(sceneObject);
-
-            selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
-        }
-
-        //!
-        //! Definition of change function parameters.
-        //!
-        public class SEventArgs : EventArgs
-        {
-            public List<SceneObject> _value;
+            m_touchInputs = new TouchInputs();
+            m_touchInputs.Enable();
         }
     }
 }
