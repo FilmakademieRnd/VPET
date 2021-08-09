@@ -61,6 +61,7 @@ class VpetData():
     geoList = []
     materialList = []
     textureList = []
+    editableList = []
 
     rootChildCount = 0
     

@@ -109,9 +109,13 @@ def listener():
         
     if msg != None:
         type = vpet.parameterTypes[msg[1]]
-        objName = bytearray(vpet.nodeList[msg[2]].name).decode('ascii')
-        obj = bpy.data.objects[objName]
-        objType = vpet.nodeTypes[vpet.nodeList[msg[2]].vpetType]
+        objName = vpet.editableList[msg[2]][0]
+        try:
+            obj = bpy.data.objects[objName]
+        except:
+            return 0.01
+        #print(f'{msg[2]} {objName}')
+        objType = vpet.nodeTypes[vpet.editableList[msg[2]][1]]
         
         if type == 'POS':
             newPos = mathutils.Vector((     unpack('f', msg, 6),\

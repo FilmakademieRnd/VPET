@@ -69,13 +69,19 @@ def initialize():
 #
 def gatherSceneData():
     initialize()
+    static_objects = []
+    editable_objects = []
     # check if VPET collections exist
-    if bpy.data.collections.find(v_prop.vpet_collection) > 0:
-        vpet.objectsToTransfer = list(bpy.data.collections[v_prop.vpet_collection].all_objects)
-    if bpy.data.collections.find(v_prop.edit_collection) > 0:    
-        vpet.objectsToTransfer += list(bpy.data.collections[v_prop.edit_collection].all_objects)
+    if bpy.data.collections.find(v_prop.vpet_collection) > -1:
+        static_objects = list(bpy.data.collections[v_prop.vpet_collection].all_objects)
+        objectList = static_objects
+        print(f'found {len(static_objects)} static objects')
+    if bpy.data.collections.find(v_prop.edit_collection) > -1:    
+        editable_objects = list(bpy.data.collections[v_prop.edit_collection].all_objects)
+        objectList += editable_objects
+        print(f'found {len(editable_objects)} editable objects')
 
-    if len(vpet.objectsToTransfer) > 0:
+    if len(objectList) > 0:
         # create empty as scene root node
         root = bpy.context.scene.objects.get('VPETsceneRoot')
         if root == None:    
@@ -86,15 +92,17 @@ def gatherSceneData():
             bpy.context.view_layer.objects.active = root
             
         # sort scene objects by childcount
-        vpet.objectsToTransfer.sort(key=lambda x: len(x.children), reverse = True)
+        objectList.sort(key=lambda x: len(x.children), reverse = True)
         
         # count toplevel objects bc they will be parented to sceneRoot
-        for i, obj in enumerate(vpet.objectsToTransfer):
+        for i, obj in enumerate(objectList):
             if type(obj.parent).__name__ == 'NoneType':
                 vpet.rootChildCount += 1
         
         # add sceneRoot to list of objects to transfer
-        vpet.objectsToTransfer.insert(0, bpy.context.active_object)
+        objectList.insert(0, bpy.context.active_object)
+
+        vpet.objectsToTransfer = objectList
     
         #iterate over all objects in the scene
         for i, n in enumerate(vpet.objectsToTransfer):
@@ -107,6 +115,10 @@ def gatherSceneData():
         
         # delete Scene Root object - scene will remain unchanged
         bpy.ops.object.delete(use_global = False)
+
+        for i, v in enumerate(vpet.nodeList):
+            if v.editable == 1:
+                vpet.editableList.append((bytearray(v.name).decode('ascii'), v.vpetType))
         
         return len(vpet.objectsToTransfer)-1
     
