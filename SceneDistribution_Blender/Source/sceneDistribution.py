@@ -132,7 +132,6 @@ def gatherSceneData():
 # @param index The objects index in the list of all objects
 def processSceneObject(obj, index):
     global vpet, v_prop
-    print(obj.name)
     node = sceneObject()
     node.vpetType = vpet.nodeTypes.index('GROUP')
     
@@ -219,7 +218,6 @@ def processSceneObject(obj, index):
     if obj.name == 'VPETsceneRoot':
         node.childCount = vpet.rootChildCount
         
-    print(node.childCount)
     node.vpetId = index
     
     # get parent index
@@ -282,8 +280,10 @@ def processMaterial(mesh):
     if shader != None:
         tmpColor = shader.inputs[0].default_value
         matPack.color = (tmpColor[0], tmpColor[1], tmpColor[2], tmpColor[3])
-        matPack.roughness = shader.inputs[7].default_value
-        matPack.specular = shader.inputs[5].default_value
+        
+        if shader.type == 'BSDF_PRINCIPLED':
+            matPack.roughness = shader.inputs[7].default_value
+            matPack.specular = shader.inputs[5].default_value
         
     # check if texture is plugged in
     matPack.tex = None
@@ -540,14 +540,15 @@ def getGeoBytesArray():
 
 ## pack texture data into byte array        
 def getTexturesByteArray():
+    vpet.texturesByteData.extend(struct.pack('i', 0))
     if len(vpet.textureList) > 0:
         for tex in vpet.textureList:
             texBinary = bytearray([])
             
-            texBinary.extend(struct.pack('i', 0)) #type
+            #texBinary.extend(struct.pack('i', 0)) #type
             texBinary.extend(struct.pack('i', tex.colorMapDataSize))
             texBinary.extend(tex.colorMapData)
             
             vpet.texturesByteData.extend(texBinary)
-    else:
-        vpet.texturesByteData.extend(struct.pack('i', 0))
+    #else:
+        #vpet.texturesByteData.extend(struct.pack('i', 0))
