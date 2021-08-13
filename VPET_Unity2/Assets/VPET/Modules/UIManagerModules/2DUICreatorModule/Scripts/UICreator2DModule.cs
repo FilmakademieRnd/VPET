@@ -69,11 +69,13 @@ namespace vpet
                 {
                     Type type = param.GetType();
                     Helpers.Log(sceneObject.name + ": " + param.name + " type:" + type);
-                    if (type == typeof(Parameter<float>))
+                    if (type == typeof(Parameter<Vector3>))
                     {
-                        //var slider = Instantiate(RoomButton, Vector3.zero, Quaternion.identity) as Button;
+                        //GameObject button = Resources.Load("Prefabs/Button") as GameObject;
+                        //GameObject buttonInstance = SceneObject.Instantiate(button, Vector3.zero, Quaternion.identity);
+                        
                         //var rectTransform = button.GetComponent<RectTransform>();
-                        //rectTransform.SetParent(Canvas.transform);
+                        //rectTransform.SetParent(GameObject.Find("Canvas").transform);
                         //rectTransform.offsetMin = Vector2.zero;
                         //rectTransform.offsetMax = Vector2.zero;
                         //button.onClick.AddListener(SpawnPlayer);
@@ -81,5 +83,6 @@ namespace vpet
                 }
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['scenedatahandler_618',['sceneDataHandler',['../classvpet_1_1_scene_manager.html#af07466dcd1a4211d428aec631084c384',1,'vpet::SceneManager']]]
+  ['headerbytedata_800',['headerByteData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a545d6283d63085a8bcc987947623256a',1,'vpet::SceneManager::SceneDataHandler']]],
+  ['headerbytedataref_801',['headerByteDataRef',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#ae479ff9efdad64bbd5e20805de76b584',1,'vpet::SceneManager::SceneDataHandler']]]
 ];

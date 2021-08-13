@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['directionallightobject_307',['DirectionalLightObject',['../classvpet_1_1_directional_light_object.html',1,'vpet']]],
-  ['dummymodule_308',['DummyModule',['../classvpet_1_1_dummy_module.html',1,'vpet']]]
+  ['characterpackage_403',['CharacterPackage',['../classvpet_1_1_scene_manager_1_1_character_package.html',1,'vpet::SceneManager']]],
+  ['core_404',['Core',['../classvpet_1_1_core.html',1,'vpet']]],
+  ['coreinterface_405',['CoreInterface',['../classvpet_1_1_core_interface.html',1,'vpet']]]
 ];

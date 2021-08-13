@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['angle_476',['angle',['../classvpet_1_1_scene_manager_1_1_scene_node_light.html#ac624690f4a6d5366b4b00606e60c357a',1,'vpet::SceneManager::SceneNodeLight']]],
-  ['aperture_477',['aperture',['../classvpet_1_1_camera_object.html#a66ee50769473c2f6110b14b5c7128b1e',1,'vpet::CameraObject']]],
-  ['aspect_478',['aspect',['../classvpet_1_1_camera_object.html#a2e15c00b32feb870b27b5790f3992754',1,'vpet::CameraObject']]]
+  ['angle_638',['angle',['../classvpet_1_1_scene_manager_1_1_scene_node_light.html#ac624690f4a6d5366b4b00606e60c357a',1,'vpet::SceneManager::SceneNodeLight']]],
+  ['aperture_639',['aperture',['../classvpet_1_1_scene_object_camera.html#a37ad2e982629bf4a1565829c7d748263',1,'vpet::SceneObjectCamera']]],
+  ['aspect_640',['aspect',['../classvpet_1_1_scene_object_camera.html#a64ddcd3a4484e21ef7213ac0f4f7288c',1,'vpet::SceneObjectCamera']]]
 ];

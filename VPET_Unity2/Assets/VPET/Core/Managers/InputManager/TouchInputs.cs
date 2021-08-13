@@ -41,6 +41,22 @@ public class @TouchInputs : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""MousePress"",
+                    ""type"": ""Button"",
+                    ""id"": ""ce2ea5ae-2ae2-4e56-81e3-e02ffac7fe5e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""f007b5c1-c042-4f3e-9988-2e9d240c34a6"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -76,6 +92,28 @@ public class @TouchInputs : IInputActionCollection, IDisposable
                     ""action"": ""TouchPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4d4b32e5-6458-4d15-97ca-f40e5e5a880d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e07aad17-2b11-449c-bdfe-1366acea0938"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -87,6 +125,8 @@ public class @TouchInputs : IInputActionCollection, IDisposable
         m_Touch_TouchInput = m_Touch.FindAction("TouchInput", throwIfNotFound: true);
         m_Touch_TouchPress = m_Touch.FindAction("TouchPress", throwIfNotFound: true);
         m_Touch_TouchPosition = m_Touch.FindAction("TouchPosition", throwIfNotFound: true);
+        m_Touch_MousePress = m_Touch.FindAction("MousePress", throwIfNotFound: true);
+        m_Touch_MousePosition = m_Touch.FindAction("MousePosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,6 +179,8 @@ public class @TouchInputs : IInputActionCollection, IDisposable
     private readonly InputAction m_Touch_TouchInput;
     private readonly InputAction m_Touch_TouchPress;
     private readonly InputAction m_Touch_TouchPosition;
+    private readonly InputAction m_Touch_MousePress;
+    private readonly InputAction m_Touch_MousePosition;
     public struct TouchActions
     {
         private @TouchInputs m_Wrapper;
@@ -146,6 +188,8 @@ public class @TouchInputs : IInputActionCollection, IDisposable
         public InputAction @TouchInput => m_Wrapper.m_Touch_TouchInput;
         public InputAction @TouchPress => m_Wrapper.m_Touch_TouchPress;
         public InputAction @TouchPosition => m_Wrapper.m_Touch_TouchPosition;
+        public InputAction @MousePress => m_Wrapper.m_Touch_MousePress;
+        public InputAction @MousePosition => m_Wrapper.m_Touch_MousePosition;
         public InputActionMap Get() { return m_Wrapper.m_Touch; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -164,6 +208,12 @@ public class @TouchInputs : IInputActionCollection, IDisposable
                 @TouchPosition.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnTouchPosition;
                 @TouchPosition.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnTouchPosition;
                 @TouchPosition.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnTouchPosition;
+                @MousePress.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnMousePress;
+                @MousePress.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnMousePress;
+                @MousePress.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnMousePress;
+                @MousePosition.started -= m_Wrapper.m_TouchActionsCallbackInterface.OnMousePosition;
+                @MousePosition.performed -= m_Wrapper.m_TouchActionsCallbackInterface.OnMousePosition;
+                @MousePosition.canceled -= m_Wrapper.m_TouchActionsCallbackInterface.OnMousePosition;
             }
             m_Wrapper.m_TouchActionsCallbackInterface = instance;
             if (instance != null)
@@ -177,6 +227,12 @@ public class @TouchInputs : IInputActionCollection, IDisposable
                 @TouchPosition.started += instance.OnTouchPosition;
                 @TouchPosition.performed += instance.OnTouchPosition;
                 @TouchPosition.canceled += instance.OnTouchPosition;
+                @MousePress.started += instance.OnMousePress;
+                @MousePress.performed += instance.OnMousePress;
+                @MousePress.canceled += instance.OnMousePress;
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
             }
         }
     }
@@ -186,5 +242,7 @@ public class @TouchInputs : IInputActionCollection, IDisposable
         void OnTouchInput(InputAction.CallbackContext context);
         void OnTouchPress(InputAction.CallbackContext context);
         void OnTouchPosition(InputAction.CallbackContext context);
+        void OnMousePress(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
     }
 }

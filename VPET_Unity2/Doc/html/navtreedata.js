@@ -49,8 +49,9 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_camera_object_8cs.html",
-"classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#ab78c56866204038662d263754b686785"
+"_core_8cs.html",
+"classvpet_1_1_scene_manager_1_1_object_package.html#a6e612a5ab44630ab6bf2a979428a0afd",
+"functions.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

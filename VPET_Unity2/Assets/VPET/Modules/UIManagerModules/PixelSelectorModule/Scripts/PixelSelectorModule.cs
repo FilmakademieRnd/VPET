@@ -76,6 +76,10 @@ namespace vpet
         //!
         private SceneManager m_sceneManager;
         //!
+        //! A reference to the VPET input manager.
+        //!
+        private InputManager m_inputManager;
+        //!
         //! The async redner request.
         //!
         private AsyncGPUReadbackRequest request;
@@ -83,9 +87,6 @@ namespace vpet
         //! Re-used property block used to set selectable id.
         //!
         private MaterialPropertyBlock m_properties;
-
-        private InputManager m_inputManager;
-
         //!
         //! Cached shader property id of selectable id.
         //!
@@ -124,15 +125,17 @@ namespace vpet
             
             m_inputManager = m_core.getManager<InputManager>();
             m_inputManager.touchInputs.Touch.TouchPress.started += ctx => InputFunction(ctx);
+            m_inputManager.touchInputs.Touch.MousePress.started += ctx => InputFunction(ctx);
         }
 
         private void InputFunction(InputAction.CallbackContext c)
         {
-            Vector2 pos = m_inputManager.touchInputs.Touch.TouchPosition.ReadValue<Vector2>();
+            //Vector2 pos = m_inputManager.touchInputs.Touch.TouchPosition.ReadValue<Vector2>();
+            Vector2 pos = m_inputManager.touchInputs.Touch.MousePosition.ReadValue<Vector2>();
 
-            SceneObject scneObject = GetSelectableAt(pos);
-            if (scneObject != null)
-                manager.addSelectedObject(scneObject);
+            SceneObject sceneObject = GetSelectableAt(pos);
+            if (sceneObject != null)
+                manager.addSelectedObject(sceneObject);
         }
 
 
@@ -173,8 +176,6 @@ namespace vpet
             hasAsyncRequest = false;
             request = default(AsyncGPUReadbackRequest);
         }
-
-
 
         //! 
         //! Gets a cached adjusted material or creates a new one based on the specified material.

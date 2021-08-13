@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['targetcollider_619',['TargetCollider',['../classvpet_1_1_light_icon.html#ac62f1abec720b622aef3907138423687',1,'vpet::LightIcon']]],
-  ['targetscale_620',['TargetScale',['../classvpet_1_1_light_icon.html#a31161a2d613a746f9a4ced22a9adc794',1,'vpet::LightIcon']]],
-  ['texturesbytedata_621',['texturesByteData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a73b40411870b1762d17bde8052b73ae2',1,'vpet::SceneManager::SceneDataHandler']]],
-  ['texturesbytedataref_622',['texturesByteDataRef',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a0aa8b006b13b837ab5fd6a57fe5cd669',1,'vpet::SceneManager::SceneDataHandler']]]
+  ['manager_802',['manager',['../classvpet_1_1_network_manager_module.html#afc1472e915034f427c9700333a2f50aa',1,'vpet.NetworkManagerModule.manager()'],['../classvpet_1_1_scene_manager_module.html#a17870b6b0403f7f46f0efc1494b51d71',1,'vpet.SceneManagerModule.manager()'],['../classvpet_1_1_u_i_manager_module.html#ab9176da1ea08c019bd919f476e844f8d',1,'vpet.UIManagerModule.manager()']]],
+  ['materialsbytedata_803',['materialsByteData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a7d1760bccae44fbcc691c9da69993c71',1,'vpet::SceneManager::SceneDataHandler']]],
+  ['materialsbytedataref_804',['materialsByteDataRef',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a917f0dea13fca1c34305c7bff96c7803',1,'vpet::SceneManager::SceneDataHandler']]]
 ];

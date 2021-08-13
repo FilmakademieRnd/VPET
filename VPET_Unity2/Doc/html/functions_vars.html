@@ -87,13 +87,20 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 
 <h3><a id="index__5F"></a>- _ -</h3><ul>
 <li>_camera
-: <a class="el" href="classvpet_1_1_camera_object.html#a4a090dff667a2693f5f7f74b685cbe3b">vpet.CameraObject</a>
+: <a class="el" href="classvpet_1_1_scene_object_camera.html#a0f4b68e35e2e1789cf3b374ceb61227e">vpet.SceneObjectCamera</a>
 </li>
 <li>_light
-: <a class="el" href="classvpet_1_1_light_object.html#a09a938575528119156e9350b35896bb5">vpet.LightObject</a>
+: <a class="el" href="classvpet_1_1_scene_object_light.html#a86bae9a71abd2c16703184d5feb2c34b">vpet.SceneObjectLight</a>
+</li>
+<li>_name
+: <a class="el" href="classvpet_1_1_abstract_parameter.html#a6fb413e28e05759466693890eb444940">vpet.AbstractParameter</a>
+</li>
+<li>_parameterList
+: <a class="el" href="classvpet_1_1_scene_object.html#af17e3682a89c5427069a8649fb1a3019">vpet.SceneObject</a>
 </li>
 <li>_value
 : <a class="el" href="classvpet_1_1_parameter.html#abe2e8f21fccb16b4603b3586b9eb35aa">vpet.Parameter&lt; T &gt;</a>
+, <a class="el" href="classvpet_1_1_u_i_manager_1_1_s_event_args.html#a2ca93491370ee333a9547d92882e802a">vpet.UIManager.SEventArgs</a>
 </li>
 </ul>
 
@@ -103,10 +110,10 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html#ac624690f4a6d5366b4b00606e60c357a">vpet.SceneManager.SceneNodeLight</a>
 </li>
 <li>aperture
-: <a class="el" href="classvpet_1_1_camera_object.html#a66ee50769473c2f6110b14b5c7128b1e">vpet.CameraObject</a>
+: <a class="el" href="classvpet_1_1_scene_object_camera.html#a37ad2e982629bf4a1565829c7d748263">vpet.SceneObjectCamera</a>
 </li>
 <li>aspect
-: <a class="el" href="classvpet_1_1_camera_object.html#a2e15c00b32feb870b27b5790f3992754">vpet.CameraObject</a>
+: <a class="el" href="classvpet_1_1_scene_object_camera.html#a64ddcd3a4484e21ef7213ac0f4f7288c">vpet.SceneObjectCamera</a>
 </li>
 </ul>
 
@@ -159,15 +166,28 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node.html#a06fe238774ccf0e3b7c4a35b88899e23">vpet.SceneManager.SceneNode</a>
 </li>
 <li>color
-: <a class="el" href="classvpet_1_1_light_object.html#a7c5de1a37939aaac7cbc2a8b6ffd545d">vpet.LightObject</a>
-, <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_geo.html#a46d1602dd6600f5576dc3a945bc6dae9">vpet.SceneManager.SceneNodeGeo</a>
+: <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_geo.html#a46d1602dd6600f5576dc3a945bc6dae9">vpet.SceneManager.SceneNodeGeo</a>
 , <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html#a4451007b88a2e2ab6adfcc8d1f5559d4">vpet.SceneManager.SceneNodeLight</a>
+, <a class="el" href="classvpet_1_1_scene_object_light.html#a43719fb3fbca3e450185bbe21422d90c">vpet.SceneObjectLight</a>
 </li>
 <li>colorMapData
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_texture_package.html#a3d301be31771eadee38029516f7c090a">vpet.SceneManager.TexturePackage</a>
 </li>
 <li>colorMapDataSize
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_texture_package.html#ad93aee9b946e4e01af8cf83be44f66bc">vpet.SceneManager.TexturePackage</a>
+</li>
+<li>cpuData
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a03235123de5404db571ade866c43ae28">vpet.PixelSelectorModule</a>
+</li>
+</ul>
+
+
+<h3><a id="index_d"></a>- d -</h3><ul>
+<li>dataHeight
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a484c1303babdb7e5405c64fcebc5b6b4">vpet.PixelSelectorModule</a>
+</li>
+<li>dataWidth
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a74e10a8400d149b1bd4b97de8159876e">vpet.PixelSelectorModule</a>
 </li>
 </ul>
 
@@ -181,18 +201,18 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 
 <h3><a id="index_f"></a>- f -</h3><ul>
 <li>far
-: <a class="el" href="classvpet_1_1_camera_object.html#aa7d566986453cb7359e3a9035da84ef6">vpet.CameraObject</a>
-, <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html#a9e5801dda3a23aa96fb32023d61122ea">vpet.SceneManager.SceneNodeCam</a>
+: <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html#a9e5801dda3a23aa96fb32023d61122ea">vpet.SceneManager.SceneNodeCam</a>
+, <a class="el" href="classvpet_1_1_scene_object_camera.html#a006b7a448cf89c2ddc078ccdd1bdec10">vpet.SceneObjectCamera</a>
 </li>
 <li>focDist
-: <a class="el" href="classvpet_1_1_camera_object.html#ac852a61d46a887810e97e83d3e99124a">vpet.CameraObject</a>
+: <a class="el" href="classvpet_1_1_scene_object_camera.html#af22db9bbb69b14a563289eb831d27666">vpet.SceneObjectCamera</a>
 </li>
 <li>format
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_texture_package.html#aa8bdcd7b678b493b06bb8d494d15daf9">vpet.SceneManager.TexturePackage</a>
 </li>
 <li>fov
-: <a class="el" href="classvpet_1_1_camera_object.html#a4f82ba53928afc014bc6811f03bfba43">vpet.CameraObject</a>
-, <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html#ac1b94a71a78783199d2d80ae08bcc7a6">vpet.SceneManager.SceneNodeCam</a>
+: <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html#ac1b94a71a78783199d2d80ae08bcc7a6">vpet.SceneManager.SceneNodeCam</a>
+, <a class="el" href="classvpet_1_1_scene_object_camera.html#a9eb667c1bc029bb33d19d17d01297553">vpet.SceneObjectCamera</a>
 </li>
 </ul>
 
@@ -204,10 +224,16 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>geoId
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_geo.html#a6c9698ed236414484c5b03f80e7d5784">vpet.SceneManager.SceneNodeGeo</a>
 </li>
+<li>gpuTexture
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a93dfdf3c4b3b9c981fc45e37f1a0ba67">vpet.PixelSelectorModule</a>
+</li>
 </ul>
 
 
 <h3><a id="index_h"></a>- h -</h3><ul>
+<li>hasAsyncRequest
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#ade3badc04b718d36e9ebaf3182f8d0ff">vpet.PixelSelectorModule</a>
+</li>
 <li>header
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a027c94413163fb5a2918bb44134e5713">vpet.SceneManager.SceneDataHandler.SceneData</a>
 </li>
@@ -229,8 +255,8 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 : <a class="el" href="classvpet_1_1_v_p_e_t_settings.html#aa9dd80dd4b9d84e61f04fbf808005a9e">vpet.VPETSettings</a>
 </li>
 <li>intensity
-: <a class="el" href="classvpet_1_1_light_object.html#a9f9f954031fe1122b3c4330721f6e5b9">vpet.LightObject</a>
-, <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html#a0a6dc6186a42d62e41c6462080c45097">vpet.SceneManager.SceneNodeLight</a>
+: <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html#a0a6dc6186a42d62e41c6462080c45097">vpet.SceneManager.SceneNodeLight</a>
+, <a class="el" href="classvpet_1_1_scene_object_light.html#a9eb9abfc93d1d8c3e229a13b455326d4">vpet.SceneObjectLight</a>
 </li>
 <li>iSize
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_object_package.html#aa8d02a5bc43c0a42cba6f837e808e6b8">vpet.SceneManager.ObjectPackage</a>
@@ -275,6 +301,9 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>m_headerByteData
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a514e1f23893c3a04e3a2b2a77d41ab45">vpet.SceneManager.SceneDataHandler</a>
 </li>
+<li>m_inputManager
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#aa21ac4432b6ff5094d80832393c06e21">vpet.PixelSelectorModule</a>
+</li>
 <li>m_ip
 : <a class="el" href="classvpet_1_1_network_manager_module.html#a5558ea17009cf19f2f35544118a2519a">vpet.NetworkManagerModule</a>
 </li>
@@ -292,6 +321,9 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 </li>
 <li>m_managerList
 : <a class="el" href="classvpet_1_1_core_interface.html#ade8deca313b2c1709e7621c199ba492a">vpet.CoreInterface</a>
+</li>
+<li>m_materials
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a6e7bb80d55d11b4c70d0a11f9f832473">vpet.PixelSelectorModule</a>
 </li>
 <li>m_materialsByteData
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler.html#aaa685dd7188c063f7ab1dc02df80bb21">vpet.SceneManager.SceneDataHandler</a>
@@ -314,20 +346,74 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>m_port
 : <a class="el" href="classvpet_1_1_network_manager_module.html#a7d90a9d5bfd5edddf74eab2010b2e5e7">vpet.NetworkManagerModule</a>
 </li>
+<li>m_properties
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#abb4d74549d8ae5d78cb4be790783f27f">vpet.PixelSelectorModule</a>
+</li>
+<li>m_renderer
+: <a class="el" href="classvpet_1_1_light_icon.html#a5c9e00b3a0e2f8334008c080971497eb">vpet.LightIcon</a>
+</li>
+<li>m_requesterThread
+: <a class="el" href="classvpet_1_1_network_manager_module.html#a5d596b78df0f81918555926e05656133">vpet.NetworkManagerModule</a>
+</li>
 <li>m_requests
 : <a class="el" href="classvpet_1_1_scene_receiver_module.html#a9db811eb194d74c90dd8461ad20c73b0">vpet.SceneReceiverModule</a>
 </li>
 <li>m_responses
 : <a class="el" href="classvpet_1_1_scene_sender_module.html#a372f67cb3aad9f1ccfea75418d65ea30">vpet.SceneSenderModule</a>
 </li>
+<li>m_sceneCameraList
+: <a class="el" href="classvpet_1_1_scene_manager.html#acab4e58496a3725c649bcc68719e7260">vpet.SceneManager</a>
+</li>
 <li>m_sceneDataHandler
 : <a class="el" href="classvpet_1_1_scene_manager.html#a1a5a12ca81106d8eaa82f5f977d374c0">vpet.SceneManager</a>
+</li>
+<li>m_sceneLightList
+: <a class="el" href="classvpet_1_1_scene_manager.html#a259da95ab38815e8e1289d2228191ac3">vpet.SceneManager</a>
+</li>
+<li>m_sceneManager
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a8bc6321fa4be7fb603be19a648799188">vpet.PixelSelectorModule</a>
+</li>
+<li>m_sceneObjects
+: <a class="el" href="classvpet_1_1_scene_manager.html#ac9460728b9f915d692bb82bf5c608674">vpet.SceneManager</a>
+</li>
+<li>m_scnRoot
+: <a class="el" href="classvpet_1_1_scene_manager.html#a425c67e429529bdc0b955dd4710c89e9">vpet.SceneManager</a>
+</li>
+<li>m_selectableIdPropertyId
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#acecc0c319e5700d2b8639c490fe12655">vpet.PixelSelectorModule</a>
+</li>
+<li>m_SelectableIdPropertyName
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a00f1deda9037e790dac077db20a24de9">vpet.PixelSelectorModule</a>
+</li>
+<li>m_selectedObjects
+: <a class="el" href="classvpet_1_1_u_i_manager.html#a181706a1d74a618238022a7bae68f82b">vpet.UIManager</a>
 </li>
 <li>m_texturesByteData
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a07d81fc0118349c0cfedb3b0c0aa86b6">vpet.SceneManager.SceneDataHandler</a>
 </li>
+<li>m_Touch
+: <a class="el" href="class_touch_inputs.html#aa64d9f681143676479f66c3719d943b4">TouchInputs</a>
+</li>
+<li>m_Touch_TouchInput
+: <a class="el" href="class_touch_inputs.html#afa2d8894bf01be8609d9ca6cb94126c2">TouchInputs</a>
+</li>
+<li>m_Touch_TouchPosition
+: <a class="el" href="class_touch_inputs.html#a14733e1afe62ccb30fa64bc2ebb754bf">TouchInputs</a>
+</li>
+<li>m_Touch_TouchPress
+: <a class="el" href="class_touch_inputs.html#aac98a0aa179e42324bd9fa9cdcc5e1b7">TouchInputs</a>
+</li>
+<li>m_TouchActionsCallbackInterface
+: <a class="el" href="class_touch_inputs.html#a6c59d9d1347ac2869b01fc2d37717c50">TouchInputs</a>
+</li>
+<li>m_touchInputs
+: <a class="el" href="classvpet_1_1_input_manager.html#aa80b7734b80af3f21213da092e23cf65">vpet.InputManager</a>
+</li>
 <li>m_vpet
 : <a class="el" href="classvpet_1_1_dummy_module.html#a77e4ec6088a8c5f216afa17b12adad29">vpet.DummyModule</a>
+</li>
+<li>m_Wrapper
+: <a class="el" href="struct_touch_inputs_1_1_touch_actions.html#a1ac545345ea90734d5076a076b677d92">TouchInputs.TouchActions</a>
 </li>
 <li>mat
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a62ac7ecf84857152bd589941f6c5d204">vpet.SceneManager.MaterialPackage</a>
@@ -358,8 +444,8 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 , <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node.html#a8df8c2aa6d5203fb99a940f142e8dce0">vpet.SceneManager.SceneNode</a>
 </li>
 <li>near
-: <a class="el" href="classvpet_1_1_camera_object.html#a542a59fa08fccf897316cacd9f94f934">vpet.CameraObject</a>
-, <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html#a86acbec27fc5fa3bcb97aa511096e9ef">vpet.SceneManager.SceneNodeCam</a>
+: <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html#a86acbec27fc5fa3bcb97aa511096e9ef">vpet.SceneManager.SceneNodeCam</a>
+, <a class="el" href="classvpet_1_1_scene_object_camera.html#aee128c24bb5811e5afefeda207e03b56">vpet.SceneObjectCamera</a>
 </li>
 <li>nodeList
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#ab78c56866204038662d263754b686785">vpet.SceneManager.SceneDataHandler.SceneData</a>
@@ -374,6 +460,9 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 
 
 <h3><a id="index_o"></a>- o -</h3><ul>
+<li>objectIdShader
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a40856daffd2b5c07f2281696a43174ac">vpet.PixelSelectorModule</a>
+</li>
 <li>objectList
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a0921f4b6f7fe7dad9ce9cf0dbfc4d867">vpet.SceneManager.SceneDataHandler.SceneData</a>
 </li>
@@ -399,14 +488,14 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 : <a class="el" href="classvpet_1_1_light_cone.html#a80844d1e07e6909e005c119ff52849f3">vpet.LightCone</a>
 </li>
 <li>range
-: <a class="el" href="classvpet_1_1_light_object.html#a2fd81a3eaf9b0880cf8a3d2aac7eabdc">vpet.LightObject</a>
-, <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html#ac69827bfd1edf6e248c4eb409c8185d0">vpet.SceneManager.SceneNodeLight</a>
+: <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html#ac69827bfd1edf6e248c4eb409c8185d0">vpet.SceneManager.SceneNodeLight</a>
+, <a class="el" href="classvpet_1_1_scene_object_light.html#abc81fe14ff362de0d005418118217f7b">vpet.SceneObjectLight</a>
 </li>
 <li>receivedData
 : <a class="el" href="classvpet_1_1_scene_receiver_module.html#ac0d73e175d799940040d37f46772d7ff">vpet.SceneReceiverModule</a>
 </li>
-<li>renderer
-: <a class="el" href="classvpet_1_1_light_icon.html#aaeb994101140a26233a55ce6bb36baab">vpet.LightIcon</a>
+<li>request
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a650229ee3cef325408eecb3634537642">vpet.PixelSelectorModule</a>
 </li>
 <li>rootBoneID
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_skinned_geo.html#adcd832dc003daf6fa26085f453581fd8">vpet.SceneManager.SceneNodeSkinnedGeo</a>
@@ -432,6 +521,9 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node.html#aceea7d2b47210f1c7ad28a4af3125302">vpet.SceneManager.SceneNode</a>
 , <a class="el" href="classvpet_1_1_scene_object.html#aacb374ef907129febcdaf92c6c708f7b">vpet.SceneObject</a>
 </li>
+<li>scaleDivisor
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a4f5f2834056e6a6edc274f9d9d7dfea8">vpet.PixelSelectorModule</a>
+</li>
 <li>scene
 : <a class="el" href="classvpet_1_1_scene_parser_module.html#a9fdefbfffb130c707e8b8517d7c35460">vpet.SceneParserModule</a>
 </li>
@@ -440,12 +532,6 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 </li>
 <li>sceneBoundsMin
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_settings.html#a5f9553e21643fb979ae462784ae5a132">vpet.SceneManager.Settings</a>
-</li>
-<li>SceneCameraList
-: <a class="el" href="classvpet_1_1_scene_creator_module.html#a0b1729af961976a4a9e3a105380c7e40">vpet.SceneCreatorModule</a>
-</li>
-<li>SceneEditableObjects
-: <a class="el" href="classvpet_1_1_scene_creator_module.html#aec28e10d6c68488a25178a977af94da5">vpet.SceneCreatorModule</a>
 </li>
 <li>SceneMaterialList
 : <a class="el" href="classvpet_1_1_scene_creator_module.html#a1247ee2c086ef0b2bb5a42c9191ef22f">vpet.SceneCreatorModule</a>
@@ -459,11 +545,11 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <li>SceneTextureList
 : <a class="el" href="classvpet_1_1_scene_creator_module.html#aa4a1db297638c6e987d0635b151824e7">vpet.SceneCreatorModule</a>
 </li>
-<li>scnRoot
-: <a class="el" href="classvpet_1_1_scene_creator_module.html#a6a9e69b9ed68e6c03de7fc313ada2408">vpet.SceneCreatorModule</a>
+<li>Selectable
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#a57a7d1d78f794e9991bae112f1e9c25d">vpet.PixelSelectorModule</a>
 </li>
-<li>SelectableLights
-: <a class="el" href="classvpet_1_1_scene_creator_module.html#a63bfe3728dcb246cc18bab9658fd3cb2">vpet.SceneCreatorModule</a>
+<li>SelectableType
+: <a class="el" href="classvpet_1_1_pixel_selector_module.html#aca673f9e9ccfbe537c80a0b571e7ac59">vpet.PixelSelectorModule</a>
 </li>
 <li>size_float
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a453948b58530436055bae4d0132874f3">vpet.SceneManager.SceneDataHandler</a>
@@ -483,7 +569,7 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 , <a class="el" href="classvpet_1_1_light_sphere.html#ab19fb104579b3ff7b1dbc5e8f3e348b8">vpet.LightSphere</a>
 </li>
 <li>spotAngle
-: <a class="el" href="classvpet_1_1_spot_light_object.html#a33788432e45b782dea5d582616eff1e5">vpet.SpotLightObject</a>
+: <a class="el" href="classvpet_1_1_scene_object_spot_light.html#a2bdbdc1e299c4a702f5a80da9c3a2fb5">vpet.SceneObjectSpotLight</a>
 </li>
 <li>src
 : <a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a3376a1706e1d34a6273038c2f4acff5a">vpet.SceneManager.MaterialPackage</a>

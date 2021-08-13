@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['manager_610',['manager',['../classvpet_1_1_network_manager_module.html#afc1472e915034f427c9700333a2f50aa',1,'vpet.NetworkManagerModule.manager()'],['../classvpet_1_1_scene_manager_module.html#a17870b6b0403f7f46f0efc1494b51d71',1,'vpet.SceneManagerModule.manager()'],['../classvpet_1_1_u_i_manager_module.html#a2b849a61c1003f6ae6d091f8ccc31ff1',1,'vpet.UIManagerModule.manager()']]],
-  ['materialsbytedata_611',['materialsByteData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a7d1760bccae44fbcc691c9da69993c71',1,'vpet::SceneManager::SceneDataHandler']]],
-  ['materialsbytedataref_612',['materialsByteDataRef',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a917f0dea13fca1c34305c7bff96c7803',1,'vpet::SceneManager::SceneDataHandler']]]
+  ['characterbytedata_794',['characterByteData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a884c6b518d4ac66cadd6d1378b852f52',1,'vpet::SceneManager::SceneDataHandler']]],
+  ['characterbytedataref_795',['characterByteDataRef',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html#ad61620fbf24ef74b6b80d24440106d6e',1,'vpet::SceneManager::SceneDataHandler']]],
+  ['controlschemes_796',['controlSchemes',['../class_touch_inputs.html#a5710e5ce8111e3653c83af27d2529c87',1,'TouchInputs']]],
+  ['core_797',['core',['../classvpet_1_1_manager.html#ac86f85618bfd52fc204aa30fddff74a8',1,'vpet::Manager']]]
 ];

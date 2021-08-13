@@ -1,19 +1,4 @@
 var searchData=
 [
-  ['scenecreatormodule_329',['SceneCreatorModule',['../classvpet_1_1_scene_creator_module.html',1,'vpet']]],
-  ['scenedata_330',['SceneData',['../classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html',1,'vpet::SceneManager::SceneDataHandler']]],
-  ['scenedatahandler_331',['SceneDataHandler',['../classvpet_1_1_scene_manager_1_1_scene_data_handler.html',1,'vpet::SceneManager']]],
-  ['scenemanager_332',['SceneManager',['../classvpet_1_1_scene_manager.html',1,'vpet']]],
-  ['scenemanagermodule_333',['SceneManagerModule',['../classvpet_1_1_scene_manager_module.html',1,'vpet']]],
-  ['scenenode_334',['SceneNode',['../classvpet_1_1_scene_manager_1_1_scene_node.html',1,'vpet::SceneManager']]],
-  ['scenenodecam_335',['SceneNodeCam',['../classvpet_1_1_scene_manager_1_1_scene_node_cam.html',1,'vpet::SceneManager']]],
-  ['scenenodegeo_336',['SceneNodeGeo',['../classvpet_1_1_scene_manager_1_1_scene_node_geo.html',1,'vpet::SceneManager']]],
-  ['scenenodelight_337',['SceneNodeLight',['../classvpet_1_1_scene_manager_1_1_scene_node_light.html',1,'vpet::SceneManager']]],
-  ['scenenodeskinnedgeo_338',['SceneNodeSkinnedGeo',['../classvpet_1_1_scene_manager_1_1_scene_node_skinned_geo.html',1,'vpet::SceneManager']]],
-  ['sceneobject_339',['SceneObject',['../classvpet_1_1_scene_object.html',1,'vpet']]],
-  ['sceneparsermodule_340',['SceneParserModule',['../classvpet_1_1_scene_parser_module.html',1,'vpet']]],
-  ['scenereceivermodule_341',['SceneReceiverModule',['../classvpet_1_1_scene_receiver_module.html',1,'vpet']]],
-  ['scenesendermodule_342',['SceneSenderModule',['../classvpet_1_1_scene_sender_module.html',1,'vpet']]],
-  ['settings_343',['Settings',['../classvpet_1_1_scene_manager_1_1_settings.html',1,'vpet::SceneManager']]],
-  ['spotlightobject_344',['SpotLightObject',['../classvpet_1_1_spot_light_object.html',1,'vpet']]]
+  ['objectpackage_422',['ObjectPackage',['../classvpet_1_1_scene_manager_1_1_object_package.html',1,'vpet::SceneManager']]]
 ];

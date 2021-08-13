@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['helpers_309',['Helpers',['../classvpet_1_1_helpers.html',1,'vpet']]]
+  ['dummymodule_406',['DummyModule',['../classvpet_1_1_dummy_module.html',1,'vpet']]]
 ];

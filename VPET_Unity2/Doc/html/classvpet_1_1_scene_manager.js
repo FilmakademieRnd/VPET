@@ -20,6 +20,17 @@ var classvpet_1_1_scene_manager =
       [ "SKINNEDMESH", "classvpet_1_1_scene_manager.html#a2c1705c6da485e79240ed574012ed51ba19f345b5d10d757944fefc64c414a4e4", null ]
     ] ],
     [ "SceneManager", "classvpet_1_1_scene_manager.html#ada328ea9180f1aaa5ecad7c2732c1bbe", null ],
+    [ "emitSceneReady", "classvpet_1_1_scene_manager.html#ac55a2b2796b6cd8b7415167ab0b08a12", null ],
+    [ "getSceneObject", "classvpet_1_1_scene_manager.html#a6cfa246758fe858d83c60421dcdf2894", null ],
+    [ "getSceneObjectId", "classvpet_1_1_scene_manager.html#a341113ba0d2af20073770af353f2af9a", null ],
+    [ "ResetScene", "classvpet_1_1_scene_manager.html#ade10c4f215aa6864c3afa14dbac43650", null ],
+    [ "m_sceneCameraList", "classvpet_1_1_scene_manager.html#acab4e58496a3725c649bcc68719e7260", null ],
     [ "m_sceneDataHandler", "classvpet_1_1_scene_manager.html#a1a5a12ca81106d8eaa82f5f977d374c0", null ],
-    [ "sceneDataHandler", "classvpet_1_1_scene_manager.html#af07466dcd1a4211d428aec631084c384", null ]
+    [ "m_sceneLightList", "classvpet_1_1_scene_manager.html#a259da95ab38815e8e1289d2228191ac3", null ],
+    [ "m_sceneObjects", "classvpet_1_1_scene_manager.html#ac9460728b9f915d692bb82bf5c608674", null ],
+    [ "m_scnRoot", "classvpet_1_1_scene_manager.html#a425c67e429529bdc0b955dd4710c89e9", null ],
+    [ "sceneDataHandler", "classvpet_1_1_scene_manager.html#af07466dcd1a4211d428aec631084c384", null ],
+    [ "sceneObjects", "classvpet_1_1_scene_manager.html#a002c142304a882a0b18dc69488164123", null ],
+    [ "scnRoot", "classvpet_1_1_scene_manager.html#a84ff38e8cd817b72c998f65d99254d0e", null ],
+    [ "sceneReady", "classvpet_1_1_scene_manager.html#a1f73a8976a8ae011760d39d9ef7b9cb7", null ]
 ];

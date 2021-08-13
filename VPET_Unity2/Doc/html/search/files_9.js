@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vpetsettings_2ecs_387',['VPETSettings.cs',['../_v_p_e_t_settings_8cs.html',1,'']]]
+  ['touchinputs_2ecs_493',['TouchInputs.cs',['../_touch_inputs_8cs.html',1,'']]]
 ];

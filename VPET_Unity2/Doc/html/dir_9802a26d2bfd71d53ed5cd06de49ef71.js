@@ -3,6 +3,9 @@ var dir_9802a26d2bfd71d53ed5cd06de49ef71 =
     [ "CoreInterface.cs", "_core_interface_8cs.html", [
       [ "CoreInterface", "classvpet_1_1_core_interface.html", "classvpet_1_1_core_interface" ]
     ] ],
+    [ "InputManagerModuleInterface.cs", "_input_manager_module_interface_8cs.html", [
+      [ "InputManagerModule", "classvpet_1_1_input_manager_module.html", "classvpet_1_1_input_manager_module" ]
+    ] ],
     [ "ManagerInterface.cs", "_manager_interface_8cs.html", [
       [ "ManagerInterface", "interfacevpet_1_1_manager_interface.html", null ],
       [ "Manager", "classvpet_1_1_manager.html", "classvpet_1_1_manager" ]
