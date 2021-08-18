@@ -30,12 +30,36 @@ Syncronisation Server. They are licensed under the following terms:
 
 
 using System;
+using UnityEngine;
 
 namespace vpet
 {
     public class InputManager : Manager
     {
+        public enum InputEventType
+        {
+            TAP,
+            DRAG, 
+            STARTED,
+            ENDED
+        }
+        public class InputEventArgs : EventArgs
+        {
+            public InputEventType type;
+            public Vector2 point;
+            public Vector2 delta;
+        }
+        public event EventHandler<InputEventArgs> inputEvent;
+
+        public class PinchEventArgs : EventArgs
+        {
+            public float distance;
+        }
+        public event EventHandler<PinchEventArgs> pinchEvent;
+
         private TouchInputs m_touchInputs;
+        
+        // [REVIEW]
         public ref TouchInputs touchInputs
         {
             get { return ref m_touchInputs; }
