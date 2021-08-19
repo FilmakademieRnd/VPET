@@ -35,10 +35,20 @@ namespace vpet
 {
     public class UIManager : Manager
     {
+        //!
+        //! The list containing currently selected scene objects.
+        //!
         private List<SceneObject> m_selectedObjects;
 
         //!
-        //! Event emitted when parameter changed.
+        //! Definition of change function parameters.
+        //!
+        public class SEventArgs : EventArgs
+        {
+            public List<SceneObject> _value;
+        }
+        //!
+        //! Event emitted when the scene selection has changed.
         //!
         public event EventHandler<SEventArgs> selectionChanged;
 
@@ -49,6 +59,12 @@ namespace vpet
         {
             m_selectedObjects = new List<SceneObject>();
         }
+
+        //!
+        //! Function that adds a sceneObject to the selected objects list.
+        //!
+        //! @ param sceneObject The selected scene object to be added.
+        //!
         public void addSelectedObject(SceneObject sceneObject)
         {
             m_selectedObjects.Clear();
@@ -57,12 +73,5 @@ namespace vpet
             selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
         }
 
-        //!
-        //! Definition of change function parameters.
-        //!
-        public class SEventArgs : EventArgs
-        {
-            public List<SceneObject> _value;
-        }
     }
 }

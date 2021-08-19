@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 14.07.2021
+//! @date 18.08.2021
 
 using System;
 using System.Collections;
@@ -51,6 +51,10 @@ namespace vpet
 
         }
 
+        //!
+        //! Init callback for the UICreator2D module.
+        //! Called after constructor. 
+        //!
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;

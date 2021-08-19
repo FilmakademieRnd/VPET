@@ -77,11 +77,17 @@ namespace vpet
             awakeEvent?.Invoke(this, new EventArgs());
         }
 
+        //!
+        //! Unity's OnDestroy callback, used to invoke a destroy event to inform VPET modules.
+        //!
         private void OnDestroy()
         {
             destroyEvent?.Invoke(this, new EventArgs());
         }
 
+        //!
+        //! Unity's Update callback, used to invoke a update event to inform VPET modules.
+        //!
         private void Update()
         {
             updateEvent?.Invoke(this, new EventArgs() );

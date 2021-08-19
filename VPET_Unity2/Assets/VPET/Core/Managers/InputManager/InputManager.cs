@@ -22,11 +22,11 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "InputManager.cs"
-//! @brief Implementation of the VPET Input Manager, managing all user inupt sytems and mapping.
+//! @brief Implementation of the VPET Input Manager, managing all user inupts and mapping.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 09.08.2021
+//! @date 19.08.2021
 
 
 using System;
@@ -34,8 +34,14 @@ using UnityEngine;
 
 namespace vpet
 {
+    //!
+    //! Class implementing the input manager, managing all user inupts and mapping.
+    //!
     public class InputManager : Manager
     {
+        //!
+        //! Enumeration defining supported input event types.
+        //!
         public enum InputEventType
         {
             TAP,
@@ -43,20 +49,35 @@ namespace vpet
             STARTED,
             ENDED
         }
+        //!
+        //! Class defining input event arguments.
+        //!
         public class InputEventArgs : EventArgs
         {
             public InputEventType type;
             public Vector2 point;
             public Vector2 delta;
         }
+        //!
+        //! The default input event.
+        //!
         public event EventHandler<InputEventArgs> inputEvent;
-
+        
+        //!
+        //! Class defining pinch input event arguments.
+        //!
         public class PinchEventArgs : EventArgs
         {
             public float distance;
         }
+        //!
+        //! The pinch input event.
+        //!
         public event EventHandler<PinchEventArgs> pinchEvent;
 
+        //!
+        //! The generated Unity input class defining all available user inputs.
+        //!
         private TouchInputs m_touchInputs;
         
         // [REVIEW]

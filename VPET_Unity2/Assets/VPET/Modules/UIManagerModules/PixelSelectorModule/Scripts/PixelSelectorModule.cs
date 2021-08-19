@@ -116,6 +116,12 @@ namespace vpet
             m_selectableIdPropertyId = Shader.PropertyToID(m_SelectableIdPropertyName);
         }
 
+        //! 
+        //! Function called when Unity initializes the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
         protected override void Init(object sender, EventArgs e)
         {
             m_core.updateEvent += renderUpdate;
@@ -265,16 +271,13 @@ namespace vpet
 
                 request = AsyncGPUReadback.Request(gpuTexture);
             }
-
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    SceneObject sceneObject = GetSelectableAt(Input.mousePosition);
-            //    if (sceneObject)
-            //        Helpers.Log(sceneObject.name);
-            //}
-
         }
 
+        //!
+        //! Function that creates a new property block for all renderable
+        //! objects in the scene to set the object ID as a shader parameter.
+        //! This function is called after the scene has been loaded.
+        //!
         private void modifyMaterials(object sender, EventArgs e)
         {
             foreach (Renderer renderer in m_sceneManager.scnRoot.GetComponentsInChildren<Renderer>())
