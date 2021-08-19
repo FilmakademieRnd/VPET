@@ -50,8 +50,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_core_8cs.html",
-"classvpet_1_1_scene_manager_1_1_object_package.html#a6e612a5ab44630ab6bf2a979428a0afd",
-"functions.html"
+"classvpet_1_1_scene_manager_1_1_character_package.html#aa51c11323231faed12443f6cff7f74ad",
+"dir_808d41454a4ab47db2808e45bf7e00ec.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

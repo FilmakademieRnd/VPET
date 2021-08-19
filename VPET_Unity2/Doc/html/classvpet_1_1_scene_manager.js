@@ -22,7 +22,7 @@ var classvpet_1_1_scene_manager =
     [ "SceneManager", "classvpet_1_1_scene_manager.html#ada328ea9180f1aaa5ecad7c2732c1bbe", null ],
     [ "emitSceneReady", "classvpet_1_1_scene_manager.html#ac55a2b2796b6cd8b7415167ab0b08a12", null ],
     [ "getSceneObject", "classvpet_1_1_scene_manager.html#a6cfa246758fe858d83c60421dcdf2894", null ],
-    [ "getSceneObjectId", "classvpet_1_1_scene_manager.html#a341113ba0d2af20073770af353f2af9a", null ],
+    [ "getSceneObjectId", "classvpet_1_1_scene_manager.html#a0b29a61027514410ac0c9d573807a003", null ],
     [ "ResetScene", "classvpet_1_1_scene_manager.html#ade10c4f215aa6864c3afa14dbac43650", null ],
     [ "m_sceneCameraList", "classvpet_1_1_scene_manager.html#acab4e58496a3725c649bcc68719e7260", null ],
     [ "m_sceneDataHandler", "classvpet_1_1_scene_manager.html#a1a5a12ca81106d8eaa82f5f977d374c0", null ],

@@ -41,55 +41,6 @@ namespace vpet
     //!
     public partial class SceneManager : Manager
     {
-        private GameObject m_scnRoot;
-
-        public ref GameObject scnRoot
-        {
-            get { return ref m_scnRoot; }
-        }
-
-
-        //! The list storing editable VPET scene objects in scene.
-        private List<SceneObject> m_sceneObjects = new List<SceneObject>();
-
-        //! The list storing selectable Unity lights in scene.
-        public List<SceneObjectLight> m_sceneLightList = new List<SceneObjectLight>();
-
-        //! The list storing Unity cameras in scene.
-        public List<SceneObjectCamera> m_sceneCameraList = new List<SceneObjectCamera>();
-
-        //!
-        //! Event emitted when scene is prepared.
-        //!
-        public event EventHandler<EventArgs> sceneReady;
-
-        public void emitSceneReady()
-        {
-            sceneReady?.Invoke(this, new EventArgs());
-        }
-
-        //!
-        //! Setter and getter to List holding references to all editable VPET sceneObjects.
-        //!
-        public List<SceneObject> sceneObjects
-        {
-            get { return m_sceneObjects; }
-            set { m_sceneObjects = value; }
-        }
-        //!
-        //! The VPET SceneDataHandler, handling all VPET scene data relevant conversion.
-        //!
-        protected SceneDataHandler m_sceneDataHandler;
-        //!
-        //! A reference to the VPET SceneDataHandler.
-        //!
-        //! @return A reference to the VPET SceneDataHandler.
-        //!
-        public ref SceneDataHandler sceneDataHandler
-        {
-            get { return ref m_sceneDataHandler; }
-        }
-        
         public static class Settings
         {
             //!
@@ -118,7 +69,70 @@ namespace vpet
             //! global scale of the scene
             //!
             public static float sceneScale = 1f;
+        }
+        
+        //!
+        //! The list storing editable VPET scene objects in scene.
+        //!
+        private List<SceneObject> m_sceneObjects = new List<SceneObject>();
+        //!
+        //! The list storing selectable Unity lights in scene.
+        //!
+        public List<SceneObjectLight> m_sceneLightList = new List<SceneObjectLight>();
+        //!
+        //! The list storing Unity cameras in scene.
+        //!
+        public List<SceneObjectCamera> m_sceneCameraList = new List<SceneObjectCamera>();
+        
+        //!
+        //! A reference to the VPET scene root.
+        //!
+        private GameObject m_scnRoot;
+        //!
+        //! The VPET SceneDataHandler, handling all VPET scene data relevant conversion.
+        //!
+        protected SceneDataHandler m_sceneDataHandler;
+        
+        //!
+        //! Event emitted when scene is prepared.
+        //!
+        public event EventHandler<EventArgs> sceneReady;
 
+        //!
+        //! Setter and getter to List holding references to all editable VPET sceneObjects.
+        //!
+        public List<SceneObject> sceneObjects
+        {
+            get { return m_sceneObjects; }
+            set { m_sceneObjects = value; }
+        }
+
+        //!
+        //! Getter returning a reference to the VPET scene root.
+        //!
+        //! @return A reference to the VPET scene root.
+        //!
+        public ref GameObject scnRoot
+        {
+            get { return ref m_scnRoot; }
+        }
+
+        //!
+        //! A reference to the VPET SceneDataHandler.
+        //!
+        //! @return A reference to the VPET SceneDataHandler.
+        //!
+        public ref SceneDataHandler sceneDataHandler
+        {
+            get { return ref m_sceneDataHandler; }
+        }
+
+        //!
+        //! Function that emits the scene ready event. 
+        //!
+        public void emitSceneReady()
+        {
+            sceneReady?.Invoke(this, new EventArgs());
         }
 
         //!
@@ -138,7 +152,12 @@ namespace vpet
             }
         }
 
-
+        //!
+        //! Function that returns a scne object based in the given ID.
+        //!
+        //! @param id The ID of the scene object to be returned.
+        //! @return The corresponding scene object to the gevien ID.
+        //!
         public SceneObject getSceneObject(int id)
         {
             if (id < 1)
@@ -147,7 +166,13 @@ namespace vpet
                 return sceneObjects[id -1];
         }
 
-        public int getSceneObjectId(SceneObject sceneObject)
+        //!
+        //! Function that returns a id based in the given scne object.
+        //!
+        //! @param scneObject The scne object of which the ID will be returned. 
+        //! @return The corresponding ID to the gevien scene object.
+        //!
+        public int getSceneObjectId(ref SceneObject sceneObject)
         {
             return sceneObjects.IndexOf(sceneObject) + 1;  // +1 because 0 is non selectable object or background
         }

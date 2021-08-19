@@ -288,7 +288,7 @@ namespace vpet
                 SceneObject sceneObject = renderer.gameObject.GetComponent<SceneObject>();
                 int id = 0;
                 if (sceneObject)
-                    id = m_sceneManager.getSceneObjectId(sceneObject);
+                    id = m_sceneManager.getSceneObjectId(ref sceneObject);
 
                 Color32 packedId = EncodeId(id);
 

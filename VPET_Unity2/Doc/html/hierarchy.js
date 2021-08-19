@@ -5,6 +5,8 @@ var hierarchy =
     ] ],
     [ "vpet.SceneManager.CharacterPackage", "classvpet_1_1_scene_manager_1_1_character_package.html", null ],
     [ "EventArgs", null, [
+      [ "vpet.InputManager.InputEventArgs", "classvpet_1_1_input_manager_1_1_input_event_args.html", null ],
+      [ "vpet.InputManager.PinchEventArgs", "classvpet_1_1_input_manager_1_1_pinch_event_args.html", null ],
       [ "vpet.Parameter< T >.TEventArgs", "classvpet_1_1_parameter_1_1_t_event_args.html", null ],
       [ "vpet.UIManager.SEventArgs", "classvpet_1_1_u_i_manager_1_1_s_event_args.html", null ]
     ] ],

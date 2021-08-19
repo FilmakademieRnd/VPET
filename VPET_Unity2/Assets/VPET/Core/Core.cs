@@ -22,7 +22,7 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "core.cs"
-//! @brief VPET core implementation
+//! @brief VPET core implementation. Central class for VPET initalization. Manages all VPETManagers and their modules.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
@@ -44,13 +44,20 @@ namespace vpet
     {
         public Core()
         {
-            //Initializing core components
-            //Create Selector
-            //_selector = new Selector();
+
         }
 
+        //!
+        //! Event invoked when an Unity Update() callback is triggerd.
+        //!
         public event EventHandler updateEvent;
+        //!
+        //! Event invoked when an Unity Awake() callback is triggerd.
+        //!
         public event EventHandler awakeEvent;
+        //!
+        //! Event invoked when an Unity OnDestroy() callback is triggerd.
+        //!
         public event EventHandler destroyEvent;
 
         //!

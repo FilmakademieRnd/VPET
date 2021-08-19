@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['none_789',['NONE',['../classvpet_1_1_helpers.html#a268dcad2193184ec6c7d5928f17d3fbbab50339a10e1de285ac99d4c3990b8693',1,'vpet::Helpers']]]
+  ['light_819',['LIGHT',['../classvpet_1_1_scene_manager.html#a2c1705c6da485e79240ed574012ed51baf8589806bbf66241917092b2a6e18c6f',1,'vpet::SceneManager']]]
 ];

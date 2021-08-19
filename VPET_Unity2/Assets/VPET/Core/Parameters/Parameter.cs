@@ -60,8 +60,14 @@ namespace vpet
     //!
     public class Parameter<T> : AbstractParameter
     {
+        //!
+        //! Default constructor.
+        //!
         public Parameter() {}
 
+        //!
+        //! Constructor initializing members.
+        //!
         public Parameter(T value, string name)
         {
             _value = value;
@@ -69,12 +75,12 @@ namespace vpet
         }
 
         //!
-        //! Parameters member value
+        //! The parameters value as a template.
         //!
         private T _value;
 
         //!
-        //! Getter and setter for value
+        //! Getter and setter for the parameters value. 
         //!
         public T value
         {
@@ -83,18 +89,16 @@ namespace vpet
         }
 
         //!
-        //! Event emitted when parameter changed.
-        //!
-        public event EventHandler<TEventArgs> hasChanged;
-
-        //!
         //! Definition of change function parameters.
         //!
         public class TEventArgs : EventArgs
         {
             public T value;
         }
-
+        //!
+        //! Event emitted when parameter changed.
+        //!
+        public event EventHandler<TEventArgs> hasChanged;
 
         //!
         //! Abstract definition of the function called to change a parameters value.

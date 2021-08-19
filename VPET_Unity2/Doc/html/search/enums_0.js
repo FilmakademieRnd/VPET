@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logmsgtype_782',['logMsgType',['../classvpet_1_1_helpers.html#a268dcad2193184ec6c7d5928f17d3fbb',1,'vpet::Helpers']]]
+  ['inputeventtype_810',['InputEventType',['../classvpet_1_1_input_manager.html#af0c52fcb01eb57d3865f1aae4490aaa0',1,'vpet::InputManager']]]
 ];

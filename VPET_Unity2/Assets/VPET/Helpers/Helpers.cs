@@ -22,22 +22,20 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "SceneDataDefinition.cs"
-//! @brief definition of VPET scene data structure
+//! @brief definition of VPET helpers class.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
 //! @date 26.04.2021
 
-using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Reflection;
 using UnityEngine;
 
 namespace vpet
 {
     //!
-    //! implementation class for assembly helpers
+    //! Implementation for VPET helpers.
     //!
     public static class Helpers
     {
