@@ -28,11 +28,8 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 23.02.2021
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
-using System.Reflection;
+using System.Threading;
 
 namespace vpet
 {
@@ -46,6 +43,16 @@ namespace vpet
         {
 
         }
+
+        static private byte m_time = 0;
+        public byte time 
+        { 
+            set => m_time = value;
+            get => m_time;
+        }
+
+        private bool m_clockThreadAbort = false;
+        private Thread m_timeThread;
 
         //!
         //! Event invoked when an Unity Update() callback is triggerd.
@@ -80,6 +87,9 @@ namespace vpet
             //Create Input manager
             InputManager inputManager = new InputManager(typeof(InputManagerModule), this);
             m_managerList.Add(typeof(InputManager), inputManager);
+
+            m_timeThread = new Thread(updateTime);
+            m_timeThread.Start();
             
             awakeEvent?.Invoke(this, new EventArgs());
         }
@@ -89,6 +99,7 @@ namespace vpet
         //!
         private void OnDestroy()
         {
+            m_clockThreadAbort = true;
             destroyEvent?.Invoke(this, new EventArgs());
         }
 
@@ -97,7 +108,22 @@ namespace vpet
         //!
         private void Update()
         {
-            updateEvent?.Invoke(this, new EventArgs() );
+            updateEvent?.Invoke(this, new EventArgs());
+        }
+
+        private void updateTime()
+        {
+            while (!m_clockThreadAbort)
+            {
+                if (m_time > 254)
+                    m_time = 0;
+                else
+                    m_time++;
+
+                //m_time > 254 ? m_time = 0 : m_time++;
+
+                Thread.Sleep(17);  // ~ 60 fps
+            }
         }
 
     }
