@@ -72,6 +72,9 @@ namespace vpet
         //!
         void Awake()
         {
+            m_timeThread = new Thread(updateTime);
+            m_timeThread.Start();
+
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
             m_managerList.Add(typeof(NetworkManager), networkManager);
@@ -88,8 +91,6 @@ namespace vpet
             InputManager inputManager = new InputManager(typeof(InputManagerModule), this);
             m_managerList.Add(typeof(InputManager), inputManager);
 
-            m_timeThread = new Thread(updateTime);
-            m_timeThread.Start();
             
             awakeEvent?.Invoke(this, new EventArgs());
         }
@@ -111,6 +112,8 @@ namespace vpet
             updateEvent?.Invoke(this, new EventArgs());
         }
 
+        // [REVIEW]
+        // Perhaps better to use invokeRepeating?
         private void updateTime()
         {
             while (!m_clockThreadAbort)
