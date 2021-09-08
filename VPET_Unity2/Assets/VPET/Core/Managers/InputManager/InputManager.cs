@@ -31,6 +31,7 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace vpet
 {
@@ -45,7 +46,7 @@ namespace vpet
         public enum InputEventType
         {
             TAP,
-            DRAG, 
+            DRAG,
             STARTED,
             ENDED
         }
@@ -57,12 +58,13 @@ namespace vpet
             public InputEventType type;
             public Vector2 point;
             public Vector2 delta;
+            public double time;
         }
         //!
         //! The default input event.
         //!
         public event EventHandler<InputEventArgs> inputEvent;
-        
+
         //!
         //! Class defining pinch input event arguments.
         //!
@@ -78,20 +80,44 @@ namespace vpet
         //!
         //! The generated Unity input class defining all available user inputs.
         //!
-        private TouchInputs m_touchInputs;
-        
+        private Inputs m_inputs;
+
         // [REVIEW]
-        public ref TouchInputs touchInputs
+        // please replace, just for testing!
+        public ref Inputs touchInputs
         {
-            get { return ref m_touchInputs; }
+            get { return ref m_inputs; }
         }
         //!
         //! Constructor initializing member variables.
         //!
         public InputManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
-            m_touchInputs = new TouchInputs();
-            m_touchInputs.Enable();
+            m_inputs = new Inputs();
+            m_inputs.Enable();
+
+            // bind individual input events
+            m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
+            m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
+        }
+        private void InputFunction(InputAction.CallbackContext c)
+        {
+            
+            InputEventArgs e = new InputEventArgs();
+
+            // just an exampe, needs different code to discover correct type and values!
+            // we need to define VPET actions like tap, hold, drag, etc. and mapp it to
+            // multiple bindings like keyboard, mouse click and touch (see referenced video)
+            // please watch https://youtu.be/rMlcwtoui4I
+            if (c.started)
+            {
+                e.type = InputEventType.STARTED;
+                e.delta = Vector2.zero;
+                e.point = c.ReadValue<Vector2>();
+                e.time = 0f;
+
+                inputEvent?.Invoke(this, e);
+            }
         }
     }
 }

@@ -130,14 +130,19 @@ namespace vpet
             m_sceneManager.sceneReady += modifyMaterials;
             
             m_inputManager = m_core.getManager<InputManager>();
-            m_inputManager.touchInputs.Touch.TouchPress.started += ctx => InputFunction(ctx);
-            m_inputManager.touchInputs.Touch.MousePress.started += ctx => InputFunction(ctx);
+
+            // [REVIEW]
+            // please replace, just for testing!
+            m_inputManager.touchInputs.Map.TouchPress.started += ctx => InputFunction(ctx);
+            m_inputManager.touchInputs.Map.MousePress.started += ctx => InputFunction(ctx);
         }
 
+        // [REVIEW]
+        // please replace, just for testing!
         private void InputFunction(InputAction.CallbackContext c)
         {
             //Vector2 pos = m_inputManager.touchInputs.Touch.TouchPosition.ReadValue<Vector2>();
-            Vector2 pos = m_inputManager.touchInputs.Touch.MousePosition.ReadValue<Vector2>();
+            Vector2 pos = m_inputManager.touchInputs.Map.MousePosition.ReadValue<Vector2>();
 
             SceneObject sceneObject = GetSelectableAt(pos);
             if (sceneObject != null)
