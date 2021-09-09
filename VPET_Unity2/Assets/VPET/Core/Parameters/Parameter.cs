@@ -72,7 +72,28 @@ namespace vpet
         {
             _value = value;
             this.name = name;
+            Type type = typeof(T);
+
+            if (type == typeof(bool))
+                _type = ParameterType.BOOL;
+            else if (type == typeof(int))
+                _type = ParameterType.INT;
+            else if (type == typeof(float))
+                _type = ParameterType.FLOAT;
+            else if (type == typeof(Vector2))
+                _type = ParameterType.VECTOR2;
+            else if (type == typeof(Vector3))
+                _type = ParameterType.VECTOR3;
+            else if (type == typeof(Vector4) || type == typeof(Quaternion) || type == typeof(Color) || type == typeof(Color32))
+                _type = ParameterType.VECTOR4;
+            else
+                _type = ParameterType.UNKNOWN;
+
         }
+
+        private enum ParameterType {BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, UNKNOWN}
+
+        private ParameterType _type;
 
         //!
         //! The parameters value as a template.
@@ -109,6 +130,32 @@ namespace vpet
         {
             _value = v;
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
+        }
+
+        public byte[] serialize()
+        {
+            byte[] data = new byte[0];
+            switch (_type)
+            {
+                case ParameterType.BOOL:
+                    {
+                        data = new byte[2];
+                        data[0] = (byte)_type;
+                        data[1] = Convert.ToByte(_value);
+                        break;
+                    }
+
+            }
+            return data;
+            //byte[] msg = new byte[18];
+            //msg[0] = cID;
+            //msg[1] = (byte)paramTarget;
+            //msg[1] = (byte)paramType;
+            //Buffer.BlockCopy(BitConverter.GetBytes((Int32)_.id), 0, msg, 2, 4);
+            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
+            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
+            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
+            //return msg;
         }
     }
 }
