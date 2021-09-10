@@ -103,6 +103,82 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "tonioMap",
+            "id": "8cc45c96-8744-4e65-a250-74d6bef146fe",
+            "actions": [
+                {
+                    "name": "Tap",
+                    "type": "Value",
+                    "id": "ab4d5fd6-3315-4f45-a46d-e5cb1158b0f4",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Drag",
+                    "type": "Button",
+                    "id": "200863e5-f743-4e9b-a495-b099c194b10a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ScreenPosition",
+                    "type": "PassThrough",
+                    "id": "b67ec0c5-5fa2-4df1-8a4d-b7b33d76318c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a6bf0009-6e2f-4fa6-a2a2-1690fc7c2e3f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f19f6a66-b296-4479-aae7-dbc6a2d6e4f3",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e11a254e-fbac-4f65-93c3-ff9daa180ade",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScreenPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "93400442-e1fd-4e27-b7d0-e28bc858022f",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScreenPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

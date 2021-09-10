@@ -60,6 +60,10 @@ namespace vpet
             public Vector2 delta;
             public double time;
         }
+        //[REVIEW]
+        //public delegate void ClickAction(InputEventArgs InputArg);
+        //public event ClickAction OnClicked;
+
         //!
         //! The default input event.
         //!
@@ -97,8 +101,11 @@ namespace vpet
             m_inputs.Enable();
 
             // bind individual input events
-            m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
-            m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
+            //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
+            //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
+            m_inputs.tonioMap.Tap.started += ctx => InputFunction(ctx);
+            //m_inputs.tonioMap.Tap.performed += ctx => InputFunction(ctx);
+            //m_inputs.tonioMap.Tap.canceled += ctx => InputFunction(ctx);
         }
         private void InputFunction(InputAction.CallbackContext c)
         {
@@ -106,17 +113,21 @@ namespace vpet
             InputEventArgs e = new InputEventArgs();
 
             // just an exampe, needs different code to discover correct type and values!
-            // we need to define VPET actions like tap, hold, drag, etc. and mapp it to
+            // we need to define VPET actions like tap, hold, drag, etc. and map it to
             // multiple bindings like keyboard, mouse click and touch (see referenced video)
             // please watch https://youtu.be/rMlcwtoui4I
+            
             if (c.started)
             {
+                Debug.Log("STARTED");
+                Debug.Log(c);
                 e.type = InputEventType.STARTED;
-                e.delta = Vector2.zero;
-                e.point = c.ReadValue<Vector2>();
-                e.time = 0f;
+                e.point = m_inputs.tonioMap.ScreenPosition.ReadValue<Vector2>();
 
+                //e.delta = Vector2.zero;
+                //e.time = 0f;
                 inputEvent?.Invoke(this, e);
+
             }
         }
     }

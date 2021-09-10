@@ -135,18 +135,23 @@ namespace vpet
             // please replace, just for testing!
             m_inputManager.touchInputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             m_inputManager.touchInputs.Map.MousePress.started += ctx => InputFunction(ctx);
+
+            // Tonio debug only
+            // <EVENT> += <FUNCTION to be triggered>
+            //m_inputManager.inputEvent += 
         }
 
         // [REVIEW]
         // please replace, just for testing!
         private void InputFunction(InputAction.CallbackContext c)
         {
+            Debug.Log("Pixel Selector Input Function");
             //Vector2 pos = m_inputManager.touchInputs.Touch.TouchPosition.ReadValue<Vector2>();
-            Vector2 pos = m_inputManager.touchInputs.Map.MousePosition.ReadValue<Vector2>();
+            //Vector2 pos = m_inputManager.touchInputs.Map.MousePosition.ReadValue<Vector2>();
 
-            SceneObject sceneObject = GetSelectableAt(pos);
-            if (sceneObject != null)
-                manager.addSelectedObject(sceneObject);
+            //SceneObject sceneObject = GetSelectableAt(pos);
+            //if (sceneObject != null)
+            //    manager.addSelectedObject(sceneObject);
         }
 
 
