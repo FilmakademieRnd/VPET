@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 16.03.2021
+//! @date 09.09.2021
 
 using System;
 using System.Collections;
@@ -72,7 +72,31 @@ namespace vpet
         {
             _value = value;
             this.name = name;
+            Type type = typeof(T);
+
+            if (type == typeof(bool))
+                _type = ParameterType.BOOL;
+            else if (type == typeof(int))
+                _type = ParameterType.INT;
+            else if (type == typeof(float))
+                _type = ParameterType.FLOAT;
+            else if (type == typeof(Vector2))
+                _type = ParameterType.VECTOR2;
+            else if (type == typeof(Vector3))
+                _type = ParameterType.VECTOR3;
+            else if (type == typeof(Vector4))
+                _type = ParameterType.VECTOR4;
+            else if (type == typeof(Quaternion))
+                _type = ParameterType.QUATERNION;
+            else if (type == typeof(Color))
+                _type = ParameterType.COLOR;
+            else
+                _type = ParameterType.UNKNOWN;
         }
+
+        public enum ParameterType {BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN}
+
+        private ParameterType _type;
 
         //!
         //! The parameters value as a template.
@@ -109,6 +133,104 @@ namespace vpet
         {
             _value = v;
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
+        }
+
+        // parameter should only store data and a minimal amount of functionaliy
+        // --> move this to helpers, or network manager?
+        public static byte[] serialize(T value, ParameterType t)
+        {
+            byte[] data;
+            switch (t)
+            {
+                case ParameterType.BOOL:
+                    {
+                        data = new byte[2];
+                        data[1] = Convert.ToByte(value);
+                        break;
+                    }
+                case ParameterType.INT:
+                    {
+                        data = new byte[5];
+                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToInt32(value)), 0, data, 1, 4);
+                        break;
+                    }
+                case ParameterType.FLOAT:
+                    {
+                        data = new byte[5];
+                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToSingle(value)), 0, data, 1, 4);
+                        break;
+                    }
+                case ParameterType.VECTOR2:
+                    {
+                        data = new byte[9];
+                        Vector2 obj = (Vector2) Convert.ChangeType(value, typeof(Vector2));
+                        
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
+                        break;
+                    }
+                case ParameterType.VECTOR3:
+                    {
+                        data = new byte[13];
+                        Vector3 obj = (Vector3) Convert.ChangeType(value, typeof(Vector3));
+
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, 9, 4);
+                        break;
+                    }
+                case ParameterType.VECTOR4:
+                    {
+                        data = new byte[17];
+                        Vector4 obj = (Vector4) Convert.ChangeType(value, typeof(Vector4));
+
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, 9, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, 13, 4);
+                        break;
+                    }
+                case ParameterType.QUATERNION:
+                    {
+                        data = new byte[17];
+                        Quaternion obj = (Quaternion) Convert.ChangeType(value, typeof(Quaternion));
+
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, 9, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, 13, 4);
+                        break;
+                    }
+                case ParameterType.COLOR:
+                    {
+                        data = new byte[17];
+                        Color obj = (Color) Convert.ChangeType(value, typeof(Color));
+
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.r), 0, data, 1, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, 5, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.b), 0, data, 9, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, 13, 4);
+                        break;
+                    }
+                default:
+                    {
+                        data = new byte[1];
+                        break;
+                    }
+
+            }
+            data[0] = (byte) t;
+
+            return data;
+            //byte[] msg = new byte[18];
+            //msg[0] = cID;
+            //msg[1] = (byte)paramTarget;
+            //msg[1] = (byte)paramType;
+            //Buffer.BlockCopy(BitConverter.GetBytes((Int32)_.id), 0, msg, 2, 4);
+            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
+            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
+            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
+            //return msg;
         }
     }
 }
