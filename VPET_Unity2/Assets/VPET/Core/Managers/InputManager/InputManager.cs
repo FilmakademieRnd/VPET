@@ -103,13 +103,19 @@ namespace vpet
             // bind individual input events
             //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
-            m_inputs.tonioMap.Tap.started += ctx => InputFunction(ctx);
+            //m_inputs.tonioMap.Tap.started += ctx => InputFunction(ctx);
+
+            m_inputs.tonioMap.Tap.started += context => {
+                Debug.Log(context.phase);
+                Debug.Log(this.Equals(this.GetType()));
+                Debug.Log("piep");
+            };
             //m_inputs.tonioMap.Tap.performed += ctx => InputFunction(ctx);
             //m_inputs.tonioMap.Tap.canceled += ctx => InputFunction(ctx);
         }
         private void InputFunction(InputAction.CallbackContext c)
         {
-            
+            Debug.Log("--- starting input function ---");
             InputEventArgs e = new InputEventArgs();
 
             // just an exampe, needs different code to discover correct type and values!
@@ -117,12 +123,14 @@ namespace vpet
             // multiple bindings like keyboard, mouse click and touch (see referenced video)
             // please watch https://youtu.be/rMlcwtoui4I
             
+            // at start we should check if we are on object, canvas or UI element
             if (c.started)
             {
                 Debug.Log("STARTED");
                 Debug.Log(c);
+                //Debug.Log(c.ReadValue<Vector2>());
                 e.type = InputEventType.STARTED;
-                e.point = m_inputs.tonioMap.ScreenPosition.ReadValue<Vector2>();
+                //e.point = m_inputs.tonioMap.ScreenPosition.ReadValue<Vector2>();
 
                 //e.delta = Vector2.zero;
                 //e.time = 0f;
