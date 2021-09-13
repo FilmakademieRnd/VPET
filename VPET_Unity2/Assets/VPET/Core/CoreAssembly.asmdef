@@ -2,8 +2,8 @@
     "name": "Core",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:537950da5d92ca54b94b56175500fa02"
+        "Unity.InputSystem",
+        "HelperAssembly"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

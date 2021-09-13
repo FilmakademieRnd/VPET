@@ -112,7 +112,7 @@
                     "name": "Tap",
                     "type": "PassThrough",
                     "id": "ab4d5fd6-3315-4f45-a46d-e5cb1158b0f4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 },
@@ -137,8 +137,19 @@
                 {
                     "name": "",
                     "id": "a6bf0009-6e2f-4fa6-a2a2-1690fc7c2e3f",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40d0a9d6-36b9-46d8-ae06-c91dbe06d9d0",
+                    "path": "<Mouse>/press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Tap",
