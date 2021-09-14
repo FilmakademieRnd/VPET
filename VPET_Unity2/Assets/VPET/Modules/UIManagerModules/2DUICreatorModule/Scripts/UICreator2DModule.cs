@@ -67,6 +67,10 @@ namespace vpet
         //!
         private void createUI(object sender, UIManager.SEventArgs a)
         {
+            // [REVIEW]
+            // UI Debug
+            Debug.Log("--- create UI ---");
+            Debug.Log(a);
             foreach (SceneObject sceneObject in a._value)
             {
                 foreach (AbstractParameter param in sceneObject.parameterList)

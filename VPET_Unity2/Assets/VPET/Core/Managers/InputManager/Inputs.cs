@@ -116,6 +116,82 @@ public class @Inputs : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""tonioMap"",
+            ""id"": ""8cc45c96-8744-4e65-a250-74d6bef146fe"",
+            ""actions"": [
+                {
+                    ""name"": ""Tap"",
+                    ""type"": ""Button"",
+                    ""id"": ""ab4d5fd6-3315-4f45-a46d-e5cb1158b0f4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Drag"",
+                    ""type"": ""Button"",
+                    ""id"": ""200863e5-f743-4e9b-a495-b099c194b10a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""ScreenPosition"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""b67ec0c5-5fa2-4df1-8a4d-b7b33d76318c"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f19f6a66-b296-4479-aae7-dbc6a2d6e4f3"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e11a254e-fbac-4f65-93c3-ff9daa180ade"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScreenPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""93400442-e1fd-4e27-b7d0-e28bc858022f"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScreenPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5bb74c1e-9265-48a0-8efb-a9756c59ce67"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -127,6 +203,11 @@ public class @Inputs : IInputActionCollection, IDisposable
         m_Map_TouchPosition = m_Map.FindAction("TouchPosition", throwIfNotFound: true);
         m_Map_MousePress = m_Map.FindAction("MousePress", throwIfNotFound: true);
         m_Map_MousePosition = m_Map.FindAction("MousePosition", throwIfNotFound: true);
+        // tonioMap
+        m_tonioMap = asset.FindActionMap("tonioMap", throwIfNotFound: true);
+        m_tonioMap_Tap = m_tonioMap.FindAction("Tap", throwIfNotFound: true);
+        m_tonioMap_Drag = m_tonioMap.FindAction("Drag", throwIfNotFound: true);
+        m_tonioMap_ScreenPosition = m_tonioMap.FindAction("ScreenPosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -237,6 +318,55 @@ public class @Inputs : IInputActionCollection, IDisposable
         }
     }
     public MapActions @Map => new MapActions(this);
+
+    // tonioMap
+    private readonly InputActionMap m_tonioMap;
+    private ITonioMapActions m_TonioMapActionsCallbackInterface;
+    private readonly InputAction m_tonioMap_Tap;
+    private readonly InputAction m_tonioMap_Drag;
+    private readonly InputAction m_tonioMap_ScreenPosition;
+    public struct TonioMapActions
+    {
+        private @Inputs m_Wrapper;
+        public TonioMapActions(@Inputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Tap => m_Wrapper.m_tonioMap_Tap;
+        public InputAction @Drag => m_Wrapper.m_tonioMap_Drag;
+        public InputAction @ScreenPosition => m_Wrapper.m_tonioMap_ScreenPosition;
+        public InputActionMap Get() { return m_Wrapper.m_tonioMap; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(TonioMapActions set) { return set.Get(); }
+        public void SetCallbacks(ITonioMapActions instance)
+        {
+            if (m_Wrapper.m_TonioMapActionsCallbackInterface != null)
+            {
+                @Tap.started -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnTap;
+                @Tap.performed -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnTap;
+                @Tap.canceled -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnTap;
+                @Drag.started -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnDrag;
+                @Drag.performed -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnDrag;
+                @Drag.canceled -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnDrag;
+                @ScreenPosition.started -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnScreenPosition;
+                @ScreenPosition.performed -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnScreenPosition;
+                @ScreenPosition.canceled -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnScreenPosition;
+            }
+            m_Wrapper.m_TonioMapActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Tap.started += instance.OnTap;
+                @Tap.performed += instance.OnTap;
+                @Tap.canceled += instance.OnTap;
+                @Drag.started += instance.OnDrag;
+                @Drag.performed += instance.OnDrag;
+                @Drag.canceled += instance.OnDrag;
+                @ScreenPosition.started += instance.OnScreenPosition;
+                @ScreenPosition.performed += instance.OnScreenPosition;
+                @ScreenPosition.canceled += instance.OnScreenPosition;
+            }
+        }
+    }
+    public TonioMapActions @tonioMap => new TonioMapActions(this);
     public interface IMapActions
     {
         void OnTouchInput(InputAction.CallbackContext context);
@@ -244,5 +374,11 @@ public class @Inputs : IInputActionCollection, IDisposable
         void OnTouchPosition(InputAction.CallbackContext context);
         void OnMousePress(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
+    }
+    public interface ITonioMapActions
+    {
+        void OnTap(InputAction.CallbackContext context);
+        void OnDrag(InputAction.CallbackContext context);
+        void OnScreenPosition(InputAction.CallbackContext context);
     }
 }

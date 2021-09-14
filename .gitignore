@@ -85,3 +85,4 @@ build*
 *.autosave
 
 *.pyc
+VPET_Unity2/.vscode/settings.json

@@ -207,7 +207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1023117104}
   - component: {fileID: 1023117103}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   - component: {fileID: 1124708337}
   - component: {fileID: 1124708336}
   - component: {fileID: 1124708335}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Cube (2)
   m_TagString: editable
   m_Icon: {fileID: 0}
@@ -528,7 +528,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1136079608}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Scene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -595,7 +595,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1286581208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04491e308f767db4090fabad9647c2cc, type: 3}
+  m_Script: {fileID: 11500000, guid: 253f38ed091b76044bbb71f8c5d9d160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1320808352
@@ -709,7 +709,7 @@ GameObject:
   - component: {fileID: 1331304640}
   - component: {fileID: 1331304642}
   - component: {fileID: 1331304641}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -872,7 +872,7 @@ GameObject:
   - component: {fileID: 1632550663}
   - component: {fileID: 1632550662}
   - component: {fileID: 1632550661}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,7 +996,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1672782514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3405a2328a6eb6e4eb6ba7778f68c8a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 38581022383cb6f4da5803333dd6b94d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1751737977
@@ -1011,7 +1011,7 @@ GameObject:
   - component: {fileID: 1751737981}
   - component: {fileID: 1751737980}
   - component: {fileID: 1751737979}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Cube
   m_TagString: editable
   m_Icon: {fileID: 0}
@@ -1168,7 +1168,7 @@ GameObject:
   - component: {fileID: 1931213798}
   - component: {fileID: 1931213797}
   - component: {fileID: 1931213796}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
