@@ -135,22 +135,26 @@ namespace vpet
             // please replace, just for testing!
             
             // testing subscription to Input Event
-            //m_inputManager.inputEvent += SelectTest;
+            m_inputManager.inputEvent += SelectFunction;
 
         }
 
         // [REVIEW]
         // please replace, just for testing!
-        private void SelectTest(object sender, InputManager.InputEventArgs e)
+        private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
-            Debug.Log("Select Test");
-            Debug.Log(e.type);
-            Debug.Log(e.point);
+
+            SceneObject obj = GetSelectableAt(e.point);
+            if (obj != null)
+            {
+                Debug.Log("selecting: " + obj.ToString());
+                manager.addSelectedObject(obj);
+            }
         }
 
         // [REVIEW]
         // please replace, just for testing!
-        private void SelectFunction(InputAction.CallbackContext c)
+        private void SelectFunction_(InputAction.CallbackContext c)
         {
             Debug.Log("Pixel Selector Input Function");
             Debug.Log(c);
