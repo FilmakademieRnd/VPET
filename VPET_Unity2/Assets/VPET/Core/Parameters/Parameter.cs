@@ -26,11 +26,9 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 09.09.2021
+//! @date 10.09.2021
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace vpet
@@ -135,9 +133,12 @@ namespace vpet
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
         }
 
+        public byte[] serialize
+        { get => Serialize(_value, _type); }
+
         // parameter should only store data and a minimal amount of functionaliy
         // --> move this to helpers, or network manager?
-        public static byte[] serialize(T value, ParameterType t)
+        public static byte[] Serialize(T value, ParameterType t)
         {
             byte[] data;
             switch (t)
@@ -222,15 +223,6 @@ namespace vpet
             data[0] = (byte) t;
 
             return data;
-            //byte[] msg = new byte[18];
-            //msg[0] = cID;
-            //msg[1] = (byte)paramTarget;
-            //msg[1] = (byte)paramType;
-            //Buffer.BlockCopy(BitConverter.GetBytes((Int32)_.id), 0, msg, 2, 4);
-            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.x), 0, msg, 6, 4);
-            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.y), 0, msg, 10, 4);
-            //Buffer.BlockCopy(BitConverter.GetBytes(locPos.z), 0, msg, 14, 4);
-            //return msg;
         }
     }
 }

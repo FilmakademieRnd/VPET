@@ -22,7 +22,7 @@ public class @Inputs : IInputActionCollection, IDisposable
                     ""name"": ""TouchInput"",
                     ""type"": ""PassThrough"",
                     ""id"": ""92822953-cf9d-498c-b915-ee4322205c40"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -63,8 +63,8 @@ public class @Inputs : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""39fcc17a-55fb-4ba4-9d1e-54760c46ff76"",
-                    ""path"": ""<Touchscreen>/primaryTouch"",
-                    ""interactions"": """",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""TouchInput"",

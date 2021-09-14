@@ -72,6 +72,14 @@ namespace vpet
 
             selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
         }
+        //!
+        //! Function that clears the selected objects list.
+        //!
+        public void clearSelectedObject()
+        {
+            m_selectedObjects.Clear();
+            selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
+        }
 
     }
 }

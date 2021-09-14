@@ -150,6 +150,8 @@ namespace vpet
                 Debug.Log("selecting: " + obj.ToString());
                 manager.addSelectedObject(obj);
             }
+            else
+                manager.clearSelectedObject();
         }
 
         // [REVIEW]
@@ -195,6 +197,7 @@ namespace vpet
         {
             dataWidth = 0;
             dataHeight = 0;
+
 
             if (gpuTexture != null)
                 gpuTexture.Release();
