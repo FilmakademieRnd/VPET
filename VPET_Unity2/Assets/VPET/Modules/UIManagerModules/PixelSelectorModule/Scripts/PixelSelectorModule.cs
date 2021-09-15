@@ -143,7 +143,7 @@ namespace vpet
         // please replace, just for testing!
         private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
-
+            Debug.Log("PixelSelector > SelectFunction");
             SceneObject obj = GetSelectableAt(e.point);
             if (obj != null)
             {

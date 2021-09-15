@@ -48,7 +48,7 @@ namespace vpet
             TAP,
             DRAG,
             STARTED,
-            ENDED
+            PERFORMED
         }
         //!
         //! Class defining input event arguments.
@@ -56,10 +56,15 @@ namespace vpet
         public class InputEventArgs : EventArgs
         {
             public InputEventType type;
+            public InputActionPhase phase;
             public Vector2 point;
             public Vector2 delta;
             public double time;
         }
+        //[REVIEW]
+        //public delegate void ClickAction(InputEventArgs InputArg);
+        //public event ClickAction OnClicked;
+
         //!
         //! The default input event.
         //!
@@ -97,35 +102,36 @@ namespace vpet
             m_inputs.Enable();
 
             // bind individual input events
-            //m_inputs.Map.TouchInput.started += ctx => InputFunction(ctx);
-            m_inputs.Map.TouchInput.started += ctx =>
-            {
-                Helpers.Log(ctx.ToString());
-
-            };
+            //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
+            m_inputs.tonioMap.Tap.started += ctx => TapFunction(ctx);
+            m_inputs.tonioMap.Tap.performed += ctx => TapFunction(ctx);
+            m_inputs.tonioMap.Tap.canceled += ctx => TapFunction(ctx);
+
         }
-        private void InputFunction(InputAction.CallbackContext c)
+        private void TapFunction(InputAction.CallbackContext c)
         {
-            
+            //Debug.Log(c);
             InputEventArgs e = new InputEventArgs();
 
+            if (c.performed)
+            {
+                e.point = m_inputs.tonioMap.ScreenPosition.ReadValue<Vector2>();
+                inputEvent?.Invoke(this, e);
+            }
+
             // just an exampe, needs different code to discover correct type and values!
-            // we need to define VPET actions like tap, hold, drag, etc. and mapp it to
+            // we need to define VPET actions like tap, hold, drag, etc. and map it to
             // multiple bindings like keyboard, mouse click and touch (see referenced video)
             // please watch https://youtu.be/rMlcwtoui4I
-
-            Helpers.Log(c.phase.ToString());
-
-            //if (c.started)
-            //{
-            //    e.type = InputEventType.STARTED;
-            //    e.delta = Vector2.zero;
-            //    e.point = c.ReadValue<Vector2>();
-            //    e.time = 0f;
-
-            //    inputEvent?.Invoke(this, e);
-            //}
+            
+            // at start we should check if we are on object, canvas or UI element
+            if (c.started)
+            {
+                //e.type = InputEventType.STARTED;
+                //e.delta = Vector2.zero;
+                //e.time = 0f;
+            }
         }
     }
 }
