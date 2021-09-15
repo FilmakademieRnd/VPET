@@ -29,7 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 18.08.2021
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,6 +40,8 @@ namespace vpet
     //!
     public class UICreator2DModule : UIManagerModule
     {
+
+        private List<GameObject> UIParameterList = new List<GameObject>();
 
         //!
         //! Constructor
@@ -67,29 +69,58 @@ namespace vpet
         //!
         private void createUI(object sender, UIManager.SEventArgs a)
         {
+            clearUI();
+            
             // [REVIEW]
             // UI Debug
             Debug.Log("--- create UI ---");
             Debug.Log(a);
+
+            int buttonOffset = 50;
+
+
             foreach (SceneObject sceneObject in a._value)
             {
-                foreach (AbstractParameter param in sceneObject.parameterList)
+                //foreach (AbstractParameter param in sceneObject.parameterList)
+                for (int i = 0; i < sceneObject.parameterList.Count ; i++)
                 {
+                    AbstractParameter param = sceneObject.parameterList[i];
+                    Vector3 buttonPosition = new Vector3(1500, 800 - (buttonOffset * i), 0);
+                    
                     Type type = param.GetType();
                     Helpers.Log(sceneObject.name + ": " + param.name + " type:" + type);
-                    if (type == typeof(Parameter<Vector3>))
+                    GameObject button = Resources.Load("Prefabs/Button") as GameObject;
+                    GameObject buttonInstance = SceneObject.Instantiate(button, Vector3.zero, Quaternion.identity);
+                    UIParameterList.Add(buttonInstance);
+
+                    var rectTransform = buttonInstance.GetComponent<RectTransform>();
+                    rectTransform.SetPositionAndRotation(buttonPosition, Quaternion.identity); 
+                    buttonInstance.transform.SetParent(GameObject.Find("Canvas").transform);
+                    
+                    switch (param.name)
                     {
-                        //GameObject button = Resources.Load("Prefabs/Button") as GameObject;
-                        //GameObject buttonInstance = SceneObject.Instantiate(button, Vector3.zero, Quaternion.identity);
-                        
-                        //var rectTransform = button.GetComponent<RectTransform>();
-                        //rectTransform.SetParent(GameObject.Find("Canvas").transform);
-                        //rectTransform.offsetMin = Vector2.zero;
-                        //rectTransform.offsetMax = Vector2.zero;
-                        //button.onClick.AddListener(SpawnPlayer);
+                        case "position":
+                            buttonInstance.GetComponentInChildren<Text>().text = "Position Button";
+                            break;
+                        case "rotation":
+                            buttonInstance.GetComponentInChildren<Text>().text = "Rotation Button";
+                            break;
+                        case "scale":
+                            buttonInstance.GetComponentInChildren<Text>().text = "Scale Button";
+                            break;
                     }
                 }
             }
+        }
+
+        private void clearUI()
+        {
+            foreach (GameObject oldUIElement in UIParameterList)
+            {
+                UnityEngine.Object.Destroy(oldUIElement);
+            }
+
+            UIParameterList.Clear();
         }
 
     }
