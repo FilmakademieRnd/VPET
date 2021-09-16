@@ -43,6 +43,7 @@ namespace vpet
 
         private List<GameObject> UIParameterList = new List<GameObject>();
         private GameObject m_slider;
+        private GameObject m_spinner;
 
         //!
         //! Constructor
@@ -62,6 +63,7 @@ namespace vpet
         {
             manager.selectionChanged += createUI;
             m_slider = Resources.Load("Prefabs/Slider") as GameObject;
+            m_spinner = Resources.Load("Prefabs/Spinner") as GameObject;
         }
 
 
@@ -90,19 +92,30 @@ namespace vpet
                     Vector3 sliderPosition = new Vector3(800, 400 - (buttonOffset * i), 0);
                     
                     Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.type);
-                    GameObject sliderInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
-                    UIParameterList.Add(sliderInstance);
 
-                    var rectTransform = sliderInstance.GetComponent<RectTransform>();
-                    rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity); 
-                    sliderInstance.transform.SetParent(GameObject.Find("Canvas").transform);
-                    Slider spinner = sliderInstance.GetComponent<Slider>();
+                    GameObject gameobjectInstance;
+
                     if (param.type == AbstractParameter.ParameterType.FLOAT)
                     {
+                        gameobjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
+                        Slider slider = gameobjectInstance.GetComponent<Slider>();
                         Parameter<float> p = (Parameter<float>)param;
-                        spinner.onValueChanged.AddListener(p.setValue);
+                        slider.onValueChanged.AddListener(p.setValue);
                     }
+                    else if (param.type == AbstractParameter.ParameterType.VECTOR3)
+                    {
+                        gameobjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
+                        Spinner spinner = gameobjectInstance.GetComponent<Spinner>();
+                        Parameter<Vector3> p = (Parameter<Vector3>)param;
+                        spinner.hasChanged += p.changeValue;
+                    }
+                    UIParameterList.Add(gameobjectInstance);
+
+                    var rectTransform = gameobjectInstance.GetComponent<RectTransform>();
+                    rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity); 
+                    gameobjectInstance.transform.SetParent(GameObject.Find("Canvas").transform);
                     
+                    GameObject spinnerInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
                     switch (param.name)
                     {
                         case "position":

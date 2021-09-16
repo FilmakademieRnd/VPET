@@ -138,11 +138,16 @@ namespace vpet
         //! @param   sender     Object calling the change function
         //! @param   a          Values to be passed to the change function
         //!
-        public void setValue(T v)
+        private void setValue(T v)
         {
             _value = v;
             Helpers.Log(v.ToString());
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
+        }
+
+        public void changeValue(object sender, TEventArgs a)
+        {
+            setValue(a.value);
         }
 
         public byte[] serialize
