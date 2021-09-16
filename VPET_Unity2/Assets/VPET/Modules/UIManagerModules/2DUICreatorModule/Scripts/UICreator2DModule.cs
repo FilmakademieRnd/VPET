@@ -42,6 +42,7 @@ namespace vpet
     {
 
         private List<GameObject> UIParameterList = new List<GameObject>();
+        private GameObject m_slider;
 
         //!
         //! Constructor
@@ -60,6 +61,7 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
+            m_slider = Resources.Load("Prefabs/Slider") as GameObject;
         }
 
 
@@ -85,28 +87,36 @@ namespace vpet
                 for (int i = 0; i < sceneObject.parameterList.Count ; i++)
                 {
                     AbstractParameter param = sceneObject.parameterList[i];
-                    Vector3 buttonPosition = new Vector3(1500, 800 - (buttonOffset * i), 0);
+                    Vector3 sliderPosition = new Vector3(1500, 800 - (buttonOffset * i), 0);
                     
-                    Type type = param.GetType();
+                    Type type = param.getType();
                     Helpers.Log(sceneObject.name + ": " + param.name + " type:" + type);
-                    GameObject button = Resources.Load("Prefabs/Button") as GameObject;
-                    GameObject buttonInstance = SceneObject.Instantiate(button, Vector3.zero, Quaternion.identity);
-                    UIParameterList.Add(buttonInstance);
+                    GameObject sliderInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
+                    UIParameterList.Add(sliderInstance);
 
-                    var rectTransform = buttonInstance.GetComponent<RectTransform>();
-                    rectTransform.SetPositionAndRotation(buttonPosition, Quaternion.identity); 
-                    buttonInstance.transform.SetParent(GameObject.Find("Canvas").transform);
+                    var rectTransform = sliderInstance.GetComponent<RectTransform>();
+                    rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity); 
+                    sliderInstance.transform.SetParent(GameObject.Find("Canvas").transform);
+                    Slider spinner = sliderInstance.GetComponent<Slider>();
+                    if (type == typeof(float))
+                    {
+                        Parameter<float> p = (Parameter<float>)param;
+                        spinner.onValueChanged.AddListener(p.setValue);
+                    }
                     
                     switch (param.name)
                     {
                         case "position":
-                            buttonInstance.GetComponentInChildren<Text>().text = "Position Button";
+                            sliderInstance.GetComponentInChildren<Text>().text = "Position Slider";
                             break;
                         case "rotation":
-                            buttonInstance.GetComponentInChildren<Text>().text = "Rotation Button";
+                            sliderInstance.GetComponentInChildren<Text>().text = "Rotation Slider";
                             break;
                         case "scale":
-                            buttonInstance.GetComponentInChildren<Text>().text = "Scale Button";
+                            sliderInstance.GetComponentInChildren<Text>().text = "Scale Slider";
+                            break;
+                        case "test":
+                            sliderInstance.GetComponentInChildren<Text>().text = "Test Slider";
                             break;
                     }
                 }

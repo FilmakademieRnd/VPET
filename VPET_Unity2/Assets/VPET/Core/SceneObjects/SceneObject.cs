@@ -66,6 +66,11 @@ namespace vpet
         private Parameter<Vector3> scale;
 
         //!
+        //! [REVIEW]
+        //!
+        private Parameter<float> test;
+
+        //!
         //! List storing all parameters of this SceneObject.
         //!
         protected List<AbstractParameter> _parameterList;
@@ -97,6 +102,9 @@ namespace vpet
             scale = new Parameter<Vector3>(this.transform.localScale, "scale");
             scale.hasChanged += updateScale;
             _parameterList.Add(scale);
+            test = new Parameter<float>(1, "test");
+            //test.hasChanged += updateScale;
+            _parameterList.Add(test);
         }
 
         //!

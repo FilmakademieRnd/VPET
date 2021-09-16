@@ -85,7 +85,7 @@ namespace vpet
         public override void Update()
         {
             base.Update();
-            updateSceneObjectLightParameters();
+            //updateSceneObjectLightParameters();
         }
 
         //!

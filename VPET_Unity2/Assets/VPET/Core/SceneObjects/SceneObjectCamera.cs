@@ -109,7 +109,7 @@ namespace vpet
         public override void Update()
         {
             base.Update();
-            updateCameraParameters();
+            //updateCameraParameters();
         }
 
         //!
