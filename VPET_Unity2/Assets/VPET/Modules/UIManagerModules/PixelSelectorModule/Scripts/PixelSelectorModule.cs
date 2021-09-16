@@ -183,7 +183,12 @@ namespace vpet
 
             int scaledX = (int)screenPosition.x / scaleDivisor;
             int scaledY = (int)screenPosition.y / scaleDivisor;
-            Color32 packedId = cpuData[scaledX + dataWidth * scaledY];
+            int pos = scaledX + dataWidth * scaledY;
+            
+            if (cpuData.Length < pos)
+                return null;
+            
+            Color32 packedId = cpuData[pos];
             int id = DecodeId(packedId);
 
             return m_sceneManager.getSceneObject(id);

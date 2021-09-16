@@ -93,43 +93,38 @@ namespace vpet
                     
                     Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.type);
 
-                    GameObject gameobjectInstance;
+                    GameObject gameObjectInstance = null;
 
-                    if (param.type == AbstractParameter.ParameterType.FLOAT)
+                    switch (param.type)
                     {
-                        gameobjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
-                        Slider slider = gameobjectInstance.GetComponent<Slider>();
-                        Parameter<float> p = (Parameter<float>)param;
-                        slider.onValueChanged.AddListener(p.setValue);
+                        case AbstractParameter.ParameterType.FLOAT:
+                            {
+                                gameObjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
+                                Parameter<float> p = (Parameter<float>)param;
+                                gameObjectInstance.GetComponent<Slider>().onValueChanged.AddListener(p.setValue);
+                                buttonOffset = 50;
+                                break;
+                            }
+                        case AbstractParameter.ParameterType.VECTOR3:
+                            {
+                                gameObjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
+                                Parameter<Vector3> p = (Parameter<Vector3>)param;
+                                Spinner spinner = gameObjectInstance.GetComponent<Spinner>();
+                                spinner.setValues(p.value);
+                                spinner.hasChanged += new Spinner.spinnerEventHandler(p.setValue);
+                                buttonOffset = 100;
+                                break;
+                            }
                     }
-                    else if (param.type == AbstractParameter.ParameterType.VECTOR3)
+                    if (gameObjectInstance != null)
                     {
-                        gameobjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
-                        Spinner spinner = gameobjectInstance.GetComponent<Spinner>();
-                        Parameter<Vector3> p = (Parameter<Vector3>)param;
-                        spinner.hasChanged += p.changeValue;
-                    }
-                    UIParameterList.Add(gameobjectInstance);
+                        UIParameterList.Add(gameObjectInstance);
 
-                    var rectTransform = gameobjectInstance.GetComponent<RectTransform>();
-                    rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity); 
-                    gameobjectInstance.transform.SetParent(GameObject.Find("Canvas").transform);
-                    
-                    GameObject spinnerInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
-                    switch (param.name)
-                    {
-                        case "position":
-                            sliderInstance.GetComponentInChildren<Text>().text = "Position Slider";
-                            break;
-                        case "rotation":
-                            sliderInstance.GetComponentInChildren<Text>().text = "Rotation Slider";
-                            break;
-                        case "scale":
-                            sliderInstance.GetComponentInChildren<Text>().text = "Scale Slider";
-                            break;
-                        case "test":
-                            sliderInstance.GetComponentInChildren<Text>().text = "Test Slider";
-                            break;
+                        RectTransform rectTransform = gameObjectInstance.GetComponent<RectTransform>();
+                        rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity);
+                        gameObjectInstance.transform.SetParent(GameObject.Find("Canvas").transform);
+
+                        gameObjectInstance.GetComponentInChildren<Text>().text = param.name;
                     }
                 }
             }

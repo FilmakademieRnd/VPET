@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
@@ -8,7 +6,9 @@ using System;
 public class Spinner : MonoBehaviour
 {
     private Vector3 _value;
-    
+
+    private Slider _sliderX, _sliderY, _sliderZ;
+
     //!
     //! Definition of change function parameters.
     //!
@@ -16,41 +16,62 @@ public class Spinner : MonoBehaviour
     {
         public Vector3 value;
     }
+
+    public delegate void spinnerEventHandler(Vector3 v);
     //!
     //! Event emitted when parameter changed.
     //!
-    public event EventHandler<FEventArgs> hasChanged;
+    public event spinnerEventHandler hasChanged;
 
     private void Awake()
     {
         _value = Vector3.zero;
 
-        Slider sliderX = GameObject.Find("SpinnerX").GetComponent<Slider>();
-        Slider sliderY = GameObject.Find("SpinnerY").GetComponent<Slider>();
-        Slider sliderZ = GameObject.Find("SpinnerZ").GetComponent<Slider>();
+        _sliderX = transform.Find("SliderX").GetComponent<Slider>();
+        _sliderY = transform.Find("SliderY").GetComponent<Slider>();
+        _sliderZ = transform.Find("SliderZ").GetComponent<Slider>();
 
-        sliderX.onValueChanged.AddListener(updateParameterX);
-        sliderY.onValueChanged.AddListener(updateParameterY);
-        sliderZ.onValueChanged.AddListener(updateParameterZ);
+        _sliderX.onValueChanged.AddListener(updateParameterX);
+        _sliderY.onValueChanged.AddListener(updateParameterY);
+        _sliderZ.onValueChanged.AddListener(updateParameterZ);
+
     }
 
     private void updateParameterX(float v)
     {
         _value.x = v;
-        hasChanged?.Invoke(this, new FEventArgs { value = _value });
+        hasChanged?.Invoke(_value);
     }
 
     private void updateParameterY(float v)
     {
         _value.y = v;
-        hasChanged?.Invoke(this, new FEventArgs { value = _value });
+        hasChanged?.Invoke(_value);
     }
 
     private void updateParameterZ(float v)
     {
         _value.z = v;
-        hasChanged?.Invoke(this, new FEventArgs { value = _value });
+        hasChanged?.Invoke(_value);
     }
 
+    public void setValues (Vector3 v) 
+    {
+        // [REVIEW] 
+        // this should be related to the scene scale
+
+        _sliderX.maxValue = Mathf.Abs(v.x) * 2;
+        _sliderX.minValue = Mathf.Abs(v.x) * -2;        
+        
+        _sliderY.maxValue = Mathf.Abs(v.y) * 2;
+        _sliderY.minValue = Mathf.Abs(v.y) * -2;
+
+        _sliderZ.maxValue = Mathf.Abs(v.z) * 2;
+        _sliderZ.minValue = Mathf.Abs(v.z) * -2;
+
+        _sliderX.value = v.x;
+        _sliderY.value = v.y;
+        _sliderZ.value = v.z;
+    }
 
 }
