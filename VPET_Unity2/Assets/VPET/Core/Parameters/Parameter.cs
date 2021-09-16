@@ -39,9 +39,19 @@ namespace vpet
     public abstract class AbstractParameter
     {
         //!
+        //! Definition of VPETs parameter types
+        //!
+        public enum ParameterType { BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN }
+
+        //!
         //! The name of the parameter.
         //!
         private string _name;
+
+        //!
+        //! The VPET parameter type
+        //!
+        protected ParameterType _type = ParameterType.UNKNOWN;
 
         //!
         //! Getter for name.
@@ -50,6 +60,11 @@ namespace vpet
         {
             get => _name;
             protected set => _name = value;
+        }
+
+        public ParameterType type
+        {
+            get => _type;
         }
     }
 
@@ -92,10 +107,6 @@ namespace vpet
                 _type = ParameterType.UNKNOWN;
         }
 
-        public enum ParameterType {BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN}
-
-        private ParameterType _type;
-
         //!
         //! The parameters value as a template.
         //!
@@ -132,11 +143,6 @@ namespace vpet
             _value = v;
             Helpers.Log(v.ToString());
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
-        }
-
-        public Type getType()
-        {
-            return typeof(T);
         }
 
         public byte[] serialize

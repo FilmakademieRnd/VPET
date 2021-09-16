@@ -87,10 +87,9 @@ namespace vpet
                 for (int i = 0; i < sceneObject.parameterList.Count ; i++)
                 {
                     AbstractParameter param = sceneObject.parameterList[i];
-                    Vector3 sliderPosition = new Vector3(1500, 800 - (buttonOffset * i), 0);
+                    Vector3 sliderPosition = new Vector3(800, 400 - (buttonOffset * i), 0);
                     
-                    Type type = param.getType();
-                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + type);
+                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.type);
                     GameObject sliderInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
                     UIParameterList.Add(sliderInstance);
 
@@ -98,7 +97,7 @@ namespace vpet
                     rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity); 
                     sliderInstance.transform.SetParent(GameObject.Find("Canvas").transform);
                     Slider spinner = sliderInstance.GetComponent<Slider>();
-                    if (type == typeof(float))
+                    if (param.type == AbstractParameter.ParameterType.FLOAT)
                     {
                         Parameter<float> p = (Parameter<float>)param;
                         spinner.onValueChanged.AddListener(p.setValue);
