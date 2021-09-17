@@ -46,12 +46,10 @@ namespace vpet
         //! unique id of this sceneObject
         //!
         public int id;
-
         //!
         //! is the sceneObject reacting to physics
         //!
         public bool physicsActive;
-
         //!
         //! Position of the SceneObject
         //!
@@ -64,17 +62,11 @@ namespace vpet
         //! Scale of the SceneObject
         //!
         private Parameter<Vector3> scale;
-
-        //!
-        //! [REVIEW]
-        //!
-        private Parameter<float> test;
-
         //!
         //! List storing all parameters of this SceneObject.
         //!
         protected List<AbstractParameter> _parameterList;
-
+        
         //!
         //! Getter for parameter list
         //!
@@ -93,18 +85,15 @@ namespace vpet
             id = Helpers.getUniqueID();
             physicsActive = false;
 
-            position = new Parameter<Vector3>(this.transform.localPosition, "position");
+            position = new Parameter<Vector3>(transform.localPosition, "position");
             position.hasChanged += updatePosition;
             _parameterList.Add(position);
-            rotation = new Parameter<Quaternion>(this.transform.localRotation, "rotation");
+            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation");
             rotation.hasChanged += updateRotation;
             _parameterList.Add(rotation);
-            scale = new Parameter<Vector3>(this.transform.localScale, "scale");
+            scale = new Parameter<Vector3>(transform.localScale, "scale");
             scale.hasChanged += updateScale;
             _parameterList.Add(scale);
-            test = new Parameter<float>(1, "test");
-            //test.hasChanged += updateScale;
-            _parameterList.Add(test);
         }
 
         //!
@@ -114,7 +103,7 @@ namespace vpet
         //!
         private void updatePosition(object sender, Parameter<Vector3>.TEventArgs a)
         {
-            this.transform.localPosition = a.value;
+            transform.localPosition = a.value;
         }
 
         //!
@@ -124,7 +113,7 @@ namespace vpet
         //!
         private void updateRotation(object sender, Parameter<Quaternion>.TEventArgs a)
         {
-            this.transform.localRotation = a.value;
+            transform.localRotation = a.value;
         }
 
         //!
@@ -134,7 +123,7 @@ namespace vpet
         //!
         private void updateScale(object sender, Parameter<Vector3>.TEventArgs a)
         {
-            this.transform.localScale = a.value;
+            transform.localScale = a.value;
         }
 
         //!
@@ -152,10 +141,10 @@ namespace vpet
         //!
         private void updateSceneObjectTransform()
         {
-            if (transform.position != position.value)
-                position.value = transform.position;
-            if (transform.rotation != rotation.value)
-                rotation.value = transform.rotation;
+            if (transform.localPosition != position.value)
+                position.value = transform.localPosition;
+            if (transform.localRotation != rotation.value)
+                rotation.value = transform.localRotation;
             if (transform.localScale != scale.value)
                 scale.value = transform.localScale;
         }

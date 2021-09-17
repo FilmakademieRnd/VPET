@@ -76,15 +76,16 @@ namespace vpet
         //!
         //! Default constructor.
         //!
-        public Parameter() {}
+        public Parameter() { }
 
         //!
         //! Constructor initializing members.
         //!
-        public Parameter(T value, string name)
+        public Parameter(T value, string name, int sceneObjectId = -1)
         {
             _value = value;
             this.name = name;
+            _sceneObjectId = sceneObjectId;
             Type type = typeof(T);
 
             if (type == typeof(bool))
@@ -105,6 +106,12 @@ namespace vpet
                 _type = ParameterType.COLOR;
             else
                 _type = ParameterType.UNKNOWN;
+        }
+
+        private int _sceneObjectId;
+        public int sceneObjectId
+        {
+            get => _sceneObjectId;
         }
 
         //!
