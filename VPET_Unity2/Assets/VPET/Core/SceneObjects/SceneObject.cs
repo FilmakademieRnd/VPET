@@ -43,13 +43,38 @@ namespace vpet
     public class SceneObject : MonoBehaviour
     {
         //!
+        //! Is the sceneObject reacting to physics
+        //!
+        private bool _physicsActive;
+        //!
+        //! Is the sceneObject reacting to physics
+        //!
+        public bool physicsActive
+        {
+            get => _physicsActive;
+        }
+        //!
         //! unique id of this sceneObject
         //!
-        public int id;
+        private short _id;
         //!
-        //! is the sceneObject reacting to physics
+        //! Getter for unique id of this sceneObject
         //!
-        public bool physicsActive;
+        public short id
+        {
+            get => _id;
+        }
+        //!
+        //! Definition of change function parameters.
+        //!
+        public class SOEventArgs<T> : EventArgs
+        {
+            public AbstractParameter value;
+        }
+        //!
+        //! Event emitted when parameter changed.
+        //!
+        public event EventHandler<AbstractParameter> hasChanged;
         //!
         //! Position of the SceneObject
         //!
@@ -82,8 +107,8 @@ namespace vpet
         {
             _parameterList = new List<AbstractParameter>();
 
-            id = Helpers.getUniqueID();
-            physicsActive = false;
+            _id = Helpers.getUniqueID();
+            _physicsActive = false;
 
             position = new Parameter<Vector3>(transform.localPosition, "position");
             position.hasChanged += updatePosition;
@@ -132,7 +157,7 @@ namespace vpet
         public virtual void Update()
         {
             // ToDo: implement a clever way to figure out when the transforms need to be updated 
-            if(physicsActive)
+            if(_physicsActive)
                 updateSceneObjectTransform();
         }
 

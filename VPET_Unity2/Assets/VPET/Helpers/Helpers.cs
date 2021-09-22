@@ -42,13 +42,13 @@ namespace vpet
         //!
         //! global id counter for generating unique sceneObject IDs
         //!
-        private static int s_id = 0;
+        private static short s_id = 0;
 
         //!
         //! provide a unique id
         //! @return     unique id as int
         //!
-        public static int getUniqueID()
+        public static short getUniqueID()
         {
             return s_id++;
         }

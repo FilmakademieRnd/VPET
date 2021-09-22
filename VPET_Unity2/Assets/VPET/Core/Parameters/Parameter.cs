@@ -29,6 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 10.09.2021
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace vpet
@@ -39,9 +40,16 @@ namespace vpet
     public abstract class AbstractParameter
     {
         //!
-        //! Definition of VPETs parameter types
+        //! The unique id of this parameter.
         //!
-        public enum ParameterType { BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN }
+        protected short _id;
+        //!
+        //! Getter for unique id of this parameter.
+        //!
+        public short id
+        {
+            get => _id;
+        }
 
         //!
         //! The name of the parameter.
@@ -49,9 +57,9 @@ namespace vpet
         private string _name;
 
         //!
-        //! The VPET parameter type
+        //! The parameter type
         //!
-        protected ParameterType _type = ParameterType.UNKNOWN;
+        protected Type _type;
 
         //!
         //! Getter for name.
@@ -62,7 +70,7 @@ namespace vpet
             protected set => _name = value;
         }
 
-        public ParameterType type
+        public Type type
         {
             get => _type;
         }
@@ -74,38 +82,34 @@ namespace vpet
     public class Parameter<T> : AbstractParameter
     {
         //!
+        //! Definition of VPETs parameter types
+        //!
+        public enum ParameterType : byte { BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN = 100} 
+
+        //!
+        //! List for mapping VPET parameter types to C# types and visa versa.
+        //!
+        private static readonly List<Type> _paramTypes = new List<Type> { typeof(bool), 
+                                                                          typeof(int), 
+                                                                          typeof(float), 
+                                                                          typeof(Vector2), 
+                                                                          typeof(Vector3), 
+                                                                          typeof(Vector4), 
+                                                                          typeof(Quaternion), 
+                                                                          typeof(Color) };
+        //!
         //! Default constructor.
         //!
         public Parameter() { }
-
         //!
         //! Constructor initializing members.
         //!
-        public Parameter(T value, string name, int sceneObjectId = -1)
+        public Parameter(T value, string name, short id = -1)
         {
             _value = value;
             this.name = name;
-            _sceneObjectId = sceneObjectId;
-            Type type = typeof(T);
-
-            if (type == typeof(bool))
-                _type = ParameterType.BOOL;
-            else if (type == typeof(int))
-                _type = ParameterType.INT;
-            else if (type == typeof(float))
-                _type = ParameterType.FLOAT;
-            else if (type == typeof(Vector2))
-                _type = ParameterType.VECTOR2;
-            else if (type == typeof(Vector3))
-                _type = ParameterType.VECTOR3;
-            else if (type == typeof(Vector4))
-                _type = ParameterType.VECTOR4;
-            else if (type == typeof(Quaternion))
-                _type = ParameterType.QUATERNION;
-            else if (type == typeof(Color))
-                _type = ParameterType.COLOR;
-            else
-                _type = ParameterType.UNKNOWN;
+            Type _type = typeof(T);
+            _id = id;
         }
 
         private int _sceneObjectId;
@@ -154,12 +158,28 @@ namespace vpet
         public byte[] serialize
         { get => Serialize(_value, _type); }
 
+        public static Type toCType (ParameterType t)
+        {
+            return _paramTypes[(int)t];
+        }
+
+        public static ParameterType toVPETType (Type t)
+        {
+            int idx = _paramTypes.FindIndex(item => item.Equals(t));
+            if (idx == -1)
+                return (ParameterType) 100;
+            else
+                return (ParameterType) idx;
+        }
+
         // parameter should only store data and a minimal amount of functionaliy
         // --> move this to helpers, or network manager?
-        public static byte[] Serialize(T value, ParameterType t)
+        public static byte[] Serialize(T value, Type t)
         {
             byte[] data;
-            switch (t)
+            ParameterType vpetType = toVPETType(t);
+
+            switch (vpetType)
             {
                 case ParameterType.BOOL:
                     {
@@ -182,8 +202,8 @@ namespace vpet
                 case ParameterType.VECTOR2:
                     {
                         data = new byte[9];
-                        Vector2 obj = (Vector2) Convert.ChangeType(value, typeof(Vector2));
-                        
+                        Vector2 obj = (Vector2)Convert.ChangeType(value, typeof(Vector2));
+
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
                         break;
@@ -191,7 +211,7 @@ namespace vpet
                 case ParameterType.VECTOR3:
                     {
                         data = new byte[13];
-                        Vector3 obj = (Vector3) Convert.ChangeType(value, typeof(Vector3));
+                        Vector3 obj = (Vector3)Convert.ChangeType(value, typeof(Vector3));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
@@ -201,7 +221,7 @@ namespace vpet
                 case ParameterType.VECTOR4:
                     {
                         data = new byte[17];
-                        Vector4 obj = (Vector4) Convert.ChangeType(value, typeof(Vector4));
+                        Vector4 obj = (Vector4)Convert.ChangeType(value, typeof(Vector4));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
@@ -212,7 +232,7 @@ namespace vpet
                 case ParameterType.QUATERNION:
                     {
                         data = new byte[17];
-                        Quaternion obj = (Quaternion) Convert.ChangeType(value, typeof(Quaternion));
+                        Quaternion obj = (Quaternion)Convert.ChangeType(value, typeof(Quaternion));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
@@ -223,7 +243,7 @@ namespace vpet
                 case ParameterType.COLOR:
                     {
                         data = new byte[17];
-                        Color obj = (Color) Convert.ChangeType(value, typeof(Color));
+                        Color obj = (Color)Convert.ChangeType(value, typeof(Color));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.r), 0, data, 1, 4);
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, 5, 4);
@@ -238,7 +258,7 @@ namespace vpet
                     }
 
             }
-            data[0] = (byte) t;
+            data[0] = (byte) vpetType;
 
             return data;
         }
