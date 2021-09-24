@@ -91,11 +91,11 @@ namespace vpet
                     AbstractParameter param = sceneObject.parameterList[i];
                     Vector3 sliderPosition = new Vector3(800, 400 - (buttonOffset * i), 0);
                     
-                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.type);
+                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.cType);
 
                     GameObject gameObjectInstance = null;
 
-                    switch (param.type)
+                    switch (param.vpetType)
                     {
                         case AbstractParameter.ParameterType.FLOAT:
                             {

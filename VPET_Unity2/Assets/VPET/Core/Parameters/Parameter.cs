@@ -39,10 +39,35 @@ namespace vpet
     //!
     public abstract class AbstractParameter
     {
+
         //!
         //! The unique id of this parameter.
         //!
         protected short _id;
+        //!
+        //! The parameters C# type.
+        //!
+        protected Type _type;
+        //!
+        //! The name of the parameter.
+        //!
+        protected string _name;
+        //!
+        //! Definition of VPETs parameter types
+        //!
+        public enum ParameterType : byte { BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN = 100 }
+
+        //!
+        //! List for mapping VPET parameter types to C# types and visa versa.
+        //!
+        private static readonly List<Type> _paramTypes = new List<Type> { typeof(bool),
+                                                                          typeof(int),
+                                                                          typeof(float),
+                                                                          typeof(Vector2),
+                                                                          typeof(Vector3),
+                                                                          typeof(Vector4),
+                                                                          typeof(Quaternion),
+                                                                          typeof(Color) };
         //!
         //! Getter for unique id of this parameter.
         //!
@@ -50,19 +75,22 @@ namespace vpet
         {
             get => _id;
         }
-
         //!
-        //! The name of the parameter.
+        //! Getter for parameters C# type.
         //!
-        private string _name;
-
+        public Type cType
+        {
+            get => _type;
+        }
         //!
-        //! The parameter type
+        //! Getter for parameters VPET type.
         //!
-        protected Type _type;
-
+        public ParameterType vpetType
+        {
+            get => toVPETType(_type);
+        }
         //!
-        //! Getter for name.
+        //! Getter for parameters name.
         //!
         public string name
         {
@@ -70,10 +98,32 @@ namespace vpet
             protected set => _name = value;
         }
 
-        public Type type
+        //!
+        //! Fuction that determines a parameters C# type from a VPET type.
+        //!
+        //! @param t The C# type from which the VPET type is to be determined. 
+        //! @return The determined C# type.
+        //!
+        public static Type toCType(ParameterType t)
         {
-            get => _type;
+            return _paramTypes[(int)t];
         }
+
+        //!
+        //! Fuction that determines a parameters VPET type from a C# type.
+        //!
+        //! @param t The VPET type from which the C# type is to be determined. 
+        //! @return The determined VPET type.
+        //!
+        public static ParameterType toVPETType(Type t)
+        {
+            int idx = _paramTypes.FindIndex(item => item.Equals(t));
+            if (idx == -1)
+                return (ParameterType)100;
+            else
+                return (ParameterType)idx;
+        }
+
     }
 
     //!
@@ -81,22 +131,6 @@ namespace vpet
     //!
     public class Parameter<T> : AbstractParameter
     {
-        //!
-        //! Definition of VPETs parameter types
-        //!
-        public enum ParameterType : byte { BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN = 100} 
-
-        //!
-        //! List for mapping VPET parameter types to C# types and visa versa.
-        //!
-        private static readonly List<Type> _paramTypes = new List<Type> { typeof(bool), 
-                                                                          typeof(int), 
-                                                                          typeof(float), 
-                                                                          typeof(Vector2), 
-                                                                          typeof(Vector3), 
-                                                                          typeof(Vector4), 
-                                                                          typeof(Quaternion), 
-                                                                          typeof(Color) };
         //!
         //! Default constructor.
         //!
@@ -107,15 +141,9 @@ namespace vpet
         public Parameter(T value, string name, short id = -1)
         {
             _value = value;
-            this.name = name;
-            Type _type = typeof(T);
+            _name = name;
+            _type = typeof(T);
             _id = id;
-        }
-
-        private int _sceneObjectId;
-        public int sceneObjectId
-        {
-            get => _sceneObjectId;
         }
 
         //!
@@ -155,23 +183,15 @@ namespace vpet
             hasChanged?.Invoke(this, new TEventArgs { value = _value });
         }
 
+        //!
+        //! Function for serializing the parameters data.
+        //! 
+        //!  @return The Parameters data serialized as a byte array.
+        //! 
         public byte[] serialize
         { get => Serialize(_value, _type); }
 
-        public static Type toCType (ParameterType t)
-        {
-            return _paramTypes[(int)t];
-        }
-
-        public static ParameterType toVPETType (Type t)
-        {
-            int idx = _paramTypes.FindIndex(item => item.Equals(t));
-            if (idx == -1)
-                return (ParameterType) 100;
-            else
-                return (ParameterType) idx;
-        }
-
+        // [REVIEW]
         // parameter should only store data and a minimal amount of functionaliy
         // --> move this to helpers, or network manager?
         public static byte[] Serialize(T value, Type t)
