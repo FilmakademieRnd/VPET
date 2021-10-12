@@ -47,7 +47,7 @@ namespace vpet
             base.Start();
             if (_light)
             {
-                spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle");
+                spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle", (short)parameterList.Count);
                 spotAngle.hasChanged += updateAngle;
                 _parameterList.Add(spotAngle);
             }
@@ -68,9 +68,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new angle value
         //!
-        private void updateAngle(object sender, Parameter<float>.TEventArgs a)
+        private void updateAngle(object sender, float a)
         {
-            _light.spotAngle = a.value;
+            _light.spotAngle = a;
+            emitHasChanged((AbstractParameter)sender);
         }
     }
 }

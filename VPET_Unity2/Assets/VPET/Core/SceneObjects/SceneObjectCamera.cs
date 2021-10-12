@@ -82,22 +82,22 @@ namespace vpet
 
             if (_camera)
             {
-                fov = new Parameter<float>(_camera.fieldOfView, "fov");
+                fov = new Parameter<float>(_camera.fieldOfView, "fov", (short)parameterList.Count);
                 fov.hasChanged += updateFov;
                 _parameterList.Add(fov);
-                aspect = new Parameter<float>(_camera.aspect, "aspectRatio");
+                aspect = new Parameter<float>(_camera.aspect, "aspectRatio", (short)parameterList.Count);
                 aspect.hasChanged += updateAspect;
                 _parameterList.Add(aspect);
-                near = new Parameter<float>(_camera.nearClipPlane, "nearClipPlane");
+                near = new Parameter<float>(_camera.nearClipPlane, "nearClipPlane", (short)parameterList.Count);
                 near.hasChanged += updateNearClipPlane;
                 _parameterList.Add(near);
-                far = new Parameter<float>(_camera.farClipPlane, "farClipPlane");
+                far = new Parameter<float>(_camera.farClipPlane, "farClipPlane", (short)parameterList.Count);
                 far.hasChanged += updateFarClipPlane;
                 _parameterList.Add(far);
-                focDist = new Parameter<float>(1f, "focalDistance");
+                focDist = new Parameter<float>(1f, "focalDistance", (short)parameterList.Count);
                 focDist.hasChanged += updateFocalDistance;
                 _parameterList.Add(focDist);
-                aperture = new Parameter<float>(2.8f, "aperture");
+                aperture = new Parameter<float>(2.8f, "aperture", (short)parameterList.Count);
                 aperture.hasChanged += updateAperture;
                 _parameterList.Add(aperture);
             }
@@ -117,9 +117,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new fov value
         //!
-        private void updateFov(object sender, Parameter<float>.TEventArgs a)
+        private void updateFov(object sender, float a)
         {
-            _camera.fieldOfView = a.value;
+            _camera.fieldOfView = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -127,9 +128,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new aspect ratio value
         //!
-        private void updateAspect(object sender, Parameter<float>.TEventArgs a)
+        private void updateAspect(object sender, float a)
         {
-            _camera.aspect = a.value;
+            _camera.aspect = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -137,9 +139,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new near clip plane value
         //!
-        private void updateNearClipPlane(object sender, Parameter<float>.TEventArgs a)
+        private void updateNearClipPlane(object sender, float a)
         {
-            _camera.nearClipPlane = a.value;
+            _camera.nearClipPlane = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -147,9 +150,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new far clip plane value
         //!
-        private void updateFarClipPlane(object sender, Parameter<float>.TEventArgs a)
+        private void updateFarClipPlane(object sender, float a)
         {
-            _camera.farClipPlane = a.value;
+            _camera.farClipPlane = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -157,7 +161,7 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new focal distance value
         //!
-        private void updateFocalDistance(object sender, Parameter<float>.TEventArgs a)
+        private void updateFocalDistance(object sender, float a)
         {
             //ToDO: Use this in PostEffect.
         }
@@ -167,7 +171,7 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new aperture value
         //!
-        private void updateAperture(object sender, Parameter<float>.TEventArgs a)
+        private void updateAperture(object sender, float a)
         {
             //ToDO: Use this in PostEffect.
         }

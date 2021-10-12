@@ -65,13 +65,6 @@ namespace vpet
             get => _id;
         }
         //!
-        //! Definition of change function parameters.
-        //!
-        public class SOEventArgs<T> : EventArgs
-        {
-            public AbstractParameter value;
-        }
-        //!
         //! Event emitted when parameter changed.
         //!
         public event EventHandler<AbstractParameter> hasChanged;
@@ -110,15 +103,20 @@ namespace vpet
             _id = Helpers.getUniqueID();
             _physicsActive = false;
 
-            position = new Parameter<Vector3>(transform.localPosition, "position");
+            position = new Parameter<Vector3>(transform.localPosition, "position", (short) parameterList.Count);
             position.hasChanged += updatePosition;
             _parameterList.Add(position);
-            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation");
+            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation", (short)parameterList.Count);
             rotation.hasChanged += updateRotation;
             _parameterList.Add(rotation);
-            scale = new Parameter<Vector3>(transform.localScale, "scale");
+            scale = new Parameter<Vector3>(transform.localScale, "scale", (short)parameterList.Count);
             scale.hasChanged += updateScale;
             _parameterList.Add(scale);
+        }
+
+        protected void emitHasChanged (AbstractParameter parameter)
+        {
+            hasChanged?.Invoke(this, parameter);
         }
 
         //!
@@ -126,9 +124,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new position value
         //!
-        private void updatePosition(object sender, Parameter<Vector3>.TEventArgs a)
+        private void updatePosition(object sender, Vector3 a)
         {
-            transform.localPosition = a.value;
+            transform.localPosition = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -136,9 +135,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new rotation value
         //!
-        private void updateRotation(object sender, Parameter<Quaternion>.TEventArgs a)
+        private void updateRotation(object sender, Quaternion a)
         {
-            transform.localRotation = a.value;
+            transform.localRotation = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -146,9 +146,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new scale value
         //!
-        private void updateScale(object sender, Parameter<Vector3>.TEventArgs a)
+        private void updateScale(object sender, Vector3 a)
         {
-            transform.localScale = a.value;
+            transform.localScale = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!

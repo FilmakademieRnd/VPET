@@ -161,16 +161,9 @@ namespace vpet
         }
 
         //!
-        //! Definition of change function parameters.
-        //!
-        public class TEventArgs : EventArgs
-        {
-            public T value;
-        }
-        //!
         //! Event emitted when parameter changed.
         //!
-        public event EventHandler<TEventArgs> hasChanged;
+        public event EventHandler<T> hasChanged;
 
         //!
         //! Abstract definition of the function called to change a parameters value.
@@ -180,7 +173,7 @@ namespace vpet
         public void setValue(T v)
         {
             _value = v;
-            hasChanged?.Invoke(this, new TEventArgs { value = _value });
+            hasChanged?.Invoke(this, v);
         }
 
         //!

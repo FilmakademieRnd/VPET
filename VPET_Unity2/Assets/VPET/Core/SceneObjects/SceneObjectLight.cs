@@ -66,13 +66,13 @@ namespace vpet
             _light = this.GetComponent<Light>();
             if (_light)
             {
-                color = new Parameter<Color>(_light.color, "color");
+                color = new Parameter<Color>(_light.color, "color", (short) parameterList.Count);
                 color.hasChanged += updateColor;
                 _parameterList.Add(color);
-                intensity = new Parameter<float>(_light.intensity, "intensity");
+                intensity = new Parameter<float>(_light.intensity, "intensity", (short)parameterList.Count);
                 intensity.hasChanged += updateIntensity;
                 _parameterList.Add(intensity);
-                range = new Parameter<float>(_light.range, "range");
+                range = new Parameter<float>(_light.range, "range", (short)parameterList.Count);
                 range.hasChanged += updateRange;
                 _parameterList.Add(range);
             }
@@ -93,9 +93,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new color value
         //!
-        private void updateColor(object sender, Parameter<Color>.TEventArgs a)
+        private void updateColor(object sender, Color a)
         {
-            _light.color = a.value;
+            _light.color = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -103,9 +104,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new intensity value
         //!
-        private void updateIntensity(object sender, Parameter<float>.TEventArgs a)
+        private void updateIntensity(object sender, float a)
         {
-            _light.intensity = a.value;
+            _light.intensity = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -113,9 +115,10 @@ namespace vpet
         //! @param   sender     Object calling the update function
         //! @param   a          new range value
         //!
-        private void updateRange(object sender, Parameter<float>.TEventArgs a)
+        private void updateRange(object sender, float a)
         {
-            _light.range = a.value;
+            _light.range = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
