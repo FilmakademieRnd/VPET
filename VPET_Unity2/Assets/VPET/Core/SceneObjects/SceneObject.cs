@@ -114,6 +114,11 @@ namespace vpet
             _parameterList.Add(scale);
         }
 
+        //!
+        //! Function that emits the scene objects hasChanged event. (Used for parameter updates)
+        //!
+        //! @param parameter The parameter that has changed. 
+        //!
         protected void emitHasChanged (AbstractParameter parameter)
         {
             hasChanged?.Invoke(this, parameter);

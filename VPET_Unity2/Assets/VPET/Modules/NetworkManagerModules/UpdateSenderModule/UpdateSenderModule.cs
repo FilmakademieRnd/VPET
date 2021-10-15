@@ -26,13 +26,12 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 20.05.2021
+//! @date 15.10.2021
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
 using System;
+using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -55,13 +54,88 @@ namespace vpet
 
         //!
         //! Function for custom initialisation.
-        //! @param messageQueue List of byte[] to be received by the receiver.
-        //!
-        public override void initialise(out List<byte[]> messageQueue)
+        //! 
+        //! @param sender The VPET core.
+        //! @param e The pssed event arguments.
+        //! 
+        protected override void Init(object sender, EventArgs e)
         {
-            base.initialise(out messageQueue);
-            messageQueue = m_messageQueue;
+            m_messageQueue = new List<byte[]>();
+
+            SceneManager sceneManager = m_core.getManager<SceneManager>();
+            sceneManager.sceneReady += connectAndStart;
         }
+
+        //!
+        //! Function that connects the scene object change events for parameter queuing.
+        //!
+        //! @param sender The emitting scene object.
+        //! @param e The pssed event arguments.
+        //!
+        private void connectAndStart(object sender, EventArgs e)
+        {
+            foreach (SceneObject sceneObject in ((SceneManager) sender).sceneObjects)
+            {
+                sceneObject.hasChanged += queueParameterMessage;
+            }
+
+            // [REVIEW] port should be in global config
+            startUpdateSender(manager.ip, "5557");
+        }
+
+        //!
+        //! Function that creates a parameter update message and adds it to the message queue for sending.
+        //!
+        //! @param sender The emitting scene object.
+        //! @param e The pssed event arguments.
+        //!
+        private void queueParameterMessage(object sender, AbstractParameter abstractParameter)
+        {
+            // Message structure: Header, Parameter (optional)
+            // Header: ClientID, Time, MessageType
+            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+            
+            byte[] message = abstractParameter.Serialize(8); // ParameterData;
+
+            // header
+            message[0] = manager.cID;
+            message[1] = m_core.time;
+            message[2] = (byte) MessageType.PARAMETERUPDATE;
+
+            // parameter
+            Buffer.BlockCopy(BitConverter.GetBytes( ((SceneObject)sender).id), 0, message, 3, 2);  // SceneObjectID
+            Buffer.BlockCopy(BitConverter.GetBytes(abstractParameter.id), 0, message, 5, 2);  // ParameterID
+            message[7] = (byte)abstractParameter.vpetType;  // ParameterType
+
+            m_messageQueue.Add(message);
+        }
+
+        //!
+        //! Function that creates a ping message and adds it to the message queue for sending.
+        //!
+        private void queuePingMessage()
+        {
+            byte[] message = new byte[3];
+
+            // header
+            message[0] = manager.cID;
+            message[1] = m_core.time;
+            message[2] = (byte)MessageType.PING;
+        }
+
+        //!
+        //! Function that creates a sync message and adds it to the message queue for sending.
+        //!
+        private void queueSyncMessage()
+        {
+            byte[] message = new byte[3];
+
+            // header
+            message[0] = manager.cID;
+            message[1] = m_core.time;
+            message[2] = (byte)MessageType.SYNC;
+        }
+
 
         //!
         //! Function, sending messages in m_messageQueue (executed in separate thread).
@@ -77,7 +151,7 @@ namespace vpet
                 Helpers.Log("Sender connected: " + "tcp://" + m_ip + ":" + m_port);
                 while (m_isRunning)
                 {
-                    if (m_messageQueue.Count > 0)
+                    if  (m_messageQueue.Count > 0)
                     {
                         try
                         {
@@ -86,6 +160,8 @@ namespace vpet
                         }
                         catch { }
                     }
+                    Thread.Yield();
+                    Thread.Sleep(1);
                 }
                 sender.Disconnect("tcp://" + m_ip + ":" + m_port);
                 sender.Close();

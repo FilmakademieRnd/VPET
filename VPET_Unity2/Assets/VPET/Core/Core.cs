@@ -30,6 +30,7 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Threading;
+using UnityEngine;
 
 namespace vpet
 {
@@ -72,13 +73,10 @@ namespace vpet
         //!
         void Awake()
         {
-            m_timeThread = new Thread(updateTime);
-            m_timeThread.Start();
-
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
             m_managerList.Add(typeof(NetworkManager), networkManager);
-
+            
             //Create scene manager
             SceneManager sceneManager = new SceneManager(typeof(SceneManagerModule), this);
             m_managerList.Add(typeof(SceneManager), sceneManager);
@@ -93,6 +91,15 @@ namespace vpet
 
             
             awakeEvent?.Invoke(this, new EventArgs());
+        }
+
+        void Start()
+        {
+            // Sync framerate to monitors refresh rate
+            QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = 60;
+
+            InvokeRepeating("updateTime", 0f, 1f/60f);
         }
 
         //!
@@ -110,23 +117,15 @@ namespace vpet
         private void Update()
         {
             updateEvent?.Invoke(this, new EventArgs());
+            QualitySettings.vSyncCount = 1;
         }
 
-        // [REVIEW]
-        // Perhaps better to use invokeRepeating?
+        //!
+        //! Function for increasing and resetting the time variable.
+        //!
         private void updateTime()
         {
-            while (!m_clockThreadAbort)
-            {
-                if (m_time > 254)
-                    m_time = 0;
-                else
-                    m_time++;
-
-                //m_time > 254 ? m_time = 0 : m_time++;
-
-                Thread.Sleep(17);  // ~ 60 fps
-            }
+            m_time = (m_time > 254 ? (byte)0 : m_time+=1);
         }
 
     }

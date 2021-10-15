@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.06.2021
+//! @date 13.10.2021
 
 using System.Collections;
 using System.Collections.Generic;

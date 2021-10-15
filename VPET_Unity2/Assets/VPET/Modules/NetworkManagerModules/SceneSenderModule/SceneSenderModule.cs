@@ -76,7 +76,9 @@ namespace vpet
                             dataSender.SendFrame(m_responses[message]);
                         else
                             dataSender.SendFrame(new byte[0]);
+
                     }
+                    Thread.Sleep(100);
                 }
 
                 // TODO: check first if closed

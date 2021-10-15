@@ -26,13 +26,11 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 25.06.2021
+//! @date 15.10.2021
 
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Threading;
 using System;
+using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -56,12 +54,12 @@ namespace vpet
         //!
         //! Function for custom initialisation.
         //! 
-        //! @param messageQueue List of byte[] to be received by the receiver.
-        //!
-        public override void initialise(out List<byte[]> messageQueue)
+        //! @param sender The VPET core.
+        //! @param e The pssed event arguments.
+        //! 
+        protected override void Init(object sender, EventArgs e)
         {
-            base.initialise(out messageQueue);
-            messageQueue = m_messageQueue;
+            m_messageQueue = new List<byte[]>();
         }
 
         //!
@@ -85,6 +83,8 @@ namespace vpet
                     {
                         m_messageQueue.Add(input);
                     }
+                    Thread.Yield();
+                    Thread.Sleep(1);
                 }
                 receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 receiver.Close();

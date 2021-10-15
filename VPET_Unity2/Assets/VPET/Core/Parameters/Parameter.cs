@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 10.09.2021
+//! @date 13.10.2021
 
 using System;
 using System.Collections.Generic;
@@ -104,7 +104,7 @@ namespace vpet
         //! @param t The C# type from which the VPET type is to be determined. 
         //! @return The determined C# type.
         //!
-        public static Type toCType(ParameterType t)
+        protected static Type toCType(ParameterType t)
         {
             return _paramTypes[(int)t];
         }
@@ -115,7 +115,7 @@ namespace vpet
         //! @param t The VPET type from which the C# type is to be determined. 
         //! @return The determined VPET type.
         //!
-        public static ParameterType toVPETType(Type t)
+        protected static ParameterType toVPETType(Type t)
         {
             int idx = _paramTypes.FindIndex(item => item.Equals(t));
             if (idx == -1)
@@ -123,6 +123,9 @@ namespace vpet
             else
                 return (ParameterType)idx;
         }
+
+        public abstract byte[] Serialize(int startoffset);
+        public abstract void deSerialize(ref byte[] data);
 
     }
 
@@ -179,101 +182,143 @@ namespace vpet
         //!
         //! Function for serializing the parameters data.
         //! 
-        //!  @return The Parameters data serialized as a byte array.
+        //! @param startoffset The offset in bytes within the generated array at which the data should start at.
+        //! @return The Parameters data serialized as a byte array.
         //! 
-        public byte[] serialize
-        { get => Serialize(_value, _type); }
-
-        // [REVIEW]
-        // parameter should only store data and a minimal amount of functionaliy
-        // --> move this to helpers, or network manager?
-        public static byte[] Serialize(T value, Type t)
+        public override byte[] Serialize(int startoffset)
         {
-            byte[] data;
-            ParameterType vpetType = toVPETType(t);
+            byte[] data = null;
+            ParameterType vpetType = toVPETType(_type);
 
             switch (vpetType)
             {
                 case ParameterType.BOOL:
                     {
-                        data = new byte[2];
-                        data[1] = Convert.ToByte(value);
-                        break;
+                        data = new byte[1 + startoffset];
+                        data[1 + startoffset] = Convert.ToByte(_value);
+                        return data;
                     }
                 case ParameterType.INT:
                     {
-                        data = new byte[5];
-                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToInt32(value)), 0, data, 1, 4);
-                        break;
+                        data = new byte[4 + startoffset];
+                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToInt32(_value)), 0, data, startoffset, 4);
+                        return data;
                     }
                 case ParameterType.FLOAT:
                     {
-                        data = new byte[5];
-                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToSingle(value)), 0, data, 1, 4);
-                        break;
+                        data = new byte[4 + startoffset];
+                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToSingle(_value)), 0, data, startoffset, 4);
+                        return data;
                     }
                 case ParameterType.VECTOR2:
                     {
-                        data = new byte[9];
-                        Vector2 obj = (Vector2)Convert.ChangeType(value, typeof(Vector2));
+                        data = new byte[8 + startoffset];
+                        Vector2 obj = (Vector2)Convert.ChangeType(_value, typeof(Vector2));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
-                        break;
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
+                        return data;
                     }
                 case ParameterType.VECTOR3:
                     {
-                        data = new byte[13];
-                        Vector3 obj = (Vector3)Convert.ChangeType(value, typeof(Vector3));
+                        data = new byte[12 + startoffset];
+                        Vector3 obj = (Vector3)Convert.ChangeType(_value, typeof(Vector3));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, 9, 4);
-                        break;
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset+8, 4);
+                        return data;
                     }
                 case ParameterType.VECTOR4:
                     {
-                        data = new byte[17];
-                        Vector4 obj = (Vector4)Convert.ChangeType(value, typeof(Vector4));
+                        data = new byte[16 + startoffset];
+                        Vector4 obj = (Vector4)Convert.ChangeType(_value, typeof(Vector4));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, 9, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, 13, 4);
-                        break;
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset+8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset+12, 4);
+                        return data;
                     }
                 case ParameterType.QUATERNION:
                     {
-                        data = new byte[17];
-                        Quaternion obj = (Quaternion)Convert.ChangeType(value, typeof(Quaternion));
+                        data = new byte[16 + startoffset];
+                        Quaternion obj = (Quaternion)Convert.ChangeType(_value, typeof(Quaternion));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, 1, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, 5, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, 9, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, 13, 4);
-                        break;
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset+8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset+12, 4);
+                        return data;
                     }
                 case ParameterType.COLOR:
                     {
-                        data = new byte[17];
-                        Color obj = (Color)Convert.ChangeType(value, typeof(Color));
+                        data = new byte[16 + startoffset];
+                        Color obj = (Color)Convert.ChangeType(_value, typeof(Color));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.r), 0, data, 1, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, 5, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.b), 0, data, 9, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, 13, 4);
-                        break;
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.r), 0, data, startoffset, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, startoffset+4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.b), 0, data, startoffset+8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, startoffset+12, 4);
+                        return data;
                     }
                 default:
-                    {
-                        data = new byte[1];
-                        break;
-                    }
+                        return data;
 
             }
-            data[0] = (byte) vpetType;
+        }
 
-            return data;
+        //!
+        //! Function for deserializing parameter data.
+        //! 
+        //! @param data The byte data to be deserialized and copyed to the parameters value.
+        //! 
+        public override void deSerialize(ref byte[] data)
+        {
+            ParameterType t = toVPETType(_type);
+            switch (t)
+            {
+                case ParameterType.BOOL:
+                    _value = (T)(object)BitConverter.ToBoolean(data, 8);
+                    return;
+                case ParameterType.INT:
+                    _value = (T)(object)BitConverter.ToInt32(data, 8);
+                    return;
+                case ParameterType.FLOAT:
+                    _value = (T)(object)BitConverter.ToSingle(data, 8);
+
+                    return;
+                case ParameterType.VECTOR2:
+                    _value = (T)(object)new Vector2(BitConverter.ToSingle(data, 8),
+                                                    BitConverter.ToSingle(data, 12));
+                    return;
+                case ParameterType.VECTOR3:
+                    _value = (T)(object)new Vector3(BitConverter.ToSingle(data, 8),
+                                                    BitConverter.ToSingle(data, 12),
+                                                    BitConverter.ToSingle(data, 16));
+                    return;
+                case ParameterType.VECTOR4:
+                    _value = (T)(object)new Vector4(BitConverter.ToSingle(data, 8),
+                                                    BitConverter.ToSingle(data, 12),
+                                                    BitConverter.ToSingle(data, 16),
+                                                    BitConverter.ToSingle(data, 20));
+                    return;
+                case ParameterType.QUATERNION:
+                    _value = (T)(object)new Quaternion(BitConverter.ToSingle(data, 8),
+                                                     BitConverter.ToSingle(data, 12),
+                                                     BitConverter.ToSingle(data, 16),
+                                                     BitConverter.ToSingle(data, 20));
+                    return;
+                case ParameterType.COLOR:
+                    _value = (T)(object)new Color(BitConverter.ToSingle(data, 8),
+                                                    BitConverter.ToSingle(data, 12),
+                                                    BitConverter.ToSingle(data, 16),
+                                                    BitConverter.ToSingle(data, 20));
+                    return;
+                default:
+                    _value = (T)new object();
+                    return;
+            }
         }
     }
 }

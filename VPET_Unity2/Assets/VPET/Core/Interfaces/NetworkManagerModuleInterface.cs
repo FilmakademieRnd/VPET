@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.06.2021
+//! @date 13.10.2021
 
 using System;
 using System.Collections.Generic;
@@ -40,6 +40,12 @@ namespace vpet
     //!
     public abstract class NetworkManagerModule : Module
     {
+        public enum MessageType
+        {
+            PARAMETERUPDATE, // node
+            SYNC, PING, RESENDUPDATE // sync and ping, [REVIEW] do we still need the RESENDUPDATE?
+        }
+
         //!
         //! IP address of the network interface to be used.
         //!
@@ -68,7 +74,6 @@ namespace vpet
         protected abstract void run();
 
 
-
         //!
         //! Ret the manager of this module.
         //!
@@ -93,16 +98,6 @@ namespace vpet
         }
 
         //!
-        //! Function for custom initialisation.
-        //! 
-        //! Reference to tist of byte[] storing the messages.
-        //!
-        public virtual void initialise(out List<byte[]> messageQueue)
-        {
-            messageQueue = m_messageQueue;
-        }
-
-        //!
         //! Function to start a new thread.
         //!
         //! @param ip IP address of the network interface.
@@ -119,7 +114,6 @@ namespace vpet
 
             m_requesterThread = new Thread(starter);
             m_requesterThread.Start();
-
         }
 
         //!

@@ -26,15 +26,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 20.05.2021
+//! @date 13.10.2021
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Threading;
 using System;
-using NetMQ;
-using NetMQ.Sockets;
+using System.Net;
 
 namespace vpet
 {
@@ -51,6 +46,37 @@ namespace vpet
         //!
         public NetworkManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
-        }    
+            //reads the network name of the device
+            var hostName = Dns.GetHostName();
+            var host = Dns.GetHostEntry(hostName);
+
+            //Take last ip adress of local network (which is local wlan ip address)
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    m_cID = byte.Parse(ip.ToString().Split('.')[3]);
+                    m_ip = ip.ToString();
+                }
+            }
+        }
+
+        //!
+        //! The ID if the client (based on the last digit of IP address)
+        //!
+        private byte m_cID;
+        public byte cID
+        {
+            get => m_cID;
+        }
+
+        //!
+        //! The local IP address.
+        //!
+        private string m_ip;
+        public string ip
+        {
+            get => m_ip;
+        }
     }
 }

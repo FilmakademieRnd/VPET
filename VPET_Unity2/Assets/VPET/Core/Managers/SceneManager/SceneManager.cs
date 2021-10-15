@@ -127,6 +127,8 @@ namespace vpet
             get { return ref m_sceneDataHandler; }
         }
 
+        //[REVIEW]
+        // Should be accessable only from SceneManager/SceneManager modules
         //!
         //! Function that emits the scene ready event. 
         //!
