@@ -60,7 +60,7 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_messageQueue = new List<byte[]>();
+            m_messageQueue = new LinkedList<byte[]>();
 
             SceneManager sceneManager = m_core.getManager<SceneManager>();
             sceneManager.sceneReady += connectAndStart;
@@ -107,7 +107,7 @@ namespace vpet
             Buffer.BlockCopy(BitConverter.GetBytes(abstractParameter.id), 0, message, 5, 2);  // ParameterID
             message[7] = (byte)abstractParameter.vpetType;  // ParameterType
 
-            m_messageQueue.Add(message);
+            m_messageQueue.AddLast(message);
         }
 
         //!
@@ -136,7 +136,6 @@ namespace vpet
             message[2] = (byte)MessageType.SYNC;
         }
 
-
         //!
         //! Function, sending messages in m_messageQueue (executed in separate thread).
         //!
@@ -155,8 +154,8 @@ namespace vpet
                     {
                         try
                         {
-                            sender.SendFrame(m_messageQueue[0], false); // true not wait
-                            m_messageQueue.RemoveAt(0);
+                            sender.SendFrame(m_messageQueue.First.Value, false); // true not wait
+                            m_messageQueue.RemoveFirst();
                         }
                         catch { }
                     }
@@ -168,7 +167,6 @@ namespace vpet
                 sender.Dispose();
             }
         }
-
 
         //!
         //! Function to start the scene sender module.

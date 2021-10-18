@@ -41,6 +41,8 @@ namespace vpet
     //!
     public class UpdateReceiverModule : NetworkManagerModule
     {
+        private Thread m_consumerThread;
+        private SceneManager m_sceneManager;
         //!
         //! Constructor
         //!
@@ -59,7 +61,12 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_messageQueue = new List<byte[]>();
+            m_messageQueue = new LinkedList<byte[]>();
+            m_sceneManager = m_core.getManager<SceneManager>();
+
+            ThreadStart consumer = new ThreadStart(consumeMessages);
+            m_consumerThread = new Thread(consumer);
+            m_consumerThread.Start();
         }
 
         //!
@@ -72,16 +79,30 @@ namespace vpet
             using (var receiver = new SubscriberSocket())
             {
                 receiver.SubscribeToAnyTopic();
-
                 receiver.Connect("tcp://" + m_ip + ":" + m_port);
 
                 Helpers.Log("Receiver connected: " + "tcp://" + m_ip + ":" + m_port);
-                byte[] input;
+                byte[] input = null;
                 while (m_isRunning)
                 {
                     if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(5), out input))
                     {
-                        m_messageQueue.Add(input);
+                        if (input[0] != manager.cID)
+                        {
+                            //[REVIEW]
+                            // Add ping and sync message here (direct execution without queuing)
+
+                            // make shure that producer and consumer exclude eachother
+                            lock (m_messageQueue)
+                            {
+                                // [REVIEW] Queue length should be configurable globally
+                                // store only last 16 messages
+                                if (m_messageQueue.Count > 15)
+                                    m_messageQueue.RemoveFirst();
+
+                                m_messageQueue.AddLast(input);
+                            }
+                        }
                     }
                     Thread.Yield();
                     Thread.Sleep(1);
@@ -90,6 +111,43 @@ namespace vpet
                 receiver.Close();
                 receiver.Dispose();
             }
+        }
+
+        private void consumeMessages()
+        {
+            // Message structure: Header, Parameter (optional)
+            // Header: ClientID, Time, MessageType
+            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+
+            while (m_isRunning)
+            {
+                lock (m_messageQueue)
+                { 
+                    foreach (byte[] message in m_messageQueue)
+                    {
+                        //[REVIEW] time window for valid massages
+                        if (m_core.time - message[1] < 2)
+                        {
+                            decodeMessage(message);
+                        }
+                    }
+                    m_messageQueue.Clear();
+                }
+                Thread.Yield();
+                Thread.Sleep(1);
+            }
+        }
+
+        private void decodeMessage(byte[] message)
+        {
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+            short parameterID = BitConverter.ToInt16(message, 5);
+            //AbstractParameter.ParameterType type = (AbstractParameter.ParameterType)message[7];
+
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+
+            if (sceneObject != null)
+                sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
         }
 
 

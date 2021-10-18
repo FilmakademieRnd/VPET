@@ -88,6 +88,7 @@ namespace vpet
         //! A reference to the VPET scene root.
         //!
         private GameObject m_scnRoot;
+
         //!
         //! The VPET SceneDataHandler, handling all VPET scene data relevant conversion.
         //!
@@ -127,16 +128,6 @@ namespace vpet
             get { return ref m_sceneDataHandler; }
         }
 
-        //[REVIEW]
-        // Should be accessable only from SceneManager/SceneManager modules
-        //!
-        //! Function that emits the scene ready event. 
-        //!
-        public void emitSceneReady()
-        {
-            sceneReady?.Invoke(this, new EventArgs());
-        }
-
         //!
         //! constructor
         //! @param  name    Name of the scene manager
@@ -152,6 +143,16 @@ namespace vpet
             {
                 scnRoot = new GameObject("VPETScene");
             }
+        }
+
+        //[REVIEW]
+        // Should be accessable only from SceneManager/SceneManager modules
+        //!
+        //! Function that emits the scene ready event. 
+        //!
+        public void emitSceneReady()
+        {
+            sceneReady?.Invoke(this, new EventArgs());
         }
 
         //!

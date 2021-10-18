@@ -59,7 +59,7 @@ namespace vpet
         //!
         //! List of byte[] storing the messages.
         //!
-        protected List<byte[]> m_messageQueue;
+        protected LinkedList<byte[]> m_messageQueue;
 
         //!
         //! Flag specifing if the thread should stop running.
@@ -110,9 +110,8 @@ namespace vpet
             m_ip = ip;
             m_port = port;
 
-            ThreadStart starter = new ThreadStart(run);
-
-            m_requesterThread = new Thread(starter);
+            ThreadStart transeiver = new ThreadStart(run);
+            m_requesterThread = new Thread(transeiver);
             m_requesterThread.Start();
         }
 

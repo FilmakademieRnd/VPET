@@ -125,7 +125,7 @@ namespace vpet
         }
 
         public abstract byte[] Serialize(int startoffset);
-        public abstract void deSerialize(ref byte[] data);
+        public abstract void deSerialize(ref byte[] data, int offset);
 
     }
 
@@ -273,52 +273,51 @@ namespace vpet
         //! 
         //! @param data The byte data to be deserialized and copyed to the parameters value.
         //! 
-        public override void deSerialize(ref byte[] data)
+        public override void deSerialize(ref byte[] data, int offset)
         {
             ParameterType t = toVPETType(_type);
             switch (t)
             {
                 case ParameterType.BOOL:
-                    _value = (T)(object)BitConverter.ToBoolean(data, 8);
-                    return;
+                    _value = (T)(object)BitConverter.ToBoolean(data, offset);
+                    break;
                 case ParameterType.INT:
-                    _value = (T)(object)BitConverter.ToInt32(data, 8);
-                    return;
+                    _value = (T)(object)BitConverter.ToInt32(data, offset);
+                    break;
                 case ParameterType.FLOAT:
-                    _value = (T)(object)BitConverter.ToSingle(data, 8);
-
-                    return;
+                    _value = (T)(object)BitConverter.ToSingle(data, offset);
+                    break;
                 case ParameterType.VECTOR2:
-                    _value = (T)(object)new Vector2(BitConverter.ToSingle(data, 8),
-                                                    BitConverter.ToSingle(data, 12));
-                    return;
+                    _value = (T)(object)new Vector2(BitConverter.ToSingle(data, offset),
+                                                    BitConverter.ToSingle(data, offset+4));
+                    break;
                 case ParameterType.VECTOR3:
-                    _value = (T)(object)new Vector3(BitConverter.ToSingle(data, 8),
-                                                    BitConverter.ToSingle(data, 12),
-                                                    BitConverter.ToSingle(data, 16));
-                    return;
+                    _value = (T)(object)new Vector3(BitConverter.ToSingle(data, offset),
+                                                    BitConverter.ToSingle(data, offset+4),
+                                                    BitConverter.ToSingle(data, offset+8));
+                    break;
                 case ParameterType.VECTOR4:
-                    _value = (T)(object)new Vector4(BitConverter.ToSingle(data, 8),
-                                                    BitConverter.ToSingle(data, 12),
-                                                    BitConverter.ToSingle(data, 16),
-                                                    BitConverter.ToSingle(data, 20));
-                    return;
+                    _value = (T)(object)new Vector4(BitConverter.ToSingle(data, offset),
+                                                    BitConverter.ToSingle(data, offset+4),
+                                                    BitConverter.ToSingle(data, offset+8),
+                                                    BitConverter.ToSingle(data, offset+12));
+                    break;
                 case ParameterType.QUATERNION:
-                    _value = (T)(object)new Quaternion(BitConverter.ToSingle(data, 8),
-                                                     BitConverter.ToSingle(data, 12),
-                                                     BitConverter.ToSingle(data, 16),
-                                                     BitConverter.ToSingle(data, 20));
-                    return;
+                    _value = (T)(object)new Quaternion(BitConverter.ToSingle(data, offset),
+                                                     BitConverter.ToSingle(data, offset+4),
+                                                     BitConverter.ToSingle(data, offset+8),
+                                                     BitConverter.ToSingle(data, offset+12));
+                    break;
                 case ParameterType.COLOR:
-                    _value = (T)(object)new Color(BitConverter.ToSingle(data, 8),
-                                                    BitConverter.ToSingle(data, 12),
-                                                    BitConverter.ToSingle(data, 16),
-                                                    BitConverter.ToSingle(data, 20));
-                    return;
+                    _value = (T)(object)new Color(BitConverter.ToSingle(data, offset),
+                                                    BitConverter.ToSingle(data, offset+4),
+                                                    BitConverter.ToSingle(data, offset+8),
+                                                    BitConverter.ToSingle(data, offset+12));
+                    break;
                 default:
-                    _value = (T)new object();
                     return;
             }
+            hasChanged?.Invoke(this, _value);
         }
     }
 }
