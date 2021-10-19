@@ -52,9 +52,6 @@ namespace vpet
             get => m_time;
         }
 
-        private bool m_clockThreadAbort = false;
-        private Thread m_timeThread;
-
         //!
         //! Event invoked when an Unity Update() callback is triggerd.
         //!
@@ -67,6 +64,10 @@ namespace vpet
         //! Event invoked when an Unity OnDestroy() callback is triggerd.
         //!
         public event EventHandler destroyEvent;
+        //!
+        //! Event invoked when VPETs global timer ticks.
+        //!
+        public event EventHandler<byte> syncEvent;
 
         //!
         //! Initialization of all Managers and modules.
@@ -107,7 +108,6 @@ namespace vpet
         //!
         private void OnDestroy()
         {
-            m_clockThreadAbort = true;
             destroyEvent?.Invoke(this, new EventArgs());
         }
 
@@ -116,8 +116,8 @@ namespace vpet
         //!
         private void Update()
         {
-            updateEvent?.Invoke(this, new EventArgs());
             QualitySettings.vSyncCount = 1;
+            updateEvent?.Invoke(this, new EventArgs());
         }
 
         //!
@@ -125,6 +125,7 @@ namespace vpet
         //!
         private void updateTime()
         {
+            syncEvent?.Invoke(this, m_time);
             m_time = (m_time > 254 ? (byte)0 : m_time+=1);
         }
 

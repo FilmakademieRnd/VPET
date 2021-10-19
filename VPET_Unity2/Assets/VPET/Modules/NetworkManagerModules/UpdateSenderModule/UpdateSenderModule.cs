@@ -150,14 +150,17 @@ namespace vpet
                 Helpers.Log("Sender connected: " + "tcp://" + m_ip + ":" + m_port);
                 while (m_isRunning)
                 {
-                    if  (m_messageQueue.Count > 0)
+                    lock (m_messageQueue)
                     {
-                        try
+                        if (m_messageQueue.Count > 0)
                         {
-                            sender.SendFrame(m_messageQueue.First.Value, false); // true not wait
-                            m_messageQueue.RemoveFirst();
+                            try
+                            {
+                                sender.SendFrame(m_messageQueue.First.Value, false); // true not wait
+                                m_messageQueue.RemoveFirst();
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
                     Thread.Yield();
                     Thread.Sleep(1);

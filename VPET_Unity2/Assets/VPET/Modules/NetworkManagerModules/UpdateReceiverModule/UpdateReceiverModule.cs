@@ -41,6 +41,7 @@ namespace vpet
     //!
     public class UpdateReceiverModule : NetworkManagerModule
     {
+        private static ManualResetEvent m_mre = new ManualResetEvent(false);
         private Thread m_consumerThread;
         private SceneManager m_sceneManager;
         //!
@@ -63,6 +64,21 @@ namespace vpet
         {
             m_messageQueue = new LinkedList<byte[]>();
             m_sceneManager = m_core.getManager<SceneManager>();
+            m_sceneManager.sceneReady += connectAndStart;
+        }
+
+        //!
+        //! Function that connects the scene object change events for parameter queuing.
+        //!
+        //! @param sender The emitting scene object.
+        //! @param e The pssed event arguments.
+        //!
+        private void connectAndStart(object sender, EventArgs e)
+        {
+            // [REVIEW] port should be in global config
+            startUpdateReceiver("127.0.0.1", "5557");
+
+            m_core.syncEvent += runConsumeMessageOnce;
 
             ThreadStart consumer = new ThreadStart(consumeMessages);
             m_consumerThread = new Thread(consumer);
@@ -89,18 +105,26 @@ namespace vpet
                     {
                         if (input[0] != manager.cID)
                         {
-                            //[REVIEW]
-                            // Add ping and sync message here (direct execution without queuing)
-
-                            // make shure that producer and consumer exclude eachother
-                            lock (m_messageQueue)
+                            switch ((MessageType)input[2])
                             {
-                                // [REVIEW] Queue length should be configurable globally
-                                // store only last 16 messages
-                                if (m_messageQueue.Count > 15)
-                                    m_messageQueue.RemoveFirst();
+                                case MessageType.PING:
+                                    decodePingMessage();
+                                    break;
+                                case MessageType.SYNC:
+                                    decodeSyncMessage();
+                                    break;
+                                case MessageType.PARAMETERUPDATE:
+                                    // make shure that producer and consumer exclude eachother
+                                    lock (m_messageQueue)
+                                    {
+                                        // [REVIEW] Queue length should be configurable globally
+                                        // store only last 64 messages
+                                        if (m_messageQueue.Count > 63)
+                                            m_messageQueue.RemoveFirst();
 
-                                m_messageQueue.AddLast(input);
+                                        m_messageQueue.AddLast(input);
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -112,6 +136,14 @@ namespace vpet
                 receiver.Dispose();
             }
         }
+        
+        private void decodePingMessage()
+        { 
+        }
+
+        private void decodeSyncMessage()
+        {
+        }
 
         private void consumeMessages()
         {
@@ -121,6 +153,8 @@ namespace vpet
 
             while (m_isRunning)
             {
+                // lock the thread until global timer unlocks it
+                m_mre.WaitOne();
                 lock (m_messageQueue)
                 { 
                     foreach (byte[] message in m_messageQueue)
@@ -134,8 +168,14 @@ namespace vpet
                     m_messageQueue.Clear();
                 }
                 Thread.Yield();
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
             }
+        }
+
+        private void runConsumeMessageOnce(object o, byte time)
+        {
+            m_mre.Set();
+            m_mre.Reset();
         }
 
         private void decodeMessage(byte[] message)
