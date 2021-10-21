@@ -82,7 +82,7 @@ namespace vpet
 
             createMaterials(ref sceneData);
             
-            if (SceneManager.Settings.loadTextures)
+            if (manager.settings.loadTextures)
                 createTextures(ref sceneData);
 
             createMeshes(ref sceneData);
@@ -367,7 +367,7 @@ namespace vpet
                     }
 
                     // map properties
-                    if (SceneManager.Settings.loadSampleScene)
+                    if (manager.settings.loadSampleScene)
                     {
                         MapMaterialProperties(mat, nodeGeo);
                     }
@@ -386,8 +386,8 @@ namespace vpet
                     {
                         Mesh mesh = SceneMeshList[nodeGeo.geoId];
 
-                        SceneManager.Settings.sceneBoundsMax = Vector3.Max(SceneManager.Settings.sceneBoundsMax, renderer.bounds.max);
-                        SceneManager.Settings.sceneBoundsMin = Vector3.Min(SceneManager.Settings.sceneBoundsMin, renderer.bounds.min);
+                        manager.settings.sceneBoundsMax = Vector3.Max(manager.settings.sceneBoundsMax, renderer.bounds.max);
+                        manager.settings.sceneBoundsMin = Vector3.Min(manager.settings.sceneBoundsMin, renderer.bounds.min);
 
                         if (node.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                         {
@@ -449,7 +449,7 @@ namespace vpet
                     // instert type here!!!
                     lightComponent.type = nodeLight.lightType;
                     lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);
-                    lightComponent.intensity = nodeLight.intensity * SceneManager.Settings.lightIntensityFactor;
+                    lightComponent.intensity = nodeLight.intensity * manager.settings.lightIntensityFactor;
                     lightComponent.spotAngle = nodeLight.angle;
                     if (lightComponent.type == LightType.Directional)
                     {
@@ -460,7 +460,7 @@ namespace vpet
                         lightComponent.shadows = LightShadows.None;
                     lightComponent.shadowBias = 0f;
                     lightComponent.shadowNormalBias = 1f;
-                    lightComponent.range = nodeLight.range * SceneManager.Settings.sceneScale;
+                    lightComponent.range = nodeLight.range * manager.settings.sceneScale;
 
                     Debug.Log("Create Light: " + nodeLight.name + " of type: " + nodeLight.lightType.ToString() + " Intensity: " + nodeLight.intensity + " Pos: " + pos);
 
@@ -503,7 +503,7 @@ namespace vpet
                     cameraInstance.SetActive(false);
                     cameraInstance.name = cameraObject.name;
                     cameraInstance.transform.SetParent(objMain.transform, false);
-                    cameraInstance.transform.localScale = new Vector3(1, 1, 1) * SceneManager.Settings.sceneScale;
+                    cameraInstance.transform.localScale = new Vector3(1, 1, 1) * manager.settings.sceneScale;
                     cameraInstance.transform.localPosition = new Vector3(0, 0, 0);
                     cameraInstance.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
 
@@ -519,8 +519,8 @@ namespace vpet
                     manager.sceneObjects.Add(sco);
                 }
 
-                Vector3 sceneExtends = SceneManager.Settings.sceneBoundsMax - SceneManager.Settings.sceneBoundsMin;
-                SceneManager.Settings.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+                Vector3 sceneExtends = manager.settings.sceneBoundsMax - manager.settings.sceneBoundsMin;
+                manager.settings.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
 
                 //place object
                 objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;

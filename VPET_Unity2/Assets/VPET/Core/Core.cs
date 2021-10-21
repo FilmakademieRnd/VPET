@@ -29,7 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 23.02.2021
 
 using System;
-using System.Threading;
+using System.IO;
 using UnityEngine;
 
 namespace vpet
@@ -127,6 +127,19 @@ namespace vpet
         {
             syncEvent?.Invoke(this, m_time);
             m_time = (m_time > 254 ? (byte)0 : m_time+=1);
+        }
+
+        internal void SaveSetting(string path, Settings settings)
+        {
+            string filepath = Path.Combine(path, settings.GetType().ToString() + ".cfg");
+            File.WriteAllText(filepath, JsonUtility.ToJson(settings));
+            Helpers.Log("Settings saved to: " + filepath);
+        }
+
+        internal void LoadSetting(string path, ref Settings settings)
+        {
+            string filepath = Path.Combine(path, settings.GetType() + ".cfg");
+            settings = (Settings)JsonUtility.FromJson(File.ReadAllText(filepath), settings.GetType());
         }
 
     }

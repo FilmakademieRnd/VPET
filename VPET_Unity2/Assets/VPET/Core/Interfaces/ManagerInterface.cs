@@ -28,9 +28,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 25.06.2021
 
-using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace vpet
 {
@@ -64,6 +65,11 @@ namespace vpet
         //! Dictionary of loaded modules.
         //!
         private Dictionary<Type, Module> m_modules;
+
+        //!
+        //! The managers settings. 
+        //!
+        protected Settings _settings;
 
         //!
         //! Constructor
@@ -119,5 +125,7 @@ namespace vpet
         {
             return m_modules.Remove(type);
         }
+
+
     }
 }

@@ -28,49 +28,54 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 23.02.2021
 
-using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 namespace vpet
 {
-
     //!
     //! class managing all scene related aspects
     //!
     public partial class SceneManager : Manager
     {
-        public static class Settings
+        [Serializable]
+        public class SceneManagerSettings : Settings
         {
             //!
             //! Do we load scene from dump file
             //!
-            public static bool loadSampleScene = true;
+            public bool loadSampleScene = true;
 
             //!
             //! Do we load textures
             //!
-            public static bool loadTextures = true;
+            public bool loadTextures = true;
 
             //!
             //! The maximum extend of the scene
             //!
-            public static Vector3 sceneBoundsMax = Vector3.positiveInfinity;
-            public static Vector3 sceneBoundsMin = Vector3.negativeInfinity;
-            public static float maxExtend = 1f;
+            public Vector3 sceneBoundsMax = Vector3.positiveInfinity;
+            public Vector3 sceneBoundsMin = Vector3.negativeInfinity;
+            public float maxExtend = 1f;
 
             //!
             //! Light Intensity multiplicator
             //!
-            public static float lightIntensityFactor = 1f;
+            public float lightIntensityFactor = 1f;
 
             //!
             //! global scale of the scene
             //!
-            public static float sceneScale = 1f;
+            public float sceneScale = 1f;
         }
-        
+
+        //!
+        //! Cast for accessing the settings variable with the correct type.
+        //!
+        public SceneManagerSettings settings { get => (SceneManagerSettings)_settings; } 
+
         //!
         //! The list storing editable VPET scene objects in scene.
         //!
@@ -136,6 +141,7 @@ namespace vpet
         public SceneManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_sceneDataHandler = new SceneDataHandler();
+            _settings = new SceneManagerSettings();
 
             // create scene parent if not there
             scnRoot = GameObject.Find("Scene");
@@ -143,7 +149,9 @@ namespace vpet
             {
                 scnRoot = new GameObject("VPETScene");
             }
+
         }
+
 
         //[REVIEW]
         // Should be accessable only from SceneManager/SceneManager modules
