@@ -31,7 +31,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System.IO;
 using System.Collections.Generic;
 using System;
-using UnityEngine;
+using System.Linq;
 
 namespace vpet
 {
@@ -69,7 +69,7 @@ namespace vpet
         //!
         //! The managers settings. 
         //!
-        protected Settings _settings;
+        internal Settings _settings;
 
         //!
         //! Constructor
@@ -84,8 +84,17 @@ namespace vpet
             foreach (Type t in modules)
             {
                 Module module = (Module)Activator.CreateInstance(t, t.ToString(), core);
-                addModule(module, t);
+                if (module.load)
+                    addModule(module, t);
             }
+
+            Type[] settingTypes = Helpers.GetAllTypes(AppDomain.CurrentDomain, typeof(Settings));
+            Type[] managerTypes = GetType().GetNestedTypes();
+
+            Type settingsType = Helpers.FindFirst<Type>(settingTypes, managerTypes);
+
+            if (settingsType != null)
+                _settings = (Settings)Activator.CreateInstance(settingsType);
         }
 
         //!
@@ -115,6 +124,11 @@ namespace vpet
             if (!m_modules.TryGetValue(typeof(T), out module))
                 Helpers.Log(this.GetType().ToString() + " no module of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.ERROR);
             return (T)(object) module;
+        }
+
+        public List<Module> getModules()
+        {
+            return new List<Module>(m_modules.Values);
         }
 
         //!

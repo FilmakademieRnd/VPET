@@ -54,13 +54,6 @@ namespace vpet
             public bool loadTextures = true;
 
             //!
-            //! The maximum extend of the scene
-            //!
-            public Vector3 sceneBoundsMax = Vector3.positiveInfinity;
-            public Vector3 sceneBoundsMin = Vector3.negativeInfinity;
-            public float maxExtend = 1f;
-
-            //!
             //! Light Intensity multiplicator
             //!
             public float lightIntensityFactor = 1f;
@@ -74,7 +67,14 @@ namespace vpet
         //!
         //! Cast for accessing the settings variable with the correct type.
         //!
-        public SceneManagerSettings settings { get => (SceneManagerSettings)_settings; } 
+        public SceneManagerSettings settings { get => (SceneManagerSettings)_settings; }
+
+        //!
+        //! The maximum extend of the scene
+        //!
+        public Vector3 sceneBoundsMax = Vector3.positiveInfinity;
+        public Vector3 sceneBoundsMin = Vector3.negativeInfinity;
+        public float maxExtend = 1f;
 
         //!
         //! The list storing editable VPET scene objects in scene.
@@ -141,7 +141,7 @@ namespace vpet
         public SceneManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_sceneDataHandler = new SceneDataHandler();
-            _settings = new SceneManagerSettings();
+            //_settings = new SceneManagerSettings();
 
             // create scene parent if not there
             scnRoot = GameObject.Find("Scene");
@@ -149,7 +149,6 @@ namespace vpet
             {
                 scnRoot = new GameObject("VPETScene");
             }
-
         }
 
 

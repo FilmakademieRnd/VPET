@@ -41,7 +41,7 @@ namespace vpet
     //!
     public class UpdateReceiverModule : NetworkManagerModule
     {
-        private static ManualResetEvent m_mre = new ManualResetEvent(false);
+        
         private Thread m_consumerThread;
         private SceneManager m_sceneManager;
         //!
@@ -131,6 +131,7 @@ namespace vpet
                     Thread.Yield();
                     Thread.Sleep(1);
                 }
+                // [Review] Thread end causes exeptions!
                 receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 receiver.Close();
                 receiver.Dispose();

@@ -70,5 +70,10 @@ namespace vpet
 
             return (T)(object) manager;
         }
+
+        protected List<Manager> getManagers()
+        {
+            return new List<Manager>(m_managerList.Values);
+        }
     }
 }

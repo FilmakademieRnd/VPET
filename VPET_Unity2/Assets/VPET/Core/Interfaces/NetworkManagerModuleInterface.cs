@@ -73,6 +73,7 @@ namespace vpet
         //!
         protected abstract void run();
 
+        protected static ManualResetEvent m_mre = new ManualResetEvent(false);
 
         //!
         //! Ret the manager of this module.
@@ -121,6 +122,8 @@ namespace vpet
         public void stop()
         {
             m_isRunning = false;
+            m_mre.Set();
+            m_mre.Reset();
         }
     }
 }

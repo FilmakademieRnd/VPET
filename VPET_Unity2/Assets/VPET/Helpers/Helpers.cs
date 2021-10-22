@@ -107,6 +107,23 @@ namespace vpet
             return result.ToArray();
         }
 
+        public static T FindFirst<T>(T[] a, T[] b) 
+        {
+            T newType = default(T);
+            foreach (T t1 in a)
+            {
+                foreach (T t2 in b)
+                {
+                    if (t1.Equals(t2))
+                    {
+                        newType = t2;
+                        break;
+                    }
+                }
+            }
+            return newType;
+        }
+
         //!
         //! Searches and returns a child transform in a tree of transforms by name
         //!

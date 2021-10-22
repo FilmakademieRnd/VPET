@@ -386,8 +386,8 @@ namespace vpet
                     {
                         Mesh mesh = SceneMeshList[nodeGeo.geoId];
 
-                        manager.settings.sceneBoundsMax = Vector3.Max(manager.settings.sceneBoundsMax, renderer.bounds.max);
-                        manager.settings.sceneBoundsMin = Vector3.Min(manager.settings.sceneBoundsMin, renderer.bounds.min);
+                        manager.sceneBoundsMax = Vector3.Max(manager.sceneBoundsMax, renderer.bounds.max);
+                        manager.sceneBoundsMin = Vector3.Min(manager.sceneBoundsMin, renderer.bounds.min);
 
                         if (node.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                         {
@@ -519,8 +519,8 @@ namespace vpet
                     manager.sceneObjects.Add(sco);
                 }
 
-                Vector3 sceneExtends = manager.settings.sceneBoundsMax - manager.settings.sceneBoundsMin;
-                manager.settings.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
+                Vector3 sceneExtends = manager.sceneBoundsMax - manager.sceneBoundsMin;
+                manager.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
 
                 //place object
                 objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;

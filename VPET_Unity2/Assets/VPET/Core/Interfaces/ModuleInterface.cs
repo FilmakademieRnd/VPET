@@ -58,6 +58,11 @@ namespace vpet
         protected Core m_core;
 
         //!
+        //! Flad determin whether a module is loaded or not.
+        //!
+        public bool load = true;
+
+        //!
         //! constructor
         //! @param  name    name of the module.
         //!

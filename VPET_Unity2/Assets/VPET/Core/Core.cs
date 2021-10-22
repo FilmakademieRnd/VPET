@@ -40,6 +40,13 @@ namespace vpet
     //!
     public class Core : CoreInterface
     {
+        public class coreSettings : Settings
+        {
+            public Vector2Int screenSize = new Vector2Int(1280,720);
+            public int vSyncCount = 1;
+            public int framerate = 60;
+        }
+
         public Core()
         {
 
@@ -50,6 +57,13 @@ namespace vpet
         { 
             set => m_time = value;
             get => m_time;
+        }
+
+        public Settings _settings;
+        public coreSettings settings 
+        {
+            get { return (coreSettings) _settings; }
+            set { _settings = value; } 
         }
 
         //!
@@ -74,6 +88,8 @@ namespace vpet
         //!
         void Awake()
         {
+            _settings = new coreSettings();
+
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
             m_managerList.Add(typeof(NetworkManager), networkManager);
@@ -90,6 +106,7 @@ namespace vpet
             InputManager inputManager = new InputManager(typeof(InputManagerModule), this);
             m_managerList.Add(typeof(InputManager), inputManager);
 
+            LoadSettings();
             
             awakeEvent?.Invoke(this, new EventArgs());
         }
@@ -97,10 +114,10 @@ namespace vpet
         void Start()
         {
             // Sync framerate to monitors refresh rate
-            QualitySettings.vSyncCount = 1;
-            Application.targetFrameRate = 60;
+            QualitySettings.vSyncCount = settings.vSyncCount;
+            Application.targetFrameRate = settings.framerate;
 
-            InvokeRepeating("updateTime", 0f, 1f/60f);
+            InvokeRepeating("updateTime", 0f, 1f/settings.framerate);
         }
 
         //!
@@ -108,6 +125,7 @@ namespace vpet
         //!
         private void OnDestroy()
         {
+            SaveSettings();
             destroyEvent?.Invoke(this, new EventArgs());
         }
 
@@ -129,17 +147,36 @@ namespace vpet
             m_time = (m_time > 254 ? (byte)0 : m_time+=1);
         }
 
-        internal void SaveSetting(string path, Settings settings)
+        private void SaveSettings()
+        {
+            foreach (Manager manager in getManagers())
+                if (manager._settings != null)
+                    Save(Application.persistentDataPath, manager._settings);
+
+            Save(Application.persistentDataPath, settings);
+        }
+
+        private void LoadSettings()
+        {
+            foreach (Manager manager in getManagers())
+                if (manager._settings != null)
+                    Load(Application.persistentDataPath, ref manager._settings);
+
+            Load(Application.persistentDataPath, ref _settings);
+        }
+
+        internal void Save(string path, Settings settings)
         {
             string filepath = Path.Combine(path, settings.GetType().ToString() + ".cfg");
             File.WriteAllText(filepath, JsonUtility.ToJson(settings));
             Helpers.Log("Settings saved to: " + filepath);
         }
 
-        internal void LoadSetting(string path, ref Settings settings)
+        internal void Load(string path, ref Settings settings)
         {
             string filepath = Path.Combine(path, settings.GetType() + ".cfg");
-            settings = (Settings)JsonUtility.FromJson(File.ReadAllText(filepath), settings.GetType());
+            if (File.Exists(filepath))
+                settings = (Settings)JsonUtility.FromJson(File.ReadAllText(filepath), settings.GetType());
         }
 
     }
