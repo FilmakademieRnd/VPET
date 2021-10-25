@@ -64,6 +64,8 @@ namespace vpet
 
             SceneManager sceneManager = m_core.getManager<SceneManager>();
             sceneManager.sceneReady += connectAndStart;
+
+            m_core.syncEvent += queuePingMessage;
         }
 
         //!
@@ -113,7 +115,7 @@ namespace vpet
         //!
         //! Function that creates a ping message and adds it to the message queue for sending.
         //!
-        private void queuePingMessage()
+        private void queuePingMessage(object o, byte t)
         {
             byte[] message = new byte[3];
 
@@ -121,6 +123,8 @@ namespace vpet
             message[0] = manager.cID;
             message[1] = m_core.time;
             message[2] = (byte)MessageType.PING;
+
+            m_messageQueue.AddLast(message);
         }
 
         //!
@@ -134,6 +138,8 @@ namespace vpet
             message[0] = manager.cID;
             message[1] = m_core.time;
             message[2] = (byte)MessageType.SYNC;
+
+            m_messageQueue.AddLast(message);
         }
 
         //!

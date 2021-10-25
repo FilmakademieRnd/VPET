@@ -31,9 +31,8 @@ namespace vpet
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
-            SceneCreatorModule sceneCreatorModule = sceneManager.getModule<SceneCreatorModule>();
 
-            sceneReceiverModule.receiveScene("172.18.1.177", "5555");
+            sceneReceiverModule.receiveScene("192.168.1.224", "5555");
         }
     }
 }

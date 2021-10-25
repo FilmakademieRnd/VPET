@@ -76,9 +76,9 @@ namespace vpet
         private void connectAndStart(object sender, EventArgs e)
         {
             // [REVIEW] port should be in global config
-            startUpdateReceiver(manager.settings.m_serverIP, "5557");
+            startUpdateReceiver(manager.settings.m_serverIP, "5556");
 
-            m_core.syncEvent += runConsumeMessageOnce;
+            m_core.timeEvent += runConsumeMessageOnce;
 
             ThreadStart consumer = new ThreadStart(consumeMessages);
             m_consumerThread = new Thread(consumer);
@@ -108,10 +108,10 @@ namespace vpet
                             switch ((MessageType)input[2])
                             {
                                 case MessageType.PING:
-                                    decodePingMessage();
+                                    decodePingMessage(ref input);
                                     break;
                                 case MessageType.SYNC:
-                                    decodeSyncMessage();
+                                    decodeSyncMessage(ref input);
                                     break;
                                 case MessageType.PARAMETERUPDATE:
                                     // make shure that producer and consumer exclude eachother
@@ -134,15 +134,16 @@ namespace vpet
                 // [Review] Thread end causes exeptions!
                 receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 receiver.Close();
-                receiver.Dispose();
+                //receiver.Dispose();
             }
         }
         
-        private void decodePingMessage()
-        { 
+        private void decodePingMessage(ref byte[] message)
+        {
+            m_core.time = message[1];
         }
 
-        private void decodeSyncMessage()
+        private void decodeSyncMessage(ref byte[] message)
         {
         }
 
@@ -156,27 +157,40 @@ namespace vpet
             {
                 // lock the thread until global timer unlocks it
                 m_mre.WaitOne();
-                lock (m_messageQueue)
-                { 
-                    foreach (byte[] message in m_messageQueue)
-                    {
-                        //[REVIEW] time window for valid massages
-                        if (m_core.time - message[1] < 2)
-                        {
-                            decodeMessage(message);
-                        }
-                    }
-                    m_messageQueue.Clear();
-                }
+                //lock (m_messageQueue)
+                //{ 
+                //    foreach (byte[] message in m_messageQueue)
+                //    {
+                //        //[REVIEW] time window for valid massages
+                //        if (m_core.time - message[1] < 2)
+                //        {
+                //            decodeMessage(message);
+                //        }
+                //    }
+                //    m_messageQueue.Clear();
+                //}
                 Thread.Yield();
                 //Thread.Sleep(1);
             }
         }
 
-        private void runConsumeMessageOnce(object o, byte time)
+        private void runConsumeMessageOnce(object o, EventArgs e)
         {
-            m_mre.Set();
-            m_mre.Reset();
+            //m_mre.Set();
+            //m_mre.Reset();
+
+            lock (m_messageQueue)
+            {
+                foreach (byte[] message in m_messageQueue)
+                {
+                    //[REVIEW] time window for valid massages
+                    if (m_core.time - message[1] < 2)
+                    {
+                        decodeMessage(message);
+                    }
+                }
+                m_messageQueue.Clear();
+            }
         }
 
         private void decodeMessage(byte[] message)

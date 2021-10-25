@@ -242,7 +242,7 @@ namespace vpet
             }
 
             // if there are more nodes on one level
-            if (idxChild < sceneData.nodeList.Count)
+            if (idxChild + 1 < sceneData.nodeList.Count)
                 idxChild = createSceneGraphIter(ref sceneData, parent, idxChild + 1);
 
             return idxChild;

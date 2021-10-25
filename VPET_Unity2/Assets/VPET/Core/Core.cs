@@ -81,6 +81,10 @@ namespace vpet
         //!
         //! Event invoked when VPETs global timer ticks.
         //!
+        public event EventHandler timeEvent;
+        //!
+        //! Event invoked every second.
+        //!
         public event EventHandler<byte> syncEvent;
 
         //!
@@ -135,7 +139,7 @@ namespace vpet
         private void Update()
         {
             QualitySettings.vSyncCount = 1;
-            updateEvent?.Invoke(this, new EventArgs());
+            updateEvent?.Invoke(this, EventArgs.Empty);
         }
 
         //!
@@ -143,8 +147,12 @@ namespace vpet
         //!
         private void updateTime()
         {
-            syncEvent?.Invoke(this, m_time);
+            timeEvent?.Invoke(this, EventArgs.Empty);
             m_time = (m_time > 254 ? (byte)0 : m_time+=1);
+
+            if ((m_time % settings.framerate) == 0)
+                syncEvent?.Invoke(this, m_time);
+
         }
 
         private void SaveSettings()
