@@ -80,7 +80,7 @@ namespace vpet
             }
 
             // [REVIEW] port should be in global config
-            startUpdateSender(manager.ip, "5557");
+            startUpdateSender(manager.settings.m_serverIP, "5557");
         }
 
         //!

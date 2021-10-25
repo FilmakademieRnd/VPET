@@ -38,6 +38,16 @@ namespace vpet
     //!
     public class NetworkManager : Manager
     {
+        [Serializable]
+        public class NetworkManagerSettings : Settings
+        {
+            public string m_serverIP = "192.168.1.224";
+        }
+
+        //!
+        //! Cast for accessing the settings variable with the correct type.
+        //!
+        public NetworkManagerSettings settings { get => (NetworkManagerSettings)_settings; }
         //!
         //! Constructor initializing member variables.
         //!

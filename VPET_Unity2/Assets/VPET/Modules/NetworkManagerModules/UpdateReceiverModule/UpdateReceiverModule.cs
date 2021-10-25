@@ -76,7 +76,7 @@ namespace vpet
         private void connectAndStart(object sender, EventArgs e)
         {
             // [REVIEW] port should be in global config
-            startUpdateReceiver("127.0.0.1", "5557");
+            startUpdateReceiver(manager.settings.m_serverIP, "5557");
 
             m_core.syncEvent += runConsumeMessageOnce;
 
