@@ -68,10 +68,10 @@ void ZeroMQHandler::requestStop()
     mutex.unlock();
 }
 
-int ZeroMQHandler::CharToInt(const char* buf)
+short ZeroMQHandler::CharToShort(const char* buf)
 {
-  int val;
-  std::memcpy(&val, buf, 4);
+  short val;
+  std::memcpy(&val, buf, 2);
   return val;
 }
 
@@ -154,9 +154,10 @@ void ZeroMQHandler::run()
                 msgArray.remove(msgArray.length()-1,1);
 
             char clientID = rawData[0];
-            ParameterType paramType = static_cast<ParameterType>(rawData[1]);
-            int objectID = CharToInt(&rawData[2]);
-            QByteArray msgKey = QByteArray(rawData+1, 5); //combination of ParamType & objectID
+            MessageType paramType = static_cast<MessageType>(rawData[2]);
+            short sceneObjectID = CharToShort(&rawData[3]);
+            short parameterID = CharToShort(&rawData[5]);
+            QByteArray msgKey = QByteArray(rawData+2, 5); //combination of ParamType & objectID
 
             //std::cout << (int)clientID << " modifies " << paramType << " on " << objectID << std::endl;
 
@@ -198,7 +199,7 @@ void ZeroMQHandler::run()
                     sender_->send(objectState.constData(), static_cast<size_t>(objectState.length()));
                 }
             }
-            else if (paramType == LOCK){
+            /*else if (paramType == LOCK){
                 //store locked object for each client
                 lockMap.insert(clientID,objectID);
                 objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
@@ -219,8 +220,8 @@ void ZeroMQHandler::run()
                 //send to all zerMQ clients (most relevant for the scene server)
                 sender_->send(message);
                 //send to animation engine over TCP
-                socketExternal_->send(message);
-            }
+                 socketExternal_->send(message);
+            }*/
             else if (paramType != PING){
                 //if(paramType != HIDDENLOCK)
                 objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));

@@ -53,18 +53,13 @@ public:
     //request this process to stop working
     void requestStop();
 
-    enum ParameterType
+    enum MessageType
     {
-        POS, ROT, SCALE, LOCK, HIDDENLOCK, KINEMATIC, // node
-        FOV, ASPECT, FOCUSDIST, FOCUSSIZE, APERTURE,   // camera
-        COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
-        BONEANIM, // animation bone
-        VERTEXANIM, // animation vertex
-        PING, RESENDUPDATE,  // sync and ping
-        CHARACTERTARGET
+        PARAMETERUPDATE, // node
+        SYNC, PING, RESENDUPDATE, LOCK // sync and ping, [REVIEW] do we still need the RESENDUPDATE?
     };
 
-    int CharToInt(const char* buf);
+    short CharToShort(const char* buf);
 
 private:
 

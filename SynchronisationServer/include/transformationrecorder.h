@@ -40,28 +40,16 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include <nzmqt/nzmqt.hpp>
 #include <QTime>
 #include <QStringList>
-#ifdef Q_OS_WIN
-    #include "ncamadapter.h"
-#endif
 #include "recordWriter.h"
 
 class TransformationRecorder : public QObject
 {
     Q_OBJECT
 public:
-#ifdef Q_OS_WIN
-    explicit TransformationRecorder(QString serverIP,
-                                    zmq::context_t* context,
-                                    QList<QStringList>* i_messagesStorage,
-                                    QMutex* i_mutex,
-                                    NcamAdapter* i_ncamAdapter );
-#endif
-#ifdef Q_OS_MACOS
     explicit TransformationRecorder(QString serverIP,
                                     zmq::context_t* context,
                                     QList<QStringList>* i_messagesStorage,
                                     QMutex* i_mutex);
-#endif
 
 private:
     QString serverIP_;
@@ -76,10 +64,6 @@ private:
     QString msg_;
 
     QMutex* mutexmain;
-
-#ifdef Q_OS_WIN
-    NcamAdapter* ncamAdapter;
-#endif
 
     // RecordWriter* recordWriter;
 

@@ -17,11 +17,6 @@ HEADERS += \
     ../include/mainapp.h \
     ../include/objectStateHandler.h
 
-win32{
-    HEADERS += \
-        ../include/ncamsimpleclient.h \
-        ../include/ncamadapter.h
-}
 
 SOURCES += \
     ../src/zeroMQHandler.cpp \
@@ -33,21 +28,13 @@ SOURCES += \
     ../src/main.cpp
 
 
-
-win32{
-    SOURCES += \
-        ../src/ncamadapter.cpp
-}
-
 win32{
     INCLUDEPATH += ../include \
                 ../zeromq-4.3.1/build/install/include \
                 ../nzmqt/include \
-                ../nzmqt/3rdparty/cppzmq \
-                ../ncam-2.6/include
+                ../nzmqt/3rdparty/cppzmq
 
-    LIBS += -L../zeromq-4.3.1/build/install/lib -llibzmq-v141-mt-4_3_1 \
-            -L../ncam-2.6/lib/Windows/MSVC2013_MT/32bits -lLibNcamDataStreaming
+    LIBS += -L../zeromq-4.3.1/build/install/lib -llibzmq-v141-mt-4_3_1
 }
 
 macx{

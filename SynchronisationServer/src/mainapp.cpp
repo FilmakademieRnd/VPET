@@ -54,17 +54,6 @@ void MainApp::run()
     zeroMQHandlerThread->start();
     zeroMQHandler->requestStart();
 
-#ifdef Q_OS_WIN
-    NcamAdapter* ncamAdapter = new NcamAdapter(ncamIP_, ncamPort_, ownIP_, context_);
-    if(ncamIP_ != "" && ncamPort_ != "")
-    {
-        QThread* ncamThread = new QThread();
-        ncamAdapter->moveToThread(ncamThread);
-        QObject::connect( ncamThread, SIGNAL(started()), ncamAdapter, SLOT(run()));
-        ncamThread->start();
-    }
-#endif
-
     /*
     RecordWriter* recordWriter = new RecordWriter( &messagesStorage, &m_mutex );
     QThread* writeThread = new QThread();

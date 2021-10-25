@@ -35,22 +35,7 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include "transformationrecorder.h"
 #include <iostream>
 #include <QThread>
-#ifdef Q_OS_WIN
-TransformationRecorder::TransformationRecorder(QString serverIP, zmq::context_t* context, QList<QStringList> *i_messagesStorage, QMutex *i_mutex, NcamAdapter *i_ncamAdapter ) //, RecordWriter* i_recordWriter )
-{
-    serverIP_ = serverIP;
-    context_ = context;
-    timer.start();
-    lastTime = 0;
-    messagesStorage = i_messagesStorage;
-    mutexmain = i_mutex;
-    ncamAdapter = i_ncamAdapter;
-    // erecordWriter = i_recordWriter;
-    isRecording = false;
-    lastTimeCode = 0;
-}
-#endif
-#ifdef Q_OS_MACOS
+
 TransformationRecorder::TransformationRecorder(QString serverIP, zmq::context_t* context, QList<QStringList> *i_messagesStorage, QMutex *i_mutex) //, RecordWriter* i_recordWriter )
 {
     serverIP_ = serverIP;
@@ -63,7 +48,6 @@ TransformationRecorder::TransformationRecorder(QString serverIP, zmq::context_t*
     isRecording = false;
     lastTimeCode = 0;
 }
-#endif
 
 void TransformationRecorder::run()
 {
@@ -107,66 +91,5 @@ void TransformationRecorder::run()
             // send force message to writer to write rest of the data
             // recordWriter->forceWrite = true;
         }
-
-#ifdef Q_OS_WIN
-        if ( ncamAdapter->timeCode != lastTimeCode )
-        {
-            // add time code
-            splitMsg.insert(0, QString::number( ncamAdapter->timeCode ) );
-
-            if ( isRecording )
-            {
-                // write everything
-                mutexmain->lock();
-                // std::cout << splitMsg.join("|").toStdString()  << std::endl;
-                messagesStorage->append(splitMsg);
-                mutexmain->unlock();
-            }
-
-            // std::cout << "messagesStorage->length() after appending " << messagesStorage->size() << std::endl;
-
-            /*
-             * Check if object already in list and overwrite existing transform (previous version)
-            bool found = false;
-            if(splitMsg.length() > 3)
-            {
-                for(int i = 0; i < messagesStorage.length(); i++)
-                {
-                    if(messagesStorage[i][2] == splitMsg[2] || splitMsg[2] != "cam")
-                    {
-                        if(messagesStorage[i][1] == splitMsg[1])
-                        {
-                            messagesStorage[i] = splitMsg;
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                if (!found)
-                {
-                    messagesStorage.append(splitMsg);
-                }
-            }
-            */
-
-            /*if (timer.elapsed() - lastTime > 2000)
-            {
-                std::cout << "sending initial updates: " << messagesStorage.length() << std::endl;
-                for(int i = 0; i < messagesStorage.length(); i++)
-                {
-                    std::string msg = messagesStorage[i].join("|").toLatin1().data();
-                    std::cout << msg << std::endl;
-                    zmq::message_t message((void*)msg.c_str(),msg.size(),NULL);
-                    sendSocket_->send(message);
-                }
-                lastTime = timer.elapsed();
-            }*/
-
-
-            lastTimeCode = ncamAdapter->timeCode;
-
-        }
-#endif
-
     }
 }

@@ -39,9 +39,6 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include <QThread>
 #include <QMutex>
 #include <zeroMQHandler.h>
-#ifdef Q_OS_WIN
-    #include <ncamadapter.h>
-#endif
 #include <transformationrecorder.h>
 #include <iostream>
 
