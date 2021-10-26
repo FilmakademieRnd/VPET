@@ -41,16 +41,11 @@ namespace vpet
         private List<SceneObject> m_selectedObjects;
 
         //!
-        //! Definition of change function parameters.
-        //!
-        public class SEventArgs : EventArgs
-        {
-            public List<SceneObject> _value;
-        }
-        //!
         //! Event emitted when the scene selection has changed.
         //!
-        public event EventHandler<SEventArgs> selectionChanged;
+        public event EventHandler<List<SceneObject>> selectionChanged;
+        public event EventHandler<SceneObject> selectionAdded;
+        public event EventHandler<SceneObject> selectionRemoved;
 
         //!
         //! Constructor initializing member variables.
@@ -70,15 +65,31 @@ namespace vpet
             m_selectedObjects.Clear();
             m_selectedObjects.Add(sceneObject);
 
-            selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
+            selectionChanged?.Invoke(this, m_selectedObjects );
+            selectionAdded?.Invoke(this, sceneObject);
+        }
+        //!
+        //! Function that removes a sceneObject to the selected objects list.
+        //!
+        //! @ param sceneObject The selected scene object to be removed.
+        //!
+        public void removeSelectedObject(SceneObject sceneObject)
+        {
+            m_selectedObjects.Remove(sceneObject);
+
+            selectionChanged?.Invoke(this, m_selectedObjects);
+            selectionRemoved?.Invoke(this, sceneObject);
         }
         //!
         //! Function that clears the selected objects list.
         //!
         public void clearSelectedObject()
         {
+            foreach(SceneObject sceneObject in m_selectedObjects)
+                selectionRemoved?.Invoke(this, sceneObject);
+
             m_selectedObjects.Clear();
-            selectionChanged?.Invoke(this, new SEventArgs { _value = m_selectedObjects });
+            selectionChanged?.Invoke(this, m_selectedObjects);
         }
 
     }

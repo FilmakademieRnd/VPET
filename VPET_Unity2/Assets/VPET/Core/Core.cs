@@ -150,7 +150,7 @@ namespace vpet
         private void updateTime()
         {
             timeEvent?.Invoke(this, EventArgs.Empty);
-            m_time = (m_time > 254 ? (byte)0 : m_time+=1);
+            m_time = (m_time > 239 ? (byte)0 : m_time+=1);
 
             if ((m_time % settings.framerate) == 0)
                 syncEvent?.Invoke(this, m_time);

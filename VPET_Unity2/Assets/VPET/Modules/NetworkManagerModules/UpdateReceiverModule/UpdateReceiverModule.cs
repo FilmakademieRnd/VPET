@@ -80,9 +80,9 @@ namespace vpet
 
             m_core.timeEvent += runConsumeMessageOnce;
 
-            ThreadStart consumer = new ThreadStart(consumeMessages);
-            m_consumerThread = new Thread(consumer);
-            m_consumerThread.Start();
+            //ThreadStart consumer = new ThreadStart(consumeMessages);
+            //m_consumerThread = new Thread(consumer);
+            //m_consumerThread.Start();
         }
 
         //!
@@ -107,8 +107,13 @@ namespace vpet
                         {
                             switch ((MessageType)input[2])
                             {
+                                case MessageType.LOCK:
+                                    if (!m_core.settings.isServer)
+                                        decodeSyncMessage(ref input);
+                                    break;
                                 case MessageType.SYNC:
-                                    decodeSyncMessage(ref input);
+                                    if (!m_core.settings.isServer)
+                                        decodeSyncMessage(ref input);
                                     break;
                                 case MessageType.PARAMETERUPDATE:
                                     // make shure that producer and consumer exclude eachother
@@ -122,6 +127,8 @@ namespace vpet
                                         m_messageQueue.AddLast(input);
                                     }
                                     break;
+                                default:
+                                    break;
                             }
                         }
                     }
@@ -131,13 +138,22 @@ namespace vpet
                 // [Review] Thread end causes exeptions!
                 receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 receiver.Close();
-                //receiver.Dispose();
+                receiver.Dispose();
             }
         }
         
         private void decodeSyncMessage(ref byte[] message)
         {
             m_core.time = message[1];
+        }
+
+        private void decodeLockMessage(ref byte[] message)
+        {
+            bool lockState = BitConverter.ToBoolean(message, 2);
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+            sceneObject._lock = lockState;
         }
 
         private void consumeMessages()

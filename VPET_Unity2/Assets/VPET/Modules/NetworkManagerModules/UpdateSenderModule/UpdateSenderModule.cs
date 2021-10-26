@@ -29,7 +29,6 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 15.10.2021
 
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 using System.Threading;
 using NetMQ;
@@ -65,6 +64,10 @@ namespace vpet
             SceneManager sceneManager = m_core.getManager<SceneManager>();
             sceneManager.sceneReady += connectAndStart;
 
+            UIManager uiManager = m_core.getManager<UIManager>();
+            uiManager.selectionAdded += lockSceneObject;
+            uiManager.selectionRemoved += unlockSceneObject;
+
             m_core.syncEvent += queuePingMessage;
 
             if (m_core.settings.isServer)
@@ -86,6 +89,34 @@ namespace vpet
 
             // [REVIEW] port should be in global config
             startUpdateSender(manager.settings.m_serverIP, "5557");
+        }
+
+        private void lockSceneObject(object sender, SceneObject sceneObject)
+        {
+            byte[] message = new byte[6];
+
+            // header
+            message[0] = manager.cID;
+            message[1] = m_core.time;
+            message[2] = (byte)MessageType.LOCK;
+            Buffer.BlockCopy(BitConverter.GetBytes(((SceneObject)sender).id), 0, message, 3, 2);  // SceneObjectID
+            message[5] = Convert.ToByte(true);
+
+            m_messageQueue.AddLast(message);
+        }
+
+        private void unlockSceneObject(object sender, SceneObject sceneObject)
+        {
+            byte[] message = new byte[6];
+
+            // header
+            message[0] = manager.cID;
+            message[1] = m_core.time;
+            message[2] = (byte)MessageType.LOCK;
+            Buffer.BlockCopy(BitConverter.GetBytes(((SceneObject)sender).id), 0, message, 3, 2);  // SceneObjectID
+            message[5] = Convert.ToByte(false);
+
+            m_messageQueue.AddLast(message);
         }
 
         //!

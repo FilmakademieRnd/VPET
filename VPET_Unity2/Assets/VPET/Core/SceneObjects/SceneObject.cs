@@ -43,9 +43,13 @@ namespace vpet
     public class SceneObject : MonoBehaviour
     {
         //!
+        //! Is the sceneObject locked
+        //!
+        public bool _lock = false;
+        //!
         //! Is the sceneObject reacting to physics
         //!
-        private bool _physicsActive;
+        private bool _physicsActive = false;
         //!
         //! Is the sceneObject reacting to physics
         //!
@@ -100,7 +104,7 @@ namespace vpet
         {
             _parameterList = new List<AbstractParameter>();
 
-            _id = Helpers.getUniqueID();
+            _id = Helpers.getSoID();
             _physicsActive = false;
 
             position = new Parameter<Vector3>(transform.localPosition, "position", (short) parameterList.Count);
@@ -121,7 +125,8 @@ namespace vpet
         //!
         protected void emitHasChanged (AbstractParameter parameter)
         {
-            hasChanged?.Invoke(this, parameter);
+            if (!_lock)
+                hasChanged?.Invoke(this, parameter);
         }
 
         //!

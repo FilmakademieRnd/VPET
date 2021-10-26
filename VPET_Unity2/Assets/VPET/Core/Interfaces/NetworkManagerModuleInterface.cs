@@ -42,7 +42,7 @@ namespace vpet
     {
         public enum MessageType
         {
-            PARAMETERUPDATE, // node
+            PARAMETERUPDATE, LOCK, // node
             SYNC, PING, RESENDUPDATE // sync and ping, [REVIEW] do we still need the RESENDUPDATE?
         }
 

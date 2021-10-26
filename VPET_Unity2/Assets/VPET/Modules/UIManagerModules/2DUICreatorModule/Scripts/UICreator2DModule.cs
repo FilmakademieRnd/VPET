@@ -71,19 +71,19 @@ namespace vpet
         //! Function that recreates the UI Layout.
         //! Being called when selection has changed.
         //!
-        private void createUI(object sender, UIManager.SEventArgs a)
+        private void createUI(object sender, List<SceneObject> sceneObjects)
         {
             clearUI();
             
             // [REVIEW]
             // UI Debug
             Debug.Log("--- create UI ---");
-            Debug.Log(a);
+            Debug.Log(sceneObjects);
 
             int buttonOffset = 50;
 
 
-            foreach (SceneObject sceneObject in a._value)
+            foreach (SceneObject sceneObject in sceneObjects)
             {
                 //foreach (AbstractParameter param in sceneObject.parameterList)
                 for (int i = 0; i < sceneObject.parameterList.Count ; i++)
