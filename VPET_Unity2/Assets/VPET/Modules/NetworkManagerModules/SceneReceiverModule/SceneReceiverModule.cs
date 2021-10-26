@@ -33,6 +33,8 @@ using System.Collections.Generic;
 using System;
 using NetMQ;
 using NetMQ.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace vpet
 {
@@ -49,11 +51,6 @@ namespace vpet
         //! The event that is triggerd, when the scene has been received.
         //!
         public event EventHandler m_sceneReceived;
-
-        //!
-        //! Dummy list, will be emty all the time!
-        //!
-        private List<byte[]> receivedData;
 
         //!
         //! Constructor
@@ -79,7 +76,20 @@ namespace vpet
             m_ip = ip;
             m_port = port;
 
-            run();
+            ThreadStart transeiver = new ThreadStart(run);
+            Thread requesterThread = new Thread(transeiver);
+            requesterThread.Start();
+
+            Task task = new Task<long>
+            (() =>
+            {
+                requesterThread.Join();
+                m_sceneReceived?.Invoke(this, new EventArgs());
+
+                return 1;
+            });
+
+            task.RunSynchronously();
         }
 
         //!
@@ -123,7 +133,7 @@ namespace vpet
                 }
 
                 // emit sceneReceived signal to trigger scene cration in the sceneCreator module
-                m_sceneReceived?.Invoke(this, new EventArgs());
+                //this.m_sceneReceived?.Invoke(this, new EventArgs());
 
                 sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 sceneReceiver.Close();

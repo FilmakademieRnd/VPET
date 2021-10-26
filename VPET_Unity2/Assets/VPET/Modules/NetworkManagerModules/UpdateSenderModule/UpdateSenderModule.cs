@@ -99,7 +99,7 @@ namespace vpet
             message[0] = manager.cID;
             message[1] = m_core.time;
             message[2] = (byte)MessageType.LOCK;
-            Buffer.BlockCopy(BitConverter.GetBytes(((SceneObject)sender).id), 0, message, 3, 2);  // SceneObjectID
+            Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, message, 3, 2);  // SceneObjectID
             message[5] = Convert.ToByte(true);
 
             m_messageQueue.AddLast(message);
@@ -113,7 +113,7 @@ namespace vpet
             message[0] = manager.cID;
             message[1] = m_core.time;
             message[2] = (byte)MessageType.LOCK;
-            Buffer.BlockCopy(BitConverter.GetBytes(((SceneObject)sender).id), 0, message, 3, 2);  // SceneObjectID
+            Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, message, 3, 2);  // SceneObjectID
             message[5] = Convert.ToByte(false);
 
             m_messageQueue.AddLast(message);

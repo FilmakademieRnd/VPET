@@ -42,7 +42,7 @@ namespace vpet
     public class UpdateReceiverModule : NetworkManagerModule
     {
         
-        private Thread m_consumerThread;
+        //private Thread m_consumerThread;
         private SceneManager m_sceneManager;
         //!
         //! Constructor
@@ -108,8 +108,7 @@ namespace vpet
                             switch ((MessageType)input[2])
                             {
                                 case MessageType.LOCK:
-                                    if (!m_core.settings.isServer)
-                                        decodeSyncMessage(ref input);
+                                        decodeLockMessage(ref input);
                                     break;
                                 case MessageType.SYNC:
                                     if (!m_core.settings.isServer)
