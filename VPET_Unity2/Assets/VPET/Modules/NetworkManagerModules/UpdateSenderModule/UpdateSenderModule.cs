@@ -66,6 +66,9 @@ namespace vpet
             sceneManager.sceneReady += connectAndStart;
 
             m_core.syncEvent += queuePingMessage;
+
+            if (m_core.settings.isServer)
+                m_core.syncEvent += queueSyncMessage;
         }
 
         //!
@@ -130,7 +133,7 @@ namespace vpet
         //!
         //! Function that creates a sync message and adds it to the message queue for sending.
         //!
-        private void queueSyncMessage()
+        private void queueSyncMessage(object o, byte t)
         {
             byte[] message = new byte[3];
 

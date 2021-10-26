@@ -107,9 +107,6 @@ namespace vpet
                         {
                             switch ((MessageType)input[2])
                             {
-                                case MessageType.PING:
-                                    decodePingMessage(ref input);
-                                    break;
                                 case MessageType.SYNC:
                                     decodeSyncMessage(ref input);
                                     break;
@@ -138,13 +135,9 @@ namespace vpet
             }
         }
         
-        private void decodePingMessage(ref byte[] message)
-        {
-            m_core.time = message[1];
-        }
-
         private void decodeSyncMessage(ref byte[] message)
         {
+            m_core.time = message[1];
         }
 
         private void consumeMessages()

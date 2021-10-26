@@ -45,6 +45,8 @@ namespace vpet
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
+
+            public bool isServer = false;
         }
 
         public Core()
@@ -152,7 +154,6 @@ namespace vpet
 
             if ((m_time % settings.framerate) == 0)
                 syncEvent?.Invoke(this, m_time);
-
         }
 
         private void SaveSettings()

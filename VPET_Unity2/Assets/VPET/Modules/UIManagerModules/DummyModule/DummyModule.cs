@@ -15,6 +15,7 @@ namespace vpet
         }
         public void send()
         {
+            m_vpet.settings.isServer = true;
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
@@ -27,6 +28,8 @@ namespace vpet
 
         public void receive()
         {
+            m_vpet.settings.isServer = false;
+
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
