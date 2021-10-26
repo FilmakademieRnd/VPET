@@ -159,13 +159,19 @@ void ZeroMQHandler::run()
             short parameterID = CharToShort(&rawData[5]);
             QByteArray msgKey = QByteArray(rawData+2, 5); //combination of ParamType & objectID
 
-            //std::cout << (int)clientID << " modifies " << paramType << " on " << objectID << std::endl;
-
-            //QString debugMsg = "";
-            //foreach (const char c, msgArray){
-            //    debugMsg += QString::number((int)c) + " ";
-            //}
-            //std::cout << debugMsg.toStdString() << std::endl;
+            if(_debug)
+            {
+                std::cout << "Msg: ";
+                std::cout << "cID: " << 256+rawData[0] << " "; //ClientID
+                std::cout << "t: " << 0+rawData[1] << " "; //Time
+                std::cout << "mtype: " << static_cast<MessageType>(rawData[2]) << " "; //MessageType
+                if(paramType ==  PARAMETERUPDATE)
+                {
+                    std::cout << "oID: " <<  CharToShort(&rawData[3]) << " "; //SceneObjectID
+                    std::cout << "pID: " << CharToShort(&rawData[5]); //ParamID
+                }
+                std::cout << std::endl;
+            }
 
             //update ping timeout
             if(!msgIsExternal)
@@ -199,23 +205,22 @@ void ZeroMQHandler::run()
                     sender_->send(objectState.constData(), static_cast<size_t>(objectState.length()));
                 }
             }
-            /*else if (paramType == LOCK){
+            else if (paramType == LOCK){
                 //store locked object for each client
-                lockMap.insert(clientID,objectID);
+                lockMap.insert(clientID,sceneObjectID);
                 objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
                 if(_debug)
                 {
-                    QByteArray testMSG = msgArray.replace(0,1,&targetHostID,1);
-                    std::cout << "LockMsg (" << testMSG.length() << "):";
-                    foreach(const char c, testMSG)
-                    {
-                        std::cout << " " << (int)c;
-                    }
+                    std::cout << "LockMsg: ";
+                    std::cout << "cID: " << 256+rawData[0] << " "; //ClientID
+                    std::cout << "t: " << 0+rawData[1] << " "; //Time
+                    std::cout << "oID: " <<  CharToShort(&rawData[3]); //SceneObjectID
+                    std::cout << "state: " <<  0+rawData[5]; //SceneObjectID
                     std::cout << std::endl;
                 }
                 sender_->send(message);
             }
-            else if (paramType == CHARACTERTARGET)
+            /*else if (paramType == CHARACTERTARGET)
             {
                 //send to all zerMQ clients (most relevant for the scene server)
                 sender_->send(message);
@@ -225,16 +230,6 @@ void ZeroMQHandler::run()
             else if (paramType != PING){
                 //if(paramType != HIDDENLOCK)
                 objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
-                if(_debug)
-                {
-                    QByteArray testMSG = msgArray.replace(0,1,&targetHostID,1);
-                    std::cout << "OtherMsg (" << testMSG.length() << "):";
-                    foreach(const char c, testMSG)
-                    {
-                        std::cout << c;
-                    }
-                    std::cout << std::endl;
-                }
                 sender_->send(message);
             }
         }

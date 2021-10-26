@@ -55,8 +55,8 @@ public:
 
     enum MessageType
     {
-        PARAMETERUPDATE, // node
-        SYNC, PING, RESENDUPDATE, LOCK // sync and ping, [REVIEW] do we still need the RESENDUPDATE?
+        PARAMETERUPDATE, LOCK,// node
+        SYNC, PING, RESENDUPDATE // sync and ping, [REVIEW] do we still need the RESENDUPDATE?
     };
 
     short CharToShort(const char* buf);
@@ -64,7 +64,7 @@ public:
 private:
 
     //id displayed as clientID for messages redistributed through syncServer
-    char targetHostID = '1';
+    char targetHostID = 1;
 
     //if true process is stopped
     bool _stop;
