@@ -156,6 +156,7 @@ namespace vpet
         {
             _value = value;
             _name = name;
+            _parent = parent;
             _type = typeof(T);
             _id = id;
         }

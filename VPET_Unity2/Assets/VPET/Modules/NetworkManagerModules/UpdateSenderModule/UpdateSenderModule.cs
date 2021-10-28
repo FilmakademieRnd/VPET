@@ -220,7 +220,6 @@ namespace vpet
                             try { sender.SendFrame(m_controlMessage, false); } // true not wait 
                             catch { }
                             m_controlMessage = null;
-                            Helpers.Log("Control message send.");
                         }
                     }
                     else
