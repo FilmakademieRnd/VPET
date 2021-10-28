@@ -26,9 +26,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 15.10.2021
+//! @date 28.10.2021
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System;
 using System.Threading;
 using NetMQ;
@@ -41,9 +42,14 @@ namespace vpet
     //!
     public class UpdateReceiverModule : NetworkManagerModule
     {
-        
-        //private Thread m_consumerThread;
+        //!
+        //! Buffer for storing incoming messages by time.
+        //!
+        private List<List<byte[]>> m_messageBuffer;
+
+        //!
         private SceneManager m_sceneManager;
+        
         //!
         //! Constructor
         //!
@@ -62,7 +68,11 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_messageQueue = new LinkedList<byte[]>();
+            // initialize message buffer
+            m_messageBuffer = new List<List<byte[]>>(m_core.m_timesteps);
+            for (int i = 0; i < m_core.m_timesteps; i++)
+                m_messageBuffer.Add(new List<byte[]>(16));
+
             m_sceneManager = m_core.getManager<SceneManager>();
             m_sceneManager.sceneReady += connectAndStart;
         }
@@ -78,11 +88,7 @@ namespace vpet
             // [REVIEW] port should be in global config
             startUpdateReceiver(manager.settings.m_serverIP, "5556");
 
-            m_core.timeEvent += runConsumeMessageOnce;
-
-            //ThreadStart consumer = new ThreadStart(consumeMessages);
-            //m_consumerThread = new Thread(consumer);
-            //m_consumerThread.Start();
+            m_core.timeEvent += consumeMessages;
         }
 
         //!
@@ -116,14 +122,10 @@ namespace vpet
                                     break;
                                 case MessageType.PARAMETERUPDATE:
                                     // make shure that producer and consumer exclude eachother
-                                    lock (m_messageQueue)
+                                    lock (m_messageBuffer)
                                     {
-                                        // [REVIEW] Queue length should be configurable globally
-                                        // store only last 64 messages
-                                        if (m_messageQueue.Count > 63)
-                                            m_messageQueue.RemoveFirst();
-
-                                        m_messageQueue.AddLast(input);
+                                        // input[1] is time
+                                        m_messageBuffer[input[1]].Add(input);
                                     }
                                     break;
                                 default:
@@ -134,18 +136,27 @@ namespace vpet
                     Thread.Yield();
                     Thread.Sleep(1);
                 }
-                // [Review] Thread end causes exeptions!
-                receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
-                receiver.Close();
-                receiver.Dispose();
+                try
+                {
+                    // [Review] Thread end causes exeptions!
+                    receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                    receiver.Close();
+                    receiver.Dispose();
+                }
+                finally
+                {
+                    NetMQConfig.Cleanup(false);
+                }
             }
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeSyncMessage(ref byte[] message)
         {
             m_core.time = message[1];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeLockMessage(ref byte[] message)
         {
             bool lockState = BitConverter.ToBoolean(message, 2);
@@ -155,50 +166,17 @@ namespace vpet
             sceneObject._lock = lockState;
         }
 
-        private void consumeMessages()
+        private void consumeMessages(object o, EventArgs e)
         {
-            // Message structure: Header, Parameter (optional)
-            // Header: ClientID, Time, MessageType
-            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+            // define the buffer size by defining the time offset in the ringbuffer
+            // % time steps to take ring (0 to m_timesteps) into account
+            // set to 1/4 second
+            byte bufferTime = (byte)((m_core.time - m_core.settings.framerate/4) % m_core.m_timesteps);
 
-            while (m_isRunning)
-            {
-                // lock the thread until global timer unlocks it
-                m_mre.WaitOne();
-                //lock (m_messageQueue)
-                //{ 
-                //    foreach (byte[] message in m_messageQueue)
-                //    {
-                //        //[REVIEW] time window for valid massages
-                //        if (m_core.time - message[1] < 2)
-                //        {
-                //            decodeMessage(message);
-                //        }
-                //    }
-                //    m_messageQueue.Clear();
-                //}
-                Thread.Yield();
-                //Thread.Sleep(1);
-            }
-        }
+            foreach (Byte[] message in m_messageBuffer[bufferTime])
+                decodeMessage(message);
 
-        private void runConsumeMessageOnce(object o, EventArgs e)
-        {
-            //m_mre.Set();
-            //m_mre.Reset();
-
-            lock (m_messageQueue)
-            {
-                foreach (byte[] message in m_messageQueue)
-                {
-                    //[REVIEW] time window for valid massages
-                    if (m_core.time - message[1] < 2)
-                    {
-                        decodeMessage(message);
-                    }
-                }
-                m_messageQueue.Clear();
-            }
+            m_messageBuffer[bufferTime].Clear();
         }
 
         private void decodeMessage(byte[] message)

@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.02.2021
+//! @date 28.10.2021
 
 using System;
 using System.IO;
@@ -54,7 +54,9 @@ namespace vpet
 
         }
 
-        static private byte m_time = 0;
+        public int m_timesteps = ((int)(256f / 60)) * 60;
+
+        private byte m_time = 0;
         public byte time 
         { 
             set => m_time = value;

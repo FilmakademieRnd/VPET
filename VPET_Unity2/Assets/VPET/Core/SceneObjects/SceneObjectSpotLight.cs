@@ -47,7 +47,7 @@ namespace vpet
             base.Start();
             if (_light)
             {
-                spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle", (short)parameterList.Count);
+                spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle", this, (short)parameterList.Count);
                 spotAngle.hasChanged += updateAngle;
                 _parameterList.Add(spotAngle);
             }

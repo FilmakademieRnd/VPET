@@ -107,13 +107,13 @@ namespace vpet
             _id = Helpers.getSoID();
             _physicsActive = false;
 
-            position = new Parameter<Vector3>(transform.localPosition, "position", (short) parameterList.Count);
+            position = new Parameter<Vector3>(transform.localPosition, "position", this, (short) parameterList.Count);
             position.hasChanged += updatePosition;
             _parameterList.Add(position);
-            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation", (short)parameterList.Count);
+            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation", this, (short)parameterList.Count);
             rotation.hasChanged += updateRotation;
             _parameterList.Add(rotation);
-            scale = new Parameter<Vector3>(transform.localScale, "scale", (short)parameterList.Count);
+            scale = new Parameter<Vector3>(transform.localScale, "scale", this, (short)parameterList.Count);
             scale.hasChanged += updateScale;
             _parameterList.Add(scale);
         }

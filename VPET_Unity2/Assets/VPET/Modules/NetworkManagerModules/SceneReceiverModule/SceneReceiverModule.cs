@@ -28,12 +28,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 25.06.2021
 
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using NetMQ;
 using NetMQ.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace vpet
@@ -69,28 +67,17 @@ namespace vpet
         //! @param ip IP address of the network interface.
         //! @param port Port number to be used.
         //!
-        protected override void start(string ip, string port)
+        protected async override void start(string ip, string port)
         {
-            stop();
-
             m_ip = ip;
             m_port = port;
 
-            ThreadStart transeiver = new ThreadStart(run);
-            Thread requesterThread = new Thread(transeiver);
-            requesterThread.Start();
-
-            Task task = new Task<long>
-            (() =>
-            {
-                requesterThread.Join();
-                m_sceneReceived?.Invoke(this, new EventArgs());
-
-                return 1;
-            });
-
-            task.RunSynchronously();
+            await Task.Run(() => run());
+            
+            // emit sceneReceived signal to trigger scene cration in the sceneCreator module
+            m_sceneReceived?.Invoke(this, new EventArgs());
         }
+
 
         //!
         //! Function, requesting scene packages and receiving package data (executed in separate thread).
@@ -131,9 +118,6 @@ namespace vpet
                             break;
                     }
                 }
-
-                // emit sceneReceived signal to trigger scene cration in the sceneCreator module
-                //this.m_sceneReceived?.Invoke(this, new EventArgs());
 
                 sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 sceneReceiver.Close();

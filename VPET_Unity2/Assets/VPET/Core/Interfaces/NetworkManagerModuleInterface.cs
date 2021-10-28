@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 13.10.2021
+//! @date 28.10.2021
 
 using System;
 using System.Collections.Generic;
@@ -56,11 +56,6 @@ namespace vpet
         //! Port number to be used.
         //!
         protected string m_port;
-
-        //!
-        //! List of byte[] storing the messages.
-        //!
-        protected LinkedList<byte[]> m_messageQueue;
 
         //!
         //! Flag specifing if the thread should stop running.
