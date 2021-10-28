@@ -2040,7 +2040,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6565867901006322448}
         m_TargetAssemblyTypeName: vpet.VPETOnBoardingModule, ModulesAssembly
-        m_MethodName: send
+        m_MethodName: receive
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

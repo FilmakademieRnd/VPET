@@ -67,7 +67,6 @@ namespace vpet
             m_spinner = settings.spinnerPrefab;
         }
 
-
         //!
         //! Function that recreates the UI Layout.
         //! Being called when selection has changed.

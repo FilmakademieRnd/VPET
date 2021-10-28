@@ -32,6 +32,7 @@ namespace vpet
         
         public void send()
         {
+            m_vpet.settings.isServer = true;
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
@@ -48,13 +49,15 @@ namespace vpet
 
         public void receive()
         {
+            m_vpet.settings.isServer = false;
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
+            networkManager.settings.m_serverIP = ipInput.text;
 
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
             SceneCreatorModule sceneCreatorModule = sceneManager.getModule<SceneCreatorModule>();
 
-            sceneReceiverModule.receiveScene("172.18.1.177", "5555");
+            sceneReceiverModule.receiveScene(ipInput.text, portInput.text);
         }
     }
 }
