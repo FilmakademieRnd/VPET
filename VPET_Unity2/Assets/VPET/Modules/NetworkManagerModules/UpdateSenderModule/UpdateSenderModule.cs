@@ -98,6 +98,12 @@ namespace vpet
             m_core.timeEvent += sendParameterMessages;
         }
 
+        //!
+        //! Function that creates and sends a lock message after a selectionAdd event invokes.
+        //!
+        //! @param sender The UI manager.
+        //! @param sceneObject The selected scene object.
+        //!
         private void lockSceneObject(object sender, SceneObject sceneObject)
         {
             m_controlMessage = new byte[6];
@@ -113,6 +119,12 @@ namespace vpet
             m_mre.Reset();
         }
 
+        //!
+        //! Function that creates and sends a (un)lock message after a selectionRemove event invokes.
+        //!
+        //! @param sender The UI manager.
+        //! @param sceneObject The deselected scene object.
+        //!
         private void unlockSceneObject(object sender, SceneObject sceneObject)
         {
             m_controlMessage = new byte[6];
@@ -132,13 +144,16 @@ namespace vpet
         //!
         //! Function that creates a ping message and adds it to the message queue for sending.
         //!
-        private void queuePingMessage(object o, byte t)
+        //! @param sender The VPET core.
+        //! @param time The clients global time.
+        //!
+        private void queuePingMessage(object o, byte time)
         {
             m_controlMessage = new byte[3];
 
             // header
             m_controlMessage[0] = manager.cID;
-            m_controlMessage[1] = m_core.time;
+            m_controlMessage[1] = time;
             m_controlMessage[2] = (byte)MessageType.PING;
 
             m_mre.Set();
@@ -148,19 +163,28 @@ namespace vpet
         //!
         //! Function that creates a sync message and adds it to the message queue for sending.
         //!
-        private void queueSyncMessage(object o, byte t)
+        //! @param sender The VPET core.
+        //! @param t The clients global time.
+        //!
+        private void queueSyncMessage(object o, byte time)
         {
             m_controlMessage = new byte[3];
 
             // header
             m_controlMessage[0] = manager.cID;
-            m_controlMessage[1] = m_core.time;
+            m_controlMessage[1] = time;
             m_controlMessage[2] = (byte)MessageType.SYNC;
 
             m_mre.Set();
             m_mre.Reset();
         }
 
+        //!
+        //! Function collects all parameter modifications within one global time tick for sending.
+        //!
+        //! @param sender The scene object containing the modified parameter.
+        //! @param parameter The modified parameter.
+        //!
         private void queueModifiedParameter(object sender, AbstractParameter parameter)
         {
             if (!m_modifiedParameters.Contains(parameter))
@@ -168,10 +192,10 @@ namespace vpet
         }
 
         //!
-        //! Function that creates a parameter update message and adds it to the message queue for sending.
+        //! Function that creates a parameter update message (byte[]) based on a abstravt parameter and a time value.
         //!
-        //! @param sender The emitting scene object.
-        //! @param e The pssed event arguments.
+        //! @param parameter The modified parameter the message will be based on.
+        //! @param time The pssed event arguments.
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte[] createParameterMessage(AbstractParameter parameter, byte time)
@@ -198,9 +222,9 @@ namespace vpet
             }
         }
 
-
         //!
-        //! Function, sending messages in m_messageQueue (executed in separate thread).
+        //! Function, sending control messages and parameter update messages (executed in separate thread).
+        //! Thread execution is locked after every loop and unlocked by sendParameterMessages every global tick.
         //!
         protected override void run()
         {
@@ -240,12 +264,22 @@ namespace vpet
                     }
                     Thread.Yield();
                 }
-                sender.Disconnect("tcp://" + m_ip + ":" + m_port);
-                sender.Close();
-                sender.Dispose();
+                try
+                {
+                    sender.Disconnect("tcp://" + m_ip + ":" + m_port);
+                    sender.Close();
+                    sender.Dispose();
+                }
+                finally
+                {
+                    NetMQConfig.Cleanup(false);
+                }
             }
         }
 
+        //!
+        //! Function that unlocks the sender thread once (called with every global tick event).
+        //!
         private void sendParameterMessages(object o, EventArgs e)
         {
             m_mre.Set();

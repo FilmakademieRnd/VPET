@@ -48,6 +48,8 @@ namespace vpet
         private List<List<byte[]>> m_messageBuffer;
 
         //!
+        //! A referece to VPET's scene manager.
+        //!
         private SceneManager m_sceneManager;
         
         //!
@@ -92,7 +94,9 @@ namespace vpet
         }
 
         //!
-        //! Function, listening for messages and adds them to m_messageQueue (executed in separate thread).
+        //! Function, waiting for incoming messages (executed in separate thread).
+        //! Control messages are executed immediately, parameter update messages are buffered
+        //! and executed later to obtain synchronicity.
         //!
         protected override void run()
         {
@@ -138,7 +142,6 @@ namespace vpet
                 }
                 try
                 {
-                    // [Review] Thread end causes exeptions!
                     receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                     receiver.Close();
                     receiver.Dispose();
@@ -150,12 +153,22 @@ namespace vpet
             }
         }
 
+        //! 
+        //! Function that decodes a sync message and set the clients global time.
+        //!
+        //! @param message The message to be decoded.
+        //! 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeSyncMessage(ref byte[] message)
         {
             m_core.time = message[1];
         }
 
+        //! 
+        //! Function that decodes a lock message and lock or unlock the corresponding scene object.
+        //!
+        //! @param message The message to be decoded.
+        //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeLockMessage(ref byte[] message)
         {
@@ -166,6 +179,9 @@ namespace vpet
             sceneObject._lock = lockState;
         }
 
+        //!
+        //! Function that triggers the parameter updates (called once a global time tick).
+        //!
         private void consumeMessages(object o, EventArgs e)
         {
             // define the buffer size by defining the time offset in the ringbuffer
@@ -179,6 +195,11 @@ namespace vpet
             m_messageBuffer[bufferTime].Clear();
         }
 
+        //!
+        //! Function to decode a parameter message and update the corresponding parameter. 
+        //!
+        //! @param message The message to be decoded.
+        //!
         private void decodeMessage(byte[] message)
         {
             short sceneObjectID = BitConverter.ToInt16(message, 3);

@@ -29,10 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 28.10.2021
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
-
 
 namespace vpet
 {
@@ -41,6 +38,9 @@ namespace vpet
     //!
     public abstract class NetworkManagerModule : Module
     {
+        //!
+        //! Enumeration defining VPET message types.
+        //!
         public enum MessageType
         {
             PARAMETERUPDATE, LOCK, // node
@@ -62,7 +62,10 @@ namespace vpet
         //!
         protected bool m_isRunning;
 
-        private Thread m_requesterThread;
+        //!
+        //! The Thread used for receiving or sending messages.
+        //!
+        private Thread m_transeinverThread;
         
         //!
         //! Function, listening for messages and adds them to m_messageQueue (executed in separate thread).
@@ -89,6 +92,9 @@ namespace vpet
             core.destroyEvent += stopThread;
         }
 
+        //!
+        //! Function to stop all tranceiver threads (called when VPET core will be destroyed).
+        //!
         private void stopThread(object sender, EventArgs e)
         {
             stop();
@@ -108,12 +114,12 @@ namespace vpet
             m_port = port;
 
             ThreadStart transeiver = new ThreadStart(run);
-            m_requesterThread = new Thread(transeiver);
-            m_requesterThread.Start();
+            m_transeinverThread = new Thread(transeiver);
+            m_transeinverThread.Start();
         }
 
         //!
-        //! Stop the receiver.
+        //! Stop the transeinver.
         //!
         public void stop()
         {
