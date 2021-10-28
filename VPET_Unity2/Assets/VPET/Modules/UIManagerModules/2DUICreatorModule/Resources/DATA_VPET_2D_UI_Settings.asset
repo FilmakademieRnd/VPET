@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57491f7bed84c034f878719cb8086863, type: 3}
+  m_Name: DATA_VPET_2D_UI_Settings
+  m_EditorClassIdentifier: 
+  spinnerPrefab: {fileID: 4525799023743638965, guid: 8394591aa5d94654e901cedcc1e2600c, type: 3}
+  SliderPrefab: {fileID: 1177632157241151997, guid: e3a25f9abef28c14ea09e5ca2c0548c8, type: 3}
