@@ -171,7 +171,7 @@ namespace vpet
             // define the buffer size by defining the time offset in the ringbuffer
             // % time steps to take ring (0 to m_timesteps) into account
             // set to 1/4 second
-            byte bufferTime = (byte)((m_core.time - m_core.settings.framerate/4) % m_core.m_timesteps);
+            int bufferTime = (((m_core.time - m_core.settings.framerate/4) + m_core.m_timesteps) % m_core.m_timesteps);
 
             foreach (Byte[] message in m_messageBuffer[bufferTime])
                 decodeMessage(message);

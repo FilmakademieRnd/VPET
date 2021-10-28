@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57491f7bed84c034f878719cb8086863, type: 3}
   m_Name: DATA_VPET_2D_UI_Settings
   m_EditorClassIdentifier: 
-  spinnerPrefab: {fileID: 4525799023743638965, guid: 8394591aa5d94654e901cedcc1e2600c, type: 3}
-  SliderPrefab: {fileID: 1177632157241151997, guid: e3a25f9abef28c14ea09e5ca2c0548c8, type: 3}
+  spinnerPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}
+  sliderPrefab: {fileID: 1177632157241151997, guid: 1049aa97f9c89f148baf01bc1d982264, type: 3}
