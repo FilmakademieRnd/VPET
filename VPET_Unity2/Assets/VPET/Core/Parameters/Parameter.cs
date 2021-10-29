@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 13.10.2021
+//! @date 28.10.2021
 
 using System;
 using System.Collections.Generic;
@@ -52,6 +52,10 @@ namespace vpet
         //! The name of the parameter.
         //!
         protected string _name;
+        //!
+        //! A reference to the parameters parent object.
+        //!
+        protected SceneObject _parent;
         //!
         //! Definition of VPETs parameter types
         //!
@@ -97,6 +101,13 @@ namespace vpet
             get => _name;
             protected set => _name = value;
         }
+        //!
+        //! Getter for parameters parent.
+        //!
+        public SceneObject parent
+        {
+            get => _parent;
+        }
 
         //!
         //! Fuction that determines a parameters C# type from a VPET type.
@@ -141,10 +152,11 @@ namespace vpet
         //!
         //! Constructor initializing members.
         //!
-        public Parameter(T value, string name, short id = -1)
+        public Parameter(T value, string name, SceneObject parent, short id = -1)
         {
             _value = value;
             _name = name;
+            _parent = parent;
             _type = typeof(T);
             _id = id;
         }

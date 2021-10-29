@@ -66,13 +66,13 @@ namespace vpet
             _light = this.GetComponent<Light>();
             if (_light)
             {
-                color = new Parameter<Color>(_light.color, "color", (short) parameterList.Count);
+                color = new Parameter<Color>(_light.color, "color", this, (short) parameterList.Count);
                 color.hasChanged += updateColor;
                 _parameterList.Add(color);
-                intensity = new Parameter<float>(_light.intensity, "intensity", (short)parameterList.Count);
+                intensity = new Parameter<float>(_light.intensity, "intensity", this, (short)parameterList.Count);
                 intensity.hasChanged += updateIntensity;
                 _parameterList.Add(intensity);
-                range = new Parameter<float>(_light.range, "range", (short)parameterList.Count);
+                range = new Parameter<float>(_light.range, "range", this, (short)parameterList.Count);
                 range.hasChanged += updateRange;
                 _parameterList.Add(range);
             }
