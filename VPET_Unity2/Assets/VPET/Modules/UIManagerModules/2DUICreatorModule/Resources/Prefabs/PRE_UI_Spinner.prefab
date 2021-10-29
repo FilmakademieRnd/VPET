@@ -610,6 +610,7 @@ MonoBehaviour:
   lerpTimeMilliSeconds: 50
   triggerPercent: 60
   triggerAcceleration: 10
+  screenPercentAxisDrag: 2.5
 --- !u!1 &4525799023743638965
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,7 +623,7 @@ GameObject:
   - component: {fileID: 1147271362884138602}
   - component: {fileID: 5376950116861449927}
   m_Layer: 5
-  m_Name: Spinner
+  m_Name: PRE_UI_Spinner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -660,11 +661,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4525799023743638965}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daf0c57651b05c049a04899ccc4650f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 43a625668938fae4c8dcecf8b8d5b6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSnap: {fileID: 5801572510629092701}
   currentAxis: 0
+  scrollSnap: {fileID: 5801572510629092701}
+  sensitivity: 0.65
 --- !u!114 &5376950116861449927
 MonoBehaviour:
   m_ObjectHideFlags: 0

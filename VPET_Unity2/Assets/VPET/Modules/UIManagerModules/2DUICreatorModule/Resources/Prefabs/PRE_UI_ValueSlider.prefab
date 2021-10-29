@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6920035314774884162}
   - component: {fileID: 6663310252840863572}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: PRE_UI_ValueSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

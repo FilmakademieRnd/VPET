@@ -55,6 +55,7 @@ namespace vpet
         }
 
         public int m_timesteps = ((int)(256f / 60)) * 60;
+        public Canvas m_vpetCanvas;
 
         private byte m_time = 0;
         public byte time 

@@ -42,8 +42,8 @@ namespace vpet
     {
 
         private List<GameObject> UIParameterList = new List<GameObject>();
-        private GameObject m_slider;
-        private GameObject m_spinner;
+        private Canvas m_canvas;
+        public UICreator2DModuleSettings settings;
 
         //!
         //! Constructor
@@ -62,9 +62,8 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
-            UICreator2DModuleSettings settings = Resources.Load("DATA_VPET_2D_UI_Settings") as UICreator2DModuleSettings;
-            m_slider = settings.sliderPrefab;
-            m_spinner = settings.spinnerPrefab;
+            settings = Resources.Load("DATA_VPET_2D_UI_Settings") as UICreator2DModuleSettings;
+            m_canvas = m_core.m_vpetCanvas;
         }
 
         //!
@@ -82,7 +81,6 @@ namespace vpet
 
             int buttonOffset = 50;
 
-
             foreach (SceneObject sceneObject in sceneObjects)
             {
                 //foreach (AbstractParameter param in sceneObject.parameterList)
@@ -99,23 +97,25 @@ namespace vpet
                     {
                         case AbstractParameter.ParameterType.FLOAT:
                             {
-                                gameObjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
+                                /* gameObjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
                                 Parameter<float> p = (Parameter<float>)param;
                                 gameObjectInstance.GetComponent<Slider>().onValueChanged.AddListener(p.setValue);
-                                buttonOffset = 50;
+                                buttonOffset = 50; */
                                 break;
                             }
                         case AbstractParameter.ParameterType.VECTOR3:
                             {
-                                gameObjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
+                                /* gameObjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
                                 Parameter<Vector3> p = (Parameter<Vector3>)param;
                                 Spinner spinner = gameObjectInstance.GetComponent<Spinner>();
                                 spinner.Init(p.value);
                                 spinner.hasChanged += p.setValue;
-                                buttonOffset = 100;
+                                buttonOffset = 100; */
                                 break;
                             }
                     }
+
+                    //If we added a UI Elemnt, position it here
                     if (gameObjectInstance != null)
                     {
                         UIParameterList.Add(gameObjectInstance);
