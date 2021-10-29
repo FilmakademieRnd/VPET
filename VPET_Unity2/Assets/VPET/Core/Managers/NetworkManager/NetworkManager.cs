@@ -41,7 +41,7 @@ namespace vpet
         [Serializable]
         public class NetworkManagerSettings : Settings
         {
-            public string m_serverIP = "192.168.1.224";
+            public string m_serverIP = "127.0.0.1";
         }
 
         //!

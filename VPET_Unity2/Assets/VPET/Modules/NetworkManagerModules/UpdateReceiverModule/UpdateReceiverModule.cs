@@ -51,7 +51,9 @@ namespace vpet
         //! A referece to VPET's scene manager.
         //!
         private SceneManager m_sceneManager;
-        
+
+        private int m_timesteps;
+
         //!
         //! Constructor
         //!
@@ -70,10 +72,12 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
+            m_timesteps = ((int)(256f / m_core.settings.framerate)) * m_core.settings.framerate;
+
             // initialize message buffer
-            m_messageBuffer = new List<List<byte[]>>(m_core.m_timesteps);
-            for (int i = 0; i < m_core.m_timesteps; i++)
-                m_messageBuffer.Add(new List<byte[]>(16));
+            m_messageBuffer = new List<List<byte[]>>(m_timesteps);
+            for (int i = 0; i < m_timesteps; i++)
+                m_messageBuffer.Add(new List<byte[]>(256));
 
             m_sceneManager = m_core.getManager<SceneManager>();
             m_sceneManager.sceneReady += connectAndStart;
@@ -102,54 +106,51 @@ namespace vpet
         {
             m_isRunning = true;
             AsyncIO.ForceDotNet.Force();
-            using (var receiver = new SubscriberSocket())
-            {
-                receiver.SubscribeToAnyTopic();
-                receiver.Connect("tcp://" + m_ip + ":" + m_port);
+            var receiver = new SubscriberSocket();
+            receiver.SubscribeToAnyTopic();
+            receiver.Connect("tcp://" + m_ip + ":" + m_port);
 
-                Helpers.Log("Receiver connected: " + "tcp://" + m_ip + ":" + m_port);
-                byte[] input = null;
-                while (m_isRunning)
+            Helpers.Log("Update receiver connected: " + "tcp://" + m_ip + ":" + m_port);
+            byte[] input = null;
+            while (m_isRunning)
+            {
+                if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(1), out input))
                 {
-                    if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(5), out input))
+                    if (input[0] != manager.cID)
                     {
-                        if (input[0] != manager.cID)
+                        switch ((MessageType)input[2])
                         {
-                            switch ((MessageType)input[2])
-                            {
-                                case MessageType.LOCK:
-                                        decodeLockMessage(ref input);
-                                    break;
-                                case MessageType.SYNC:
-                                    if (!m_core.settings.isServer)
-                                        decodeSyncMessage(ref input);
-                                    break;
-                                case MessageType.PARAMETERUPDATE:
-                                    // make shure that producer and consumer exclude eachother
-                                    lock (m_messageBuffer)
-                                    {
-                                        // input[1] is time
-                                        m_messageBuffer[input[1]].Add(input);
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
+                            case MessageType.LOCK:
+                                decodeLockMessage(ref input);
+                                break;
+                            case MessageType.SYNC:
+                                if (!m_core.settings.isServer)
+                                    decodeSyncMessage(ref input);
+                                break;
+                            case MessageType.PARAMETERUPDATE:
+                                // make shure that producer and consumer exclude eachother
+                                lock (m_messageBuffer)
+                                {
+                                    // input[1] is time
+                                    m_messageBuffer[input[1]].Add(input);
+                                }
+                                break;
+                            default:
+                                break;
                         }
                     }
-                    Thread.Yield();
-                    Thread.Sleep(1);
                 }
-                try
-                {
-                    receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
-                    receiver.Close();
-                    receiver.Dispose();
-                }
-                finally
-                {
-                    NetMQConfig.Cleanup(false);
-                }
+                Thread.Yield();
+            }
+            try
+            {
+                receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                receiver.Close();
+                receiver.Dispose();
+            }
+            finally
+            {
+                NetMQConfig.Cleanup(false);
             }
         }
 
@@ -186,13 +187,16 @@ namespace vpet
         {
             // define the buffer size by defining the time offset in the ringbuffer
             // % time steps to take ring (0 to m_timesteps) into account
-            // set to 1/4 second
-            int bufferTime = (((m_core.time - m_core.settings.framerate/4) + m_core.m_timesteps) % m_core.m_timesteps);
+            // set to 1/10 second
+            int bufferTime = (((m_core.time - m_core.settings.framerate/10) + m_timesteps) % m_timesteps);
 
-            foreach (Byte[] message in m_messageBuffer[bufferTime])
-                decodeMessage(message);
+            lock (m_messageBuffer)
+            {
+                foreach (Byte[] message in m_messageBuffer[bufferTime])
+                    decodeMessage(message);
 
-            m_messageBuffer[bufferTime].Clear();
+                m_messageBuffer[bufferTime].Clear();
+            }
         }
 
         //!

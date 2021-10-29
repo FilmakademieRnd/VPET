@@ -54,8 +54,6 @@ namespace vpet
 
         }
 
-        public int m_timesteps = ((int)(256f / 60)) * 60;
-
         private byte m_time = 0;
         public byte time 
         { 
@@ -63,7 +61,7 @@ namespace vpet
             get => m_time;
         }
 
-        public Settings _settings;
+        private Settings _settings;
         public coreSettings settings 
         {
             get { return (coreSettings) _settings; }
@@ -152,6 +150,7 @@ namespace vpet
         private void updateTime()
         {
             timeEvent?.Invoke(this, EventArgs.Empty);
+
             m_time = (m_time > 239 ? (byte)0 : m_time+=1);
 
             if ((m_time % settings.framerate) == 0)

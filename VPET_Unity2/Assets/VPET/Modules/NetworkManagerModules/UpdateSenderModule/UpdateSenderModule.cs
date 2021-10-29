@@ -230,51 +230,47 @@ namespace vpet
         {
             m_isRunning = true;
             AsyncIO.ForceDotNet.Force();
-            using (var sender = new PublisherSocket())
-            {
-                sender.Connect("tcp://" + m_ip + ":" + m_port);
+            var sender = new PublisherSocket();
 
-                while (m_isRunning)
+            sender.Connect("tcp://" + m_ip + ":" + m_port);
+            Helpers.Log("Update sender connected: " + "tcp://" + m_ip + ":" + m_port);
+            while (m_isRunning)
+            {
+                m_mre.WaitOne();
+                if (m_controlMessage != null)
                 {
-                    m_mre.WaitOne();
-                    if (m_controlMessage != null)
+                    lock (m_controlMessage)
                     {
-                        lock (m_controlMessage)
+                        sender.SendFrame(m_controlMessage, false); // true not wait 
+                        m_controlMessage = null;
+                    }
+                }
+                else
+                {
+                    lock (m_modifiedParameters)
+                    {
+                        if (m_modifiedParameters.Count > 0)
                         {
-                            try { sender.SendFrame(m_controlMessage, false); } // true not wait 
-                            catch { }
-                            m_controlMessage = null;
+                            byte time = m_core.time;
+                            foreach (AbstractParameter parameter in m_modifiedParameters)
+                                sender.SendFrame(createParameterMessage(parameter, time), false); // true not wait
+                            m_modifiedParameters.Clear();
                         }
                     }
-                    else
-                    {
-                        lock (m_modifiedParameters)
-                        {
-                            if (m_modifiedParameters.Count > 0)
-                            {
-                                byte time = m_core.time;
-                                foreach (AbstractParameter parameter in m_modifiedParameters)
-                                {
-                                    try { sender.SendFrame(createParameterMessage(parameter, time), false); } // true not wait
-                                    catch { }
-                                }
-                                m_modifiedParameters.Clear();
-                            }
-                        }
-                    }
-                    Thread.Yield();
                 }
-                try
-                {
-                    sender.Disconnect("tcp://" + m_ip + ":" + m_port);
-                    sender.Close();
-                    sender.Dispose();
-                }
-                finally
-                {
-                    NetMQConfig.Cleanup(false);
-                }
+                Thread.Yield();
             }
+            try
+            {
+                sender.Disconnect("tcp://" + m_ip + ":" + m_port);
+                sender.Close();
+                sender.Dispose();
+            }
+            finally
+            {
+                NetMQConfig.Cleanup(false);
+            }
+
         }
 
         //!

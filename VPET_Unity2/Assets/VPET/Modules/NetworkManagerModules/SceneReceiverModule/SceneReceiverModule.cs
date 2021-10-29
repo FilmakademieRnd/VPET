@@ -86,43 +86,49 @@ namespace vpet
         protected override void run()
         {
             AsyncIO.ForceDotNet.Force();
-            using (var sceneReceiver = new RequestSocket())
+            var sceneReceiver = new RequestSocket();
+
+            SceneManager sceneManager = m_core.getManager<SceneManager>();
+
+            sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
+
+            SceneManager.SceneDataHandler sceneDataHandler = sceneManager.sceneDataHandler;
+            foreach (string request in m_requests)
             {
-                SceneManager sceneManager = m_core.getManager<SceneManager>();
-
-                sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
-
-                SceneManager.SceneDataHandler sceneDataHandler = sceneManager.sceneDataHandler;
-                foreach (string request in m_requests)
+                sceneReceiver.SendFrame(request);
+                switch (request)
                 {
-                    sceneReceiver.SendFrame(request);
-                    switch (request)
-                    {
-                        case "header":
-                            sceneDataHandler.headerByteData = sceneReceiver.ReceiveFrameBytes();
-                            break;
-                        case "nodes":
-                            sceneDataHandler.nodesByteData = sceneReceiver.ReceiveFrameBytes();
-                            break;
-                        case "objects":
-                            sceneDataHandler.objectsByteData = sceneReceiver.ReceiveFrameBytes();
-                            break;
-                        case "characters":
-                            sceneDataHandler.characterByteData = sceneReceiver.ReceiveFrameBytes();
-                            break;
-                        case "textures":
-                            sceneDataHandler.texturesByteData = sceneReceiver.ReceiveFrameBytes();
-                            break;
-                        case "materials":
-                            sceneDataHandler.materialsByteData = sceneReceiver.ReceiveFrameBytes();
-                            break;
-                    }
+                    case "header":
+                        sceneDataHandler.headerByteData = sceneReceiver.ReceiveFrameBytes();
+                        break;
+                    case "nodes":
+                        sceneDataHandler.nodesByteData = sceneReceiver.ReceiveFrameBytes();
+                        break;
+                    case "objects":
+                        sceneDataHandler.objectsByteData = sceneReceiver.ReceiveFrameBytes();
+                        break;
+                    case "characters":
+                        sceneDataHandler.characterByteData = sceneReceiver.ReceiveFrameBytes();
+                        break;
+                    case "textures":
+                        sceneDataHandler.texturesByteData = sceneReceiver.ReceiveFrameBytes();
+                        break;
+                    case "materials":
+                        sceneDataHandler.materialsByteData = sceneReceiver.ReceiveFrameBytes();
+                        break;
                 }
-
-                sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
-                sceneReceiver.Close();
-                sceneReceiver.Dispose();
             }
+            try
+            {
+                sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                sceneReceiver.Dispose();
+                sceneReceiver.Close();
+            }
+            finally
+            {
+                NetMQConfig.Cleanup(false);
+            }
+
         }
 
 

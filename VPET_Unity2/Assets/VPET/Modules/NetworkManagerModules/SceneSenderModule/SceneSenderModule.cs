@@ -61,38 +61,36 @@ namespace vpet
         {
             m_isRunning = true;
             AsyncIO.ForceDotNet.Force();
-            using (var dataSender = new ResponseSocket())
+            var dataSender = new ResponseSocket();
+
+            dataSender.Bind("tcp://" + m_ip + ":" + m_port);
+            Debug.Log("Enter while.. ");
+
+            while (m_isRunning)
             {
-                dataSender.Bind("tcp://" + m_ip + ":" + m_port);
-                Debug.Log("Enter while.. ");
-
-                while (m_isRunning)
+                string message = "";
+                dataSender.TryReceiveFrameString(out message);       // TryReceiveFrameString returns null if no message has been received!
+                if (message != null)
                 {
-                    string message = "";
-                    dataSender.TryReceiveFrameString(out message);       // TryReceiveFrameString returns null if no message has been received!
-                    if (message != null)
-                    {
-                        if (m_responses.ContainsKey(message))
-                            dataSender.SendFrame(m_responses[message]);
-                        else
-                            dataSender.SendFrame(new byte[0]);
+                    if (m_responses.ContainsKey(message))
+                        dataSender.SendFrame(m_responses[message]);
+                    else
+                        dataSender.SendFrame(new byte[0]);
 
-                    }
-                    Thread.Sleep(100);
                 }
+                Thread.Sleep(100);
+            }
 
-                // TODO: check first if closed
-                try
-                {
-                    dataSender.Disconnect("tcp://" + m_ip + ":" + m_port);
-                    dataSender.Dispose();
-                    dataSender.Close();
-                }
-                finally
-                {
-                    NetMQConfig.Cleanup(false);
-                }
-
+            // TODO: check first if closed
+            try
+            {
+                dataSender.Disconnect("tcp://" + m_ip + ":" + m_port);
+                dataSender.Dispose();
+                dataSender.Close();
+            }
+            finally
+            {
+                NetMQConfig.Cleanup(false);
             }
         }
 
