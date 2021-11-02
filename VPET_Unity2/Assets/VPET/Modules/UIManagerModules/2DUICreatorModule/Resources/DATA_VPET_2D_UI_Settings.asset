@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57491f7bed84c034f878719cb8086863, type: 3}
   m_Name: DATA_VPET_2D_UI_Settings
   m_EditorClassIdentifier: 
+  manipulatorSelector: {fileID: 4307059089844997307, guid: 71afd1100b336784a81ae5d36772ef00, type: 3}
   parameterMapping:
     m_keys: 040702
     m_values:
@@ -35,3 +36,15 @@ MonoBehaviour:
     manipulatorPrefab: {fileID: 2892447746883057861, guid: 71b774303bf331e4baf1aeeaf5c3a793, type: 3}
   - type: 3
     manipulatorPrefab: {fileID: 696908080734692091, guid: dc63da0f69c0adf43994f239f8fc5940, type: 3}
+  - type: 1
+    manipulatorPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}
+  - type: 1
+    manipulatorPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}
+  - type: 1
+    manipulatorPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}
+  - type: 1
+    manipulatorPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}
+  - type: 1
+    manipulatorPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}
+  - type: 1
+    manipulatorPrefab: {fileID: 4525799023743638965, guid: 51997ceb00f06a24b987ca381e1ca66a, type: 3}

@@ -9,9 +9,10 @@ namespace vpet
     {
         public Button selectionButton;
 
-        public void Init(SceneObjectViewMenu sceneObjectMenu, int index)
+        public void Init(SceneObjectViewMenu sceneObjectMenu, Sprite icon, int index)
         {
-            
+            selectionButton.onClick.AddListener(() => sceneObjectMenu.SelectManipulator(index));
+            selectionButton.image.sprite = icon;
         }
     }
 }

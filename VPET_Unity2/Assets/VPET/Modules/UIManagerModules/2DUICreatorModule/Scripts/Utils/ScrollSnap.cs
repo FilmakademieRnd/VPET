@@ -149,7 +149,7 @@ namespace vpet
                 float dt = Time.deltaTime;
                 
                 float accelerationY = dy / dt;
-                Debug.Log($"Axis Y Axelleration {accelerationY}");
+                //Debug.Log($"Axis Y Axelleration {accelerationY}");
 
                 //Transforming value back to decimal percent 5% -> 0.05
                 onAxisDrag?.Invoke((Spinner.Axis)CurrentIndex, accelerationY);// / 100f);
@@ -309,7 +309,7 @@ namespace vpet
             {
                 scrollRect.enabled = true;
                 axisLocked = false;
-                Debug.Log("Axis unlocked");
+                //Debug.Log("Axis unlocked");
             }
             else
             {
@@ -317,7 +317,7 @@ namespace vpet
                 scrollRect.enabled = false;
                 StartLerping();
                 axisLocked = true;
-                Debug.Log("Axis Lock triggered");
+                //Debug.Log("Axis Lock triggered");
             }
         }
     }

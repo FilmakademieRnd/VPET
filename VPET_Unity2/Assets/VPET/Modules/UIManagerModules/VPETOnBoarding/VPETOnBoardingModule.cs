@@ -19,12 +19,11 @@ namespace vpet
         //button connect/start
         
         private Core m_vpet;
-        private CanvasGroup canvas;
+        public Menu settingsMenu;
 
         public void Awake()
         {
             m_vpet = GameObject.Find("VPET").GetComponent<Core>();
-            canvas = GetComponent<CanvasGroup>();
             
             ipInput.text = "127.0.0.1";
             portInput.text = "5555";
@@ -41,10 +40,8 @@ namespace vpet
 
             sceneParserModule.ParseScene();
             sceneSenderModule.sendScene(ipInput.text, portInput.text);
-
-            canvas.alpha = 0f;
-            canvas.interactable = false;
-            canvas.blocksRaycasts = false;
+            
+            settingsMenu.HideMenu();
         }
 
         public void receive()
@@ -58,6 +55,8 @@ namespace vpet
             SceneCreatorModule sceneCreatorModule = sceneManager.getModule<SceneCreatorModule>();
 
             sceneReceiverModule.receiveScene(ipInput.text, portInput.text);
+            
+            settingsMenu.HideMenu();
         }
     }
 }

@@ -104,9 +104,9 @@ namespace vpet
             // bind individual input events
             //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
-            m_inputs.tonioMap.Tap.started += ctx => TapFunction(ctx);
-            m_inputs.tonioMap.Tap.performed += ctx => TapFunction(ctx);
-            m_inputs.tonioMap.Tap.canceled += ctx => TapFunction(ctx);
+            m_inputs.tonioMap.Click.started += ctx => TapFunction(ctx);
+            m_inputs.tonioMap.Click.performed += ctx => TapFunction(ctx);
+            m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
 
         }
         private void TapFunction(InputAction.CallbackContext c)
@@ -116,7 +116,7 @@ namespace vpet
 
             if (c.performed)
             {
-                e.point = m_inputs.tonioMap.ScreenPosition.ReadValue<Vector2>();
+                e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
                 inputEvent?.Invoke(this, e);
             }
 

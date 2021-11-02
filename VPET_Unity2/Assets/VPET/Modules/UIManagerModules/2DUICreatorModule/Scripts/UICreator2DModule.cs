@@ -137,12 +137,14 @@ namespace vpet
 
         private void clearUI()
         {
-            foreach (GameObject oldUIElement in UIParameterList)
+            /* foreach (GameObject oldUIElement in UIParameterList)
             {
                 UnityEngine.Object.Destroy(oldUIElement);
             }
 
-            UIParameterList.Clear();
+            UIParameterList.Clear(); */
+
+            m_sceneObjectViewMenu.Clear();
         }
 
     }

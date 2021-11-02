@@ -7,7 +7,7 @@ namespace vpet
     [CreateAssetMenu(fileName = "DATA_VPET_2D_UI_Settings", menuName = "VPET/Create UI Creator 2D Settings file", order = 1)]
     public class UICreator2DModuleSettings : ScriptableObject
     {
-        public GameObject manipulatorSelector;
+        public ManipulatorSelector manipulatorSelector;
         public ParameterMapping parameterMapping;
         public List<ManipulatorReference> manipulators;
     }
