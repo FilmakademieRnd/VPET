@@ -15,6 +15,7 @@ namespace vpet
 
         private SelectionAnalyzer selectionAnalyzer = new SelectionAnalyzer();
         
+        private List<GameObject> instancedManipulators = new List<GameObject>();
 
         public void Init(UICreator2DModule ui2DModule, List<SceneObject> selection)
         {
@@ -39,11 +40,23 @@ namespace vpet
                 if(manipRef.manipulatorPrefab != null)
                 {
                     manipulators.Add(manipRef);
-                    Debug.Log($"VPET Added determined to show {manipRef.type} Manipulator");
+                    Debug.Log($"VPET Added determined to create {manipRef.type} Manipulator");
                 }
+
+                GameObject createdManip = Instantiate(manipRef.manipulatorPrefab, manipulatorParent);
+                createdManip.SetActive(false);
+                instancedManipulators.Add(createdManip);
+
+                GameObject createdManipSelector = Instantiate(ui2DModule.settings.manipulatorSelector, manipulatorSelection);
             }
 
 
+        }
+
+        public void InstantiateManipulators(List<ManipulatorReference> selection)
+        {
+            //Add Manipulator Icons to the Selector part
+            //Add Actual Manipulators as child of manipulator parent
         }
 
         public void InitManipulatorSelection()
