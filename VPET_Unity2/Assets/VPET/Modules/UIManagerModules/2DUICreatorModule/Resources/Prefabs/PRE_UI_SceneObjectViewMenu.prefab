@@ -504,7 +504,7 @@ MonoBehaviour:
   menuGroup: {fileID: 0}
   isActive: 1
   manipulatorParent: {fileID: 6335300372849287581}
-  manipulatorSelection: {fileID: 8004107346914796540}
+  manipulatorSelection: {fileID: 3825168469130524396}
   objectSelection: {fileID: 376654862}
   viewSettings: {fileID: 365293025}
 --- !u!1 &6942457416297062744

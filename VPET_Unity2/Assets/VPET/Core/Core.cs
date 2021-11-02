@@ -31,6 +31,8 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem.UI;
 
 namespace vpet
 {
@@ -55,7 +57,7 @@ namespace vpet
         }
 
         public int m_timesteps = ((int)(256f / 60)) * 60;
-        public Canvas m_vpetCanvas;
+        public InputSystemUIInputModule inputModule;
 
         private byte m_time = 0;
         public byte time 

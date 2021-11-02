@@ -16,10 +16,15 @@ namespace vpet
         private SelectionAnalyzer selectionAnalyzer = new SelectionAnalyzer();
         
         private List<GameObject> instancedManipulators = new List<GameObject>();
+        private List<GameObject> instancedManipulatorSelectors = new List<GameObject>();
 
         public void Init(UICreator2DModule ui2DModule, List<SceneObject> selection)
         {
-            if(selection.Count < 1) return;
+            if(selection.Count < 1)
+            {
+                Debug.Log("Selection was empty, no UI will be displayed!");
+                return;
+            }
 
             ShowMenu();
 
@@ -49,6 +54,7 @@ namespace vpet
 
                         ManipulatorSelector createdManipSelector = Instantiate(ui2DModule.settings.manipulatorSelector, manipulatorSelection);
                         createdManipSelector.Init(this, manipSetting.uiSprites[0], manipIndex);
+                        instancedManipulatorSelectors.Add(createdManipSelector.gameObject);
 
                         manipIndex++;
                     }
@@ -72,6 +78,13 @@ namespace vpet
             {
                 Destroy(manip);
             }
+            instancedManipulators.Clear();
+
+            foreach (var manipSelec in instancedManipulatorSelectors)
+            {
+                Destroy(manipSelec);
+            }
+            instancedManipulatorSelectors.Clear();            
         }
 
         public void InstantiateManipulators(List<ManipulatorReference> selection)

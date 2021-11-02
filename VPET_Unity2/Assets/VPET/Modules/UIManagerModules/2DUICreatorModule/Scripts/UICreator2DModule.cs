@@ -42,7 +42,6 @@ namespace vpet
     {
 
         private List<GameObject> UIParameterList = new List<GameObject>();
-        private Canvas m_canvas;
         public UICreator2DModuleSettings settings;
         private SceneObjectViewMenu m_sceneObjectViewMenu;
 
@@ -65,7 +64,6 @@ namespace vpet
             manager.selectionChanged += createUI;
             settings = Resources.Load("DATA_VPET_2D_UI_Settings") as UICreator2DModuleSettings;
 
-            m_canvas = m_core.m_vpetCanvas;
             m_sceneObjectViewMenu = GameObject.FindObjectOfType<SceneObjectViewMenu>();
         }
 
@@ -75,12 +73,12 @@ namespace vpet
         //!
         private void createUI(object sender, List<SceneObject> sceneObjects)
         {
-            clearUI();
+
+            m_sceneObjectViewMenu.Clear();
             
             // [REVIEW]
             // UI Debug
             Debug.Log("--- Creating 2D UI ---");
-            Debug.Log(sceneObjects);
 
             m_sceneObjectViewMenu.Init(this, sceneObjects);
 

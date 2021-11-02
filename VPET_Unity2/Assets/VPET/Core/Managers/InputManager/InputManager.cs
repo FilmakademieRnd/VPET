@@ -32,6 +32,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 namespace vpet
 {
@@ -61,9 +62,8 @@ namespace vpet
             public Vector2 delta;
             public double time;
         }
-        //[REVIEW]
-        //public delegate void ClickAction(InputEventArgs InputArg);
-        //public event ClickAction OnClicked;
+
+        private InputSystemUIInputModule m_inputModule;
 
         //!
         //! The default input event.
@@ -108,13 +108,15 @@ namespace vpet
             m_inputs.tonioMap.Click.performed += ctx => TapFunction(ctx);
             m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
 
+            m_inputModule = vpetCore.inputModule;
         }
+
         private void TapFunction(InputAction.CallbackContext c)
         {
             //Debug.Log(c);
             InputEventArgs e = new InputEventArgs();
 
-            if (c.performed)
+            if (c.performed && !TappedUI())
             {
                 e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
                 inputEvent?.Invoke(this, e);
@@ -132,6 +134,13 @@ namespace vpet
                 //e.delta = Vector2.zero;
                 //e.time = 0f;
             }
+        }
+
+        public bool TappedUI()
+        {
+            bool result = m_inputModule.IsPointerOverGameObject(Mouse.current);
+            Debug.Log(result? "Clicked in the Sene": "Clicked on UI");
+            return result;
         }
     }
 }
