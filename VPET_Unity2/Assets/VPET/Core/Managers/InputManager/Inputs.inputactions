@@ -142,7 +142,7 @@
                 },
                 {
                     "name": "Click",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "39e9fa23-d5d0-4a24-880d-340c9cc20808",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -187,28 +187,9 @@
                     "expectedControlType": "Quaternion",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Drag",
-                    "type": "Button",
-                    "id": "200863e5-f743-4e9b-a495-b099c194b10a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "f19f6a66-b296-4479-aae7-dbc6a2d6e4f3",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Drag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "4fc21893-c29a-424f-9d7f-f6490366ec48",

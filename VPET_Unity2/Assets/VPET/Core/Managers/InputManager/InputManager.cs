@@ -104,7 +104,7 @@ namespace vpet
             // bind individual input events
             //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
-            m_inputs.tonioMap.Click.started += ctx => TapFunction(ctx);
+
             m_inputs.tonioMap.Click.performed += ctx => TapFunction(ctx);
             m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
 
@@ -113,13 +113,15 @@ namespace vpet
 
         private void TapFunction(InputAction.CallbackContext c)
         {
-            //Debug.Log(c);
             InputEventArgs e = new InputEventArgs();
 
-            if (c.performed && !TappedUI())
+            if (c.performed)
             {
-                e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
-                inputEvent?.Invoke(this, e);
+                if (!TappedUI())
+                {
+                    e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
+                    inputEvent?.Invoke(this, e);
+                }
             }
 
             // just an exampe, needs different code to discover correct type and values!
@@ -138,8 +140,8 @@ namespace vpet
 
         public bool TappedUI()
         {
-            bool result = m_inputModule.IsPointerOverGameObject(Mouse.current);
-            Debug.Log(result? "Clicked in the Sene": "Clicked on UI");
+            bool result = m_inputModule.IsPointerOverGameObject(Mouse.current.deviceId);
+            Debug.Log(result? "Clicked on UI": "Clicked in the Sene");
             return result;
         }
     }

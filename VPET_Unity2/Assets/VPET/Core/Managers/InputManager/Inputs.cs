@@ -155,7 +155,7 @@ public class @Inputs : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""Click"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""39e9fa23-d5d0-4a24-880d-340c9cc20808"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -200,28 +200,9 @@ public class @Inputs : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Quaternion"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""Drag"",
-                    ""type"": ""Button"",
-                    ""id"": ""200863e5-f743-4e9b-a495-b099c194b10a"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""f19f6a66-b296-4479-aae7-dbc6a2d6e4f3"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Hold"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Drag"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""4fc21893-c29a-424f-9d7f-f6490366ec48"",
@@ -444,7 +425,6 @@ public class @Inputs : IInputActionCollection, IDisposable
         m_tonioMap_RightClick = m_tonioMap.FindAction("RightClick", throwIfNotFound: true);
         m_tonioMap_TrackedDevicePosition = m_tonioMap.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_tonioMap_TrackedDeviceOrientation = m_tonioMap.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
-        m_tonioMap_Drag = m_tonioMap.FindAction("Drag", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -569,7 +549,6 @@ public class @Inputs : IInputActionCollection, IDisposable
     private readonly InputAction m_tonioMap_RightClick;
     private readonly InputAction m_tonioMap_TrackedDevicePosition;
     private readonly InputAction m_tonioMap_TrackedDeviceOrientation;
-    private readonly InputAction m_tonioMap_Drag;
     public struct TonioMapActions
     {
         private @Inputs m_Wrapper;
@@ -584,7 +563,6 @@ public class @Inputs : IInputActionCollection, IDisposable
         public InputAction @RightClick => m_Wrapper.m_tonioMap_RightClick;
         public InputAction @TrackedDevicePosition => m_Wrapper.m_tonioMap_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_tonioMap_TrackedDeviceOrientation;
-        public InputAction @Drag => m_Wrapper.m_tonioMap_Drag;
         public InputActionMap Get() { return m_Wrapper.m_tonioMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -624,9 +602,6 @@ public class @Inputs : IInputActionCollection, IDisposable
                 @TrackedDeviceOrientation.started -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.performed -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.canceled -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnTrackedDeviceOrientation;
-                @Drag.started -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnDrag;
-                @Drag.performed -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnDrag;
-                @Drag.canceled -= m_Wrapper.m_TonioMapActionsCallbackInterface.OnDrag;
             }
             m_Wrapper.m_TonioMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -661,9 +636,6 @@ public class @Inputs : IInputActionCollection, IDisposable
                 @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
-                @Drag.started += instance.OnDrag;
-                @Drag.performed += instance.OnDrag;
-                @Drag.canceled += instance.OnDrag;
             }
         }
     }
@@ -688,6 +660,5 @@ public class @Inputs : IInputActionCollection, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
-        void OnDrag(InputAction.CallbackContext context);
     }
 }

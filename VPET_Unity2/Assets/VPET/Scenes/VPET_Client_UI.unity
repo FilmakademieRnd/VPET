@@ -832,7 +832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_timesteps: 240
-  m_vpetCanvas: {fileID: 0}
+  inputModule: {fileID: 413575431}
 --- !u!850595691 &1778909856
 LightingSettings:
   m_ObjectHideFlags: 0

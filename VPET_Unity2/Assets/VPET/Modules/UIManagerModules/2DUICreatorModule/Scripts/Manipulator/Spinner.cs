@@ -80,7 +80,6 @@ namespace vpet
             Vector3 axisDiff = direction * normalizedDiff;
             Vector3 newlocalPos = localReferenceValue + axisDiff;//Vector3.Scale(localReferenceValue, axisDiff);
             
-            Debug.Log(newlocalPos);
             return newlocalPos;
         }
     }
