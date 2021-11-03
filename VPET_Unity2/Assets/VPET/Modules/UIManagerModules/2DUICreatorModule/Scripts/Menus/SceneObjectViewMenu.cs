@@ -33,37 +33,34 @@ namespace vpet
             SceneObject mainSelection = selection[0];
 
             int manipIndex = 0;
+            int paramIndex = 0;
             foreach (var paramater in mainSelection.parameterList)
             {
                 //Check which type of Manipulator edits this type of Parameter
-                try
+                //Get UI Prefab Reference via this Manipulator Type
+                try 
                 {
-                    ManipulatorSetting manipSetting = ui2DModule.settings.parameterMapping[paramater.vpetType];
-
-                    //Get UI Prefab Reference via this Manipulator Type
-                    ManipulatorReference manipRef = ui2DModule.settings.manipulators.First(reference => reference.type == manipSetting.manipulator);
-
+                    ManipulatorReference manipRef = ui2DModule.settings.manipulators[paramIndex];
+                    
                     if(manipRef.manipulatorPrefab != null)
-                    {
-                        manipulators.Add(manipRef);
-                        Debug.Log($"VPET Added determined to create {manipRef.type} Manipulator");
-                        
+                    {                        
                         GameObject createdManip = Instantiate(manipRef.manipulatorPrefab, manipulatorParent);
                         createdManip.SetActive(false);
                         instancedManipulators.Add(createdManip);
 
                         ManipulatorSelector createdManipSelector = Instantiate(ui2DModule.settings.manipulatorSelector, manipulatorSelection);
-                        createdManipSelector.Init(this, manipSetting.uiSprites[0], manipIndex);
+                        createdManipSelector.Init(this, manipRef.selectorIcon, manipIndex);
                         instancedManipulatorSelectors.Add(createdManipSelector.gameObject);
 
                         manipIndex++;
                     }
                 }
-                catch(KeyNotFoundException e)
+                catch(System.IndexOutOfRangeException e)
                 {
-                    //No Manipulator Setting was found for this type of parameter
-                    continue;
+                    
                 }
+
+                paramIndex++;
             }
 
             if(instancedManipulators.Count > 0)

@@ -36,9 +36,11 @@ namespace vpet
         //!
         public event spinnerEventHandler hasChanged;
 
-        public void Init(Vector3 initialValue)
+        public void Init(Vector3 initialValue, AbstractParameter abstractPara)
         {
             _value = initialValue;
+            Parameter<Vector3> p = (Parameter<Vector3>)abstractPara;
+            hasChanged += p.setValue;
         }
 
         private void Awake()

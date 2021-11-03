@@ -8,28 +8,15 @@ namespace vpet
     public class UICreator2DModuleSettings : ScriptableObject
     {
         public ManipulatorSelector manipulatorSelector;
-        public ParameterMapping parameterMapping;
         public List<ManipulatorReference> manipulators;
     }
 
     [System.Serializable]
-    public struct ManipulatorReference
+    public class ManipulatorReference
     {
-        public ManipulatorType type;
+        public AbstractParameter.ParameterType parameterType;
         public GameObject manipulatorPrefab;
-    }
-
-    [System.Serializable]
-    public class ParameterMapping : SerializableDictionary<AbstractParameter.ParameterType, ManipulatorSetting>
-    {
-
-    }
-
-    [System.Serializable]
-    public struct ManipulatorSetting
-    {
-        public ManipulatorType manipulator;
-        public List<Sprite> uiSprites;
+        public Sprite selectorIcon;
     }
 
     public enum ManipulatorType
