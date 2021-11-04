@@ -6,6 +6,6 @@ namespace vpet
 {
     public abstract class Manipulator : MonoBehaviour
     {
-        public abstract void Init(AbstractParameter parameter);
+        public abstract void LinkToParameter(AbstractParameter abstractParam);
     }
 }

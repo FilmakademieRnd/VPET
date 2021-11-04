@@ -81,67 +81,10 @@ namespace vpet
             Debug.Log("--- Creating 2D UI ---");
 
             m_sceneObjectViewMenu.Init(this, sceneObjects);
-
-            /* int buttonOffset = 50;
-
-            foreach (SceneObject sceneObject in sceneObjects)
-            {
-                //foreach (AbstractParameter param in sceneObject.parameterList)
-                for (int i = 0; i < sceneObject.parameterList.Count ; i++)
-                {
-                    AbstractParameter param = sceneObject.parameterList[i];
-                    Vector3 sliderPosition = new Vector3(800, 400 - (buttonOffset * i), 0);
-                    
-                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.cType);
-
-                    GameObject gameObjectInstance = null;
-
-                    switch (param.vpetType)
-                    {
-                        case AbstractParameter.ParameterType.FLOAT:
-                            {
-                                gameObjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
-                                Parameter<float> p = (Parameter<float>)param;
-                                gameObjectInstance.GetComponent<Slider>().onValueChanged.AddListener(p.setValue);
-                                buttonOffset = 50;
-                                break;
-                            }
-                        case AbstractParameter.ParameterType.VECTOR3:
-                            {
-                                gameObjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
-                                Parameter<Vector3> p = (Parameter<Vector3>)param;
-                                Spinner spinner = gameObjectInstance.GetComponent<Spinner>();
-                                spinner.Init(p.value);
-                                spinner.hasChanged += p.setValue;
-                                buttonOffset = 100;
-                                break;
-                            }
-                    }
-
-                    //If we added a UI Elemnt, position it here
-                    if (gameObjectInstance != null)
-                    {
-                        UIParameterList.Add(gameObjectInstance);
-
-                        RectTransform rectTransform = gameObjectInstance.GetComponent<RectTransform>();
-                        rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity);
-                        gameObjectInstance.transform.SetParent(GameObject.Find("Canvas").transform);
-
-                        gameObjectInstance.GetComponentInChildren<Text>().text = param.name;
-                    }
-                }
-            } */
         }
 
         private void clearUI()
         {
-            /* foreach (GameObject oldUIElement in UIParameterList)
-            {
-                UnityEngine.Object.Destroy(oldUIElement);
-            }
-
-            UIParameterList.Clear(); */
-
             m_sceneObjectViewMenu.Clear();
         }
 

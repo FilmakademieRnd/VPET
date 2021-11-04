@@ -6,16 +6,8 @@ namespace vpet
 {
     public class ValueSlider : Manipulator
     {
-        // Start is called before the first frame update
-        void Start()
+        public override void LinkToParameter(AbstractParameter abstractParam)
         {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
         }
     }
 }

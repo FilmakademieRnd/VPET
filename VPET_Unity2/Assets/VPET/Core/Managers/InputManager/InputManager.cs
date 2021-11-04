@@ -141,7 +141,7 @@ namespace vpet
         public bool TappedUI()
         {
             bool result = m_inputModule.IsPointerOverGameObject(Mouse.current.deviceId);
-            Debug.Log(result? "Clicked on UI": "Clicked in the Sene");
+            //Debug.Log(result? "Clicked on UI": "Clicked in the Sene");
             return result;
         }
     }

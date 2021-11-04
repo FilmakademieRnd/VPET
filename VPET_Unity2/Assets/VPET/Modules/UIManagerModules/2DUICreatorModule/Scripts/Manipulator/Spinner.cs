@@ -5,7 +5,7 @@ using System;
 
 namespace vpet
 {
-    public class Spinner : Manipulator
+    public abstract class Spinner : Manipulator
     {
         public enum Axis
         {
@@ -20,7 +20,7 @@ namespace vpet
         [Range(0.1f, 2f)]
         public float sensitivity = 0.65f;
 
-        private Vector3 _value;
+        protected Vector3 _value;
 
         //!
         //! Definition of change function parameters.
@@ -30,18 +30,12 @@ namespace vpet
             public Vector3 value;
         }
 
-        public delegate void spinnerEventHandler(Vector3 v);
-        //!
-        //! Event emitted when parameter changed.
-        //!
-        public event spinnerEventHandler hasChanged;
-
-        public void Init(Vector3 initialValue, AbstractParameter abstractPara)
+        public void Init(Vector3 initialValue)
         {
             _value = initialValue;
-            Parameter<Vector3> p = (Parameter<Vector3>)abstractPara;
-            hasChanged += p.setValue;
         }
+
+        public abstract void InvokeHasChanged();
 
         private void Awake()
         {
@@ -54,8 +48,8 @@ namespace vpet
         {
             //TODO: Shouldn't the UI send "Normalized" Data instead of Total Values?
             _value = AccelerationToLocalSpace(axis, value * sensitivity, _value);
-            
-            hasChanged?.Invoke(_value);
+
+            InvokeHasChanged();
         }
 
         private void AxisSnap(int index)

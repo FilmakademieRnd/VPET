@@ -6,17 +6,9 @@ using UnityEngine;
 namespace vpet
 {
     public class ColorPicker : Manipulator
-    {
-        // Start is called before the first frame update
-        void Start()
+    {        
+        public override void LinkToParameter(AbstractParameter abstractParam)
         {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
         }
     }
 }

@@ -14,9 +14,17 @@ namespace vpet
     [System.Serializable]
     public class ManipulatorReference
     {
-        public AbstractParameter.ParameterType parameterType;
-        public GameObject manipulatorPrefab;
+        public AbstractParameter.ParameterType valueType;
+        public ParameterType parameterType;
+        public Manipulator manipulatorPrefab;
         public Sprite selectorIcon;
+    }
+
+    public enum ParameterType
+    {
+        Position,
+        Rotation,
+        Scale
     }
 
     public enum ManipulatorType
