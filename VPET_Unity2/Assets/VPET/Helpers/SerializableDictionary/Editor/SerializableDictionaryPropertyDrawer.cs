@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿#if UNITY_EDITOR
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 using System.Reflection;
 using System;
 
@@ -606,3 +607,5 @@ public class SerializableDictionaryStoragePropertyDrawer : PropertyDrawer
 		return EditorGUI.GetPropertyHeight(property);
 	}
 }
+
+#endif

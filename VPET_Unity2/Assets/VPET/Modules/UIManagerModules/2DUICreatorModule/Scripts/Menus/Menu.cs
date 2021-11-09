@@ -20,8 +20,10 @@ namespace vpet
         #region Public Fields
         public UIMenuStart startBehaviour;
         public bool turnOnAndOffCanvasObject = false; 
-        public bool blocksRaycasts = true;          
+        public bool blocksRaycasts = true;
+        #if UNITY_EDITOR
         [ReadOnly]
+        #endif
         public CanvasGroup menuGroup;
  
         [HideInInspector]
