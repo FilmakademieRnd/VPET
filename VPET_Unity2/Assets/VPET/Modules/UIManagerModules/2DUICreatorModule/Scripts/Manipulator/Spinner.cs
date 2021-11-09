@@ -13,8 +13,10 @@ namespace vpet
             Y = 1,
             Z = 2
         }
-        
+
+        #if UNITY_EDITOR
         [ReadOnly]
+        #endif
         public Axis currentAxis;
         public ScrollSnap scrollSnap;
         [Range(0.1f, 2f)]
