@@ -155,17 +155,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
-  m_ActionsAsset: {fileID: -944628639613478452, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_PointAction: {fileID: -3620098603942503950, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_MoveAction: {fileID: 3499045786269238177, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_SubmitAction: {fileID: 3501583898488472335, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_CancelAction: {fileID: -2733100446518212118, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_LeftClickAction: {fileID: -9134580204943745741, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_MiddleClickAction: {fileID: -6254356270666264090, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_RightClickAction: {fileID: 4528473812601502359, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_ScrollWheelAction: {fileID: -5192946533559896588, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_TrackedDevicePositionAction: {fileID: -4143776715213334350, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 5275272130832771049, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_PointAction: {fileID: -2867342362678845708, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_MoveAction: {fileID: 3499045786269238177, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_SubmitAction: {fileID: 3501583898488472335, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_CancelAction: {fileID: -2733100446518212118, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_LeftClickAction: {fileID: -9134580204943745741, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_MiddleClickAction: {fileID: -6254356270666264090, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_RightClickAction: {fileID: 4528473812601502359, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_ScrollWheelAction: {fileID: -5192946533559896588, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_TrackedDevicePositionAction: {fileID: -4143776715213334350, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 5275272130832771049, guid: 518b08431656048e29b24e1689d13ebf, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
 --- !u!114 &413575432
@@ -193,6 +194,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -206,7 +208,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1136079608}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: Scene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,12 +223,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136079607}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 62.544147, y: -9.023121, z: 54.438133}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1331304640}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1320808352
 GameObject:
@@ -318,6 +320,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1488523944}
   - {fileID: 1370347303}
@@ -355,11 +358,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1331304639}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -63.4, y: 11.96, z: -68.7}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1136079608}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!81 &1331304641
 AudioListener:
@@ -651,6 +655,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6565867902599276098, guid: 9a3bd9526e8f4a2499af3c148150e871, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: receive
+      objectReference: {fileID: 0}
     - target: {fileID: 6565867902639024114, guid: 9a3bd9526e8f4a2499af3c148150e871, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -689,9 +697,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1320808356}
     m_Modifications:
+    - target: {fileID: 365293025, guid: dee9b377a6547384b91b3c18b70cf6fd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.7701416
+      objectReference: {fileID: 0}
     - target: {fileID: 3825168469130524396, guid: dee9b377a6547384b91b3c18b70cf6fd, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3825168469130524396, guid: dee9b377a6547384b91b3c18b70cf6fd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.00015321204
       objectReference: {fileID: 0}
     - target: {fileID: 6565867901006322460, guid: dee9b377a6547384b91b3c18b70cf6fd, type: 3}
       propertyPath: m_Name
@@ -815,6 +831,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -840,7 +857,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
-  serializedVersion: 3
+  serializedVersion: 4
   m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 0
   m_EnableRealtimeLightmaps: 0
@@ -853,7 +870,7 @@ LightingSettings:
   m_LightmapMaxSize: 1024
   m_BakeResolution: 50
   m_Padding: 2
-  m_TextureCompression: 0
+  m_LightmapCompression: 0
   m_AO: 0
   m_AOMaxDistance: 1
   m_CompAOExponent: 0
@@ -894,3 +911,4 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaDirect: 0.5
   m_PVRFilteringAtrousPositionSigmaIndirect: 2
   m_PVRFilteringAtrousPositionSigmaAO: 1
+  m_PVRTiledBaking: 0

@@ -113,11 +113,12 @@ namespace vpet
 
         private void TapFunction(InputAction.CallbackContext c)
         {
+            Debug.Log("Tapped");
             InputEventArgs e = new InputEventArgs();
 
             if (c.performed)
             {
-                if (!TappedUI())
+                if (!TappedUI(c.control.device.deviceId))
                 {
                     e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
                     inputEvent?.Invoke(this, e);
@@ -138,9 +139,9 @@ namespace vpet
             }
         }
 
-        public bool TappedUI()
+        public bool TappedUI(int id)
         {
-            bool result = m_inputModule.IsPointerOverGameObject(Mouse.current.deviceId);
+            bool result = m_inputModule.IsPointerOverGameObject(id);
             //Debug.Log(result? "Clicked on UI": "Clicked in the Sene");
             return result;
         }

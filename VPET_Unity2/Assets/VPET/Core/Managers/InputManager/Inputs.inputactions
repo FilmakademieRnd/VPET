@@ -11,7 +11,8 @@
                     "id": "92822953-cf9d-498c-b915-ee4322205c40",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TouchPress",
@@ -19,7 +20,8 @@
                     "id": "25011a82-3a0a-4c38-94a8-4fed0e6d9f28",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TouchPosition",
@@ -27,7 +29,8 @@
                     "id": "bff22165-01c6-4e4c-af37-f3703b288aae",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MousePress",
@@ -35,7 +38,8 @@
                     "id": "ce2ea5ae-2ae2-4e56-81e3-e02ffac7fe5e",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MousePosition",
@@ -43,7 +47,8 @@
                     "id": "f007b5c1-c042-4f3e-9988-2e9d240c34a6",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -114,7 +119,8 @@
                     "id": "b48a59d7-3b11-4d2b-afe3-1044fd9f54c6",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Submit",
@@ -122,7 +128,8 @@
                     "id": "72d4c606-0968-4616-bcc1-4ad463d0fde7",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Cancel",
@@ -130,7 +137,8 @@
                     "id": "df10f81d-a22c-4340-a842-99d5ef9ab4cb",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Point",
@@ -138,7 +146,8 @@
                     "id": "6ce499a9-b30f-4b6b-b826-af44eabb983f",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Click",
@@ -146,7 +155,8 @@
                     "id": "39e9fa23-d5d0-4a24-880d-340c9cc20808",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "ScrollWheel",
@@ -154,7 +164,8 @@
                     "id": "98f0d282-f6bb-45fd-96d3-8bd85aa5aed1",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MiddleClick",
@@ -162,7 +173,8 @@
                     "id": "2849e90e-27c2-40fc-a527-5d8dc8c17120",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "RightClick",
@@ -170,7 +182,8 @@
                     "id": "aaa7ebd1-bb7d-4e74-95f8-3ed939d14844",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TrackedDevicePosition",
@@ -178,7 +191,8 @@
                     "id": "e15f11d5-585c-4e90-a02b-fa16435a41b6",
                     "expectedControlType": "Vector3",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TrackedDeviceOrientation",
@@ -186,7 +200,8 @@
                     "id": "bdb52728-6ac9-4d37-8f36-50d3e26f6f9c",
                     "expectedControlType": "Quaternion",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -247,6 +262,17 @@
                 },
                 {
                     "name": "",
+                    "id": "d6d9f010-954f-42f5-976d-75e42c15d637",
+                    "path": "<Touchscreen>/touch*/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "11fd20d5-1927-4d81-9769-d4a1c5dabfa4",
                     "path": "<Mouse>/position",
                     "interactions": "",
@@ -263,6 +289,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
+                    "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "790ce86c-6087-4f6e-82da-c6da8acf6d40",
+                    "path": "<Touchscreen>/touch*/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false

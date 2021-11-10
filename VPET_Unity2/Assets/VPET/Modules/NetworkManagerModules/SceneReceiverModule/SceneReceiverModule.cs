@@ -70,6 +70,7 @@ namespace vpet
         protected async override void start(string ip, string port)
         {
             m_ip = ip;
+            Helpers.Log(ip);
             m_port = port;
 
             await Task.Run(() => run());

@@ -6,7 +6,11 @@
         "HelperAssembly",
         "Unity.InputSystem",
         "Unity.TextMeshPro",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.XR.ARFoundation",
+        "Unity.XR.ARKit",
+        "Unity.XR.ARSubsystems",
+        "Unity.XR.Management"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
