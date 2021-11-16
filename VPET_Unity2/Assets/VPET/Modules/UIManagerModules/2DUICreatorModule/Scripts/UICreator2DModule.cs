@@ -62,9 +62,8 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
-            UICreator2DModuleSettings settings = Resources.Load("DATA_VPET_2D_UI_Settings") as UICreator2DModuleSettings;
-            m_slider = settings.sliderPrefab;
-            m_spinner = settings.spinnerPrefab;
+            m_slider = Resources.Load("Prefabs/Slider") as GameObject;
+            m_spinner = Resources.Load("Prefabs/Spinner") as GameObject;
         }
 
 
@@ -111,8 +110,8 @@ namespace vpet
                                 gameObjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
                                 Parameter<Vector3> p = (Parameter<Vector3>)param;
                                 Spinner spinner = gameObjectInstance.GetComponent<Spinner>();
-                                spinner.Init(p.value);
-                                spinner.hasChanged += p.setValue;
+                                spinner.setValues(p.value);
+                                spinner.hasChanged += new Spinner.spinnerEventHandler(p.setValue);
                                 buttonOffset = 100;
                                 break;
                             }

@@ -5,20 +5,9 @@ using System;
 
 public class Spinner : MonoBehaviour
 {
-    public enum Axis
-    {
-        X = 0,
-        Y = 1,
-        Z = 2
-    }
-    
-    [ReadOnly]
-    public Axis currentAxis;
-    public ScrollSnap scrollSnap;
-    [Range(0.1f, 2f)]
-    public float sensitivity = 0.65f;
-
     private Vector3 _value;
+
+    private Slider _sliderX, _sliderY, _sliderZ;
 
     //!
     //! Definition of change function parameters.
@@ -34,51 +23,55 @@ public class Spinner : MonoBehaviour
     //!
     public event spinnerEventHandler hasChanged;
 
-    public void Init(Vector3 initialValue)
-    {
-        _value = initialValue;
-    }
-
     private void Awake()
     {
-        scrollSnap.onRelease.AddListener(AxisSnap);
-        scrollSnap.onAxisDrag += AxisDrag;
+        _value = Vector3.zero;
+
+        _sliderX = transform.Find("SliderX").GetComponent<Slider>();
+        _sliderY = transform.Find("SliderY").GetComponent<Slider>();
+        _sliderZ = transform.Find("SliderZ").GetComponent<Slider>();
+
+        _sliderX.onValueChanged.AddListener(updateParameterX);
+        _sliderY.onValueChanged.AddListener(updateParameterY);
+        _sliderZ.onValueChanged.AddListener(updateParameterZ);
+
     }
 
-    //TODO: Should function as a joystick
-    private void AxisDrag(Axis axis, float value)
+    private void updateParameterX(float v)
     {
-        //TODO: Shouldn't the UI send "Normalized" Data instead of Total Values?
-        _value = AccelerationToLocalSpace(axis, value * sensitivity, _value);
-        
+        _value.x = v;
         hasChanged?.Invoke(_value);
     }
 
-    private void AxisSnap(int index)
+    private void updateParameterY(float v)
     {
-        currentAxis = (Axis)index;
+        _value.y = v;
+        hasChanged?.Invoke(_value);
     }
 
-    public Vector3 AccelerationToLocalSpace(Axis axis, float normalizedDiff, Vector3 localReferenceValue)
+    private void updateParameterZ(float v)
     {
-        Vector3 direction = Vector3.zero;
-        switch (axis)
-        {
-            case Axis.X:
-                direction = Vector3.right;
-                break;
-            case Axis.Y:
-                direction = Vector3.up;
-                break;
-            case Axis.Z:
-                direction = Vector3.forward;
-                break;
-        }
+        _value.z = v;
+        hasChanged?.Invoke(_value);
+    }
 
-        Vector3 axisDiff = direction * normalizedDiff;
-        Vector3 newlocalPos = localReferenceValue + axisDiff;//Vector3.Scale(localReferenceValue, axisDiff);
+    public void setValues (Vector3 v) 
+    {
+        // [REVIEW] 
+        // this should be related to the scene scale
+
+        _sliderX.maxValue = Mathf.Abs(v.x) * 2;
+        _sliderX.minValue = Mathf.Abs(v.x) * -2;        
         
-        Debug.Log(newlocalPos);
-        return newlocalPos;
+        _sliderY.maxValue = Mathf.Abs(v.y) * 2;
+        _sliderY.minValue = Mathf.Abs(v.y) * -2;
+
+        _sliderZ.maxValue = Mathf.Abs(v.z) * 2;
+        _sliderZ.minValue = Mathf.Abs(v.z) * -2;
+
+        _sliderX.value = v.x;
+        _sliderY.value = v.y;
+        _sliderZ.value = v.z;
     }
+
 }
