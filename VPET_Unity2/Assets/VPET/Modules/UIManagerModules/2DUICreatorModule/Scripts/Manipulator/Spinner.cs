@@ -39,7 +39,7 @@ namespace vpet
 
         public abstract void InvokeHasChanged();
 
-        private void Awake()
+        private void Start()
         {
             scrollSnap.onRelease.AddListener(AxisSnap);
             scrollSnap.onAxisDrag += AxisDrag;

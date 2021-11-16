@@ -33,7 +33,6 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.InputSystem;
 
 namespace vpet
 {
@@ -157,20 +156,6 @@ namespace vpet
             }
             else
                 manager.clearSelectedObject();
-        }
-
-        // [REVIEW]
-        // please replace, just for testing!
-        private void SelectFunction_(InputAction.CallbackContext c)
-        {
-            Debug.Log("Pixel Selector Input Function");
-            Debug.Log(c);
-            //Vector2 pos = m_inputManager.touchInputs.Touch.TouchPosition.ReadValue<Vector2>();
-            //Vector2 pos = m_inputManager.touchInputs.Map.MousePosition.ReadValue<Vector2>();
-
-            //SceneObject sceneObject = GetSelectableAt(pos);
-            //if (sceneObject != null)
-            //    manager.addSelectedObject(sceneObject);
         }
 
 

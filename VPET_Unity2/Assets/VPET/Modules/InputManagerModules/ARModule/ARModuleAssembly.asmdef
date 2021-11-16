@@ -1,0 +1,22 @@
+{
+    "name": "ARModuleAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a9420e37d7990b54abdef6688edbe313",
+        "GUID:dfd0ce20189d48e5b22bb4134b558f5a",
+        "GUID:92703082f92b41ba80f0d6912de66115",
+        "GUID:e40ba710768534012815d3193fa296cb",
+        "GUID:3c8c80ae2ea220d4fb13c98317414fa5"
+    ],
+    "includePlatforms": [
+        "iOS"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

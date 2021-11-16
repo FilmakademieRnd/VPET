@@ -21,11 +21,11 @@ namespace vpet
         private Core m_vpet;
         public Menu settingsMenu;
 
-        public void Awake()
+        public void Start()
         {
             m_vpet = GameObject.Find("VPET").GetComponent<Core>();
             
-            ipInput.text = "127.0.0.1";
+            ipInput.text = m_vpet.getManager<NetworkManager>().settings.m_serverIP;
             portInput.text = "5555";
         }
         
@@ -49,6 +49,7 @@ namespace vpet
             m_vpet.settings.isServer = false;
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
+
             networkManager.settings.m_serverIP = ipInput.text;
 
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
