@@ -19,12 +19,11 @@ namespace vpet
         //button connect/start
         
         private Core m_vpet;
-        private CanvasGroup canvas;
+        public Menu settingsMenu;
 
         public void Awake()
         {
             m_vpet = GameObject.Find("VPET").GetComponent<Core>();
-            canvas = GetComponent<CanvasGroup>();
             
             ipInput.text = "127.0.0.1";
             portInput.text = "5555";
@@ -32,6 +31,7 @@ namespace vpet
         
         public void send()
         {
+            m_vpet.settings.isServer = true;
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
 
@@ -40,21 +40,23 @@ namespace vpet
 
             sceneParserModule.ParseScene();
             sceneSenderModule.sendScene(ipInput.text, portInput.text);
-
-            canvas.alpha = 0f;
-            canvas.interactable = false;
-            canvas.blocksRaycasts = false;
+            
+            settingsMenu.HideMenu();
         }
 
         public void receive()
         {
+            m_vpet.settings.isServer = false;
             SceneManager sceneManager = m_vpet.getManager<SceneManager>();
             NetworkManager networkManager = m_vpet.getManager<NetworkManager>();
+            networkManager.settings.m_serverIP = ipInput.text;
 
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
             SceneCreatorModule sceneCreatorModule = sceneManager.getModule<SceneCreatorModule>();
 
-            sceneReceiverModule.receiveScene("172.18.1.177", "5555");
+            sceneReceiverModule.receiveScene(ipInput.text, portInput.text);
+            
+            settingsMenu.HideMenu();
         }
     }
 }

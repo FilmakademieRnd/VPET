@@ -42,8 +42,8 @@ namespace vpet
     {
 
         private List<GameObject> UIParameterList = new List<GameObject>();
-        private GameObject m_slider;
-        private GameObject m_spinner;
+        public UICreator2DModuleSettings settings;
+        private SceneObjectViewMenu m_sceneObjectViewMenu;
 
         //!
         //! Constructor
@@ -62,10 +62,10 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
-            m_slider = Resources.Load("Prefabs/Slider") as GameObject;
-            m_spinner = Resources.Load("Prefabs/Spinner") as GameObject;
-        }
+            settings = Resources.Load("DATA_VPET_2D_UI_Settings") as UICreator2DModuleSettings;
 
+            m_sceneObjectViewMenu = GameObject.FindObjectOfType<SceneObjectViewMenu>();
+        }
 
         //!
         //! Function that recreates the UI Layout.
@@ -73,71 +73,19 @@ namespace vpet
         //!
         private void createUI(object sender, List<SceneObject> sceneObjects)
         {
-            clearUI();
+
+            m_sceneObjectViewMenu.Clear();
             
             // [REVIEW]
             // UI Debug
-            Debug.Log("--- create UI ---");
-            Debug.Log(sceneObjects);
+            Debug.Log("--- Creating 2D UI ---");
 
-            int buttonOffset = 50;
-
-
-            foreach (SceneObject sceneObject in sceneObjects)
-            {
-                //foreach (AbstractParameter param in sceneObject.parameterList)
-                for (int i = 0; i < sceneObject.parameterList.Count ; i++)
-                {
-                    AbstractParameter param = sceneObject.parameterList[i];
-                    Vector3 sliderPosition = new Vector3(800, 400 - (buttonOffset * i), 0);
-                    
-                    Helpers.Log(sceneObject.name + ": " + param.name + " type:" + param.cType);
-
-                    GameObject gameObjectInstance = null;
-
-                    switch (param.vpetType)
-                    {
-                        case AbstractParameter.ParameterType.FLOAT:
-                            {
-                                gameObjectInstance = SceneObject.Instantiate(m_slider, Vector3.zero, Quaternion.identity);
-                                Parameter<float> p = (Parameter<float>)param;
-                                gameObjectInstance.GetComponent<Slider>().onValueChanged.AddListener(p.setValue);
-                                buttonOffset = 50;
-                                break;
-                            }
-                        case AbstractParameter.ParameterType.VECTOR3:
-                            {
-                                gameObjectInstance = SceneObject.Instantiate(m_spinner, Vector3.zero, Quaternion.identity);
-                                Parameter<Vector3> p = (Parameter<Vector3>)param;
-                                Spinner spinner = gameObjectInstance.GetComponent<Spinner>();
-                                spinner.setValues(p.value);
-                                spinner.hasChanged += new Spinner.spinnerEventHandler(p.setValue);
-                                buttonOffset = 100;
-                                break;
-                            }
-                    }
-                    if (gameObjectInstance != null)
-                    {
-                        UIParameterList.Add(gameObjectInstance);
-
-                        RectTransform rectTransform = gameObjectInstance.GetComponent<RectTransform>();
-                        rectTransform.SetPositionAndRotation(sliderPosition, Quaternion.identity);
-                        gameObjectInstance.transform.SetParent(GameObject.Find("Canvas").transform);
-
-                        gameObjectInstance.GetComponentInChildren<Text>().text = param.name;
-                    }
-                }
-            }
+            m_sceneObjectViewMenu.Init(this, sceneObjects);
         }
 
         private void clearUI()
         {
-            foreach (GameObject oldUIElement in UIParameterList)
-            {
-                UnityEngine.Object.Destroy(oldUIElement);
-            }
-
-            UIParameterList.Clear();
+            m_sceneObjectViewMenu.Clear();
         }
 
     }

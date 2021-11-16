@@ -31,6 +31,8 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem.UI;
 
 namespace vpet
 {
@@ -54,6 +56,9 @@ namespace vpet
 
         }
 
+        public int m_timesteps = ((int)(256f / 60)) * 60;
+        public InputSystemUIInputModule inputModule;
+
         private byte m_time = 0;
         public byte time 
         { 
@@ -61,7 +66,7 @@ namespace vpet
             get => m_time;
         }
 
-        private Settings _settings;
+        public Settings _settings;
         public coreSettings settings 
         {
             get { return (coreSettings) _settings; }
@@ -150,7 +155,6 @@ namespace vpet
         private void updateTime()
         {
             timeEvent?.Invoke(this, EventArgs.Empty);
-
             m_time = (m_time > 239 ? (byte)0 : m_time+=1);
 
             if ((m_time % settings.framerate) == 0)

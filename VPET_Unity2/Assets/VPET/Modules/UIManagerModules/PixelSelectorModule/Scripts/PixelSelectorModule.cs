@@ -111,6 +111,7 @@ namespace vpet
         //!
         public PixelSelectorModule(string name, Core core) : base(name, core)
         {
+            load = false;
             objectIdShader = Resources.Load<Shader>("Shader/SelectableId");
             m_materials = new Dictionary<Material, Material>();
             m_selectableIdPropertyId = Shader.PropertyToID(m_SelectableIdPropertyName);
@@ -143,6 +144,10 @@ namespace vpet
         // please replace, just for testing!
         private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
+            //TODO: Only change Selection, when non-UI was clicked
+
+            
+
             Debug.Log("PixelSelector > SelectFunction");
             SceneObject obj = GetSelectableAt(e.point);
             if (obj != null)

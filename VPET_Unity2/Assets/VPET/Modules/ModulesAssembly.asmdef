@@ -8,6 +8,7 @@
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "Unity.XR.ARFoundation",
+        "Unity.XR.ARKit",
         "Unity.XR.ARSubsystems",
         "Unity.XR.Management"
     ],

@@ -32,6 +32,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 namespace vpet
 {
@@ -61,9 +62,8 @@ namespace vpet
             public Vector2 delta;
             public double time;
         }
-        //[REVIEW]
-        //public delegate void ClickAction(InputEventArgs InputArg);
-        //public event ClickAction OnClicked;
+
+        private InputSystemUIInputModule m_inputModule;
 
         //!
         //! The default input event.
@@ -104,20 +104,25 @@ namespace vpet
             // bind individual input events
             //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
-            m_inputs.tonioMap.Tap.started += ctx => TapFunction(ctx);
-            m_inputs.tonioMap.Tap.performed += ctx => TapFunction(ctx);
-            m_inputs.tonioMap.Tap.canceled += ctx => TapFunction(ctx);
 
+            m_inputs.tonioMap.Click.performed += ctx => TapFunction(ctx);
+            m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
+
+            m_inputModule = vpetCore.inputModule;
         }
+
         private void TapFunction(InputAction.CallbackContext c)
         {
-            //Debug.Log(c);
+            Debug.Log("Tapped");
             InputEventArgs e = new InputEventArgs();
 
             if (c.performed)
             {
-                e.point = m_inputs.tonioMap.ScreenPosition.ReadValue<Vector2>();
-                inputEvent?.Invoke(this, e);
+                if (!TappedUI(c.control.device.deviceId))
+                {
+                    e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
+                    inputEvent?.Invoke(this, e);
+                }
             }
 
             // just an exampe, needs different code to discover correct type and values!
@@ -132,6 +137,13 @@ namespace vpet
                 //e.delta = Vector2.zero;
                 //e.time = 0f;
             }
+        }
+
+        public bool TappedUI(int id)
+        {
+            bool result = m_inputModule.IsPointerOverGameObject(id);
+            //Debug.Log(result? "Clicked on UI": "Clicked in the Sene");
+            return result;
         }
     }
 }
