@@ -11,7 +11,8 @@
                     "id": "92822953-cf9d-498c-b915-ee4322205c40",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TouchPress",
@@ -19,7 +20,8 @@
                     "id": "25011a82-3a0a-4c38-94a8-4fed0e6d9f28",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "TouchPosition",
@@ -27,7 +29,8 @@
                     "id": "bff22165-01c6-4e4c-af37-f3703b288aae",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MousePress",
@@ -35,7 +38,8 @@
                     "id": "ce2ea5ae-2ae2-4e56-81e3-e02ffac7fe5e",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MousePosition",
@@ -43,7 +47,8 @@
                     "id": "f007b5c1-c042-4f3e-9988-2e9d240c34a6",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -114,7 +119,8 @@
                     "id": "ab4d5fd6-3315-4f45-a46d-e5cb1158b0f4",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Drag",
@@ -122,7 +128,8 @@
                     "id": "200863e5-f743-4e9b-a495-b099c194b10a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "ScreenPosition",
@@ -130,7 +137,8 @@
                     "id": "b67ec0c5-5fa2-4df1-8a4d-b7b33d76318c",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -175,6 +183,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "Tap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "ARTouchScreen",
+            "id": "6a4e6bd0-0463-4366-96d3-55aa7c361418",
+            "actions": [
+                {
+                    "name": "PlaceScene",
+                    "type": "Value",
+                    "id": "abe6d729-d68d-4877-8130-4fab2e22bfe9",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f0343022-98cb-44f3-98dd-075ea10bf9c7",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlaceScene",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

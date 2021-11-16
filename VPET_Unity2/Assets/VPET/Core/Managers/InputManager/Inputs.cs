@@ -209,6 +209,34 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ARTouchScreen"",
+            ""id"": ""6a4e6bd0-0463-4366-96d3-55aa7c361418"",
+            ""actions"": [
+                {
+                    ""name"": ""PlaceScene"",
+                    ""type"": ""Value"",
+                    ""id"": ""abe6d729-d68d-4877-8130-4fab2e22bfe9"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f0343022-98cb-44f3-98dd-075ea10bf9c7"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceScene"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -225,6 +253,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         m_tonioMap_Tap = m_tonioMap.FindAction("Tap", throwIfNotFound: true);
         m_tonioMap_Drag = m_tonioMap.FindAction("Drag", throwIfNotFound: true);
         m_tonioMap_ScreenPosition = m_tonioMap.FindAction("ScreenPosition", throwIfNotFound: true);
+        // ARTouchScreen
+        m_ARTouchScreen = asset.FindActionMap("ARTouchScreen", throwIfNotFound: true);
+        m_ARTouchScreen_PlaceScene = m_ARTouchScreen.FindAction("PlaceScene", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -394,6 +425,39 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         }
     }
     public TonioMapActions @tonioMap => new TonioMapActions(this);
+
+    // ARTouchScreen
+    private readonly InputActionMap m_ARTouchScreen;
+    private IARTouchScreenActions m_ARTouchScreenActionsCallbackInterface;
+    private readonly InputAction m_ARTouchScreen_PlaceScene;
+    public struct ARTouchScreenActions
+    {
+        private @Inputs m_Wrapper;
+        public ARTouchScreenActions(@Inputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @PlaceScene => m_Wrapper.m_ARTouchScreen_PlaceScene;
+        public InputActionMap Get() { return m_Wrapper.m_ARTouchScreen; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ARTouchScreenActions set) { return set.Get(); }
+        public void SetCallbacks(IARTouchScreenActions instance)
+        {
+            if (m_Wrapper.m_ARTouchScreenActionsCallbackInterface != null)
+            {
+                @PlaceScene.started -= m_Wrapper.m_ARTouchScreenActionsCallbackInterface.OnPlaceScene;
+                @PlaceScene.performed -= m_Wrapper.m_ARTouchScreenActionsCallbackInterface.OnPlaceScene;
+                @PlaceScene.canceled -= m_Wrapper.m_ARTouchScreenActionsCallbackInterface.OnPlaceScene;
+            }
+            m_Wrapper.m_ARTouchScreenActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @PlaceScene.started += instance.OnPlaceScene;
+                @PlaceScene.performed += instance.OnPlaceScene;
+                @PlaceScene.canceled += instance.OnPlaceScene;
+            }
+        }
+    }
+    public ARTouchScreenActions @ARTouchScreen => new ARTouchScreenActions(this);
     public interface IMapActions
     {
         void OnTouchInput(InputAction.CallbackContext context);
@@ -407,5 +471,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         void OnTap(InputAction.CallbackContext context);
         void OnDrag(InputAction.CallbackContext context);
         void OnScreenPosition(InputAction.CallbackContext context);
+    }
+    public interface IARTouchScreenActions
+    {
+        void OnPlaceScene(InputAction.CallbackContext context);
     }
 }
