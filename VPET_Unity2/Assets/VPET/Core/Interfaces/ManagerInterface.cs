@@ -81,11 +81,15 @@ namespace vpet
             m_modules = new Dictionary<Type, Module>();
             m_core = vpetCore;
             Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
+
             foreach (Type t in modules)
             {
                 Module module = (Module)Activator.CreateInstance(t, t.ToString(), core);
                 if (module.load)
                     addModule(module, t);
+                else {
+                    module.Dispose();
+                }
             }
 
             Type[] settingTypes = Helpers.GetAllTypes(AppDomain.CurrentDomain, typeof(Settings));

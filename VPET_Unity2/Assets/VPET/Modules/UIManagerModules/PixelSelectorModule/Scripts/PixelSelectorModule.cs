@@ -143,9 +143,7 @@ namespace vpet
         // please replace, just for testing!
         private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
-            //TODO: Only change Selection, when non-UI was clicked
-
-            
+            //TODO: Only change Selection, when non-UI was clicked            
 
             Debug.Log("PixelSelector > SelectFunction");
             SceneObject obj = GetSelectableAt(e.point);

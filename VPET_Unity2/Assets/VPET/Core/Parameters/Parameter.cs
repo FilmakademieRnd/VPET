@@ -29,6 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 28.10.2021
 
 using System;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,19 +60,22 @@ namespace vpet
         //!
         //! Definition of VPETs parameter types
         //!
-        public enum ParameterType : byte { BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, UNKNOWN = 100 }
+        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, INFO, UNKNOWN = 100 }
 
         //!
         //! List for mapping VPET parameter types to C# types and visa versa.
         //!
-        private static readonly List<Type> _paramTypes = new List<Type> { typeof(bool),
+        private static readonly List<Type> _paramTypes = new List<Type> { typeof(void),
+                                                                          typeof(bool),
                                                                           typeof(int),
                                                                           typeof(float),
                                                                           typeof(Vector2),
                                                                           typeof(Vector3),
                                                                           typeof(Vector4),
                                                                           typeof(Quaternion),
-                                                                          typeof(Color) };
+                                                                          typeof(Color),
+                                                                          typeof(string),
+                                                                          typeof(string)};
         //!
         //! Getter for unique id of this parameter.
         //!
@@ -274,6 +278,16 @@ namespace vpet
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, startoffset+12, 4);
                         return data;
                     }
+                case ParameterType.STRING: 
+                case ParameterType.INFO:
+                    {
+                        string obj = (string)Convert.ChangeType(_value, typeof(string));
+                        data = new byte[obj.Length + startoffset];
+
+                        Buffer.BlockCopy(Encoding.UTF8.GetBytes(obj), 0, data, startoffset, obj.Length);
+
+                        return data;
+                    }
                 default:
                         return data;
 
@@ -325,6 +339,10 @@ namespace vpet
                                                     BitConverter.ToSingle(data, offset+4),
                                                     BitConverter.ToSingle(data, offset+8),
                                                     BitConverter.ToSingle(data, offset+12));
+                    break;
+                case ParameterType.STRING:
+                case ParameterType.INFO:
+                    _value = (T)(object)new string(Encoding.UTF8.GetString(data));
                     break;
                 default:
                     return;

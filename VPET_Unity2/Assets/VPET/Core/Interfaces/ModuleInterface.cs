@@ -44,7 +44,7 @@ namespace vpet
     //!
     //! module interface implementation
     //!
-    public class Module : ModuleInterface
+    public class Module : ModuleInterface, IDisposable
     {
         //!
         //! name of the module
@@ -75,6 +75,12 @@ namespace vpet
             core.destroyEvent += Cleanup;
         }
 
+        public void Dispose()
+        {
+             m_core.awakeEvent -= Init;
+            m_core.destroyEvent -= Cleanup;
+        }
+
         //!
         //! Get the name of the module.
         //! @return name of the module.
@@ -98,5 +104,7 @@ namespace vpet
         //! @param e Arguments for these event. 
         //! 
         protected virtual void Cleanup(object sender, EventArgs e) { }
+
+        protected virtual void getMenus() { }
     }
 }

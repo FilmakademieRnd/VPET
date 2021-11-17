@@ -65,7 +65,7 @@ namespace vpet
         //!
         //! The Thread used for receiving or sending messages.
         //!
-        private Thread m_transeinverThread;
+        private Thread m_transeiverThread;
         
         //!
         //! Function, listening for messages and adds them to m_messageQueue (executed in separate thread).
@@ -92,6 +92,11 @@ namespace vpet
             core.destroyEvent += stopThread;
         }
 
+        ~ NetworkManagerModule() 
+        {
+            m_core.destroyEvent -= stopThread;
+        }
+
         //!
         //! Function to stop all tranceiver threads (called when VPET core will be destroyed).
         //!
@@ -114,12 +119,12 @@ namespace vpet
             m_port = port;
 
             ThreadStart transeiver = new ThreadStart(run);
-            m_transeinverThread = new Thread(transeiver);
-            m_transeinverThread.Start();
+            m_transeiverThread = new Thread(transeiver);
+            m_transeiverThread.Start();
         }
 
         //!
-        //! Stop the transeinver.
+        //! Stop the transeiver.
         //!
         public void stop()
         {
