@@ -110,7 +110,6 @@ namespace vpet
         //!
         public PixelSelectorModule(string name, Core core) : base(name, core)
         {
-            load = false;
             objectIdShader = Resources.Load<Shader>("Shader/SelectableId");
             m_materials = new Dictionary<Material, Material>();
             m_selectableIdPropertyId = Shader.PropertyToID(m_SelectableIdPropertyName);

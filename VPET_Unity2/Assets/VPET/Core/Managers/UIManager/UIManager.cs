@@ -65,7 +65,7 @@ namespace vpet
             m_selectedObjects.Clear();
             m_selectedObjects.Add(sceneObject);
 
-            selectionChanged?.Invoke(this, m_selectedObjects );
+            selectionChanged?.Invoke(this, m_selectedObjects);
             selectionAdded?.Invoke(this, sceneObject);
         }
         //!
