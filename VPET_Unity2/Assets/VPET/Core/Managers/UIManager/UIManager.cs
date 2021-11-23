@@ -62,12 +62,12 @@ namespace vpet
         //!
         public void addSelectedObject(SceneObject sceneObject)
         {
-            m_selectedObjects.Clear();
             m_selectedObjects.Add(sceneObject);
 
             selectionChanged?.Invoke(this, m_selectedObjects);
             selectionAdded?.Invoke(this, sceneObject);
         }
+
         //!
         //! Function that removes a sceneObject to the selected objects list.
         //!
@@ -80,6 +80,7 @@ namespace vpet
             selectionChanged?.Invoke(this, m_selectedObjects);
             selectionRemoved?.Invoke(this, sceneObject);
         }
+
         //!
         //! Function that clears the selected objects list.
         //!

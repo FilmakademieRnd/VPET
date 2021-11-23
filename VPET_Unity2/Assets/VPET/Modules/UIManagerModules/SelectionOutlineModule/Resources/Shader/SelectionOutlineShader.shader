@@ -4,7 +4,7 @@ Shader "Outline"
     {
         _Color("Main Color", Color) = (0,0,0,1)
 
-        _OutlineColor("Outline color", Color) = (1,0,0,1)
+        _OutlineColor("Outline color", Color) = (1,1,1,1)
         _OutlineWidth("Outline width", Range(0.0, 2.0)) = 0.15
     }
         CGINCLUDE

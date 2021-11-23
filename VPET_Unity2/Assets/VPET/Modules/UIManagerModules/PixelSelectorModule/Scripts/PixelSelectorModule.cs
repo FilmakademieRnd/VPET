@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 08.08.2021
+//! @date 23.11.2021
 
 using System;
 using System.Collections.Generic;
@@ -130,29 +130,30 @@ namespace vpet
             
             m_inputManager = m_core.getManager<InputManager>();
 
-            // [REVIEW]
-            // please replace, just for testing!
-            
-            // testing subscription to Input Event
+            // hookup to input events
             m_inputManager.inputEvent += SelectFunction;
 
         }
 
-        // [REVIEW]
-        // please replace, just for testing!
+        //!
+        //! Function to connect input managers input event for estimating a scene object at
+        //! a certain screen coortinate with UI managers scene object selection mechanism.
+        //!
+        //! @param sender The input manager.
+        //! @param e The screen coorinates from the input event.
+        //!
         private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
-            //TODO: Only change Selection, when non-UI was clicked            
-
-            Debug.Log("PixelSelector > SelectFunction");
+            Helpers.Log("PixelSelector > SelectFunction");
             SceneObject obj = GetSelectableAt(e.point);
+            
+            manager.clearSelectedObject();
+            
             if (obj != null)
             {
-                Debug.Log("selecting: " + obj.ToString());
+                Helpers.Log("selecting: " + obj.ToString());
                 manager.addSelectedObject(obj);
             }
-            else
-                manager.clearSelectedObject();
         }
 
 
