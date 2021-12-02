@@ -156,8 +156,6 @@ namespace vpet
             }
         }
 
-
-
         //!
         //! Retrieve the selectable present at the current location in camera screenspace, if any.
         //! 

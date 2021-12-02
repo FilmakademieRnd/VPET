@@ -60,12 +60,12 @@ namespace vpet
         //!
         //! Definition of VPETs parameter types
         //!
-        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, INFO, UNKNOWN = 100 }
+        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, UNKNOWN = 100 }
 
         //!
         //! List for mapping VPET parameter types to C# types and visa versa.
         //!
-        private static readonly List<Type> _paramTypes = new List<Type> { typeof(void),
+        private static readonly List<Type> _paramTypes = new List<Type> { typeof(object),
                                                                           typeof(bool),
                                                                           typeof(int),
                                                                           typeof(float),
@@ -74,7 +74,6 @@ namespace vpet
                                                                           typeof(Vector4),
                                                                           typeof(Quaternion),
                                                                           typeof(Color),
-                                                                          typeof(string),
                                                                           typeof(string)};
         //!
         //! Getter for unique id of this parameter.
@@ -150,13 +149,9 @@ namespace vpet
     public class Parameter<T> : AbstractParameter
     {
         //!
-        //! Default constructor.
-        //!
-        public Parameter() { }
-        //!
         //! Constructor initializing members.
         //!
-        public Parameter(T value, string name, SceneObject parent, short id = -1)
+        public Parameter(T value, string name, SceneObject parent = null, short id = -1)
         {
             _value = value;
             _name = name;
@@ -279,7 +274,6 @@ namespace vpet
                         return data;
                     }
                 case ParameterType.STRING: 
-                case ParameterType.INFO:
                     {
                         string obj = (string)Convert.ChangeType(_value, typeof(string));
                         data = new byte[obj.Length + startoffset];
@@ -341,7 +335,6 @@ namespace vpet
                                                     BitConverter.ToSingle(data, offset+12));
                     break;
                 case ParameterType.STRING:
-                case ParameterType.INFO:
                     _value = (T)(object)new string(Encoding.UTF8.GetString(data));
                     break;
                 default:
