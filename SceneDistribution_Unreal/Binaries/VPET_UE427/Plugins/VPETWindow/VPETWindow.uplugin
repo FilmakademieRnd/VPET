@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1.01,
+	"VersionName": "1.0.1",
+	"FriendlyName": "VPET Helper",
+	"Description": "VPET Helper Editor Window",
+	"Category": "Virtual Production",
+	"CreatedBy": "Animationsinstitut R&D Lab",
+	"CreatedByURL": "https://animationsinstitut.de/en/research/tools/vpet",
+	"DocsURL": "https://github.com/FilmakademieRnd/VPET",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "VPETWindow",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
