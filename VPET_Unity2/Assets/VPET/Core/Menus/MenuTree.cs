@@ -85,28 +85,4 @@ namespace vpet
         }
     }
 
-    public class Example
-    {
-        MenuTree menu = new MenuTree()
-            .Begin(MenuItem.IType.HSPLIT)
-                .Begin(MenuItem.IType.VSPLIT)
-                    .Add(MenuItem.IType.PARAMETER, new Parameter<string>("This is a test string", "StringParameter"))
-                    .Add(MenuItem.IType.PARAMETER, new Parameter<bool>(true, "BoolParameter"))
-                .End()
-                .Begin(MenuItem.IType.HSPLIT)
-                    .Add(MenuItem.IType.PARAMETER, new Parameter<object>(null, "OK"))
-                    .Add(MenuItem.IType.PARAMETER, new Parameter<object>(null, "Abort"))
-                .End()
-           .End();
-
-        //tree.Nodes.ForEach(p => PrintNode(p, 0));
-
-        void TraverseAndPrintTree(MenuItem item, int level)
-        {
-            Helpers.Log(new string(' ', level * 3) + " " + item.Parameter.ToString());
-            level++;
-            item.Children.ForEach(p => TraverseAndPrintTree(p, level));
-        }
-    }
-
 }
