@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2021
+under grant agreement no 780470, 2018-2022
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 09.07.2021
+//! @date 21.01.2022
 
 using System.Collections.Generic;
 using System;
@@ -44,8 +44,43 @@ namespace vpet
         //! Event emitted when the scene selection has changed.
         //!
         public event EventHandler<List<SceneObject>> selectionChanged;
+        //!
+        //! Event emitted when a sceneObject has been added to a selection.
+        //!
         public event EventHandler<SceneObject> selectionAdded;
+        //!
+        //! Event emitted when a sceneObject has been removed from a selection.
+        //!
         public event EventHandler<SceneObject> selectionRemoved;
+
+
+        //!
+        //! Event emitted when a MenuTree has been selected.
+        //!
+        public event EventHandler<MenuTree> menuSelected;
+
+        //!
+        //! A list storing references to the menus (MenuTrees) created by the UI-Modules.
+        //!
+        private List<MenuTree> m_menus;
+
+        //!
+        //! Adds a given menu to the menulist.
+        //!
+        //! @param menu The menue to be added to the list.
+        //!
+        public void AddMenu(MenuTree menu)
+        {
+            m_menus.Add(menu);
+        }
+
+        //!
+        //! Returns a reference to to list of menus.
+        //!
+        public ref List<MenuTree> GetMenus()
+        {
+            return ref m_menus;
+        }
 
         //!
         //! Constructor initializing member variables.
