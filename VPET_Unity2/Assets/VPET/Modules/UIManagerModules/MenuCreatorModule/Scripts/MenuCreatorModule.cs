@@ -45,8 +45,9 @@ namespace vpet
         //!
         public MenuCreatorModule(string name, Core core) : base(name, core)
         {
-            load = false;
         }
+
+        private MenuTree m_oldMenu;
 
         //!
         //! Prefab for the Unity canvas object.
@@ -107,9 +108,56 @@ namespace vpet
                        .Add(new Parameter<object>(null, "Abort"))
                    .End()
               .End();
+            menu.name = "TestMenu";
+            menu.iconResourceLocation = "Images/button_translate";
+            manager.addMenu(menu);
 
-            GameObject menuCanvas = GameObject.Instantiate(m_canvas);
-            menu.Items.ForEach(p => TraverseAndPrintTree(p, menuCanvas));
+            MenuTree menu2 = new MenuTree()
+               .Begin(MenuItem.IType.VSPLIT)
+
+               .Begin(MenuItem.IType.VSPLIT)
+                   .Add(new Parameter<string>("This is a test string", "StringParameter"))
+                   .Add(MenuItem.IType.SPACE)
+                   .Add(new Parameter<bool>(true, "BoolParameter"))
+                   .Add(MenuItem.IType.SPACE)
+                   .Add("That's an info text string.")
+               .End()
+               .Begin(MenuItem.IType.HSPLIT)
+                   .Add(new Parameter<object>(null, "OK"))
+                   .Add(new Parameter<object>(null, "Abort"))
+               .End()
+            .End();
+
+            menu2.name = "Bla!";
+            manager.addMenu(menu2);
+
+            //GameObject menuCanvas = GameObject.Instantiate(m_canvas);
+            //m_uiElements.Add(menuCanvas);
+            //menu.Items.ForEach(p => createMenufromTree(p, menuCanvas));
+
+            manager.menuSelected += createMenu;
+        }
+
+        void createMenu(object sender, MenuTree menu)
+        {
+            destroyMenu();
+
+            if (menu == null)
+                return;
+
+            if (menu.visible && m_oldMenu == menu)
+                menu.visible = false;
+            else
+            {
+                GameObject menuCanvas = GameObject.Instantiate(m_canvas);
+                m_uiElements.Add(menuCanvas);
+                GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;
+                m_uiElements.Add(rootPanel);
+                menu.Items.ForEach(p => createMenufromTree(p, rootPanel));
+                menu.visible = true;
+            }
+
+            m_oldMenu = menu;
         }
 
         //!
@@ -118,7 +166,7 @@ namespace vpet
         //! @param item The start item for the tree traversal.
         //! @param parentObject The items parent Unity GameObject.
         //!
-        private void TraverseAndPrintTree(MenuItem item, GameObject parentObject)
+        private void createMenufromTree(MenuItem item, GameObject parentObject)
         {
             GameObject newObject = null;
 
@@ -169,6 +217,8 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_button, parentObject.transform);
                                 Button button = newObject.GetComponent<Button>();
+                                Action parameterAction = ((Parameter<Action>) item.Parameter).value;
+                                button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
                             }
@@ -177,6 +227,7 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_toggle, parentObject.transform);
                                 Toggle toggle = newObject.GetComponent<Toggle>();
+                                toggle.onValueChanged.AddListener(delegate { ((Parameter<bool>)item.Parameter).setValue(toggle.isOn); });
                                 toggle.isOn = ((Parameter<bool>) item.Parameter).value;
                                 Text textComponent = newObject.GetComponentInChildren<Text>();
                                 textComponent.text = item.Parameter.name;
@@ -186,6 +237,7 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_inputField, parentObject.transform);
                                 TMP_InputField inputField = newObject.GetComponent<TMP_InputField>();
+                                inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
                             }
                             break;
@@ -194,7 +246,16 @@ namespace vpet
             }
 
             m_uiElements.Add(newObject);
-            item.Children.ForEach(p => TraverseAndPrintTree(p, newObject));
+            item.Children.ForEach(p => createMenufromTree(p, newObject));
+        }
+
+        private void destroyMenu()
+        {
+            foreach (GameObject uiElement in m_uiElements)
+            {
+                UnityEngine.Object.Destroy(uiElement);
+            }
+            m_uiElements.Clear();
         }
     }
 }

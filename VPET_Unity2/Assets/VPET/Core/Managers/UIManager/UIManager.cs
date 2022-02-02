@@ -69,15 +69,18 @@ namespace vpet
         //!
         //! @param menu The menue to be added to the list.
         //!
-        public void AddMenu(MenuTree menu)
+        public void addMenu(MenuTree menu)
         {
-            m_menus.Add(menu);
+            if (m_menus.Contains(menu))
+                Helpers.Log("Menu already existing in UIManager!", Helpers.logMsgType.WARNING);
+            else
+                m_menus.Add(menu);
         }
 
         //!
         //! Returns a reference to to list of menus.
         //!
-        public ref List<MenuTree> GetMenus()
+        public ref List<MenuTree> getMenus()
         {
             return ref m_menus;
         }
@@ -88,6 +91,7 @@ namespace vpet
         public UIManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_selectedObjects = new List<SceneObject>();
+            m_menus = new List<MenuTree>();
         }
 
         //!
@@ -128,5 +132,9 @@ namespace vpet
             selectionChanged?.Invoke(this, m_selectedObjects);
         }
 
+        public void showMenu(MenuTree menu)
+        {
+            menuSelected?.Invoke(this, menu);
+        }
     }
 }

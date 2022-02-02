@@ -171,7 +171,7 @@ namespace vpet
             int scaledY = (int)screenPosition.y / scaleDivisor;
             int pos = scaledX + dataWidth * scaledY;
             
-            if (cpuData.Length < pos)
+            if (cpuData.Length < pos || pos < 0)
                 return null;
             
             Color32 packedId = cpuData[pos];

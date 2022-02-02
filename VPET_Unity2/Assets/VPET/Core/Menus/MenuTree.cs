@@ -35,6 +35,9 @@ namespace vpet
 {
     public class MenuTree
     {
+        public bool visible = false;
+        public string name { get; set; } = "";
+        public string iconResourceLocation = "";
         //!
         //! Stack for inserting new items.
         //! 

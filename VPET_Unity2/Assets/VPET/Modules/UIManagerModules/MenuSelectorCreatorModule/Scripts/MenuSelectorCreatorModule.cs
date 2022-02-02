@@ -28,7 +28,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 21.01.2022
 
+using System;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 namespace vpet
 {
@@ -36,7 +39,35 @@ namespace vpet
     {
         public MenuSelectorCreatorModule(string name, Core core) : base(name, core)
         {
+        }
 
+        protected override void LateInit(object sender, EventArgs e)
+        {
+            GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
+            GameObject buttonRes = Resources.Load("Prefabs/MenuSelectorButton") as GameObject;
+
+            GameObject canvas = GameObject.Instantiate(canvasRes);
+            Transform contentTransform = canvas.transform.FindDeepChild("Content");
+
+            foreach (MenuTree menu in manager.getMenus())
+            {
+                GameObject buttonInst = GameObject.Instantiate(buttonRes, contentTransform);
+                Button button = buttonInst.GetComponent<Button>();
+                button.onClick.AddListener(() => manager.showMenu(menu));
+                TextMeshProUGUI textComponent = buttonInst.GetComponentInChildren<TextMeshProUGUI>();
+                textComponent.text = menu.name;
+                if (menu.iconResourceLocation.Length > 0)
+                {
+                    Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
+                    if (resImage != null)
+                    {
+                        Image buttonImage = buttonInst.GetComponentInChildren<Image>();
+                        buttonImage.sprite = resImage;
+                    }
+                    else
+                        Helpers.Log("Menu Icon resource: " + menu.iconResourceLocation + " not found!", Helpers.logMsgType.WARNING);
+                }
+            }
         }
     }
 }
