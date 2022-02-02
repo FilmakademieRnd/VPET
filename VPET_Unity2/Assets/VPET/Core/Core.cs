@@ -74,15 +74,23 @@ namespace vpet
         }
 
         //!
-        //! Event invoked when an Unity Update() callback is triggerd.
+        //! Event invoked when an Unity Update() callback is triggered.
         //!
         public event EventHandler updateEvent;
         //!
-        //! Event invoked when an Unity Awake() callback is triggerd.
+        //! Event invoked when an Unity Awake() callback is triggered.
         //!
         public event EventHandler awakeEvent;
         //!
-        //! Event invoked when an Unity OnDestroy() callback is triggerd.
+        //! Event invoked after the awakeEvent is triggered.
+        //!
+        public event EventHandler lateAwakeEvent;
+        //!
+        //! Event invoked when an Unity Start() callback is triggered.
+        //!
+        public event EventHandler startEvent;
+        //!
+        //! Event invoked when an Unity OnDestroy() callback is triggered.
         //!
         public event EventHandler destroyEvent;
         //!
@@ -120,6 +128,7 @@ namespace vpet
             LoadSettings();
             
             awakeEvent?.Invoke(this, new EventArgs());
+            lateAwakeEvent?.Invoke(this, new EventArgs());
         }
 
         void Start()
@@ -129,6 +138,8 @@ namespace vpet
             Application.targetFrameRate = settings.framerate;
 
             InvokeRepeating("updateTime", 0f, 1f/settings.framerate);
+
+            startEvent?.Invoke(this, new EventArgs());
         }
 
         //!

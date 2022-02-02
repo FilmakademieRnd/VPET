@@ -72,12 +72,15 @@ namespace vpet
             m_core = core;
 
             core.awakeEvent += Init;
+            core.lateAwakeEvent += LateInit;
+            core.startEvent += Start;
             core.destroyEvent += Cleanup;
         }
 
         public void Dispose()
         {
-             m_core.awakeEvent -= Init;
+            m_core.awakeEvent -= Init;
+            m_core.lateAwakeEvent -= LateInit;
             m_core.destroyEvent -= Cleanup;
         }
 
@@ -97,6 +100,20 @@ namespace vpet
         //! @param e Arguments for these event. 
         //! 
         protected virtual void Init(object sender, EventArgs e) { }
+        //! 
+        //! Virtual function called after the Init function.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected virtual void LateInit(object sender, EventArgs e) { }
+        //! 
+        //! Virtual function called when an Unity Start() callback is triggered.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected virtual void Start(object sender, EventArgs e) { }
         //! 
         //! Virtual function called before Unity destroys the VPET core.
         //! 

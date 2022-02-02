@@ -65,7 +65,7 @@ namespace vpet
         //!
         //! List for mapping VPET parameter types to C# types and visa versa.
         //!
-        private static readonly List<Type> _paramTypes = new List<Type> { typeof(object),
+        private static readonly List<Type> _paramTypes = new List<Type> { typeof(Action),
                                                                           typeof(bool),
                                                                           typeof(int),
                                                                           typeof(float),

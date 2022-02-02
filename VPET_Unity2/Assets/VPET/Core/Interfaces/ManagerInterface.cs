@@ -82,6 +82,9 @@ namespace vpet
             m_core = vpetCore;
             Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
 
+            core.awakeEvent += Init;
+            core.destroyEvent += Cleanup;
+
             foreach (Type t in modules)
             {
                 Module module = (Module)Activator.CreateInstance(t, t.ToString(), core);
@@ -100,6 +103,21 @@ namespace vpet
             if (settingsType != null)
                 _settings = (Settings)Activator.CreateInstance(settingsType);
         }
+
+        //! 
+        //! Virtual function called when Unity initializes the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected virtual void Init(object sender, EventArgs e) { }
+        //! 
+        //! Virtual function called before Unity destroys the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected virtual void Cleanup(object sender, EventArgs e) { }
 
         //!
         //! Function to add a module to the manager.
