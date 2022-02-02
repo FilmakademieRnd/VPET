@@ -106,7 +106,7 @@ namespace vpet
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
 
             m_inputs.tonioMap.Click.performed += ctx => TapFunction(ctx);
-            m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
+            //m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
 
             m_inputModule = vpetCore.inputModule;
         }

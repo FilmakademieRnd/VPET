@@ -21,8 +21,8 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "SpinnerQuaternion.cs"
-//! @brief implementation of a Quaternion / rotation spinner manipulator
+//! @file "ManipulatorSelector.cs"
+//! @brief implementation of script attached to each button / selector to select a manipulator
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @author Justus Henne
@@ -32,26 +32,41 @@ Syncronisation Server. They are licensed under the following terms:
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace vpet
 {
-    public class SpinnerQuaternion : Spinner
+    public class ManipulatorSelector : MonoBehaviour
     {
-        public delegate void spinnerEventHandler(Quaternion v);
-        //!
-        //! Event emitted when parameter changed.
-        //!
-        public event spinnerEventHandler hasChanged;
+        //associated button, linked in prefab
+        public Button selectionButton;
 
-        public override void InvokeHasChanged()
+        //! 
+        //! function to initialize the Selector
+        //! @param module reference to the UICreator2DModule
+        //! @param icon sprite to be used by this button
+        //! @param index index of the associated manipulator in UICreator2DModule
+        //!
+        public void Init(UICreator2DModule module, Sprite icon, int index)
         {
-            hasChanged?.Invoke(Quaternion.Euler(_value));
+            selectionButton.onClick.AddListener(() => module.SelectManipulator(index));
+            selectionButton.image.sprite = icon;
         }
 
-        public override void LinkToParameter(AbstractParameter abstractParam)
+        //!
+        //! function to show button highlighted / selected
+        //!
+        public void visualizeActive()
         {
-            Parameter<Quaternion> p = (Parameter<Quaternion>)abstractParam;
-            hasChanged += p.setValue;
+            selectionButton.gameObject.GetComponent<Image>().color = selectionButton.colors.selectedColor;
+        }
+
+        //!
+        //! function to show button idle
+        //!
+        public void visualizeIdle()
+        {
+            selectionButton.gameObject.GetComponent<Image>().color = selectionButton.colors.normalColor;
         }
     }
 }

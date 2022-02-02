@@ -45,7 +45,7 @@ namespace vpet
         //!
         public MenuCreatorModule(string name, Core core) : base(name, core)
         {
-            
+            load = false;
         }
 
         //!
