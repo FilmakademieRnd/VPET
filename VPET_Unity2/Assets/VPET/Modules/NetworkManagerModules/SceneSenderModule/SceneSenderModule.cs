@@ -106,6 +106,9 @@ namespace vpet
 
             m_core.getManager<UIManager>().showMenu(null);
 
+            SceneParserModule sceneParserModule = m_core.getManager<SceneManager>().getModule<SceneParserModule>();
+            sceneParserModule.ParseScene();
+
             sendScene(manager.settings.m_serverIP, "5555");
         }
 
