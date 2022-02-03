@@ -30,7 +30,9 @@ Syncronisation Server. They are licensed under the following terms:
 
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 
@@ -62,8 +64,6 @@ namespace vpet
             public Vector2 delta;
             public double time;
         }
-
-        private InputSystemUIInputModule m_inputModule;
 
         //!
         //! The default input event.
@@ -105,31 +105,27 @@ namespace vpet
             //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
             //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
 
-            m_inputs.tonioMap.Click.performed += ctx => TapFunction(ctx);
+            m_inputs.VPETMap.Click.performed += ctx => TapFunction(ctx);
             //m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
-
-            m_inputModule = vpetCore.inputModule;
         }
 
         private void TapFunction(InputAction.CallbackContext c)
         {
-            Debug.Log("Tapped");
+            Helpers.Log("Tapped");
             InputEventArgs e = new InputEventArgs();
 
             if (c.performed)
             {
-                if (!TappedUI(c.control.device.deviceId))
-                {
-                    e.point = m_inputs.tonioMap.Point.ReadValue<Vector2>();
+                e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+                if (!TappedUI(e.point))
                     inputEvent?.Invoke(this, e);
-                }
             }
 
             // just an exampe, needs different code to discover correct type and values!
             // we need to define VPET actions like tap, hold, drag, etc. and map it to
             // multiple bindings like keyboard, mouse click and touch (see referenced video)
             // please watch https://youtu.be/rMlcwtoui4I
-            
+
             // at start we should check if we are on object, canvas or UI element
             if (c.started)
             {
@@ -139,11 +135,15 @@ namespace vpet
             }
         }
 
-        public bool TappedUI(int id)
+        private bool TappedUI(Vector2 pos)
         {
-            bool result = m_inputModule.IsPointerOverGameObject(id);
-            //Debug.Log(result? "Clicked on UI": "Clicked in the Sene");
-            return result;
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = pos;
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            
+            return results.Count > 0;
         }
     }
+
 }

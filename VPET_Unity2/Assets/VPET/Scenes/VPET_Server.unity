@@ -158,7 +158,7 @@ MonoBehaviour:
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
   m_PointAction: {fileID: -2398977727886834574, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
-  m_MoveAction: {fileID: 3499045786269238177, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
+  m_MoveAction: {fileID: 0}
   m_SubmitAction: {fileID: 3501583898488472335, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
   m_CancelAction: {fileID: -2733100446518212118, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
   m_LeftClickAction: {fileID: -6905252015152794738, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_TrackedDevicePositionAction: {fileID: -4143776715213334350, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 5275272130832771049, guid: a90242eb084c63445a29db83c2567c8a, type: 3}
   m_DeselectOnBackgroundClick: 1
-  m_PointerBehavior: 0
+  m_PointerBehavior: 1
 --- !u!114 &413575432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 10
 --- !u!4 &413575433
 Transform:
@@ -657,7 +657,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isServer: 1
-  inputModule: {fileID: 413575431}
 --- !u!1 &1745412172
 GameObject:
   m_ObjectHideFlags: 0

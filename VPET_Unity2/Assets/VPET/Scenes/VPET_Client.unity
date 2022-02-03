@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3405a2328a6eb6e4eb6ba7778f68c8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timesteps: 240
+  isServer: 0
   inputModule: {fileID: 413575431}
 --- !u!850595691 &1778909856
 LightingSettings:

@@ -144,7 +144,6 @@ namespace vpet
         //!
         private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
-            Helpers.Log("PixelSelector > SelectFunction");
             SceneObject obj = GetSelectableAt(e.point);
             
             manager.clearSelectedObject();

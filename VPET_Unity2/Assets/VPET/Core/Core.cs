@@ -59,8 +59,6 @@ namespace vpet
 
         }
 
-        public InputSystemUIInputModule inputModule;
-
         private byte m_time = 0;
         public byte time 
         { 

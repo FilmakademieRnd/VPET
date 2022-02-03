@@ -54,6 +54,7 @@ namespace vpet
         private MenuTree m_menu;
 
         private Dictionary<string, byte[]> m_responses;
+
         //!
         //! Constructor
         //!

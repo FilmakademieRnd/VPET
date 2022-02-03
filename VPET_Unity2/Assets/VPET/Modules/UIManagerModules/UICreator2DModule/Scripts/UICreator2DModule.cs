@@ -106,7 +106,6 @@ namespace vpet
 
             if (sceneObjects.Count < 1)
             {
-                Debug.Log("Selection was empty, no UI will be displayed!");
                 return;
             }
 
