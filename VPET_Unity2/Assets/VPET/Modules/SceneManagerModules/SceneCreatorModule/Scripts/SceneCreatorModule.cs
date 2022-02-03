@@ -63,7 +63,13 @@ namespace vpet
         //!
         public SceneCreatorModule(string name, Core core) : base(name, core)
         {
-            NetworkManager networkManager = core.getManager<NetworkManager>();
+            if (core.isServer)
+                load = false;
+        }
+
+        protected override void Init(object sender, EventArgs e)
+        {
+            NetworkManager networkManager = m_core.getManager<NetworkManager>();
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
             sceneReceiverModule.m_sceneReceived += CreateScene;
         }

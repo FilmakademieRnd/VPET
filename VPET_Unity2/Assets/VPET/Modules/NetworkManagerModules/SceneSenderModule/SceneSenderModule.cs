@@ -43,6 +43,16 @@ namespace vpet
     //!
     public class SceneSenderModule : NetworkManagerModule
     {
+        // [REVIEW]
+        // needs to be replaced by an proper serialization fonctionality 
+        // to store a parameters value into the settings files.
+        private Parameter<string> m_serverIP_Param;
+
+        //!
+        //! The menu for the network configuration.
+        //!
+        private MenuTree m_menu;
+
         private Dictionary<string, byte[]> m_responses;
         //!
         //! Constructor
@@ -52,6 +62,51 @@ namespace vpet
         //!
         public SceneSenderModule(string name, Core core) : base(name, core)
         {
+            if (!core.isServer)
+                load = false;
+        }
+
+        //! 
+        //!  Function called when an Unity Awake() callback is triggered
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Init(object sender, EventArgs e)
+        {
+            Parameter<Action> button = new Parameter<Action>(Connect, "Start");
+            m_serverIP_Param = new Parameter<string>(manager.settings.m_serverIP, "IP Adress");
+
+            m_menu = new MenuTree()
+               .Begin(MenuItem.IType.VSPLIT)
+                   .Add("Please enter own IP Adress!")
+                   .Add(m_serverIP_Param)
+                   .Add(button)
+              .End();
+
+            m_menu.name = "Network Server";
+            m_core.getManager<UIManager>().addMenu(m_menu);
+        }
+
+        //! 
+        //! Function called when an Unity Start() callback is triggered
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Start(object sender, EventArgs e)
+        {
+            m_core.getManager<UIManager>().showMenu(m_menu);
+        }
+
+        private void Connect()
+        {
+            manager.settings.m_serverIP = m_serverIP_Param.value;
+            Helpers.Log(manager.settings.m_serverIP);
+
+            m_core.getManager<UIManager>().showMenu(null);
+
+            sendScene(manager.settings.m_serverIP, "5555");
         }
 
         //!

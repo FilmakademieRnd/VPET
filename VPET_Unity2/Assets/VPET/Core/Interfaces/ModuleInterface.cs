@@ -81,6 +81,7 @@ namespace vpet
         {
             m_core.awakeEvent -= Init;
             m_core.lateAwakeEvent -= LateInit;
+            m_core.startEvent -= Start;
             m_core.destroyEvent -= Cleanup;
         }
 

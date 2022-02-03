@@ -87,7 +87,7 @@ namespace vpet
 
             m_core.syncEvent += queuePingMessage;
 
-            if (m_core.settings.isServer)
+            if (m_core.isServer)
                 m_core.syncEvent += queueSyncMessage;
 
             foreach (SceneObject sceneObject in ((SceneManager) sender).sceneObjects)

@@ -23,6 +23,7 @@ namespace vpet
     //    }
     //}
 
+    [Serializable]
     public class Settings
     { }
 

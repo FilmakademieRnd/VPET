@@ -64,11 +64,17 @@ namespace vpet
         //!
         public SceneParserModule(string name, Core core) : base(name, core) 
         {
-            scene = GameObject.Find("Scene").transform;
+            if (!core.isServer)
+                load = false;
 
             m_lodLowLayer = LayerMask.NameToLayer("LodLow");
             m_lodHighLayer = LayerMask.NameToLayer("LodHigh");
             m_lodMixedLayer = LayerMask.NameToLayer("LodMixed");
+        }
+
+        protected override void Init(object sender, EventArgs e)
+        {
+            scene = GameObject.Find("Scene").transform;
         }
 
         //!

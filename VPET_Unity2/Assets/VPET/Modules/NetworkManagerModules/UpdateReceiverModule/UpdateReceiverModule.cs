@@ -124,7 +124,7 @@ namespace vpet
                                 decodeLockMessage(ref input);
                                 break;
                             case MessageType.SYNC:
-                                if (!m_core.settings.isServer)
+                                if (!m_core.isServer)
                                     decodeSyncMessage(ref input);
                                 break;
                             case MessageType.PARAMETERUPDATE:

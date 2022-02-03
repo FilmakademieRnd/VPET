@@ -42,21 +42,23 @@ namespace vpet
     //!
     public class Core : CoreInterface
     {
+        [Serializable]
         public class coreSettings : Settings
         {
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
 
-            public bool isServer = false;
         }
+        public coreSettings settings { get; set; }
+
+        public bool isServer = false;
 
         public Core()
         {
 
         }
 
-        public int m_timesteps = ((int)(256f / 60)) * 60;
         public InputSystemUIInputModule inputModule;
 
         private byte m_time = 0;
@@ -64,13 +66,6 @@ namespace vpet
         { 
             set => m_time = value;
             get => m_time;
-        }
-
-        public Settings _settings;
-        public coreSettings settings 
-        {
-            get { return (coreSettings) _settings; }
-            set { _settings = value; } 
         }
 
         //!
@@ -107,7 +102,7 @@ namespace vpet
         //!
         void Awake()
         {
-            _settings = new coreSettings();
+            settings = new coreSettings();
 
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
@@ -185,9 +180,9 @@ namespace vpet
         {
             foreach (Manager manager in getManagers())
                 if (manager._settings != null)
-                    Load(Application.persistentDataPath, ref manager._settings);
+                    Load(Application.persistentDataPath, manager._settings);
 
-            Load(Application.persistentDataPath, ref _settings);
+            Load(Application.persistentDataPath, settings);
         }
 
         internal void Save(string path, Settings settings)
@@ -197,7 +192,7 @@ namespace vpet
             Helpers.Log("Settings saved to: " + filepath);
         }
 
-        internal void Load(string path, ref Settings settings)
+        internal void Load(string path, Settings settings)
         {
             string filepath = Path.Combine(path, settings.GetType() + ".cfg");
             if (File.Exists(filepath))

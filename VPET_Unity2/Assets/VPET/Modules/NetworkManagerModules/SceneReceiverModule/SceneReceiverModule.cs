@@ -68,6 +68,8 @@ namespace vpet
         //!
         public SceneReceiverModule(string name, Core core) : base(name, core)
         {
+            if (core.isServer)
+                load = false;
         }
 
         //! 
@@ -83,7 +85,7 @@ namespace vpet
 
             m_menu = new MenuTree()
                .Begin(MenuItem.IType.VSPLIT)
-                   .Add("Please enter IP Adress!")
+                   .Add("Please enter server IP Adress!")
                    .Add(m_serverIP_Param)
                    .Add(button)
               .End();
