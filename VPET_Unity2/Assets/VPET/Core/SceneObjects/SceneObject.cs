@@ -100,7 +100,7 @@ namespace vpet
         //!
         //! Start is called before the first frame update
         //!
-        public virtual void Start()
+        public virtual void Awake()
         {
             _parameterList = new List<AbstractParameter>();
 
@@ -116,6 +116,13 @@ namespace vpet
             scale = new Parameter<Vector3>(transform.localScale, "scale", this, (short)parameterList.Count);
             scale.hasChanged += updateScale;
             _parameterList.Add(scale);
+        }
+
+        public virtual void OnDestroy()
+        {
+            position.hasChanged -= updatePosition;
+            rotation.hasChanged -= updateRotation;
+            scale.hasChanged -= updateScale;
         }
 
         //!

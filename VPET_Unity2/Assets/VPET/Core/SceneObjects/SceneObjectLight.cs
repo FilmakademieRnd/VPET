@@ -60,9 +60,9 @@ namespace vpet
         protected Light _light;
 
         // Start is called before the first frame update
-        public override void Start()
+        public override void Awake()
         {
-            base.Start();
+            base.Awake();
             _light = this.GetComponent<Light>();
             if (_light)
             {
@@ -79,6 +79,14 @@ namespace vpet
             else
                 Helpers.Log("no light component found!");
 
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            color.hasChanged -= updateColor;
+            intensity.hasChanged -= updateIntensity;
+            range.hasChanged -= updateRange;
         }
 
         // Update is called once per frame

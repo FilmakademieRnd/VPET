@@ -41,7 +41,7 @@ namespace vpet
         {
         }
 
-        protected override void LateInit(object sender, EventArgs e)
+        protected override void Start(object sender, EventArgs e)
         {
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
             GameObject buttonRes = Resources.Load("Prefabs/MenuSelectorButton") as GameObject;

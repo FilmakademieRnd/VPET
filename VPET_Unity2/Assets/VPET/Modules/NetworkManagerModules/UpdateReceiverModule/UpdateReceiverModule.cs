@@ -63,6 +63,11 @@ namespace vpet
         public UpdateReceiverModule(string name, Core core) : base(name, core)
         {
         }
+        ~UpdateReceiverModule()
+        {
+            m_core.timeEvent -= consumeMessages;
+            m_sceneManager.sceneReady -= connectAndStart;
+        }
 
         //!
         //! Function for custom initialisation.

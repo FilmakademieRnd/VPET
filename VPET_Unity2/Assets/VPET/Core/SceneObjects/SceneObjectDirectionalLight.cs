@@ -41,9 +41,9 @@ namespace vpet
     {
 
         // Start is called before the first frame update
-        public override void Start()
+        public override void Awake()
         {
-            base.Start();
+            base.Awake();
 
         }
 

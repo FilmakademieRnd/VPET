@@ -67,6 +67,16 @@ namespace vpet
                 load = false;
         }
 
+        ~SceneCreatorModule()
+        {
+            if (!m_core.isServer)
+            {
+                NetworkManager networkManager = m_core.getManager<NetworkManager>();
+                SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
+                sceneReceiverModule.m_sceneReceived -= CreateScene;
+            }
+        }
+
         protected override void Init(object sender, EventArgs e)
         {
             NetworkManager networkManager = m_core.getManager<NetworkManager>();

@@ -56,6 +56,29 @@ namespace vpet
         {
         }
 
+        ~UpdateSenderModule()
+        {
+            SceneManager sceneManager = m_core.getManager<SceneManager>();
+            UIManager uiManager = m_core.getManager<UIManager>();
+
+
+            sceneManager.sceneReady -= connectAndStart;
+            uiManager.selectionAdded -= lockSceneObject;
+            uiManager.selectionRemoved -= unlockSceneObject;
+
+            m_core.syncEvent -= queuePingMessage;
+
+            if (m_core.isServer)
+                m_core.syncEvent -= queueSyncMessage;
+
+            foreach (SceneObject sceneObject in sceneManager.sceneObjects)
+            {
+                sceneObject.hasChanged -= queueModifiedParameter;
+            }
+
+            m_core.timeEvent -= sendParameterMessages;
+        }
+
         //!
         //! Function for custom initialisation.
         //! 
@@ -73,7 +96,7 @@ namespace vpet
         //!
         //! Function that connects the scene object change events for parameter queuing.
         //!
-        //! @param sender The emitting scene object.
+        //! @param sender The SceneManager.
         //! @param e The pssed event arguments.
         //!
         private void connectAndStart(object sender, EventArgs e)

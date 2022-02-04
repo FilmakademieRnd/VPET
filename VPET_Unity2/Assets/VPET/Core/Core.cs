@@ -48,9 +48,13 @@ namespace vpet
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
-
         }
-        public coreSettings settings { get; set; }
+        private Settings _settings;
+        public coreSettings settings
+        {
+            get { return (coreSettings)_settings; }
+            set { _settings = value; }
+        }
 
         public bool isServer = false;
 
@@ -100,7 +104,7 @@ namespace vpet
         //!
         void Awake()
         {
-            settings = new coreSettings();
+            _settings = new coreSettings();
 
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
@@ -171,16 +175,16 @@ namespace vpet
                 if (manager._settings != null)
                     Save(Application.persistentDataPath, manager._settings);
 
-            Save(Application.persistentDataPath, settings);
+            Save(Application.persistentDataPath, _settings);
         }
 
         private void LoadSettings()
         {
             foreach (Manager manager in getManagers())
                 if (manager._settings != null)
-                    Load(Application.persistentDataPath, manager._settings);
+                    Load(Application.persistentDataPath, ref manager._settings);
 
-            Load(Application.persistentDataPath, settings);
+            Load(Application.persistentDataPath, ref _settings);
         }
 
         internal void Save(string path, Settings settings)
@@ -190,7 +194,7 @@ namespace vpet
             Helpers.Log("Settings saved to: " + filepath);
         }
 
-        internal void Load(string path, Settings settings)
+        internal void Load(string path, ref Settings settings)
         {
             string filepath = Path.Combine(path, settings.GetType() + ".cfg");
             if (File.Exists(filepath))

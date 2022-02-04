@@ -135,6 +135,13 @@ namespace vpet
 
         }
 
+        ~PixelSelectorModule()
+        {
+            m_core.updateEvent -= renderUpdate;
+            m_sceneManager.sceneReady -= modifyMaterials;
+            m_inputManager.inputEvent -= SelectFunction;
+        }
+
         //!
         //! Function to connect input managers input event for estimating a scene object at
         //! a certain screen coortinate with UI managers scene object selection mechanism.

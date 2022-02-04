@@ -42,9 +42,9 @@ namespace vpet
         private Parameter<float> spotAngle;
 
         // Start is called before the first frame update
-        public override void Start()
+        public override void Awake()
         {
-            base.Start();
+            base.Awake();
             if (_light)
             {
                 spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle", this, (short)parameterList.Count);
@@ -53,6 +53,12 @@ namespace vpet
             }
             else
                 Helpers.Log("no light component found!");
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            spotAngle.hasChanged -= updateAngle;
         }
 
         // Update is called once per frame

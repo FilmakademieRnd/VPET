@@ -104,6 +104,12 @@ namespace vpet
                 _settings = (Settings)Activator.CreateInstance(settingsType);
         }
 
+        ~Manager()
+        {
+            core.awakeEvent -= Init;
+            core.destroyEvent -= Cleanup;
+        }
+
         //! 
         //! Virtual function called when Unity initializes the VPET core.
         //! 

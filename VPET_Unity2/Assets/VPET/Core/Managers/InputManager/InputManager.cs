@@ -109,6 +109,11 @@ namespace vpet
             //m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
         }
 
+        ~InputManager()
+        {
+            m_inputs.VPETMap.Click.performed -= ctx => TapFunction(ctx);
+        }
+
         private void TapFunction(InputAction.CallbackContext c)
         {
             Helpers.Log("Tapped");

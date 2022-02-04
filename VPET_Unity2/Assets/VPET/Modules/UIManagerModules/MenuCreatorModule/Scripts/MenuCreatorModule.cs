@@ -138,6 +138,11 @@ namespace vpet
             manager.menuSelected += createMenu;
         }
 
+        ~MenuCreatorModule()
+        {
+            manager.menuSelected -= createMenu;
+        }
+
         void createMenu(object sender, MenuTree menu)
         {
             destroyMenu();

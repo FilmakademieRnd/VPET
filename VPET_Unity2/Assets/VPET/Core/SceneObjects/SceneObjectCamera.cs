@@ -75,9 +75,9 @@ namespace vpet
         private Camera _camera;
 
         // Start is called before the first frame update
-        public override void Start()
+        public override void Awake()
         {
-            base.Start();
+            base.Awake();
             _camera = this.GetComponent<Camera>();
 
             if (_camera)
@@ -103,6 +103,17 @@ namespace vpet
             }
             else
                 Helpers.Log("no camera component found!");
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            fov.hasChanged -= updateFov;
+            aspect.hasChanged -= updateAspect;
+            near.hasChanged -= updateNearClipPlane;
+            far.hasChanged -= updateFarClipPlane;
+            focDist.hasChanged -= updateFocalDistance;
+            aperture.hasChanged -= updateAperture;
         }
 
         // Update is called once per frame
