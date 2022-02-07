@@ -26,7 +26,11 @@ var NAVTREE =
 [
   [ "VPET", "index.html", [
     [ "Packages", "namespaces.html", [
-      [ "Packages", "namespaces.html", "namespaces_dup" ]
+      [ "Packages", "namespaces.html", "namespaces_dup" ],
+      [ "Package Functions", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ]
+      ] ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -34,8 +38,8 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ],
+        [ "Functions", "functions_func.html", "functions_func" ],
+        [ "Variables", "functions_vars.html", "functions_vars" ],
         [ "Enumerations", "functions_enum.html", null ],
         [ "Properties", "functions_prop.html", null ],
         [ "Events", "functions_evnt.html", null ]
@@ -49,9 +53,10 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_core_8cs.html",
-"classvpet_1_1_scene_manager_1_1_character_package.html#aa51c11323231faed12443f6cff7f74ad",
-"dir_808d41454a4ab47db2808e45bf7e00ec.html"
+"_a_r_module_8cs.html",
+"classvpet_1_1_manipulator_reference.html",
+"classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a0921f4b6f7fe7dad9ce9cf0dbfc4d867",
+"classvpet_1_1_u_i_creator2_d_module.html#a4c5b12eaee01b04d563331a082d6a44d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

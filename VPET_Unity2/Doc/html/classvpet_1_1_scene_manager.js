@@ -4,12 +4,12 @@ var classvpet_1_1_scene_manager =
     [ "MaterialPackage", "classvpet_1_1_scene_manager_1_1_material_package.html", "classvpet_1_1_scene_manager_1_1_material_package" ],
     [ "ObjectPackage", "classvpet_1_1_scene_manager_1_1_object_package.html", "classvpet_1_1_scene_manager_1_1_object_package" ],
     [ "SceneDataHandler", "classvpet_1_1_scene_manager_1_1_scene_data_handler.html", "classvpet_1_1_scene_manager_1_1_scene_data_handler" ],
+    [ "SceneManagerSettings", "classvpet_1_1_scene_manager_1_1_scene_manager_settings.html", "classvpet_1_1_scene_manager_1_1_scene_manager_settings" ],
     [ "SceneNode", "classvpet_1_1_scene_manager_1_1_scene_node.html", "classvpet_1_1_scene_manager_1_1_scene_node" ],
     [ "SceneNodeCam", "classvpet_1_1_scene_manager_1_1_scene_node_cam.html", "classvpet_1_1_scene_manager_1_1_scene_node_cam" ],
     [ "SceneNodeGeo", "classvpet_1_1_scene_manager_1_1_scene_node_geo.html", "classvpet_1_1_scene_manager_1_1_scene_node_geo" ],
     [ "SceneNodeLight", "classvpet_1_1_scene_manager_1_1_scene_node_light.html", "classvpet_1_1_scene_manager_1_1_scene_node_light" ],
     [ "SceneNodeSkinnedGeo", "classvpet_1_1_scene_manager_1_1_scene_node_skinned_geo.html", "classvpet_1_1_scene_manager_1_1_scene_node_skinned_geo" ],
-    [ "Settings", "classvpet_1_1_scene_manager_1_1_settings.html", "classvpet_1_1_scene_manager_1_1_settings" ],
     [ "TexturePackage", "classvpet_1_1_scene_manager_1_1_texture_package.html", "classvpet_1_1_scene_manager_1_1_texture_package" ],
     [ "VpetHeader", "classvpet_1_1_scene_manager_1_1_vpet_header.html", "classvpet_1_1_scene_manager_1_1_vpet_header" ],
     [ "NodeType", "classvpet_1_1_scene_manager.html#a2c1705c6da485e79240ed574012ed51b", [
@@ -29,8 +29,12 @@ var classvpet_1_1_scene_manager =
     [ "m_sceneLightList", "classvpet_1_1_scene_manager.html#a259da95ab38815e8e1289d2228191ac3", null ],
     [ "m_sceneObjects", "classvpet_1_1_scene_manager.html#ac9460728b9f915d692bb82bf5c608674", null ],
     [ "m_scnRoot", "classvpet_1_1_scene_manager.html#a425c67e429529bdc0b955dd4710c89e9", null ],
+    [ "maxExtend", "classvpet_1_1_scene_manager.html#a08b823573741bd37faad667a9cf6adda", null ],
+    [ "sceneBoundsMax", "classvpet_1_1_scene_manager.html#a5dbe2c160e67c4bd4b1ce49fc3a2dfbb", null ],
+    [ "sceneBoundsMin", "classvpet_1_1_scene_manager.html#affef04a92a834b4a17a25cce85c30103", null ],
     [ "sceneDataHandler", "classvpet_1_1_scene_manager.html#af07466dcd1a4211d428aec631084c384", null ],
     [ "sceneObjects", "classvpet_1_1_scene_manager.html#a002c142304a882a0b18dc69488164123", null ],
     [ "scnRoot", "classvpet_1_1_scene_manager.html#a84ff38e8cd817b72c998f65d99254d0e", null ],
+    [ "settings", "classvpet_1_1_scene_manager.html#a5d77480301e6b61eee0f96d48d54b05f", null ],
     [ "sceneReady", "classvpet_1_1_scene_manager.html#a1f73a8976a8ae011760d39d9ef7b9cb7", null ]
 ];

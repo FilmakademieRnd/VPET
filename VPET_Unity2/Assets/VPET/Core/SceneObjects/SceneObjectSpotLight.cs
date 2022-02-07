@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2021
+under grant agreement no 780470, 2018-2022
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.06.2021
+//! @date 03.02.2022
 
 using System.Collections;
 using System.Collections.Generic;
@@ -55,13 +55,20 @@ namespace vpet
                 Helpers.Log("no light component found!");
         }
 
+        //!
+        //! Function called, when Unity emit it's OnDestroy event.
+        //!
         public override void OnDestroy()
         {
             base.OnDestroy();
             spotAngle.hasChanged -= updateAngle;
         }
 
-        // Update is called once per frame
+        //! 
+        //! Function updating the scene objects light parameter spotAngle.
+        //! The function is called once per Unity frame call to copy the 
+        //! UnityLight value to the VPET parameter.
+        //! 
         public override void Update()
         {
             base.Update();

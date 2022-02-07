@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2021
+under grant agreement no 780470, 2018-2022
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -105,6 +105,9 @@ namespace vpet
                 Helpers.Log("no camera component found!");
         }
 
+        //!
+        //! Function called, when Unity emit it's OnDestroy event.
+        //!
         public override void OnDestroy()
         {
             base.OnDestroy();

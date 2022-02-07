@@ -86,8 +86,10 @@ $(document).ready(function(){initNavTree('classvpet_1_1_scene_object.html',''); 
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
+<a href="#events">Events</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_scene_object-members.html">List of all members</a>  </div>
@@ -111,17 +113,22 @@ Inheritance diagram for vpet.SceneObject:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab05cccb08e83b75da9a7c40a5355ae4d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ab05cccb08e83b75da9a7c40a5355ae4d">Start</a> ()</td></tr>
-<tr class="separator:ab05cccb08e83b75da9a7c40a5355ae4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0b9972c9b67e09c1fa68b8b86ce9a1c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#af0b9972c9b67e09c1fa68b8b86ce9a1c">Awake</a> ()</td></tr>
+<tr class="separator:af0b9972c9b67e09c1fa68b8b86ce9a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade99dba2b00f5c1e0fb62c89f854b0f2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ade99dba2b00f5c1e0fb62c89f854b0f2">OnDestroy</a> ()</td></tr>
+<tr class="separator:ade99dba2b00f5c1e0fb62c89f854b0f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11925ee76c58d4a403956a7e698ca432"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a11925ee76c58d4a403956a7e698ca432">Update</a> ()</td></tr>
 <tr class="separator:a11925ee76c58d4a403956a7e698ca432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a72551608a109fd75090927ad8e190878"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a72551608a109fd75090927ad8e190878">id</a></td></tr>
-<tr class="separator:a72551608a109fd75090927ad8e190878"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae833358759ebc9100da484783bf0cb09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ae833358759ebc9100da484783bf0cb09">physicsActive</a></td></tr>
-<tr class="separator:ae833358759ebc9100da484783bf0cb09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86bcf79f5c99e1995f5dd7e49a209746"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a86bcf79f5c99e1995f5dd7e49a209746">_lock</a> = false</td></tr>
+<tr class="separator:a86bcf79f5c99e1995f5dd7e49a209746"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:adbe576ff8f83ee0700da4e4f5f4bc5d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#adbe576ff8f83ee0700da4e4f5f4bc5d0">emitHasChanged</a> (<a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a> parameter)</td></tr>
+<tr class="separator:adbe576ff8f83ee0700da4e4f5f4bc5d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -130,22 +137,35 @@ Protected Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
+<tr class="memitem:ae833358759ebc9100da484783bf0cb09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ae833358759ebc9100da484783bf0cb09">physicsActive</a><code> [get]</code></td></tr>
+<tr class="separator:ae833358759ebc9100da484783bf0cb09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b45aec0de2490a94dd3074274e856be"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a7b45aec0de2490a94dd3074274e856be">id</a><code> [get]</code></td></tr>
+<tr class="separator:a7b45aec0de2490a94dd3074274e856be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32b55d08b7ea799b27be5a372277dca6"><td class="memItemLeft" align="right" valign="top">ref List&lt; <a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a32b55d08b7ea799b27be5a372277dca6">parameterList</a><code> [get]</code></td></tr>
 <tr class="separator:a32b55d08b7ea799b27be5a372277dca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="events"></a>
+Events</h2></td></tr>
+<tr class="memitem:a2115996543b0b8eb3d1bede044ffc66b"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a2115996543b0b8eb3d1bede044ffc66b">hasChanged</a></td></tr>
+<tr class="separator:a2115996543b0b8eb3d1bede044ffc66b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:ac58b3b15badce6c9bf79b77090f2ba49"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ac58b3b15badce6c9bf79b77090f2ba49">updatePosition</a> (object sender, <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;.TEventArgs a)</td></tr>
-<tr class="separator:ac58b3b15badce6c9bf79b77090f2ba49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae93fd4885f0ea56b67afe85da2d460ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ae93fd4885f0ea56b67afe85da2d460ad">updateRotation</a> (object sender, <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Quaternion &gt;.TEventArgs a)</td></tr>
-<tr class="separator:ae93fd4885f0ea56b67afe85da2d460ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23d8445be34c7cfd221e3f9a4e9adb4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a23d8445be34c7cfd221e3f9a4e9adb4c">updateScale</a> (object sender, <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;.TEventArgs a)</td></tr>
-<tr class="separator:a23d8445be34c7cfd221e3f9a4e9adb4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3140189fa4e64cdef4182b72bf78b67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ad3140189fa4e64cdef4182b72bf78b67">updatePosition</a> (object sender, Vector3 a)</td></tr>
+<tr class="separator:ad3140189fa4e64cdef4182b72bf78b67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0ee1ed1a9112c73ed6d7ee0e7ea06d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#aa0ee1ed1a9112c73ed6d7ee0e7ea06d0">updateRotation</a> (object sender, Quaternion a)</td></tr>
+<tr class="separator:aa0ee1ed1a9112c73ed6d7ee0e7ea06d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a440718b6b7e039a48686ea163530633b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a440718b6b7e039a48686ea163530633b">updateScale</a> (object sender, Vector3 a)</td></tr>
+<tr class="separator:a440718b6b7e039a48686ea163530633b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8dc5c0fc0c3690fd09c996f52364344"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#ad8dc5c0fc0c3690fd09c996f52364344">updateSceneObjectTransform</a> ()</td></tr>
 <tr class="separator:ad8dc5c0fc0c3690fd09c996f52364344"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a734051981548603b2002c45783aa7f6c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a734051981548603b2002c45783aa7f6c">_physicsActive</a> = false</td></tr>
+<tr class="separator:a734051981548603b2002c45783aa7f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e4d320db80a78cf7c9adf981456437d"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a7e4d320db80a78cf7c9adf981456437d">_id</a></td></tr>
+<tr class="separator:a7e4d320db80a78cf7c9adf981456437d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cafaa3e0caff78cfd037ebac870e3b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a2cafaa3e0caff78cfd037ebac870e3b5">position</a></td></tr>
 <tr class="separator:a2cafaa3e0caff78cfd037ebac870e3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93b45e0046ad81f8cbe362d9d7c04c2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Quaternion &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a93b45e0046ad81f8cbe362d9d7c04c2b">rotation</a></td></tr>
@@ -156,8 +176,8 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of the VPET <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a>, connecting Unity and VPET functionalty around 3D scene specific objects. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab05cccb08e83b75da9a7c40a5355ae4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab05cccb08e83b75da9a7c40a5355ae4d">&#9670;&nbsp;</a></span>Start()</h2>
+<a id="af0b9972c9b67e09c1fa68b8b86ce9a1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0b9972c9b67e09c1fa68b8b86ce9a1c">&#9670;&nbsp;</a></span>Awake()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -166,7 +186,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void vpet.SceneObject.Start </td>
+          <td class="memname">virtual void vpet.SceneObject.Awake </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -180,7 +200,68 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Start is called before the first frame update </p>
 
-<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_object_spot_light.html#aec43a88568afbdaa83708fd60c1e6dc0">vpet.SceneObjectSpotLight</a>, <a class="el" href="classvpet_1_1_scene_object_point_light.html#ab18a621590ce60f27cbb928b2f06b82b">vpet.SceneObjectPointLight</a>, <a class="el" href="classvpet_1_1_scene_object_light.html#a3b2d0ad3bc482c07883b378a14975248">vpet.SceneObjectLight</a>, <a class="el" href="classvpet_1_1_scene_object_directional_light.html#afb57637f1be590dd3cb1f2f4579b66cd">vpet.SceneObjectDirectionalLight</a>, and <a class="el" href="classvpet_1_1_scene_object_camera.html#a31e76daf328492780fd54aa838265ffa">vpet.SceneObjectCamera</a>.</p>
+<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_object_spot_light.html#a23d580adeaf5b4736b6ec7bfd01520a9">vpet.SceneObjectSpotLight</a>, <a class="el" href="classvpet_1_1_scene_object_point_light.html#abe2cd2dc916097cb63371f3dfbef9831">vpet.SceneObjectPointLight</a>, <a class="el" href="classvpet_1_1_scene_object_light.html#a94d1f2a95f18ebd242922361ff5c617f">vpet.SceneObjectLight</a>, <a class="el" href="classvpet_1_1_scene_object_directional_light.html#a8efb1b88efefe1bfbb98178b1f7ef1fd">vpet.SceneObjectDirectionalLight</a>, and <a class="el" href="classvpet_1_1_scene_object_camera.html#aaadecb240800ddd796541060eb877fd2">vpet.SceneObjectCamera</a>.</p>
+
+</div>
+</div>
+<a id="adbe576ff8f83ee0700da4e4f5f4bc5d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbe576ff8f83ee0700da4e4f5f4bc5d0">&#9670;&nbsp;</a></span>emitHasChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SceneObject.emitHasChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a>&#160;</td>
+          <td class="paramname"><em>parameter</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that emits the scene objects hasChanged event. (Used for parameter updates)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parameter</td><td>The parameter that has changed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ade99dba2b00f5c1e0fb62c89f854b0f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade99dba2b00f5c1e0fb62c89f854b0f2">&#9670;&nbsp;</a></span>OnDestroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void vpet.SceneObject.OnDestroy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function called, when Unity emit it's OnDestroy event. </p>
+
+<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_object_spot_light.html#a7170310563ed21ab8c1f5c3cf19e9bd6">vpet.SceneObjectSpotLight</a>, <a class="el" href="classvpet_1_1_scene_object_light.html#a3b0777806dfc65411f2fde1c70cb2b81">vpet.SceneObjectLight</a>, and <a class="el" href="classvpet_1_1_scene_object_camera.html#a2880adb0a573a7f0ab12fa63d2dacb5d">vpet.SceneObjectCamera</a>.</p>
 
 </div>
 </div>
@@ -212,8 +293,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac58b3b15badce6c9bf79b77090f2ba49"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac58b3b15badce6c9bf79b77090f2ba49">&#9670;&nbsp;</a></span>updatePosition()</h2>
+<a id="ad3140189fa4e64cdef4182b72bf78b67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3140189fa4e64cdef4182b72bf78b67">&#9670;&nbsp;</a></span>updatePosition()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -230,7 +311,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;.TEventArgs&#160;</td>
+          <td class="paramtype">Vector3&#160;</td>
           <td class="paramname"><em>a</em>&#160;</td>
         </tr>
         <tr>
@@ -255,8 +336,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae93fd4885f0ea56b67afe85da2d460ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae93fd4885f0ea56b67afe85da2d460ad">&#9670;&nbsp;</a></span>updateRotation()</h2>
+<a id="aa0ee1ed1a9112c73ed6d7ee0e7ea06d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0ee1ed1a9112c73ed6d7ee0e7ea06d0">&#9670;&nbsp;</a></span>updateRotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,7 +354,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Quaternion &gt;.TEventArgs&#160;</td>
+          <td class="paramtype">Quaternion&#160;</td>
           <td class="paramname"><em>a</em>&#160;</td>
         </tr>
         <tr>
@@ -298,8 +379,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a23d8445be34c7cfd221e3f9a4e9adb4c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a23d8445be34c7cfd221e3f9a4e9adb4c">&#9670;&nbsp;</a></span>updateScale()</h2>
+<a id="a440718b6b7e039a48686ea163530633b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a440718b6b7e039a48686ea163530633b">&#9670;&nbsp;</a></span>updateScale()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -316,7 +397,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; Vector3 &gt;.TEventArgs&#160;</td>
+          <td class="paramtype">Vector3&#160;</td>
           <td class="paramname"><em>a</em>&#160;</td>
         </tr>
         <tr>
@@ -368,6 +449,44 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a7e4d320db80a78cf7c9adf981456437d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e4d320db80a78cf7c9adf981456437d">&#9670;&nbsp;</a></span>_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">short vpet.SceneObject._id</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>unique id of this sceneObject </p>
+
+</div>
+</div>
+<a id="a86bcf79f5c99e1995f5dd7e49a209746"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86bcf79f5c99e1995f5dd7e49a209746">&#9670;&nbsp;</a></span>_lock</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.SceneObject._lock = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is the sceneObject locked </p>
+
+</div>
+</div>
 <a id="af17e3682a89c5427069a8649fb1a3019"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af17e3682a89c5427069a8649fb1a3019">&#9670;&nbsp;</a></span>_parameterList</h2>
 
@@ -391,33 +510,26 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a72551608a109fd75090927ad8e190878"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72551608a109fd75090927ad8e190878">&#9670;&nbsp;</a></span>id</h2>
+<a id="a734051981548603b2002c45783aa7f6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a734051981548603b2002c45783aa7f6c">&#9670;&nbsp;</a></span>_physicsActive</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int vpet.SceneObject.id</td>
+          <td class="memname">bool vpet.SceneObject._physicsActive = false</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>unique id of this sceneObject </p>
-
-</div>
-</div>
-<a id="ae833358759ebc9100da484783bf0cb09"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae833358759ebc9100da484783bf0cb09">&#9670;&nbsp;</a></span>physicsActive</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool vpet.SceneObject.physicsActive</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>is the sceneObject reacting to physics </p>
+<p>Is the sceneObject reacting to physics </p>
 
 </div>
 </div>
@@ -491,6 +603,29 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
+<a id="a7b45aec0de2490a94dd3074274e856be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b45aec0de2490a94dd3074274e856be">&#9670;&nbsp;</a></span>id</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">short vpet.SceneObject.id</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Getter for unique id of this sceneObject </p>
+
+</div>
+</div>
 <a id="a32b55d08b7ea799b27be5a372277dca6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a32b55d08b7ea799b27be5a372277dca6">&#9670;&nbsp;</a></span>parameterList</h2>
 
@@ -511,6 +646,45 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Getter for parameter list </p>
+
+</div>
+</div>
+<a id="ae833358759ebc9100da484783bf0cb09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae833358759ebc9100da484783bf0cb09">&#9670;&nbsp;</a></span>physicsActive</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.SceneObject.physicsActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Is the sceneObject reacting to physics </p>
+
+</div>
+</div>
+<h2 class="groupheader">Event Documentation</h2>
+<a id="a2115996543b0b8eb3d1bede044ffc66b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2115996543b0b8eb3d1bede044ffc66b">&#9670;&nbsp;</a></span>hasChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a>&gt; vpet.SceneObject.hasChanged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Event emitted when parameter changed. </p>
 
 </div>
 </div>

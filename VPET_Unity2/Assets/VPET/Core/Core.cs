@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2021
+under grant agreement no 780470, 2018-2022
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -26,13 +26,11 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 28.10.2021
+//! @date 07.02.2022
 
 using System;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem.UI;
 
 namespace vpet
 {
@@ -42,12 +40,16 @@ namespace vpet
     //!
     public class Core : CoreInterface
     {
-        [Serializable]
+        //!
+        //! Class containing the cores settings.
+        //! This is persistent data saved and loaded to/from disk.
+        //!
         public class coreSettings : Settings
         {
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
+            public Parameter<Color> test = new Parameter<Color>(new Color(1,2,3), "Color");
         }
         private Settings _settings;
         public coreSettings settings
@@ -56,14 +58,18 @@ namespace vpet
             set { _settings = value; }
         }
 
+        //!
+        //! Flag determining wether the VPERT instance acts as a server or client.
+        //!
         public bool isServer = false;
 
-        public Core()
-        {
-
-        }
-
+        //!
+        //! The current local time stores as value between 0 and 255.
+        //!
         private byte m_time = 0;
+        //!
+        //! The current local time stores as value between 0 and 255.
+        //!
         public byte time 
         { 
             set => m_time = value;
@@ -100,7 +106,7 @@ namespace vpet
         public event EventHandler<byte> syncEvent;
 
         //!
-        //! Initialization of all Managers and modules.
+        //! Unity's Awake callback, used for Initialization of all Managers and modules.
         //!
         void Awake()
         {
@@ -128,6 +134,9 @@ namespace vpet
             lateAwakeEvent?.Invoke(this, new EventArgs());
         }
 
+        //!
+        //! Unity's Start callback, used for Late initialization.
+        //!
         void Start()
         {
             // Sync framerate to monitors refresh rate
@@ -169,6 +178,9 @@ namespace vpet
                 syncEvent?.Invoke(this, m_time);
         }
 
+        //!
+        //! Function to save the modules- and core settins to disk.
+        //!
         private void SaveSettings()
         {
             foreach (Manager manager in getManagers())
@@ -178,6 +190,9 @@ namespace vpet
             Save(Application.persistentDataPath, _settings);
         }
 
+        //!
+        //! Function to load the modules- and core settins from disk.
+        //!
         private void LoadSettings()
         {
             foreach (Manager manager in getManagers())
@@ -187,6 +202,9 @@ namespace vpet
             Load(Application.persistentDataPath, ref _settings);
         }
 
+        //!
+        //! Function to serialize settings and write it to disk.
+        //!
         internal void Save(string path, Settings settings)
         {
             string filepath = Path.Combine(path, settings.GetType().ToString() + ".cfg");
@@ -194,6 +212,9 @@ namespace vpet
             Helpers.Log("Settings saved to: " + filepath);
         }
 
+        //!
+        //! Function to read settings from disk and deserialze it to a Settings class.
+        //!
         internal void Load(string path, ref Settings settings)
         {
             string filepath = Path.Combine(path, settings.GetType() + ".cfg");

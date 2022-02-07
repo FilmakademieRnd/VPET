@@ -21,7 +21,7 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "MenuSelectorCreatorModule.cs.cs"
+//! @file "MenuSelectorCreatorModule.cs"
 //! @brief Implementation of the VPET MenuSelectorCreatorModule, creating menu items in the UI.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
@@ -37,10 +37,21 @@ namespace vpet
 {
     public class MenuSelectorCreatorModule : UIManagerModule
     {
+        //!
+        //! Constructor
+        //! @param name Name of this module
+        //! @param core Reference to the VPET core
+        //!
         public MenuSelectorCreatorModule(string name, Core core) : base(name, core)
         {
         }
 
+        //!
+        //! Function that creates a menu containing buttons for every registered menu.
+        //!
+        //! @param sender A reference to the VPET core.
+        //! @param e The event arguments for the start event.
+        //!
         protected override void Start(object sender, EventArgs e)
         {
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;

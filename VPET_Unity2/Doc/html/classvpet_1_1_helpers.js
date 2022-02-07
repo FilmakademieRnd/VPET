@@ -6,8 +6,9 @@ var classvpet_1_1_helpers =
       [ "ERROR", "classvpet_1_1_helpers.html#a268dcad2193184ec6c7d5928f17d3fbbabb1ca97ec761fc37101737ba0aa2e7c5", null ]
     ] ],
     [ "FindDeepChild", "classvpet_1_1_helpers.html#a30fa47b60683b8ca51a5fcc49a49b12d", null ],
+    [ "FindFirst< T >", "classvpet_1_1_helpers.html#a0765f90532b32b27045981cf190cc614", null ],
     [ "GetAllTypes", "classvpet_1_1_helpers.html#a0df93bd1de4d97936f1d52138ba885df", null ],
-    [ "getUniqueID", "classvpet_1_1_helpers.html#ad88198c68bdfbd2c770dc2a4969d3780", null ],
+    [ "getSoID", "classvpet_1_1_helpers.html#a44dddc789757065f20e41069f36cd8e6", null ],
     [ "Log", "classvpet_1_1_helpers.html#a856a77d37068589dc98540c68397963e", null ],
-    [ "s_id", "classvpet_1_1_helpers.html#a1ba5956dc16d5977571e135383f70c58", null ]
+    [ "s_id", "classvpet_1_1_helpers.html#a631ff048dfe22bfd553d596e5d10af53", null ]
 ];

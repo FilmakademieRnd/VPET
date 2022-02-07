@@ -1,15 +1,16 @@
 var classvpet_1_1_pixel_selector_module =
 [
     [ "PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html#a8628897d6f0a919eb006671b74de86b3", null ],
+    [ "~PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html#a97b295eeffe4b55a8f2cc70201c1c18f", null ],
     [ "Cleanup", "classvpet_1_1_pixel_selector_module.html#a2d7c84bd1eb508b0195c23830117d412", null ],
     [ "DecodeId", "classvpet_1_1_pixel_selector_module.html#a7cbe0c727ad51269db7bf64b6a53ff7c", null ],
     [ "EncodeId", "classvpet_1_1_pixel_selector_module.html#a442e492b0dae266ffa99c1241ba9ad01", null ],
     [ "GetSelectableAt", "classvpet_1_1_pixel_selector_module.html#a242e08b2631d4f156e565b5ca4ec31f3", null ],
     [ "GetSelectableMaterial", "classvpet_1_1_pixel_selector_module.html#a954ad8c0c7defbd2e39d50d534dcab64", null ],
     [ "Init", "classvpet_1_1_pixel_selector_module.html#aee5b3f5faac63d4eee3d752a2f6431b8", null ],
-    [ "InputFunction", "classvpet_1_1_pixel_selector_module.html#aff7fc6352a4a2562dfffaeee5593379b", null ],
     [ "modifyMaterials", "classvpet_1_1_pixel_selector_module.html#ab7e68d34501be84ba6857ada0c366f9d", null ],
     [ "renderUpdate", "classvpet_1_1_pixel_selector_module.html#af9976d2cc2c6da446d45e68a968bb4c5", null ],
+    [ "SelectFunction", "classvpet_1_1_pixel_selector_module.html#a74f315556b33c4cde2e42000b628939e", null ],
     [ "cpuData", "classvpet_1_1_pixel_selector_module.html#a03235123de5404db571ade866c43ae28", null ],
     [ "dataHeight", "classvpet_1_1_pixel_selector_module.html#a484c1303babdb7e5405c64fcebc5b6b4", null ],
     [ "dataWidth", "classvpet_1_1_pixel_selector_module.html#a74e10a8400d149b1bd4b97de8159876e", null ],

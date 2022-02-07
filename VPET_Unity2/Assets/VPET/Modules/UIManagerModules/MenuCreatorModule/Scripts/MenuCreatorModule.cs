@@ -47,8 +47,10 @@ namespace vpet
         {
         }
 
+        //!
+        //! A reference to the previous created menu, null at the beginning.
+        //!
         private MenuTree m_oldMenu;
-
         //!
         //! Prefab for the Unity canvas object.
         //!
@@ -138,11 +140,20 @@ namespace vpet
             manager.menuSelected += createMenu;
         }
 
+        //!
+        //! Destructor, cleaning up event registrations. 
+        //!
         ~MenuCreatorModule()
         {
             manager.menuSelected -= createMenu;
         }
 
+        //!
+        //! Function creating a menu UI element based on a MenuTree object.
+        //!
+        //! @param sender A reference to the UI manager.
+        //! @param menu A reference to the MenuTree used to create the UI elements of a menu.
+        //!
         void createMenu(object sender, MenuTree menu)
         {
             destroyMenu();
@@ -254,6 +265,9 @@ namespace vpet
             item.Children.ForEach(p => createMenufromTree(p, newObject));
         }
 
+        //!
+        //! Function to destroy all created UI elements of a menu.
+        //!
         private void destroyMenu()
         {
             foreach (GameObject uiElement in m_uiElements)

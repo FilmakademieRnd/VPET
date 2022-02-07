@@ -63,6 +63,10 @@ namespace vpet
         public UpdateReceiverModule(string name, Core core) : base(name, core)
         {
         }
+
+        //!
+        //! Destructor, cleaning up event registrations. 
+        //!
         ~UpdateReceiverModule()
         {
             m_core.timeEvent -= consumeMessages;

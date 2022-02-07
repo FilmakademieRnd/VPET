@@ -92,7 +92,10 @@ namespace vpet
             core.destroyEvent += stopThread;
         }
 
-        ~ NetworkManagerModule() 
+        //!
+        //! Destructor, cleaning up event registrations. 
+        //!
+        ~NetworkManagerModule() 
         {
             m_core.destroyEvent -= stopThread;
         }

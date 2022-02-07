@@ -122,6 +122,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_data_handler.html">SceneDataHandler</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_manager_settings.html">SceneManagerSettings</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node.html">SceneNode</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_cam.html">SceneNodeCam</a></td></tr>
@@ -131,8 +133,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_light.html">SceneNodeLight</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_node_skinned_geo.html">SceneNodeSkinnedGeo</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_settings.html">Settings</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_texture_package.html">TexturePackage</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,10 +154,10 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac55a2b2796b6cd8b7415167ab0b08a12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#ac55a2b2796b6cd8b7415167ab0b08a12">emitSceneReady</a> ()</td></tr>
-<tr class="separator:ac55a2b2796b6cd8b7415167ab0b08a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada328ea9180f1aaa5ecad7c2732c1bbe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#ada328ea9180f1aaa5ecad7c2732c1bbe">SceneManager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core.html">Core</a> vpetCore)</td></tr>
 <tr class="separator:ada328ea9180f1aaa5ecad7c2732c1bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac55a2b2796b6cd8b7415167ab0b08a12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#ac55a2b2796b6cd8b7415167ab0b08a12">emitSceneReady</a> ()</td></tr>
+<tr class="separator:ac55a2b2796b6cd8b7415167ab0b08a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cfa246758fe858d83c60421dcdf2894"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a6cfa246758fe858d83c60421dcdf2894">getSceneObject</a> (int id)</td></tr>
 <tr class="separator:a6cfa246758fe858d83c60421dcdf2894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b29a61027514410ac0c9d573807a003"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a0b29a61027514410ac0c9d573807a003">getSceneObjectId</a> (ref <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> sceneObject)</td></tr>
@@ -169,9 +169,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a36ad7cc7d92c772fc5e898dd93bca6a0 inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fc56919bb0603dc2ddf2c409828dcec inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a9fc56919bb0603dc2ddf2c409828dcec">getModule&lt; T &gt;</a> ()</td></tr>
 <tr class="separator:a9fc56919bb0603dc2ddf2c409828dcec inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a983818b90ee0a4c836b67599f85a07ab inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classvpet_1_1_module.html">Module</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a983818b90ee0a4c836b67599f85a07ab">getModules</a> ()</td></tr>
+<tr class="separator:a983818b90ee0a4c836b67599f85a07ab inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a5dbe2c160e67c4bd4b1ce49fc3a2dfbb"><td class="memItemLeft" align="right" valign="top">Vector3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a5dbe2c160e67c4bd4b1ce49fc3a2dfbb">sceneBoundsMax</a> = Vector3.positiveInfinity</td></tr>
+<tr class="separator:a5dbe2c160e67c4bd4b1ce49fc3a2dfbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affef04a92a834b4a17a25cce85c30103"><td class="memItemLeft" align="right" valign="top">Vector3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#affef04a92a834b4a17a25cce85c30103">sceneBoundsMin</a> = Vector3.negativeInfinity</td></tr>
+<tr class="separator:affef04a92a834b4a17a25cce85c30103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08b823573741bd37faad667a9cf6adda"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a08b823573741bd37faad667a9cf6adda">maxExtend</a> = 1f</td></tr>
+<tr class="separator:a08b823573741bd37faad667a9cf6adda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a259da95ab38815e8e1289d2228191ac3"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classvpet_1_1_scene_object_light.html">SceneObjectLight</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a259da95ab38815e8e1289d2228191ac3">m_sceneLightList</a> = new List&lt;<a class="el" href="classvpet_1_1_scene_object_light.html">SceneObjectLight</a>&gt;()</td></tr>
 <tr class="separator:a259da95ab38815e8e1289d2228191ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acab4e58496a3725c649bcc68719e7260"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classvpet_1_1_scene_object_camera.html">SceneObjectCamera</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#acab4e58496a3725c649bcc68719e7260">m_sceneCameraList</a> = new List&lt;<a class="el" href="classvpet_1_1_scene_object_camera.html">SceneObjectCamera</a>&gt;()</td></tr>
@@ -184,6 +192,8 @@ Protected Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
+<tr class="memitem:a5d77480301e6b61eee0f96d48d54b05f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_manager_settings.html">SceneManagerSettings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a5d77480301e6b61eee0f96d48d54b05f">settings</a><code> [get, set]</code></td></tr>
+<tr class="separator:a5d77480301e6b61eee0f96d48d54b05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a002c142304a882a0b18dc69488164123"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a002c142304a882a0b18dc69488164123">sceneObjects</a><code> [get, set]</code></td></tr>
 <tr class="separator:a002c142304a882a0b18dc69488164123"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84ff38e8cd817b72c998f65d99254d0e"><td class="memItemLeft" align="right" valign="top">ref GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager.html#a84ff38e8cd817b72c998f65d99254d0e">scnRoot</a><code> [get]</code></td></tr>
@@ -209,6 +219,10 @@ Private Attributes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
+<tr class="memitem:a5f06a46bf5516682ebeea72f7784e418 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a5f06a46bf5516682ebeea72f7784e418">Init</a> (object sender, EventArgs e)</td></tr>
+<tr class="separator:a5f06a46bf5516682ebeea72f7784e418 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae441df204d0299ab3fae47b0b5431778 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ae441df204d0299ab3fae47b0b5431778">Cleanup</a> (object sender, EventArgs e)</td></tr>
+<tr class="separator:ae441df204d0299ab3fae47b0b5431778 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ad5e118d1e323304f289b3d5ab970e8a1">addModule</a> (<a class="el" href="classvpet_1_1_module.html">Module</a> module, Type type)</td></tr>
 <tr class="separator:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#aaedf4eb371f9c8f0e7f11a025c8d2828">removeModule</a> (Type type)</td></tr>
@@ -473,6 +487,49 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a08b823573741bd37faad667a9cf6adda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08b823573741bd37faad667a9cf6adda">&#9670;&nbsp;</a></span>maxExtend</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float vpet.SceneManager.maxExtend = 1f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5dbe2c160e67c4bd4b1ce49fc3a2dfbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dbe2c160e67c4bd4b1ce49fc3a2dfbb">&#9670;&nbsp;</a></span>sceneBoundsMax</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Vector3 vpet.SceneManager.sceneBoundsMax = Vector3.positiveInfinity</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The maximum extend of the scene </p>
+
+</div>
+</div>
+<a id="affef04a92a834b4a17a25cce85c30103"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affef04a92a834b4a17a25cce85c30103">&#9670;&nbsp;</a></span>sceneBoundsMin</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Vector3 vpet.SceneManager.sceneBoundsMin = Vector3.negativeInfinity</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Property Documentation</h2>
 <a id="af07466dcd1a4211d428aec631084c384"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af07466dcd1a4211d428aec631084c384">&#9670;&nbsp;</a></span>sceneDataHandler</h2>
@@ -542,6 +599,29 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter returning a reference to the VPET scene root.</p>
 <dl class="section return"><dt>Returns</dt><dd>A reference to the VPET scene root. </dd></dl>
+
+</div>
+</div>
+<a id="a5d77480301e6b61eee0f96d48d54b05f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d77480301e6b61eee0f96d48d54b05f">&#9670;&nbsp;</a></span>settings</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_scene_manager_1_1_scene_manager_settings.html">SceneManagerSettings</a> vpet.SceneManager.settings</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Cast for accessing the settings variable with the correct type. </p>
 
 </div>
 </div>

@@ -56,6 +56,9 @@ namespace vpet
         {
         }
 
+        //!
+        //! Destructor, cleaning up event registrations. 
+        //!
         ~UpdateSenderModule()
         {
             SceneManager sceneManager = m_core.getManager<SceneManager>();

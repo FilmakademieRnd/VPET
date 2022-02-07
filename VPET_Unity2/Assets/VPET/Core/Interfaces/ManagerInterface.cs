@@ -104,6 +104,9 @@ namespace vpet
                 _settings = (Settings)Activator.CreateInstance(settingsType);
         }
 
+        //!
+        //! Destructor, cleaning up event registrations. 
+        //!
         ~Manager()
         {
             core.awakeEvent -= Init;

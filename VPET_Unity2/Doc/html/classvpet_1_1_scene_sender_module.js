@@ -1,7 +1,12 @@
 var classvpet_1_1_scene_sender_module =
 [
     [ "SceneSenderModule", "classvpet_1_1_scene_sender_module.html#a4016ad093a026657a3ea1b8dd95b45cc", null ],
+    [ "Connect", "classvpet_1_1_scene_sender_module.html#a724c9a39d25cfbb20a23cad34793e62b", null ],
+    [ "Init", "classvpet_1_1_scene_sender_module.html#affcbbcd7c3444776e8b288a4f46227f3", null ],
     [ "run", "classvpet_1_1_scene_sender_module.html#aaf6162ff5ba2c4a54a0c490e568008b0", null ],
     [ "sendScene", "classvpet_1_1_scene_sender_module.html#a250a450551daedba43ce3cdd11f00733", null ],
-    [ "m_responses", "classvpet_1_1_scene_sender_module.html#a372f67cb3aad9f1ccfea75418d65ea30", null ]
+    [ "Start", "classvpet_1_1_scene_sender_module.html#a254b3e54987ccc8ed3f5a5cc705a76b3", null ],
+    [ "m_menu", "classvpet_1_1_scene_sender_module.html#a2a6c45214944452545d011de84624e64", null ],
+    [ "m_responses", "classvpet_1_1_scene_sender_module.html#a372f67cb3aad9f1ccfea75418d65ea30", null ],
+    [ "m_serverIP_Param", "classvpet_1_1_scene_sender_module.html#a6613bebf1c20dc3874e209c344d5d265", null ]
 ];

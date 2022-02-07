@@ -13,7 +13,7 @@ namespace vpet
     //!
     //! implementation of unity scene loader module
     //!
-    public class UnitySceneLoaderModule : Module
+    public class UnitySceneLoaderModule : SceneManagerModule
     {
         //!
         //! constructor

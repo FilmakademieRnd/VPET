@@ -1,5 +1,11 @@
 var annotated_dup =
 [
+    [ "DG", "namespace_d_g.html", [
+      [ "Tweening", "namespace_d_g_1_1_tweening.html", [
+        [ "DOTweenModuleUnityVersion", "class_d_g_1_1_tweening_1_1_d_o_tween_module_unity_version.html", null ],
+        [ "DOTweenModuleUtils", "class_d_g_1_1_tweening_1_1_d_o_tween_module_utils.html", "class_d_g_1_1_tweening_1_1_d_o_tween_module_utils" ]
+      ] ]
+    ] ],
     [ "vpet", "namespacevpet.html", [
       [ "Core", "classvpet_1_1_core.html", "classvpet_1_1_core" ],
       [ "CoreInterface", "classvpet_1_1_core_interface.html", "classvpet_1_1_core_interface" ],
@@ -15,6 +21,8 @@ var annotated_dup =
       [ "NetworkManager", "classvpet_1_1_network_manager.html", "classvpet_1_1_network_manager" ],
       [ "SceneManager", "classvpet_1_1_scene_manager.html", "classvpet_1_1_scene_manager" ],
       [ "UIManager", "classvpet_1_1_u_i_manager.html", "classvpet_1_1_u_i_manager" ],
+      [ "MenuTree", "classvpet_1_1_menu_tree.html", "classvpet_1_1_menu_tree" ],
+      [ "MenuItem", "classvpet_1_1_menu_item.html", "classvpet_1_1_menu_item" ],
       [ "AbstractParameter", "classvpet_1_1_abstract_parameter.html", "classvpet_1_1_abstract_parameter" ],
       [ "Parameter", "classvpet_1_1_parameter.html", "classvpet_1_1_parameter" ],
       [ "SceneObject", "classvpet_1_1_scene_object.html", "classvpet_1_1_scene_object" ],
@@ -23,8 +31,10 @@ var annotated_dup =
       [ "SceneObjectLight", "classvpet_1_1_scene_object_light.html", "classvpet_1_1_scene_object_light" ],
       [ "SceneObjectPointLight", "classvpet_1_1_scene_object_point_light.html", "classvpet_1_1_scene_object_point_light" ],
       [ "SceneObjectSpotLight", "classvpet_1_1_scene_object_spot_light.html", "classvpet_1_1_scene_object_spot_light" ],
-      [ "VPETSettings", "classvpet_1_1_v_p_e_t_settings.html", "classvpet_1_1_v_p_e_t_settings" ],
+      [ "Settings", "classvpet_1_1_settings.html", null ],
       [ "Helpers", "classvpet_1_1_helpers.html", "classvpet_1_1_helpers" ],
+      [ "ARModule", "classvpet_1_1_a_r_module.html", "classvpet_1_1_a_r_module" ],
+      [ "PlaceScene", "classvpet_1_1_place_scene.html", "classvpet_1_1_place_scene" ],
       [ "SceneReceiverModule", "classvpet_1_1_scene_receiver_module.html", "classvpet_1_1_scene_receiver_module" ],
       [ "SceneSenderModule", "classvpet_1_1_scene_sender_module.html", "classvpet_1_1_scene_sender_module" ],
       [ "UpdateReceiverModule", "classvpet_1_1_update_receiver_module.html", "classvpet_1_1_update_receiver_module" ],
@@ -36,9 +46,20 @@ var annotated_dup =
       [ "LightIcon", "classvpet_1_1_light_icon.html", "classvpet_1_1_light_icon" ],
       [ "LightSphere", "classvpet_1_1_light_sphere.html", "classvpet_1_1_light_sphere" ],
       [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", "classvpet_1_1_unity_scene_loader_module" ],
+      [ "MenuCreatorModule", "classvpet_1_1_menu_creator_module.html", "classvpet_1_1_menu_creator_module" ],
+      [ "MenuSelectorCreatorModule", "classvpet_1_1_menu_selector_creator_module.html", "classvpet_1_1_menu_selector_creator_module" ],
+      [ "PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html", "classvpet_1_1_pixel_selector_module" ],
+      [ "SelectionOutlineModule", "classvpet_1_1_selection_outline_module.html", "classvpet_1_1_selection_outline_module" ],
+      [ "ColorPicker", "classvpet_1_1_color_picker.html", "classvpet_1_1_color_picker" ],
+      [ "Manipulator", "classvpet_1_1_manipulator.html", "classvpet_1_1_manipulator" ],
+      [ "ScrollSnap", "classvpet_1_1_scroll_snap.html", "classvpet_1_1_scroll_snap" ],
+      [ "Spinner", "classvpet_1_1_spinner.html", "classvpet_1_1_spinner" ],
+      [ "SpinnerQuaternion", "classvpet_1_1_spinner_quaternion.html", "classvpet_1_1_spinner_quaternion" ],
+      [ "SpinnerVec3", "classvpet_1_1_spinner_vec3.html", "classvpet_1_1_spinner_vec3" ],
+      [ "ManipulatorSelector", "classvpet_1_1_manipulator_selector.html", "classvpet_1_1_manipulator_selector" ],
       [ "UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html", "classvpet_1_1_u_i_creator2_d_module" ],
-      [ "DummyModule", "classvpet_1_1_dummy_module.html", "classvpet_1_1_dummy_module" ],
-      [ "PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html", "classvpet_1_1_pixel_selector_module" ]
+      [ "UICreator2DModuleSettings", "classvpet_1_1_u_i_creator2_d_module_settings.html", "classvpet_1_1_u_i_creator2_d_module_settings" ],
+      [ "ManipulatorReference", "classvpet_1_1_manipulator_reference.html", "classvpet_1_1_manipulator_reference" ]
     ] ],
-    [ "TouchInputs", "class_touch_inputs.html", "class_touch_inputs" ]
+    [ "Inputs", "class_inputs.html", "class_inputs" ]
 ];

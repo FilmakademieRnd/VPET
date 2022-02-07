@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['devices_831',['devices',['../class_touch_inputs.html#a1eb754468891c4c4bb6291632f43980c',1,'TouchInputs']]]
+  ['devices_1376',['devices',['../class_inputs.html#a4dd1c57052a1d3a1d1687c380443530e',1,'Inputs']]]
 ];

@@ -103,19 +103,21 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ad88198c68bdfbd2c770dc2a4969d3780"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#ad88198c68bdfbd2c770dc2a4969d3780">getUniqueID</a> ()</td></tr>
-<tr class="separator:ad88198c68bdfbd2c770dc2a4969d3780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44dddc789757065f20e41069f36cd8e6"><td class="memItemLeft" align="right" valign="top">static short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a44dddc789757065f20e41069f36cd8e6">getSoID</a> ()</td></tr>
+<tr class="separator:a44dddc789757065f20e41069f36cd8e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a856a77d37068589dc98540c68397963e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a856a77d37068589dc98540c68397963e">Log</a> (string msg, <a class="el" href="classvpet_1_1_helpers.html#a268dcad2193184ec6c7d5928f17d3fbb">logMsgType</a> type=0)</td></tr>
 <tr class="separator:a856a77d37068589dc98540c68397963e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0df93bd1de4d97936f1d52138ba885df"><td class="memItemLeft" align="right" valign="top">static Type[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a0df93bd1de4d97936f1d52138ba885df">GetAllTypes</a> (AppDomain appDomain, Type type)</td></tr>
 <tr class="separator:a0df93bd1de4d97936f1d52138ba885df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0765f90532b32b27045981cf190cc614"><td class="memItemLeft" align="right" valign="top">static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a0765f90532b32b27045981cf190cc614">FindFirst&lt; T &gt;</a> (T[] a, T[] b)</td></tr>
+<tr class="separator:a0765f90532b32b27045981cf190cc614"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30fa47b60683b8ca51a5fcc49a49b12d"><td class="memItemLeft" align="right" valign="top">static Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a30fa47b60683b8ca51a5fcc49a49b12d">FindDeepChild</a> (this Transform aParent, string aName)</td></tr>
 <tr class="separator:a30fa47b60683b8ca51a5fcc49a49b12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
-<tr class="memitem:a1ba5956dc16d5977571e135383f70c58"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a1ba5956dc16d5977571e135383f70c58">s_id</a> = 0</td></tr>
-<tr class="separator:a1ba5956dc16d5977571e135383f70c58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a631ff048dfe22bfd553d596e5d10af53"><td class="memItemLeft" align="right" valign="top">static short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a631ff048dfe22bfd553d596e5d10af53">s_id</a> = 1</td></tr>
+<tr class="separator:a631ff048dfe22bfd553d596e5d10af53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation for VPET helpers. </p>
@@ -194,6 +196,42 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a0765f90532b32b27045981cf190cc614"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0765f90532b32b27045981cf190cc614">&#9670;&nbsp;</a></span>FindFirst&lt; T &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static T vpet.Helpers.FindFirst&lt; T &gt; </td>
+          <td>(</td>
+          <td class="paramtype">T[]&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T[]&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0df93bd1de4d97936f1d52138ba885df"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0df93bd1de4d97936f1d52138ba885df">&#9670;&nbsp;</a></span>GetAllTypes()</h2>
 
@@ -238,8 +276,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad88198c68bdfbd2c770dc2a4969d3780"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad88198c68bdfbd2c770dc2a4969d3780">&#9670;&nbsp;</a></span>getUniqueID()</h2>
+<a id="a44dddc789757065f20e41069f36cd8e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44dddc789757065f20e41069f36cd8e6">&#9670;&nbsp;</a></span>getSoID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -248,7 +286,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int vpet.Helpers.getUniqueID </td>
+          <td class="memname">static short vpet.Helpers.getSoID </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -308,8 +346,8 @@ Static Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a1ba5956dc16d5977571e135383f70c58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ba5956dc16d5977571e135383f70c58">&#9670;&nbsp;</a></span>s_id</h2>
+<a id="a631ff048dfe22bfd553d596e5d10af53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a631ff048dfe22bfd553d596e5d10af53">&#9670;&nbsp;</a></span>s_id</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -318,7 +356,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int vpet.Helpers.s_id = 0</td>
+          <td class="memname">short vpet.Helpers.s_id = 1</td>
         </tr>
       </table>
   </td>

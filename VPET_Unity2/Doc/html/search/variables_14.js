@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['width_809',['width',['../classvpet_1_1_scene_manager_1_1_texture_package.html#aa97101ed8ed619b12d86407a777b41b9',1,'vpet::SceneManager::TexturePackage']]]
+  ['width_1309',['width',['../classvpet_1_1_scene_manager_1_1_texture_package.html#aa97101ed8ed619b12d86407a777b41b9',1,'vpet::SceneManager::TexturePackage']]],
+  ['wraparound_1310',['wrapAround',['../classvpet_1_1_scroll_snap.html#af7645cde5dbd7cc55f195ede492650cd',1,'vpet::ScrollSnap']]]
 ];

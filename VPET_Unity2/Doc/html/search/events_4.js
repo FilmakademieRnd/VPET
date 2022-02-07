@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['m_5fscenereceived_863',['m_sceneReceived',['../classvpet_1_1_scene_receiver_module.html#a473ffcea51cb4e2b407fd303f083751a',1,'vpet::SceneReceiverModule']]]
+  ['lateawakeevent_1419',['lateAwakeEvent',['../classvpet_1_1_core.html#adcbe9d40a91a5ce34443995a63d9ad92',1,'vpet::Core']]]
 ];

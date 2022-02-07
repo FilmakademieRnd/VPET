@@ -1,6 +1,25 @@
 var classvpet_1_1_u_i_creator2_d_module =
 [
     [ "UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html#a2ec32179c2b6b91fca746eeee1cfda62", null ],
-    [ "createUI", "classvpet_1_1_u_i_creator2_d_module.html#af85e8354d543ff2faa231b34d7686fe5", null ],
-    [ "Init", "classvpet_1_1_u_i_creator2_d_module.html#a095ba11400862ea66e55417d44b3b65e", null ]
+    [ "clearUI", "classvpet_1_1_u_i_creator2_d_module.html#ab7405904f9e41501a2d94cc8b2cf7fe5", null ],
+    [ "createUI", "classvpet_1_1_u_i_creator2_d_module.html#aeaa96241cfa972ed9cb17ec841162b08", null ],
+    [ "HideMenu", "classvpet_1_1_u_i_creator2_d_module.html#a131b040a8473f1aade4656c6ded7257c", null ],
+    [ "Init", "classvpet_1_1_u_i_creator2_d_module.html#a095ba11400862ea66e55417d44b3b65e", null ],
+    [ "SelectManipulator", "classvpet_1_1_u_i_creator2_d_module.html#ab8f66684a228c26676eb9939a1dcd045", null ],
+    [ "SetActive", "classvpet_1_1_u_i_creator2_d_module.html#a52344c9d0703fe7b5844c88ab27b9c0e", null ],
+    [ "SetAlpha", "classvpet_1_1_u_i_creator2_d_module.html#ace8d35af056f51e4064acf381199c5af", null ],
+    [ "SetInteractable", "classvpet_1_1_u_i_creator2_d_module.html#a4c5b12eaee01b04d563331a082d6a44d", null ],
+    [ "ShowMenu", "classvpet_1_1_u_i_creator2_d_module.html#ae1807790950f7b944344894472f94f6e", null ],
+    [ "blocksRaycasts", "classvpet_1_1_u_i_creator2_d_module.html#ae89edb9bd7315eeac6f8044d96337e61", null ],
+    [ "instancedManipulators", "classvpet_1_1_u_i_creator2_d_module.html#a9e417fdfa2d5ed88e9746ecf569dd09b", null ],
+    [ "instancedManipulatorSelectors", "classvpet_1_1_u_i_creator2_d_module.html#a3cd8c3916d53413179570ca691ed2fc3", null ],
+    [ "isActive", "classvpet_1_1_u_i_creator2_d_module.html#aaf424db0a6046ba1a423dfef6c13f29a", null ],
+    [ "manipulatorPanel", "classvpet_1_1_u_i_creator2_d_module.html#a447aeb850bb3f89a4e79268a4fff05cd", null ],
+    [ "manipulatorSelectionPanel", "classvpet_1_1_u_i_creator2_d_module.html#a92fed697084b8e856308a4cc74808fdb", null ],
+    [ "selectorSize", "classvpet_1_1_u_i_creator2_d_module.html#ab38068990f7b5e240640613d248d9a31", null ],
+    [ "selectorSpacing", "classvpet_1_1_u_i_creator2_d_module.html#a35e13bac074b091259b8a0b5effb532a", null ],
+    [ "selectorsPerRow", "classvpet_1_1_u_i_creator2_d_module.html#ae86eb828aa03167a466353f0ed9de924", null ],
+    [ "settings", "classvpet_1_1_u_i_creator2_d_module.html#a442757e0e15e73f93af3941c320c329e", null ],
+    [ "turnOnAndOffCanvasObject", "classvpet_1_1_u_i_creator2_d_module.html#abc240d91abf0d86349a23907797d7647", null ],
+    [ "UI2D", "classvpet_1_1_u_i_creator2_d_module.html#acd959687f765bf05be937dc6d014b4ce", null ]
 ];

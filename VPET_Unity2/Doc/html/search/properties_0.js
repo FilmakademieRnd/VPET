@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['asset_825',['asset',['../class_touch_inputs.html#ac18b288dfbe27e77e14ed599b070b3bf',1,'TouchInputs']]]
+  ['asset_1364',['asset',['../class_inputs.html#a1e87c9564dd89a2daddb908831c2e9a4',1,'Inputs']]]
 ];

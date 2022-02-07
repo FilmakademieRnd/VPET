@@ -84,9 +84,11 @@ $(document).ready(function(){initNavTree('classvpet_1_1_network_manager_module.h
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
@@ -102,7 +104,7 @@ Inheritance diagram for vpet.NetworkManagerModule:</div>
   <img src="classvpet_1_1_network_manager_module.png" usemap="#vpet.NetworkManagerModule_map" alt=""/>
   <map id="vpet.NetworkManagerModule_map" name="vpet.NetworkManagerModule_map">
 <area href="classvpet_1_1_module.html" alt="vpet.Module" shape="rect" coords="283,56,462,80"/>
-<area href="interfacevpet_1_1_module_interface.html" alt="vpet.ModuleInterface" shape="rect" coords="283,0,462,24"/>
+<area href="interfacevpet_1_1_module_interface.html" alt="vpet.ModuleInterface" shape="rect" coords="189,0,368,24"/>
 <area href="classvpet_1_1_scene_receiver_module.html" alt="vpet.SceneReceiverModule" shape="rect" coords="0,168,179,192"/>
 <area href="classvpet_1_1_scene_sender_module.html" alt="vpet.SceneSenderModule" shape="rect" coords="189,168,368,192"/>
 <area href="classvpet_1_1_update_receiver_module.html" alt="vpet.UpdateReceiverModule" shape="rect" coords="378,168,557,192"/>
@@ -110,17 +112,30 @@ Inheritance diagram for vpet.NetworkManagerModule:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a91591f47da93c15ec9ea0be4cb1487fa"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487fa">MessageType</a> { <br />
+&#160;&#160;<a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487faa725ab7ce4543afdd767557ad6d3e6657">PARAMETERUPDATE</a>
+, <a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487faaf510b97de4ace11844b85f23d0fc012f">LOCK</a>
+, <a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487faa274ccef15a21e829d03293a6fd1974f3">SYNC</a>
+, <a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487faae07ff41a486c27c095a15898dcca34d1">PING</a>
+, <br />
+&#160;&#160;<a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487faa4372594b5d8154561e762385bf4be674">RESENDUPDATE</a>
+<br />
+ }</td></tr>
+<tr class="separator:a91591f47da93c15ec9ea0be4cb1487fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af2d6c8789c6da4e93592665c9d038883"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#af2d6c8789c6da4e93592665c9d038883">NetworkManagerModule</a> (string <a class="el" href="classvpet_1_1_module.html#a57008ce094309ba9806e796d1bdf78be">name</a>, <a class="el" href="classvpet_1_1_core.html">Core</a> core)</td></tr>
 <tr class="separator:af2d6c8789c6da4e93592665c9d038883"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e1a34290dba68fc5c2e1975ab352deb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a7e1a34290dba68fc5c2e1975ab352deb">initialise</a> (out List&lt; byte[]&gt; messageQueue)</td></tr>
-<tr class="separator:a7e1a34290dba68fc5c2e1975ab352deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae36c9eb94a61632d569c721d36602cc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ae36c9eb94a61632d569c721d36602cc9">stop</a> ()</td></tr>
 <tr class="separator:ae36c9eb94a61632d569c721d36602cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classvpet_1_1_module"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvpet_1_1_module')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvpet_1_1_module.html">vpet.Module</a></td></tr>
 <tr class="memitem:a0c5deeec62853b99ba5a819758358836 inherit pub_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a0c5deeec62853b99ba5a819758358836">Module</a> (string <a class="el" href="classvpet_1_1_module.html#a57008ce094309ba9806e796d1bdf78be">name</a>, <a class="el" href="classvpet_1_1_core.html">Core</a> core)</td></tr>
 <tr class="separator:a0c5deeec62853b99ba5a819758358836 inherit pub_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa661f3fcfbb12d7f66522049b4761ec6 inherit pub_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#aa661f3fcfbb12d7f66522049b4761ec6">Dispose</a> ()</td></tr>
+<tr class="separator:aa661f3fcfbb12d7f66522049b4761ec6 inherit pub_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -131,8 +146,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="inherit_header pro_methods_classvpet_1_1_module"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classvpet_1_1_module')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classvpet_1_1_module.html">vpet.Module</a></td></tr>
 <tr class="memitem:afb349cb89231acd4b5c758d792464c79 inherit pro_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#afb349cb89231acd4b5c758d792464c79">Init</a> (object sender, EventArgs e)</td></tr>
 <tr class="separator:afb349cb89231acd4b5c758d792464c79 inherit pro_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f098c668a5c9770baf9f0b2796ddc9d inherit pro_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a3f098c668a5c9770baf9f0b2796ddc9d">Start</a> (object sender, EventArgs e)</td></tr>
+<tr class="separator:a3f098c668a5c9770baf9f0b2796ddc9d inherit pro_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a044369f5d6c5ddb645b56bd9194bea46 inherit pro_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a044369f5d6c5ddb645b56bd9194bea46">Cleanup</a> (object sender, EventArgs e)</td></tr>
 <tr class="separator:a044369f5d6c5ddb645b56bd9194bea46 inherit pro_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f4cf97821cbb760352d194919adaf90 inherit pro_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a1f4cf97821cbb760352d194919adaf90">getMenus</a> ()</td></tr>
+<tr class="separator:a1f4cf97821cbb760352d194919adaf90 inherit pro_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -140,8 +159,6 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a5558ea17009cf19f2f35544118a2519a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d90a9d5bfd5edddf74eab2010b2e5e7"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a7d90a9d5bfd5edddf74eab2010b2e5e7">m_port</a></td></tr>
 <tr class="separator:a7d90a9d5bfd5edddf74eab2010b2e5e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab480fcd4ca3fc448fce7fe207100f4e8"><td class="memItemLeft" align="right" valign="top">List&lt; byte[]&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ab480fcd4ca3fc448fce7fe207100f4e8">m_messageQueue</a></td></tr>
-<tr class="separator:ab480fcd4ca3fc448fce7fe207100f4e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9edd7aa546a1efe37aff19881456f5ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a9edd7aa546a1efe37aff19881456f5ea">m_isRunning</a></td></tr>
 <tr class="separator:a9edd7aa546a1efe37aff19881456f5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classvpet_1_1_module"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classvpet_1_1_module')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classvpet_1_1_module.html">vpet.Module</a></td></tr>
@@ -149,6 +166,11 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a7d1ec1e3f55d940fa5f3bff3c2d53dbd inherit pro_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77cf1658a79cdc4a4c9fa032aab64897 inherit pro_attribs_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_core.html">Core</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a77cf1658a79cdc4a4c9fa032aab64897">m_core</a></td></tr>
 <tr class="separator:a77cf1658a79cdc4a4c9fa032aab64897 inherit pro_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
+Static Protected Attributes</h2></td></tr>
+<tr class="memitem:ab43b852dc1f8460964a10769a174ce86"><td class="memItemLeft" align="right" valign="top">static ManualResetEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ab43b852dc1f8460964a10769a174ce86">m_mre</a> = new ManualResetEvent(false)</td></tr>
+<tr class="separator:ab43b852dc1f8460964a10769a174ce86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
@@ -160,17 +182,56 @@ Properties</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
+<tr class="memitem:a90061d2c4101440e96ebcb609253554d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a90061d2c4101440e96ebcb609253554d">~NetworkManagerModule</a> ()</td></tr>
+<tr class="separator:a90061d2c4101440e96ebcb609253554d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a342c8bbaf1d8997eacdc89c9114468ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a342c8bbaf1d8997eacdc89c9114468ce">stopThread</a> (object sender, EventArgs e)</td></tr>
 <tr class="separator:a342c8bbaf1d8997eacdc89c9114468ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a5d596b78df0f81918555926e05656133"><td class="memItemLeft" align="right" valign="top">Thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a5d596b78df0f81918555926e05656133">m_requesterThread</a></td></tr>
-<tr class="separator:a5d596b78df0f81918555926e05656133"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36164249479ce684810d8f7486d80895"><td class="memItemLeft" align="right" valign="top">Thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a36164249479ce684810d8f7486d80895">m_transeiverThread</a></td></tr>
+<tr class="separator:a36164249479ce684810d8f7486d80895"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_attribs_classvpet_1_1_module"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classvpet_1_1_module')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classvpet_1_1_module.html">vpet.Module</a></td></tr>
+<tr class="memitem:ab108c97c04d044e7accc7923f99b6272 inherit pub_attribs_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#ab108c97c04d044e7accc7923f99b6272">load</a> = true</td></tr>
+<tr class="separator:ab108c97c04d044e7accc7923f99b6272 inherit pub_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class for scene manager modules </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a91591f47da93c15ec9ea0be4cb1487fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91591f47da93c15ec9ea0be4cb1487fa">&#9670;&nbsp;</a></span>MessageType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classvpet_1_1_network_manager_module.html#a91591f47da93c15ec9ea0be4cb1487fa">vpet.NetworkManagerModule.MessageType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Enumeration defining VPET message types. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a91591f47da93c15ec9ea0be4cb1487faa725ab7ce4543afdd767557ad6d3e6657"></a>PARAMETERUPDATE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91591f47da93c15ec9ea0be4cb1487faaf510b97de4ace11844b85f23d0fc012f"></a>LOCK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91591f47da93c15ec9ea0be4cb1487faa274ccef15a21e829d03293a6fd1974f3"></a>SYNC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91591f47da93c15ec9ea0be4cb1487faae07ff41a486c27c095a15898dcca34d1"></a>PING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91591f47da93c15ec9ea0be4cb1487faa4372594b5d8154561e762385bf4be674"></a>RESENDUPDATE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af2d6c8789c6da4e93592665c9d038883"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2d6c8789c6da4e93592665c9d038883">&#9670;&nbsp;</a></span>NetworkManagerModule()</h2>
 
@@ -206,9 +267,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7e1a34290dba68fc5c2e1975ab352deb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e1a34290dba68fc5c2e1975ab352deb">&#9670;&nbsp;</a></span>initialise()</h2>
+<a id="a90061d2c4101440e96ebcb609253554d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90061d2c4101440e96ebcb609253554d">&#9670;&nbsp;</a></span>~NetworkManagerModule()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,26 +277,23 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void vpet.NetworkManagerModule.initialise </td>
+          <td class="memname">vpet.NetworkManagerModule.~NetworkManagerModule </td>
           <td>(</td>
-          <td class="paramtype">out List&lt; byte[]&gt;&#160;</td>
-          <td class="paramname"><em>messageQueue</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Function for custom initialisation.</p>
-<p>Reference to tist of byte[] storing the messages. </p>
-
-<p>Reimplemented in <a class="el" href="classvpet_1_1_update_sender_module.html#a6320402d77b1bec7d971e562e525cdfb">vpet.UpdateSenderModule</a>, and <a class="el" href="classvpet_1_1_update_receiver_module.html#aa1c3daca9d1373bfc2e1df6a68224f4f">vpet.UpdateReceiverModule</a>.</p>
+<p>Destructor, cleaning up event registrations. </p>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a745193e11474ecbfb170e928c27073d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a745193e11474ecbfb170e928c27073d6">&#9670;&nbsp;</a></span>run()</h2>
 
@@ -307,7 +364,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_receiver_module.html#a06462913de0868d535c9a45e239af502">vpet.SceneReceiverModule</a>.</p>
+<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_receiver_module.html#a08a08abe97a90f794155bb5579a00569">vpet.SceneReceiverModule</a>.</p>
 
 </div>
 </div>
@@ -325,7 +382,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Stop the receiver. </p>
+<p>Stop the transeiver. </p>
 
 </div>
 </div>
@@ -362,6 +419,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Function to stop all tranceiver threads (called when VPET core will be destroyed). </p>
 
 </div>
 </div>
@@ -412,8 +470,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab480fcd4ca3fc448fce7fe207100f4e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab480fcd4ca3fc448fce7fe207100f4e8">&#9670;&nbsp;</a></span>m_messageQueue</h2>
+<a id="ab43b852dc1f8460964a10769a174ce86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab43b852dc1f8460964a10769a174ce86">&#9670;&nbsp;</a></span>m_mre</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -422,16 +480,15 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;byte[]&gt; vpet.NetworkManagerModule.m_messageQueue</td>
+          <td class="memname">ManualResetEvent vpet.NetworkManagerModule.m_mre = new ManualResetEvent(false)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>List of byte[] storing the messages. </p>
 
 </div>
 </div>
@@ -458,8 +515,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5d596b78df0f81918555926e05656133"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d596b78df0f81918555926e05656133">&#9670;&nbsp;</a></span>m_requesterThread</h2>
+<a id="a36164249479ce684810d8f7486d80895"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36164249479ce684810d8f7486d80895">&#9670;&nbsp;</a></span>m_transeiverThread</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -468,7 +525,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Thread vpet.NetworkManagerModule.m_requesterThread</td>
+          <td class="memname">Thread vpet.NetworkManagerModule.m_transeiverThread</td>
         </tr>
       </table>
   </td>
@@ -477,6 +534,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>The Thread used for receiving or sending messages. </p>
 
 </div>
 </div>

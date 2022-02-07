@@ -14,7 +14,7 @@ research and development activities of Animationsinstitut.
  
 In 2018 some features (Character Animation Interface and USD support) were
 addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2021
+under grant agreement no 780470, 2018-2022
  
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
@@ -26,21 +26,23 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 17.11.2021
+//! @date 07.02.2022
 
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace vpet
 {
+
     //!
     //! Parameter base class.
     //!
-    public abstract class AbstractParameter
+    [Serializable]
+    public abstract class AbstractParameter 
     {
-
         //!
         //! The unique id of this parameter.
         //!
@@ -52,6 +54,7 @@ namespace vpet
         //!
         //! The name of the parameter.
         //!
+        [SerializeField]
         protected string _name;
         //!
         //! A reference to the parameters parent object.
@@ -87,6 +90,7 @@ namespace vpet
         //!
         public Type cType
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _type;
         }
         //!
@@ -94,6 +98,7 @@ namespace vpet
         //!
         public ParameterType vpetType
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => toVPETType(_type);
         }
         //!
@@ -101,7 +106,9 @@ namespace vpet
         //!
         public string name
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _name;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             protected set => _name = value;
         }
         //!
@@ -109,6 +116,7 @@ namespace vpet
         //!
         public SceneObject parent
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _parent;
         }
 
@@ -140,13 +148,13 @@ namespace vpet
 
         public abstract byte[] Serialize(int startoffset);
         public abstract void deSerialize(ref byte[] data, int offset);
-
     }
 
+    [Serializable]
     //!
     //! Parameter class defining the fundamental functionality and interface
     //!
-    public class Parameter<T> : AbstractParameter
+    public class Parameter<T> : AbstractParameter, IFormattable
     {
         //!
         //! Constructor initializing members.
@@ -160,6 +168,7 @@ namespace vpet
             _id = id;
         }
 
+        [SerializeField]
         //!
         //! The parameters value as a template.
         //!
@@ -170,7 +179,9 @@ namespace vpet
         //!
         public T value
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _value;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { setValue(value); }
         }
 
@@ -184,6 +195,7 @@ namespace vpet
         //! @param   sender     Object calling the change function
         //! @param   a          Values to be passed to the change function
         //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void setValue(T v)
         {
             _value = v;
@@ -196,6 +208,7 @@ namespace vpet
         //! @param startoffset The offset in bytes within the generated array at which the data should start at.
         //! @return The Parameters data serialized as a byte array.
         //! 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte[] Serialize(int startoffset)
         {
             byte[] data = null;
@@ -293,6 +306,7 @@ namespace vpet
         //! 
         //! @param data The byte data to be deserialized and copyed to the parameters value.
         //! 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void deSerialize(ref byte[] data, int offset)
         {
             ParameterType t = toVPETType(_type);
@@ -342,5 +356,17 @@ namespace vpet
             }
             hasChanged?.Invoke(this, _value);
         }
+
+        //!
+        //! Function for string serialization. Used for storing parameters to disk.
+        //! 
+        //! @param format The format string (not used).
+        //! @formatProvider The format prvider used to format the string (not used).
+        //! 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("({0}, {1})", value.ToString(), name);
+        }
+
     }
 }
