@@ -95,10 +95,10 @@ namespace vpet
         //!
         //! Setter and getter to List holding references to all editable VPET sceneObjects.
         //!
-        public List<SceneObject> sceneLightList
+        public List<SceneObjectLight> sceneLightList
         {
-            get { return m_sceneObjects; }
-            set { m_sceneObjects = value; }
+            get { return m_sceneLightList; }
+            set { m_sceneLightList = value; }
         }
         //!
         //! The list storing Unity cameras in scene.
@@ -107,10 +107,10 @@ namespace vpet
         //!
         //! Setter and getter to List holding references to all editable VPET sceneObjects.
         //!
-        public List<SceneObject> sceneCameraList
+        public List<SceneObjectCamera> sceneCameraList
         {
-            get { return m_sceneObjects; }
-            set { m_sceneObjects = value; }
+            get { return m_sceneCameraList; }
+            set { m_sceneCameraList = value; }
         }
 
         //!
