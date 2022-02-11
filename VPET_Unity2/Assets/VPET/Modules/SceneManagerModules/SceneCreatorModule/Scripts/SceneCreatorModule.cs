@@ -506,9 +506,27 @@ namespace vpet
                     // parent 
                     _lightUberInstance.transform.SetParent(objMain.transform, false);
 
-                    SceneObjectLight sco = objMain.AddComponent<SceneObjectLight>();
+                    SceneObjectLight sco;
+                    switch (lightComponent.type)
+                    {
+                        case LightType.Point:
+                            sco = objMain.AddComponent<SceneObjectPointLight>();
+                            break;
+                        case LightType.Directional:
+                            sco = objMain.AddComponent<SceneObjectDirectionalLight>();
+                            break;
+                        case LightType.Spot:
+                            sco = objMain.AddComponent<SceneObjectSpotLight>();
+                            break;
+                        case LightType.Area:
+                            sco = objMain.AddComponent<SceneObjectAreaLight>();
+                            break;
+                        default:
+                            sco = objMain.AddComponent<SceneObjectLight>();
+                            break;
+                    }
 
-                    manager.m_sceneLightList.Add(sco);
+                    manager.sceneLightList.Add(sco);
                     manager.sceneObjects.Add(sco);
 
                 }
@@ -534,7 +552,7 @@ namespace vpet
                     sco.near.value = nodeCam.near;
                     sco.far.value = nodeCam.far;
 
-                    manager.m_sceneCameraList.Add(sco);
+                    manager.sceneCameraList.Add(sco);
                     manager.sceneObjects.Add(sco);
                 }
 

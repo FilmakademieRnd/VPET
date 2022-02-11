@@ -194,5 +194,10 @@ namespace vpet
             if (transform.localScale != scale.value)
                 scale.value = transform.localScale;
         }
+
+        public Parameter<T> getParameter<T>(string name)
+        {
+           return (Parameter<T>) _parameterList.Find(parameter => parameter.name == name);
+        }
     }
 }
