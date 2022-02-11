@@ -70,10 +70,10 @@ namespace vpet
         //!
         public UICreator2DModule(string name, Core core) : base(name, core)
         {
-            Transform canvas = GameObject.Find("Canvas").transform;
-            GameObject uipanel = Resources.Load<GameObject>("Prefabs/PRE_2DUI_Panel");
-            UI2D = SceneObject.Instantiate(uipanel, canvas).transform;
-            UI2D.name = "UI2D";
+            GameObject canvas = Resources.Load<GameObject>("Prefabs/PRE_Canvas_2DUI");
+            Transform canvasTrans = SceneObject.Instantiate(canvas).transform;
+            canvasTrans.name = "Canvas_2DUI";
+            UI2D = canvasTrans.GetChild(0).transform;
             manipulatorSelectionPanel = UI2D.GetChild(0);
             manipulatorPanel = UI2D.GetChild(1);
             HideMenu();
