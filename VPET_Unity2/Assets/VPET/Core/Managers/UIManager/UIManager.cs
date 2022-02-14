@@ -53,6 +53,8 @@ namespace vpet
         //!
         public event EventHandler<SceneObject> selectionRemoved;
 
+        // Event emitted when TRS manipulator should change mode
+        public event EventHandler<int> manipulatorChange;
 
         //!
         //! Event emitted when a MenuTree has been selected.
@@ -135,6 +137,14 @@ namespace vpet
         public void showMenu(MenuTree menu)
         {
             menuSelected?.Invoke(this, menu);
+        }
+
+        //!
+        //! Function that changes TRS manipulator mode
+        //!
+        public void setManipulatorMode(int manipulatorMode)
+        {
+            manipulatorChange?.Invoke(this, manipulatorMode);
         }
     }
 }

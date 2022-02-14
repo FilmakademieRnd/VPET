@@ -26,8 +26,9 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @author Justus Henne
+//! @author Paulo Scatena
 //! @version 0
-//! @date 02.02.2022
+//! @date 14.02.2022
 
 using System;
 using System.Collections.Generic;
@@ -202,6 +203,8 @@ namespace vpet
             foreach (GameObject g in instancedManipulatorSelectors)
                 g.GetComponent<ManipulatorSelector>().visualizeIdle();
             instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
+            // actual send command
+            manager.setManipulatorMode(index);
         }
 
         //!
