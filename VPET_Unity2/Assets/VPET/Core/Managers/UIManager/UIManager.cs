@@ -53,7 +53,6 @@ namespace vpet
         //! Event emitted when a sceneObject has been removed from a selection.
         //!
         public event EventHandler<SceneObject> selectionRemoved;
-<<<<<<< HEAD
         //!
         //! Event emitted to highlight a scene object.
         //!
@@ -62,12 +61,10 @@ namespace vpet
         //! Event emitted to unhighlight a scene object.
         //!
         public event EventHandler<SceneObject> unhighlightLocked;
-=======
 
         // Event emitted when TRS manipulator should change mode
         public event EventHandler<int> manipulatorChange;
 
->>>>>>> 47312594db8ad708cd469b54acc076368f793b74
         //!
         //! Event emitted when a MenuTree has been selected.
         //!
