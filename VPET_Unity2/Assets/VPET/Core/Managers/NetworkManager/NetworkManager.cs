@@ -65,7 +65,13 @@ namespace vpet
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
-                    m_cID = byte.Parse(ip.ToString().Split('.')[3]);
+                    if (core.isServer)
+                    {
+                        // prevent equal cIDs if server and client running on the same machine
+                        m_cID = 0;
+                    }
+                    else
+                        m_cID = byte.Parse(ip.ToString().Split('.')[3]);
                     m_ip = ip.ToString();
                 }
             }

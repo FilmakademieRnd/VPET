@@ -40,7 +40,12 @@ namespace vpet
         //! The outline material to be added to the selectet object.
         //!
         private Material _outlineMaterial;
-        
+
+        //!
+        //! The outline material to be added to a locked object.
+        //!
+        private Material _outlineLockMaterial;
+
         //!
         //! Constructor
         //! @param name Name of this module
@@ -60,9 +65,33 @@ namespace vpet
         {
             Shader outlineShader = Resources.Load<Shader>("Shader/SelectionOutlineShader");
             _outlineMaterial = new Material(outlineShader);
+            _outlineLockMaterial = new Material(outlineShader);
+            _outlineLockMaterial.SetColor("_OutlineColor", Color.red);
 
             manager.selectionAdded += HighlightSelection;
             manager.selectionRemoved += DisableHighlightSelection;
+
+            manager.highlightLocked += HighlightLocked;
+            manager.unhighlightLocked += DisableHighlightLocked;
+        }
+
+        //!
+        //! Function that is called when the UIManager signals an selection.
+        //! Will add the outline material to all renderes of the given scene object.
+        //!
+        //! @param sender A reference to the UIManager.
+        //! @param eventArgs Event Arguments containing the Scene Object and the highlight color.
+        //!
+        private void HighlightLocked(object sender, SceneObject sceneObject)
+        {
+            Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
+
+            foreach (Renderer renderer in renderers)
+            {
+                List<Material> materials = renderer.sharedMaterials.ToList();
+                materials.Add(_outlineLockMaterial);
+                renderer.materials = materials.ToArray();
+            }
         }
 
         //!
@@ -79,10 +108,7 @@ namespace vpet
             foreach (Renderer renderer in renderers)
             {
                 List<Material> materials = renderer.sharedMaterials.ToList();
-                
-                //if (!materials.Contains(_outlineMaterial))
-                    materials.Add(_outlineMaterial);
-
+                materials.Add(_outlineMaterial);
                 renderer.materials = materials.ToArray();
             }
         }
@@ -102,6 +128,26 @@ namespace vpet
             {
                 List<Material> materials = renderer.sharedMaterials.ToList();
                 materials.Remove(_outlineMaterial);
+
+                renderer.materials = materials.ToArray();
+            }
+        }
+
+        //!
+        //! Function that is called when the UIManager signals an selection removed.
+        //! Will remove the outline material on all renderes of the given scene object.
+        //!
+        //! @param sender A reference to the UIManager.
+        //! @param sceneObject The selected sceneObject.
+        //!
+        private void DisableHighlightLocked(object sender, SceneObject sceneObject)
+        {
+            Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
+
+            foreach (Renderer renderer in renderers)
+            {
+                List<Material> materials = renderer.sharedMaterials.ToList();
+                materials.Remove(_outlineLockMaterial);
 
                 renderer.materials = materials.ToArray();
             }

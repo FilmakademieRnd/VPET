@@ -29,7 +29,6 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 03.02.2022
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,9 +42,13 @@ namespace vpet
     public class SceneObject : MonoBehaviour
     {
         //!
-        //! Is the sceneObject locked
+        //! Is the sceneObject locked?
         //!
         public bool _lock = false;
+        //!
+        //! Previous lock state.
+        //!
+        private bool m_oldLock;
         //!
         //! Is the sceneObject reacting to physics
         //!
@@ -68,6 +71,10 @@ namespace vpet
         {
             get => _id;
         }
+        //!
+        //! A reference to the VPET UI manager.
+        //!
+        private UIManager m_uiManager;
         //!
         //! Event emitted when parameter changed.
         //!
@@ -102,12 +109,17 @@ namespace vpet
         //!
         public virtual void Awake()
         {
+            Core core = GameObject.FindObjectOfType<Core>();
+
+            if (core)
+                m_uiManager = core.getManager<UIManager>();
+
             _parameterList = new List<AbstractParameter>();
 
             _id = Helpers.getSoID();
             _physicsActive = false;
 
-            position = new Parameter<Vector3>(transform.localPosition, "position", this, (short) parameterList.Count);
+            position = new Parameter<Vector3>(transform.localPosition, "position", this, (short)parameterList.Count);
             position.hasChanged += updatePosition;
             _parameterList.Add(position);
             rotation = new Parameter<Quaternion>(transform.localRotation, "rotation", this, (short)parameterList.Count);
@@ -177,9 +189,18 @@ namespace vpet
         //!
         public virtual void Update()
         {
-            // ToDo: implement a clever way to figure out when the transforms need to be updated 
-            if(_physicsActive)
-                updateSceneObjectTransform();
+            if (_lock != m_oldLock)
+            {
+                if (_lock)
+                    m_uiManager.highlightSceneObject(this);
+                else
+                    m_uiManager.unhighlightSceneObject(this);
+                m_oldLock = _lock;
+            }
+
+#if UNITY_EDITOR
+            updateSceneObjectTransform();
+#endif
         }
 
         //!

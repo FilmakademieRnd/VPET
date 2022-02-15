@@ -142,10 +142,16 @@ namespace vpet
         {
             //! The field of view of the camera. 
             public float fov;
+            //! The aspect ratio of the camera. 
+            public float aspect;
             //! The near clipping plane of the camera.
             public float near;
             //! The far clipping plane of the camera.
             public float far;
+            //! The focal distance of the camera. 
+            public float focalDist;
+            //! The aperture of the camera. 
+            public float aperture;
         };
 
         //!

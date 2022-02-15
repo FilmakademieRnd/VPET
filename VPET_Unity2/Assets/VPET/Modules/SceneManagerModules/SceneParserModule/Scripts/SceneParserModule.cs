@@ -195,8 +195,12 @@ namespace vpet
             SceneManager.SceneNodeCam nodeCamera = new SceneManager.SceneNodeCam();
 
             nodeCamera.fov = camera.fieldOfView;
+            nodeCamera.aspect = camera.aspect;
             nodeCamera.near = camera.nearClipPlane;
             nodeCamera.far = camera.farClipPlane;
+            // [REVIEW] not supported by Unity?
+            nodeCamera.focalDist = 1f;      
+            nodeCamera.aperture = 2.8f;
             return nodeCamera;
         }
 

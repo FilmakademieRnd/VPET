@@ -92,15 +92,15 @@ namespace vpet
         //!
         public void CreateScene(object o, EventArgs e)
         {
-            SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager) manager).sceneDataHandler;
+            SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager)manager).sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 
-           
+
 
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
 
             createMaterials(ref sceneData);
-            
+
             if (manager.settings.loadTextures)
                 createTextures(ref sceneData);
 
@@ -370,6 +370,10 @@ namespace vpet
                 objMain = new GameObject();
                 objMain.name = Encoding.ASCII.GetString(node.name);
 
+                objMain.transform.localPosition = pos;
+                objMain.transform.localRotation = rot;
+                objMain.transform.localScale = scl;
+
                 if (node.GetType() == typeof(SceneManager.SceneNodeGeo) || node.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                 {
                     SceneManager.SceneNodeGeo nodeGeo = (SceneManager.SceneNodeGeo)node;
@@ -455,17 +459,10 @@ namespace vpet
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeLight))
                 {
-                    SceneManager.SceneNodeLight nodeLight = (SceneManager.SceneNodeLight) node;
+                    SceneManager.SceneNodeLight nodeLight = (SceneManager.SceneNodeLight)node;
 
-                    // Add light prefab
-                    GameObject lightUber = Resources.Load<GameObject>("UberLight");
-                    GameObject _lightUberInstance = GameObject.Instantiate(lightUber);
-                    _lightUberInstance.name = lightUber.name;
-                    lightUber.transform.GetChild(0).gameObject.layer = 8;
+                    Light lightComponent = objMain.AddComponent<Light>();
 
-
-                    Light lightComponent = _lightUberInstance.GetComponent<Light>();
-                    // instert type here!!!
                     lightComponent.type = nodeLight.lightType;
                     lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);
                     lightComponent.intensity = nodeLight.intensity * manager.settings.lightIntensityFactor;
@@ -503,57 +500,51 @@ namespace vpet
                         Debug.Log("Unknown Light Type in NodeBuilderBasic::CreateLight");
                     }
 
-                    // parent 
-                    _lightUberInstance.transform.SetParent(objMain.transform, false);
-
-                    SceneObjectLight sco;
-                    switch (lightComponent.type)
+                    if (nodeLight.editable)
                     {
-                        case LightType.Point:
-                            sco = objMain.AddComponent<SceneObjectPointLight>();
-                            break;
-                        case LightType.Directional:
-                            sco = objMain.AddComponent<SceneObjectDirectionalLight>();
-                            break;
-                        case LightType.Spot:
-                            sco = objMain.AddComponent<SceneObjectSpotLight>();
-                            break;
-                        case LightType.Area:
-                            sco = objMain.AddComponent<SceneObjectAreaLight>();
-                            break;
-                        default:
-                            sco = objMain.AddComponent<SceneObjectLight>();
-                            break;
+                        SceneObjectLight sco;
+                        switch (lightComponent.type)
+                        {
+                            case LightType.Point:
+                                sco = objMain.AddComponent<SceneObjectPointLight>();
+                                break;
+                            case LightType.Directional:
+                                sco = objMain.AddComponent<SceneObjectDirectionalLight>();
+                                break;
+                            case LightType.Spot:
+                                sco = objMain.AddComponent<SceneObjectSpotLight>();
+                                break;
+                            case LightType.Area:
+                                sco = objMain.AddComponent<SceneObjectAreaLight>();
+                                break;
+                            default:
+                                sco = objMain.AddComponent<SceneObjectLight>();
+                                break;
+                        }
+                        manager.sceneLightList.Add(sco);
+                        manager.sceneObjects.Add(sco);
                     }
-
-                    manager.sceneLightList.Add(sco);
-                    manager.sceneObjects.Add(sco);
-
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeCam))
                 {
                     SceneManager.SceneNodeCam nodeCam = (SceneManager.SceneNodeCam)node;
 
-                    // add camera dummy mesh
-                    GameObject cameraObject = Resources.Load<GameObject>("cameraObject");
-                    GameObject cameraInstance = GameObject.Instantiate(cameraObject);
-                    cameraInstance.SetActive(false);
-                    cameraInstance.name = cameraObject.name;
-                    cameraInstance.transform.SetParent(objMain.transform, false);
-                    cameraInstance.transform.localScale = new Vector3(1, 1, 1) * manager.settings.sceneScale;
-                    cameraInstance.transform.localPosition = new Vector3(0, 0, 0);
-                    cameraInstance.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
+                    Camera camera = objMain.AddComponent<Camera>();
 
-                    // add camera data script and set values
-                    //if (nodeCam.editable)
-                    //{
-                    SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
-                    sco.fov.value = nodeCam.fov;
-                    sco.near.value = nodeCam.near;
-                    sco.far.value = nodeCam.far;
+                    camera.fieldOfView = nodeCam.fov;
+                    camera.aspect = nodeCam.aspect;
+                    camera.nearClipPlane = nodeCam.near;
+                    camera.farClipPlane = nodeCam.far;
+                    //camera.focalDistance = nodeCam.focalDist;     // not available in unity
+                    //camera.aperture = nodeCam.aperture;       // not available in unity
 
-                    manager.sceneCameraList.Add(sco);
-                    manager.sceneObjects.Add(sco);
+                    if (nodeCam.editable)
+                    {
+                        SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
+
+                        manager.sceneCameraList.Add(sco);
+                        manager.sceneObjects.Add(sco);
+                    }
                 }
 
                 Vector3 sceneExtends = manager.sceneBoundsMax - manager.sceneBoundsMin;
@@ -566,10 +557,6 @@ namespace vpet
             {
                 objMain = parentTransform.Find(Encoding.ASCII.GetString(node.name)).gameObject;
             }
-
-            objMain.transform.localPosition = pos;
-            objMain.transform.localRotation = rot;
-            objMain.transform.localScale = scl;
 
             return objMain;
 
@@ -699,7 +686,7 @@ namespace vpet
         private int createSkinnedRendererIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
         {
 
-            SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo) sceneData.nodeList[idx];
+            SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo)sceneData.nodeList[idx];
 
             if (node == null)
                 return -1;

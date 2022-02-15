@@ -96,7 +96,9 @@ namespace vpet
         public override void Update()
         {
             base.Update();
-            //updateSceneObjectLightParameters();
+#if UNITY_EDITOR
+            updateSceneObjectLightParameters();
+#endif
         }
 
         //!
@@ -141,7 +143,7 @@ namespace vpet
                 color.value = _light.color;
             if (_light.intensity != intensity.value)
                 intensity.value = _light.intensity;
-            if (_light.range != intensity.value)
+            if (_light.range != range.value)
                 range.value = _light.range;
         }
     }
