@@ -25,8 +25,9 @@ Syncronisation Server. They are licensed under the following terms:
 //! @brief Implementation of the VPET Input Manager, managing all user inupts and mapping.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
+//! @author Paulo Scatena
 //! @version 0
-//! @date 03.02.2022
+//! @date 14.02.2022
 
 
 using System;
@@ -70,6 +71,14 @@ namespace vpet
         //!
         public event EventHandler<InputEventArgs> inputEvent;
 
+        // TRS Development events
+        // Touch start
+        public event EventHandler<InputEventArgs> InputPressStart;
+        //! Touch end
+        public event EventHandler<InputEventArgs> InputPressEnd;
+        //! Touch move
+        public event EventHandler<InputEventArgs> InputMove;
+
         //!
         //! Class defining pinch input event arguments.
         //!
@@ -107,6 +116,14 @@ namespace vpet
 
             m_inputs.VPETMap.Click.performed += ctx => TapFunction(ctx);
             //m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
+
+            // TRS development bindings
+            m_inputs.VPETMap.Click.performed += ctx => PressStart(ctx);
+            m_inputs.VPETMap.Click.canceled += ctx => PressEnd(ctx);
+
+            // inefficient?
+            m_inputs.VPETMap.Position.performed += ctx => MovePoint(ctx);
+
         }
 
         ~InputManager()
@@ -138,6 +155,27 @@ namespace vpet
                 //e.delta = Vector2.zero;
                 //e.time = 0f;
             }
+        }
+
+        private void MovePoint(InputAction.CallbackContext c)
+        {
+            InputEventArgs e = new InputEventArgs();
+            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            InputMove?.Invoke(this, e);
+        }
+
+        private void PressStart(InputAction.CallbackContext c)
+        {
+            InputEventArgs e = new InputEventArgs();
+            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            InputPressStart?.Invoke(this, e);
+        }
+
+        private void PressEnd(InputAction.CallbackContext c)
+        {
+            InputEventArgs e = new InputEventArgs();
+            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            InputPressEnd?.Invoke(this, e);
         }
 
         private bool TappedUI(Vector2 pos)
