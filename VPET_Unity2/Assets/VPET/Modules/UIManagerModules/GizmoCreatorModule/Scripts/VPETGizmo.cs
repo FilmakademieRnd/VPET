@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +5,9 @@ namespace vpet
 {
     public class VPETGizmo
     {
+        private GameObject m_root;
         private GameObject m_GizmoElementPrefab;
         private List<GameObject> m_GizmoElements;
-        private GameObject m_root;
 
         //!
         //! Constructor
@@ -34,11 +33,18 @@ namespace vpet
 
         ~VPETGizmo()
         {
-            foreach (GameObject gizmoElement in m_GizmoElements)
-                removeElement(gizmoElement);
+            dispose();
         }
 
-        public GameObject addElement(ref Vector3[] positions, Color color, bool loop = false)
+        public void dispose()
+        {
+            foreach (GameObject gizmoElement in m_GizmoElements)
+                Object.Destroy(gizmoElement);
+            Object.Destroy(m_root);
+            m_GizmoElements.Clear();
+        }
+
+        public Transform addElement(ref Vector3[] positions, Color color, bool loop = false)
         {
             GameObject gizmoElement = GameObject.Instantiate(m_GizmoElementPrefab, m_root.transform);
             LineRenderer lineRenderer = gizmoElement.GetComponent<LineRenderer>();
@@ -50,7 +56,7 @@ namespace vpet
             lineRenderer.SetPositions(positions);
             m_GizmoElements.Add(gizmoElement);
 
-            return gizmoElement;
+            return gizmoElement.transform;
         }
 
         public void removeElement(GameObject element)
@@ -68,5 +74,6 @@ namespace vpet
                 lineRenderer.endColor = color;
             }
         }
+
     }
 }

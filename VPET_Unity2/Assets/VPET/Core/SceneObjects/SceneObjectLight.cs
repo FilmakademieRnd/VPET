@@ -50,11 +50,6 @@ namespace vpet
         private Parameter<float> intensity;
 
         //!
-        //! the range of the light
-        //!
-        private Parameter<float> range;
-
-        //!
         //! the reference to the light component
         //!
         protected Light _light;
@@ -72,9 +67,6 @@ namespace vpet
                 intensity = new Parameter<float>(_light.intensity, "intensity", this, (short)parameterList.Count);
                 intensity.hasChanged += updateIntensity;
                 _parameterList.Add(intensity);
-                range = new Parameter<float>(_light.range, "range", this, (short)parameterList.Count);
-                range.hasChanged += updateRange;
-                _parameterList.Add(range);
             }
             else
                 Helpers.Log("no light component found!");
@@ -89,7 +81,6 @@ namespace vpet
             base.OnDestroy();
             color.hasChanged -= updateColor;
             intensity.hasChanged -= updateIntensity;
-            range.hasChanged -= updateRange;
         }
 
         // Update is called once per frame
@@ -124,17 +115,6 @@ namespace vpet
         }
 
         //!
-        //! Update the light range of the GameObject.
-        //! @param   sender     Object calling the update function
-        //! @param   a          new range value
-        //!
-        private void updateRange(object sender, float a)
-        {
-            _light.range = a;
-            emitHasChanged((AbstractParameter)sender);
-        }
-
-        //!
         //! updates the Unity light component specific parameters and informs all connected VPET parameters about the change
         //!
         private void updateSceneObjectLightParameters()
@@ -143,8 +123,6 @@ namespace vpet
                 color.value = _light.color;
             if (_light.intensity != intensity.value)
                 intensity.value = _light.intensity;
-            if (_light.range != range.value)
-                range.value = _light.range;
         }
     }
 }
