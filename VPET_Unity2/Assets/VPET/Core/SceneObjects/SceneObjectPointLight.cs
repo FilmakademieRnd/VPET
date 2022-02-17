@@ -39,17 +39,64 @@ namespace vpet
     //!
     public class SceneObjectPointLight : SceneObjectLight
     {
+        //!
+        //! the range of the light
+        //!
+        private Parameter<float> range;
 
         // Start is called before the first frame update
         public override void Awake()
         {
             base.Awake();
+
+            _light = this.GetComponent<Light>();
+            if (_light)
+            {
+                range = new Parameter<float>(_light.range, "range", this, (short)parameterList.Count);
+                range.hasChanged += updateRange;
+                _parameterList.Add(range);
+            }
+            else
+                Helpers.Log("no light component found!");
+        }
+
+
+        //!
+        //! Function called, when Unity emit it's OnDestroy event.
+        //!
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            range.hasChanged -= updateRange;
+        }
+
+        //!
+        //! Update the light range of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new range value
+        //!
+        private void updateRange(object sender, float a)
+        {
+            _light.range = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         // Update is called once per frame
         public override void Update()
         {
             base.Update();
+#if UNITY_EDITOR
+            updateSceneObjectLightParameters();
+#endif
+        }
+
+        //!
+        //! updates the Unity light component specific parameters and informs all connected VPET parameters about the change
+        //!
+        private void updateSceneObjectLightParameters()
+        {
+            if (_light.range != range.value)
+                range.value = _light.range;
         }
     }
 }

@@ -46,9 +46,7 @@ namespace vpet
         //!
         public UnityEditorModule(string name, Core core) : base(name, core)
         {
-#if !UNITY_EDITOR
             load = false;
-#endif
         }
 
         //! 

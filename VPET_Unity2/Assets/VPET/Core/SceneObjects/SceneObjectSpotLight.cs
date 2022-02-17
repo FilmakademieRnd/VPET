@@ -39,6 +39,13 @@ namespace vpet
     //!
     public class SceneObjectSpotLight : SceneObjectLight
     {
+        //!
+        //! the range of the light
+        //!
+        private Parameter<float> range;
+        //!
+        //! the angle of the lights spot
+        //!
         private Parameter<float> spotAngle;
 
         // Start is called before the first frame update
@@ -47,6 +54,9 @@ namespace vpet
             base.Awake();
             if (_light)
             {
+                range = new Parameter<float>(_light.range, "range", this, (short)parameterList.Count);
+                range.hasChanged += updateRange;
+                _parameterList.Add(range);
                 spotAngle = new Parameter<float>(_light.spotAngle, "spotAngle", this, (short)parameterList.Count);
                 spotAngle.hasChanged += updateAngle;
                 _parameterList.Add(spotAngle);
@@ -61,19 +71,19 @@ namespace vpet
         public override void OnDestroy()
         {
             base.OnDestroy();
+            range.hasChanged -= updateRange;
             spotAngle.hasChanged -= updateAngle;
         }
 
-        //! 
-        //! Function updating the scene objects light parameter spotAngle.
-        //! The function is called once per Unity frame call to copy the 
-        //! UnityLight value to the VPET parameter.
-        //! 
-        public override void Update()
+        //!
+        //! Update the light range of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new range value
+        //!
+        private void updateRange(object sender, float a)
         {
-            base.Update();
-            if (_light.spotAngle != spotAngle.value)
-                spotAngle.value = _light.spotAngle;
+            _light.range = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -86,5 +96,20 @@ namespace vpet
             _light.spotAngle = a;
             emitHasChanged((AbstractParameter)sender);
         }
+
+        //! 
+        //! Function updating the scene objects light parameter spotAngle.
+        //! The function is called once per Unity frame call to copy the 
+        //! UnityLight value to the VPET parameter.
+        //! 
+        public override void Update()
+        {
+            base.Update();
+            if (_light.spotAngle != spotAngle.value)
+                spotAngle.value = _light.spotAngle;
+            if (_light.range != range.value)
+                range.value = _light.range;
+        }
+
     }
 }
