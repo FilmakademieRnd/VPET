@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isVertical: 1
   loop: 1
-  allowValueSetting: 1
+  allowValueSetting: 0
   previewExtend: 1
   fadeFactor: 100
 --- !u!1 &787113311249867528

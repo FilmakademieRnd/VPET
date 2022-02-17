@@ -58,31 +58,37 @@ namespace vpet
             {
                 case AbstractParameter.ParameterType.FLOAT:
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
+                    paramFloat.hasChanged += snapSelect.setParam;
                     float f = paramFloat.value;
                     list.Add(new Tuple<float, string>(f, ""));
+                    snapSelect.Init(list, 10f);
                     break;
                 case AbstractParameter.ParameterType.VECTOR2:
                     Parameter<Vector2> paramVec2 = (Parameter<Vector2>)abstractParam;
+                    paramVec2.hasChanged += snapSelect.setParam;
                     Vector2 vec2 = paramVec2.value;
                     list.Add(new Tuple<float, string>(vec2.x, "X"));
                     list.Add(new Tuple<float, string>(vec2.y, "Y"));
+                    snapSelect.Init(list, 10f);
                     break;
                 case AbstractParameter.ParameterType.VECTOR3:
                     Parameter<Vector3> paramVec3 = (Parameter<Vector3>)abstractParam;
+                    paramVec3.hasChanged += snapSelect.setParam;
                     Vector3 vec3 = paramVec3.value;
                     list.Add(new Tuple<float, string>(vec3.x, "X"));
                     list.Add(new Tuple<float, string>(vec3.y, "Y"));
                     list.Add(new Tuple<float, string>(vec3.z, "Z"));
-                    list.Add(new Tuple<float, string>(vec3.z, "XYZ"));
-                    snapSelect.Init(list, 0.01f);
+                    list.Add(new Tuple<float, string>((vec3.x+ vec3.y + vec3.z) / 3f, "XYZ"));
+                    snapSelect.Init(list, 10f);
                     break;
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
+                    paramQuat.hasChanged += snapSelect.setParam;
                     Vector3 rot = paramQuat.value.eulerAngles;
                     list.Add(new Tuple<float, string>(rot.x, "X"));
                     list.Add(new Tuple<float, string>(rot.y, "Y"));
                     list.Add(new Tuple<float, string>(rot.z, "Z"));
-                    snapSelect.Init(list, 0.1f);
+                    snapSelect.Init(list, 500f);
                     break;
                 default:
                     Helpers.Log("Parameter Type cannot be edited with Spinner.");
@@ -108,37 +114,37 @@ namespace vpet
             {
                 case AbstractParameter.ParameterType.FLOAT:
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
-                    paramFloat.setValue(val);
+                    paramFloat.setValue(paramFloat.value + val);
                     break;
                 case AbstractParameter.ParameterType.VECTOR2:
                     Parameter<Vector2> paramVec2 = (Parameter<Vector2>)abstractParam;
                     Vector2 valVec2 = paramVec2.value;
                     if (currentAxis == 0)
-                        paramVec2.setValue(new Vector2(val, valVec2.y));
+                        paramVec2.setValue(new Vector2(valVec2.x + val, valVec2.y));
                     else
-                        paramVec2.setValue(new Vector2(valVec2.x, val));
+                        paramVec2.setValue(new Vector2(valVec2.x, valVec2.y + val));
                     break;
                 case AbstractParameter.ParameterType.VECTOR3:
                     Parameter<Vector3> paramVec3 = (Parameter<Vector3>)abstractParam;
                     Vector3 valVec3 = paramVec3.value;
                     if (currentAxis == 0)
-                        paramVec3.setValue(new Vector3(val, valVec3.y, valVec3.z));
+                        paramVec3.setValue(new Vector3(valVec3.x + val, valVec3.y, valVec3.z));
                     else if (currentAxis == 1)
-                        paramVec3.setValue(new Vector3(valVec3.x, val, valVec3.z));
+                        paramVec3.setValue(new Vector3(valVec3.x, valVec3.y + val, valVec3.z));
                     else if (currentAxis == 2)
-                        paramVec3.setValue(new Vector3(valVec3.x, valVec3.y, val));
+                        paramVec3.setValue(new Vector3(valVec3.x, valVec3.y, valVec3.z + val));
                     else
-                        paramVec3.setValue(new Vector3(val, val, val));
+                        paramVec3.setValue(new Vector3(valVec3.x + val, valVec3.y + val, valVec3.z + val));
                     break;
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
                     Vector3 rot = paramQuat.value.eulerAngles;
                     if (currentAxis == 0)
-                        rot = new Vector3(val, rot.y, rot.z);
+                        rot = new Vector3(rot.x + val, rot.y, rot.z);
                     else if (currentAxis == 1)
-                        rot = new Vector3(rot.x, val, rot.z);
+                        rot = new Vector3(rot.x, rot.y + val, rot.z);
                     else
-                        rot = new Vector3(rot.x, rot.y, val);
+                        rot = new Vector3(rot.x, rot.y, rot.z + val);
                     paramQuat.setValue(Quaternion.Euler(rot));
                     break;
                 default:

@@ -19,20 +19,14 @@ namespace vpet
             refRect = this.transform.parent.parent.GetComponent<RectTransform>();
             snapSelect = this.transform.parent.parent.parent.GetComponent<SnapSelect>();
             txt = this.GetComponent<TextMeshProUGUI>();
+            snapSelect.draggingAxis += updateTransparency;
+            updateTransparency(this, true);
         }
 
-        void Update()
+        public void updateTransparency(object sender, bool e)
         {
             float dist = Vector2.Distance(rect.position, refRect.position);
             txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f - ((dist / snapSelect.fadeFactor)));
-            /*if (dist < 50)
-            {
-                txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f);
-            }
-            else
-            {
-                txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f-((dist/1000f)));
-            }*/
         }
     }
 }

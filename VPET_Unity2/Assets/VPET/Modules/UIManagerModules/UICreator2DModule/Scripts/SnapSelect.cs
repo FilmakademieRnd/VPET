@@ -61,6 +61,11 @@ namespace vpet
         //!
         public event EventHandler<float> valueChanged;
 
+        //!
+        //! Event emitted when Axis dragging is in progress.
+        //!
+        public event EventHandler<bool> draggingAxis;
+
         private RectTransform mainPanel;
 
         private RectTransform contentPanel;
@@ -82,17 +87,7 @@ namespace vpet
 
         private int currentAxis;
 
-        private bool draggingActive;
-
-        private float deltaValue;
-
         private float sensitivity;
-
-        /*public void test()
-        {
-            List<string> elementNames = new List<string>() { "X", "Y", "Z"};
-            Init(elementNames);
-        }*/
 
 
         // Start is called before the first frame update
@@ -106,8 +101,6 @@ namespace vpet
             arrows = this.transform.GetChild(2).GetComponent<RectTransform>();
             valueText = this.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
 
-            draggingActive = false;
-            deltaValue = 0;
             sensitivity = sensitivityIn;
 
             elementCount = elementTupels.Count;
@@ -128,7 +121,6 @@ namespace vpet
                 contentPanel.localPosition = new Vector2(elementSize.x, 0);
 
             }
-
 
             GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/PRE_Element");
             
@@ -157,26 +149,46 @@ namespace vpet
                 }
             }
 
-            valueText.text = elementTupels[0].Item1.ToString();
+            valueText.text = elementTupels[0].Item1.ToString("N2");
             initialized = true;
         }
 
-        // Update is called once per frame
-        void Update()
+        public void setParam(object sender, float f)
         {
-            if (draggingActive && axisDecided && ((isVertical && majorAxisX) || (!isVertical && !majorAxisX)))
-            {
-                elements[currentAxis] += (((deltaValue) * sensitivity) / Time.deltaTime);
-                valueChanged.Invoke(this, elements[currentAxis]);
-                valueText.text = elements[currentAxis].ToString();
-            }
+            elements[0] = f;
+            valueText.text = elements[currentAxis].ToString("N2");
+        }
+
+        public void setParam(object sender, Vector2 v2 )
+        {
+            elements[0] = v2.x;
+            elements[1] = v2.y;
+            valueText.text = elements[currentAxis].ToString("N2");
+        }
+
+        public void setParam(object sender, Vector3 v3)
+        {
+            elements[0] = v3.x;
+            elements[1] = v3.y;
+            elements[2] = v3.z;
+            elements[3] = (v3.x + v3.y + v3.z) / 3f;
+            valueText.text = elements[currentAxis].ToString("N2");
+
+        }
+
+        public void setParam(object sender, Quaternion q)
+        {
+            Vector3 rot = q.eulerAngles;
+            elements[0] = rot.x;
+            elements[1] = rot.y;
+            elements[2] = rot.z;
+            valueText.text = elements[currentAxis].ToString("N2");
         }
 
         public void OnBeginDrag(PointerEventData data)
         {
             dragStart = data.position;
             axisDecided = false;
-            draggingActive = true;
         }
 
         public void OnDrag(PointerEventData data)
@@ -194,18 +206,25 @@ namespace vpet
                     if (majorAxisX)
                     {
                         //adjust Parameter
-                        deltaValue = (data.position.x - dragStart.x)/Screen.width;
+                        valueChanged.Invoke(this, (data.delta.x / Screen.width) * sensitivity);
                     }
-
                     else
+                    {
                         contentPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y);
-                else
-                    if (majorAxisX)
-                    contentPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
+                        draggingAxis.Invoke(this, true);
+                    }
                 else
                 {
-                    //adjust Parameter
-                    deltaValue = (data.position.y - dragStart.y)/Screen.height;
+                    if (majorAxisX)
+                    {
+                        contentPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
+                        draggingAxis.Invoke(this, true);
+                    }
+                    else
+                    {
+                        //adjust Parameter
+                        valueChanged.Invoke(this, (data.delta.y / Screen.height) * sensitivity);
+                    }
                 }
             }
 
@@ -239,8 +258,6 @@ namespace vpet
 
         public void OnEndDrag(PointerEventData data)
         {
-            draggingActive = false;
-            deltaValue = 0;
             if (axisDecided && ((isVertical && !majorAxisX) || (!isVertical && majorAxisX)))
             {
                 Vector2 contentPos = contentPanel.GetComponent<RectTransform>().anchoredPosition;
@@ -253,7 +270,7 @@ namespace vpet
                         currentAxis = elementCount + currentAxis;
                     Debug.Log(currentAxis);
                     parameterChanged.Invoke(this, currentAxis);
-                    valueText.text = elements[currentAxis].ToString();
+                    valueText.text = elements[currentAxis].ToString("N2");
                 }
                 else
                 {
@@ -264,10 +281,10 @@ namespace vpet
                         currentAxis = elementCount + currentAxis;
                     Debug.Log(currentAxis);
                     parameterChanged.Invoke(this, currentAxis);
-                    valueText.text = elements[currentAxis].ToString();
+                    valueText.text = elements[currentAxis].ToString("N2");
                 }
             }
-
+            draggingAxis.Invoke(this, true);
         }
     }
 }
