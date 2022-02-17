@@ -37,6 +37,6 @@ namespace vpet
 {
     public abstract class Manipulator : MonoBehaviour
     {
-        public abstract void LinkToParameter(AbstractParameter abstractParam);
+        protected AbstractParameter abstractParam;
     }
 }
