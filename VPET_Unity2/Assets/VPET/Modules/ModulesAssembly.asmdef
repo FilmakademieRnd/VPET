@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Core",
-        "HelperAssembly"
+        "HelperAssembly",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
