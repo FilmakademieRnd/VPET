@@ -100,14 +100,29 @@ namespace vpet
                 Transform trans = gameObject.transform;
                 SceneObject sceneObject = null;
                 if (trans.GetComponent<Light>() != null) {
-                    node = ParseLight(trans.GetComponent<Light>());
-                    sceneObject = gameObject.AddComponent<SceneObjectLight>();
-                    manager.m_sceneLightList.Add((SceneObjectLight) sceneObject);
+                    Light light = trans.GetComponent<Light>();
+                    node = ParseLight(light);
+                    switch (light.type)
+                    {
+                        case LightType.Point:
+                            sceneObject = gameObject.AddComponent<SceneObjectPointLight>();
+                            break;
+                        case LightType.Directional:
+                            sceneObject = gameObject.AddComponent<SceneObjectDirectionalLight>();
+                            break;
+                        case LightType.Spot:
+                            sceneObject = gameObject.AddComponent<SceneObjectSpotLight>();
+                            break;
+                        case LightType.Area:
+                            sceneObject = gameObject.AddComponent<SceneObjectAreaLight>();
+                            break;
+                    }
+                    manager.sceneLightList.Add((SceneObjectLight) sceneObject);
                 }
                 else if (trans.GetComponent<Camera>() != null) {
                     node = ParseCamera(trans.GetComponent<Camera>());
                     sceneObject = gameObject.AddComponent<SceneObjectCamera>();
-                    manager.m_sceneCameraList.Add((SceneObjectCamera)sceneObject);
+                    manager.sceneCameraList.Add((SceneObjectCamera)sceneObject);
                 }
                 else if (trans.GetComponent<MeshFilter>() != null) {
                     node = ParseMesh(trans, ref sceneData);
@@ -180,8 +195,12 @@ namespace vpet
             SceneManager.SceneNodeCam nodeCamera = new SceneManager.SceneNodeCam();
 
             nodeCamera.fov = camera.fieldOfView;
+            nodeCamera.aspect = camera.aspect;
             nodeCamera.near = camera.nearClipPlane;
             nodeCamera.far = camera.farClipPlane;
+            // [REVIEW] not supported by Unity?
+            nodeCamera.focalDist = 1f;      
+            nodeCamera.aperture = 2.8f;
             return nodeCamera;
         }
 

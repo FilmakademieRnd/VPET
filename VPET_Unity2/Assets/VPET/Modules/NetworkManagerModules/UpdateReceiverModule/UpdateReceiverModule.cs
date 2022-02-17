@@ -182,7 +182,7 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeLockMessage(ref byte[] message)
         {
-            bool lockState = BitConverter.ToBoolean(message, 2);
+            bool lockState = BitConverter.ToBoolean(message, 5);
             short sceneObjectID = BitConverter.ToInt16(message, 3);
 
             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);

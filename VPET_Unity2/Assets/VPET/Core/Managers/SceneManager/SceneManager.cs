@@ -81,14 +81,38 @@ namespace vpet
         //!
         private List<SceneObject> m_sceneObjects = new List<SceneObject>();
         //!
+        //! Setter and getter to List holding references to all editable VPET sceneObjects.
+        //!
+        public List<SceneObject> sceneObjects
+        {
+            get { return m_sceneObjects; }
+            set { m_sceneObjects = value; }
+        }
+        //!
         //! The list storing selectable Unity lights in scene.
         //!
-        public List<SceneObjectLight> m_sceneLightList = new List<SceneObjectLight>();
+        private List<SceneObjectLight> m_sceneLightList = new List<SceneObjectLight>();
+        //!
+        //! Setter and getter to List holding references to all editable VPET sceneObjects.
+        //!
+        public List<SceneObjectLight> sceneLightList
+        {
+            get { return m_sceneLightList; }
+            set { m_sceneLightList = value; }
+        }
         //!
         //! The list storing Unity cameras in scene.
         //!
-        public List<SceneObjectCamera> m_sceneCameraList = new List<SceneObjectCamera>();
-        
+        private List<SceneObjectCamera> m_sceneCameraList = new List<SceneObjectCamera>();
+        //!
+        //! Setter and getter to List holding references to all editable VPET sceneObjects.
+        //!
+        public List<SceneObjectCamera> sceneCameraList
+        {
+            get { return m_sceneCameraList; }
+            set { m_sceneCameraList = value; }
+        }
+
         //!
         //! A reference to the VPET scene root.
         //!
@@ -103,15 +127,6 @@ namespace vpet
         //! Event emitted when scene is prepared.
         //!
         public event EventHandler<EventArgs> sceneReady;
-
-        //!
-        //! Setter and getter to List holding references to all editable VPET sceneObjects.
-        //!
-        public List<SceneObject> sceneObjects
-        {
-            get { return m_sceneObjects; }
-            set { m_sceneObjects = value; }
-        }
 
         //!
         //! Getter returning a reference to the VPET scene root.

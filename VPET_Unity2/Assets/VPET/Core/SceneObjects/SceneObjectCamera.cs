@@ -123,7 +123,9 @@ namespace vpet
         public override void Update()
         {
             base.Update();
-            //updateCameraParameters();
+#if UNITY_EDITOR
+            updateCameraParameters();
+#endif
         }
 
         //!

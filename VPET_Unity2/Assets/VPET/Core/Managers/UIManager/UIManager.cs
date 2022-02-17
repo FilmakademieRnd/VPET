@@ -30,6 +30,7 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace vpet
 {
@@ -52,7 +53,17 @@ namespace vpet
         //! Event emitted when a sceneObject has been removed from a selection.
         //!
         public event EventHandler<SceneObject> selectionRemoved;
+        //!
+        //! Event emitted to highlight a scene object.
+        //!
+        public event EventHandler<SceneObject> highlightLocked;
+        //!
+        //! Event emitted to unhighlight a scene object.
+        //!
+        public event EventHandler<SceneObject> unhighlightLocked;
 
+        // Event emitted when TRS manipulator should change mode
+        public event EventHandler<int> manipulatorChange;
 
         //!
         //! Event emitted when a MenuTree has been selected.
@@ -94,6 +105,16 @@ namespace vpet
             m_menus = new List<MenuTree>();
         }
 
+        public void highlightSceneObject(SceneObject sceneObject)
+        {
+            highlightLocked?.Invoke(this, sceneObject);
+        }
+
+        public void unhighlightSceneObject(SceneObject sceneObject)
+        {
+            unhighlightLocked?.Invoke(this, sceneObject);
+        }
+
         //!
         //! Function that adds a sceneObject to the selected objects list.
         //!
@@ -101,10 +122,13 @@ namespace vpet
         //!
         public void addSelectedObject(SceneObject sceneObject)
         {
-            m_selectedObjects.Add(sceneObject);
+            if (!sceneObject._lock)
+            {
+                m_selectedObjects.Add(sceneObject);
 
-            selectionChanged?.Invoke(this, m_selectedObjects);
-            selectionAdded?.Invoke(this, sceneObject);
+                selectionChanged?.Invoke(this, m_selectedObjects);
+                selectionAdded?.Invoke(this, sceneObject);
+            }
         }
 
         //!
@@ -135,6 +159,14 @@ namespace vpet
         public void showMenu(MenuTree menu)
         {
             menuSelected?.Invoke(this, menu);
+        }
+
+        //!
+        //! Function that changes TRS manipulator mode
+        //!
+        public void setManipulatorMode(int manipulatorMode)
+        {
+            manipulatorChange?.Invoke(this, manipulatorMode);
         }
     }
 }
