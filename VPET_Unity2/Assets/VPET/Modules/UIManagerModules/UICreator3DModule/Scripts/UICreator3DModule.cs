@@ -27,7 +27,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Jonas Trottnow
 //! @author Paulo Scatena
 //! @version 0
-//! @date 18.01.2022
+//! @date 16.02.2022
 
 using System;
 using System.Collections.Generic;
@@ -513,6 +513,9 @@ namespace vpet
         {
             manip.transform.position = xform.position;
             manip.transform.rotation = xform.rotation;
+
+            // Adjust scale
+            manip.transform.localScale = GetModifierScale();
         }
 
         private void SetManipulatorMode(object sender, int manipulatorMode)
@@ -552,6 +555,7 @@ namespace vpet
         public void UpdateManipulatorPosition(object sender, Vector3 position)
         {
             manipT.transform.position = position;
+            manipT.transform.localScale = GetModifierScale();
         }
 
         public void UpdateManipulatorRotation(object sender, Quaternion rotation)
@@ -597,6 +601,15 @@ namespace vpet
         private Vector3 VecInvert(Vector3 vec)
         {
             return new Vector3(1 / vec.x, 1 / vec.y, 1 / vec.z);
+        }
+
+        // For scale adjustment
+        private Vector3 GetModifierScale()
+        {
+            return Vector3.one
+                       * (Vector3.Distance(Camera.main.transform.position, selObj.transform.position)
+                       * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+                       * Screen.dpi / 1000);
         }
 
         public void SetModeT()

@@ -43,18 +43,25 @@ namespace vpet
     public class UICreator2DModule : UIManagerModule
     {
         // icon layout configuration
-        private int selectorsPerRow = 3;
         private int selectorSize = 100;
         private int selectorSpacing = 10;
 
-        //settings resource
-        public UICreator2DModuleSettings settings;
+        //Currently displayed manipulator (can be null if none is displayed)
+        GameObject currentManipulator;
 
-        //List of Manipolators
-        private List<GameObject> instancedManipulators = new List<GameObject>();
+        //Currently displayed AddSelector (can be null if none is displayed)
+        GameObject currentAddSelector;
+
+        //Currently displayed manipulator (can be null if none is displayed)
+        GameObject selectorPrefab;
 
         //List of selection Buttons for Manipulators
         private List<GameObject> instancedManipulatorSelectors = new List<GameObject>();
+
+        //!
+        //! Event emitted when parameter has changed
+        //!
+        public event EventHandler<int> parameterChanged;
 
         private Transform UI2D;
         private Transform manipulatorPanel;
@@ -63,6 +70,11 @@ namespace vpet
         public bool turnOnAndOffCanvasObject = false;
         public bool blocksRaycasts = true;
         public bool isActive = true;
+
+        //!
+        //! currently selected SceneObject
+        //!
+        private SceneObject mainSelection;
 
         //!
         //! Constructor
@@ -77,6 +89,9 @@ namespace vpet
             UI2D = canvasTrans.GetChild(0).transform;
             manipulatorSelectionPanel = UI2D.GetChild(0);
             manipulatorPanel = UI2D.GetChild(1);
+
+            selectorPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Manipulator_Selector");
+
             HideMenu();
         }
 
@@ -89,9 +104,6 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
-            settings = Resources.Load("DATA_VPET_2D_UI_Settings") as UICreator2DModuleSettings;
-
-            //m_sceneObjectViewMenu = GameObject.FindObjectOfType<SceneObjectViewMenu>();
         }
 
         //!
@@ -113,64 +125,58 @@ namespace vpet
             ShowMenu();
 
             //TODO Account for more than the first sceneObject being selected
-            SceneObject mainSelection = sceneObjects[0];
+            mainSelection = sceneObjects[0];
 
-            int manipIndex = 0;
             int paramIndex = 0;
-            foreach (var paramater in mainSelection.parameterList)
+            if (mainSelection.parameterList.Count > 2)
             {
-                //Check which type of Manipulator edits this type of Parameter
-                //Get UI Prefab Reference via this Manipulator Type
-                try
+                //inititalize selectors for translation, rotation, scale
+                for(int i = 0; i < 3; i++)
                 {
-                    ManipulatorReference manipRef = settings.manipulators[paramIndex];
+                    GameObject createdManipSelector = SceneObject.Instantiate(selectorPrefab, manipulatorSelectionPanel);
+                    createdManipSelector.GetComponent<RectTransform>().sizeDelta = new Vector2(selectorSize, selectorSize);
+                    createdManipSelector.GetComponent<RectTransform>().localPosition = new Vector2((selectorSize + selectorSpacing) * paramIndex, -selectorSpacing);
+                    instancedManipulatorSelectors.Add(createdManipSelector.gameObject);
 
-                    if (manipRef.manipulatorPrefab != null)
+                    Sprite icon = Resources.Load<Sprite>("Images/button_translate");
+                    switch (i)
                     {
-                        Manipulator createdManip = SceneObject.Instantiate(manipRef.manipulatorPrefab, manipulatorPanel);
-                        Debug.Log(createdManip.name);
-                        createdManip.gameObject.SetActive(false);
-                        createdManip.LinkToParameter(paramater);
-                        instancedManipulators.Add(createdManip.gameObject);
-
-                        ManipulatorSelector createdManipSelector = SceneObject.Instantiate(settings.manipulatorSelector, manipulatorSelectionPanel);
-                        createdManipSelector.GetComponent<RectTransform>().sizeDelta = new Vector2(selectorSize, selectorSize);
-                        createdManipSelector.GetComponent<RectTransform>().localPosition = new Vector2((selectorSize+selectorSpacing) * (paramIndex % selectorsPerRow - 1),
-                                                                                                       -(selectorSize + selectorSpacing) * ((float)Math.Floor(paramIndex/ (float)selectorsPerRow)-1f));
-                        instancedManipulatorSelectors.Add(createdManipSelector.gameObject);
-
-                        //Initialization of the different Manipulators
-                        createdManipSelector.Init(this, manipRef.selectorIcon, manipIndex);
-                        switch (manipRef.parameterType)
-                        {
-                            case ParameterType.Position:
-                                Spinner spinnerPos = (Spinner)createdManip;
-                                spinnerPos.Init(mainSelection.gameObject.transform.position);
-                                break;
-                            case ParameterType.Rotation:
-                                Spinner spinnerRot = (Spinner)createdManip;
-                                spinnerRot.Init(mainSelection.gameObject.transform.rotation.eulerAngles);
-                                break;
-                            case ParameterType.Scale:
-                                Spinner spinnerScale = (Spinner)createdManip;
-                                spinnerScale.Init(mainSelection.gameObject.transform.localScale);
-                                break;
-                        }
-
-                        manipIndex++;
+                        //translation
+                        case 0:
+                            icon = Resources.Load<Sprite>("Images/button_translate");
+                            break;
+                        //rotation
+                        case 1:
+                            icon = Resources.Load<Sprite>("Images/button_rotate");
+                            break;
+                        //scale
+                        case 2:
+                            icon = Resources.Load<Sprite>("Images/button_scale");
+                            break;
                     }
+                    if(icon)
+                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, icon, i);
+
+
+                    paramIndex++;
                 }
-                catch (System.IndexOutOfRangeException e)
+
+                //handle additional parameters
+                if (mainSelection.parameterList.Count > 3)
                 {
+                    List<Tuple<float, string>> list = new List<Tuple<float, string>>();
+                    GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
+                    currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
+
+                    for (int i = 3; i < mainSelection.parameterList.Count; i++)
+                    {
+                        list.Add(new Tuple<float, string>(0, mainSelection.parameterList[i].name));
+                    }
+                    currentAddSelector.GetComponent<SnapSelect>().Init(list, 0.01f);
 
                 }
 
-                paramIndex++;
-            }
-
-            if (instancedManipulators.Count > 0)
-            {
-                SelectManipulator(0);
+                createManipulator(0);
             }
         }
 
@@ -179,11 +185,8 @@ namespace vpet
         //!
         private void clearUI()
         {
-            foreach (var manip in instancedManipulators)
-            {
-                GameObject.Destroy(manip);
-            }
-            instancedManipulators.Clear();
+            GameObject.Destroy(currentManipulator);
+            GameObject.Destroy(currentAddSelector);
 
             foreach (var manipSelec in instancedManipulatorSelectors)
             {
@@ -194,12 +197,35 @@ namespace vpet
 
         //!
         //! function called when manipulator shall be changed
-        //! @param index index of the Manipulator to be chosen
+        //! @param index index of the Parameter a Manipulator shall be drawn for
         //!
-        public void SelectManipulator(int index)
+        public void createManipulator(int index)
         {
-            instancedManipulators.ForEach(manip => manip.gameObject.SetActive(false));
-            instancedManipulators[index].gameObject.SetActive(true);
+            if(parameterChanged != null)
+                parameterChanged.Invoke(this, index);
+            if(currentManipulator)
+                GameObject.Destroy(currentManipulator);
+
+            AbstractParameter abstractParam = mainSelection.parameterList[index];
+            AbstractParameter.ParameterType type = abstractParam.vpetType;
+
+            switch(type)
+            {
+                case AbstractParameter.ParameterType.FLOAT:
+                case AbstractParameter.ParameterType.VECTOR2:
+                case AbstractParameter.ParameterType.VECTOR3:
+                case AbstractParameter.ParameterType.QUATERNION:
+                    GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Spinner");
+                    currentManipulator = SceneObject.Instantiate(spinnerPrefab, manipulatorPanel);
+                    currentManipulator.GetComponent<Spinner>().Init(abstractParam);
+                    break;
+                case AbstractParameter.ParameterType.COLOR:
+                default:
+                    Helpers.Log("No UI for parameter type implemented...");
+                    break;
+
+            }
+
             foreach (GameObject g in instancedManipulatorSelectors)
                 g.GetComponent<ManipulatorSelector>().visualizeIdle();
             instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();

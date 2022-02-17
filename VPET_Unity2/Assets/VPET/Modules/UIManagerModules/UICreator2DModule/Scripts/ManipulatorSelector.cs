@@ -49,7 +49,7 @@ namespace vpet
         //!
         public void Init(UICreator2DModule module, Sprite icon, int index)
         {
-            selectionButton.onClick.AddListener(() => module.SelectManipulator(index));
+            selectionButton.onClick.AddListener(() => module.createManipulator(index));
             selectionButton.image.sprite = icon;
         }
 
