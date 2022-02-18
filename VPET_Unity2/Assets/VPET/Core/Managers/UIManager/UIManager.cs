@@ -63,7 +63,7 @@ namespace vpet
         public event EventHandler<SceneObject> unhighlightLocked;
 
         // Event emitted when TRS manipulator should change mode
-        public event EventHandler<int> manipulatorChange;
+        //public event EventHandler<int> manipulatorChange;
 
         //!
         //! Event emitted when a MenuTree has been selected.
@@ -164,9 +164,9 @@ namespace vpet
         //!
         //! Function that changes TRS manipulator mode
         //!
-        public void setManipulatorMode(int manipulatorMode)
-        {
-            manipulatorChange?.Invoke(this, manipulatorMode);
-        }
+        //public void setManipulatorMode(int manipulatorMode)
+        //{
+        //    manipulatorChange?.Invoke(this, manipulatorMode);
+        //}
     }
 }

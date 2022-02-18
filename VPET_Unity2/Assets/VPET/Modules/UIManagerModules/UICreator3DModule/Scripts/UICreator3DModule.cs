@@ -117,8 +117,10 @@ namespace vpet
             // Subscribe to selection change
             manager.selectionChanged += SelectionUpdate;
 
-            // Subscrive to manipulator change
-            manager.manipulatorChange += SetManipulatorMode;
+            // Subscribe to manipulator change
+            //manager.manipulatorChange += SetManipulatorMode;
+            UICreator2DModule UI2DModule = manager.getModule<UICreator2DModule>();
+            UI2DModule.parameterChanged += SetManipulatorMode;
 
             // Grabbing from the input manager directly
             m_inputManager = m_core.getManager<InputManager>();
@@ -137,10 +139,11 @@ namespace vpet
         }
 
 
-
         //!
-        //! Function that does nothing.
-        //! Being called when selection has changed.
+        //! Function to select the manipulator and prepare for transformations.
+        //! Called with the start of click from InputManager
+        //! @param sender callback sender
+        //! @param e event reference
         //!
         private void PressStart(object sender, InputManager.InputEventArgs e)
         {
@@ -184,7 +187,13 @@ namespace vpet
             }
         }
 
-        // Raycaster helper
+        //!
+        //! Helper function that raycasts from camera and returns hit game object
+        //! It subscribes (at PressStart) to the event triggered at every position update from InputManager
+        //! @param pos screen point through which to raycast
+        //! @param layerMask layer mask containing the objects to be considered
+        //!
+        // Warning?
         // Potential bad behaviors if there are other objects besides the manipulators with physics collider inside UI layer
         private GameObject CameraRaycast(Vector3 pos, int layerMask = 1 << 5)
         {
@@ -196,6 +205,12 @@ namespace vpet
 
         }
 
+        //!
+        //! Function to finalize manipulator operation
+        //! Called with the end (cancellation) of click from InputManager
+        //! @param sender callback sender
+        //! @param e event reference
+        //!
         private void PressEnd(object sender, InputManager.InputEventArgs e)
         {
             //Debug.Log("Press end: " + e.point.ToString());
@@ -217,10 +232,15 @@ namespace vpet
             }
         }
 
-        // This for mouse drag
+        //!
+        //! Function to be performed on click/touch drag
+        //! It subscribes (at PressStart) to the event triggered at every position update from InputManager
+        //! @param sender callback sender
+        //! @param e event reference
+        //!
+        // Warning?
         // Should only operate in case of existing selection
-        // But what happens if touch input is moving the object and other function change the selection
-        
+        // But what happens if touch input is moving the object and other function change the selection?
         private void Move(object sender, InputManager.InputEventArgs e)
         {
 
@@ -405,9 +425,9 @@ namespace vpet
                 GrabParameterIndex();
 
                 // Start with translation
-                if (modeTRS == -1)
-                    //SetModeT();
-                    SetManipulatorMode(null, 0);
+                // No need - already addressed by 2D module call
+                //if (modeTRS == -1)
+                //    SetManipulatorMode(null, 0);
             }
             else // empty selection
             {
