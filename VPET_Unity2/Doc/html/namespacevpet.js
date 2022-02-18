@@ -19,6 +19,7 @@ var namespacevpet =
     [ "AbstractParameter", "classvpet_1_1_abstract_parameter.html", "classvpet_1_1_abstract_parameter" ],
     [ "Parameter", "classvpet_1_1_parameter.html", "classvpet_1_1_parameter" ],
     [ "SceneObject", "classvpet_1_1_scene_object.html", "classvpet_1_1_scene_object" ],
+    [ "SceneObjectAreaLight", "classvpet_1_1_scene_object_area_light.html", "classvpet_1_1_scene_object_area_light" ],
     [ "SceneObjectCamera", "classvpet_1_1_scene_object_camera.html", "classvpet_1_1_scene_object_camera" ],
     [ "SceneObjectDirectionalLight", "classvpet_1_1_scene_object_directional_light.html", "classvpet_1_1_scene_object_directional_light" ],
     [ "SceneObjectLight", "classvpet_1_1_scene_object_light.html", "classvpet_1_1_scene_object_light" ],
@@ -39,31 +40,20 @@ var namespacevpet =
     [ "LightIcon", "classvpet_1_1_light_icon.html", "classvpet_1_1_light_icon" ],
     [ "LightSphere", "classvpet_1_1_light_sphere.html", "classvpet_1_1_light_sphere" ],
     [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", "classvpet_1_1_unity_scene_loader_module" ],
+    [ "GizmoCreatorModule", "classvpet_1_1_gizmo_creator_module.html", "classvpet_1_1_gizmo_creator_module" ],
+    [ "GizmoElementUpdate", "classvpet_1_1_gizmo_element_update.html", "classvpet_1_1_gizmo_element_update" ],
+    [ "VPETGizmo", "classvpet_1_1_v_p_e_t_gizmo.html", "classvpet_1_1_v_p_e_t_gizmo" ],
     [ "MenuCreatorModule", "classvpet_1_1_menu_creator_module.html", "classvpet_1_1_menu_creator_module" ],
     [ "MenuSelectorCreatorModule", "classvpet_1_1_menu_selector_creator_module.html", "classvpet_1_1_menu_selector_creator_module" ],
     [ "PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html", "classvpet_1_1_pixel_selector_module" ],
     [ "SelectionOutlineModule", "classvpet_1_1_selection_outline_module.html", "classvpet_1_1_selection_outline_module" ],
-    [ "ColorPicker", "classvpet_1_1_color_picker.html", "classvpet_1_1_color_picker" ],
     [ "Manipulator", "classvpet_1_1_manipulator.html", "classvpet_1_1_manipulator" ],
-    [ "ScrollSnap", "classvpet_1_1_scroll_snap.html", "classvpet_1_1_scroll_snap" ],
     [ "Spinner", "classvpet_1_1_spinner.html", "classvpet_1_1_spinner" ],
-    [ "SpinnerQuaternion", "classvpet_1_1_spinner_quaternion.html", "classvpet_1_1_spinner_quaternion" ],
-    [ "SpinnerVec3", "classvpet_1_1_spinner_vec3.html", "classvpet_1_1_spinner_vec3" ],
     [ "ManipulatorSelector", "classvpet_1_1_manipulator_selector.html", "classvpet_1_1_manipulator_selector" ],
+    [ "SnapSelect", "classvpet_1_1_snap_select.html", "classvpet_1_1_snap_select" ],
+    [ "TextHighlighter", "classvpet_1_1_text_highlighter.html", "classvpet_1_1_text_highlighter" ],
     [ "UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html", "classvpet_1_1_u_i_creator2_d_module" ],
-    [ "UICreator2DModuleSettings", "classvpet_1_1_u_i_creator2_d_module_settings.html", "classvpet_1_1_u_i_creator2_d_module_settings" ],
-    [ "ManipulatorReference", "classvpet_1_1_manipulator_reference.html", "classvpet_1_1_manipulator_reference" ],
-    [ "ManipulatorType", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7", [
-      [ "ValueSlider", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7a90df746e5ba0c82ff04740a3e920fcf6", null ],
-      [ "Spinner", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7a9b2c85dd7af17d4528bd7489e72c59c5", null ],
-      [ "Button", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7a87b7760f14fbff78d8819291f36ab9a0", null ],
-      [ "Toggle", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7aa8875bbe4272c0bdd786cfaaedf77921", null ],
-      [ "TextInput", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7ac852755f85e80bfa21ab754f8dde93dc", null ],
-      [ "ColorPicker", "namespacevpet.html#a7209a2d8deddd197f82cc43faa8000a7a113c31051c1a60449aef2fe5bfa63439", null ]
-    ] ],
-    [ "ParameterType", "namespacevpet.html#a80988a0225cd3aa6680d78148d1d9ec1", [
-      [ "Position", "namespacevpet.html#a80988a0225cd3aa6680d78148d1d9ec1a52f5e0bc3859bc5f5e25130b6c7e8881", null ],
-      [ "Rotation", "namespacevpet.html#a80988a0225cd3aa6680d78148d1d9ec1af1a42bd417390fc63b030a519624607a", null ],
-      [ "Scale", "namespacevpet.html#a80988a0225cd3aa6680d78148d1d9ec1a85a7cd587d6142dbfc1a4de05af7b75d", null ]
-    ] ]
+    [ "Editor_UIModeChange", "classvpet_1_1_editor___u_i_mode_change.html", "classvpet_1_1_editor___u_i_mode_change" ],
+    [ "UICreator3DModule", "classvpet_1_1_u_i_creator3_d_module.html", "classvpet_1_1_u_i_creator3_d_module" ],
+    [ "UnityEditorModule", "classvpet_1_1_unity_editor_module.html", "classvpet_1_1_unity_editor_module" ]
 ];

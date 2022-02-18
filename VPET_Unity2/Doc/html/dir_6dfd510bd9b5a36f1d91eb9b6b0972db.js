@@ -3,6 +3,9 @@ var dir_6dfd510bd9b5a36f1d91eb9b6b0972db =
     [ "SceneObject.cs", "_scene_object_8cs.html", [
       [ "SceneObject", "classvpet_1_1_scene_object.html", "classvpet_1_1_scene_object" ]
     ] ],
+    [ "SceneObjectAreaLight.cs", "_scene_object_area_light_8cs.html", [
+      [ "SceneObjectAreaLight", "classvpet_1_1_scene_object_area_light.html", "classvpet_1_1_scene_object_area_light" ]
+    ] ],
     [ "SceneObjectCamera.cs", "_scene_object_camera_8cs.html", [
       [ "SceneObjectCamera", "classvpet_1_1_scene_object_camera.html", "classvpet_1_1_scene_object_camera" ]
     ] ],

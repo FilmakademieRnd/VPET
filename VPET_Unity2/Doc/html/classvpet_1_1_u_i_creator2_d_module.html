@@ -87,6 +87,7 @@ $(document).ready(function(){initNavTree('classvpet_1_1_u_i_creator2_d_module.ht
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#events">Events</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_u_i_creator2_d_module-members.html">List of all members</a>  </div>
@@ -110,8 +111,8 @@ Inheritance diagram for vpet.UICreator2DModule:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2ec32179c2b6b91fca746eeee1cfda62"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a2ec32179c2b6b91fca746eeee1cfda62">UICreator2DModule</a> (string <a class="el" href="classvpet_1_1_module.html#a57008ce094309ba9806e796d1bdf78be">name</a>, <a class="el" href="classvpet_1_1_core.html">Core</a> core)</td></tr>
 <tr class="separator:a2ec32179c2b6b91fca746eeee1cfda62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8f66684a228c26676eb9939a1dcd045"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#ab8f66684a228c26676eb9939a1dcd045">SelectManipulator</a> (int index)</td></tr>
-<tr class="separator:ab8f66684a228c26676eb9939a1dcd045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc150f526d794b02dad51f1863bc2108"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#adc150f526d794b02dad51f1863bc2108">createManipulator</a> (int index)</td></tr>
+<tr class="separator:adc150f526d794b02dad51f1863bc2108"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1807790950f7b944344894472f94f6e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#ae1807790950f7b944344894472f94f6e">ShowMenu</a> (bool setInteractable=true, System.Action onComplete=null)</td></tr>
 <tr class="separator:ae1807790950f7b944344894472f94f6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a131b040a8473f1aade4656c6ded7257c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a131b040a8473f1aade4656c6ded7257c">HideMenu</a> (bool setInteractable=true, System.Action onComplete=null)</td></tr>
@@ -127,8 +128,6 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a442757e0e15e73f93af3941c320c329e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_u_i_creator2_d_module_settings.html">UICreator2DModuleSettings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a442757e0e15e73f93af3941c320c329e">settings</a></td></tr>
-<tr class="separator:a442757e0e15e73f93af3941c320c329e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc240d91abf0d86349a23907797d7647"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#abc240d91abf0d86349a23907797d7647">turnOnAndOffCanvasObject</a> = false</td></tr>
 <tr class="separator:abc240d91abf0d86349a23907797d7647"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae89edb9bd7315eeac6f8044d96337e61"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#ae89edb9bd7315eeac6f8044d96337e61">blocksRaycasts</a> = true</td></tr>
@@ -151,6 +150,11 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a1f4cf97821cbb760352d194919adaf90 inherit pro_methods_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a1f4cf97821cbb760352d194919adaf90">getMenus</a> ()</td></tr>
 <tr class="separator:a1f4cf97821cbb760352d194919adaf90 inherit pro_methods_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="events"></a>
+Events</h2></td></tr>
+<tr class="memitem:a673a789f4d236719451ccf3d14140180"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a673a789f4d236719451ccf3d14140180">parameterChanged</a></td></tr>
+<tr class="separator:a673a789f4d236719451ccf3d14140180"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:aeaa96241cfa972ed9cb17ec841162b08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#aeaa96241cfa972ed9cb17ec841162b08">createUI</a> (object sender, List&lt; <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> &gt; sceneObjects)</td></tr>
@@ -166,14 +170,16 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ae86eb828aa03167a466353f0ed9de924"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#ae86eb828aa03167a466353f0ed9de924">selectorsPerRow</a> = 3</td></tr>
-<tr class="separator:ae86eb828aa03167a466353f0ed9de924"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab38068990f7b5e240640613d248d9a31"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#ab38068990f7b5e240640613d248d9a31">selectorSize</a> = 100</td></tr>
 <tr class="separator:ab38068990f7b5e240640613d248d9a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35e13bac074b091259b8a0b5effb532a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a35e13bac074b091259b8a0b5effb532a">selectorSpacing</a> = 10</td></tr>
 <tr class="separator:a35e13bac074b091259b8a0b5effb532a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e417fdfa2d5ed88e9746ecf569dd09b"><td class="memItemLeft" align="right" valign="top">List&lt; GameObject &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a9e417fdfa2d5ed88e9746ecf569dd09b">instancedManipulators</a> = new List&lt;GameObject&gt;()</td></tr>
-<tr class="separator:a9e417fdfa2d5ed88e9746ecf569dd09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9723212dc2cbf6a1a186addacd7039f3"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a9723212dc2cbf6a1a186addacd7039f3">currentManipulator</a></td></tr>
+<tr class="separator:a9723212dc2cbf6a1a186addacd7039f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3425f6b00ed1085cfc88df197073efb"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#aa3425f6b00ed1085cfc88df197073efb">currentAddSelector</a></td></tr>
+<tr class="separator:aa3425f6b00ed1085cfc88df197073efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af857971a0a8453e94c20b06c1cb2cf70"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#af857971a0a8453e94c20b06c1cb2cf70">selectorPrefab</a></td></tr>
+<tr class="separator:af857971a0a8453e94c20b06c1cb2cf70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cd8c3916d53413179570ca691ed2fc3"><td class="memItemLeft" align="right" valign="top">List&lt; GameObject &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a3cd8c3916d53413179570ca691ed2fc3">instancedManipulatorSelectors</a> = new List&lt;GameObject&gt;()</td></tr>
 <tr class="separator:a3cd8c3916d53413179570ca691ed2fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd959687f765bf05be937dc6d014b4ce"><td class="memItemLeft" align="right" valign="top">Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#acd959687f765bf05be937dc6d014b4ce">UI2D</a></td></tr>
@@ -182,6 +188,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a447aeb850bb3f89a4e79268a4fff05cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92fed697084b8e856308a4cc74808fdb"><td class="memItemLeft" align="right" valign="top">Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a92fed697084b8e856308a4cc74808fdb">manipulatorSelectionPanel</a></td></tr>
 <tr class="separator:a92fed697084b8e856308a4cc74808fdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bba4c90d24de350d457bbfe2c4ebc21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html#a1bba4c90d24de350d457bbfe2c4ebc21">mainSelection</a></td></tr>
+<tr class="separator:a1bba4c90d24de350d457bbfe2c4ebc21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -259,6 +267,30 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>function to delete all 2D UI elements </p>
+
+</div>
+</div>
+<a id="adc150f526d794b02dad51f1863bc2108"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc150f526d794b02dad51f1863bc2108">&#9670;&nbsp;</a></span>createManipulator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.UICreator2DModule.createManipulator </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>function called when manipulator shall be changed </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>index of the <a class="el" href="classvpet_1_1_parameter.html">Parameter</a> a <a class="el" href="classvpet_1_1_manipulator.html">Manipulator</a> shall be drawn for </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -382,30 +414,6 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p>Reimplemented from <a class="el" href="classvpet_1_1_module.html#afb349cb89231acd4b5c758d792464c79">vpet.Module</a>.</p>
-
-</div>
-</div>
-<a id="ab8f66684a228c26676eb9939a1dcd045"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8f66684a228c26676eb9939a1dcd045">&#9670;&nbsp;</a></span>SelectManipulator()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.UICreator2DModule.SelectManipulator </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>function called when manipulator shall be changed </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">index</td><td>index of the <a class="el" href="classvpet_1_1_manipulator.html">Manipulator</a> to be chosen </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -563,8 +571,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a9e417fdfa2d5ed88e9746ecf569dd09b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e417fdfa2d5ed88e9746ecf569dd09b">&#9670;&nbsp;</a></span>instancedManipulators</h2>
+<a id="aa3425f6b00ed1085cfc88df197073efb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3425f6b00ed1085cfc88df197073efb">&#9670;&nbsp;</a></span>currentAddSelector</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -573,7 +581,29 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;GameObject&gt; vpet.UICreator2DModule.instancedManipulators = new List&lt;GameObject&gt;()</td>
+          <td class="memname">GameObject vpet.UICreator2DModule.currentAddSelector</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9723212dc2cbf6a1a186addacd7039f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9723212dc2cbf6a1a186addacd7039f3">&#9670;&nbsp;</a></span>currentManipulator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GameObject vpet.UICreator2DModule.currentManipulator</td>
         </tr>
       </table>
   </td>
@@ -621,6 +651,29 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a1bba4c90d24de350d457bbfe2c4ebc21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bba4c90d24de350d457bbfe2c4ebc21">&#9670;&nbsp;</a></span>mainSelection</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> vpet.UICreator2DModule.mainSelection</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>currently selected <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> </p>
+
+</div>
+</div>
 <a id="a447aeb850bb3f89a4e79268a4fff05cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a447aeb850bb3f89a4e79268a4fff05cd">&#9670;&nbsp;</a></span>manipulatorPanel</h2>
 
@@ -654,6 +707,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">Transform vpet.UICreator2DModule.manipulatorSelectionPanel</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af857971a0a8453e94c20b06c1cb2cf70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af857971a0a8453e94c20b06c1cb2cf70">&#9670;&nbsp;</a></span>selectorPrefab</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GameObject vpet.UICreator2DModule.selectorPrefab</td>
         </tr>
       </table>
   </td>
@@ -709,42 +784,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ae86eb828aa03167a466353f0ed9de924"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae86eb828aa03167a466353f0ed9de924">&#9670;&nbsp;</a></span>selectorsPerRow</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int vpet.UICreator2DModule.selectorsPerRow = 3</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a442757e0e15e73f93af3941c320c329e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a442757e0e15e73f93af3941c320c329e">&#9670;&nbsp;</a></span>settings</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_u_i_creator2_d_module_settings.html">UICreator2DModuleSettings</a> vpet.UICreator2DModule.settings</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="abc240d91abf0d86349a23907797d7647"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abc240d91abf0d86349a23907797d7647">&#9670;&nbsp;</a></span>turnOnAndOffCanvasObject</h2>
 
@@ -778,6 +817,22 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Event Documentation</h2>
+<a id="a673a789f4d236719451ccf3d14140180"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a673a789f4d236719451ccf3d14140180">&#9670;&nbsp;</a></span>parameterChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">EventHandler&lt;int&gt; vpet.UICreator2DModule.parameterChanged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Event emitted when parameter has changed </p>
 
 </div>
 </div>

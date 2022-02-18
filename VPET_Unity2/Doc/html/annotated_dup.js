@@ -1,11 +1,5 @@
 var annotated_dup =
 [
-    [ "DG", "namespace_d_g.html", [
-      [ "Tweening", "namespace_d_g_1_1_tweening.html", [
-        [ "DOTweenModuleUnityVersion", "class_d_g_1_1_tweening_1_1_d_o_tween_module_unity_version.html", null ],
-        [ "DOTweenModuleUtils", "class_d_g_1_1_tweening_1_1_d_o_tween_module_utils.html", "class_d_g_1_1_tweening_1_1_d_o_tween_module_utils" ]
-      ] ]
-    ] ],
     [ "vpet", "namespacevpet.html", [
       [ "Core", "classvpet_1_1_core.html", "classvpet_1_1_core" ],
       [ "CoreInterface", "classvpet_1_1_core_interface.html", "classvpet_1_1_core_interface" ],
@@ -26,6 +20,7 @@ var annotated_dup =
       [ "AbstractParameter", "classvpet_1_1_abstract_parameter.html", "classvpet_1_1_abstract_parameter" ],
       [ "Parameter", "classvpet_1_1_parameter.html", "classvpet_1_1_parameter" ],
       [ "SceneObject", "classvpet_1_1_scene_object.html", "classvpet_1_1_scene_object" ],
+      [ "SceneObjectAreaLight", "classvpet_1_1_scene_object_area_light.html", "classvpet_1_1_scene_object_area_light" ],
       [ "SceneObjectCamera", "classvpet_1_1_scene_object_camera.html", "classvpet_1_1_scene_object_camera" ],
       [ "SceneObjectDirectionalLight", "classvpet_1_1_scene_object_directional_light.html", "classvpet_1_1_scene_object_directional_light" ],
       [ "SceneObjectLight", "classvpet_1_1_scene_object_light.html", "classvpet_1_1_scene_object_light" ],
@@ -46,20 +41,22 @@ var annotated_dup =
       [ "LightIcon", "classvpet_1_1_light_icon.html", "classvpet_1_1_light_icon" ],
       [ "LightSphere", "classvpet_1_1_light_sphere.html", "classvpet_1_1_light_sphere" ],
       [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", "classvpet_1_1_unity_scene_loader_module" ],
+      [ "GizmoCreatorModule", "classvpet_1_1_gizmo_creator_module.html", "classvpet_1_1_gizmo_creator_module" ],
+      [ "GizmoElementUpdate", "classvpet_1_1_gizmo_element_update.html", "classvpet_1_1_gizmo_element_update" ],
+      [ "VPETGizmo", "classvpet_1_1_v_p_e_t_gizmo.html", "classvpet_1_1_v_p_e_t_gizmo" ],
       [ "MenuCreatorModule", "classvpet_1_1_menu_creator_module.html", "classvpet_1_1_menu_creator_module" ],
       [ "MenuSelectorCreatorModule", "classvpet_1_1_menu_selector_creator_module.html", "classvpet_1_1_menu_selector_creator_module" ],
       [ "PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html", "classvpet_1_1_pixel_selector_module" ],
       [ "SelectionOutlineModule", "classvpet_1_1_selection_outline_module.html", "classvpet_1_1_selection_outline_module" ],
-      [ "ColorPicker", "classvpet_1_1_color_picker.html", "classvpet_1_1_color_picker" ],
       [ "Manipulator", "classvpet_1_1_manipulator.html", "classvpet_1_1_manipulator" ],
-      [ "ScrollSnap", "classvpet_1_1_scroll_snap.html", "classvpet_1_1_scroll_snap" ],
       [ "Spinner", "classvpet_1_1_spinner.html", "classvpet_1_1_spinner" ],
-      [ "SpinnerQuaternion", "classvpet_1_1_spinner_quaternion.html", "classvpet_1_1_spinner_quaternion" ],
-      [ "SpinnerVec3", "classvpet_1_1_spinner_vec3.html", "classvpet_1_1_spinner_vec3" ],
       [ "ManipulatorSelector", "classvpet_1_1_manipulator_selector.html", "classvpet_1_1_manipulator_selector" ],
+      [ "SnapSelect", "classvpet_1_1_snap_select.html", "classvpet_1_1_snap_select" ],
+      [ "TextHighlighter", "classvpet_1_1_text_highlighter.html", "classvpet_1_1_text_highlighter" ],
       [ "UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html", "classvpet_1_1_u_i_creator2_d_module" ],
-      [ "UICreator2DModuleSettings", "classvpet_1_1_u_i_creator2_d_module_settings.html", "classvpet_1_1_u_i_creator2_d_module_settings" ],
-      [ "ManipulatorReference", "classvpet_1_1_manipulator_reference.html", "classvpet_1_1_manipulator_reference" ]
+      [ "Editor_UIModeChange", "classvpet_1_1_editor___u_i_mode_change.html", "classvpet_1_1_editor___u_i_mode_change" ],
+      [ "UICreator3DModule", "classvpet_1_1_u_i_creator3_d_module.html", "classvpet_1_1_u_i_creator3_d_module" ],
+      [ "UnityEditorModule", "classvpet_1_1_unity_editor_module.html", "classvpet_1_1_unity_editor_module" ]
     ] ],
     [ "Inputs", "class_inputs.html", "class_inputs" ]
 ];

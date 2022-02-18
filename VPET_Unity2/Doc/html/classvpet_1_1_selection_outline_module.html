@@ -132,15 +132,21 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
+<tr class="memitem:a033977905d519b52b5bdf4017dfaa4d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_selection_outline_module.html#a033977905d519b52b5bdf4017dfaa4d7">HighlightLocked</a> (object sender, <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> sceneObject)</td></tr>
+<tr class="separator:a033977905d519b52b5bdf4017dfaa4d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af616e7c373c74ed9256447abf01a1559"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_selection_outline_module.html#af616e7c373c74ed9256447abf01a1559">HighlightSelection</a> (object sender, <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> sceneObject)</td></tr>
 <tr class="separator:af616e7c373c74ed9256447abf01a1559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63ab95c3eee90b97a01bcdd69d4109c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_selection_outline_module.html#a63ab95c3eee90b97a01bcdd69d4109c4">DisableHighlightSelection</a> (object sender, <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> sceneObject)</td></tr>
 <tr class="separator:a63ab95c3eee90b97a01bcdd69d4109c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e08b385b92b93c4cf40d6512d4ab9e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_selection_outline_module.html#a8e08b385b92b93c4cf40d6512d4ab9e5">DisableHighlightLocked</a> (object sender, <a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a> sceneObject)</td></tr>
+<tr class="separator:a8e08b385b92b93c4cf40d6512d4ab9e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a2fec5f7636a4e002a97fd611f859a5bf"><td class="memItemLeft" align="right" valign="top">Material&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_selection_outline_module.html#a2fec5f7636a4e002a97fd611f859a5bf">_outlineMaterial</a></td></tr>
 <tr class="separator:a2fec5f7636a4e002a97fd611f859a5bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e3fbd9c3d13042990acb5bbb22a2f2e"><td class="memItemLeft" align="right" valign="top">Material&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_selection_outline_module.html#a7e3fbd9c3d13042990acb5bbb22a2f2e">_outlineLockMaterial</a></td></tr>
+<tr class="separator:a7e3fbd9c3d13042990acb5bbb22a2f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -196,6 +202,50 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8e08b385b92b93c4cf40d6512d4ab9e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e08b385b92b93c4cf40d6512d4ab9e5">&#9670;&nbsp;</a></span>DisableHighlightLocked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SelectionOutlineModule.DisableHighlightLocked </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a>&#160;</td>
+          <td class="paramname"><em>sceneObject</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that is called when the <a class="el" href="classvpet_1_1_u_i_manager.html">UIManager</a> signals an selection removed. Will remove the outline material on all renderes of the given scene object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>A reference to the <a class="el" href="classvpet_1_1_u_i_manager.html">UIManager</a>. </td></tr>
+    <tr><td class="paramname">sceneObject</td><td>The selected sceneObject. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a63ab95c3eee90b97a01bcdd69d4109c4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a63ab95c3eee90b97a01bcdd69d4109c4">&#9670;&nbsp;</a></span>DisableHighlightSelection()</h2>
 
@@ -234,6 +284,50 @@ Additional Inherited Members</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">sender</td><td>A reference to the <a class="el" href="classvpet_1_1_u_i_manager.html">UIManager</a>. </td></tr>
     <tr><td class="paramname">sceneObject</td><td>The selected sceneObject. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a033977905d519b52b5bdf4017dfaa4d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a033977905d519b52b5bdf4017dfaa4d7">&#9670;&nbsp;</a></span>HighlightLocked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SelectionOutlineModule.HighlightLocked </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_scene_object.html">SceneObject</a>&#160;</td>
+          <td class="paramname"><em>sceneObject</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that is called when the <a class="el" href="classvpet_1_1_u_i_manager.html">UIManager</a> signals an selection. Will add the outline material to all renderes of the given scene object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>A reference to the <a class="el" href="classvpet_1_1_u_i_manager.html">UIManager</a>. </td></tr>
+    <tr><td class="paramname">eventArgs</td><td>Event Arguments containing the Scene Object and the highlight color. </td></tr>
   </table>
   </dd>
 </dl>
@@ -331,6 +425,29 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a7e3fbd9c3d13042990acb5bbb22a2f2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e3fbd9c3d13042990acb5bbb22a2f2e">&#9670;&nbsp;</a></span>_outlineLockMaterial</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Material vpet.SelectionOutlineModule._outlineLockMaterial</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The outline material to be added to a locked object. </p>
+
+</div>
+</div>
 <a id="a2fec5f7636a4e002a97fd611f859a5bf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2fec5f7636a4e002a97fd611f859a5bf">&#9670;&nbsp;</a></span>_outlineMaterial</h2>
 

@@ -22,11 +22,11 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "SceneObjectCamera.cs"
-//! @brief implementation SceneObjectCamera as a specialisation of SceneObject.
+//! @brief Implementation of the SceneObjectCamera as a specialisation of SceneObject.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 13.10.2021
+//! @date 18.10.2021
 
 using System.Collections;
 using System.Collections.Generic;

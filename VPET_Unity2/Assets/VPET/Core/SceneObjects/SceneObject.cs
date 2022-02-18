@@ -22,11 +22,11 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "SceneObject.cs"
-//! @brief implementation of the VPET SceneObject, connecting Unity and VPET functionalty.
+//! @brief Implementation of the VPET SceneObject, connecting Unity and VPET functionalty.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 03.02.2022
+//! @date 18.02.2022
 
 using System;
 using System.Collections.Generic;

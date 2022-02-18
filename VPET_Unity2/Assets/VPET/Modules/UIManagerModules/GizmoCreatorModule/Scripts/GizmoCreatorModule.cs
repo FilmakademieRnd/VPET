@@ -25,7 +25,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @brief Implementation of the VPET GizmoCreatorModule, creating line based gizmo objects.
 //! @author Simon Spielmann
 //! @version 0
-//! @date 10.02.2022
+//! @date 18.02.2022
 
 using System;
 using System.Collections.Generic;
@@ -33,20 +33,62 @@ using UnityEngine;
 
 namespace vpet
 {
+    //!
+    //! Implementation of the VPET GizmoCreatorModule, creating line based gizmo objects.
+    //!
     public class GizmoCreatorModule : UIManagerModule
     {
+        //!
+        //! The list of created gizmos.
+        //!
         private List<VPETGizmo> m_gizmos;
+        //!
+        //! Stored positions for a line.
+        //!
+        private static Vector3[] m_linePos = new Vector3[]
+        {
+            new Vector3(0.0f, 0.0f, 0.0f),
+            new Vector3(0.0f, 0.0f, 5.0f)
+        };
+        //!
+        //! Stored positions for a rectangle.
+        //!
+        private static Vector3[] m_rectPos = new Vector3[]
+        {
+            new Vector3( -0.5f,-0.5f, 0.0f ),
+            new Vector3(  0.5f,-0.5f, 0.0f ),
+            new Vector3(  0.5f, 0.5f, 0.0f ),
+            new Vector3( -0.5f, 0.5f, 0.0f )
+        };
+        //!
+        //! Stored positions for a cone.
+        //!
+        private static Vector3[] m_conePos = new Vector3[]
+        {
+            new Vector3(  0.0f, 0.0f, 0.0f ),
+            new Vector3( -0.5f,-0.5f, 1.0f ),
 
-        private static Vector3[] m_linePos;
+            new Vector3(  0.0f, 0.0f, 0.0f ),
+            new Vector3(  0.5f,-0.5f, 1.0f ),
 
-        private static Vector3[] m_rectPos; 
+            new Vector3(  0.0f, 0.0f, 0.0f ),
+            new Vector3(  0.5f, 0.5f, 1.0f ),
 
-        private static Vector3[] m_conePos; 
-
+            new Vector3(  0.0f, 0.0f, 0.0f ),
+            new Vector3( -0.5f, 0.5f, 1.0f )
+        };
+        //!
+        //! Stored positions for a circle.
+        //!
         private static Vector3[] m_circlePos;
-
+        //!
+        //! List storing event connections for releasing them before gizmos will be deleted.
+        //!
         private List<Tuple<SceneObject, EventHandler<AbstractParameter>>> m_ParameterEventHandlers;
-        private List<Tuple<Parameter<float>, EventHandler<float>>> m_eventHandlersC;
+        //!
+        //! 
+        //!
+        private List<Tuple<Parameter<Color>, EventHandler<Color>>> m_eventHandlersColor;
 
         //!
         //! Constructor
@@ -56,39 +98,11 @@ namespace vpet
         public GizmoCreatorModule(string name, Core core) : base(name, core)
         {
             m_ParameterEventHandlers = new List<Tuple<SceneObject, EventHandler<AbstractParameter>>>();
+            m_eventHandlersColor = new List<Tuple<Parameter<Color>, EventHandler<Color>>>();
             m_gizmos = new List<VPETGizmo>();
-
-            m_linePos = new Vector3[]
-            {
-                new Vector3(0.0f, 0.0f, 0.0f),
-                new Vector3(0.0f, 0.0f, 5.0f)
-            };
-
-            m_rectPos = new Vector3[]
-            {
-                new Vector3( -0.5f,-0.5f, 0.0f ),
-                new Vector3(  0.5f,-0.5f, 0.0f ),
-                new Vector3(  0.5f, 0.5f, 0.0f ),
-                new Vector3( -0.5f, 0.5f, 0.0f )
-            };
-
-            m_conePos = new Vector3[]
-            {
-                new Vector3(  0.0f, 0.0f, 0.0f ),
-                new Vector3( -0.5f,-0.5f, 1.0f ),
-                                          
-                new Vector3(  0.0f, 0.0f, 0.0f ),
-                new Vector3(  0.5f,-0.5f, 1.0f ),
-                                          
-                new Vector3(  0.0f, 0.0f, 0.0f ),
-                new Vector3(  0.5f, 0.5f, 1.0f ),
-                                          
-                new Vector3(  0.0f, 0.0f, 0.0f ),
-                new Vector3( -0.5f, 0.5f, 1.0f )
-            };
-
             m_circlePos = new Vector3[32];
-            
+
+            // creating points for a circle
             for (int i=0; i<m_circlePos.Length; i++)
             {
                 float step = (Mathf.PI * 2.0f * i) / m_circlePos.Length;
@@ -97,11 +111,18 @@ namespace vpet
 
         }
 
+        //!
+        //! Init Function, connecting module with celsction changed event.
+        //!
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createGizmos;
         }
 
+        //!
+        //! Function that parses the given list of scene objects to create and
+        //! add gizmo objects depending on it's type as child objects.
+        //!
         private void createGizmos(object sender, List<SceneObject> sceneObjects)
         {
             diosposeGizmos();
@@ -117,7 +138,7 @@ namespace vpet
                             Color lightColor = sceneObject.GetComponent<Light>().color;
                             Parameter<Color> colorParameter = sceneObject.getParameter<Color>("color");
                             colorParameter.hasChanged += gizmo.setColor;
-                            //m_eventHandlers.Add(new Tuple<Parameter<float>, EventHandler<float>>(colorParameter, updateScalePoint));
+                            m_eventHandlersColor.Add(new Tuple<Parameter<Color>, EventHandler<Color>>(colorParameter, gizmo.setColor));
                             switch (sceneObject)
                             {
                                 case SceneObjectPointLight:
@@ -168,6 +189,9 @@ namespace vpet
             }
         }
 
+        //!
+        //! Function for calculating and setting of scale updates for a point light gizmo.
+        //!
         private void updateScalePoint(object sender, AbstractParameter parameter)
         {
             SceneObject sceneObject = (SceneObject) sender;
@@ -176,6 +200,9 @@ namespace vpet
             sceneObject.transform.GetChild(0).localScale = new Vector3(range, range, range);
         }
 
+        //!
+        //! Function for calculating and setting of scale updates for a spot light gizmo.
+        //!
         private void updateScaleSpot(object sender, AbstractParameter parameter)
         {
             SceneObject sceneObject = (SceneObject) sender;
@@ -188,6 +215,9 @@ namespace vpet
             sceneObject.transform.GetChild(0).localScale = new Vector3(dia, dia, range);
         }
 
+        //!
+        //! Function for calculating and setting of scale updates for a camera gizmo.
+        //!
         private void updateScaleCamera(object sender, AbstractParameter parameter)
         {
             SceneObject sceneObject = (SceneObject)sender;
@@ -201,12 +231,21 @@ namespace vpet
             sceneObject.transform.GetChild(0).localScale = new Vector3(dia * aspect, dia, far);
         }
 
+        //!
+        //! Function for disposing and cleanup of all created gizmos.
+        //!
         private void diosposeGizmos()
         {
+            foreach (Tuple<Parameter<Color>, EventHandler<Color>> t in m_eventHandlersColor)
+                t.Item1.hasChanged -= t.Item2;
+
+            m_eventHandlersColor.Clear();
+            
             foreach (Tuple<SceneObject, EventHandler<AbstractParameter>> t in m_ParameterEventHandlers)
                 t.Item1.hasChanged -= t.Item2;
            
             m_ParameterEventHandlers.Clear();
+
 
             foreach (VPETGizmo gizmo in m_gizmos)
                 gizmo.dispose();

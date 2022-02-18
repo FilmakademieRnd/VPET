@@ -111,14 +111,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7170310563ed21ab8c1f5c3cf19e9bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a250ff3663a1c612f5d9cbf55a48b60b2"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_spot_light.html#a250ff3663a1c612f5d9cbf55a48b60b2">Update</a> ()</td></tr>
 <tr class="separator:a250ff3663a1c612f5d9cbf55a48b60b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classvpet_1_1_scene_object"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvpet_1_1_scene_object')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvpet_1_1_scene_object.html">vpet.SceneObject</a></td></tr>
+<tr class="memitem:a337b7160d275c874cc7562cc41b3b825 inherit pub_methods_classvpet_1_1_scene_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a337b7160d275c874cc7562cc41b3b825">getParameter&lt; T &gt;</a> (string name)</td></tr>
+<tr class="separator:a337b7160d275c874cc7562cc41b3b825 inherit pub_methods_classvpet_1_1_scene_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
+<tr class="memitem:a7a6654a272e2ec942c04c624e92fd3b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_spot_light.html#a7a6654a272e2ec942c04c624e92fd3b8">updateRange</a> (object sender, float a)</td></tr>
+<tr class="separator:a7a6654a272e2ec942c04c624e92fd3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7762ea68bcc085669be984c8eb0695a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_spot_light.html#a7762ea68bcc085669be984c8eb0695a8">updateAngle</a> (object sender, float a)</td></tr>
 <tr class="separator:a7762ea68bcc085669be984c8eb0695a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a1de17dc55cb9fa19b74dc1bab0d5700d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_spot_light.html#a1de17dc55cb9fa19b74dc1bab0d5700d">range</a></td></tr>
+<tr class="separator:a1de17dc55cb9fa19b74dc1bab0d5700d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bdbdc1e299c4a702f5a80da9c3a2fb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_spot_light.html#a2bdbdc1e299c4a702f5a80da9c3a2fb5">spotAngle</a></td></tr>
 <tr class="separator:a2bdbdc1e299c4a702f5a80da9c3a2fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -277,7 +284,73 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a7a6654a272e2ec942c04c624e92fd3b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a6654a272e2ec942c04c624e92fd3b8">&#9670;&nbsp;</a></span>updateRange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SceneObjectSpotLight.updateRange </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update the light range of the GameObject. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Object calling the update function </td></tr>
+    <tr><td class="paramname">a</td><td>new range value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a1de17dc55cb9fa19b74dc1bab0d5700d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1de17dc55cb9fa19b74dc1bab0d5700d">&#9670;&nbsp;</a></span>range</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt;float&gt; vpet.SceneObjectSpotLight.range</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>the range of the light </p>
+
+</div>
+</div>
 <a id="a2bdbdc1e299c4a702f5a80da9c3a2fb5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2bdbdc1e299c4a702f5a80da9c3a2fb5">&#9670;&nbsp;</a></span>spotAngle</h2>
 
@@ -297,6 +370,7 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>the angle of the lights spot </p>
 
 </div>
 </div>

@@ -26,11 +26,7 @@ var NAVTREE =
 [
   [ "VPET", "index.html", [
     [ "Packages", "namespaces.html", [
-      [ "Packages", "namespaces.html", "namespaces_dup" ],
-      [ "Package Functions", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Enumerations", "namespacemembers_enum.html", null ]
-      ] ]
+      [ "Packages", "namespaces.html", "namespaces_dup" ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -54,9 +50,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_r_module_8cs.html",
-"classvpet_1_1_manipulator_reference.html",
-"classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a0921f4b6f7fe7dad9ce9cf0dbfc4d867",
-"classvpet_1_1_u_i_creator2_d_module.html#a4c5b12eaee01b04d563331a082d6a44d"
+"classvpet_1_1_manager.html#ab81fefb6eaf48fe2e2ae5509ef41c683",
+"classvpet_1_1_scene_manager_1_1_scene_data_handler.html#aff4561f031037ba858071ab41842a87d",
+"classvpet_1_1_u_i_creator2_d_module.html#af857971a0a8453e94c20b06c1cb2cf70",
+"interface_inputs_1_1_i_v_p_e_t_map_actions.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

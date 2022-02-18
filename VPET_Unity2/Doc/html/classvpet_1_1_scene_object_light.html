@@ -99,10 +99,11 @@ Inheritance diagram for vpet.SceneObjectLight:</div>
  <div class="center">
   <img src="classvpet_1_1_scene_object_light.png" usemap="#vpet.SceneObjectLight_map" alt=""/>
   <map id="vpet.SceneObjectLight_map" name="vpet.SceneObjectLight_map">
-<area href="classvpet_1_1_scene_object.html" alt="vpet.SceneObject" shape="rect" coords="211,56,412,80"/>
-<area href="classvpet_1_1_scene_object_directional_light.html" alt="vpet.SceneObjectDirectionalLight" shape="rect" coords="0,168,201,192"/>
-<area href="classvpet_1_1_scene_object_point_light.html" alt="vpet.SceneObjectPointLight" shape="rect" coords="211,168,412,192"/>
-<area href="classvpet_1_1_scene_object_spot_light.html" alt="vpet.SceneObjectSpotLight" shape="rect" coords="422,168,623,192"/>
+<area href="classvpet_1_1_scene_object.html" alt="vpet.SceneObject" shape="rect" coords="316,56,517,80"/>
+<area href="classvpet_1_1_scene_object_area_light.html" alt="vpet.SceneObjectAreaLight" shape="rect" coords="0,168,201,192"/>
+<area href="classvpet_1_1_scene_object_directional_light.html" alt="vpet.SceneObjectDirectionalLight" shape="rect" coords="211,168,412,192"/>
+<area href="classvpet_1_1_scene_object_point_light.html" alt="vpet.SceneObjectPointLight" shape="rect" coords="422,168,623,192"/>
+<area href="classvpet_1_1_scene_object_spot_light.html" alt="vpet.SceneObjectSpotLight" shape="rect" coords="633,168,834,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -114,6 +115,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3b0777806dfc65411f2fde1c70cb2b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b924603ad910a3b92e559f2dd8d2619"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_light.html#a0b924603ad910a3b92e559f2dd8d2619">Update</a> ()</td></tr>
 <tr class="separator:a0b924603ad910a3b92e559f2dd8d2619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classvpet_1_1_scene_object"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvpet_1_1_scene_object')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvpet_1_1_scene_object.html">vpet.SceneObject</a></td></tr>
+<tr class="memitem:a337b7160d275c874cc7562cc41b3b825 inherit pub_methods_classvpet_1_1_scene_object"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object.html#a337b7160d275c874cc7562cc41b3b825">getParameter&lt; T &gt;</a> (string name)</td></tr>
+<tr class="separator:a337b7160d275c874cc7562cc41b3b825 inherit pub_methods_classvpet_1_1_scene_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -129,8 +133,6 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a3b2b415f716fee78844c0b74857ab06d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3eea6babba689f559b2db64ae36096c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_light.html#ab3eea6babba689f559b2db64ae36096c">updateIntensity</a> (object sender, float a)</td></tr>
 <tr class="separator:ab3eea6babba689f559b2db64ae36096c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25e02ca070b56a4bb8b2d7209e1d0ca9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_light.html#a25e02ca070b56a4bb8b2d7209e1d0ca9">updateRange</a> (object sender, float a)</td></tr>
-<tr class="separator:a25e02ca070b56a4bb8b2d7209e1d0ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af728355430c9043294785b137239c938"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_light.html#af728355430c9043294785b137239c938">updateSceneObjectLightParameters</a> ()</td></tr>
 <tr class="separator:af728355430c9043294785b137239c938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -140,8 +142,6 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a43719fb3fbca3e450185bbe21422d90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9eb9abfc93d1d8c3e229a13b455326d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_light.html#a9eb9abfc93d1d8c3e229a13b455326d4">intensity</a></td></tr>
 <tr class="separator:a9eb9abfc93d1d8c3e229a13b455326d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc81fe14ff362de0d005418118217f7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_object_light.html#abc81fe14ff362de0d005418118217f7b">range</a></td></tr>
-<tr class="separator:abc81fe14ff362de0d005418118217f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -221,7 +221,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classvpet_1_1_scene_object.html#ade99dba2b00f5c1e0fb62c89f854b0f2">vpet.SceneObject</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_object_spot_light.html#a7170310563ed21ab8c1f5c3cf19e9bd6">vpet.SceneObjectSpotLight</a>.</p>
+<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_object_spot_light.html#a7170310563ed21ab8c1f5c3cf19e9bd6">vpet.SceneObjectSpotLight</a>, and <a class="el" href="classvpet_1_1_scene_object_point_light.html#a0205bb8ecc553d8a60e40fe41dbf636c">vpet.SceneObjectPointLight</a>.</p>
 
 </div>
 </div>
@@ -341,49 +341,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a25e02ca070b56a4bb8b2d7209e1d0ca9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25e02ca070b56a4bb8b2d7209e1d0ca9">&#9670;&nbsp;</a></span>updateRange()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.SceneObjectLight.updateRange </td>
-          <td>(</td>
-          <td class="paramtype">object&#160;</td>
-          <td class="paramname"><em>sender</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>a</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Update the light range of the GameObject. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">sender</td><td>Object calling the update function </td></tr>
-    <tr><td class="paramname">a</td><td>new range value </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="af728355430c9043294785b137239c938"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af728355430c9043294785b137239c938">&#9670;&nbsp;</a></span>updateSceneObjectLightParameters()</h2>
 
@@ -477,29 +434,6 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>the intensity of the light </p>
-
-</div>
-</div>
-<a id="abc81fe14ff362de0d005418118217f7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc81fe14ff362de0d005418118217f7b">&#9670;&nbsp;</a></span>range</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt;float&gt; vpet.SceneObjectLight.range</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>the range of the light </p>
 
 </div>
 </div>
