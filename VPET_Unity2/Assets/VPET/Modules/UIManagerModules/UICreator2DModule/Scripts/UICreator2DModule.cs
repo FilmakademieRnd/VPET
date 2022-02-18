@@ -230,7 +230,7 @@ namespace vpet
                 g.GetComponent<ManipulatorSelector>().visualizeIdle();
             instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
             // actual send command
-            manager.setManipulatorMode(index);
+            //manager.setManipulatorMode(index);
         }
 
         //!
