@@ -33,7 +33,6 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace vpet
 {

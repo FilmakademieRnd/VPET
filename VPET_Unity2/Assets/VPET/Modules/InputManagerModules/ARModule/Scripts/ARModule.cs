@@ -21,8 +21,8 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "UICreator2DModule.cs"
-//! @brief implementation of VPET 2D UI scene creator module
+//! @file "ARModule.cs"
+//! @brief implementation of VPET AR features
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
