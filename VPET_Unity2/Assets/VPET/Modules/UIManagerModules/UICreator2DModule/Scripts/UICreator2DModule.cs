@@ -33,7 +33,6 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace vpet
 {
@@ -67,9 +66,7 @@ namespace vpet
         private Transform manipulatorPanel;
         private Transform manipulatorSelectionPanel;
 
-        public bool turnOnAndOffCanvasObject = false;
         public bool blocksRaycasts = true;
-        public bool isActive = true;
 
         //!
         //! currently selected SceneObject
@@ -185,8 +182,8 @@ namespace vpet
         //!
         private void clearUI()
         {
-            GameObject.Destroy(currentManipulator);
-            GameObject.Destroy(currentAddSelector);
+            GameObject.DestroyImmediate(currentManipulator);
+            GameObject.DestroyImmediate(currentAddSelector);
 
             foreach (var manipSelec in instancedManipulatorSelectors)
             {
@@ -220,6 +217,11 @@ namespace vpet
                     currentManipulator.GetComponent<Spinner>().Init(abstractParam);
                     break;
                 case AbstractParameter.ParameterType.COLOR:
+                case AbstractParameter.ParameterType.ACTION:
+                case AbstractParameter.ParameterType.BOOL:
+                case AbstractParameter.ParameterType.INT:
+                case AbstractParameter.ParameterType.STRING:
+                case AbstractParameter.ParameterType.VECTOR4:
                 default:
                     Helpers.Log("No UI for parameter type implemented...");
                     break;
@@ -228,15 +230,13 @@ namespace vpet
 
             foreach (GameObject g in instancedManipulatorSelectors)
                 g.GetComponent<ManipulatorSelector>().visualizeIdle();
+
             instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
-            // actual send command
-            //manager.setManipulatorMode(index);
         }
 
         //!
         //! function to enable or disapble 2D UI interactablitity
         //! @param value interactable true/false
-
         //!
         private void SetInteractable(bool value)
         {
@@ -254,66 +254,30 @@ namespace vpet
         }
 
         //!
-        //! function to activate or deactivate 2D UI
-        //! @param value avtivate/deactivate
-        //!
-        private void SetActive(bool value)
-        {
-            UI2D.gameObject.SetActive(value);
-        }
-
-        //!
         //! Show 2D manipulator menu
         //! @param setInteractable sets if menu shall be initially interactable
-        //! @param onComplete action being called when menu is fully visible
         //!
-        public virtual void ShowMenu(bool setInteractable = true, System.Action onComplete = null)
+        public virtual void ShowMenu(bool setInteractable = true)
         {
-            //Before Fade
-            if (turnOnAndOffCanvasObject)
-            {
-                SetActive(true);
-            }
 
             SetAlpha(1f);
-            isActive = true;
 
             if (setInteractable)
             {
                 SetInteractable(true);
-            }
-
-            if (onComplete != null)
-            {
-                onComplete.Invoke();
             }
         }
 
         //!
         //! Hide 2D manipulator menu
         //! @param setInteractable sets if menu shall be initially interactable
-        //! @param onComplete action being called when menu is fully visible
         //!
-        public void HideMenu(bool setInteractable = true, System.Action onComplete = null)
+        public void HideMenu(bool setInteractable = true)
         {
-            //Before Fade
-            isActive = false;
+            SetAlpha(0f);
 
             if (setInteractable)
-            {
                 SetInteractable(false);
-            }
-
-            SetAlpha(0f);
-            if (turnOnAndOffCanvasObject)
-            {
-                SetActive(false);
-            }
-
-            if (onComplete != null)
-            {
-                onComplete.Invoke();
-            }
         }
     }
 }

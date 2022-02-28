@@ -22,7 +22,7 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "Manipulator.cs"
-//! @brief base class of a manipulator
+//! @brief base class of a manipulator for the 2D UI
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @author Justus Henne
@@ -37,6 +37,9 @@ namespace vpet
 {
     public abstract class Manipulator : MonoBehaviour
     {
+        //!
+        //! Reference to the AbstractParameter to be edited by the manipulator
+        //!
         protected AbstractParameter abstractParam;
     }
 }
