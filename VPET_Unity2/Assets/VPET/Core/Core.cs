@@ -4,7 +4,7 @@ VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
  
-Copyright (c) 2021 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
  
 This project has been initiated in the scope of the EU funded project 
 Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
@@ -26,9 +26,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 07.02.2022
+//! @date 01.03.2022
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -51,18 +52,22 @@ namespace vpet
             public int framerate = 60;
             public Parameter<Color> test = new Parameter<Color>(new Color(1,2,3), "Color");
         }
+        //!
+        //! The core settings.
+        //!
         private Settings _settings;
+        //!
+        //! Getter and setter for the core settings.
+        //!
         public coreSettings settings
         {
             get { return (coreSettings)_settings; }
             set { _settings = value; }
         }
-
         //!
         //! Flag determining wether the VPERT instance acts as a server or client.
         //!
         public bool isServer = false;
-
         //!
         //! The current local time stores as value between 0 and 255.
         //!
@@ -75,7 +80,19 @@ namespace vpet
             set => m_time = value;
             get => m_time;
         }
-
+        //!
+        //! The global list of parameter objects.
+        //!
+        private List<ParameterObject> m_parameterObjectList;
+        //!
+        //! Getter for the parameter object list.
+        //!
+        //! @return A reference to the parameter object list.
+        //!
+        public ref List<ParameterObject> parameterObjectList
+        {
+            get => ref m_parameterObjectList;
+        }
         //!
         //! Event invoked when an Unity Update() callback is triggered.
         //!
@@ -111,6 +128,7 @@ namespace vpet
         void Awake()
         {
             _settings = new coreSettings();
+            m_parameterObjectList = new List<ParameterObject>();
 
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
@@ -220,6 +238,19 @@ namespace vpet
             string filepath = Path.Combine(path, settings.GetType() + ".cfg");
             if (File.Exists(filepath))
                 settings = (Settings)JsonUtility.FromJson(File.ReadAllText(filepath), settings.GetType());
+        }
+
+        //!
+        //! Function for adding parameter objects to the prameter object list.
+        //!
+        //! @parameterObject The parameter object to be added to the parameter object list.
+        //!
+        internal void addParameterObject(ParameterObject parameterObject)
+        {
+            if (!m_parameterObjectList.Contains(parameterObject))
+                m_parameterObjectList.Add(parameterObject);
+            else
+                Helpers.Log("Parameter object List already contains the Parameter Object.", Helpers.logMsgType.WARNING);
         }
 
     }

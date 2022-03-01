@@ -26,10 +26,9 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 18.02.2022
+//! @date 01.03.2022
 
-using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace vpet
@@ -39,7 +38,7 @@ namespace vpet
     //! around 3D scene specific objects.
     //!
     [DisallowMultipleComponent]
-    public class SceneObject : MonoBehaviour
+    public class SceneObject : ParameterObject
     {
         //!
         //! Is the sceneObject locked?
@@ -61,24 +60,9 @@ namespace vpet
             get => _physicsActive;
         }
         //!
-        //! unique id of this sceneObject
-        //!
-        private short _id;
-        //!
-        //! Getter for unique id of this sceneObject
-        //!
-        public short id
-        {
-            get => _id;
-        }
-        //!
         //! A reference to the VPET UI manager.
         //!
         private UIManager m_uiManager;
-        //!
-        //! Event emitted when parameter changed.
-        //!
-        public event EventHandler<AbstractParameter> hasChanged;
         //!
         //! Position of the SceneObject
         //!
@@ -92,42 +76,22 @@ namespace vpet
         //!
         private Parameter<Vector3> scale;
         //!
-        //! List storing all parameters of this SceneObject.
+        //! Initialisation
         //!
-        protected List<AbstractParameter> _parameterList;
-        
-        //!
-        //! Getter for parameter list
-        //!
-        public ref List<AbstractParameter> parameterList
+        public override void Awake()
         {
-            get => ref _parameterList;
-        }
+            base.Awake();
 
-        //!
-        //! Start is called before the first frame update
-        //!
-        public virtual void Awake()
-        {
-            Core core = GameObject.FindObjectOfType<Core>();
+            m_uiManager = _core.getManager<UIManager>();
 
-            if (core)
-                m_uiManager = core.getManager<UIManager>();
-
-            _parameterList = new List<AbstractParameter>();
-
-            _id = Helpers.getSoID();
             _physicsActive = false;
 
-            position = new Parameter<Vector3>(transform.localPosition, "position", this, (short)parameterList.Count);
+            position = new Parameter<Vector3>(transform.localPosition, "position", this);
             position.hasChanged += updatePosition;
-            _parameterList.Add(position);
-            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation", this, (short)parameterList.Count);
+            rotation = new Parameter<Quaternion>(transform.localRotation, "rotation", this);
             rotation.hasChanged += updateRotation;
-            _parameterList.Add(rotation);
-            scale = new Parameter<Vector3>(transform.localScale, "scale", this, (short)parameterList.Count);
+            scale = new Parameter<Vector3>(transform.localScale, "scale", this);
             scale.hasChanged += updateScale;
-            _parameterList.Add(scale);
         }
 
         //!
@@ -145,10 +109,11 @@ namespace vpet
         //!
         //! @param parameter The parameter that has changed. 
         //!
-        protected void emitHasChanged (AbstractParameter parameter)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected override void emitHasChanged (AbstractParameter parameter)
         {
             if (!_lock)
-                hasChanged?.Invoke(this, parameter);
+                base.emitHasChanged(parameter);
         }
 
         //!
@@ -214,11 +179,6 @@ namespace vpet
                 rotation.value = transform.localRotation;
             if (transform.localScale != scale.value)
                 scale.value = transform.localScale;
-        }
-
-        public Parameter<T> getParameter<T>(string name)
-        {
-           return (Parameter<T>) _parameterList.Find(parameter => parameter.name == name);
         }
     }
 }

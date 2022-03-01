@@ -40,20 +40,6 @@ namespace vpet
     public static class Helpers
     {
         //!
-        //! global id counter for generating unique sceneObject IDs
-        //!
-        private static short s_id = 1;
-
-        //!
-        //! provide a unique id
-        //! @return     unique id as int
-        //!
-        public static short getSoID()
-        {
-            return s_id++;
-        }
-
-        //!
         //! Types for the debug message logs
         //!
         public enum logMsgType
@@ -84,7 +70,6 @@ namespace vpet
                     break;
             }
         }
-
         //!
         //! searches and returns types in an assembly
         //! @param  appDomain   domain to be searched in for assemblies
@@ -123,7 +108,6 @@ namespace vpet
             }
             return newType;
         }
-
         //!
         //! Searches and returns a child transform in a tree of transforms by name
         //!

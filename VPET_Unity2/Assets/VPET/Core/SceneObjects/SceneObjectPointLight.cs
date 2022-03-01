@@ -26,10 +26,8 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 03.02.2022
+//! @date 01.03.2022
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace vpet
@@ -52,9 +50,8 @@ namespace vpet
             _light = this.GetComponent<Light>();
             if (_light)
             {
-                range = new Parameter<float>(_light.range, "range", this, (short)parameterList.Count);
+                range = new Parameter<float>(_light.range, "range", this);
                 range.hasChanged += updateRange;
-                _parameterList.Add(range);
             }
             else
                 Helpers.Log("no light component found!");

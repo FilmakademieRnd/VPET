@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 07.02.2022
+//! @date 01.03.2022
 
 using System;
 using System.Text;
@@ -41,8 +41,12 @@ namespace vpet
     //! Parameter base class.
     //!
     [Serializable]
-    public abstract class AbstractParameter 
+    public abstract class AbstractParameter
     {
+        //!
+        //! Flag that determines whether a Parameter will be distributed.
+        //!
+        public bool _distribute;
         //!
         //! The unique id of this parameter.
         //!
@@ -50,7 +54,7 @@ namespace vpet
         //!
         //! The parameters C# type.
         //!
-        protected Type _type;
+        protected ParameterType _type;
         //!
         //! The name of the parameter.
         //!
@@ -59,11 +63,11 @@ namespace vpet
         //!
         //! A reference to the parameters parent object.
         //!
-        protected SceneObject _parent;
+        protected ParameterObject _parent;
         //!
         //! Definition of VPETs parameter types
         //!
-        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, UNKNOWN = 100 }
+        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, LIST, UNKNOWN = 100 }
 
         //!
         //! List for mapping VPET parameter types to C# types and visa versa.
@@ -77,7 +81,8 @@ namespace vpet
                                                                           typeof(Vector4),
                                                                           typeof(Quaternion),
                                                                           typeof(Color),
-                                                                          typeof(string)};
+                                                                          typeof(string),
+                                                                          typeof(int)};
         //!
         //! Getter for unique id of this parameter.
         //!
@@ -91,7 +96,7 @@ namespace vpet
         public Type cType
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _type;
+            get => toCType(_type);
         }
         //!
         //! Getter for parameters VPET type.
@@ -99,7 +104,7 @@ namespace vpet
         public ParameterType vpetType
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => toVPETType(_type);
+            get => _type;
         }
         //!
         //! Getter for parameters name.
@@ -114,12 +119,11 @@ namespace vpet
         //!
         //! Getter for parameters parent.
         //!
-        public SceneObject parent
+        public ParameterObject parent
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _parent;
         }
-
         //!
         //! Fuction that determines a parameters C# type from a VPET type.
         //!
@@ -130,7 +134,6 @@ namespace vpet
         {
             return _paramTypes[(int)t];
         }
-
         //!
         //! Fuction that determines a parameters VPET type from a C# type.
         //!
@@ -145,8 +148,18 @@ namespace vpet
             else
                 return (ParameterType)idx;
         }
-
+        //!
+        //! Abstract definition of the function for serializing the parameters data.
+        //! 
+        //! @param startoffset The offset in bytes within the generated array at which the data should start at.
+        //! @return The Parameters data serialized as a byte array.
+        //! 
         public abstract byte[] Serialize(int startoffset);
+        //!
+        //! Abstract definition of the function for deserializing parameter data.
+        //! 
+        //! @param data The byte data to be deserialized and copyed to the parameters value.
+        //! 
         public abstract void deSerialize(ref byte[] data, int offset);
     }
 
@@ -157,22 +170,39 @@ namespace vpet
     public class Parameter<T> : AbstractParameter, IFormattable
     {
         //!
-        //! Constructor initializing members.
+        //! The paramters constructor, initializing members.
         //!
-        public Parameter(T value, string name, SceneObject parent = null, short id = -1)
+        //! @param value The value of the parameder as the defined type T.
+        //! @param name The parameters name.
+        //! @param name The parameters parent ParameterObject.
+        //! @param name Flag that determines whether a Parameter will be distributed.
+        //!
+        public Parameter(T value, string name, ParameterObject parent = null, bool distribute = true) 
         {
             _value = value;
             _name = name;
             _parent = parent;
-            _type = typeof(T);
-            _id = id;
+            _type = toVPETType(typeof(T));
+            _distribute = distribute;
+
+            if (parent != null)
+            {
+                _id = (short)_parent.parameterList.Count;
+                _parent.parameterList.Add(this);
+            }
+            else
+            {
+                _id = -1;
+                _distribute = false;
+            }
+
         }
 
         [SerializeField]
         //!
         //! The parameters value as a template.
         //!
-        private T _value;
+        protected T _value;
 
         //!
         //! Getter and setter for the parameters value. 
@@ -212,7 +242,7 @@ namespace vpet
         public override byte[] Serialize(int startoffset)
         {
             byte[] data = null;
-            ParameterType vpetType = toVPETType(_type);
+            ParameterType vpetType = _type;
 
             switch (vpetType)
             {
@@ -240,7 +270,7 @@ namespace vpet
                         Vector2 obj = (Vector2)Convert.ChangeType(_value, typeof(Vector2));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
                         return data;
                     }
                 case ParameterType.VECTOR3:
@@ -249,8 +279,8 @@ namespace vpet
                         Vector3 obj = (Vector3)Convert.ChangeType(_value, typeof(Vector3));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset+8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
                         return data;
                     }
                 case ParameterType.VECTOR4:
@@ -259,9 +289,9 @@ namespace vpet
                         Vector4 obj = (Vector4)Convert.ChangeType(_value, typeof(Vector4));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset+8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset+12, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset + 12, 4);
                         return data;
                     }
                 case ParameterType.QUATERNION:
@@ -270,9 +300,9 @@ namespace vpet
                         Quaternion obj = (Quaternion)Convert.ChangeType(_value, typeof(Quaternion));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset+4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset+8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset+12, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset + 12, 4);
                         return data;
                     }
                 case ParameterType.COLOR:
@@ -281,12 +311,12 @@ namespace vpet
                         Color obj = (Color)Convert.ChangeType(_value, typeof(Color));
 
                         Buffer.BlockCopy(BitConverter.GetBytes(obj.r), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, startoffset+4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.b), 0, data, startoffset+8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, startoffset+12, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, startoffset + 4, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.b), 0, data, startoffset + 8, 4);
+                        Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, startoffset + 12, 4);
                         return data;
                     }
-                case ParameterType.STRING: 
+                case ParameterType.STRING:
                     {
                         string obj = (string)Convert.ChangeType(_value, typeof(string));
                         data = new byte[obj.Length + startoffset];
@@ -296,7 +326,7 @@ namespace vpet
                         return data;
                     }
                 default:
-                        return data;
+                    return data;
 
             }
         }
@@ -309,7 +339,7 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void deSerialize(ref byte[] data, int offset)
         {
-            ParameterType t = toVPETType(_type);
+            ParameterType t = _type;
             switch (t)
             {
                 case ParameterType.BOOL:
@@ -323,30 +353,30 @@ namespace vpet
                     break;
                 case ParameterType.VECTOR2:
                     _value = (T)(object)new Vector2(BitConverter.ToSingle(data, offset),
-                                                    BitConverter.ToSingle(data, offset+4));
+                                                    BitConverter.ToSingle(data, offset + 4));
                     break;
                 case ParameterType.VECTOR3:
                     _value = (T)(object)new Vector3(BitConverter.ToSingle(data, offset),
-                                                    BitConverter.ToSingle(data, offset+4),
-                                                    BitConverter.ToSingle(data, offset+8));
+                                                    BitConverter.ToSingle(data, offset + 4),
+                                                    BitConverter.ToSingle(data, offset + 8));
                     break;
                 case ParameterType.VECTOR4:
                     _value = (T)(object)new Vector4(BitConverter.ToSingle(data, offset),
-                                                    BitConverter.ToSingle(data, offset+4),
-                                                    BitConverter.ToSingle(data, offset+8),
-                                                    BitConverter.ToSingle(data, offset+12));
+                                                    BitConverter.ToSingle(data, offset + 4),
+                                                    BitConverter.ToSingle(data, offset + 8),
+                                                    BitConverter.ToSingle(data, offset + 12));
                     break;
                 case ParameterType.QUATERNION:
                     _value = (T)(object)new Quaternion(BitConverter.ToSingle(data, offset),
-                                                     BitConverter.ToSingle(data, offset+4),
-                                                     BitConverter.ToSingle(data, offset+8),
-                                                     BitConverter.ToSingle(data, offset+12));
+                                                     BitConverter.ToSingle(data, offset + 4),
+                                                     BitConverter.ToSingle(data, offset + 8),
+                                                     BitConverter.ToSingle(data, offset + 12));
                     break;
                 case ParameterType.COLOR:
                     _value = (T)(object)new Color(BitConverter.ToSingle(data, offset),
-                                                    BitConverter.ToSingle(data, offset+4),
-                                                    BitConverter.ToSingle(data, offset+8),
-                                                    BitConverter.ToSingle(data, offset+12));
+                                                    BitConverter.ToSingle(data, offset + 4),
+                                                    BitConverter.ToSingle(data, offset + 8),
+                                                    BitConverter.ToSingle(data, offset + 12));
                     break;
                 case ParameterType.STRING:
                     _value = (T)(object)new string(Encoding.UTF8.GetString(data));
@@ -365,8 +395,103 @@ namespace vpet
         //! 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format("({0}, {1})", value.ToString(), name);
+            return String.Format("({0}, {1})", _value.ToString(), name);
         }
 
+    }
+
+    [Serializable]
+    //!
+    //! ListParameter class defining the fundamental functionality and interface
+    //!
+    public class ListParameter : Parameter<int>
+    {
+        //!
+        //! The ListParamters constructor, initializing members.
+        //!
+        //! @param parameterList The list of parameders with the given type T.
+        //! @param name The parameters name.
+        //! @param name The parameters parent ParameterObject.
+        //! @param name Flag that determines whether a Parameter will be distributed.
+        //!
+        public ListParameter(List<AbstractParameter> parameterList, string name, ParameterObject parent = null, bool distribute = true) : base(0, name, parent, distribute)
+        {
+            _parameterList = parameterList;
+            _type = ParameterType.LIST;
+        }
+
+        //!
+        //! Constructor initializing members.
+        //!
+        public ListParameter(string name, ParameterObject parent = null) : this(new List<AbstractParameter>(), name, parent)
+        { }
+
+        [SerializeField]
+        //!
+        //! The ListParameters parameter list.
+        //!
+        private List<AbstractParameter> _parameterList;
+
+        //!
+        //! Getter and setter for the parameter list.
+        //!
+        public List<AbstractParameter> parameterList
+        {
+            get => _parameterList;
+        }
+
+        //!
+        //! The function called to change a parameter in the parameter list.
+        //! @param idx The list index of the parameter to be replaced.
+        //! @param p The new parameter.
+        //!
+        public void setParameter(int idx, AbstractParameter p)
+        {
+            if (idx < _parameterList.Count)
+            {
+                _parameterList[idx] = p;
+            }
+            else
+                Helpers.Log("Parameter index for" + p.name + "exceeds length of list " + this.name, Helpers.logMsgType.WARNING);
+
+        }
+
+        //!
+        //! The function for adding a parameter to the parameter list.
+        //! @param p The parameter to be added to the parameter list.
+        //!
+        public void addParameter(AbstractParameter p)
+        {
+            if (!_parameterList.Contains(p))
+            {
+                _parameterList.Add(p);
+            }
+            else
+                Helpers.Log("Parameter " + p.name + " already exists in list " + this.name, Helpers.logMsgType.WARNING);
+        }
+
+        //!
+        //! The function for removing a parameter from the parameter list.
+        //! @param p The parameter to be femoved from the parameter list.
+        //!
+        public void removeParameter(AbstractParameter p)
+        {
+            if (_parameterList.Contains(p))
+            {
+                _parameterList.Remove(p);
+            }
+            else
+                Helpers.Log("Parameter " + p.name + " does not exists in list " + this.name, Helpers.logMsgType.WARNING);
+        }
+
+        //!
+        //! Function for selecting the active index.
+        //!
+        //! @param idx The new active index to be selected.
+        //!
+        public void select(int idx)
+        {
+            setValue(idx);
+        }
     }
 }

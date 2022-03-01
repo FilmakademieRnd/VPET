@@ -26,10 +26,8 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 18.10.2021
+//! @date 01.03.2022
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace vpet
@@ -82,24 +80,18 @@ namespace vpet
 
             if (_camera)
             {
-                fov = new Parameter<float>(_camera.fieldOfView, "fov", this, (short)parameterList.Count);
+                fov = new Parameter<float>(_camera.fieldOfView, "fov", this);
                 fov.hasChanged += updateFov;
-                _parameterList.Add(fov);
-                aspect = new Parameter<float>(_camera.aspect, "aspectRatio", this, (short)parameterList.Count);
+                aspect = new Parameter<float>(_camera.aspect, "aspectRatio", this);
                 aspect.hasChanged += updateAspect;
-                _parameterList.Add(aspect);
-                near = new Parameter<float>(_camera.nearClipPlane, "nearClipPlane", this, (short)parameterList.Count);
+                near = new Parameter<float>(_camera.nearClipPlane, "nearClipPlane", this);
                 near.hasChanged += updateNearClipPlane;
-                _parameterList.Add(near);
-                far = new Parameter<float>(_camera.farClipPlane, "farClipPlane", this, (short)parameterList.Count);
+                far = new Parameter<float>(_camera.farClipPlane, "farClipPlane", this);
                 far.hasChanged += updateFarClipPlane;
-                _parameterList.Add(far);
-                focDist = new Parameter<float>(1f, "focalDistance", this, (short)parameterList.Count);
+                focDist = new Parameter<float>(1f, "focalDistance", this);
                 focDist.hasChanged += updateFocalDistance;
-                _parameterList.Add(focDist);
-                aperture = new Parameter<float>(2.8f, "aperture", this, (short)parameterList.Count);
+                aperture = new Parameter<float>(2.8f, "aperture", this);
                 aperture.hasChanged += updateAperture;
-                _parameterList.Add(aperture);
             }
             else
                 Helpers.Log("no camera component found!");

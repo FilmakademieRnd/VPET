@@ -76,6 +76,10 @@ namespace vpet
         //!
         private GameObject m_inputField;
         //!
+        //! Prefab for the Unity dropdown object, used as UI element for a list parameter.
+        //!
+        private GameObject m_dropdown;
+        //!
         //! The list containing all UI elemets of the current menu.
         //!
         private List<GameObject> m_uiElements;
@@ -93,6 +97,13 @@ namespace vpet
             m_toggle = Resources.Load("Prefabs/MenuToggle") as GameObject;
             m_text = Resources.Load("Prefabs/MenuText") as GameObject;
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
+            m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
+
+            List<AbstractParameter> parameterList = new List<AbstractParameter>();
+            parameterList.Add(new Parameter<float>(1, "t1"));
+            parameterList.Add(new Parameter<float>(1, "t2"));
+            parameterList.Add(new Parameter<float>(1, "t4"));
+            parameterList.Add(new Parameter<float>(1, "t12"));
 
             // [REVIEW]
             // Just for testing, please remove!
@@ -108,6 +119,7 @@ namespace vpet
                    .Begin(MenuItem.IType.HSPLIT)
                        .Add(new Parameter<object>(null, "OK"))
                        .Add(new Parameter<object>(null, "Abort"))
+                       .Add(new ListParameter(parameterList, "TestList"))
                    .End()
               .End();
             menu.name = "TestMenu";
@@ -256,7 +268,23 @@ namespace vpet
                                 inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
                             }
-                            break;
+                        break;
+                        case AbstractParameter.ParameterType.LIST:
+                            {
+                                newObject = GameObject.Instantiate(m_dropdown, parentObject.transform);
+                                TMP_Dropdown dropDown = newObject.GetComponent<TMP_Dropdown>();
+
+                                List<string> names = new List<string>();
+
+                                ListParameter listParameter = (ListParameter) item.Parameter;
+                                foreach (AbstractParameter parameter in listParameter.parameterList)
+                                {
+                                    names.Add(parameter.name);
+                                }
+                                dropDown.AddOptions(names);
+                                dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
+                            }
+                        break;
                     }
                 break;
             }

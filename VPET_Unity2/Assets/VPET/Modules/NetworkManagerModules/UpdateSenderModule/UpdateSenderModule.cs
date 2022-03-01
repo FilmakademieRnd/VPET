@@ -73,9 +73,9 @@ namespace vpet
             if (m_core.isServer)
                 m_core.syncEvent -= queueSyncMessage;
 
-            foreach (SceneObject sceneObject in sceneManager.sceneObjects)
+            foreach (ParameterObject parameterObject in m_core.parameterObjectList)
             {
-                sceneObject.hasChanged -= queueModifiedParameter;
+                parameterObject.hasChanged -= queueModifiedParameter;
             }
 
             m_core.timeEvent -= sendParameterMessages;

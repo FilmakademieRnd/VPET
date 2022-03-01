@@ -122,14 +122,17 @@ namespace vpet
         //!
         private void DisableHighlightSelection(object sender, SceneObject sceneObject)
         {
-            Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
-
-            foreach (Renderer renderer in renderers)
+            if (sceneObject)
             {
-                List<Material> materials = renderer.sharedMaterials.ToList();
-                materials.Remove(_outlineMaterial);
+                Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
 
-                renderer.materials = materials.ToArray();
+                foreach (Renderer renderer in renderers)
+                {
+                    List<Material> materials = renderer.sharedMaterials.ToList();
+                    materials.Remove(_outlineMaterial);
+
+                    renderer.materials = materials.ToArray();
+                }
             }
         }
 
