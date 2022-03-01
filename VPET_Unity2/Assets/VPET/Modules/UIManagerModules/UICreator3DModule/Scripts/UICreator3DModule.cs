@@ -425,15 +425,18 @@ namespace vpet
                 GrabParameterIndex();
 
                 // Start with translation
-                // No need - already addressed by 2D module call
-                //if (modeTRS == -1)
-                //    SetManipulatorMode(null, 0);
+                // todo: confirm this design choice
+                if (modeTRS == -1)
+                    SetManipulatorMode(null, 0);
             }
             else // empty selection
             {
+                // Clean selection
+                selObj = null;
+
                 HideAxes();
                 modeTRS = -1;
-                SetManipulatorMode(null, -1);
+                //SetManipulatorMode(null, -1);
             }
 
         }
@@ -634,7 +637,7 @@ namespace vpet
 
         public void SetModeT()
         {
-            Debug.Log("T mode");
+            //Debug.Log("T mode");
             if (selObj != null)
             {
                 HideAxes();
@@ -646,7 +649,7 @@ namespace vpet
 
         public void SetModeR()
         {
-            Debug.Log("R mode");
+            //Debug.Log("R mode");
             if (selObj != null)
             {
                 HideAxes();
@@ -658,7 +661,7 @@ namespace vpet
 
         public void SetModeS()
         {
-            Debug.Log("S mode");
+            //Debug.Log("S mode");
             if (selObj != null)
             {
                 HideAxes();
