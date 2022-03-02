@@ -162,7 +162,7 @@ namespace vpet
         //!
         public enum IType
         {
-            HSPLIT, VSPLIT, SPACE, PARAMETER, TEXT
+            HSPLIT, VSPLIT, SPACE, TEXT, PARAMETER
         }
         //!
         //! The type of the menu item.

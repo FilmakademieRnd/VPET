@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 26.04.2021
+//! @date 02.03.2022
 
 using System.Collections.Generic;
 using System;
@@ -71,7 +71,7 @@ namespace vpet
             }
         }
         //!
-        //! searches and returns types in an assembly
+        //! Searches and returns types in an assembly.
         //! @param  appDomain   domain to be searched in for assemblies
         //! @param  type    type to be searched
         //! @return array of found types
@@ -92,6 +92,12 @@ namespace vpet
             return result.ToArray();
         }
 
+        //!
+        //! Searches and returns first element of a given list within another list.
+        //! @param  a The list containing elements to be searched for.
+        //! @param  b The list to be searched in.
+        //! @return The first element found.
+        //!
         public static T FindFirst<T>(T[] a, T[] b) 
         {
             T newType = default(T);

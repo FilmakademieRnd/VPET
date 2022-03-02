@@ -160,7 +160,6 @@ namespace vpet
             
             if (obj != null)
             {
-                Helpers.Log("selecting: " + obj.ToString());
                 manager.addSelectedObject(obj);
             }
         }

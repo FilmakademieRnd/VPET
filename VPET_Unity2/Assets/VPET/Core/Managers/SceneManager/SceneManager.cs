@@ -28,7 +28,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 23.02.2021
 
-using System.IO;
+using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -183,6 +183,7 @@ namespace vpet
         //! @param id The ID of the scene object to be returned.
         //! @return The corresponding scene object to the gevien ID.
         //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SceneObject getSceneObject(int id)
         {
             if (id < 1)
@@ -197,6 +198,7 @@ namespace vpet
         //! @param scneObject The scne object of which the ID will be returned. 
         //! @return The corresponding ID to the gevien scene object.
         //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int getSceneObjectId(ref SceneObject sceneObject)
         {
             return sceneObjects.IndexOf(sceneObject) + 1;  // +1 because 0 is non selectable object or background

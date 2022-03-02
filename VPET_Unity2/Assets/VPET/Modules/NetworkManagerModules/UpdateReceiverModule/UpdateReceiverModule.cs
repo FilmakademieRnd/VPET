@@ -213,11 +213,11 @@ namespace vpet
         //!
         //! @param message The message to be decoded.
         //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeMessage(byte[] message)
         {
             short sceneObjectID = BitConverter.ToInt16(message, 3);
             short parameterID = BitConverter.ToInt16(message, 5);
-            //AbstractParameter.ParameterType type = (AbstractParameter.ParameterType)message[7];
 
             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 

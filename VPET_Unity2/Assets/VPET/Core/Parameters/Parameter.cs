@@ -185,7 +185,7 @@ namespace vpet
             _type = toVPETType(typeof(T));
             _distribute = distribute;
 
-            if (parent != null)
+            if (parent)
             {
                 _id = (short)_parent.parameterList.Count;
                 _parent.parameterList.Add(this);

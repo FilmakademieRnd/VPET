@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 21.01.2022
+//! @date 02.03.2022
 
 using System;
 using System.Collections.Generic;
@@ -99,14 +99,15 @@ namespace vpet
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
 
-            List<AbstractParameter> parameterList = new List<AbstractParameter>();
-            parameterList.Add(new Parameter<float>(1, "t1"));
-            parameterList.Add(new Parameter<float>(1, "t2"));
-            parameterList.Add(new Parameter<float>(1, "t4"));
-            parameterList.Add(new Parameter<float>(1, "t12"));
-
             // [REVIEW]
             // Just for testing, please remove!
+            //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            List<AbstractParameter> parameterList = new List<AbstractParameter>();
+            parameterList.Add(new Parameter<float>(1, "t1"));
+            parameterList.Add(new Parameter<float>(12, "t2"));
+            parameterList.Add(new Parameter<float>(100, "t4"));
+            parameterList.Add(new Parameter<float>(7, "t12"));
+
             MenuTree menu = new MenuTree()
                .Begin(MenuItem.IType.HSPLIT)
                    .Begin(MenuItem.IType.VSPLIT)
@@ -144,10 +145,7 @@ namespace vpet
 
             menu2.name = "Bla!";
             manager.addMenu(menu2);
-
-            //GameObject menuCanvas = GameObject.Instantiate(m_canvas);
-            //m_uiElements.Add(menuCanvas);
-            //menu.Items.ForEach(p => createMenufromTree(p, menuCanvas));
+            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
             manager.menuSelected += createMenu;
         }
@@ -273,14 +271,11 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_dropdown, parentObject.transform);
                                 TMP_Dropdown dropDown = newObject.GetComponent<TMP_Dropdown>();
-
                                 List<string> names = new List<string>();
-
-                                ListParameter listParameter = (ListParameter) item.Parameter;
-                                foreach (AbstractParameter parameter in listParameter.parameterList)
-                                {
+                                
+                                foreach (AbstractParameter parameter in ((ListParameter)item.Parameter).parameterList)
                                     names.Add(parameter.name);
-                                }
+                                
                                 dropDown.AddOptions(names);
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
                             }
