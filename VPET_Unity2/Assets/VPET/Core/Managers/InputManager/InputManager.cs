@@ -139,7 +139,7 @@ namespace vpet
             if (c.performed)
             {
                 e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-                if (!TappedUI(e.point))
+                if (!TappedUI(e.point) && !Tapped3DUI(e.point))
                     inputEvent?.Invoke(this, e);
             }
 
@@ -168,7 +168,8 @@ namespace vpet
         {
             InputEventArgs e = new InputEventArgs();
             e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-            InputPressStart?.Invoke(this, e);
+            if (!TappedUI(e.point))
+                InputPressStart?.Invoke(this, e);
         }
 
         private void PressEnd(InputAction.CallbackContext c)
@@ -178,14 +179,30 @@ namespace vpet
             InputPressEnd?.Invoke(this, e);
         }
 
+        //!
+        //! returns true if tap was over any UI element (it goes over all raycaster in the scene - ideally that would be GraphicRaycaster from the 2D UI)
+        //! @param pos position of the tap
+        //!
         private bool TappedUI(Vector2 pos)
         {
             PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
             eventDataCurrentPosition.position = pos;
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-            
+
             return results.Count > 0;
+        }
+
+        //!
+        //! returns true if tap was over the 3D manipulator objects (layerMask 5 for UI)
+        //! @param pos position of the tap
+        //!
+        private bool Tapped3DUI(Vector2 pos, int layerMask = 1 << 5)
+        {
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(pos), out _, Mathf.Infinity, layerMask))
+                return true;
+
+            return false;
         }
     }
 
