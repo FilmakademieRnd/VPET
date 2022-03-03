@@ -187,7 +187,7 @@ namespace vpet
 
             foreach (var manipSelec in instancedManipulatorSelectors)
             {
-                GameObject.Destroy(manipSelec);
+                GameObject.DestroyImmediate(manipSelec);
             }
             instancedManipulatorSelectors.Clear();
         }

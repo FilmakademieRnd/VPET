@@ -31,6 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -42,32 +43,42 @@ namespace vpet
         //!
         //! elements selectable in the SnapSelect
         //!
-        List<float> elements;
+        private List<float> _elements;
 
         //!
         //! is the SnapSelect scrollable vertically or horizontally?
         //!
-        public bool isVertical;
+        public bool _isVertical;
 
         //!
         //! should elements be looped infinitely
         //!
-        public bool loop;
+        public bool _loop = true;
 
         //!
         //! Should the SnapSelect throw events when the value of an axis is changed?
         //!
-        public bool allowValueSetting;
+        public bool _allowValueSetting = false;
 
         //!
         //! amount of elements viewed as preview in each direction
         //!
-        public int previewExtend;
+        public int _previewExtend = 1;
 
         //!
         //! amount of fading being applied to preview Elements (multiplied with distance)
         //!
-        public float fadeFactor;
+        public float _fadeFactor = 0.5f;
+
+        //!
+        //! The amount of elements that can be selected without sliding (similar to a usual menu)
+        //!
+        public float _selectableItems = 1;
+
+        //!
+        //! The amount of elements that can be selected without sliding (similar to a usual menu)
+        //!
+        public bool _selectByClick = false;
 
         //!
         //! Event emitted when parameter has changed
@@ -85,64 +96,98 @@ namespace vpet
         public event EventHandler<bool> draggingAxis;
 
         //!
+        //! Event emitted when Axis dragging is in progress.
+        //!
+        public event EventHandler<int> elementClicked;
+
+        //!
+        //! Reference to text field for current value
+        //!
+        public TextMeshProUGUI _valueText;
+
+        //!
+        //! Reference to Prefab for background
+        //!
+        public GameObject _backgroundPrefab;
+
+        //!
+        //! Is the menu fixed or dragable
+        //!
+        private bool _dragable = true;
+        public bool dragable
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _dragable;
+        }
+
+        //!
         //! Reference to main SnapSelect UI Panel
         //!
-        private RectTransform mainPanel;
+        private RectTransform _contentMask;
 
         //!
         //! Reference to content UI Panel, containing all elements as childs
         //!
-        private RectTransform contentPanel;
+        private RectTransform _contentPanel;
 
         //!
         //! Reference to arrows visualizing drag direction
         //!
-        private RectTransform arrows;
-
-        //!
-        //! Reference to text for current value of
-        //!
-        private TextMeshProUGUI valueText;
+        private RectTransform _arrows;
 
         //!
         //! amount of selectable elements in this SnapSelect
         //!
-        private int elementCount;
+        private int _elementCount;
 
         //!
         //! is the SnapSelect already initialized?
         //!
-        private bool initialized = false;
+        private bool _initialized = false;
 
         //!
         //! Size of each Element in the 2D UI
         //!
-        private Vector2 elementSize;
+        private Vector2 _elementSize;
 
         //!
         //! is the axis currently being dragged Y or Y
         //!
-        private bool majorAxisX;
+        private bool _majorAxisX;
 
         //!
         //! Did the drag already decided which direction it is going to
         //!
-        private bool axisDecided;
+        private bool _axisDecided;
 
         //!
         //! Did the drag start
         //!
-        private Vector2 dragStart;
+        private Vector2 _dragStart;
 
         //!
         //! which axis / element is currently active (edited)
         //!
-        private int currentAxis;
+        private int _currentAxis;
 
         //!
         //! sensitivity multiplicator
         //!
-        private float sensitivity;
+        private float _sensitivity;
+
+        //!
+        //! Init function of the SnapSelect that needs to be called manually before any elements apear
+        //! Note that this initialization will automatically disable allowValueSetting
+        //! @param elementNames This is the name displayed in the UI
+        //!
+        public void Init(List<string> elementNames)
+        {
+            _allowValueSetting = false;
+            List<Tuple<float, string>> list = new List<Tuple<float, string>>();
+            foreach (string s in elementNames)
+                list.Add(new Tuple<float, string>(0f, s));
+            Init(list, 0f);
+        }
 
         //!
         //! Init function of the SnapSelect that needs to be called manually before any elements apear
@@ -151,81 +196,128 @@ namespace vpet
         //!
         public void Init(List<Tuple<float, string>> elementTupels, float sensitivityIn)
         {
-            elements = new List<float>();
-            elementSize = this.GetComponent<RectTransform>().sizeDelta;
-            mainPanel = this.transform.GetChild(1).GetComponent<RectTransform>();
-            contentPanel = mainPanel.GetChild(0).GetComponent<RectTransform>();
-            arrows = this.transform.GetChild(2).GetComponent<RectTransform>();
-            valueText = this.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+            _elements = new List<float>();
+            _elementSize = this.GetComponent<RectTransform>().sizeDelta;
 
-            sensitivity = sensitivityIn;
-
-            elementCount = elementTupels.Count;
-            currentAxis = 0;
-
-            arrows.gameObject.SetActive(allowValueSetting);
-            valueText.gameObject.SetActive(allowValueSetting);
-
-
-            if (isVertical)
+            if (_allowValueSetting)
             {
-                mainPanel.sizeDelta = new Vector2(elementSize.x, elementSize.y * (previewExtend * 2 + 1));
-                arrows.localRotation = Quaternion.Euler(0, 0, 90);
-                if(loop)
-                    contentPanel.sizeDelta = new Vector2(elementSize.x, elementSize.y * elementCount * 3);
+                GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
+                _arrows = SceneObject.Instantiate(arrowsPrefab,this.transform).GetComponent<RectTransform>();
+            }
+
+            RectTransform background = null;
+            if (_backgroundPrefab)
+                background = SceneObject.Instantiate(_backgroundPrefab, this.transform).GetComponent<RectTransform>();
+
+
+            GameObject contentFramePrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_ContentFrame");
+            _contentMask = SceneObject.Instantiate(contentFramePrefab, this.transform).GetComponent<RectTransform>();
+            _contentPanel = _contentMask.GetChild(0).GetComponent<RectTransform>();
+
+            _sensitivity = sensitivityIn;
+
+            _elementCount = elementTupels.Count;
+            _currentAxis = 0;
+
+            _dragable = _elementCount > _selectableItems;
+
+            if (_valueText)
+                _valueText.gameObject.SetActive(_allowValueSetting);
+
+
+            if (_isVertical)
+            {
+                if(background)
+                    background.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _selectableItems);
+                _contentMask.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * (_previewExtend * 2 + _selectableItems));
+                _contentMask.anchoredPosition = new Vector2(0, -_elementSize.y * _previewExtend);
+                if (_allowValueSetting)
+                    _arrows.localRotation = Quaternion.Euler(0, 0, 90);
+                if (_loop)
+                {
+                    _contentPanel.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _elementCount * 3);
+                    _contentPanel.anchoredPosition = new Vector2(0, _elementSize.y * (_previewExtend - _elementCount));
+                }
                 else
-                    contentPanel.sizeDelta = new Vector2(elementSize.x, elementSize.y * elementCount);
-                contentPanel.localPosition = new Vector2(0, elementSize.y);
+                {
+                    _contentPanel.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _elementCount);
+                    _contentPanel.anchoredPosition = new Vector2(0, _elementSize.y * _previewExtend);
+
+                }
             }
             else
             {
-                mainPanel.sizeDelta = new Vector2(elementSize.x * (previewExtend * 2 + 1), elementSize.y);
-                arrows.localRotation = Quaternion.Euler(0, 0, 0);
-                if(loop)
-                    contentPanel.sizeDelta = new Vector2(elementSize.x * elementCount * 3, elementSize.y);
+                if (background)
+                    background.sizeDelta = new Vector2(_elementSize.x * _selectableItems, _elementSize.y);
+                _contentMask.sizeDelta = new Vector2(_elementSize.x * (_previewExtend * 2 + _selectableItems), _elementSize.y);
+                _contentMask.anchoredPosition = new Vector2(-_elementSize.y * _previewExtend, 0);
+                if (_allowValueSetting)
+                    _arrows.localRotation = Quaternion.Euler(0, 0, 0);
+                if (_loop)
+                {
+                    _contentPanel.sizeDelta = new Vector2(_elementSize.x * _elementCount * 3, _elementSize.y);
+                    _contentPanel.anchoredPosition = new Vector2(_elementSize.x * (_previewExtend - _elementCount), 0);
+                }
                 else
-                    contentPanel.sizeDelta = new Vector2(elementSize.x * elementCount, elementSize.y);
-                contentPanel.localPosition = new Vector2(elementSize.x, 0);
+                {
+                    _contentPanel.sizeDelta = new Vector2(_elementSize.x * _elementCount, _elementSize.y);
+                    _contentPanel.anchoredPosition = new Vector2(_elementSize.x * _previewExtend, 0);
+                }
 
             }
 
-            GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/PRE_Element");
+            GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Element");
 
-            int startIdx = 0;
-            int endidX = 0;
-            if (loop)
+            int repetitions = 1;
+            if (_loop)
             {
-                startIdx = -1;
-                endidX = 1;
+                repetitions = 3;
             }
 
-            for (int i = startIdx; i < endidX+1; i++)
+            int elementPos = 0;
+            for (int i = 0; i < repetitions; i++)
             {
-                int elementPos = 0;
                 foreach (Tuple<float, string> elementTupel in elementTupels)
                 {
                     Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
-                    elementTrans.SetParent(contentPanel, false);
-                    elementTrans.GetComponent<RectTransform>().sizeDelta = elementSize * 0.8f ;
+                    elementTrans.SetParent(_contentPanel, false);
+                    elementTrans.GetComponent<SnapSelectElement>().index = elementPos % elementTupels.Count;
+                    elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
+                    elementTrans.GetComponent<RectTransform>().sizeDelta = _elementSize * 0.8f;
 
                     elementTrans.name = elementTupel.Item2;
                     elementTrans.GetComponent<TextMeshProUGUI>().text = elementTupel.Item2;
-                    if (isVertical)
+                    if (_isVertical)
                     {
-                        elementTrans.GetComponent<RectTransform>().localPosition = new Vector2(0, (elementPos + i * elementCount - 1) * elementSize.y);
+                        elementTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, (_elementSize.y * 0.1f) + elementPos * _elementSize.y);
                     }
                     else
                     {
-                        elementTrans.GetComponent<RectTransform>().localPosition = new Vector2((elementPos + i * elementCount - 1) * elementSize.x, 0);
+                        elementTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2((_elementSize.x * 0.1f) + elementPos * _elementSize.x, 0);
                     }
                     if(i == 0)
-                        elements.Add(elementTupel.Item1);
+                        _elements.Add(elementTupel.Item1);
                     elementPos++;
                 }
             }
 
-            valueText.text = elementTupels[0].Item1.ToString("N2");
-            initialized = true;
+            setText(elementTupels[0].Item1);
+            _initialized = true;
+        }
+
+        //!
+        //! Function called when an element was clicked
+        //! @param sender Sender of the event
+        //! @param e SnapSelectElement that has been clicked
+        //!
+        private void handleClick(object sender, SnapSelectElement e)
+        {
+            if (_selectByClick && !_axisDecided)
+            {
+                if (elementClicked != null)
+                    elementClicked.Invoke(this, e.index);
+            }
+
         }
 
         //!
@@ -235,8 +327,8 @@ namespace vpet
         //!
         public void setParam(object sender, float f)
         {
-            elements[0] = f;
-            valueText.text = elements[currentAxis].ToString("N2");
+            _elements[0] = f;
+            setText(_elements[_currentAxis]);
         }
 
         //!
@@ -246,9 +338,20 @@ namespace vpet
         //!
         public void setParam(object sender, Vector2 v2 )
         {
-            elements[0] = v2.x;
-            elements[1] = v2.y;
-            valueText.text = elements[currentAxis].ToString("N2");
+            _elements[0] = v2.x;
+            _elements[1] = v2.y;
+            setText(_elements[_currentAxis]);
+        }
+
+        //!
+        //! Set text of parameter textbox if present
+        //! @param t new text value
+        //!
+        private void setText(float t)
+        {
+            if (_valueText)
+                _valueText.text = t.ToString("N2");
+
         }
 
         //!
@@ -258,11 +361,11 @@ namespace vpet
         //!
         public void setParam(object sender, Vector3 v3)
         {
-            elements[0] = v3.x;
-            elements[1] = v3.y;
-            elements[2] = v3.z;
-            elements[3] = (v3.x + v3.y + v3.z) / 3f;
-            valueText.text = elements[currentAxis].ToString("N2");
+            _elements[0] = v3.x;
+            _elements[1] = v3.y;
+            _elements[2] = v3.z;
+            _elements[3] = (v3.x + v3.y + v3.z) / 3f;
+            setText(_elements[_currentAxis]);
 
         }
 
@@ -274,10 +377,10 @@ namespace vpet
         public void setParam(object sender, Quaternion q)
         {
             Vector3 rot = q.eulerAngles;
-            elements[0] = rot.x;
-            elements[1] = rot.y;
-            elements[2] = rot.z;
-            valueText.text = elements[currentAxis].ToString("N2");
+            _elements[0] = rot.x;
+            _elements[1] = rot.y;
+            _elements[2] = rot.z;
+            setText(_elements[_currentAxis]);
         }
 
         //!
@@ -286,8 +389,8 @@ namespace vpet
         //!
         public void OnBeginDrag(PointerEventData data)
         {
-            dragStart = data.position;
-            axisDecided = false;
+            _dragStart = data.position;
+            _axisDecided = false;
         }
 
         //!
@@ -296,76 +399,94 @@ namespace vpet
         //!
         public void OnDrag(PointerEventData data)
         {
-            Vector2 contentPos = contentPanel.anchoredPosition;
+            Vector2 contentPos = _contentPanel.anchoredPosition;
 
-            if (!axisDecided && Vector2.Distance(dragStart, data.position) > mainPanel.sizeDelta.x / 8f)
+            if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > _contentMask.sizeDelta.x / 8f)
             {
-                majorAxisX = Mathf.Abs(dragStart.x - data.position.x) > Mathf.Abs(dragStart.y - data.position.y);
-                axisDecided = true;
+                _majorAxisX = Mathf.Abs(_dragStart.x - data.position.x) > Mathf.Abs(_dragStart.y - data.position.y);
+                _axisDecided = true;
             }
-            if(axisDecided)
+            if(_axisDecided)
             {
-                if (isVertical)
-                    if (majorAxisX)
+                if (_isVertical)
+                    if (_majorAxisX)
                     {
                         //adjust Parameter
-                        if (allowValueSetting)
-                            valueChanged.Invoke(this, (data.delta.x / Screen.width) * sensitivity);
+                        if (_allowValueSetting)
+                            valueChanged.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
                     }
                     else
                     { 
-                        if (loop
-                            || ((contentPanel.anchoredPosition.y < (contentPanel.sizeDelta.y/2 - elementSize.y / 1.5f))
-                                && (contentPanel.anchoredPosition.y > -(contentPanel.sizeDelta.y / 2 + elementSize.y / 2.5f)))) // <150 >-250
+                        if (!_loop && (_contentPanel.anchoredPosition.y > (_previewExtend + 0.4f) * _elementSize.y))
                         {
-                            contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y);
-                            draggingAxis.Invoke(this, true);
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y);
                         }
+                        else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _selectableItems - 0.4f) * _elementSize.y))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _selectableItems - 0.4f) * _elementSize.y);
+                        }
+                        else if (_loop || ( _dragable
+                                && ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
+                                    && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _selectableItems - 0.4f) * _elementSize.y))))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y);
+                        }
+                        draggingAxis.Invoke(this, true);
+
                     }
                 else
                 {
-                    if (majorAxisX)
+                    if (_majorAxisX)
                     {
-                        if (loop
-                            || ((contentPanel.anchoredPosition.x < (contentPanel.sizeDelta.x / 2 - elementSize.x / 1.5f))
-                                && (contentPanel.anchoredPosition.x > -(contentPanel.sizeDelta.x / 2 + elementSize.x / 2.5f))))
+                        if (!_loop && (_contentPanel.anchoredPosition.x > (_previewExtend + 0.4f) * _elementSize.x))
                         {
-                            contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
-                            draggingAxis.Invoke(this, true);
+                            _contentPanel.anchoredPosition = new Vector2((_previewExtend + 0.4f) * _elementSize.x, contentPos.y);
                         }
+                        else if (!_loop && (_contentPanel.anchoredPosition.x < -_contentPanel.sizeDelta.x + (_previewExtend + _selectableItems - 0.4f) * _elementSize.x))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _selectableItems - 0.4f) * _elementSize.x, contentPos.y);
+                        }
+                        else if (_loop || (_dragable
+                                && ((_contentPanel.anchoredPosition.x < (_previewExtend + 0.4f) * _elementSize.x)
+                                    && (_contentPanel.anchoredPosition.x > -_contentPanel.sizeDelta.x + (_previewExtend + _selectableItems - 0.4f) * _elementSize.x))))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
+                        }
+                        draggingAxis.Invoke(this, true);
+
                     }
                     else
                     {
                         //adjust Parameter
-                        if(allowValueSetting)
-                            valueChanged.Invoke(this, (data.delta.y / Screen.height) * sensitivity);
+                        if(_allowValueSetting)
+                            valueChanged.Invoke(this, (data.delta.y / Screen.height) * _sensitivity);
                     }
                 }
             }
 
             //realize infinit looping
-            if (initialized && loop)
+            if (_initialized && _loop)
             {
-                if (isVertical)
+                if (_isVertical)
                 {
-                    if (contentPos.y > elementSize.y * elementCount)
+                    if (contentPos.y > _elementSize.y * (_previewExtend - _elementCount))
                     {
-                        contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (elementSize.y * elementCount));
+                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
                     }
-                    if (contentPos.y < elementSize.y * -elementCount)
+                    if (contentPos.y < _elementSize.y * (_previewExtend - (2 * _elementCount)))
                     {
-                        contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (elementSize.y * elementCount));
+                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
                     }
                 }
                 else
                 {
-                    if (contentPos.x > elementSize.x * elementCount)
+                    if (contentPos.x > _elementSize.x * (_previewExtend - _elementCount))
                     {
-                        contentPanel.anchoredPosition = new Vector2(contentPos.x - (elementSize.x * elementCount), contentPos.y);
+                        _contentPanel.anchoredPosition = new Vector2(contentPos.x - (_elementSize.x * _elementCount), contentPos.y);
                     }
-                    if (contentPos.x < elementSize.x * -elementCount)
+                    if (contentPos.x < _elementSize.x * (_previewExtend - (2 * _elementCount)))
                     {
-                        contentPanel.anchoredPosition = new Vector2(contentPos.x + (elementSize.x * elementCount), contentPos.y);
+                        _contentPanel.anchoredPosition = new Vector2(contentPos.x + (_elementSize.x * _elementCount), contentPos.y);
                     }
                 }
             }
@@ -377,24 +498,25 @@ namespace vpet
         //!
         public void OnEndDrag(PointerEventData data)
         {
-            if (axisDecided && ((isVertical && !majorAxisX) || (!isVertical && majorAxisX)))
+            if (_axisDecided && ((_isVertical && !_majorAxisX) || (!_isVertical && _majorAxisX)))
             {
-                Vector2 contentPos = contentPanel.GetComponent<RectTransform>().anchoredPosition;
-                if (isVertical)
+                Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
+                if (_isVertical)
                 {
-                    contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / elementSize.y)* elementSize.y);
-                    currentAxis = Mathf.FloorToInt((-(contentPanel.anchoredPosition.y / elementSize.y)+1) % (elementCount));
+                    _contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / _elementSize.y)* _elementSize.y);
+                    _currentAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.y / _elementSize.y)+1) % (_elementCount));
                 }
                 else
                 {
-                    contentPanel.anchoredPosition = new Vector2(Mathf.Round(contentPos.x / elementSize.x) * elementSize.x, contentPos.y);
-                    currentAxis = Mathf.FloorToInt((-(contentPanel.anchoredPosition.x / elementSize.x)+1) % (elementCount));
+                    _contentPanel.anchoredPosition = new Vector2(Mathf.Round(contentPos.x / _elementSize.x) * _elementSize.x, contentPos.y);
+                    _currentAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x)+1) % (_elementCount));
                 }
-                if (currentAxis < 0)
-                    currentAxis = elementCount + currentAxis;
-                parameterChanged.Invoke(this, currentAxis);
-                valueText.text = elements[currentAxis].ToString("N2");
+                if (_currentAxis < 0)
+                    _currentAxis = _elementCount + _currentAxis;
+                parameterChanged.Invoke(this, _currentAxis);
+                setText(_elements[_currentAxis]);
             }
+            _axisDecided = false;
             draggingAxis.Invoke(this, true);
         }
     }
