@@ -188,12 +188,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isVertical: 0
-  _loop: 0
-  _allowValueSetting: 0
-  _previewExtend: 0
+  _loop: 1
+  _allowValueSetting: 1
+  _previewExtend: 1
   _fadeFactor: 0.5
-  _selectableItems: 4
-  _selectByClick: 1
+  _selectableItems: 1
+  _selectByClick: 0
   _valueText: {fileID: 1962044032191950389}
   _backgroundPrefab: {fileID: 5359195211250848493, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}
 --- !u!114 &1962044032279994413

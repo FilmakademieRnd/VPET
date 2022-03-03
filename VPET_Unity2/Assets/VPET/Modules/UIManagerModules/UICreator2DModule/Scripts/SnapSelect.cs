@@ -199,12 +199,6 @@ namespace vpet
             _elements = new List<float>();
             _elementSize = this.GetComponent<RectTransform>().sizeDelta;
 
-            if (_allowValueSetting)
-            {
-                GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
-                _arrows = SceneObject.Instantiate(arrowsPrefab,this.transform).GetComponent<RectTransform>();
-            }
-
             RectTransform background = null;
             if (_backgroundPrefab)
                 background = SceneObject.Instantiate(_backgroundPrefab, this.transform).GetComponent<RectTransform>();
@@ -227,12 +221,34 @@ namespace vpet
 
             if (_isVertical)
             {
-                if(background)
+                _contentMask.anchorMin = new Vector2(0.5f, 1f);
+                _contentMask.anchorMax = new Vector2(0.5f, 1f);
+                _contentMask.pivot = new Vector2(0.5f, 1f);
+                _contentPanel.anchorMin = new Vector2(0.5f, 1f);
+                _contentPanel.anchorMax = new Vector2(0.5f, 1f);
+                _contentPanel.pivot = new Vector2(0.5f, 1f);
+
+                if (background)
+                {
+                    background.anchorMin = new Vector2(0.5f, 1f);
+                    background.anchorMax = new Vector2(0.5f, 1f);
+                    background.pivot = new Vector2(0.5f, 1f);
                     background.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _selectableItems);
+                }
                 _contentMask.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * (_previewExtend * 2 + _selectableItems));
                 _contentMask.anchoredPosition = new Vector2(0, -_elementSize.y * _previewExtend);
-                if (_allowValueSetting)
+
+
+                /*if (_allowValueSetting)
+                {
+                    GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
+                    _arrows = SceneObject.Instantiate(arrowsPrefab, this.transform).GetComponent<RectTransform>();
+                    _arrows.anchorMin = new Vector2(0.5f, 1f);
+                    _arrows.anchorMax = new Vector2(0.5f, 1f);
+                    _arrows.pivot = new Vector2(0.5f, 1f);
                     _arrows.localRotation = Quaternion.Euler(0, 0, 90);
+                    _arrows.anchoredPosition = new Vector2(0f, -(_elementSize.y * (_selectableItems-1)) / 2f);
+                }*/
                 if (_loop)
                 {
                     _contentPanel.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _elementCount * 3);
@@ -242,7 +258,6 @@ namespace vpet
                 {
                     _contentPanel.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _elementCount);
                     _contentPanel.anchoredPosition = new Vector2(0, _elementSize.y * _previewExtend);
-
                 }
             }
             else
@@ -252,7 +267,12 @@ namespace vpet
                 _contentMask.sizeDelta = new Vector2(_elementSize.x * (_previewExtend * 2 + _selectableItems), _elementSize.y);
                 _contentMask.anchoredPosition = new Vector2(-_elementSize.y * _previewExtend, 0);
                 if (_allowValueSetting)
+                {
+                    GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
+                    _arrows = SceneObject.Instantiate(arrowsPrefab, this.transform).GetComponent<RectTransform>();
                     _arrows.localRotation = Quaternion.Euler(0, 0, 0);
+                    _arrows.anchoredPosition = new Vector2((_elementSize.x*(_selectableItems-1)) / 2f, 0f);
+                }
                 if (_loop)
                 {
                     _contentPanel.sizeDelta = new Vector2(_elementSize.x * _elementCount * 3, _elementSize.y);
@@ -280,6 +300,12 @@ namespace vpet
                 foreach (Tuple<float, string> elementTupel in elementTupels)
                 {
                     Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
+                    if (_isVertical)
+                    {
+                        elementTrans.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 1f);
+                        elementTrans.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 1f);
+                        elementTrans.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 1f);
+                    }
                     elementTrans.SetParent(_contentPanel, false);
                     elementTrans.GetComponent<SnapSelectElement>().index = elementPos % elementTupels.Count;
                     elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
@@ -289,7 +315,7 @@ namespace vpet
                     elementTrans.GetComponent<TextMeshProUGUI>().text = elementTupel.Item2;
                     if (_isVertical)
                     {
-                        elementTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, (_elementSize.y * 0.1f) + elementPos * _elementSize.y);
+                        elementTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -((_elementSize.y * 0.1f) + elementPos * _elementSize.y));
                     }
                     else
                     {
@@ -315,7 +341,12 @@ namespace vpet
             if (_selectByClick && !_axisDecided)
             {
                 if (elementClicked != null)
+                {
+                    _currentAxis = e.index;
+                    setText(_elements[_currentAxis]);
+                    parameterChanged.Invoke(this, _currentAxis);
                     elementClicked.Invoke(this, e.index);
+                }
             }
 
         }
