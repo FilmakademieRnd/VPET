@@ -59,6 +59,8 @@ namespace vpet
         {
             get => _physicsActive;
         }
+        public GameObject _gizmo = null;
+        public GameObject _icon = null;
         //!
         //! A reference to the VPET UI manager.
         //!

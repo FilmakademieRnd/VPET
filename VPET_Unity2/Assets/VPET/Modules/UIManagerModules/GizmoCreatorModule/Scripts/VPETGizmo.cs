@@ -37,16 +37,17 @@ namespace vpet
     //!
     //! Implementation of the VPETGizmo class, providing functionalty for adding line based gozmo objects to a Unity scene.
     //!
-    public class VPETGizmo
+    public class VPETGizmo 
     {
         //!
         //! The gizmos root game object.
         //!
         private GameObject m_root;
+        public GameObject root { get => m_root; }
         //!
         //! A Unity prefab containing a line render object and it's custom update script (GizmoElementUpdate).
         //!
-        private GameObject m_GizmoElementPrefab;
+        private static GameObject m_GizmoElementPrefab;
         //!
         //! A List storing all added elements of the gizmo.
         //!

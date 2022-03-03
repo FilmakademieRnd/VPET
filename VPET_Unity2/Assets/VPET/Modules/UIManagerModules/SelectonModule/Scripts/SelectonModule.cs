@@ -22,7 +22,7 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "PexelSelectorModule.cs"
-//! @brief implementation of the VPET PexelSelectorModule, a pixel precise selection method.
+//! @brief implementation of the VPET SelectionModule, a pixel precise selection method.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
@@ -40,7 +40,7 @@ namespace vpet
     //! Module to be used per camera that provide selection from main camera.
     //! There can be multiple instances of this class, providing local camera space selection.
     //!
-    public class PixelSelectorModule : UIManagerModule
+    public class SelectionModule : UIManagerModule
     {
         //!
         //! Name of the shader tag for the selection shader.
@@ -108,7 +108,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public PixelSelectorModule(string name, Core core) : base(name, core)
+        public SelectionModule(string name, Core core) : base(name, core)
         {
             objectIdShader = Resources.Load<Shader>("Shader/SelectableId");
             m_materials = new Dictionary<Material, Material>();
@@ -138,7 +138,7 @@ namespace vpet
         //!
         //! Destructor, cleaning up event registrations. 
         //!
-        ~PixelSelectorModule()
+        ~SelectionModule()
         {
             m_core.updateEvent -= renderUpdate;
             m_sceneManager.sceneReady -= modifyMaterials;
@@ -154,14 +154,15 @@ namespace vpet
         //!
         private void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
-            SceneObject obj = GetSelectableAt(e.point);
-            
             manager.clearSelectedObject();
             
-            if (obj != null)
-            {
+            SceneObject obj = GetSelectableAtCollider(e.point);
+
+            if (!obj)
+                obj = GetSelectableAtPixel(e.point);
+            
+            if (obj)
                 manager.addSelectedObject(obj);
-            }
         }
 
         //!
@@ -170,7 +171,7 @@ namespace vpet
         //! @param screenPosition The position to get the selectable at.
         //! @return The selectable at the specified screen position or null if there is none.
         //!
-        public SceneObject GetSelectableAt(Vector2 screenPosition)
+        public SceneObject GetSelectableAtPixel(Vector2 screenPosition)
         {
             if (!cpuData.IsCreated)
                 return null;
@@ -186,6 +187,29 @@ namespace vpet
             int id = DecodeId(packedId);
 
             return m_sceneManager.getSceneObject(id);
+        }
+
+        //!
+        //! Retrieve the selectable present at the current location in camera screenspace, if any.
+        //! 
+        //! @param screenPosition The position to get the selectable at.
+        //! @return The selectable at the specified screen position or null if there is none.
+        //!
+        public SceneObject GetSelectableAtCollider(Vector2 screenPosition, int layerMask = 1 << 5)
+        {
+            RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(screenPosition), Mathf.Infinity, layerMask);
+            if (hit)
+            {
+                GameObject gameObject = hit.collider.gameObject;
+                SceneObject sceneObject = gameObject.GetComponent<SceneObject>();
+
+                if (!sceneObject)
+                    sceneObject = gameObject.transform.parent.GetComponent<SceneObject>();
+
+                return sceneObject;
+            }
+
+            return null;
         }
 
         //!

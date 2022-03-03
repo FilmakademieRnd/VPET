@@ -147,6 +147,8 @@ namespace vpet
                                         Transform sphere = gizmo.addElement(ref m_circlePos, lightColor, true);
                                         sphere.localScale = new Vector3(2, 2, 2);
                                         sphere.localRotation = Quaternion.Euler(new Vector3(90, 0, 0));
+
+                                        sceneObject._gizmo = gizmo.root;
                                         updateScalePoint(sceneObject, null);
                                         sceneObject.hasChanged += updateScalePoint;
                                         m_ParameterEventHandlers.Add(new Tuple<SceneObject, EventHandler<AbstractParameter>>(sceneObject, updateScalePoint));
@@ -156,13 +158,15 @@ namespace vpet
                                     {
                                         gizmo.addElement(ref m_circlePos, lightColor, true);
                                         gizmo.addElement(ref m_linePos, lightColor);
+                                        sceneObject._gizmo = gizmo.root;
                                         break;
                                     }
                                 case SceneObjectSpotLight:
                                     {
                                         gizmo.addElement(ref m_conePos, lightColor).localScale = new Vector3(0.7071f, 0.7071f, 1f);
                                         gizmo.addElement(ref m_circlePos, lightColor, true).localPosition = new Vector3(0,0,1);
-                                        
+
+                                        sceneObject._gizmo = gizmo.root;
                                         updateScaleSpot(sceneObject, null);
                                         sceneObject.hasChanged += updateScaleSpot;
                                         m_ParameterEventHandlers.Add(new Tuple<SceneObject, EventHandler<AbstractParameter>>(sceneObject, updateScaleSpot));
@@ -178,6 +182,7 @@ namespace vpet
                             gizmo.addElement(ref m_conePos, Color.yellow, false);
                             gizmo.addElement(ref m_rectPos, Color.yellow, true).localPosition = new Vector3(0,0,1);
 
+                            sceneObject._gizmo = gizmo.root;
                             updateScaleCamera(sceneObject, null);
                             sceneObject.hasChanged += updateScaleCamera;
                             m_ParameterEventHandlers.Add(new Tuple<SceneObject, EventHandler<AbstractParameter>>(sceneObject, updateScaleCamera));
@@ -185,7 +190,9 @@ namespace vpet
                         }
                 }
                 if (gizmo != null)
+                {
                     m_gizmos.Add(gizmo);
+                }
             }
         }
 
@@ -197,7 +204,7 @@ namespace vpet
             SceneObject sceneObject = (SceneObject) sender;
 
             float range = sceneObject.getParameter<float>("range").value;
-            sceneObject.transform.GetChild(0).localScale = new Vector3(range, range, range);
+            sceneObject._gizmo.transform.localScale = new Vector3(range, range, range);
         }
 
         //!
@@ -212,7 +219,7 @@ namespace vpet
             // diameter = 2 * distance * tan( angle * 0.5 )
             float dia = 2f * range * MathF.Tan(angle / 180f * Mathf.PI * 0.5f);
 
-            sceneObject.transform.GetChild(0).localScale = new Vector3(dia, dia, range);
+            sceneObject._gizmo.transform.localScale = new Vector3(dia, dia, range);
         }
 
         //!
@@ -228,7 +235,7 @@ namespace vpet
             // diameter = 2 * distance * tan( angle * 0.5 )
             float dia = 2f * far * MathF.Tan(fov / 180f * Mathf.PI * 0.5f);
 
-            sceneObject.transform.GetChild(0).localScale = new Vector3(dia * aspect, dia, far);
+            sceneObject._gizmo.transform.localScale = new Vector3(dia * aspect, dia, far);
         }
 
         //!

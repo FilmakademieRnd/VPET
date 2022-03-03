@@ -21,11 +21,11 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "GizmoElementUpdate.cs"
-//! @brief Implementation of the VPET GizmoElementUpdate component, updating line based gizmo objects.
+//! @file "IconUpdate.cs"
+//! @brief Implementation of the VPET IconUpdate component, updating a icons properties.
 //! @author Simon Spielmann
 //! @version 0
-//! @date 18.02.2022
+//! @date 03.03.2022
 
 using UnityEngine;
 
@@ -34,28 +34,19 @@ namespace vpet
     //!
     //! Implementation of the VPET GizmoElementUpdate component, updating line based gizmo objects. 
     //!
-    public class GizmoElementUpdate : MonoBehaviour
+    public class IconUpdate : MonoBehaviour
     {
-        //!
-        //! The default width parameter for the line renderer.
-        //!
-        private float m_lineWidth = 1.0f;
         //!
         //! The calculated Depth between main camera and gizmo from last frame call.
         //!
-        private float m_oldDepth = 0.0f;
-        //!
-        //! The gizmos line renderer. 
-        //!
-        private LineRenderer m_lineRenderer;
-
+        private Vector3 m_iconScale;
         //!
         //! Start is called before the first frame update
         //!
         void Start()
         {
-            m_lineRenderer = transform.gameObject.GetComponent<LineRenderer>();
-            m_lineWidth = m_lineRenderer.startWidth;
+            m_iconScale = transform.localScale;
+            transform.forward = -Camera.main.transform.forward;
         }
 
         //!
@@ -66,12 +57,9 @@ namespace vpet
             Transform camera = Camera.main.transform;
             float depth = Vector3.Dot(camera.position - transform.position, camera.forward);
 
-            if (m_oldDepth != depth)
-            {
-                m_lineRenderer.startWidth = m_lineWidth * depth;
-                m_lineRenderer.endWidth = m_lineWidth * depth;
-                m_oldDepth = depth;
-            }
+            transform.forward = -camera.forward;
+            transform.up = -camera.up;
+            transform.localScale = m_iconScale * depth * 0.1f;
         }
     }
 }
