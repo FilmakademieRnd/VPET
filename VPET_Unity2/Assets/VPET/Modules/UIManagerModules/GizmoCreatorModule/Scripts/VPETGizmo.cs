@@ -4,7 +4,7 @@ VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
  
-Copyright (c) 2021 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
  
 This project has been initiated in the scope of the EU funded project 
 Dreamspace(http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.

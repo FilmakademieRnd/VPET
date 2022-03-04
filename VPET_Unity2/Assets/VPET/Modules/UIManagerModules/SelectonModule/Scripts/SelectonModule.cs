@@ -4,7 +4,7 @@ VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
  
-Copyright (c) 2021 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
  
 This project has been initiated in the scope of the EU funded project 
 Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
@@ -190,10 +190,11 @@ namespace vpet
         }
 
         //!
-        //! Retrieve the selectable present at the current location in camera screenspace, if any.
+        //! Retrieve the selectable present at the current location by tracing a ray into the scene and looking for colliders.
         //! 
         //! @param screenPosition The position to get the selectable at.
-        //! @return The selectable at the specified screen position or null if there is none.
+        //! @param layerMask The object layers to be considered for the ray intersection.
+        //! @return The selectable at the traced collider or null if there is none.
         //!
         public SceneObject GetSelectableAtCollider(Vector2 screenPosition, int layerMask = 1 << 5)
         {
