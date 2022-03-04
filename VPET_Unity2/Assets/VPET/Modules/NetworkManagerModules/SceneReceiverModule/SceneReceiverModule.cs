@@ -94,9 +94,6 @@ namespace vpet
 
             m_menu = new MenuTree()
             .Begin(MenuItem.IType.HSPLIT)
-                .Add(MenuItem.IType.SPACE)
-            .End()
-            .Begin(MenuItem.IType.HSPLIT)
                 .Begin(MenuItem.IType.VSPLIT)
                     .Add(MenuItem.IType.SPACE)
                 .End()
@@ -120,9 +117,6 @@ namespace vpet
                 .Begin(MenuItem.IType.VSPLIT)
                     .Add(MenuItem.IType.SPACE)
                 .End()
-            .End()
-            .Begin(MenuItem.IType.HSPLIT)
-                .Add(MenuItem.IType.SPACE)
             .End();
 
             m_menu.name = "Network Client";
