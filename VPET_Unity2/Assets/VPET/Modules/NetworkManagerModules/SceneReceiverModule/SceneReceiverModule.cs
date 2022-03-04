@@ -84,13 +84,13 @@ namespace vpet
             m_serverIP_Param = new Parameter<string>(manager.settings.m_serverIP, "IP Adress");
 
             List<AbstractParameter> parameterList1 = new List<AbstractParameter>();
-            parameterList1.Add(new Parameter<string>("1", "Server"));
-            parameterList1.Add(new Parameter<string>("2", "Device"));
+            parameterList1.Add(new Parameter<string>(null, "Server"));
+            parameterList1.Add(new Parameter<string>(null, "Device"));
 
             List<AbstractParameter> parameterList2 = new List<AbstractParameter>();
-            parameterList2.Add(new Parameter<string>("1", "Scout"));
-            parameterList2.Add(new Parameter<string>("2", "Director"));
-            parameterList2.Add(new Parameter<string>("2", "Lighting"));
+            parameterList2.Add(new Parameter<string>(null, "Scout"));
+            parameterList2.Add(new Parameter<string>(null, "Director"));
+            parameterList2.Add(new Parameter<string>(null, "Lighting"));
 
             m_menu = new MenuTree()
             .Begin(MenuItem.IType.HSPLIT)
