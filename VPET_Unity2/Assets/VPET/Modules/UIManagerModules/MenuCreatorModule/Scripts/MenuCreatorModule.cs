@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor;
 
 namespace vpet
 {
@@ -83,7 +84,12 @@ namespace vpet
         //! The list containing all UI elemets of the current menu.
         //!
         private List<GameObject> m_uiElements;
-        
+        //! List if Colors based on on Color Library in "\Assets\Editor\VPET_Colors.colors"
+        //! [0] Font color
+        //! [1] GUI element background color
+        //!
+        Color[] m_colorLibrary;
+
         //!
         //! Init Function
         //!
@@ -98,6 +104,15 @@ namespace vpet
             m_text = Resources.Load("Prefabs/MenuText") as GameObject;
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
+
+            // load color library
+            string colorPresetPath = "Assets/VPET/Core/Managers/UIManager/Editor/VPET_Colors.colors";
+            UnityEngine.Object presetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(colorPresetPath);
+            SerializedObject so = new SerializedObject(presetObject);
+            SerializedProperty presets = so.FindProperty("m_Presets");
+            m_colorLibrary = new Color[presets.arraySize];
+            for (int i = 0; i < presets.arraySize; i++) {
+                    m_colorLibrary[i] = presets.GetArrayElementAtIndex(i).FindPropertyRelative("m_Color").colorValue; }
 
             // [REVIEW]
             // Just for testing, please remove!
@@ -210,7 +225,7 @@ namespace vpet
                         horizontalLayout.childControlHeight = false;
                         horizontalLayout.childControlWidth = false;
                     }
-                break;
+                    break;
                 case MenuItem.IType.VSPLIT:
                     newObject = GameObject.Instantiate(m_panel, parentObject.transform);
                     VerticalLayoutGroup verticalLayout = newObject.AddComponent<VerticalLayoutGroup>();
@@ -220,8 +235,8 @@ namespace vpet
                     {
                         verticalLayout.childForceExpandHeight = false;
                         verticalLayout.childForceExpandWidth = false;
-                        verticalLayout.childControlHeight = false;
-                        verticalLayout.childControlWidth = false;
+                        verticalLayout.childControlHeight = true;
+                        verticalLayout.childControlWidth = true;
                     }
                     break;
                 case MenuItem.IType.SPACE:
@@ -234,6 +249,7 @@ namespace vpet
                         newObject = GameObject.Instantiate(m_text, parentObject.transform);
                         TextMeshProUGUI textComponent = newObject.GetComponent<TextMeshProUGUI>();
                         textComponent.text = ((Parameter<string>)item.Parameter).value;
+                        textComponent.color = m_colorLibrary[0];
                     }
                 break;
                 case MenuItem.IType.PARAMETER:
@@ -243,10 +259,13 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_button, parentObject.transform);
                                 Button button = newObject.GetComponent<Button>();
-                                Action parameterAction = ((Parameter<Action>) item.Parameter).value;
+                                Action parameterAction = ((Parameter<Action>)item.Parameter).value;
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
+                                textComponent.color = m_colorLibrary[0];
+                                Image imgButton = button.GetComponent<Image>();
+                                imgButton.color = m_colorLibrary[1];
                             }
                         break;
                         case AbstractParameter.ParameterType.BOOL:
@@ -265,8 +284,11 @@ namespace vpet
                                 TMP_InputField inputField = newObject.GetComponent<TMP_InputField>();
                                 inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
+                                Image imgButton = inputField.GetComponent<Image>();
+                                imgButton.color = m_colorLibrary[1];
+                                inputField.textComponent.color = m_colorLibrary[0];
                             }
-                        break;
+                            break;
                         case AbstractParameter.ParameterType.LIST:
                             {
                                 newObject = GameObject.Instantiate(m_dropdown, parentObject.transform);
@@ -278,8 +300,11 @@ namespace vpet
                                 
                                 dropDown.AddOptions(names);
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
+                                dropDown.image.color = m_colorLibrary[1]; 
+                                dropDown.captionText.color = m_colorLibrary[0];
+                                dropDown.itemText.color = m_colorLibrary[0];
                             }
-                        break;
+                            break;
                     }
                 break;
             }

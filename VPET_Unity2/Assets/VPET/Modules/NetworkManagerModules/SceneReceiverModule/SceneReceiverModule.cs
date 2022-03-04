@@ -83,12 +83,47 @@ namespace vpet
             Parameter<Action> button = new Parameter<Action>(Connect, "Start");
             m_serverIP_Param = new Parameter<string>(manager.settings.m_serverIP, "IP Adress");
 
+            List<AbstractParameter> parameterList1 = new List<AbstractParameter>();
+            parameterList1.Add(new Parameter<string>("1", "Server"));
+            parameterList1.Add(new Parameter<string>("2", "Device"));
+
+            List<AbstractParameter> parameterList2 = new List<AbstractParameter>();
+            parameterList2.Add(new Parameter<string>("1", "Scout"));
+            parameterList2.Add(new Parameter<string>("2", "Director"));
+            parameterList2.Add(new Parameter<string>("2", "Lighting"));
+
             m_menu = new MenuTree()
-               .Begin(MenuItem.IType.VSPLIT)
-                   .Add("Please enter server IP Adress!")
-                   .Add(m_serverIP_Param)
-                   .Add(button)
-              .End();
+            .Begin(MenuItem.IType.HSPLIT)
+                .Add(MenuItem.IType.SPACE)
+            .End()
+            .Begin(MenuItem.IType.HSPLIT)
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Add(MenuItem.IType.SPACE)
+                .End()
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Begin(MenuItem.IType.HSPLIT)
+                         .Add("Scene Source")
+                         .Add(new ListParameter(parameterList1, "Device"))
+                     .End()
+                     .Begin(MenuItem.IType.HSPLIT)
+                         .Add("IP Address")
+                         .Add(m_serverIP_Param)
+                     .End()
+                     .Begin(MenuItem.IType.HSPLIT)
+                         .Add("Choose Role")
+                         .Add(new ListParameter(parameterList2, "Role"))
+                     .End()
+                     .Begin(MenuItem.IType.HSPLIT)
+                         .Add(button)
+                     .End()
+                .End()
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Add(MenuItem.IType.SPACE)
+                .End()
+            .End()
+            .Begin(MenuItem.IType.HSPLIT)
+                .Add(MenuItem.IType.SPACE)
+            .End();
 
             m_menu.name = "Network Client";
             m_core.getManager<UIManager>().addMenu(m_menu);
