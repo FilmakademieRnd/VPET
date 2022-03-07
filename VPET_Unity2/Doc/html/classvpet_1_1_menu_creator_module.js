@@ -8,6 +8,7 @@ var classvpet_1_1_menu_creator_module =
     [ "Init", "classvpet_1_1_menu_creator_module.html#a5374feff85769872f0c04b1a78232e02", null ],
     [ "m_button", "classvpet_1_1_menu_creator_module.html#af937e2afdb694aeea0bcda4923c5b2e6", null ],
     [ "m_canvas", "classvpet_1_1_menu_creator_module.html#a0c831bc05921c3cb960e5f5337e4fc27", null ],
+    [ "m_dropdown", "classvpet_1_1_menu_creator_module.html#a49f5cbf7c03d0ec23f4391fe86c45b51", null ],
     [ "m_inputField", "classvpet_1_1_menu_creator_module.html#af091e07e12afbd3b9fa0ab62f03dd19c", null ],
     [ "m_oldMenu", "classvpet_1_1_menu_creator_module.html#aaac746eb8f10242073cbd3d60f85132d", null ],
     [ "m_panel", "classvpet_1_1_menu_creator_module.html#ad328ca831ea454d0940289b55f07c9b9", null ],

@@ -85,8 +85,10 @@ $(document).ready(function(){initNavTree('classvpet_1_1_v_p_e_t_gizmo.html','');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#properties">Properties</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classvpet_1_1_v_p_e_t_gizmo-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.VPETGizmo Class Reference</div>  </div>
@@ -106,6 +108,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad3cd7d72beb9bfd42c5f9f7cf76a694e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#ad3cd7d72beb9bfd42c5f9f7cf76a694e">setColor</a> (object sender, Color color)</td></tr>
 <tr class="separator:ad3cd7d72beb9bfd42c5f9f7cf76a694e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
+Properties</h2></td></tr>
+<tr class="memitem:a2981ddc0c1a346072c97e2ffbe52e4a1"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#a2981ddc0c1a346072c97e2ffbe52e4a1">root</a><code> [get]</code></td></tr>
+<tr class="separator:a2981ddc0c1a346072c97e2ffbe52e4a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:ae2349f903b916e84535ea82b5d51e742"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#ae2349f903b916e84535ea82b5d51e742">~VPETGizmo</a> ()</td></tr>
@@ -115,10 +122,13 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a7b157dcda9e42440bd2731c17fd1d602"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#a7b157dcda9e42440bd2731c17fd1d602">m_root</a></td></tr>
 <tr class="separator:a7b157dcda9e42440bd2731c17fd1d602"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a628dcb3cc8d7623526cac158746724fe"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#a628dcb3cc8d7623526cac158746724fe">m_GizmoElementPrefab</a></td></tr>
-<tr class="separator:a628dcb3cc8d7623526cac158746724fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f4b8f91e5248ec3485194d1a9d73eb3"><td class="memItemLeft" align="right" valign="top">List&lt; GameObject &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#a5f4b8f91e5248ec3485194d1a9d73eb3">m_GizmoElements</a></td></tr>
 <tr class="separator:a5f4b8f91e5248ec3485194d1a9d73eb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a628dcb3cc8d7623526cac158746724fe"><td class="memItemLeft" align="right" valign="top">static GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html#a628dcb3cc8d7623526cac158746724fe">m_GizmoElementPrefab</a></td></tr>
+<tr class="separator:a628dcb3cc8d7623526cac158746724fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of the <a class="el" href="classvpet_1_1_v_p_e_t_gizmo.html">VPETGizmo</a> class, providing functionalty for adding line based gozmo objects to a Unity scene. </p>
@@ -310,7 +320,7 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -361,6 +371,29 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>The gizmos root game object. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="a2981ddc0c1a346072c97e2ffbe52e4a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2981ddc0c1a346072c97e2ffbe52e4a1">&#9670;&nbsp;</a></span>root</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GameObject vpet.VPETGizmo.root</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

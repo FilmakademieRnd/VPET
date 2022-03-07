@@ -8,7 +8,5 @@ var classvpet_1_1_helpers =
     [ "FindDeepChild", "classvpet_1_1_helpers.html#a30fa47b60683b8ca51a5fcc49a49b12d", null ],
     [ "FindFirst< T >", "classvpet_1_1_helpers.html#a0765f90532b32b27045981cf190cc614", null ],
     [ "GetAllTypes", "classvpet_1_1_helpers.html#a0df93bd1de4d97936f1d52138ba885df", null ],
-    [ "getSoID", "classvpet_1_1_helpers.html#a44dddc789757065f20e41069f36cd8e6", null ],
-    [ "Log", "classvpet_1_1_helpers.html#a856a77d37068589dc98540c68397963e", null ],
-    [ "s_id", "classvpet_1_1_helpers.html#a631ff048dfe22bfd553d596e5d10af53", null ]
+    [ "Log", "classvpet_1_1_helpers.html#a856a77d37068589dc98540c68397963e", null ]
 ];

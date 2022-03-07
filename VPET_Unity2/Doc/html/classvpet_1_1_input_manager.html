@@ -172,6 +172,8 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:afc07ec4bd95bc3a1f81229afe8c2c08f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcdef80adc222a2efe42dde00d645376"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#adcdef80adc222a2efe42dde00d645376">TappedUI</a> (Vector2 pos)</td></tr>
 <tr class="separator:adcdef80adc222a2efe42dde00d645376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a74b92b669f4c1f1f830f43a0579f15"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a9a74b92b669f4c1f1f830f43a0579f15">Tapped3DUI</a> (Vector2 pos, int layerMask=1&lt;&lt; 5)</td></tr>
+<tr class="separator:a9a74b92b669f4c1f1f830f43a0579f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -382,6 +384,48 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a9a74b92b669f4c1f1f830f43a0579f15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a74b92b669f4c1f1f830f43a0579f15">&#9670;&nbsp;</a></span>Tapped3DUI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.InputManager.Tapped3DUI </td>
+          <td>(</td>
+          <td class="paramtype">Vector2&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>layerMask</em> = <code>1&#160;&lt;&lt;&#160;5</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>returns true if tap was over the 3D manipulator objects (layerMask 5 for UI) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pos</td><td>position of the tap </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="adcdef80adc222a2efe42dde00d645376"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adcdef80adc222a2efe42dde00d645376">&#9670;&nbsp;</a></span>TappedUI()</h2>
 
@@ -405,6 +449,12 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>returns true if tap was over any UI element (it goes over all raycaster in the scene - ideally that would be GraphicRaycaster from the 2D UI) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pos</td><td>position of the tap </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

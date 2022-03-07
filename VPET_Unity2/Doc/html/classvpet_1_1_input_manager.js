@@ -14,6 +14,7 @@ var classvpet_1_1_input_manager =
     [ "PressEnd", "classvpet_1_1_input_manager.html#afc07ec4bd95bc3a1f81229afe8c2c08f", null ],
     [ "PressStart", "classvpet_1_1_input_manager.html#a5db63349b99ef400ea5fe13fde80dd05", null ],
     [ "TapFunction", "classvpet_1_1_input_manager.html#a4e6ed1ceb973259671aa63f8e28a25d7", null ],
+    [ "Tapped3DUI", "classvpet_1_1_input_manager.html#a9a74b92b669f4c1f1f830f43a0579f15", null ],
     [ "TappedUI", "classvpet_1_1_input_manager.html#adcdef80adc222a2efe42dde00d645376", null ],
     [ "m_inputs", "classvpet_1_1_input_manager.html#a2b961c7b066f273d63ef17e2c96af9ad", null ],
     [ "touchInputs", "classvpet_1_1_input_manager.html#a1e44dcd9e3730c17c9450711bd4e2af7", null ],

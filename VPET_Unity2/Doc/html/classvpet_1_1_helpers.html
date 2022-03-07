@@ -86,7 +86,6 @@ $(document).ready(function(){initNavTree('classvpet_1_1_helpers.html',''); initR
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="classvpet_1_1_helpers-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.Helpers Class Reference</div>  </div>
@@ -103,8 +102,6 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a44dddc789757065f20e41069f36cd8e6"><td class="memItemLeft" align="right" valign="top">static short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a44dddc789757065f20e41069f36cd8e6">getSoID</a> ()</td></tr>
-<tr class="separator:a44dddc789757065f20e41069f36cd8e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a856a77d37068589dc98540c68397963e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a856a77d37068589dc98540c68397963e">Log</a> (string msg, <a class="el" href="classvpet_1_1_helpers.html#a268dcad2193184ec6c7d5928f17d3fbb">logMsgType</a> type=0)</td></tr>
 <tr class="separator:a856a77d37068589dc98540c68397963e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0df93bd1de4d97936f1d52138ba885df"><td class="memItemLeft" align="right" valign="top">static Type[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a0df93bd1de4d97936f1d52138ba885df">GetAllTypes</a> (AppDomain appDomain, Type type)</td></tr>
@@ -113,11 +110,6 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a0765f90532b32b27045981cf190cc614"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30fa47b60683b8ca51a5fcc49a49b12d"><td class="memItemLeft" align="right" valign="top">static Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a30fa47b60683b8ca51a5fcc49a49b12d">FindDeepChild</a> (this Transform aParent, string aName)</td></tr>
 <tr class="separator:a30fa47b60683b8ca51a5fcc49a49b12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
-Static Private Attributes</h2></td></tr>
-<tr class="memitem:a631ff048dfe22bfd553d596e5d10af53"><td class="memItemLeft" align="right" valign="top">static short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_helpers.html#a631ff048dfe22bfd553d596e5d10af53">s_id</a> = 1</td></tr>
-<tr class="separator:a631ff048dfe22bfd553d596e5d10af53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation for VPET helpers. </p>
@@ -229,6 +221,14 @@ Static Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Searches and returns first element of a given list within another list. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>The list containing elements to be searched for. </td></tr>
+    <tr><td class="paramname">b</td><td>The list to be searched in. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The first element found. </dd></dl>
 
 </div>
 </div>
@@ -265,7 +265,7 @@ Static Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>searches and returns types in an assembly </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Searches and returns types in an assembly. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">appDomain</td><td>domain to be searched in for assemblies </td></tr>
     <tr><td class="paramname">type</td><td>type to be searched </td></tr>
@@ -273,32 +273,6 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>array of found types </dd></dl>
-
-</div>
-</div>
-<a id="a44dddc789757065f20e41069f36cd8e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44dddc789757065f20e41069f36cd8e6">&#9670;&nbsp;</a></span>getSoID()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static short vpet.Helpers.getSoID </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>provide a unique id </p><dl class="section return"><dt>Returns</dt><dd>unique id as int </dd></dl>
 
 </div>
 </div>
@@ -342,30 +316,6 @@ Static Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a631ff048dfe22bfd553d596e5d10af53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a631ff048dfe22bfd553d596e5d10af53">&#9670;&nbsp;</a></span>s_id</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">short vpet.Helpers.s_id = 1</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>global id counter for generating unique sceneObject IDs </p>
 
 </div>
 </div>

@@ -86,7 +86,9 @@ $(document).ready(function(){initNavTree('classvpet_1_1_snap_select.html',''); i
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#properties">Properties</a> &#124;
 <a href="#events">Events</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_snap_select-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -102,6 +104,8 @@ Inheritance diagram for vpet.SnapSelect:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a3717fed7866b4be8e522c6f479dacdef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a3717fed7866b4be8e522c6f479dacdef">Init</a> (List&lt; string &gt; elementNames)</td></tr>
+<tr class="separator:a3717fed7866b4be8e522c6f479dacdef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9e2de9ecda3907c341de66080c813e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#ac9e2de9ecda3907c341de66080c813e0">Init</a> (List&lt; Tuple&lt; float, string &gt;&gt; elementTupels, float sensitivityIn)</td></tr>
 <tr class="separator:ac9e2de9ecda3907c341de66080c813e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61da98fff51efdb46f11aba72cd69557"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a61da98fff51efdb46f11aba72cd69557">setParam</a> (object sender, float f)</td></tr>
@@ -121,16 +125,29 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:af5197b17a24bd1435602cdc71c1d3e7a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#af5197b17a24bd1435602cdc71c1d3e7a">isVertical</a></td></tr>
-<tr class="separator:af5197b17a24bd1435602cdc71c1d3e7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60c914b4532ac9eb0ac4210b81cb38da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a60c914b4532ac9eb0ac4210b81cb38da">loop</a></td></tr>
-<tr class="separator:a60c914b4532ac9eb0ac4210b81cb38da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca4e0a6b45705293cd0222649ace83ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aca4e0a6b45705293cd0222649ace83ec">allowValueSetting</a></td></tr>
-<tr class="separator:aca4e0a6b45705293cd0222649ace83ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca95a9a4fd28e288c2bfd4a9294d25e4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aca95a9a4fd28e288c2bfd4a9294d25e4">previewExtend</a></td></tr>
-<tr class="separator:aca95a9a4fd28e288c2bfd4a9294d25e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b54fc1aca42addcc5ff4ca7f48240e3"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a9b54fc1aca42addcc5ff4ca7f48240e3">fadeFactor</a></td></tr>
-<tr class="separator:a9b54fc1aca42addcc5ff4ca7f48240e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a000d78721b55b5260b6d522185a6d949"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a000d78721b55b5260b6d522185a6d949">_isVertical</a></td></tr>
+<tr class="separator:a000d78721b55b5260b6d522185a6d949"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5f9b8a1ac6b5f7cf9b6dbf4b5c62b33"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#af5f9b8a1ac6b5f7cf9b6dbf4b5c62b33">_loop</a> = true</td></tr>
+<tr class="separator:af5f9b8a1ac6b5f7cf9b6dbf4b5c62b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f23c564ce2d9bfeb9d8722c1785121e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a0f23c564ce2d9bfeb9d8722c1785121e">_allowValueSetting</a> = false</td></tr>
+<tr class="separator:a0f23c564ce2d9bfeb9d8722c1785121e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a5a429542c77618508876e1382cf506"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a2a5a429542c77618508876e1382cf506">_previewExtend</a> = 1</td></tr>
+<tr class="separator:a2a5a429542c77618508876e1382cf506"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93a63138fb9ca8c626b790a300bcc75d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a93a63138fb9ca8c626b790a300bcc75d">_fadeFactor</a> = 0.5f</td></tr>
+<tr class="separator:a93a63138fb9ca8c626b790a300bcc75d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b980b4511bb971e3e37e134883366fc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a6b980b4511bb971e3e37e134883366fc">_selectableItems</a> = 1</td></tr>
+<tr class="separator:a6b980b4511bb971e3e37e134883366fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0920692bb522bcd57dca5492f12cc54b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a0920692bb522bcd57dca5492f12cc54b">_selectByClick</a> = false</td></tr>
+<tr class="separator:a0920692bb522bcd57dca5492f12cc54b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12d43c1e393850457702c7c91176ef29"><td class="memItemLeft" align="right" valign="top">TextMeshProUGUI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a12d43c1e393850457702c7c91176ef29">_valueText</a></td></tr>
+<tr class="separator:a12d43c1e393850457702c7c91176ef29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e357c546eef1343f262f09084be591c"><td class="memItemLeft" align="right" valign="top">GameObject&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a1e357c546eef1343f262f09084be591c">_backgroundPrefab</a></td></tr>
+<tr class="separator:a1e357c546eef1343f262f09084be591c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
+Properties</h2></td></tr>
+<tr class="memitem:a1e7a52cc42031922b3419d48a30e6876"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a1e7a52cc42031922b3419d48a30e6876">dragable</a><code> [get]</code></td></tr>
+<tr class="separator:a1e7a52cc42031922b3419d48a30e6876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="events"></a>
 Events</h2></td></tr>
@@ -140,39 +157,115 @@ Events</h2></td></tr>
 <tr class="separator:a8934ddff1364fc4bb93d6f52fa3ce316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c8b2e109bf901e04fddedac9971b26f"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a9c8b2e109bf901e04fddedac9971b26f">draggingAxis</a></td></tr>
 <tr class="separator:a9c8b2e109bf901e04fddedac9971b26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee55e9cc2828a87a39ff99aceb68eb6c"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aee55e9cc2828a87a39ff99aceb68eb6c">elementClicked</a></td></tr>
+<tr class="separator:aee55e9cc2828a87a39ff99aceb68eb6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a7d36acc4413959ddb6056488e7d2e73a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a7d36acc4413959ddb6056488e7d2e73a">handleClick</a> (object sender, <a class="el" href="classvpet_1_1_snap_select_element.html">SnapSelectElement</a> e)</td></tr>
+<tr class="separator:a7d36acc4413959ddb6056488e7d2e73a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b382291e4a59e7de309ac0ef24de822"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a9b382291e4a59e7de309ac0ef24de822">setText</a> (float t)</td></tr>
+<tr class="separator:a9b382291e4a59e7de309ac0ef24de822"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a4b2a188b90df9fc6ef96db8125916ac5"><td class="memItemLeft" align="right" valign="top">List&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a4b2a188b90df9fc6ef96db8125916ac5">elements</a></td></tr>
-<tr class="separator:a4b2a188b90df9fc6ef96db8125916ac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae8d9a71a1e496fc3ceec663090cfa42"><td class="memItemLeft" align="right" valign="top">RectTransform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aae8d9a71a1e496fc3ceec663090cfa42">mainPanel</a></td></tr>
-<tr class="separator:aae8d9a71a1e496fc3ceec663090cfa42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64500a49620bc597e54bc6d2ea62aa02"><td class="memItemLeft" align="right" valign="top">RectTransform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a64500a49620bc597e54bc6d2ea62aa02">contentPanel</a></td></tr>
-<tr class="separator:a64500a49620bc597e54bc6d2ea62aa02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a926460da600421da457a76b182029bc0"><td class="memItemLeft" align="right" valign="top">RectTransform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a926460da600421da457a76b182029bc0">arrows</a></td></tr>
-<tr class="separator:a926460da600421da457a76b182029bc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80ef4ff3beab5fe8b3d7715e66e3cb22"><td class="memItemLeft" align="right" valign="top">TextMeshProUGUI&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a80ef4ff3beab5fe8b3d7715e66e3cb22">valueText</a></td></tr>
-<tr class="separator:a80ef4ff3beab5fe8b3d7715e66e3cb22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a007861547f6f1f3e724a36d11b66af74"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a007861547f6f1f3e724a36d11b66af74">elementCount</a></td></tr>
-<tr class="separator:a007861547f6f1f3e724a36d11b66af74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac765dade4eabaa82432937967265a659"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#ac765dade4eabaa82432937967265a659">initialized</a> = false</td></tr>
-<tr class="separator:ac765dade4eabaa82432937967265a659"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7043d0e24c64768de0fbd159a3d92649"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a7043d0e24c64768de0fbd159a3d92649">elementSize</a></td></tr>
-<tr class="separator:a7043d0e24c64768de0fbd159a3d92649"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba56e8500f1bad1592f6b35c0bf61a58"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aba56e8500f1bad1592f6b35c0bf61a58">majorAxisX</a></td></tr>
-<tr class="separator:aba56e8500f1bad1592f6b35c0bf61a58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e606d2e74813d3259af52253de43d83"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a8e606d2e74813d3259af52253de43d83">axisDecided</a></td></tr>
-<tr class="separator:a8e606d2e74813d3259af52253de43d83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff60ee94e3c343370d1b6e3db2859977"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aff60ee94e3c343370d1b6e3db2859977">dragStart</a></td></tr>
-<tr class="separator:aff60ee94e3c343370d1b6e3db2859977"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8666380911f8261f9826e4b4f9c9d5b1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a8666380911f8261f9826e4b4f9c9d5b1">currentAxis</a></td></tr>
-<tr class="separator:a8666380911f8261f9826e4b4f9c9d5b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3b3e87ab76e33636d1e59210f13a8f8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#ac3b3e87ab76e33636d1e59210f13a8f8">sensitivity</a></td></tr>
-<tr class="separator:ac3b3e87ab76e33636d1e59210f13a8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a03581b587151c990e55b3ff2fe59ed"><td class="memItemLeft" align="right" valign="top">List&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a7a03581b587151c990e55b3ff2fe59ed">_elements</a></td></tr>
+<tr class="separator:a7a03581b587151c990e55b3ff2fe59ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a233fd5bc832b5959eb94b98d3c441ecf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a233fd5bc832b5959eb94b98d3c441ecf">_dragable</a> = true</td></tr>
+<tr class="separator:a233fd5bc832b5959eb94b98d3c441ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b830671b0c5ba3c58a57098aa802cac"><td class="memItemLeft" align="right" valign="top">RectTransform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a2b830671b0c5ba3c58a57098aa802cac">_contentMask</a></td></tr>
+<tr class="separator:a2b830671b0c5ba3c58a57098aa802cac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2feb43633c4f5b6a176b400a446b734c"><td class="memItemLeft" align="right" valign="top">RectTransform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a2feb43633c4f5b6a176b400a446b734c">_contentPanel</a></td></tr>
+<tr class="separator:a2feb43633c4f5b6a176b400a446b734c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99d072b28d667a63f1edc0f61d476ceb"><td class="memItemLeft" align="right" valign="top">RectTransform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a99d072b28d667a63f1edc0f61d476ceb">_arrows</a></td></tr>
+<tr class="separator:a99d072b28d667a63f1edc0f61d476ceb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f1bafcd4b5b6ed21f8ae293d07981a1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a0f1bafcd4b5b6ed21f8ae293d07981a1">_elementCount</a></td></tr>
+<tr class="separator:a0f1bafcd4b5b6ed21f8ae293d07981a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61ca67b617ea379e83278729c32ededf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a61ca67b617ea379e83278729c32ededf">_initialized</a> = false</td></tr>
+<tr class="separator:a61ca67b617ea379e83278729c32ededf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3501874cf7e23500b2da8e217dea1e"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aac3501874cf7e23500b2da8e217dea1e">_elementSize</a></td></tr>
+<tr class="separator:aac3501874cf7e23500b2da8e217dea1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9697001d1230beba30bed95dfb0fed97"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a9697001d1230beba30bed95dfb0fed97">_majorAxisX</a></td></tr>
+<tr class="separator:a9697001d1230beba30bed95dfb0fed97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a133b2700b34303865b479519e20ffdb7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a133b2700b34303865b479519e20ffdb7">_axisDecided</a></td></tr>
+<tr class="separator:a133b2700b34303865b479519e20ffdb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a527fee7816642f3fd1d6a9ee2ab2ba94"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a527fee7816642f3fd1d6a9ee2ab2ba94">_dragStart</a></td></tr>
+<tr class="separator:a527fee7816642f3fd1d6a9ee2ab2ba94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa400b923deaec775bf58f8d46ba775c5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#aa400b923deaec775bf58f8d46ba775c5">_currentAxis</a></td></tr>
+<tr class="separator:aa400b923deaec775bf58f8d46ba775c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d7a35bb9b0dd60d2cdc6009bef9e7a9"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_snap_select.html#a8d7a35bb9b0dd60d2cdc6009bef9e7a9">_sensitivity</a></td></tr>
+<tr class="separator:a8d7a35bb9b0dd60d2cdc6009bef9e7a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7d36acc4413959ddb6056488e7d2e73a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d36acc4413959ddb6056488e7d2e73a">&#9670;&nbsp;</a></span>handleClick()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SnapSelect.handleClick </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_snap_select_element.html">SnapSelectElement</a>&#160;</td>
+          <td class="paramname"><em>e</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function called when an element was clicked </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Sender of the event </td></tr>
+    <tr><td class="paramname">e</td><td><a class="el" href="classvpet_1_1_snap_select_element.html">SnapSelectElement</a> that has been clicked </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3717fed7866b4be8e522c6f479dacdef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3717fed7866b4be8e522c6f479dacdef">&#9670;&nbsp;</a></span>Init() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SnapSelect.Init </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; string &gt;&#160;</td>
+          <td class="paramname"><em>elementNames</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Init function of the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> that needs to be called manually before any elements apear Note that this initialization will automatically disable allowValueSetting </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">elementNames</td><td>This is the name displayed in the UI </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ac9e2de9ecda3907c341de66080c813e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9e2de9ecda3907c341de66080c813e0">&#9670;&nbsp;</a></span>Init()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9e2de9ecda3907c341de66080c813e0">&#9670;&nbsp;</a></span>Init() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,6 +289,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Init function of the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> that needs to be called manually before any elements apear </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">elementTupels</td><td>Tupel value of elements to add to the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> (this are usually the axis), first value is the inital value and second the name displayed in the UI </td></tr>
+    <tr><td class="paramname">sensitivityIn</td><td>sensitivity multiplicator for the elements </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -214,6 +314,12 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Unity function called by IBeginDragHandler when a drag starts </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Data of the drag event e.g. postion, delta, ... </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -232,6 +338,12 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Unity function called by IDragHandler when a drag is currently performed </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Data of the drag event e.g. postion, delta, ... </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -250,6 +362,12 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Unity function called by IEndDragHandler when a drag ends </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Data of the drag event e.g. postion, delta, ... </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -278,6 +396,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Function receiving an updated float when it changed (usually called e.g. by <a class="el" href="classvpet_1_1_spinner.html">Spinner</a> caused by OnValueChange of <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Sender of the event </td></tr>
+    <tr><td class="paramname">f</td><td>float to be set </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -306,6 +431,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Function receiving an updated quaternion when it changed (usually called e.g. by <a class="el" href="classvpet_1_1_spinner.html">Spinner</a> caused by OnValueChange of <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Sender of the event </td></tr>
+    <tr><td class="paramname">q</td><td>quaternion to be set </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -334,6 +466,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Function receiving an updated Vector2 when it changed (usually called e.g. by <a class="el" href="classvpet_1_1_spinner.html">Spinner</a> caused by OnValueChange of <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Sender of the event </td></tr>
+    <tr><td class="paramname">v2</td><td>Vector2 to be set </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -362,26 +501,66 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Function receiving an updated Vector3 when it changed (usually called e.g. by <a class="el" href="classvpet_1_1_spinner.html">Spinner</a> caused by OnValueChange of <a class="el" href="classvpet_1_1_parameter.html">Parameter</a>) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>Sender of the event </td></tr>
+    <tr><td class="paramname">v3</td><td>Vector3 to be set </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9b382291e4a59e7de309ac0ef24de822"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b382291e4a59e7de309ac0ef24de822">&#9670;&nbsp;</a></span>setText()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.SnapSelect.setText </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set text of parameter textbox if present </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>new text value </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aca4e0a6b45705293cd0222649ace83ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca4e0a6b45705293cd0222649ace83ec">&#9670;&nbsp;</a></span>allowValueSetting</h2>
+<a id="a0f23c564ce2d9bfeb9d8722c1785121e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f23c564ce2d9bfeb9d8722c1785121e">&#9670;&nbsp;</a></span>_allowValueSetting</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool vpet.SnapSelect.allowValueSetting</td>
+          <td class="memname">bool vpet.SnapSelect._allowValueSetting = false</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Should the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> throw events when the value of an axis is changed? </p>
 
 </div>
 </div>
-<a id="a926460da600421da457a76b182029bc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a926460da600421da457a76b182029bc0">&#9670;&nbsp;</a></span>arrows</h2>
+<a id="a99d072b28d667a63f1edc0f61d476ceb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99d072b28d667a63f1edc0f61d476ceb">&#9670;&nbsp;</a></span>_arrows</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -390,7 +569,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">RectTransform vpet.SnapSelect.arrows</td>
+          <td class="memname">RectTransform vpet.SnapSelect._arrows</td>
         </tr>
       </table>
   </td>
@@ -399,11 +578,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Reference to arrows visualizing drag direction </p>
 
 </div>
 </div>
-<a id="a8e606d2e74813d3259af52253de43d83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e606d2e74813d3259af52253de43d83">&#9670;&nbsp;</a></span>axisDecided</h2>
+<a id="a133b2700b34303865b479519e20ffdb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a133b2700b34303865b479519e20ffdb7">&#9670;&nbsp;</a></span>_axisDecided</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -412,7 +592,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool vpet.SnapSelect.axisDecided</td>
+          <td class="memname">bool vpet.SnapSelect._axisDecided</td>
         </tr>
       </table>
   </td>
@@ -421,11 +601,27 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Did the drag already decided which direction it is going to </p>
 
 </div>
 </div>
-<a id="a64500a49620bc597e54bc6d2ea62aa02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64500a49620bc597e54bc6d2ea62aa02">&#9670;&nbsp;</a></span>contentPanel</h2>
+<a id="a1e357c546eef1343f262f09084be591c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e357c546eef1343f262f09084be591c">&#9670;&nbsp;</a></span>_backgroundPrefab</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GameObject vpet.SnapSelect._backgroundPrefab</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reference to Prefab for background </p>
+
+</div>
+</div>
+<a id="a2b830671b0c5ba3c58a57098aa802cac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b830671b0c5ba3c58a57098aa802cac">&#9670;&nbsp;</a></span>_contentMask</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -434,7 +630,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">RectTransform vpet.SnapSelect.contentPanel</td>
+          <td class="memname">RectTransform vpet.SnapSelect._contentMask</td>
         </tr>
       </table>
   </td>
@@ -443,11 +639,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Reference to main <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> UI Panel </p>
 
 </div>
 </div>
-<a id="a8666380911f8261f9826e4b4f9c9d5b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8666380911f8261f9826e4b4f9c9d5b1">&#9670;&nbsp;</a></span>currentAxis</h2>
+<a id="a2feb43633c4f5b6a176b400a446b734c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2feb43633c4f5b6a176b400a446b734c">&#9670;&nbsp;</a></span>_contentPanel</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -456,7 +653,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int vpet.SnapSelect.currentAxis</td>
+          <td class="memname">RectTransform vpet.SnapSelect._contentPanel</td>
         </tr>
       </table>
   </td>
@@ -465,11 +662,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Reference to content UI Panel, containing all elements as childs </p>
 
 </div>
 </div>
-<a id="aff60ee94e3c343370d1b6e3db2859977"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff60ee94e3c343370d1b6e3db2859977">&#9670;&nbsp;</a></span>dragStart</h2>
+<a id="aa400b923deaec775bf58f8d46ba775c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa400b923deaec775bf58f8d46ba775c5">&#9670;&nbsp;</a></span>_currentAxis</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -478,7 +676,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Vector2 vpet.SnapSelect.dragStart</td>
+          <td class="memname">int vpet.SnapSelect._currentAxis</td>
         </tr>
       </table>
   </td>
@@ -487,11 +685,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>which axis / element is currently active (edited) </p>
 
 </div>
 </div>
-<a id="a007861547f6f1f3e724a36d11b66af74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a007861547f6f1f3e724a36d11b66af74">&#9670;&nbsp;</a></span>elementCount</h2>
+<a id="a233fd5bc832b5959eb94b98d3c441ecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a233fd5bc832b5959eb94b98d3c441ecf">&#9670;&nbsp;</a></span>_dragable</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -500,7 +699,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int vpet.SnapSelect.elementCount</td>
+          <td class="memname">bool vpet.SnapSelect._dragable = true</td>
         </tr>
       </table>
   </td>
@@ -509,11 +708,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Is the menu fixed or dragable </p>
 
 </div>
 </div>
-<a id="a4b2a188b90df9fc6ef96db8125916ac5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b2a188b90df9fc6ef96db8125916ac5">&#9670;&nbsp;</a></span>elements</h2>
+<a id="a527fee7816642f3fd1d6a9ee2ab2ba94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a527fee7816642f3fd1d6a9ee2ab2ba94">&#9670;&nbsp;</a></span>_dragStart</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -522,7 +722,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">List&lt;float&gt; vpet.SnapSelect.elements</td>
+          <td class="memname">Vector2 vpet.SnapSelect._dragStart</td>
         </tr>
       </table>
   </td>
@@ -531,11 +731,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Did the drag start </p>
 
 </div>
 </div>
-<a id="a7043d0e24c64768de0fbd159a3d92649"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7043d0e24c64768de0fbd159a3d92649">&#9670;&nbsp;</a></span>elementSize</h2>
+<a id="a0f1bafcd4b5b6ed21f8ae293d07981a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f1bafcd4b5b6ed21f8ae293d07981a1">&#9670;&nbsp;</a></span>_elementCount</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -544,7 +745,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Vector2 vpet.SnapSelect.elementSize</td>
+          <td class="memname">int vpet.SnapSelect._elementCount</td>
         </tr>
       </table>
   </td>
@@ -553,25 +754,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>amount of selectable elements in this <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> </p>
 
 </div>
 </div>
-<a id="a9b54fc1aca42addcc5ff4ca7f48240e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b54fc1aca42addcc5ff4ca7f48240e3">&#9670;&nbsp;</a></span>fadeFactor</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float vpet.SnapSelect.fadeFactor</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac765dade4eabaa82432937967265a659"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac765dade4eabaa82432937967265a659">&#9670;&nbsp;</a></span>initialized</h2>
+<a id="a7a03581b587151c990e55b3ff2fe59ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a03581b587151c990e55b3ff2fe59ed">&#9670;&nbsp;</a></span>_elements</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -580,7 +768,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool vpet.SnapSelect.initialized = false</td>
+          <td class="memname">List&lt;float&gt; vpet.SnapSelect._elements</td>
         </tr>
       </table>
   </td>
@@ -589,39 +777,12 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>elements selectable in the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> </p>
 
 </div>
 </div>
-<a id="af5197b17a24bd1435602cdc71c1d3e7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5197b17a24bd1435602cdc71c1d3e7a">&#9670;&nbsp;</a></span>isVertical</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool vpet.SnapSelect.isVertical</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a60c914b4532ac9eb0ac4210b81cb38da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60c914b4532ac9eb0ac4210b81cb38da">&#9670;&nbsp;</a></span>loop</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool vpet.SnapSelect.loop</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aae8d9a71a1e496fc3ceec663090cfa42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae8d9a71a1e496fc3ceec663090cfa42">&#9670;&nbsp;</a></span>mainPanel</h2>
+<a id="aac3501874cf7e23500b2da8e217dea1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac3501874cf7e23500b2da8e217dea1e">&#9670;&nbsp;</a></span>_elementSize</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -630,7 +791,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">RectTransform vpet.SnapSelect.mainPanel</td>
+          <td class="memname">Vector2 vpet.SnapSelect._elementSize</td>
         </tr>
       </table>
   </td>
@@ -639,11 +800,27 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Size of each Element in the 2D UI </p>
 
 </div>
 </div>
-<a id="aba56e8500f1bad1592f6b35c0bf61a58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba56e8500f1bad1592f6b35c0bf61a58">&#9670;&nbsp;</a></span>majorAxisX</h2>
+<a id="a93a63138fb9ca8c626b790a300bcc75d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93a63138fb9ca8c626b790a300bcc75d">&#9670;&nbsp;</a></span>_fadeFactor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float vpet.SnapSelect._fadeFactor = 0.5f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>amount of fading being applied to preview Elements (multiplied with distance) </p>
+
+</div>
+</div>
+<a id="a61ca67b617ea379e83278729c32ededf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61ca67b617ea379e83278729c32ededf">&#9670;&nbsp;</a></span>_initialized</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -652,7 +829,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool vpet.SnapSelect.majorAxisX</td>
+          <td class="memname">bool vpet.SnapSelect._initialized = false</td>
         </tr>
       </table>
   </td>
@@ -661,25 +838,42 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>is the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> already initialized? </p>
 
 </div>
 </div>
-<a id="aca95a9a4fd28e288c2bfd4a9294d25e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca95a9a4fd28e288c2bfd4a9294d25e4">&#9670;&nbsp;</a></span>previewExtend</h2>
+<a id="a000d78721b55b5260b6d522185a6d949"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a000d78721b55b5260b6d522185a6d949">&#9670;&nbsp;</a></span>_isVertical</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int vpet.SnapSelect.previewExtend</td>
+          <td class="memname">bool vpet.SnapSelect._isVertical</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>is the <a class="el" href="classvpet_1_1_snap_select.html">SnapSelect</a> scrollable vertically or horizontally? </p>
 
 </div>
 </div>
-<a id="ac3b3e87ab76e33636d1e59210f13a8f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac3b3e87ab76e33636d1e59210f13a8f8">&#9670;&nbsp;</a></span>sensitivity</h2>
+<a id="af5f9b8a1ac6b5f7cf9b6dbf4b5c62b33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5f9b8a1ac6b5f7cf9b6dbf4b5c62b33">&#9670;&nbsp;</a></span>_loop</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.SnapSelect._loop = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>should elements be looped infinitely </p>
+
+</div>
+</div>
+<a id="a9697001d1230beba30bed95dfb0fed97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9697001d1230beba30bed95dfb0fed97">&#9670;&nbsp;</a></span>_majorAxisX</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -688,7 +882,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float vpet.SnapSelect.sensitivity</td>
+          <td class="memname">bool vpet.SnapSelect._majorAxisX</td>
         </tr>
       </table>
   </td>
@@ -697,11 +891,57 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>is the axis currently being dragged Y or Y </p>
 
 </div>
 </div>
-<a id="a80ef4ff3beab5fe8b3d7715e66e3cb22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80ef4ff3beab5fe8b3d7715e66e3cb22">&#9670;&nbsp;</a></span>valueText</h2>
+<a id="a2a5a429542c77618508876e1382cf506"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a5a429542c77618508876e1382cf506">&#9670;&nbsp;</a></span>_previewExtend</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int vpet.SnapSelect._previewExtend = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>amount of elements viewed as preview in each direction </p>
+
+</div>
+</div>
+<a id="a6b980b4511bb971e3e37e134883366fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b980b4511bb971e3e37e134883366fc">&#9670;&nbsp;</a></span>_selectableItems</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float vpet.SnapSelect._selectableItems = 1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The amount of elements that can be selected without sliding (similar to a usual menu) </p>
+
+</div>
+</div>
+<a id="a0920692bb522bcd57dca5492f12cc54b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0920692bb522bcd57dca5492f12cc54b">&#9670;&nbsp;</a></span>_selectByClick</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.SnapSelect._selectByClick = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The amount of elements that can be selected without sliding (similar to a usual menu) </p>
+
+</div>
+</div>
+<a id="a8d7a35bb9b0dd60d2cdc6009bef9e7a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d7a35bb9b0dd60d2cdc6009bef9e7a9">&#9670;&nbsp;</a></span>_sensitivity</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -710,12 +950,51 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">TextMeshProUGUI vpet.SnapSelect.valueText</td>
+          <td class="memname">float vpet.SnapSelect._sensitivity</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>sensitivity multiplicator </p>
+
+</div>
+</div>
+<a id="a12d43c1e393850457702c7c91176ef29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12d43c1e393850457702c7c91176ef29">&#9670;&nbsp;</a></span>_valueText</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TextMeshProUGUI vpet.SnapSelect._valueText</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reference to text field for current value </p>
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="a1e7a52cc42031922b3419d48a30e6876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e7a52cc42031922b3419d48a30e6876">&#9670;&nbsp;</a></span>dragable</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.SnapSelect.dragable</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -731,6 +1010,21 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">EventHandler&lt;bool&gt; vpet.SnapSelect.draggingAxis</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Event emitted when Axis dragging is in progress. </p>
+
+</div>
+</div>
+<a id="aee55e9cc2828a87a39ff99aceb68eb6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee55e9cc2828a87a39ff99aceb68eb6c">&#9670;&nbsp;</a></span>elementClicked</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">EventHandler&lt;int&gt; vpet.SnapSelect.elementClicked</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -8,5 +8,6 @@ var classvpet_1_1_v_p_e_t_gizmo =
     [ "setColor", "classvpet_1_1_v_p_e_t_gizmo.html#ad3cd7d72beb9bfd42c5f9f7cf76a694e", null ],
     [ "m_GizmoElementPrefab", "classvpet_1_1_v_p_e_t_gizmo.html#a628dcb3cc8d7623526cac158746724fe", null ],
     [ "m_GizmoElements", "classvpet_1_1_v_p_e_t_gizmo.html#a5f4b8f91e5248ec3485194d1a9d73eb3", null ],
-    [ "m_root", "classvpet_1_1_v_p_e_t_gizmo.html#a7b157dcda9e42440bd2731c17fd1d602", null ]
+    [ "m_root", "classvpet_1_1_v_p_e_t_gizmo.html#a7b157dcda9e42440bd2731c17fd1d602", null ],
+    [ "root", "classvpet_1_1_v_p_e_t_gizmo.html#a2981ddc0c1a346072c97e2ffbe52e4a1", null ]
 ];

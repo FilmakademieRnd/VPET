@@ -7,8 +7,8 @@ var dir_8fadf1bec17543a5d6af25d683d358fe =
     [ "SnapSelect.cs", "_snap_select_8cs.html", [
       [ "SnapSelect", "classvpet_1_1_snap_select.html", "classvpet_1_1_snap_select" ]
     ] ],
-    [ "TextHighlighter.cs", "_text_highlighter_8cs.html", [
-      [ "TextHighlighter", "classvpet_1_1_text_highlighter.html", "classvpet_1_1_text_highlighter" ]
+    [ "SnapSelectElement.cs", "_snap_select_element_8cs.html", [
+      [ "SnapSelectElement", "classvpet_1_1_snap_select_element.html", "classvpet_1_1_snap_select_element" ]
     ] ],
     [ "UICreator2DModule.cs", "_u_i_creator2_d_module_8cs.html", [
       [ "UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html", "classvpet_1_1_u_i_creator2_d_module" ]

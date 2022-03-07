@@ -31,9 +31,10 @@ var hierarchy =
         ] ],
         [ "vpet.UIManagerModule", "classvpet_1_1_u_i_manager_module.html", [
           [ "vpet.GizmoCreatorModule", "classvpet_1_1_gizmo_creator_module.html", null ],
+          [ "vpet.IconCreatorModule", "classvpet_1_1_icon_creator_module.html", null ],
           [ "vpet.MenuCreatorModule", "classvpet_1_1_menu_creator_module.html", null ],
           [ "vpet.MenuSelectorCreatorModule", "classvpet_1_1_menu_selector_creator_module.html", null ],
-          [ "vpet.PixelSelectorModule", "classvpet_1_1_pixel_selector_module.html", null ],
+          [ "vpet.SelectionModule", "classvpet_1_1_selection_module.html", null ],
           [ "vpet.SelectionOutlineModule", "classvpet_1_1_selection_outline_module.html", null ],
           [ "vpet.UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html", null ],
           [ "vpet.UICreator3DModule", "classvpet_1_1_u_i_creator3_d_module.html", null ],
@@ -52,6 +53,12 @@ var hierarchy =
     ] ],
     [ "IInputActionCollection2", null, [
       [ "Inputs", "class_inputs.html", null ]
+    ] ],
+    [ "IPointerDownHandler", null, [
+      [ "vpet.SnapSelectElement", "classvpet_1_1_snap_select_element.html", null ]
+    ] ],
+    [ "IPointerUpHandler", null, [
+      [ "vpet.SnapSelectElement", "classvpet_1_1_snap_select_element.html", null ]
     ] ],
     [ "Inputs.IVPETMapActions", "interface_inputs_1_1_i_v_p_e_t_map_actions.html", null ],
     [ "vpet.ManagerInterface", "interfacevpet_1_1_manager_interface.html", [
@@ -76,6 +83,7 @@ var hierarchy =
       ] ],
       [ "vpet.Editor_UIModeChange", "classvpet_1_1_editor___u_i_mode_change.html", null ],
       [ "vpet.GizmoElementUpdate", "classvpet_1_1_gizmo_element_update.html", null ],
+      [ "vpet.IconUpdate", "classvpet_1_1_icon_update.html", null ],
       [ "vpet.LightArrow", "classvpet_1_1_light_arrow.html", null ],
       [ "vpet.LightCone", "classvpet_1_1_light_cone.html", null ],
       [ "vpet.LightIcon", "classvpet_1_1_light_icon.html", null ],
@@ -84,21 +92,26 @@ var hierarchy =
         [ "vpet.Spinner", "classvpet_1_1_spinner.html", null ]
       ] ],
       [ "vpet.ManipulatorSelector", "classvpet_1_1_manipulator_selector.html", null ],
-      [ "vpet.PlaceScene", "classvpet_1_1_place_scene.html", null ],
-      [ "vpet.SceneObject", "classvpet_1_1_scene_object.html", [
-        [ "vpet.SceneObjectCamera", "classvpet_1_1_scene_object_camera.html", null ],
-        [ "vpet.SceneObjectLight", "classvpet_1_1_scene_object_light.html", [
-          [ "vpet.SceneObjectAreaLight", "classvpet_1_1_scene_object_area_light.html", null ],
-          [ "vpet.SceneObjectDirectionalLight", "classvpet_1_1_scene_object_directional_light.html", null ],
-          [ "vpet.SceneObjectPointLight", "classvpet_1_1_scene_object_point_light.html", null ],
-          [ "vpet.SceneObjectSpotLight", "classvpet_1_1_scene_object_spot_light.html", null ]
+      [ "vpet.ParameterObject", "classvpet_1_1_parameter_object.html", [
+        [ "vpet.SceneObject", "classvpet_1_1_scene_object.html", [
+          [ "vpet.SceneObjectCamera", "classvpet_1_1_scene_object_camera.html", null ],
+          [ "vpet.SceneObjectLight", "classvpet_1_1_scene_object_light.html", [
+            [ "vpet.SceneObjectAreaLight", "classvpet_1_1_scene_object_area_light.html", null ],
+            [ "vpet.SceneObjectDirectionalLight", "classvpet_1_1_scene_object_directional_light.html", null ],
+            [ "vpet.SceneObjectPointLight", "classvpet_1_1_scene_object_point_light.html", null ],
+            [ "vpet.SceneObjectSpotLight", "classvpet_1_1_scene_object_spot_light.html", null ]
+          ] ]
         ] ]
       ] ],
-      [ "vpet.TextHighlighter", "classvpet_1_1_text_highlighter.html", null ]
+      [ "vpet.PlaceScene", "classvpet_1_1_place_scene.html", null ],
+      [ "vpet.SnapSelectElement", "classvpet_1_1_snap_select_element.html", null ]
     ] ],
     [ "vpet.SceneManager.ObjectPackage", "classvpet_1_1_scene_manager_1_1_object_package.html", null ],
     [ "vpet.Parameter< Color >", "classvpet_1_1_parameter.html", null ],
     [ "vpet.Parameter< float >", "classvpet_1_1_parameter.html", null ],
+    [ "vpet.Parameter< int >", "classvpet_1_1_parameter.html", [
+      [ "vpet.ListParameter", "classvpet_1_1_list_parameter.html", null ]
+    ] ],
     [ "vpet.Parameter< Quaternion >", "classvpet_1_1_parameter.html", null ],
     [ "vpet.Parameter< string >", "classvpet_1_1_parameter.html", null ],
     [ "vpet.Parameter< Vector3 >", "classvpet_1_1_parameter.html", null ],

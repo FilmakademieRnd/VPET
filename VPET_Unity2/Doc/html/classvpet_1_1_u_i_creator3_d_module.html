@@ -329,6 +329,13 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Helper function that raycasts from camera and returns hit game object It subscribes (at PressStart) to the event triggered at every position update from <a class="el" href="classvpet_1_1_input_manager.html">InputManager</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pos</td><td>screen point through which to raycast </td></tr>
+    <tr><td class="paramname">layerMask</td><td>layer mask containing the objects to be considered </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -530,6 +537,13 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Function to be performed on click/touch drag It subscribes (at PressStart) to the event triggered at every position update from <a class="el" href="classvpet_1_1_input_manager.html">InputManager</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>callback sender </td></tr>
+    <tr><td class="paramname">e</td><td>event reference </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -618,6 +632,13 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Function to finalize manipulator operation Called with the end (cancellation) of click from <a class="el" href="classvpet_1_1_input_manager.html">InputManager</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>callback sender </td></tr>
+    <tr><td class="paramname">e</td><td>event reference </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -654,7 +675,13 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Function that does nothing. Being called when selection has changed. </p>
+<p>Function to select the manipulator and prepare for transformations. Called with the start of click from <a class="el" href="classvpet_1_1_input_manager.html">InputManager</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>callback sender </td></tr>
+    <tr><td class="paramname">e</td><td>event reference </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -29,6 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 21.01.2022
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -56,29 +57,46 @@ namespace vpet
         {
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
             GameObject buttonRes = Resources.Load("Prefabs/MenuSelectorButton") as GameObject;
+            
+            GameObject menuSelectorPrefab = Resources.Load("Prefabs/MenuSelectorPrefab") as GameObject;
+
 
             GameObject canvas = GameObject.Instantiate(canvasRes);
+            SnapSelect menuSelector = GameObject.Instantiate(menuSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
+            
             Transform contentTransform = canvas.transform.FindDeepChild("Content");
+
+            List<string> menuNames = new List<string>();
 
             foreach (MenuTree menu in manager.getMenus())
             {
-                GameObject buttonInst = GameObject.Instantiate(buttonRes, contentTransform);
-                Button button = buttonInst.GetComponent<Button>();
-                button.onClick.AddListener(() => manager.showMenu(menu));
-                TextMeshProUGUI textComponent = buttonInst.GetComponentInChildren<TextMeshProUGUI>();
-                textComponent.text = menu.name;
-                if (menu.iconResourceLocation.Length > 0)
-                {
-                    Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
-                    if (resImage != null)
-                    {
-                        Image buttonImage = buttonInst.GetComponentInChildren<Image>();
-                        buttonImage.sprite = resImage;
-                    }
-                    else
-                        Helpers.Log("Menu Icon resource: " + menu.iconResourceLocation + " not found!", Helpers.logMsgType.WARNING);
-                }
+                menuNames.Add(menu.name);
+
+                //GameObject buttonInst = GameObject.Instantiate(buttonRes, contentTransform);
+                //Button button = buttonInst.GetComponent<Button>();
+                //button.onClick.AddListener(() => manager.showMenu(menu));
+                //TextMeshProUGUI textComponent = buttonInst.GetComponentInChildren<TextMeshProUGUI>();
+                //textComponent.text = menu.name;
+                //if (menu.iconResourceLocation.Length > 0)
+                //{
+                //    Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
+                //    if (resImage != null)
+                //    {
+                //        Image buttonImage = buttonInst.GetComponentInChildren<Image>();
+                //        buttonImage.sprite = resImage;
+                //    }
+                //    else
+                //        Helpers.Log("Menu Icon resource: " + menu.iconResourceLocation + " not found!", Helpers.logMsgType.WARNING);
+                //}
             }
+
+            menuSelector.Init(menuNames);
+            menuSelector.elementClicked += menuClicked;
+        }
+        private void menuClicked(object sender, int id)
+        {
+            manager.showMenu(manager.getMenus()[id]);
         }
     }
+
 }

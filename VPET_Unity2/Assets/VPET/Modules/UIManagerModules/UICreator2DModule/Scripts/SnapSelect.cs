@@ -344,8 +344,8 @@ namespace vpet
                 {
                     _currentAxis = e.index;
                     setText(_elements[_currentAxis]);
-                    parameterChanged.Invoke(this, _currentAxis);
-                    elementClicked.Invoke(this, e.index);
+                    parameterChanged?.Invoke(this, _currentAxis);
+                    elementClicked?.Invoke(this, e.index);
                 }
             }
 
@@ -544,7 +544,7 @@ namespace vpet
                 }
                 if (_currentAxis < 0)
                     _currentAxis = _elementCount + _currentAxis;
-                parameterChanged.Invoke(this, _currentAxis);
+                parameterChanged?.Invoke(this, _currentAxis);
                 setText(_elements[_currentAxis]);
             }
             _axisDecided = false;
