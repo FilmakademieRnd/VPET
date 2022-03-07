@@ -58,8 +58,8 @@ VPET user guide and additional documentation
 Download the free VPET app for your devices:
 
 * [iOS - Apple App Store](https://apps.apple.com/de/app/vpet/id1374394388)
-* [Android - APK file download](https://degas.filmakademie.de/nextcloud/index.php/s/6P2bLkpEjjKdZeC)
-* [Windows - ZIP file download](https://apps.apple.com/de/app/vpet/id1374394388)
+* [Android - APK file download](https://github.com/FilmakademieRnd/VPET/releases/download/VPET_Android/vpet.apk)
+* [Windows - ZIP file download](https://github.com/FilmakademieRnd/VPET/releases/download/VPET/VPET_Win_x64.zip)
 
 Note: The client app was developed with Unity Engine and can be custom built for specific needs.  
 The Unity project can be found under the *VPET_Unity* directory.
