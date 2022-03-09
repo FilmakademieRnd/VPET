@@ -28,16 +28,17 @@ Syncronisation Server. They are licensed under the following terms:
 //! @version 0
 //! @date 21.01.2022
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
 
 namespace vpet
 {
-    public class MenuTree
+    public class MenuTree : MenuButton
     {
+        //!
+        //! Flag determining whether a menu is visible.
+        //!
         public bool visible = false;
-        public string name { get; set; } = "";
-        public string iconResourceLocation = "";
         //!
         //! Stack for inserting new items.
         //! 
@@ -46,6 +47,9 @@ namespace vpet
         //! List of Items storing menu element data.
         //! 
         public List<MenuItem> Items { get; } = new List<MenuItem>();
+
+        //public MenuTree(string caption = "", Action action = null, Role role = Role.NONE) : base(caption, action, role)
+        //{ }
 
         //!
         //! Adds a new string item as branch into the menu tree.

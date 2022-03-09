@@ -81,13 +81,15 @@ namespace vpet
         //!
         public event EventHandler<SnapSelectElement> clicked;
 
+        public Action clickAction;
+
         //!
-        //! Unity Start() function used to initialize all references
+        //! Unity OnEnable() function used to initialize all references
         //!
-        void Start()
+        void OnEnable()
         {
             rect = this.GetComponent<RectTransform>();
-            snapSelect = this.transform.parent.parent.parent.GetComponent<SnapSelect>();
+            snapSelect = this.transform.parent.GetComponent<SnapSelect>();
             refRect = snapSelect.GetComponent<RectTransform>();
             txt = this.GetComponent<TextMeshProUGUI>();
             size = Mathf.Max(rect.sizeDelta.x, rect.sizeDelta.y);
@@ -96,7 +98,7 @@ namespace vpet
             snapSelect.draggingAxis += updateTransparency;
 
             //attach reset function to click event
-            snapSelect.elementClicked += setHighlight;
+            snapSelect.highlightElement += setHighlight;
 
             //run initial transparency update
             updateTransparency(this, true);
@@ -134,7 +136,8 @@ namespace vpet
         {
             if ((Time.time - pointerDownTime) < 0.2f)
             {
-                clicked.Invoke(this, this);
+                clicked?.Invoke(this, this);
+                clickAction?.Invoke();
             }
         }
 

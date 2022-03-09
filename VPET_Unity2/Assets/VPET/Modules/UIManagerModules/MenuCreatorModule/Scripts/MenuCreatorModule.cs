@@ -138,8 +138,8 @@ namespace vpet
                        .Add(new ListParameter(parameterList, "TestList"))
                    .End()
               .End();
-            menu.name = "TestMenu";
-            menu.iconResourceLocation = "Images/button_translate";
+            menu.caption = "TestMenu";
+            menu.setIcon("Images/button_translate");
             manager.addMenu(menu);
 
             MenuTree menu2 = new MenuTree()
@@ -158,7 +158,7 @@ namespace vpet
                .End()
             .End();
 
-            menu2.name = "Bla!";
+            menu2.caption = "Bla!";
             manager.addMenu(menu2);
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

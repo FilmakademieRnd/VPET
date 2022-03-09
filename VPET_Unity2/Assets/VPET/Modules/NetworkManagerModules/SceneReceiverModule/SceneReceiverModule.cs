@@ -119,7 +119,7 @@ namespace vpet
                 .End()
             .End();
 
-            m_menu.name = "Network Client";
+            m_menu.caption = "Network Client";
             m_core.getManager<UIManager>().addMenu(m_menu);
         }
 

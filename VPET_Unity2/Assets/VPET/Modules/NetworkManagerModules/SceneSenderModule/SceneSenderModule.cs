@@ -85,7 +85,7 @@ namespace vpet
                    .Add(button)
               .End();
 
-            m_menu.name = "Network Server";
+            m_menu.caption = "Network Server";
             m_core.getManager<UIManager>().addMenu(m_menu);
         }
 

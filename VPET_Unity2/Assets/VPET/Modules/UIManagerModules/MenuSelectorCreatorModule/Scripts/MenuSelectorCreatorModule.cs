@@ -31,13 +31,14 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEditor;
 using TMPro;
 
 namespace vpet
 {
     public class MenuSelectorCreatorModule : UIManagerModule
     {
+        SnapSelect m_menuSelector;
         //!
         //! Constructor
         //! @param name Name of this module
@@ -53,45 +54,80 @@ namespace vpet
         //! @param sender A reference to the VPET core.
         //! @param e The event arguments for the start event.
         //!
-        protected override void Start(object sender, EventArgs e)
+        protected override void Init(object sender, EventArgs e)
         {
+            // [REVIEW]
+            // pls remove, only for testing...
+
+            MenuButton test = new MenuButton("TestButton", testAction);
+            test.setIcon("Images/button_frame_BG");
+            manager.addButton(test);
+
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
-            GameObject buttonRes = Resources.Load("Prefabs/MenuSelectorButton") as GameObject;
             
             GameObject menuSelectorPrefab = Resources.Load("Prefabs/MenuSelectorPrefab") as GameObject;
-
+            GameObject buttonSelectorPrefab = Resources.Load("Prefabs/ButtonSelectorPrefab") as GameObject;
 
             GameObject canvas = GameObject.Instantiate(canvasRes);
-            SnapSelect menuSelector = GameObject.Instantiate(menuSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
-            
-            Transform contentTransform = canvas.transform.FindDeepChild("Content");
+            m_menuSelector = GameObject.Instantiate(menuSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
+            SnapSelect buttonSelector = GameObject.Instantiate(buttonSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
+
+            manager.menuSelected += highlightMenuElement;
 
             foreach (MenuTree menu in manager.getMenus())
             {
-                menuSelector.addElement(menu.name);
+                if (menu.iconResourceLocation.Length > 0)
+                {
+                    Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
+                    if (resImage != null)
+                        m_menuSelector.addElement(menu.caption, resImage);
 
-                //GameObject buttonInst = GameObject.Instantiate(buttonRes, contentTransform);
-                //Button button = buttonInst.GetComponent<Button>();
-                //button.onClick.AddListener(() => manager.showMenu(menu));
-                //TextMeshProUGUI textComponent = buttonInst.GetComponentInChildren<TextMeshProUGUI>();
-                //textComponent.text = menu.name;
-                //if (menu.iconResourceLocation.Length > 0)
-                //{
-                //    Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
-                //    if (resImage != null)
-                //    {
-                //        Image buttonImage = buttonInst.GetComponentInChildren<Image>();
-                //        buttonImage.sprite = resImage;
-                //    }
-                //    else
-                //        Helpers.Log("Menu Icon resource: " + menu.iconResourceLocation + " not found!", Helpers.logMsgType.WARNING);
-                //}
+                }
+                else if (menu.caption.Length > 0)
+                    m_menuSelector.addElement(menu.caption);
+                else
+                {
+                    Helpers.Log("Menu has no caption and Icon!", Helpers.logMsgType.WARNING);
+                    m_menuSelector.addElement("EMPTY");
+                }
             }
-            menuSelector.elementClicked += menuClicked;
+
+            foreach (MenuButton button in manager.getButtons())
+            {
+                if (button.iconResourceLocation.Length > 0)
+                {
+                    Sprite resImage = Resources.Load<Sprite>(button.iconResourceLocation);
+                    if (resImage != null)
+                        buttonSelector.addElement(button.caption, resImage, 0, button.action);
+
+                }
+                else if (button.caption.Length > 0)
+                    buttonSelector.addElement(button.caption, 0, button.action);
+                else
+                {
+                    Helpers.Log("Button has no caption and Icon!", Helpers.logMsgType.WARNING);
+                    buttonSelector.addElement("EMPTY", 0, button.action);
+                }
+            }
+            m_menuSelector.elementClicked += menuClicked;
         }
+
         private void menuClicked(object sender, int id)
         {
-            manager.showMenu(manager.getMenus()[id]);
+            manager.showMenu((MenuTree)manager.getMenus()[id]);
+        }
+
+        private void highlightMenuElement(object sender, MenuTree t)
+        {
+            if (t == null)
+                m_menuSelector.showHighlighted(-1);
+            else
+                m_menuSelector.showHighlighted(t.id);
+        }
+
+        public void testAction()
+        {
+            Debug.Log("Test Action!");
         }
     }
 

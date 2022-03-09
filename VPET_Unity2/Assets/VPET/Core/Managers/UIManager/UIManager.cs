@@ -76,6 +76,11 @@ namespace vpet
         private List<MenuTree> m_menus;
 
         //!
+        //! A list storing references to menu buttons created by the UI-Modules.
+        //!
+        private List<MenuButton> m_buttons;
+
+        //!
         //! Adds a given menu to the menulist.
         //!
         //! @param menu The menue to be added to the list.
@@ -86,6 +91,23 @@ namespace vpet
                 Helpers.Log("Menu already existing in UIManager!", Helpers.logMsgType.WARNING);
             else
                 m_menus.Add(menu);
+
+            menu.id = m_menus.Count -1;
+        }
+
+        //!
+        //! Adds a given button to the buttonlist.
+        //!
+        //! @param button The button to be added to the list.
+        //!
+        public void addButton(MenuButton button)
+        {
+            if (m_buttons.Contains(button))
+                Helpers.Log("Button already existing in UIManager!", Helpers.logMsgType.WARNING);
+            else
+                m_buttons.Add(button);
+
+            button.id = m_buttons.Count -1;
         }
 
         //!
@@ -97,12 +119,21 @@ namespace vpet
         }
 
         //!
+        //! Returns a reference to to list of menu buttons.
+        //!
+        public ref List<MenuButton> getButtons()
+        {
+            return ref m_buttons;
+        }
+
+        //!
         //! Constructor initializing member variables.
         //!
         public UIManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_selectedObjects = new List<SceneObject>();
             m_menus = new List<MenuTree>();
+            m_buttons = new List<MenuButton>();
         }
 
         public void highlightSceneObject(SceneObject sceneObject)

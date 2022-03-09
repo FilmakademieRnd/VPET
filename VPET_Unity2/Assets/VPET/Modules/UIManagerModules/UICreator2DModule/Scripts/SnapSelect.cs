@@ -100,6 +100,8 @@ namespace vpet
         //!
         public event EventHandler<bool> draggingAxis;
 
+        public event EventHandler<int> highlightElement;
+
         //!
         //! Event emitted when Axis dragging is in progress.
         //!
@@ -193,12 +195,12 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(string caption, float initValue = 0f)
+        public int addElement(string caption, float initValue = 0f, Action action = null)
         {
             //add element to element list
             _elementValues.Add(initValue);
-            setText(_elementValues[_currentAxis]);
-
+            if (_currentAxis != -1) 
+                setText(_elementValues[_currentAxis]);
 
             //initialize elements
             GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Element");
@@ -207,12 +209,14 @@ namespace vpet
 
             for (int i = 0; i < repetitions; i++)
             {
-                Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
+                Transform elementTrans = SceneObject.Instantiate(elementPrefab, this.transform).transform;
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
+                elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
 
                 elementTrans.name = caption;
                 elementTrans.GetComponent<TextMeshProUGUI>().text = caption;
+                elementTrans.GetChild(0).GetComponent<Image>().color = new Color(255, 255, 255, 0);
 
                 _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
             }
@@ -227,11 +231,12 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(Sprite sprite, float initValue = 0f)
+        public int addElement(Sprite sprite, float initValue = 0f, Action action = null)
         {
             //add element to element list
             _elementValues.Add(initValue);
-            setText(_elementValues[_currentAxis]);
+            if (_currentAxis != -1)
+                setText(_elementValues[_currentAxis]);
 
 
             //initialize elements
@@ -241,14 +246,51 @@ namespace vpet
 
             for (int i = 0; i < repetitions; i++)
             {
-                Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
+                Transform elementTrans = SceneObject.Instantiate(elementPrefab, this.transform).transform;
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
+                elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
 
                 elementTrans.name = sprite.name;
                 elementTrans.GetChild(0).GetComponent<Image>().sprite = sprite;
-                elementTrans.GetChild(0).GetComponent<Image>().color = Color.white;
 
+                _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
+            }
+
+            _elementCount++;
+
+            Init();
+
+            return _elementCount - 1;
+        }
+
+        //!
+        //!
+        //!
+        public int addElement(string caption, Sprite sprite, float initValue = 0f, Action action = null)
+        {
+            //add element to element list
+            _elementValues.Add(initValue);
+            if (_currentAxis != -1)
+                setText(_elementValues[_currentAxis]);
+
+
+            //initialize elements
+            GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Element");
+
+            int repetitions = _loop ? 3 : 1;
+
+            for (int i = 0; i < repetitions; i++)
+            {
+                Transform elementTrans = SceneObject.Instantiate(elementPrefab, this.transform).transform;
+                elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
+                elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
+                elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
+
+                elementTrans.name = caption;
+
+                elementTrans.GetComponent<TextMeshProUGUI>().text = caption;
+                elementTrans.GetChild(0).GetComponent<Image>().sprite = sprite;
                 _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
             }
 
@@ -271,14 +313,14 @@ namespace vpet
         //!
         //!
         //!
-        void Awake()
+        protected override void Awake()
         {
             _elementValues = new List<float>();
             _elements = new List<SnapSelectElement>();
             background = null;
             _contentMask = null;
             _arrows = null;
-            _currentAxis = 0;
+            _currentAxis = -1;
             _elementCount = 0;
             _menuElementCount = 0;
         }
@@ -400,15 +442,18 @@ namespace vpet
         {
             if (_selectByClick && !_axisDecided)
             {
-                if (elementClicked != null)
-                {
-                    _currentAxis = e.index;
-                    setText(_elementValues[_currentAxis]);
-                    parameterChanged?.Invoke(this, _currentAxis);
-                    elementClicked?.Invoke(this, e.index);
-                }
+                _currentAxis = e.index;
+                setText(_elementValues[_currentAxis]);
+                parameterChanged?.Invoke(this, _currentAxis);
+                elementClicked?.Invoke(this, e.index);
+                highlightElement?.Invoke(this, e.index);
             }
+        }
 
+        public void showHighlighted(int id)
+        {
+            if(_currentAxis != id)
+                highlightElement?.Invoke(this, id);
         }
 
         //!
@@ -503,6 +548,8 @@ namespace vpet
                 {
                     if (_majorAxisX)
                     {
+                        if (_currentAxis == -1)
+                            _currentAxis = 0;
                         //adjust Parameter
                         if (_allowValueSetting)
                             valueChanged?.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
@@ -530,6 +577,8 @@ namespace vpet
                 {
                     if (!_majorAxisX)
                     {
+                        if (_currentAxis == -1)
+                            _currentAxis = 0;
                         //adjust Parameter
                         if (_allowValueSetting)
                             valueChanged?.Invoke(this, (data.delta.y / Screen.height) * _sensitivity);
@@ -550,7 +599,6 @@ namespace vpet
                             _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
                         }
                         draggingAxis?.Invoke(this, true);
-
                     }
                 }
             }
