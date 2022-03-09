@@ -234,12 +234,13 @@ namespace vpet
 
             // for multi selection
             objOffsets.Clear();
-            if (selObjs.Count > 1)
-            {
-                // restore rotation gizmo orientation
-                visualRot = Quaternion.identity;
-                TransformManipR(visualRot);
-            }
+            if(selObjs != null)
+                if (selObjs.Count > 1)
+                {
+                    // restore rotation gizmo orientation
+                    visualRot = Quaternion.identity;
+                    TransformManipR(visualRot);
+                }
 
         }
 
