@@ -145,13 +145,16 @@ namespace vpet
         //!
         public void setHighlight(object sender, int idx)
         {
-            if (idx != index)
+            if (idx == index)
             {
-                txt.color = Color.white;
+                if (txt.color == Color.red)
+                    txt.color = Color.white;
+                else
+                    txt.color = Color.red;
             }
             else
             {
-                txt.color = Color.red;
+                txt.color = Color.white;
             }
         }
     }

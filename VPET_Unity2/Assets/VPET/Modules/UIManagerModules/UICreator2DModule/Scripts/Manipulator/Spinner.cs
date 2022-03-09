@@ -52,43 +52,38 @@ namespace vpet
 
             AbstractParameter.ParameterType type = abstractParam.vpetType;
 
-            List<Tuple<float, string>> list = new List<Tuple<float, string>>();
-
             switch (type)
             {
                 case AbstractParameter.ParameterType.FLOAT:
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
                     paramFloat.hasChanged += snapSelect.setParam;
-                    float f = paramFloat.value;
-                    list.Add(new Tuple<float, string>(f, ""));
-                    snapSelect.Init(list, 10f);
+                    snapSelect.setSensitivity(10f);
+                    snapSelect.addElement("", paramFloat.value);
                     break;
                 case AbstractParameter.ParameterType.VECTOR2:
                     Parameter<Vector2> paramVec2 = (Parameter<Vector2>)abstractParam;
                     paramVec2.hasChanged += snapSelect.setParam;
-                    Vector2 vec2 = paramVec2.value;
-                    list.Add(new Tuple<float, string>(vec2.x, "X"));
-                    list.Add(new Tuple<float, string>(vec2.y, "Y"));
-                    snapSelect.Init(list, 10f);
+                    snapSelect.setSensitivity(10f);
+                    snapSelect.addElement("X", paramVec2.value.x);
+                    snapSelect.addElement("Y", paramVec2.value.y);
                     break;
                 case AbstractParameter.ParameterType.VECTOR3:
                     Parameter<Vector3> paramVec3 = (Parameter<Vector3>)abstractParam;
                     paramVec3.hasChanged += snapSelect.setParam;
-                    Vector3 vec3 = paramVec3.value;
-                    list.Add(new Tuple<float, string>(vec3.x, "X"));
-                    list.Add(new Tuple<float, string>(vec3.y, "Y"));
-                    list.Add(new Tuple<float, string>(vec3.z, "Z"));
-                    list.Add(new Tuple<float, string>((vec3.x+ vec3.y + vec3.z) / 3f, "XYZ"));
-                    snapSelect.Init(list, 10f);
+                    snapSelect.setSensitivity(10f);
+                    snapSelect.addElement("X", paramVec3.value.x);
+                    snapSelect.addElement("Y", paramVec3.value.y);
+                    snapSelect.addElement("Z", paramVec3.value.z);
+                    snapSelect.addElement("XYZ", (paramVec3.value.x + paramVec3.value.y + paramVec3.value.z) / 3f);
                     break;
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
                     paramQuat.hasChanged += snapSelect.setParam;
                     Vector3 rot = paramQuat.value.eulerAngles;
-                    list.Add(new Tuple<float, string>(rot.x, "X"));
-                    list.Add(new Tuple<float, string>(rot.y, "Y"));
-                    list.Add(new Tuple<float, string>(rot.z, "Z"));
-                    snapSelect.Init(list, 500f);
+                    snapSelect.setSensitivity(500f);
+                    snapSelect.addElement("X", rot.x);
+                    snapSelect.addElement("Y", rot.y);
+                    snapSelect.addElement("Z", rot.z);
                     break;
                 default:
                     Helpers.Log("Parameter Type cannot be edited with Spinner.");

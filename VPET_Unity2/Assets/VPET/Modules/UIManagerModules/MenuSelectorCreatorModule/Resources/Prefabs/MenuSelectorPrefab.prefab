@@ -53,9 +53,9 @@ MonoBehaviour:
   _isVertical: 1
   _loop: 0
   _allowValueSetting: 0
-  _previewExtend: 1
+  _previewExtend: 0
   _fadeFactor: 0.5
-  _selectableItems: 3
+  _selectableItems: -1
   _selectByClick: 1
   _valueText: {fileID: 0}
   _backgroundPrefab: {fileID: 5359195211250848493, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}

@@ -66,11 +66,9 @@ namespace vpet
             
             Transform contentTransform = canvas.transform.FindDeepChild("Content");
 
-            List<string> menuNames = new List<string>();
-
             foreach (MenuTree menu in manager.getMenus())
             {
-                menuNames.Add(menu.name);
+                menuSelector.addElement(menu.name);
 
                 //GameObject buttonInst = GameObject.Instantiate(buttonRes, contentTransform);
                 //Button button = buttonInst.GetComponent<Button>();
@@ -89,8 +87,6 @@ namespace vpet
                 //        Helpers.Log("Menu Icon resource: " + menu.iconResourceLocation + " not found!", Helpers.logMsgType.WARNING);
                 //}
             }
-
-            menuSelector.Init(menuNames);
             menuSelector.elementClicked += menuClicked;
         }
         private void menuClicked(object sender, int id)

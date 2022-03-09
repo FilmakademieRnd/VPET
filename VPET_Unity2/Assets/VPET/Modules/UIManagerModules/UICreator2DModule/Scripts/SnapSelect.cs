@@ -41,9 +41,14 @@ namespace vpet
     public class SnapSelect : UIBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
     {
         //!
-        //! elements selectable in the SnapSelect
+        //! unique element values selectable in the SnapSelect
         //!
-        private List<float> _elements;
+        private List<float> _elementValues;
+
+        //!
+        //! non-unique list of elements
+        //!
+        private List<SnapSelectElement> _elements;
 
         //!
         //! is the SnapSelect scrollable vertically or horizontally?
@@ -131,6 +136,11 @@ namespace vpet
         private RectTransform _contentPanel;
 
         //!
+        //! Reference to SnapSelect background
+        //!
+        private RectTransform background;
+
+        //!
         //! Reference to arrows visualizing drag direction
         //!
         private RectTransform _arrows;
@@ -139,6 +149,11 @@ namespace vpet
         //! amount of selectable elements in this SnapSelect
         //!
         private int _elementCount;
+
+        //!
+        //! The amount of elements that in the Menu
+        //!
+        private float _menuElementCount;
 
         //!
         //! is the SnapSelect already initialized?
@@ -176,44 +191,130 @@ namespace vpet
         private float _sensitivity;
 
         //!
-        //! Init function of the SnapSelect that needs to be called manually before any elements apear
-        //! Note that this initialization will automatically disable allowValueSetting
-        //! @param elementNames This is the name displayed in the UI
         //!
-        public void Init(List<string> elementNames)
+        //!
+        public int addElement(string caption, float initValue = 0f)
         {
-            _allowValueSetting = false;
-            List<Tuple<float, string>> list = new List<Tuple<float, string>>();
-            foreach (string s in elementNames)
-                list.Add(new Tuple<float, string>(0f, s));
-            Init(list, 0f);
+            //add element to element list
+            _elementValues.Add(initValue);
+            setText(_elementValues[_currentAxis]);
+
+
+            //initialize elements
+            GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Element");
+
+            int repetitions = _loop ? 3 : 1;
+
+            for (int i = 0; i < repetitions; i++)
+            {
+                Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
+                elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
+                elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
+
+                elementTrans.name = caption;
+                elementTrans.GetComponent<TextMeshProUGUI>().text = caption;
+
+                _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
+            }
+
+            _elementCount++;
+
+            Init();
+
+            return _elementCount - 1;
+        }
+
+        //!
+        //!
+        //!
+        public int addElement(Sprite sprite, float initValue = 0f)
+        {
+            //add element to element list
+            _elementValues.Add(initValue);
+            setText(_elementValues[_currentAxis]);
+
+
+            //initialize elements
+            GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Element");
+
+            int repetitions = _loop ? 3 : 1;
+
+            for (int i = 0; i < repetitions; i++)
+            {
+                Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
+                elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
+                elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
+
+                elementTrans.name = sprite.name;
+                elementTrans.GetChild(0).GetComponent<Image>().sprite = sprite;
+                elementTrans.GetChild(0).GetComponent<Image>().color = Color.white;
+
+                _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
+            }
+
+            _elementCount++;
+
+            Init();
+
+            return _elementCount - 1;
+        }
+
+        //!
+        //! adjust the sensitvity for parameter editing
+        //! @param sensitivityIn sensitivity multiplicator for the elements
+        //!
+        public void setSensitivity(float sensitivityIn)
+        {
+            _sensitivity = sensitivityIn;
+        }
+
+        //!
+        //!
+        //!
+        void Awake()
+        {
+            _elementValues = new List<float>();
+            _elements = new List<SnapSelectElement>();
+            background = null;
+            _contentMask = null;
+            _arrows = null;
+            _currentAxis = 0;
+            _elementCount = 0;
+            _menuElementCount = 0;
         }
 
         //!
         //! Init function of the SnapSelect that needs to be called manually before any elements apear
         //! @param elementTupels Tupel value of elements to add to the SnapSelect (this are usually the axis), first value is the inital value and second the name displayed in the UI
-        //! @param sensitivityIn sensitivity multiplicator for the elements
         //!
-        public void Init(List<Tuple<float, string>> elementTupels, float sensitivityIn)
+        private void Init()
         {
-            _elements = new List<float>();
+            //setup overall layout
             _elementSize = this.GetComponent<RectTransform>().sizeDelta;
+            if (_selectableItems < 0)
+            {
+                _menuElementCount = _elementCount;
+                _dragable = false;
+            }
+            else
+            {
+                _menuElementCount = (_elementCount < _selectableItems) ? _elementCount : _selectableItems;
+                _dragable = _elementCount > _selectableItems;
+            }
 
-            RectTransform background = null;
-            if (_backgroundPrefab)
+
+            if (_backgroundPrefab & background == null)
+            {
                 background = SceneObject.Instantiate(_backgroundPrefab, this.transform).GetComponent<RectTransform>();
+            }
 
 
-            GameObject contentFramePrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_ContentFrame");
-            _contentMask = SceneObject.Instantiate(contentFramePrefab, this.transform).GetComponent<RectTransform>();
-            _contentPanel = _contentMask.GetChild(0).GetComponent<RectTransform>();
-
-            _sensitivity = sensitivityIn;
-
-            _elementCount = elementTupels.Count;
-            _currentAxis = 0;
-
-            _dragable = _elementCount > _selectableItems;
+            if (_contentMask == null)
+            {
+                GameObject contentFramePrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_ContentFrame");
+                _contentMask = SceneObject.Instantiate(contentFramePrefab, this.transform).GetComponent<RectTransform>();
+                _contentPanel = _contentMask.GetChild(0).GetComponent<RectTransform>();
+            }
 
             if (_valueText)
                 _valueText.gameObject.SetActive(_allowValueSetting);
@@ -221,114 +322,73 @@ namespace vpet
 
             if (_isVertical)
             {
-                _contentMask.anchorMin = new Vector2(0.5f, 1f);
-                _contentMask.anchorMax = new Vector2(0.5f, 1f);
-                _contentMask.pivot = new Vector2(0.5f, 1f);
-                _contentPanel.anchorMin = new Vector2(0.5f, 1f);
-                _contentPanel.anchorMax = new Vector2(0.5f, 1f);
-                _contentPanel.pivot = new Vector2(0.5f, 1f);
+                switchToVerticalAlign(_contentMask);
+                switchToVerticalAlign(_contentPanel);
 
                 if (background)
                 {
-                    background.anchorMin = new Vector2(0.5f, 1f);
-                    background.anchorMax = new Vector2(0.5f, 1f);
-                    background.pivot = new Vector2(0.5f, 1f);
-                    background.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _selectableItems);
+                    switchToVerticalAlign(background);
                 }
-                _contentMask.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * (_previewExtend * 2 + _selectableItems));
-                _contentMask.anchoredPosition = new Vector2(0, -_elementSize.y * _previewExtend);
+            }
 
+            _contentMask.sizeDelta = multiplyAlignedVector(_elementSize, true, (_previewExtend * 2 + _menuElementCount));
+            _contentMask.anchoredPosition = multiplyAlignedVector(_elementSize, false, _previewExtend, true);
+            _contentPanel.sizeDelta = multiplyAlignedVector(_elementSize, true, _elementCount * (_loop ? 3 : 1));
+            _contentPanel.anchoredPosition = multiplyAlignedVector(_elementSize, false, -_previewExtend + (_elementCount * (_loop ? 1 : 0)), true);
+            if (background)
+                background.sizeDelta = multiplyAlignedVector(_elementSize, true, _menuElementCount);
 
-                /*if (_allowValueSetting)
+            if (_allowValueSetting && _arrows == null)
+            {
+                GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
+                _arrows = SceneObject.Instantiate(arrowsPrefab, _contentMask).GetComponent<RectTransform>();
+                _arrows.localRotation = Quaternion.Euler(0, 0, _isVertical? 90 : 0);
+                _arrows.anchoredPosition = Vector2.zero;
+                _arrows.SetParent(this.transform,true);
+            }
+
+            int repetitions = _loop ? 3 : 1;
+            for (int r = 0; r < repetitions; r++)
+                for (int e = 0; e < _elementValues.Count; e++)
                 {
-                    GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
-                    _arrows = SceneObject.Instantiate(arrowsPrefab, this.transform).GetComponent<RectTransform>();
-                    _arrows.anchorMin = new Vector2(0.5f, 1f);
-                    _arrows.anchorMax = new Vector2(0.5f, 1f);
-                    _arrows.pivot = new Vector2(0.5f, 1f);
-                    _arrows.localRotation = Quaternion.Euler(0, 0, 90);
-                    _arrows.anchoredPosition = new Vector2(0f, -(_elementSize.y * (_selectableItems-1)) / 2f);
-                }*/
-                if (_loop)
-                {
-                    _contentPanel.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _elementCount * 3);
-                    _contentPanel.anchoredPosition = new Vector2(0, _elementSize.y * (_previewExtend - _elementCount));
+                    SnapSelectElement element = _elements[e * repetitions + r];
+                    if (_isVertical)
+                        switchToVerticalAlign(element.GetComponent<RectTransform>());
+                    element.transform.SetParent(_contentPanel, false);
+                    element.GetComponent<RectTransform>().sizeDelta = _elementSize * 0.8f; 
+                    element.GetComponent<RectTransform>().anchoredPosition = multiplyAlignedVector(_elementSize, false, -(0.1f + r * _elementValues.Count + e), true);
                 }
-                else
-                {
-                    _contentPanel.sizeDelta = new Vector2(_elementSize.x, _elementSize.y * _elementCount);
-                    _contentPanel.anchoredPosition = new Vector2(0, _elementSize.y * _previewExtend);
-                }
+
+            _initialized = true;
+        }
+
+        //!
+        //! Switch a RectTransform to vertical alignment (origin moves to top center)
+        //!
+        private void switchToVerticalAlign(RectTransform t)
+        {
+            t.anchorMin = new Vector2(0.5f, 1f);
+            t.anchorMax = new Vector2(0.5f, 1f);
+            t.pivot = new Vector2(0.5f, 1f);
+        }
+
+        //!
+        //!
+        //!
+        private Vector2 multiplyAlignedVector(Vector2 vecIn, bool keepValueA, float newValueB, bool negateValueHorizontal = false)
+        {
+            Vector2 vecOut;
+            int keepA = keepValueA ? 1 : 0;
+            int negateHorizontal = negateValueHorizontal ? -1 : 1;
+            if (_isVertical)
+            {
+                vecOut = new Vector2(vecIn.x * keepA, vecIn.y * newValueB);
             }
             else
             {
-                if (background)
-                    background.sizeDelta = new Vector2(_elementSize.x * _selectableItems, _elementSize.y);
-                _contentMask.sizeDelta = new Vector2(_elementSize.x * (_previewExtend * 2 + _selectableItems), _elementSize.y);
-                _contentMask.anchoredPosition = new Vector2(-_elementSize.y * _previewExtend, 0);
-                if (_allowValueSetting)
-                {
-                    GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
-                    _arrows = SceneObject.Instantiate(arrowsPrefab, this.transform).GetComponent<RectTransform>();
-                    _arrows.localRotation = Quaternion.Euler(0, 0, 0);
-                    _arrows.anchoredPosition = new Vector2((_elementSize.x*(_selectableItems-1)) / 2f, 0f);
-                }
-                if (_loop)
-                {
-                    _contentPanel.sizeDelta = new Vector2(_elementSize.x * _elementCount * 3, _elementSize.y);
-                    _contentPanel.anchoredPosition = new Vector2(_elementSize.x * (_previewExtend - _elementCount), 0);
-                }
-                else
-                {
-                    _contentPanel.sizeDelta = new Vector2(_elementSize.x * _elementCount, _elementSize.y);
-                    _contentPanel.anchoredPosition = new Vector2(_elementSize.x * _previewExtend, 0);
-                }
-
+                vecOut = new Vector2(vecIn.x * negateHorizontal * newValueB, vecIn.y * keepA);
             }
-
-            GameObject elementPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Element");
-
-            int repetitions = 1;
-            if (_loop)
-            {
-                repetitions = 3;
-            }
-
-            int elementPos = 0;
-            for (int i = 0; i < repetitions; i++)
-            {
-                foreach (Tuple<float, string> elementTupel in elementTupels)
-                {
-                    Transform elementTrans = SceneObject.Instantiate(elementPrefab).transform;
-                    if (_isVertical)
-                    {
-                        elementTrans.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 1f);
-                        elementTrans.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 1f);
-                        elementTrans.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 1f);
-                    }
-                    elementTrans.SetParent(_contentPanel, false);
-                    elementTrans.GetComponent<SnapSelectElement>().index = elementPos % elementTupels.Count;
-                    elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
-                    elementTrans.GetComponent<RectTransform>().sizeDelta = _elementSize * 0.8f;
-
-                    elementTrans.name = elementTupel.Item2;
-                    elementTrans.GetComponent<TextMeshProUGUI>().text = elementTupel.Item2;
-                    if (_isVertical)
-                    {
-                        elementTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -((_elementSize.y * 0.1f) + elementPos * _elementSize.y));
-                    }
-                    else
-                    {
-                        elementTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2((_elementSize.x * 0.1f) + elementPos * _elementSize.x, 0);
-                    }
-                    if(i == 0)
-                        _elements.Add(elementTupel.Item1);
-                    elementPos++;
-                }
-            }
-
-            setText(elementTupels[0].Item1);
-            _initialized = true;
+            return vecOut;
         }
 
         //!
@@ -343,7 +403,7 @@ namespace vpet
                 if (elementClicked != null)
                 {
                     _currentAxis = e.index;
-                    setText(_elements[_currentAxis]);
+                    setText(_elementValues[_currentAxis]);
                     parameterChanged?.Invoke(this, _currentAxis);
                     elementClicked?.Invoke(this, e.index);
                 }
@@ -358,8 +418,8 @@ namespace vpet
         //!
         public void setParam(object sender, float f)
         {
-            _elements[0] = f;
-            setText(_elements[_currentAxis]);
+            _elementValues[0] = f;
+            setText(_elementValues[_currentAxis]);
         }
 
         //!
@@ -369,9 +429,9 @@ namespace vpet
         //!
         public void setParam(object sender, Vector2 v2 )
         {
-            _elements[0] = v2.x;
-            _elements[1] = v2.y;
-            setText(_elements[_currentAxis]);
+            _elementValues[0] = v2.x;
+            _elementValues[1] = v2.y;
+            setText(_elementValues[_currentAxis]);
         }
 
         //!
@@ -392,11 +452,11 @@ namespace vpet
         //!
         public void setParam(object sender, Vector3 v3)
         {
-            _elements[0] = v3.x;
-            _elements[1] = v3.y;
-            _elements[2] = v3.z;
-            _elements[3] = (v3.x + v3.y + v3.z) / 3f;
-            setText(_elements[_currentAxis]);
+            _elementValues[0] = v3.x;
+            _elementValues[1] = v3.y;
+            _elementValues[2] = v3.z;
+            _elementValues[3] = (v3.x + v3.y + v3.z) / 3f;
+            setText(_elementValues[_currentAxis]);
 
         }
 
@@ -408,10 +468,10 @@ namespace vpet
         public void setParam(object sender, Quaternion q)
         {
             Vector3 rot = q.eulerAngles;
-            _elements[0] = rot.x;
-            _elements[1] = rot.y;
-            _elements[2] = rot.z;
-            setText(_elements[_currentAxis]);
+            _elementValues[0] = rot.x;
+            _elementValues[1] = rot.y;
+            _elementValues[2] = rot.z;
+            setText(_elementValues[_currentAxis]);
         }
 
         //!
@@ -440,71 +500,71 @@ namespace vpet
             if(_axisDecided)
             {
                 if (_isVertical)
+                {
                     if (_majorAxisX)
                     {
                         //adjust Parameter
                         if (_allowValueSetting)
-                            valueChanged.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
+                            valueChanged?.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
                     }
-                    else
-                    { 
+                    else if (_dragable)
+                    {
                         if (!_loop && (_contentPanel.anchoredPosition.y > (_previewExtend + 0.4f) * _elementSize.y))
                         {
                             _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y);
                         }
-                        else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _selectableItems - 0.4f) * _elementSize.y))
+                        else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _selectableItems - 0.4f) * _elementSize.y);
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y);
                         }
-                        else if (_loop || ( _dragable
-                                && ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
-                                    && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _selectableItems - 0.4f) * _elementSize.y))))
+                        else if (_loop || ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
+                                    && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y)))
                         {
                             _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y);
                         }
-                        draggingAxis.Invoke(this, true);
+                        draggingAxis?.Invoke(this, true);
 
                     }
+                }
                 else
                 {
-                    if (_majorAxisX)
+                    if (!_majorAxisX)
+                    {
+                        //adjust Parameter
+                        if (_allowValueSetting)
+                            valueChanged?.Invoke(this, (data.delta.y / Screen.height) * _sensitivity);
+                    }
+                    else if (_dragable)
                     {
                         if (!_loop && (_contentPanel.anchoredPosition.x > (_previewExtend + 0.4f) * _elementSize.x))
                         {
                             _contentPanel.anchoredPosition = new Vector2((_previewExtend + 0.4f) * _elementSize.x, contentPos.y);
                         }
-                        else if (!_loop && (_contentPanel.anchoredPosition.x < -_contentPanel.sizeDelta.x + (_previewExtend + _selectableItems - 0.4f) * _elementSize.x))
+                        else if (!_loop && (_contentPanel.anchoredPosition.x < -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _selectableItems - 0.4f) * _elementSize.x, contentPos.y);
+                            _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x, contentPos.y);
                         }
-                        else if (_loop || (_dragable
-                                && ((_contentPanel.anchoredPosition.x < (_previewExtend + 0.4f) * _elementSize.x)
-                                    && (_contentPanel.anchoredPosition.x > -_contentPanel.sizeDelta.x + (_previewExtend + _selectableItems - 0.4f) * _elementSize.x))))
+                        else if (_loop || (_contentPanel.anchoredPosition.x < (_previewExtend + 0.4f) * _elementSize.x)
+                                    && (_contentPanel.anchoredPosition.x > -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
                         {
                             _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
                         }
-                        draggingAxis.Invoke(this, true);
+                        draggingAxis?.Invoke(this, true);
 
-                    }
-                    else
-                    {
-                        //adjust Parameter
-                        if(_allowValueSetting)
-                            valueChanged.Invoke(this, (data.delta.y / Screen.height) * _sensitivity);
                     }
                 }
             }
 
             //realize infinit looping
-            if (_initialized && _loop)
+            if (_initialized && _loop && _dragable)
             {
                 if (_isVertical)
                 {
-                    if (contentPos.y > _elementSize.y * (_previewExtend - _elementCount))
+                    if (contentPos.y > _elementSize.y * (-_previewExtend + (2 * _elementCount)))
                     {
                         _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
                     }
-                    if (contentPos.y < _elementSize.y * (_previewExtend - (2 * _elementCount)))
+                    if (contentPos.y < _elementSize.y * (-_previewExtend + _elementCount))
                     {
                         _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
                     }
@@ -529,7 +589,7 @@ namespace vpet
         //!
         public void OnEndDrag(PointerEventData data)
         {
-            if (_axisDecided && ((_isVertical && !_majorAxisX) || (!_isVertical && _majorAxisX)))
+            if (_axisDecided /*&& _dragable*/ && ((_isVertical && !_majorAxisX) || (!_isVertical && _majorAxisX)))
             {
                 Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
                 if (_isVertical)
@@ -545,10 +605,10 @@ namespace vpet
                 if (_currentAxis < 0)
                     _currentAxis = _elementCount + _currentAxis;
                 parameterChanged?.Invoke(this, _currentAxis);
-                setText(_elements[_currentAxis]);
+                setText(_elementValues[_currentAxis]);
             }
             _axisDecided = false;
-            draggingAxis.Invoke(this, true);
+            draggingAxis?.Invoke(this, true);
         }
     }
 }

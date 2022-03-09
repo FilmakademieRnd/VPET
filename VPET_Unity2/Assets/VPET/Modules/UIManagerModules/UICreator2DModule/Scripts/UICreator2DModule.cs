@@ -161,16 +161,13 @@ namespace vpet
                 //handle additional parameters
                 if (mainSelection.parameterList.Count > 3)
                 {
-                    List<Tuple<float, string>> list = new List<Tuple<float, string>>();
                     GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
                     currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
 
                     for (int i = 3; i < mainSelection.parameterList.Count; i++)
                     {
-                        list.Add(new Tuple<float, string>(0, mainSelection.parameterList[i].name));
+                        currentAddSelector.GetComponent<SnapSelect>().addElement(mainSelection.parameterList[i].name);
                     }
-                    currentAddSelector.GetComponent<SnapSelect>().Init(list, 0.01f);
-
                 }
 
                 createManipulator(0);
