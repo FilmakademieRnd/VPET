@@ -78,7 +78,8 @@ namespace vpet
             //! The ID for referencing the associated geometry data.
             public int geoId;
             //! The ID for referencing the associated texture data.
-            public int textureId;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
+            public int[] textureIds;
             //! The ID for referencing the associated material data.
             public int materialId;
             //! The roughness factor if the node has no material assigned.

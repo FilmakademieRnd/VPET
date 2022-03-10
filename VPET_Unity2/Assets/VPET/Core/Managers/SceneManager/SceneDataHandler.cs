@@ -405,18 +405,15 @@ namespace vpet
                 {
                     TexturePackage texPack = new TexturePackage();
 
-                    if (sceneData.header.textureBinaryType == 1)
-                    {
-                        int intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
-                        dataIdx += size_int;
-                        texPack.width = intValue;
-                        intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
-                        dataIdx += size_int;
-                        texPack.height = intValue;
-                        intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
-                        dataIdx += size_int;
-                        texPack.format = (TextureFormat)intValue;
-                    }
+                    int intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
+                    dataIdx += size_int;
+                    texPack.width = intValue;
+                    intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
+                    dataIdx += size_int;
+                    texPack.height = intValue;
+                    intValue = BitConverter.ToInt32(m_texturesByteData, dataIdx);
+                    dataIdx += size_int;
+                    texPack.format = (TextureFormat)intValue;
 
                     // pixel data
                     int numValues = BitConverter.ToInt32(m_texturesByteData, dataIdx);
