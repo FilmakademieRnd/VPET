@@ -50,7 +50,7 @@ namespace vpet
 
         // Selected objects to manipulate
         private SceneObject selObj;
-        List<SceneObject> selObjs;
+        List<SceneObject> selObjs = new List<SceneObject>();
         List<Vector3> objOffsets = new List<Vector3>();
 
         // Indexes of T R S parameters
@@ -234,13 +234,12 @@ namespace vpet
 
             // for multi selection
             objOffsets.Clear();
-            if(selObjs != null)
-                if (selObjs.Count > 1)
-                {
-                    // restore rotation gizmo orientation
-                    visualRot = Quaternion.identity;
-                    TransformManipR(visualRot);
-                }
+            if (selObjs.Count > 1)
+            {
+                // restore rotation gizmo orientation
+                visualRot = Quaternion.identity;
+                TransformManipR(visualRot);
+            }
 
         }
 
@@ -641,6 +640,14 @@ namespace vpet
         // now for multi
         private void SetManipulatorMode(object sender, int manipulatorMode)
         {
+            // Disable manipulator
+            if (manipulatorMode < 0)
+            {
+                HideAxes();
+                modeTRS = -1;
+                return;
+            }
+
             if (selObj)
             {
                 // Unsubscribe all

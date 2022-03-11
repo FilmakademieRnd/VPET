@@ -57,6 +57,9 @@ namespace vpet
         //List of selection Buttons for Manipulators
         private List<GameObject> instancedManipulatorSelectors = new List<GameObject>();
 
+        //Color picker (can be null if none is displayed)
+        GameObject colorPicker;
+
         //!
         //! Event emitted when parameter has changed
         //!
@@ -67,6 +70,9 @@ namespace vpet
         private Transform manipulatorSelectionPanel;
 
         public bool blocksRaycasts = true;
+
+        // MOD Color index for Color Picker
+        Parameter<Color> color = null;
 
         //!
         //! currently selected SceneObject
@@ -128,7 +134,7 @@ namespace vpet
             if (mainSelection.parameterList.Count > 2)
             {
                 //inititalize selectors for translation, rotation, scale
-                for(int i = 0; i < 3; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     GameObject createdManipSelector = SceneObject.Instantiate(selectorPrefab, manipulatorSelectionPanel);
                     createdManipSelector.GetComponent<RectTransform>().sizeDelta = new Vector2(selectorSize, selectorSize);
@@ -151,7 +157,7 @@ namespace vpet
                             icon = Resources.Load<Sprite>("Images/button_scale");
                             break;
                     }
-                    if(icon)
+                    if (icon)
                         createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, icon, i);
 
 
@@ -166,7 +172,15 @@ namespace vpet
 
                     for (int i = 3; i < mainSelection.parameterList.Count; i++)
                     {
-                        currentAddSelector.GetComponent<SnapSelect>().addElement(mainSelection.parameterList[i].name);
+                        // [ColorPicker Mod]
+                        //currentAddSelector.GetComponent<SnapSelect>().addElement(mainSelection.parameterList[i].name);
+                        SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
+                        snapSelect.addElement(mainSelection.parameterList[i].name);
+                        // Subscribe to parameter change
+                        snapSelect.parameterChanged += AddSelectorChange;
+                        // Check if has color
+                        if (mainSelection.parameterList[i].name == "color")
+                            color = (Parameter<Color>)mainSelection.parameterList[i];
                     }
                 }
 
@@ -182,6 +196,10 @@ namespace vpet
             GameObject.DestroyImmediate(currentManipulator);
             GameObject.DestroyImmediate(currentAddSelector);
 
+            // [ColorPicker Mod]
+            GameObject.DestroyImmediate(colorPicker);
+            manipulatorPanel.gameObject.SetActive(true);
+
             foreach (var manipSelec in instancedManipulatorSelectors)
             {
                 GameObject.DestroyImmediate(manipSelec);
@@ -195,15 +213,15 @@ namespace vpet
         //!
         public void createManipulator(int index)
         {
-            if(parameterChanged != null)
+            if (parameterChanged != null)
                 parameterChanged.Invoke(this, index);
-            if(currentManipulator)
+            if (currentManipulator)
                 GameObject.Destroy(currentManipulator);
 
             AbstractParameter abstractParam = mainSelection.parameterList[index];
             AbstractParameter.ParameterType type = abstractParam.vpetType;
 
-            switch(type)
+            switch (type)
             {
                 case AbstractParameter.ParameterType.FLOAT:
                 case AbstractParameter.ParameterType.VECTOR2:
@@ -276,5 +294,28 @@ namespace vpet
             if (setInteractable)
                 SetInteractable(false);
         }
+
+        // [ColorPicker Mod]
+        //!
+        //! Function called when the AddSelector spinner has its parameter changed
+        //! @param index of the parameter
+        //!
+        private void AddSelectorChange(object sender, int index)
+        {
+            if (colorPicker == null && color != null && index == 2) // TODO - fix magic number - why index of color is 2?
+            {
+                manipulatorPanel.gameObject.SetActive(false);
+                GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");
+                colorPicker = SceneObject.Instantiate(resourcePrefab, manipulatorSelectionPanel);
+                colorPicker.GetComponent<RectTransform>().localPosition = new Vector2(160f, -560f);
+                colorPicker.GetComponent<ColorSelect>().Init(color);
+                // Set T R S icons to idle
+                foreach (GameObject g in instancedManipulatorSelectors)
+                    g.GetComponent<ManipulatorSelector>().visualizeIdle();
+                // Set TRS manipulator to null
+                parameterChanged.Invoke(this, -1);
+            }
+        }
+
     }
 }
