@@ -26,13 +26,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 21.01.2022
+//! @date 11.03.2022
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using TMPro;
 
 namespace vpet
 {
@@ -114,11 +111,23 @@ namespace vpet
             m_menuSelector.elementClicked += menuClicked;
         }
 
+        //!
+        //! Function called when a menu button has clicked. Informs the UI manager to show the given MenuTree. 
+        //!
+        //! @param sender The snapSelect triggering this function.
+        //! @param id The snapSelect internal id for the corresponding menu.
+        //!
         private void menuClicked(object sender, int id)
         {
             manager.showMenu((MenuTree)manager.getMenus()[id]);
         }
 
+        //!
+        //! Function called when the UI manager selects a menu.
+        //!
+        //! @param sender The UI manager triggering this function.
+        //! @param t The selected menu.
+        //!
         private void highlightMenuElement(object sender, MenuTree t)
         {
             if (t == null)

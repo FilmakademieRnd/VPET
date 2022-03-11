@@ -141,7 +141,9 @@ namespace vpet
                 else if (matPack.type == 2)
                 {
                     Debug.Log(matPack.src);
+                    //Material mat = matPack.mat;
                     Material mat = new Material(Shader.Find(matPack.src));
+                    //mat.CopyPropertiesFromMaterial(matPack.mat);
                     mat.name = matPack.name;
                     SceneMaterialList.Add(mat);
                 }
@@ -640,7 +642,8 @@ namespace vpet
                     }
                     else if (propertyType == typeof(Texture))
                     {
-                        int[] ids = (int[])Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int[]));
+                        int[] Types = nodeGeo.textureTypes;
+                        int[] ids = (int[])Convert.ChangeType(fieldInfo.GetValue(nodeGeo.textureIds), typeof(int[]));
                         int idx = 0;
                         foreach(int id in ids)
                         {

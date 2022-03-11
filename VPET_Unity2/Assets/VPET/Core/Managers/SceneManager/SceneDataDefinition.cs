@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 21.05.2021
+//! @date 11.03.2022
 
 using UnityEngine;
 using System.Runtime.InteropServices;
@@ -75,9 +75,12 @@ namespace vpet
         {
             //! The ID for referencing the associated geometry data.
             public int geoId;
-            //! The ID for referencing the associated texture data.
+            //! The IDs for referencing the associated texture data.
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
             public int[] textureIds;
+            //! The Texture Types used for associating the correct material slot (Albedo, Normal, ...).
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
+            public int[] textureTypes;
             //! The ID for referencing the associated material data.
             public int materialId;
             //! The roughness factor if the node has no material assigned.

@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 19.05.2021
+//! @date 11.03.2022
 
 using System;
 using System.Text;
@@ -313,7 +313,9 @@ namespace vpet
         private void processMaterial(SceneManager.SceneNodeGeo node, Material material, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
             node.textureIds = new int[11] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-            if (material != null) 
+            node.textureTypes = new int[11] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+            if (material != null)
             {
                 // if materials's shader is not standard, add this material to material package. 
                 // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
@@ -332,10 +334,12 @@ namespace vpet
                 int idx = 0;
                 foreach (int i in textureIDs)
                 {
-
                     Texture2D texture = (Texture2D) material.GetTexture(i);
                     if (texture)
+                    {
                         node.textureIds[idx++] = processTexture(texture, ref sceneData.textureList);
+                        node.textureTypes[idx++] = i;
+                    }
                 }
             }
         }
