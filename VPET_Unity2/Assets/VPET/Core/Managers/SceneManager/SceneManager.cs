@@ -156,7 +156,10 @@ namespace vpet
         public SceneManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_sceneDataHandler = new SceneDataHandler();
-            //_settings = new SceneManagerSettings();
+
+            // [REVIEW]
+            // does it work like this??
+            Resources.Load<Material>("Materials/Standard");
 
             // create scene parent if not there
             scnRoot = GameObject.Find("Scene");

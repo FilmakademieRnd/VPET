@@ -58,10 +58,11 @@ namespace vpet
         {
             // [REVIEW]
             // pls remove, only for testing...
-
+            //>>>>>>>>>>>
             MenuButton test = new MenuButton("TestButton", testAction);
             test.setIcon("Images/button_frame_BG");
             manager.addButton(test);
+            //<<<<<<<<<<<
 
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
             
@@ -69,6 +70,7 @@ namespace vpet
             GameObject buttonSelectorPrefab = Resources.Load("Prefabs/ButtonSelectorPrefab") as GameObject;
 
             GameObject canvas = GameObject.Instantiate(canvasRes);
+            canvas.GetComponent<Canvas>().sortingOrder = 10;
             m_menuSelector = GameObject.Instantiate(menuSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
             SnapSelect buttonSelector = GameObject.Instantiate(buttonSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
 
@@ -125,6 +127,8 @@ namespace vpet
                 m_menuSelector.showHighlighted(t.id);
         }
 
+        //! [REVIEW]
+        //! Just for testing, pls remove!!
         public void testAction()
         {
             Debug.Log("Test Action!");

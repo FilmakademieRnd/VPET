@@ -566,9 +566,9 @@ namespace vpet
 
         private void HideAxes()
         {
-            HideAxis(manipT);
-            HideAxis(manipR);
-            HideAxis(manipS);
+            if (manipT) HideAxis(manipT);
+            if (manipR) HideAxis(manipR);
+            if (manipS) HideAxis(manipS);
             modeTRS = -1;
         }
 

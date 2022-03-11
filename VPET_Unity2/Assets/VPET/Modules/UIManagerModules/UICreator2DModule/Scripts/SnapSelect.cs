@@ -320,7 +320,10 @@ namespace vpet
             background = null;
             _contentMask = null;
             _arrows = null;
-            _currentAxis = -1;
+            if (_selectByClick)
+                _currentAxis = -1;
+            else
+                _currentAxis = 0;
             _elementCount = 0;
             _menuElementCount = 0;
         }
@@ -452,6 +455,7 @@ namespace vpet
 
         public void showHighlighted(int id)
         {
+
             if(_currentAxis != id)
                 highlightElement?.Invoke(this, id);
         }
@@ -502,7 +506,6 @@ namespace vpet
             _elementValues[2] = v3.z;
             _elementValues[3] = (v3.x + v3.y + v3.z) / 3f;
             setText(_elementValues[_currentAxis]);
-
         }
 
         //!
@@ -548,8 +551,6 @@ namespace vpet
                 {
                     if (_majorAxisX)
                     {
-                        if (_currentAxis == -1)
-                            _currentAxis = 0;
                         //adjust Parameter
                         if (_allowValueSetting)
                             valueChanged?.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
@@ -577,8 +578,6 @@ namespace vpet
                 {
                     if (!_majorAxisX)
                     {
-                        if (_currentAxis == -1)
-                            _currentAxis = 0;
                         //adjust Parameter
                         if (_allowValueSetting)
                             valueChanged?.Invoke(this, (data.delta.y / Screen.height) * _sensitivity);

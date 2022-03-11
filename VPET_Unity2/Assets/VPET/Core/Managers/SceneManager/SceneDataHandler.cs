@@ -768,9 +768,10 @@ namespace vpet
                     // format
                     Buffer.BlockCopy(BitConverter.GetBytes((int)texPack.format), 0, texByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
-                    // pixel data
+                    // data size
                     Buffer.BlockCopy(BitConverter.GetBytes(texPack.colorMapDataSize), 0, texByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
+                    // pixel data
                     Buffer.BlockCopy(texPack.colorMapData, 0, texByteData, dstIdx, texPack.colorMapDataSize);
                     dstIdx += texPack.colorMapDataSize;
 

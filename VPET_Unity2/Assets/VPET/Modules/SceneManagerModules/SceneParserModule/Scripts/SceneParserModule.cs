@@ -312,9 +312,8 @@ namespace vpet
         //!
         private void processMaterial(SceneManager.SceneNodeGeo node, Material material, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            if (material == null)
-                node.textureId = -1;
-            else
+            node.textureIds = new int[11] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+            if (material != null) 
             {
                 // if materials's shader is not standard, add this material to material package. 
                 // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
@@ -328,14 +327,15 @@ namespace vpet
                 if (material.HasProperty("_Glossiness"))
                     node.roughness = material.GetFloat("_Glossiness");
 
-                if (material.mainTexture != null)
+                int[] textureIDs = material.GetTexturePropertyNameIDs();
+
+                int idx = 0;
+                foreach (int i in textureIDs)
                 {
-                    Texture2D mainTex = (Texture2D)material.mainTexture;
-                    node.textureId = processTexture(mainTex, ref sceneData.textureList);
-                }
-                else
-                {
-                    node.textureId = -1;
+
+                    Texture2D texture = (Texture2D) material.GetTexture(i);
+                    if (texture)
+                        node.textureIds[idx++] = processTexture(texture, ref sceneData.textureList);
                 }
             }
         }
