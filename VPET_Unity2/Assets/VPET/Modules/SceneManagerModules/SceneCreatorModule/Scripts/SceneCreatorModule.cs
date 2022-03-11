@@ -29,10 +29,10 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 03.02.2022
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using System.Reflection;
 
 namespace vpet
 {
@@ -157,7 +157,7 @@ namespace vpet
         {
             foreach (SceneManager.TexturePackage texPack in sceneData.textureList)
             {
-                if (sceneData.header.textureBinaryType == 1)
+                if (sceneData.header.textureBinaryType == 0)
                 {
                     Texture2D tex_2d = new Texture2D(texPack.width, texPack.height, texPack.format, false);
                     tex_2d.LoadRawTextureData(texPack.colorMapData);
@@ -244,7 +244,7 @@ namespace vpet
         //! @param parent The transform of the parant node.
         //! @param idx The index for referencing into the node list.
         //!
-        private int createSceneGraphIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
+        private int createSceneGraphIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0, bool isRoot = true)
         {
             SceneManager.SceneNode node = sceneData.nodeList[idx];
 
@@ -257,11 +257,11 @@ namespace vpet
             int idxChild = idx;
             for (int k = 1; k <= node.childCount; k++)
             {
-                idxChild = createSceneGraphIter(ref sceneData, obj.transform, idxChild + 1);
+                idxChild = createSceneGraphIter(ref sceneData, obj.transform, idxChild + 1, false);
             }
 
             // if there are more nodes on one level
-            if (idxChild + 1 < sceneData.nodeList.Count)
+            if (isRoot && idxChild + 1 < sceneData.nodeList.Count)
                 idxChild = createSceneGraphIter(ref sceneData, parent, idxChild + 1);
 
             return idxChild;
@@ -562,12 +562,17 @@ namespace vpet
 
         }
 
+        // Dictionary< Name of the property in the material (target), KeyValuePair< name of the property at the node(source), type of target value > >
+        private static Dictionary<string, KeyValuePair<string, Type>> ShaderPropertyMap = new Dictionary<string, KeyValuePair<string, Type>> {
+                {"_Color", new KeyValuePair<string, Type> ("color", typeof(Color))},
+                {"_Glossiness", new KeyValuePair<string, Type> ("roughness", typeof(float))},
+                {"_MainTex", new KeyValuePair<string, Type> ("textureIds", typeof(Texture))}
+            };
         //! 
         //! [REVIEW]
         //!
-        public static void MapMaterialProperties(Material material, SceneManager.SceneNodeGeo nodeGeo)
+        public void MapMaterialProperties(Material material, SceneManager.SceneNodeGeo nodeGeo)
         {
-            /*
             //available parameters in this physically based standard shader:
             // _Color                   diffuse color (color including alpha)
             // _MainTex                 diffuse texture (2D texture)
@@ -597,7 +602,7 @@ namespace vpet
             // test texture
             // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
             // Texture2D texture = www.texture;
-            foreach (KeyValuePair<string, KeyValuePair<string, Type>> pair in VPETSettings.ShaderPropertyMap)
+            foreach (KeyValuePair<string, KeyValuePair<string, Type>> pair in ShaderPropertyMap)
             {
                 FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Key, BindingFlags.Instance | BindingFlags.Public);
                 Type propertyType = pair.Value.Value;
@@ -635,30 +640,34 @@ namespace vpet
                     }
                     else if (propertyType == typeof(Texture))
                     {
-                        int id = (int)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int));
-
-                        if (id > -1 && id < SceneLoader.SceneTextureList.Count)
+                        int[] ids = (int[])Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int[]));
+                        int idx = 0;
+                        foreach(int id in ids)
                         {
-                            Texture2D texRef = SceneLoader.SceneTextureList[nodeGeo.textureId];
-
-                            material.SetTexture(pair.Key, texRef);
-
-                            // set materials render mode to fate to senable alpha blending
-                            // TODO these values should be part of the geo node or material package !?
-                            if (Textures.hasAlpha(texRef))
+                            if (id > -1 && id < SceneTextureList.Count)
                             {
-                                // set rendering mode
-                                material.SetFloat("_Mode", 1);
-                                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                                material.SetInt("_ZWrite", 0);
-                                material.DisableKeyword("_ALPHATEST_ON");
-                                material.DisableKeyword("_ALPHABLEND_ON");
-                                material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                                material.renderQueue = 3000;
+                                Texture2D texRef = SceneTextureList[id];
+
+                                int[] nameIds = material.GetTexturePropertyNameIDs();
+
+                                material.SetTexture(nameIds[idx++], texRef);
+
+                                // set materials render mode to fate to senable alpha blending
+                                // TODO these values should be part of the geo node or material package !?
+                                if (false )//hasAlpha(texRef))
+                                {
+                                    // set rendering mode
+                                    material.SetFloat("_Mode", 1);
+                                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                                    material.SetInt("_ZWrite", 0);
+                                    material.DisableKeyword("_ALPHATEST_ON");
+                                    material.DisableKeyword("_ALPHABLEND_ON");
+                                    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                                    material.renderQueue = 3000;
+                                }
                             }
                         }
-
                     }
                     else
                     {
@@ -672,8 +681,24 @@ namespace vpet
                     // .
                 }
 
-            }*/
+            }
 
+        }
+
+        //!
+        //! function that determines if a texture has alpha
+        //! @param  texture   the texture to be checked
+        //!
+        private bool hasAlpha(Texture2D texture)
+        {
+            TextureFormat textureFormat = texture.format;
+            return (textureFormat == TextureFormat.Alpha8 ||
+                textureFormat == TextureFormat.ARGB4444 ||
+                textureFormat == TextureFormat.ARGB32 ||
+                textureFormat == TextureFormat.DXT5 ||
+                textureFormat == TextureFormat.PVRTC_RGBA2 ||
+                textureFormat == TextureFormat.PVRTC_RGBA4 ||
+                textureFormat == TextureFormat.ETC2_RGBA8);
         }
 
         //!
