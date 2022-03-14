@@ -51,14 +51,14 @@ namespace vpet
         //Currently displayed AddSelector (can be null if none is displayed)
         GameObject currentAddSelector;
 
+        //Button for additional parameters, hidden if currentAddSelector is active
+        GameObject currentAddButton;
+
         //Currently displayed manipulator (can be null if none is displayed)
         GameObject selectorPrefab;
 
         //List of selection Buttons for Manipulators
         private List<GameObject> instancedManipulatorSelectors = new List<GameObject>();
-
-        //Color picker (can be null if none is displayed)
-        GameObject colorPicker;
 
         //!
         //! Event emitted when parameter has changed
@@ -70,9 +70,6 @@ namespace vpet
         private Transform manipulatorSelectionPanel;
 
         public bool blocksRaycasts = true;
-
-        // MOD Color index for Color Picker
-        Parameter<Color> color = null;
 
         //!
         //! currently selected SceneObject
@@ -134,7 +131,7 @@ namespace vpet
             if (mainSelection.parameterList.Count > 2)
             {
                 //inititalize selectors for translation, rotation, scale
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < ((mainSelection.parameterList.Count > 3)? 4 : 3); i++)
                 {
                     GameObject createdManipSelector = SceneObject.Instantiate(selectorPrefab, manipulatorSelectionPanel);
                     createdManipSelector.GetComponent<RectTransform>().sizeDelta = new Vector2(selectorSize, selectorSize);
@@ -156,9 +153,14 @@ namespace vpet
                         case 2:
                             icon = Resources.Load<Sprite>("Images/button_scale");
                             break;
+                        case 3:
+                            icon = Resources.Load<Sprite>("Images/button_more");
+                            createdManipSelector.GetComponent<RectTransform>().localPosition = new Vector2((selectorSize + selectorSpacing), -selectorSize - 2* selectorSpacing);
+                            currentAddButton = createdManipSelector;
+                            break;
                     }
                     if (icon)
-                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, icon, i);
+                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, icon, (i==3)? -1 : i);
 
 
                     paramIndex++;
@@ -169,19 +171,13 @@ namespace vpet
                 {
                     GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
                     currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
-
+                    SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
                     for (int i = 3; i < mainSelection.parameterList.Count; i++)
                     {
-                        // [ColorPicker Mod]
-                        //currentAddSelector.GetComponent<SnapSelect>().addElement(mainSelection.parameterList[i].name);
-                        SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
                         snapSelect.addElement(mainSelection.parameterList[i].name);
-                        // Subscribe to parameter change
-                        snapSelect.parameterChanged += AddSelectorChange;
-                        // Check if has color
-                        if (mainSelection.parameterList[i].name == "color")
-                            color = (Parameter<Color>)mainSelection.parameterList[i];
                     }
+                    snapSelect.parameterChanged += createAdditionalManipulator;
+                    currentAddSelector.SetActive(false);
                 }
 
                 createManipulator(0);
@@ -196,8 +192,6 @@ namespace vpet
             GameObject.DestroyImmediate(currentManipulator);
             GameObject.DestroyImmediate(currentAddSelector);
 
-            // [ColorPicker Mod]
-            GameObject.DestroyImmediate(colorPicker);
             manipulatorPanel.gameObject.SetActive(true);
 
             foreach (var manipSelec in instancedManipulatorSelectors)
@@ -205,6 +199,11 @@ namespace vpet
                 GameObject.DestroyImmediate(manipSelec);
             }
             instancedManipulatorSelectors.Clear();
+        }
+
+        private void createAdditionalManipulator(object sender, int i)
+        {
+            createManipulator(i + 3);
         }
 
         //!
@@ -217,6 +216,19 @@ namespace vpet
                 parameterChanged.Invoke(this, index);
             if (currentManipulator)
                 GameObject.Destroy(currentManipulator);
+
+            if (index < 0 && currentAddSelector)
+            {
+                currentAddButton.SetActive(false);
+                currentAddSelector.SetActive(true);
+                createManipulator(currentAddSelector.GetComponent<SnapSelect>().currentAxis+3);
+                return;
+            }
+            else if (index < 3 && currentAddSelector)
+            {
+                currentAddButton.SetActive(true);
+                currentAddSelector.SetActive(false);
+            }
 
             AbstractParameter abstractParam = mainSelection.parameterList[index];
             AbstractParameter.ParameterType type = abstractParam.vpetType;
@@ -232,6 +244,12 @@ namespace vpet
                     currentManipulator.GetComponent<Spinner>().Init(abstractParam);
                     break;
                 case AbstractParameter.ParameterType.COLOR:
+                    GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");
+                    currentManipulator = SceneObject.Instantiate(resourcePrefab, manipulatorPanel);
+                    currentManipulator.GetComponent<ColorSelect>().Init(abstractParam);
+                    // Set TRS manipulator to null
+                    parameterChanged.Invoke(this, -1);
+                    break;
                 case AbstractParameter.ParameterType.ACTION:
                 case AbstractParameter.ParameterType.BOOL:
                 case AbstractParameter.ParameterType.INT:
@@ -246,7 +264,8 @@ namespace vpet
             foreach (GameObject g in instancedManipulatorSelectors)
                 g.GetComponent<ManipulatorSelector>().visualizeIdle();
 
-            instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
+            if(index < 3)
+                instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
         }
 
         //!
@@ -294,28 +313,5 @@ namespace vpet
             if (setInteractable)
                 SetInteractable(false);
         }
-
-        // [ColorPicker Mod]
-        //!
-        //! Function called when the AddSelector spinner has its parameter changed
-        //! @param index of the parameter
-        //!
-        private void AddSelectorChange(object sender, int index)
-        {
-            if (colorPicker == null && color != null && index == 2) // TODO - fix magic number - why index of color is 2?
-            {
-                manipulatorPanel.gameObject.SetActive(false);
-                GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");
-                colorPicker = SceneObject.Instantiate(resourcePrefab, manipulatorSelectionPanel);
-                colorPicker.GetComponent<RectTransform>().localPosition = new Vector2(160f, -560f);
-                colorPicker.GetComponent<ColorSelect>().Init(color);
-                // Set T R S icons to idle
-                foreach (GameObject g in instancedManipulatorSelectors)
-                    g.GetComponent<ManipulatorSelector>().visualizeIdle();
-                // Set TRS manipulator to null
-                parameterChanged.Invoke(this, -1);
-            }
-        }
-
     }
 }

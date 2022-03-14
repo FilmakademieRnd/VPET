@@ -89,8 +89,11 @@ namespace vpet
         void OnEnable()
         {
             rect = this.GetComponent<RectTransform>();
-            snapSelect = this.transform.parent.GetComponent<SnapSelect>();
-            refRect = snapSelect.GetComponent<RectTransform>();
+            if (!snapSelect)
+            {
+                snapSelect = this.transform.parent.GetComponent<SnapSelect>();
+                refRect = snapSelect.GetComponent<RectTransform>();
+            }
             txt = this.GetComponent<TextMeshProUGUI>();
             size = Mathf.Max(rect.sizeDelta.x, rect.sizeDelta.y);
 
@@ -150,10 +153,10 @@ namespace vpet
         {
             if (idx == index)
             {
-                if (txt.color == Color.red)
+                if (txt.color == Helpers.getGlobalColor(0))
                     txt.color = Color.white;
                 else
-                    txt.color = Color.red;
+                    txt.color = Helpers.getGlobalColor(0);
             }
             else
             {
