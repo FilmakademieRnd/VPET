@@ -37,9 +37,9 @@ namespace vpet
         //! Init function of the ColorSelect that needs to be called manually 
         //! @param color This is the color parameter to be displayed and edited
         //!
-        public void Init(Parameter<Color> color)
+        public void Init(AbstractParameter param)
         {
-            col = color;
+            col = (Parameter<Color>)param;
 
             Color inColor = col.value;
 

@@ -58,7 +58,7 @@ namespace vpet
         //!
         public void visualizeActive()
         {
-            selectionButton.gameObject.GetComponent<Image>().color = selectionButton.colors.selectedColor;
+            selectionButton.gameObject.GetComponent<Image>().color = Helpers.getGlobalColor(0);
         }
 
         //!

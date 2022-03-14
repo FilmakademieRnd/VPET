@@ -186,6 +186,7 @@ namespace vpet
         //! which axis / element is currently active (edited)
         //!
         private int _currentAxis;
+        public int currentAxis { get => _currentAxis; }
 
         //!
         //! sensitivity multiplicator
@@ -323,7 +324,10 @@ namespace vpet
             if (_selectByClick)
                 _currentAxis = -1;
             else
+            {
                 _currentAxis = 0;
+                parameterChanged?.Invoke(this, 0);
+            }
             _elementCount = 0;
             _menuElementCount = 0;
         }
@@ -404,6 +408,9 @@ namespace vpet
                     element.GetComponent<RectTransform>().anchoredPosition = multiplyAlignedVector(_elementSize, false, -(0.1f + r * _elementValues.Count + e), true);
                 }
 
+            if(_elementCount == 1 && !_selectByClick)
+                showHighlighted(0, true);
+
             _initialized = true;
         }
 
@@ -453,10 +460,10 @@ namespace vpet
             }
         }
 
-        public void showHighlighted(int id)
+        public void showHighlighted(int id, bool force = false)
         {
 
-            if(_currentAxis != id)
+            if(force || _currentAxis != id)
                 highlightElement?.Invoke(this, id);
         }
 
@@ -636,21 +643,25 @@ namespace vpet
         //!
         public void OnEndDrag(PointerEventData data)
         {
+            int newAxis;
             if (_axisDecided /*&& _dragable*/ && ((_isVertical && !_majorAxisX) || (!_isVertical && _majorAxisX)))
             {
                 Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
                 if (_isVertical)
                 {
                     _contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / _elementSize.y)* _elementSize.y);
-                    _currentAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.y / _elementSize.y)+1) % (_elementCount));
+                    newAxis = Mathf.FloorToInt(((_contentPanel.anchoredPosition.y / _elementSize.y)+1) % (_elementCount));
                 }
                 else
                 {
                     _contentPanel.anchoredPosition = new Vector2(Mathf.Round(contentPos.x / _elementSize.x) * _elementSize.x, contentPos.y);
-                    _currentAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x)+1) % (_elementCount));
+                    newAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x)+1) % (_elementCount));
                 }
-                if (_currentAxis < 0)
-                    _currentAxis = _elementCount + _currentAxis;
+                if (newAxis < 0)
+                    newAxis = _elementCount + _currentAxis;
+                if(!_selectByClick)
+                    showHighlighted(newAxis);
+                _currentAxis = newAxis;
                 parameterChanged?.Invoke(this, _currentAxis);
                 setText(_elementValues[_currentAxis]);
             }
