@@ -13,7 +13,25 @@ MonoBehaviour:
   m_Name: VPET_Colors
   m_EditorClassIdentifier: 
   m_Presets:
-  - m_Name: Font
+  - m_Name: Font Color
+    m_Color: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
+  - m_Name: Font Regular
     m_Color: {r: 0, g: 0, b: 0, a: 1}
-  - m_Name: UI Element
-    m_Color: {r: 1, g: 0.6679427, b: 0, a: 1}
+  - m_Name: Font Highlighted
+    m_Color: {r: 0, g: 0, b: 0, a: 1}
+  - m_Name: Menu BG
+    m_Color: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
+  - m_Name: Menu Title BG
+    m_Color: {r: 0.21176471, g: 0.21176471, b: 0.21176471, a: 1}
+  - m_Name: DropDown/Textfield BG
+    m_Color: {r: 0.11372549, g: 0.11372549, b: 0.11372549, a: 1}
+  - m_Name: Button BG
+    m_Color: {r: 0.32941177, g: 0.32941177, b: 0.32941177, a: 1}
+  - m_Name: Element Selection/Highlight
+    m_Color: {r: 1, g: 0.56078434, b: 0.2509804, a: 1}
+  - m_Name: Default BG
+    m_Color: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
+  - m_Name: Floating Button BG
+    m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  - m_Name: Floating Button Icon
+    m_Color: {r: 1, g: 1, b: 1, a: 1}

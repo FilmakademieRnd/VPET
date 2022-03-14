@@ -84,11 +84,15 @@ namespace vpet
         //! The list containing all UI elemets of the current menu.
         //!
         private List<GameObject> m_uiElements;
-        //! List if Colors based on on Color Library in "\Assets\Editor\VPET_Colors.colors"
-        //! [0] Font color
-        //! [1] GUI element background color
         //!
-        Color[] m_colorLibrary;
+        //! Dictionary with VPET colors "\Assets\Editor\VPET_Colors.colors"
+        //!
+        private Dictionary<string, Color> m_VPETColors;
+        //!
+        //! Default Font and size
+        //!
+        private TMP_FontAsset m_DefaultFont;
+        private int m_DefaultFontSize;
 
         //!
         //! Init Function
@@ -110,9 +114,13 @@ namespace vpet
             UnityEngine.Object presetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(colorPresetPath);
             SerializedObject so = new SerializedObject(presetObject);
             SerializedProperty presets = so.FindProperty("m_Presets");
-            m_colorLibrary = new Color[presets.arraySize];
-            for (int i = 0; i < presets.arraySize; i++) {
-                    m_colorLibrary[i] = presets.GetArrayElementAtIndex(i).FindPropertyRelative("m_Color").colorValue; }
+            m_VPETColors = new Dictionary<string, Color>();
+            for (int i = 0; i < presets.arraySize; i++)             
+                m_VPETColors.Add(presets.GetArrayElementAtIndex(i).FindPropertyRelative("m_Name").stringValue, presets.GetArrayElementAtIndex(i).FindPropertyRelative("m_Color").colorValue);
+   
+            // default font and size
+            m_DefaultFontSize = 22;     // 22
+            m_DefaultFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberatiosSans"); // LiberatiosSans, Electronic Highway Sign SDF
 
             // [REVIEW]
             // Just for testing, please remove!
@@ -248,10 +256,13 @@ namespace vpet
                     {
                         newObject = GameObject.Instantiate(m_text, parentObject.transform);
                         TextMeshProUGUI textComponent = newObject.GetComponent<TextMeshProUGUI>();
-                        textComponent.text = ((Parameter<string>)item.Parameter).value;
-                        textComponent.color = m_colorLibrary[0];
-                    }
-                break;
+                        textComponent.text = ((Parameter<string>)item.Parameter).value;                        
+                        textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                        textComponent.font = m_DefaultFont;
+                        textComponent.fontSize = m_DefaultFontSize;
+                        textComponent.fontStyle = FontStyles.Bold;
+                     }
+                    break;
                 case MenuItem.IType.PARAMETER:
                     switch (item.Parameter.vpetType) 
                     {
@@ -263,9 +274,12 @@ namespace vpet
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = m_colorLibrary[0];
+                                textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                textComponent.font = m_DefaultFont;
+                                textComponent.fontSize = m_DefaultFontSize;
                                 Image imgButton = button.GetComponent<Image>();
-                                imgButton.color = m_colorLibrary[1];
+                                imgButton.color = m_VPETColors.GetValueOrDefault("Button BG");
+                                
                             }
                         break;
                         case AbstractParameter.ParameterType.BOOL:
@@ -276,6 +290,8 @@ namespace vpet
                                 toggle.isOn = ((Parameter<bool>) item.Parameter).value;
                                 Text textComponent = newObject.GetComponentInChildren<Text>();
                                 textComponent.text = item.Parameter.name;
+                                textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                textComponent.fontSize = m_DefaultFontSize;
                             }
                         break;
                         case AbstractParameter.ParameterType.STRING:
@@ -285,8 +301,10 @@ namespace vpet
                                 inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
                                 Image imgButton = inputField.GetComponent<Image>();
-                                imgButton.color = m_colorLibrary[1];
-                                inputField.textComponent.color = m_colorLibrary[0];
+                                imgButton.color = m_VPETColors.GetValueOrDefault("DropDown/Textfield BG");
+                                inputField.textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                inputField.textComponent.font = m_DefaultFont;
+                                inputField.textComponent.fontSize = m_DefaultFontSize;
                             }
                             break;
                         case AbstractParameter.ParameterType.LIST:
@@ -294,17 +312,24 @@ namespace vpet
                                 newObject = GameObject.Instantiate(m_dropdown, parentObject.transform);
                                 TMP_Dropdown dropDown = newObject.GetComponent<TMP_Dropdown>();
                                 List<string> names = new List<string>();
-                                
+
                                 foreach (AbstractParameter parameter in ((ListParameter)item.Parameter).parameterList)
                                     names.Add(parameter.name);
-                                
+
                                 dropDown.AddOptions(names);
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
-                                dropDown.image.color = m_colorLibrary[1]; 
-                                dropDown.captionText.color = m_colorLibrary[0];
-                                dropDown.itemText.color = m_colorLibrary[0];
+
+                                dropDown.image.color = m_VPETColors.GetValueOrDefault("DropDown/Textfield BG");                                
+                                dropDown.captionText.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                dropDown.captionText.font = m_DefaultFont;
+                                dropDown.captionText.fontSize = m_DefaultFontSize;
+                                dropDown.itemText.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                dropDown.itemText.font = m_DefaultFont;
+                                dropDown.itemText.fontSize = m_DefaultFontSize;
+
+
                             }
-                            break;
+                                break;
                     }
                 break;
             }
