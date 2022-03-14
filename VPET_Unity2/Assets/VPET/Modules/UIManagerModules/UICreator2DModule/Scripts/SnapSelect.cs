@@ -547,7 +547,7 @@ namespace vpet
         {
             Vector2 contentPos = _contentPanel.anchoredPosition;
 
-            if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > _contentMask.sizeDelta.x / 8f)
+            if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > (_isVertical? (_contentMask.sizeDelta.y / 8f) : (_contentMask.sizeDelta.x / 8f)))
             {
                 _majorAxisX = Mathf.Abs(_dragStart.x - data.position.x) > Mathf.Abs(_dragStart.y - data.position.y);
                 _axisDecided = true;

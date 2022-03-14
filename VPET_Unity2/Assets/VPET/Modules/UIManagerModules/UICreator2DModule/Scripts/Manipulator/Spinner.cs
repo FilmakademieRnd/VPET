@@ -57,7 +57,7 @@ namespace vpet
                 case AbstractParameter.ParameterType.FLOAT:
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
                     paramFloat.hasChanged += snapSelect.setParam;
-                    snapSelect.setSensitivity(10f);
+                    snapSelect.setSensitivity(100f);
                     snapSelect.addElement("", paramFloat.value);
                     break;
                 case AbstractParameter.ParameterType.VECTOR2:
