@@ -201,6 +201,9 @@ namespace vpet
             GameObject.DestroyImmediate(currentAddSelector);
 
             manipulatorPanel.gameObject.SetActive(true);
+            undoButton.gameObject.SetActive(false);
+            redoButton.gameObject.SetActive(false);
+            resetButton.gameObject.SetActive(false);
 
             foreach (var manipSelec in instancedManipulatorSelectors)
             {
@@ -312,7 +315,9 @@ namespace vpet
         {
 
             SetAlpha(1f);
-
+            undoButton.gameObject.SetActive(true);
+            redoButton.gameObject.SetActive(true);
+            resetButton.gameObject.SetActive(true);
             if (setInteractable)
             {
                 SetInteractable(true);
@@ -326,6 +331,9 @@ namespace vpet
         public void HideMenu(bool setInteractable = true)
         {
             SetAlpha(0f);
+            undoButton.gameObject.SetActive(false);
+            redoButton.gameObject.SetActive(false);
+            resetButton.gameObject.SetActive(false);
 
             if (setInteractable)
                 SetInteractable(false);
