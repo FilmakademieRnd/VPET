@@ -132,7 +132,7 @@ namespace vpet
 
         private void TapFunction(InputAction.CallbackContext c)
         {
-            Helpers.Log("Tapped");
+            //Helpers.Log("Tapped");
             InputEventArgs e = new InputEventArgs();
 
             if (c.performed)

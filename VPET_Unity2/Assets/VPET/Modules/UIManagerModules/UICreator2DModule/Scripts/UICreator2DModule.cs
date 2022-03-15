@@ -199,8 +199,8 @@ namespace vpet
         {
             GameObject.DestroyImmediate(currentManipulator);
             GameObject.DestroyImmediate(currentAddSelector);
-
-            manipulatorPanel.gameObject.SetActive(true);
+            if(manipulatorPanel)
+                manipulatorPanel.gameObject.SetActive(true);
             undoButton.gameObject.SetActive(false);
             redoButton.gameObject.SetActive(false);
             resetButton.gameObject.SetActive(false);
@@ -248,9 +248,36 @@ namespace vpet
             undoButton.onClick.RemoveAllListeners();
             redoButton.onClick.RemoveAllListeners();
             resetButton.onClick.RemoveAllListeners();
-            undoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).undoStep());
-            redoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).redoStep());
-            resetButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).reset());
+            switch (abstractParam.vpetType)
+            {
+                case AbstractParameter.ParameterType.FLOAT:
+                    undoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).undoStep());
+                    redoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).redoStep());
+                    resetButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).reset());
+                    break;
+                case AbstractParameter.ParameterType.VECTOR2:
+                    undoButton.onClick.AddListener(() => ((Parameter<Vector2>)abstractParam).undoStep());
+                    redoButton.onClick.AddListener(() => ((Parameter<Vector2>)abstractParam).redoStep());
+                    resetButton.onClick.AddListener(() => ((Parameter<Vector2>)abstractParam).reset());
+                    break;
+                case AbstractParameter.ParameterType.VECTOR3:
+                    undoButton.onClick.AddListener(() => ((Parameter<Vector3>)abstractParam).undoStep());
+                    redoButton.onClick.AddListener(() => ((Parameter<Vector3>)abstractParam).redoStep());
+                    resetButton.onClick.AddListener(() => ((Parameter<Vector3>)abstractParam).reset());
+                    break;
+                case AbstractParameter.ParameterType.QUATERNION:
+                    undoButton.onClick.AddListener(() => ((Parameter<Quaternion>)abstractParam).undoStep());
+                    redoButton.onClick.AddListener(() => ((Parameter<Quaternion>)abstractParam).redoStep());
+                    resetButton.onClick.AddListener(() => ((Parameter<Quaternion>)abstractParam).reset());
+                    break;
+                case AbstractParameter.ParameterType.COLOR:
+                    undoButton.onClick.AddListener(() => ((Parameter<Color>)abstractParam).undoStep());
+                    redoButton.onClick.AddListener(() => ((Parameter<Color>)abstractParam).redoStep());
+                    resetButton.onClick.AddListener(() => ((Parameter<Color>)abstractParam).reset());
+                    break;
+                default:
+                    break;
+            }
 
 
             switch (type)

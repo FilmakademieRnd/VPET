@@ -42,6 +42,28 @@ namespace vpet
         private int currentAxis;
         private SnapSelect snapSelect;
 
+        ~Spinner()
+        {
+            if(abstractParam != null)
+                switch (abstractParam.vpetType)
+                {
+                    case AbstractParameter.ParameterType.FLOAT:
+                        snapSelect.editingEnded -= ((Parameter<float>)abstractParam).addHistoryStep;
+                        break;
+                    case AbstractParameter.ParameterType.VECTOR2:
+                        snapSelect.editingEnded -= ((Parameter<Vector2>)abstractParam).addHistoryStep;
+                        break;
+                    case AbstractParameter.ParameterType.VECTOR3:
+                        snapSelect.editingEnded -= ((Parameter<Vector3>)abstractParam).addHistoryStep;
+                        break;
+                    case AbstractParameter.ParameterType.QUATERNION:
+                        snapSelect.editingEnded -= ((Parameter<Quaternion>)abstractParam).addHistoryStep;
+                        break;
+                    default:
+                        break;
+                }
+        }
+
         //!
         //! function to initalize the spinner
         //!
@@ -95,6 +117,24 @@ namespace vpet
         {
             snapSelect.parameterChanged += changeAxis;
             snapSelect.valueChanged += setValue;
+            //[REVIEW] Avoid Parameter casting
+            switch (abstractParam.vpetType)
+            {
+                case AbstractParameter.ParameterType.FLOAT:
+                    snapSelect.editingEnded += ((Parameter<float>)abstractParam).addHistoryStep;
+                    break;
+                case AbstractParameter.ParameterType.VECTOR2:
+                    snapSelect.editingEnded += ((Parameter<Vector2>)abstractParam).addHistoryStep;
+                    break;
+                case AbstractParameter.ParameterType.VECTOR3:
+                    snapSelect.editingEnded += ((Parameter<Vector3>)abstractParam).addHistoryStep;
+                    break;
+                case AbstractParameter.ParameterType.QUATERNION:
+                    snapSelect.editingEnded += ((Parameter<Quaternion>)abstractParam).addHistoryStep;
+                    break;
+                default:
+                    break;
+            }
         }
 
         //!

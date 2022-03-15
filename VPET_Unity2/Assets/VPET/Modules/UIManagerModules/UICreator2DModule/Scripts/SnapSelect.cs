@@ -100,7 +100,15 @@ namespace vpet
         //!
         public event EventHandler<bool> draggingAxis;
 
+        //!
+        //! Event emitted when elements shall update the higlighted status (All elements listen to this event)
+        //!
         public event EventHandler<int> highlightElement;
+
+        //!
+        //! Event emitted when editing of the current parameter ended (finger is lifted)
+        //!
+        public event EventHandler<bool> editingEnded;
 
         //!
         //! Event emitted when Axis dragging is in progress.
@@ -649,21 +657,25 @@ namespace vpet
                 Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
                 if (_isVertical)
                 {
-                    _contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / _elementSize.y)* _elementSize.y);
-                    newAxis = Mathf.FloorToInt(((_contentPanel.anchoredPosition.y / _elementSize.y)+1) % (_elementCount));
+                    _contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / _elementSize.y) * _elementSize.y);
+                    newAxis = Mathf.FloorToInt(((_contentPanel.anchoredPosition.y / _elementSize.y) + 1) % (_elementCount));
                 }
                 else
                 {
                     _contentPanel.anchoredPosition = new Vector2(Mathf.Round(contentPos.x / _elementSize.x) * _elementSize.x, contentPos.y);
-                    newAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x)+1) % (_elementCount));
+                    newAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x) + 1) % (_elementCount));
                 }
                 if (newAxis < 0)
                     newAxis = _elementCount + _currentAxis;
-                if(!_selectByClick)
+                if (!_selectByClick)
                     showHighlighted(newAxis);
                 _currentAxis = newAxis;
                 parameterChanged?.Invoke(this, _currentAxis);
                 setText(_elementValues[_currentAxis]);
+            }
+            else if (_axisDecided)
+            {
+                editingEnded?.Invoke(this, true);
             }
             _axisDecided = false;
             draggingAxis?.Invoke(this, true);
