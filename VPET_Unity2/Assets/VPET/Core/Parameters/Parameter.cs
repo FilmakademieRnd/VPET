@@ -185,6 +185,15 @@ namespace vpet
             _type = toVPETType(typeof(T));
             _distribute = distribute;
 
+            //history initialization
+            _initialValue = value;
+            _valueHistory = new List<T>();
+            _valueHistory.Add(value);
+            _currentHistoryPos = 0;
+            //maximum amount of stored undo/redo (history) steps
+            //[REVIEW] define globally? user adjustable?
+            _maxHistory = 20;
+
             if (parent)
             {
                 _id = (short)_parent.parameterList.Count;
@@ -216,6 +225,26 @@ namespace vpet
         }
 
         //!
+        //! The initial value of the parameter at constuction time
+        //!
+        private T _initialValue;
+
+        //!
+        //! A list of last editings to this parameter for undo/redo functionality
+        //!
+        private List<T> _valueHistory;
+
+        //!
+        //! A list of last editings to this parameter for undo/redo functionality
+        //!
+        private int _currentHistoryPos;
+
+        //!
+        //! A list of last editings to this parameter for undo/redo functionality
+        //!
+        private int _maxHistory;
+
+        //!
         //! Event emitted when parameter changed.
         //!
         public event EventHandler<T> hasChanged;
@@ -230,6 +259,63 @@ namespace vpet
         {
             _value = v;
             hasChanged?.Invoke(this, v);
+
+            //history maintaining
+            if (false) //[TODO] trigger for update (based on timer??)
+            {
+                _valueHistory.Add(v);
+                if (_currentHistoryPos < _valueHistory.Count - 1)
+                    _valueHistory.RemoveRange(_currentHistoryPos+1, (_valueHistory.Count - _currentHistoryPos - 1));
+                if (_valueHistory.Count <= _maxHistory)
+                    _currentHistoryPos++;
+                else
+                    _valueHistory.RemoveAt(0);
+            }
+        }
+
+        //!
+        //! undo the latest change to the parameter
+        //! @return sucess of undo (false if no earlier versions are available)
+        //!
+        public bool undoStep()
+        {
+            if (_currentHistoryPos > 0)
+            {
+                _value = _valueHistory[_currentHistoryPos - 1];
+                hasChanged?.Invoke(this, _value);
+                _currentHistoryPos--;
+                return true;
+            }
+            return false;
+        }
+
+        //!
+        //! redo the next change to the parameter
+        //! @return sucess of redo (false if no later versions are available)
+        //!
+        public bool redoStep()
+        {
+            if (_currentHistoryPos < (_valueHistory.Count - 1))
+            {
+                _value = _valueHistory[_currentHistoryPos + 1];
+                hasChanged?.Invoke(this, _value);
+                _currentHistoryPos++;
+                return true;
+            }
+            return false;
+        }
+
+        //!
+        //! reset parameter to initial value
+        //!
+        public void reset()
+        {
+            _currentHistoryPos = 0;
+            _valueHistory = new List<T>();
+            _valueHistory.Add(_initialValue);
+            _value = _initialValue;
+            hasChanged?.Invoke(this, _value);
+
         }
 
         //!

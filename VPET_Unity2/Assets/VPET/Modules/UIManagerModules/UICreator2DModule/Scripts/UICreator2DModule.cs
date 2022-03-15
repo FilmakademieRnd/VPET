@@ -33,6 +33,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace vpet
 {
@@ -68,6 +69,9 @@ namespace vpet
         private Transform UI2D;
         private Transform manipulatorPanel;
         private Transform manipulatorSelectionPanel;
+        private Button undoButton;
+        private Button redoButton;
+        private Button resetButton;
 
         public bool blocksRaycasts = true;
 
@@ -89,6 +93,10 @@ namespace vpet
             UI2D = canvasTrans.GetChild(0).transform;
             manipulatorSelectionPanel = UI2D.GetChild(0);
             manipulatorPanel = UI2D.GetChild(1);
+            undoButton = UI2D.GetChild(2).GetChild(0).GetComponent<Button>();
+            redoButton = UI2D.GetChild(2).GetChild(1).GetComponent<Button>();
+            resetButton = UI2D.GetChild(2).GetChild(2).GetComponent<Button>();
+
 
             selectorPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Manipulator_Selector");
 
@@ -232,6 +240,15 @@ namespace vpet
 
             AbstractParameter abstractParam = mainSelection.parameterList[index];
             AbstractParameter.ParameterType type = abstractParam.vpetType;
+
+            //[TODO] Avoid Parameter casting
+            undoButton.onClick.RemoveAllListeners();
+            redoButton.onClick.RemoveAllListeners();
+            resetButton.onClick.RemoveAllListeners();
+            undoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).undoStep());
+            redoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).redoStep());
+            resetButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).reset());
+
 
             switch (type)
             {
