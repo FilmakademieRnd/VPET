@@ -12,4 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571c3159f3d367c44bbd7573b8d3f06d, type: 3}
   m_Name: DATA_VPET_Colors
   m_EditorClassIdentifier: 
-  colors: []
+  colors:
+  - name: Font Color
+    color: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
+  - name: Font Regular
+    color: {r: 0, g: 0, b: 0, a: 1}
+  - name: Font Highlighted
+    color: {r: 0, g: 0, b: 0, a: 1}
+  - name: Menu BG
+    color: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
+  - name: Menu Title BG
+    color: {r: 0.21176471, g: 0.21176471, b: 0.21176471, a: 1}
+  - name: DropDown/Textfield BG
+    color: {r: 0.11372549, g: 0.11372549, b: 0.11372549, a: 1}
+  - name: Button BG
+    color: {r: 0.32941177, g: 0.32941177, b: 0.32941177, a: 1}
+  - name: Element Selection/Highlight
+    color: {r: 1, g: 0.56078434, b: 0.2509804, a: 1}
+  - name: Default BG
+    color: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
+  - name: Floating Button BG
+    color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  - name: Floating Button Icon
+    color: {r: 1, g: 1, b: 1, a: 1}

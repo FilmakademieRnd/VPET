@@ -207,8 +207,11 @@ namespace vpet
         //!
         //! Getter Function that returns color from global DATA_VPET_Colors resource file (loacted in \Core\Managers\UIManager\Resources)
         //!
-        public Color getGlobalColor(String colorName) {            
-            return VPETColorValues.colors.Find(x => x.name.Contains(colorName)).color;
+        public Color getGlobalColor(String colorName) {
+            if (!VPETColorValues.colors.Exists(x => x.name.Contains(colorName)))
+                return new Color(1,0,1);
+            else
+                return VPETColorValues.colors.Find(x => x.name.Contains(colorName)).color;
         }
     }
 }
