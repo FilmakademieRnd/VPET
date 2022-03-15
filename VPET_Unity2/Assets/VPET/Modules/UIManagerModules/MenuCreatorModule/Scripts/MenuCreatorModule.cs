@@ -85,10 +85,6 @@ namespace vpet
         //!
         private List<GameObject> m_uiElements;
         //!
-        //! Dictionary with VPET colors "\Assets\Editor\VPET_Colors.colors"
-        //!
-        private Dictionary<string, Color> m_VPETColors;
-        //!
         //! Default Font and size
         //!
         private TMP_FontAsset m_DefaultFont;
@@ -109,15 +105,6 @@ namespace vpet
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
 
-            // load color library
-            string colorPresetPath = "Assets/VPET/Core/Managers/UIManager/Editor/VPET_Colors.colors";
-            UnityEngine.Object presetObject = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(colorPresetPath);
-            SerializedObject so = new SerializedObject(presetObject);
-            SerializedProperty presets = so.FindProperty("m_Presets");
-            m_VPETColors = new Dictionary<string, Color>();
-            for (int i = 0; i < presets.arraySize; i++)             
-                m_VPETColors.Add(presets.GetArrayElementAtIndex(i).FindPropertyRelative("m_Name").stringValue, presets.GetArrayElementAtIndex(i).FindPropertyRelative("m_Color").colorValue);
-   
             // default font and size
             m_DefaultFontSize = 22;     // 22
             m_DefaultFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberatiosSans"); // LiberatiosSans, Electronic Highway Sign SDF
@@ -257,7 +244,7 @@ namespace vpet
                         newObject = GameObject.Instantiate(m_text, parentObject.transform);
                         TextMeshProUGUI textComponent = newObject.GetComponent<TextMeshProUGUI>();
                         textComponent.text = ((Parameter<string>)item.Parameter).value;                        
-                        textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                        textComponent.color = manager.getGlobalColor("Font Color");
                         textComponent.font = m_DefaultFont;
                         textComponent.fontSize = m_DefaultFontSize;
                         textComponent.fontStyle = FontStyles.Bold;
@@ -274,11 +261,11 @@ namespace vpet
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                textComponent.color = manager.getGlobalColor("Font Color");
                                 textComponent.font = m_DefaultFont;
                                 textComponent.fontSize = m_DefaultFontSize;
                                 Image imgButton = button.GetComponent<Image>();
-                                imgButton.color = m_VPETColors.GetValueOrDefault("Button BG");
+                                imgButton.color = manager.getGlobalColor("Button BG");
                                 
                             }
                         break;
@@ -290,7 +277,7 @@ namespace vpet
                                 toggle.isOn = ((Parameter<bool>) item.Parameter).value;
                                 Text textComponent = newObject.GetComponentInChildren<Text>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                textComponent.color = manager.getGlobalColor("Font Color");
                                 textComponent.fontSize = m_DefaultFontSize;
                             }
                         break;
@@ -301,8 +288,8 @@ namespace vpet
                                 inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
                                 Image imgButton = inputField.GetComponent<Image>();
-                                imgButton.color = m_VPETColors.GetValueOrDefault("DropDown/Textfield BG");
-                                inputField.textComponent.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                imgButton.color = manager.getGlobalColor("DropDown/Textfield BG");
+                                inputField.textComponent.color = manager.getGlobalColor("Font Color");
                                 inputField.textComponent.font = m_DefaultFont;
                                 inputField.textComponent.fontSize = m_DefaultFontSize;
                             }
@@ -319,14 +306,13 @@ namespace vpet
                                 dropDown.AddOptions(names);
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
 
-                                dropDown.image.color = m_VPETColors.GetValueOrDefault("DropDown/Textfield BG");                                
-                                dropDown.captionText.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                dropDown.image.color = manager.getGlobalColor("DropDown/Textfield BG");                                
+                                dropDown.captionText.color = manager.getGlobalColor("Font Color");
                                 dropDown.captionText.font = m_DefaultFont;
                                 dropDown.captionText.fontSize = m_DefaultFontSize;
-                                dropDown.itemText.color = m_VPETColors.GetValueOrDefault("Font Color");
+                                dropDown.itemText.color = manager.getGlobalColor("Font Color");
                                 dropDown.itemText.font = m_DefaultFont;
                                 dropDown.itemText.fontSize = m_DefaultFontSize;
-
 
                             }
                                 break;

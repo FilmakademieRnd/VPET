@@ -61,6 +61,10 @@ namespace vpet
         //! Event emitted to unhighlight a scene object.
         //!
         public event EventHandler<SceneObject> unhighlightLocked;
+        //!
+        //! Load global VPET color names and values.
+        //!
+        private VPETColorSettings VPETColorValues = Resources.Load("DATA_VPET_Colors") as VPETColorSettings;
 
         // Event emitted when TRS manipulator should change mode
         //public event EventHandler<int> manipulatorChange;
@@ -199,5 +203,12 @@ namespace vpet
         //{
         //    manipulatorChange?.Invoke(this, manipulatorMode);
         //}
+
+        //!
+        //! Getter Function that returns color from global DATA_VPET_Colors resource file (loacted in \Core\Managers\UIManager\Resources)
+        //!
+        public Color getGlobalColor(String colorName) {            
+            return VPETColorValues.colors.Find(x => x.name.Contains(colorName)).color;
+        }
     }
 }
