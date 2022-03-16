@@ -201,9 +201,12 @@ namespace vpet
             GameObject.DestroyImmediate(currentAddSelector);
             if(manipulatorPanel)
                 manipulatorPanel.gameObject.SetActive(true);
-            undoButton.gameObject.SetActive(false);
-            redoButton.gameObject.SetActive(false);
-            resetButton.gameObject.SetActive(false);
+            if (undoButton)
+            {
+                undoButton.gameObject.SetActive(false);
+                redoButton.gameObject.SetActive(false);
+                resetButton.gameObject.SetActive(false);
+            }
 
             foreach (var manipSelec in instancedManipulatorSelectors)
             {

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7995702603731389406}
   - component: {fileID: 7995702603731389345}
   - component: {fileID: 7995702603731389344}
-  - component: {fileID: 7995702603731389347}
+  - component: {fileID: -4559926708153733942}
   m_Layer: 0
   m_Name: ARSessionOrigin
   m_TagString: Untagged
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastPrefab: {fileID: 0}
---- !u!114 &7995702603731389347
+--- !u!114 &-4559926708153733942
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

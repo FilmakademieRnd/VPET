@@ -64,7 +64,7 @@ namespace vpet
         //!
         //! Load global VPET color names and values.
         //!
-        private VPETColorSettings VPETColorValues = Resources.Load("DATA_VPET_Colors") as VPETColorSettings;
+        private VPETColorSettings VPETColorValues;
 
         // Event emitted when TRS manipulator should change mode
         //public event EventHandler<int> manipulatorChange;
@@ -138,6 +138,7 @@ namespace vpet
             m_selectedObjects = new List<SceneObject>();
             m_menus = new List<MenuTree>();
             m_buttons = new List<MenuButton>();
+            VPETColorValues = Resources.Load("DATA_VPET_Colors") as VPETColorSettings;
         }
 
         public void highlightSceneObject(SceneObject sceneObject)

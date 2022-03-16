@@ -64,7 +64,7 @@ namespace vpet
 
             Camera.main.gameObject.AddComponent<ARPoseDriver>();
             Camera.main.gameObject.AddComponent<ARCameraManager>();
-            Camera.main.gameObject.AddComponent<AROcclusionManager>();
+            //Camera.main.gameObject.AddComponent<AROcclusionManager>();
             Camera.main.gameObject.AddComponent<ARCameraBackground>();
 
             vpetCore = core;

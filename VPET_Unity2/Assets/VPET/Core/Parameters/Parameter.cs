@@ -266,7 +266,6 @@ namespace vpet
         //!
         public void addHistoryStep(object sender, bool e)
         {
-            Debug.Log("Added Step");
             if (_currentHistoryPos < _valueHistory.Count - 1)
                 _valueHistory.RemoveRange(_currentHistoryPos + 1, (_valueHistory.Count - _currentHistoryPos - 1));
             _valueHistory.Add(_value);
