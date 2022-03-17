@@ -186,6 +186,11 @@ namespace vpet
         private bool _axisDecided;
 
         //!
+        //! Canvas of SnapSelect in parent object
+        //!
+        private Canvas _canvas;
+
+        //!
         //! Did the drag start
         //!
         private Vector2 _dragStart;
@@ -324,6 +329,8 @@ namespace vpet
         //!
         protected override void Awake()
         {
+            _canvas = GetComponentInParent<Canvas>();
+
             _elementValues = new List<float>();
             _elements = new List<SnapSelectElement>();
             background = null;
@@ -554,6 +561,7 @@ namespace vpet
         public void OnDrag(PointerEventData data)
         {
             Vector2 contentPos = _contentPanel.anchoredPosition;
+            float scale = 1/_canvas.scaleFactor;
 
             if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > (_isVertical? (_contentMask.sizeDelta.y / 8f) : (_contentMask.sizeDelta.x / 8f)))
             {
@@ -574,16 +582,16 @@ namespace vpet
                     {
                         if (!_loop && (_contentPanel.anchoredPosition.y > (_previewExtend + 0.4f) * _elementSize.y))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y);
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y * scale);
                         }
                         else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y);
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y * scale);
                         }
                         else if (_loop || ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
                                     && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y)))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y);
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y * scale);
                         }
                         draggingAxis?.Invoke(this, true);
 
@@ -601,16 +609,16 @@ namespace vpet
                     {
                         if (!_loop && (_contentPanel.anchoredPosition.x > (_previewExtend + 0.4f) * _elementSize.x))
                         {
-                            _contentPanel.anchoredPosition = new Vector2((_previewExtend + 0.4f) * _elementSize.x, contentPos.y);
+                            _contentPanel.anchoredPosition = new Vector2((_previewExtend + 0.4f) * _elementSize.x * scale, contentPos.y);
                         }
                         else if (!_loop && (_contentPanel.anchoredPosition.x < -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x, contentPos.y);
+                            _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x * scale, contentPos.y);
                         }
                         else if (_loop || (_contentPanel.anchoredPosition.x < (_previewExtend + 0.4f) * _elementSize.x)
                                     && (_contentPanel.anchoredPosition.x > -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
                         {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x, contentPos.y);
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x * scale, contentPos.y);
                         }
                         draggingAxis?.Invoke(this, true);
                     }

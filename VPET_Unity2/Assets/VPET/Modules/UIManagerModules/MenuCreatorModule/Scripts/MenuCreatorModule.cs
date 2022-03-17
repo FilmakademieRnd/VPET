@@ -83,11 +83,6 @@ namespace vpet
         //! The list containing all UI elemets of the current menu.
         //!
         private List<GameObject> m_uiElements;
-        //!
-        //! Default Font and size
-        //!
-        private TMP_FontAsset m_DefaultFont;
-        private int m_DefaultFontSize;
 
         //!
         //! Init Function
@@ -103,10 +98,6 @@ namespace vpet
             m_text = Resources.Load("Prefabs/MenuText") as GameObject;
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
-
-            // default font and size
-            m_DefaultFontSize = 22;     // 22
-            m_DefaultFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberatiosSans"); // LiberatiosSans, Electronic Highway Sign SDF
 
             // [REVIEW]
             // Just for testing, please remove!
@@ -243,9 +234,9 @@ namespace vpet
                         newObject = GameObject.Instantiate(m_text, parentObject.transform);
                         TextMeshProUGUI textComponent = newObject.GetComponent<TextMeshProUGUI>();
                         textComponent.text = ((Parameter<string>)item.Parameter).value;                        
-                        textComponent.color = manager.getGlobalColor("Font Color");
-                        textComponent.font = m_DefaultFont;
-                        textComponent.fontSize = m_DefaultFontSize;
+                        textComponent.color = manager.uiSettings.colors.FontColor;
+                        textComponent.font = manager.uiSettings.defaultFont;
+                        textComponent.fontSize = manager.uiSettings.defaultFontSize;
                         textComponent.fontStyle = FontStyles.Bold;
                      }
                     break;
@@ -260,11 +251,11 @@ namespace vpet
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = manager.getGlobalColor("Font Color");
-                                textComponent.font = m_DefaultFont;
-                                textComponent.fontSize = m_DefaultFontSize;
+                                textComponent.color = manager.uiSettings.colors.FontColor;
+                                textComponent.font = manager.uiSettings.defaultFont;
+                                textComponent.fontSize = manager.uiSettings.defaultFontSize;
                                 Image imgButton = button.GetComponent<Image>();
-                                imgButton.color = manager.getGlobalColor("Button BG");
+                                imgButton.color = manager.uiSettings.colors.ButtonBG;
                                 
                             }
                         break;
@@ -276,8 +267,8 @@ namespace vpet
                                 toggle.isOn = ((Parameter<bool>) item.Parameter).value;
                                 Text textComponent = newObject.GetComponentInChildren<Text>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = manager.getGlobalColor("Font Color");
-                                textComponent.fontSize = m_DefaultFontSize;
+                                textComponent.color = manager.uiSettings.colors.FontColor;
+                                textComponent.fontSize = manager.uiSettings.defaultFontSize;
                             }
                         break;
                         case AbstractParameter.ParameterType.STRING:
@@ -287,10 +278,10 @@ namespace vpet
                                 inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
                                 Image imgButton = inputField.GetComponent<Image>();
-                                imgButton.color = manager.getGlobalColor("DropDown/Textfield BG");
-                                inputField.textComponent.color = manager.getGlobalColor("Font Color");
-                                inputField.textComponent.font = m_DefaultFont;
-                                inputField.textComponent.fontSize = m_DefaultFontSize;
+                                imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                inputField.textComponent.color = manager.uiSettings.colors.FontColor;
+                                inputField.textComponent.font = manager.uiSettings.defaultFont;
+                                inputField.textComponent.fontSize = manager.uiSettings.defaultFontSize;
                             }
                             break;
                         case AbstractParameter.ParameterType.LIST:
@@ -305,13 +296,13 @@ namespace vpet
                                 dropDown.AddOptions(names);
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
 
-                                dropDown.image.color = manager.getGlobalColor("DropDown/Textfield BG");                                
-                                dropDown.captionText.color = manager.getGlobalColor("Font Color");
-                                dropDown.captionText.font = m_DefaultFont;
-                                dropDown.captionText.fontSize = m_DefaultFontSize;
-                                dropDown.itemText.color = manager.getGlobalColor("Font Color");
-                                dropDown.itemText.font = m_DefaultFont;
-                                dropDown.itemText.fontSize = m_DefaultFontSize;
+                                dropDown.image.color = manager.uiSettings.colors.DropDown_TextfieldBG;                                
+                                dropDown.captionText.color = manager.uiSettings.colors.FontColor;
+                                dropDown.captionText.font = manager.uiSettings.defaultFont;
+                                dropDown.captionText.fontSize = manager.uiSettings.defaultFontSize;
+                                dropDown.itemText.color = manager.uiSettings.colors.FontColor;
+                                dropDown.itemText.font = manager.uiSettings.defaultFont;
+                                dropDown.itemText.fontSize = manager.uiSettings.defaultFontSize;
 
                             }
                                 break;

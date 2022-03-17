@@ -43,8 +43,8 @@ namespace vpet
     public class UICreator2DModule : UIManagerModule
     {
         // icon layout configuration
-        private int selectorSize = 100;
-        private int selectorSpacing = 10;
+        private int selectorSize = 15;
+        private int selectorSpacing = 2;
 
         //Currently displayed manipulator (can be null if none is displayed)
         GameObject currentManipulator;

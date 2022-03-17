@@ -33,6 +33,8 @@ namespace vpet
 
         private Parameter<Color> col = null;
 
+        private Canvas _canvas;
+
         //!
         //! Init function of the ColorSelect that needs to be called manually 
         //! @param color This is the color parameter to be displayed and edited
@@ -63,9 +65,10 @@ namespace vpet
         //!
         protected override void OnEnable()
         {
+            _canvas = GetComponentInParent<Canvas>();
             // Grab picker dimensions
             RectTransform rect = GetComponent<RectTransform>();
-            pickerSize = rect.sizeDelta;
+            pickerSize = rect.rect.size * _canvas.scaleFactor;
 
             // Grab material
             mat = GetComponent<Image>().material;

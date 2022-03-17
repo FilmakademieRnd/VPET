@@ -64,10 +64,8 @@ namespace vpet
         //!
         //! Load global VPET color names and values.
         //!
-        private VPETColorSettings VPETColorValues;
-
-        // Event emitted when TRS manipulator should change mode
-        //public event EventHandler<int> manipulatorChange;
+        private static VPETUISettings m_uiSettings;
+        public VPETUISettings uiSettings { get => m_uiSettings; }
 
         //!
         //! Event emitted when a MenuTree has been selected.
@@ -138,7 +136,7 @@ namespace vpet
             m_selectedObjects = new List<SceneObject>();
             m_menus = new List<MenuTree>();
             m_buttons = new List<MenuButton>();
-            VPETColorValues = Resources.Load("DATA_VPET_Colors") as VPETColorSettings;
+            m_uiSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
         }
 
         public void highlightSceneObject(SceneObject sceneObject)
@@ -195,24 +193,6 @@ namespace vpet
         public void showMenu(MenuTree menu)
         {
             menuSelected?.Invoke(this, menu);
-        }
-
-        //!
-        //! Function that changes TRS manipulator mode
-        //!
-        //public void setManipulatorMode(int manipulatorMode)
-        //{
-        //    manipulatorChange?.Invoke(this, manipulatorMode);
-        //}
-
-        //!
-        //! Getter Function that returns color from global DATA_VPET_Colors resource file (loacted in \Core\Managers\UIManager\Resources)
-        //!
-        public Color getGlobalColor(String colorName) {
-            if (!VPETColorValues.colors.Exists(x => x.name.Contains(colorName)))
-                return new Color(1,0,1);
-            else
-                return VPETColorValues.colors.Find(x => x.name.Contains(colorName)).color;
         }
     }
 }

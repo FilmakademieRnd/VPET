@@ -12,26 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571c3159f3d367c44bbd7573b8d3f06d, type: 3}
   m_Name: DATA_VPET_Colors
   m_EditorClassIdentifier: 
+  defaultFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  defaultFontSize: 5
   colors:
-  - name: Font Color
-    color: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
-  - name: Font Regular
-    color: {r: 0, g: 0, b: 0, a: 1}
-  - name: Font Highlighted
-    color: {r: 0, g: 0, b: 0, a: 1}
-  - name: Menu BG
-    color: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
-  - name: Menu Title BG
-    color: {r: 0.21176471, g: 0.21176471, b: 0.21176471, a: 1}
-  - name: DropDown/Textfield BG
-    color: {r: 0.11372549, g: 0.11372549, b: 0.11372549, a: 1}
-  - name: Button BG
-    color: {r: 0.32941177, g: 0.32941177, b: 0.32941177, a: 1}
-  - name: Element Selection/Highlight
-    color: {r: 1, g: 0.56078434, b: 0.2509804, a: 1}
-  - name: Default BG
-    color: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
-  - name: Floating Button BG
-    color: {r: 0, g: 0, b: 0, a: 0.5019608}
-  - name: Floating Button Icon
-    color: {r: 1, g: 1, b: 1, a: 1}
+    FontColor: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
+    FontRegular: {r: 0, g: 0, b: 0, a: 1}
+    FontHighlighted: {r: 0, g: 0, b: 0, a: 1}
+    MenuBG: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 1}
+    MenuTitleBG: {r: 0.21176471, g: 0.21176471, b: 0.21176471, a: 1}
+    DropDown_TextfieldBG: {r: 0.11372549, g: 0.11372549, b: 0.11372549, a: 1}
+    ButtonBG: {r: 0.32941177, g: 0.32941177, b: 0.32941177, a: 1}
+    ElementSelection_Highlight: {r: 1, g: 0.56078434, b: 0.2509804, a: 1}
+    DefaultBG: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 0}
+    FloatingButtonBG: {r: 0, g: 0, b: 0, a: 0.5019608}
+    FloatingButtonIcon: {r: 1, g: 1, b: 1, a: 1}

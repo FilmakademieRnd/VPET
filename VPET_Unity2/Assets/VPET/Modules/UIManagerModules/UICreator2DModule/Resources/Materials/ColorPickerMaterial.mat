@@ -76,6 +76,6 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _InputColor: {r: 0.7199998, g: 0, b: 1, a: 1}
-    - _InputPos: {r: 0.74666667, g: 0.8233333, b: 0.9, a: 0.78666663}
+    - _InputColor: {r: 0.21633816, g: 0, b: 1, a: 1}
+    - _InputPos: {r: 0.7114174, g: 0.31158686, b: 0.9, a: 0.702723}
   m_BuildTextureStacks: []
