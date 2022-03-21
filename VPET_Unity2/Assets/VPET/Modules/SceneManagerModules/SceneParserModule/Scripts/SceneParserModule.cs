@@ -62,7 +62,7 @@ namespace vpet
         //!
         //! Constructor
         //!
-        public SceneParserModule(string name, Core core) : base(name, core) 
+        public SceneParserModule(string name, Core core) : base(name, core)
         {
             if (!core.isServer)
                 load = false;
@@ -99,7 +99,8 @@ namespace vpet
                 SceneManager.SceneNode node = new SceneManager.SceneNode();
                 Transform trans = gameObject.transform;
                 SceneObject sceneObject = null;
-                if (trans.GetComponent<Light>() != null) {
+                if (trans.GetComponent<Light>() != null)
+                {
                     Light light = trans.GetComponent<Light>();
                     node = ParseLight(light);
                     switch (light.type)
@@ -117,19 +118,22 @@ namespace vpet
                             sceneObject = gameObject.AddComponent<SceneObjectAreaLight>();
                             break;
                     }
-                    manager.sceneLightList.Add((SceneObjectLight) sceneObject);
+                    manager.sceneLightList.Add((SceneObjectLight)sceneObject);
                 }
-                else if (trans.GetComponent<Camera>() != null) {
+                else if (trans.GetComponent<Camera>() != null)
+                {
                     node = ParseCamera(trans.GetComponent<Camera>());
                     sceneObject = gameObject.AddComponent<SceneObjectCamera>();
                     manager.sceneCameraList.Add((SceneObjectCamera)sceneObject);
                 }
-                else if (trans.GetComponent<MeshFilter>() != null) {
+                else if (trans.GetComponent<MeshFilter>() != null)
+                {
                     node = ParseMesh(trans, ref sceneData);
                     if (gameObject.tag == "editable")
                         sceneObject = gameObject.AddComponent<SceneObject>();
                 }
-                else if (trans.GetComponent<SkinnedMeshRenderer>() != null) {
+                else if (trans.GetComponent<SkinnedMeshRenderer>() != null)
+                {
                     node = ParseSkinnedMesh(trans, ref gameObjects, ref sceneData);
                     if (gameObject.tag == "editable")
                         sceneObject = gameObject.AddComponent<SceneObject>();
@@ -199,7 +203,7 @@ namespace vpet
             nodeCamera.near = camera.nearClipPlane;
             nodeCamera.far = camera.farClipPlane;
             // [REVIEW] not supported by Unity?
-            nodeCamera.focalDist = 1f;      
+            nodeCamera.focalDist = 1f;
             nodeCamera.aperture = 2.8f;
             return nodeCamera;
         }
@@ -312,36 +316,156 @@ namespace vpet
         //!
         private void processMaterial(SceneManager.SceneNodeGeo node, Material material, ref SceneManager.SceneDataHandler.SceneData sceneData)
         {
-            node.textureIds = new int[11] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-            node.textureTypes = new int[11] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-
-            if (material != null)
+            if (material != null || material.shader != null)
             {
-                // if materials's shader is not standard, add this material to material package. 
-                // Currently this will only get the material name and try to load it on client side. If this fails, it will fallback to Standard.
-                node.materialId = processMaterial(material, ref sceneData.materialList);
+                // already stored ?
+                for (int i = 0; i < sceneData.materialList.Count; i++)
+                {
+                    if (sceneData.materialList[i].materialID == material.GetInstanceID())
+                    {
+                        node.materialId = i;
+                    }
+                }
 
+                // create material package
+                SceneManager.MaterialPackage matPack = new SceneManager.MaterialPackage();
+                matPack.materialID = material.GetInstanceID();
+                matPack.name = material.name;
+
+                // shader config
+                matPack.shaderConfig = new bool[SceneManager.shaderKeywords.Length];
+                int idx = 0;
+                foreach (string keyWord in SceneManager.shaderKeywords)
+                {
+                    if (material.IsKeywordEnabled(keyWord))
+                        matPack.shaderConfig[idx] = true;
+                    else
+                        matPack.shaderConfig[idx] = false;
+                    idx++;
+                }
+
+                // shader/material properties 
+                int propertyCount = material.shader.GetPropertyCount();
+                matPack.shaderPropertyIds = new int[propertyCount];
+                matPack.shaderPropertyTypes = new int[propertyCount];
+                matPack.shaderProperties = new byte[0];
+                // debug
+                //System.Tuple<string, int>[] propertyNames = new System.Tuple<string, int>[propertyCount];
+                for (int i = 0; i < propertyCount; i++)
+                {
+                    matPack.shaderPropertyIds[i] = material.shader.GetPropertyNameId(i);
+                    matPack.shaderPropertyTypes[i] = (int)material.shader.GetPropertyType(i);
+                    // debug
+                    //propertyNames[i] = new Tuple<string, int>(material.shader.GetPropertyName(i), (int)material.shader.GetPropertyType(i));
+
+                    byte[] shaderData;
+                    int dstIdx = 0;
+                    switch (matPack.shaderPropertyTypes[i])
+                    {
+                        // color
+                        case 0:
+                            shaderData = new byte[4 * SceneManager.SceneDataHandler.size_float];
+                            Color color = material.GetColor(matPack.shaderPropertyIds[i]);
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.r), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.g), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.b), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            Buffer.BlockCopy(BitConverter.GetBytes(color.a), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            break;
+                        // vector 4
+                        case 1:
+                            shaderData = new byte[4 * SceneManager.SceneDataHandler.size_float];
+                            Vector4 vec4 = material.GetVector(matPack.shaderPropertyIds[i]);
+                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.x), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.y), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.z), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.w), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            break;
+                        // float, range
+                        case 2:
+                        case 3:
+                            shaderData = new byte[SceneManager.SceneDataHandler.size_float];
+                            float f = material.GetFloat(matPack.shaderPropertyIds[i]);
+                            Buffer.BlockCopy(BitConverter.GetBytes(f), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            dstIdx += SceneManager.SceneDataHandler.size_float;
+                            break;
+                        // Texture (handled separately)
+                        //case 4:
+                        //  break;
+                        default:
+                            shaderData = new byte[0];
+                            break;
+                    }
+                    matPack.shaderProperties = SceneManager.SceneDataHandler.Concat<byte>(matPack.shaderProperties, shaderData);
+                }
+
+                // deprecated values stored in node
                 if (material.HasProperty("_Color"))
                 {
                     node.color = new float[4] { material.color.r, material.color.g, material.color.b, material.color.a };
                 }
 
+                // deprecated values stored in node
                 if (material.HasProperty("_Glossiness"))
                     node.roughness = material.GetFloat("_Glossiness");
 
-                int[] textureIDs = material.GetTexturePropertyNameIDs();
-
-                int idx = 0;
-                foreach (int i in textureIDs)
+                // if material within Resources/VPET than use load material
+                string matName = material.name.Replace("(Instance)", "").Trim();
+                Material _mat = Resources.Load(string.Format("VPET/Materials/{0}", matName), typeof(Material)) as Material;
+                if (_mat)
                 {
-                    Texture2D texture = (Texture2D) material.GetTexture(i);
+                    Helpers.Log("mat type" + 1 + " material " + material.name);
+                    matPack.type = 1;
+                    matPack.src = matName;
+                }
+                else
+                {
+                    Helpers.Log("mat type" + 2 + " shader " + material.shader.name);
+                    matPack.type = 2;
+                    matPack.src = material.shader.name;
+                }
+
+                // debug
+                string[] texNames = material.GetTexturePropertyNames();
+                // texture slots
+                int[] texNameIDs = material.GetTexturePropertyNameIDs();
+                matPack.textureIds = new int[texNameIDs.Length];
+                matPack.textureNameIds = new int[texNameIDs.Length];
+                matPack.textureOffsets = new float[texNameIDs.Length * 2];
+                matPack.textureScales = new float[texNameIDs.Length * 2];
+                Array.Fill<int>(matPack.textureIds, -1);
+                Array.Fill<int>(matPack.textureNameIds, -1);
+                Array.Fill<float>(matPack.textureOffsets, 0f);
+                Array.Fill<float>(matPack.textureScales, 1f);
+
+                idx = 0;
+                foreach (int nameId in texNameIDs)
+                {
+                    Texture2D texture = (Texture2D)material.GetTexture(nameId);
                     if (texture)
                     {
-                        node.textureIds[idx++] = processTexture(texture, ref sceneData.textureList);
-                        node.textureTypes[idx++] = i;
+                        matPack.textureIds[idx] = processTexture(texture, ref sceneData.textureList);
+                        matPack.textureNameIds[idx] = texNameIDs[idx];
+                        matPack.textureOffsets[idx * 2] = material.GetTextureOffset(texNameIDs[idx]).x;
+                        matPack.textureOffsets[idx * 2 + 1] = material.GetTextureOffset(texNameIDs[idx]).y;
+                        matPack.textureScales[idx * 2] = material.GetTextureScale(texNameIDs[idx]).x;
+                        matPack.textureScales[idx * 2 + 1] = material.GetTextureScale(texNameIDs[idx]).y;
                     }
+                    idx++;
                 }
+
+                sceneData.materialList.Add(matPack);
+                node.materialId = sceneData.materialList.Count - 1;
             }
+            else
+                node.materialId = -1;
         }
 
         //!
@@ -429,54 +553,6 @@ namespace vpet
             sceneData.objectList.Add(objPack);
 
             return sceneData.objectList.Count - 1;
-        }
-
-        //!
-        //! Serialises a Unity material into a VPET Material Package and adds it to the given 
-        //! list, if it does not already contain the material. Otherwise returns the reference ID of the
-        //! already existing material. 
-        //!
-        //! @mat The material to be serialized
-        //! @materialList The list to add the serialised material to.
-        //! @return The reference ID for material. 
-        //!
-        private int processMaterial(Material mat, ref List<SceneManager.MaterialPackage> materialList)
-        {
-            if (mat == null || mat.shader == null)
-                return -1;
-
-            // already stored ?
-            for (int i = 0; i < materialList.Count; i++)
-            {
-                if (materialList[i].mat.GetInstanceID() == mat.GetInstanceID())
-                {
-                    return i;
-                }
-            }
-
-            // create
-            SceneManager.MaterialPackage matPack = new SceneManager.MaterialPackage();
-            matPack.mat = mat;
-            matPack.name = mat.name;
-
-            // if material within Resources/VPET than use load material
-            string matName = mat.name.Replace("(Instance)", "").Trim();
-            Material _mat = Resources.Load(string.Format("VPET/Materials/{0}", matName), typeof(Material)) as Material;
-            if (_mat)
-            {
-                Helpers.Log("mat type" + 1 + " material " + mat.name);
-                matPack.type = 1;
-                matPack.src = matName;
-            }
-            else
-            {
-                Helpers.Log("mat type" + 2 + " shader " + mat.shader.name);
-                matPack.type = 2;
-                matPack.src = mat.shader.name;
-            }
-
-            materialList.Add(matPack);
-            return materialList.Count - 1;
         }
 
         //!
@@ -569,27 +645,5 @@ namespace vpet
 
             characterList.Add(chrPack);
         }
-
-
-        /*
-         * [REVIEW]
-        MOVE THIS TO FUTURE SERVERADAPTER
-
-        //!
-        //! Recursively iterates over all scene elements & adds their ID to sceneObjectRefList
-        //!
-        private void recursiveIdExtract(Transform location)
-        {
-            if (location.GetComponent<SceneObject>())
-            {
-                serverAdapter.sceneObjectRefList[location.GetComponent<SceneObject>().id] = location.GetComponent<SceneObject>();
-            }
-
-            foreach (Transform child in location)
-                if (child.gameObject.activeSelf)
-                    recursiveIdExtract(child);
-        }
-         
-         */
     }
 }

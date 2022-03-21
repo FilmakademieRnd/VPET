@@ -35,6 +35,8 @@ namespace vpet
 {
     public partial class SceneManager : Manager
     {
+        public static string[] shaderKeywords = { "_NORMALMAP", "_ALPHATEST_ON", "_ALPHABLEND_ON", "_ALPHAPREMULTIPLY_ON", "_EMISSION", "_PARALLAXMAP", "_DETAIL_MULX2", "_METALLICGLOSSMAP", "_SPECGLOSSMAP" };
+
         //!
         //! Enumeration defining VPET node Types.
         //!
@@ -75,12 +77,6 @@ namespace vpet
         {
             //! The ID for referencing the associated geometry data.
             public int geoId;
-            //! The IDs for referencing the associated texture data.
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
-            public int[] textureIds;
-            //! The Texture Types used for associating the correct material slot (Albedo, Normal, ...).
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
-            public int[] textureTypes;
             //! The ID for referencing the associated material data.
             public int materialId;
             //! The roughness factor if the node has no material assigned.
@@ -257,8 +253,76 @@ namespace vpet
             public string name;
             //! The Unity resource name the material uses to refrence its shaders.
             public string src;
-            //! The additionally stored Unity material.
-            public Material mat;
+            //! The material ID for instancing.
+            public int materialID;
+            //! The IDs for referencing the associated texture data.
+            public int[] textureIds;
+            //! The texture Types used for associating the correct material slot.
+            //! [0]	"_MainTex"
+            //! [1]	"_BumpMap"
+            //! [2]	"_DetailNormalMap"
+            //! [3]	"_ParallaxMap"
+            //! [4]	"_OcclusionMap"
+            //! [5]	"_EmissionMap"
+            //! [6]	"_DetailMask"
+            //! [7]	"_DetailAlbedoMap"
+            //! [8]	"_MetallicGlossMap"
+            //! [9]	"_Occlusion"
+            //! [10] "_Detail"
+            public int[] textureNameIds;
+            //! The textures UV offset as Vec2.
+            public float[] textureOffsets;
+            //! The textures UV scale as Vec2.
+            public float[] textureScales;
+            //! Available shader configuration flags.
+            //! [0] "_NORMALMAP"
+            //! [1] "_ALPHATEST_ON"
+            //! [2] "_ALPHABLEND_ON"
+            //! [3] "_ALPHAPREMULTIPLY_ON"
+            //! [4] "_EMISSION"
+            //! [5] "_PARALLAXMAP"
+            //! [6] "_DETAIL_MULX2"
+            //! [7] "_METALLICGLOSSMAP"
+            //! [8] "_SPECGLOSSMAP"
+            public bool[] shaderConfig;
+            //! Available shader parameter IDs ( ID, type (not part of this array) )
+            //! [0]	"_Color, Color"	
+            //! [1]	"_MainTex, Texture"	
+            //! [2]	"_Cutoff, float"	
+            //! [3]	"_Glossiness, float"
+            //! [4]	"_GlossMapScale, float"	
+            //! [5]	"_SmoothnessTextureChannel, int"	
+            //! [6]	"_Metallic, float"	
+            //! [7]	"_MetallicGlossMap, Texture"	
+            //! [8]	"_SpecularHighlights, int"
+            //! [9]	"_GlossyReflections, int"	
+            //! [10] "_BumpScale, int"	
+            //! [11] "_BumpMap, Texture"	
+            //! [12] "_Parallax, float"	
+            //! [13] "_ParallaxMap, Texture"	
+            //! [14] "_OcclusionStrength, float"	
+            //! [15] "_OcclusionMap, Texture"	
+            //! [16] "_EmissionColor, Color"	
+            //! [17] "_EmissionMap, Texture"	
+            //! [18] "_DetailMask, Texture"	
+            //! [19] "_DetailAlbedoMap, Texture"
+            //! [20] "_DetailNormalMapScale, int"
+            //! [21] "_DetailNormalMap, Texture"
+            //! [22] "_UVSec, int"
+            //! [23] "_Mode, int"
+            //! [24] "_SrcBlend, int"
+            //! [25] "_DstBlend, int"
+            //! [26] "_ZWrite, int"
+            public int[] shaderPropertyIds;
+            //! Available shader parameter types
+            //! [0]	"Color"	
+            //! [1]	"Vector4"	
+            //! [2]	"int"	
+            //! [3]	"float"
+            //! [4]	"Texture"
+            public int[] shaderPropertyTypes;
+            //! All available shader parameter values as a byte stream.
+            public byte[] shaderProperties;
         };
     }
 }

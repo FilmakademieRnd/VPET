@@ -95,14 +95,12 @@ namespace vpet
             SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager)manager).sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 
-
-
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
-
-            createMaterials(ref sceneData);
 
             if (manager.settings.loadTextures)
                 createTextures(ref sceneData);
+            
+            createMaterials(ref sceneData);
 
             createMeshes(ref sceneData);
 
@@ -141,10 +139,75 @@ namespace vpet
                 else if (matPack.type == 2)
                 {
                     Debug.Log(matPack.src);
-                    //Material mat = matPack.mat;
                     Material mat = new Material(Shader.Find(matPack.src));
-                    //mat.CopyPropertiesFromMaterial(matPack.mat);
                     mat.name = matPack.name;
+
+                    if (matPack.shaderConfig[4])
+                        mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+                    
+                    mat.SetColor("_EmissionColor", Color.white);
+
+                    for (int i = 0; i < matPack.shaderConfig.Length; i++)
+                    {
+                        if (matPack.shaderConfig[i])
+                            mat.EnableKeyword(SceneManager.shaderKeywords[i]);
+                        else
+                            mat.DisableKeyword(SceneManager.shaderKeywords[i]);
+                    }
+
+                    int idx = 0;
+                    for (int i=0; i<matPack.shaderPropertyIds.Length; i++)
+                    {
+                        switch (matPack.shaderPropertyTypes[i])
+                        {
+                            // color
+                            case 0:
+                                float r = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                float g = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                float b = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                float a = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                mat.SetColor(matPack.shaderPropertyIds[i], new Color(r, g, b, a));
+                                break;
+                            // vector 4
+                            case 1:
+                                float x = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                float y = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                float z = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                float w = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                mat.SetVector(matPack.shaderPropertyIds[i], new Vector4(x, y, z, w));
+                                break;
+                            // float, range
+                            case 2: case 3:
+                                float f = BitConverter.ToSingle(matPack.shaderProperties, idx);
+                                idx += SceneManager.SceneDataHandler.size_float;
+                                mat.SetFloat(matPack.shaderPropertyIds[i], f);
+                                break;
+                            // Texture (handled separately)
+                            //case 4:
+                            //  break;
+                        }
+                    }
+
+                    for (int i=0; i< matPack.textureNameIds.Length; i++)
+                    {
+                        int texID = matPack.textureIds[i];
+                        int texNameID = matPack.textureNameIds[i];
+                        if (texID > -1 && texID < SceneTextureList.Count)
+                        {
+                            mat.SetTexture(texNameID, SceneTextureList[texID]);
+                            mat.SetTextureOffset(texNameID, new Vector2(matPack.textureOffsets[i * 2], matPack.textureOffsets[i * 2 + 1]));
+                            mat.SetTextureScale(texNameID, new Vector2(matPack.textureScales[i * 2], matPack.textureScales[i * 2 + 1]));
+                        }
+                    }
+                    
                     SceneMaterialList.Add(mat);
                 }
             }
@@ -392,10 +455,10 @@ namespace vpet
                     }
 
                     // map properties
-                    if (manager.settings.loadSampleScene)
-                    {
-                        MapMaterialProperties(mat, nodeGeo);
-                    }
+                    //if (manager.settings.loadSampleScene)
+                    //{
+                    //    MapMaterialProperties(mat, nodeGeo);
+                    //}
 
                     // Add Material
                     Renderer renderer;
@@ -565,10 +628,10 @@ namespace vpet
         }
 
         // Dictionary< Name of the property in the material (target), KeyValuePair< name of the property at the node(source), type of target value > >
-        private static Dictionary<string, KeyValuePair<string, Type>> ShaderPropertyMap = new Dictionary<string, KeyValuePair<string, Type>> {
-                {"_Color", new KeyValuePair<string, Type> ("color", typeof(Color))},
-                {"_Glossiness", new KeyValuePair<string, Type> ("roughness", typeof(float))},
-                {"_MainTex", new KeyValuePair<string, Type> ("textureIds", typeof(Texture))}
+        private static Dictionary<string, Tuple<string, Type>> ShaderPropertyMap = new Dictionary<string, Tuple<string, Type>> {
+                {"_Color", new Tuple<string, Type> ("color", typeof(Color))},
+                {"_Glossiness", new Tuple<string, Type> ("roughness", typeof(float))},
+                {"_MainTex", new Tuple<string, Type> ("textureIds", typeof(Texture))}
             };
         //! 
         //! [REVIEW]
@@ -604,10 +667,10 @@ namespace vpet
             // test texture
             // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
             // Texture2D texture = www.texture;
-            foreach (KeyValuePair<string, KeyValuePair<string, Type>> pair in ShaderPropertyMap)
+            foreach (KeyValuePair<string, Tuple<string, Type>> pair in ShaderPropertyMap)
             {
-                FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Key, BindingFlags.Instance | BindingFlags.Public);
-                Type propertyType = pair.Value.Value;
+                FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Item1, BindingFlags.Instance | BindingFlags.Public);
+                Type propertyType = pair.Value.Item2;
 
                 if (material.HasProperty(pair.Key) && fieldInfo != null)
                 {
@@ -624,26 +687,24 @@ namespace vpet
                         float[] v = (float[])fieldInfo.GetValue(nodeGeo);
                         float a = v.Length > 3 ? v[3] : 1.0f;
                         Color c = new Color(v[0], v[1], v[2], a);
-                        string name = Encoding.UTF8.GetString(nodeGeo.name, 0, nodeGeo.name.Length);
                         material.SetColor(pair.Key, c);
 
-                        if (a < 1.0f)
-                        {
-                            // set rendering mode
-                            material.SetFloat("_Mode", 1);
-                            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                            material.SetInt("_ZWrite", 0);
-                            material.DisableKeyword("_ALPHATEST_ON");
-                            material.DisableKeyword("_ALPHABLEND_ON");
-                            material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                            material.renderQueue = 3000;
-                        }
+                        //if (a < 1.0f)
+                        //{
+                        //    // set rendering mode
+                        //    material.SetFloat("_Mode", 1);
+                        //    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        //    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        //    material.SetInt("_ZWrite", 0);
+                        //    material.DisableKeyword("_ALPHATEST_ON");
+                        //    material.DisableKeyword("_ALPHABLEND_ON");
+                        //    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                        //    material.renderQueue = 3000;
+                        //}
                     }
                     else if (propertyType == typeof(Texture))
                     {
-                        int[] Types = nodeGeo.textureTypes;
-                        int[] ids = (int[])Convert.ChangeType(fieldInfo.GetValue(nodeGeo.textureIds), typeof(int[]));
+                        int[] ids = (int[])Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int[]));
                         int idx = 0;
                         foreach(int id in ids)
                         {
@@ -655,20 +716,20 @@ namespace vpet
 
                                 material.SetTexture(nameIds[idx++], texRef);
 
-                                // set materials render mode to fate to senable alpha blending
-                                // TODO these values should be part of the geo node or material package !?
-                                if (false )//hasAlpha(texRef))
-                                {
-                                    // set rendering mode
-                                    material.SetFloat("_Mode", 1);
-                                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                                    material.SetInt("_ZWrite", 0);
-                                    material.DisableKeyword("_ALPHATEST_ON");
-                                    material.DisableKeyword("_ALPHABLEND_ON");
-                                    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                                    material.renderQueue = 3000;
-                                }
+                                //// set materials render mode to fate to senable alpha blending
+                                //// TODO these values should be part of the geo node or material package !?
+                                //if (false )//hasAlpha(texRef))
+                                //{
+                                //    // set rendering mode
+                                //    material.SetFloat("_Mode", 1);
+                                //    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                                //    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                                //    material.SetInt("_ZWrite", 0);
+                                //    material.DisableKeyword("_ALPHATEST_ON");
+                                //    material.DisableKeyword("_ALPHABLEND_ON");
+                                //    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                                //    material.renderQueue = 3000;
+                                //}
                             }
                         }
                     }
