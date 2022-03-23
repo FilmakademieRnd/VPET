@@ -136,6 +136,7 @@ namespace vpet
                     {
                         targetParam.copyValue(_history[i]);
                         success = true;
+                        break;
                     }
                 if (!success)
                     targetParam.reset();
