@@ -209,7 +209,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ee91648a-bf6d-4efd-a98a-5f0edcc87166"",
-                    ""path"": ""<Touchscreen>/touch*/position"",
+                    ""path"": ""<Touchscreen>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -231,8 +231,8 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9d031a88-0d48-45c6-939d-1205fcf74ecf"",
-                    ""path"": ""<Touchscreen>/touch*/Press"",
-                    ""interactions"": """",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Click"",

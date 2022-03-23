@@ -286,8 +286,8 @@ namespace vpet
                         foreach (SceneObject obj in selObjs)
                         {
                             objOffsets.Add(obj.transform.position - manipulator.transform.position);
-                            Debug.Log("OBJECT: " + obj.ToString());
-                            Debug.Log("OFFSET: " + (obj.transform.position - manipulator.transform.position).ToString());
+                            //Debug.Log("OBJECT: " + obj.ToString());
+                            //Debug.Log("OFFSET: " + (obj.transform.position - manipulator.transform.position).ToString());
                         }
                     }
                     // adjust
@@ -498,10 +498,11 @@ namespace vpet
             {
                 // Clean selection
                 selObj = null;
+                selObjs.Clear();
 
-                HideAxes();
-                modeTRS = -1;
-                //SetManipulatorMode(null, -1);
+                //HideAxes();
+                //modeTRS = -1;
+                SetManipulatorMode(null, -1);
             }
 
         }
@@ -645,6 +646,8 @@ namespace vpet
             {
                 HideAxes();
                 modeTRS = -1;
+                // hack against first click selection?
+                manipT.transform.position = float.MaxValue * Vector3.one;
                 return;
             }
 
