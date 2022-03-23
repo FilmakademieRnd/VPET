@@ -47,6 +47,12 @@ namespace vpet
         //! Flag that determines whether a Parameter will be distributed.
         //!
         public bool _distribute;
+
+        //!
+        //! Flag indicating if latest update sould be added to undo/redo history (used when distributing changes)
+        //! [REVIEW] Is there a better solution than placing it here?
+        //!
+        public bool addLatestUpdateToHistory;
         //!
         //! The unique id of this parameter.
         //!
@@ -124,6 +130,12 @@ namespace vpet
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _parent;
         }
+
+        //!
+        //! abstract reset function for the abstract parameter
+        //!
+        public abstract void reset();
+
         //!
         //! Fuction that determines a parameters C# type from a VPET type.
         //!
@@ -161,6 +173,12 @@ namespace vpet
         //! @param data The byte data to be deserialized and copyed to the parameters value.
         //! 
         public abstract void deSerialize(ref byte[] data, int offset);
+
+        //!
+        //! Abstract definition of function called to copy value of other parameter
+        //! @param v new value to be set. Value will be casted automatically
+        //!
+        public abstract void copyValue(AbstractParameter v);
     }
 
     [Serializable]
@@ -184,15 +202,10 @@ namespace vpet
             _parent = parent;
             _type = toVPETType(typeof(T));
             _distribute = distribute;
+            addLatestUpdateToHistory = false;
 
             //history initialization
             _initialValue = value;
-            _valueHistory = new List<T>();
-            _valueHistory.Add(value);
-            _currentHistoryPos = 0;
-            //maximum amount of stored undo/redo (history) steps
-            //[REVIEW] define globally? user adjustable?
-            _maxHistory = 20;
 
             if (parent)
             {
@@ -205,6 +218,21 @@ namespace vpet
                 _distribute = false;
             }
 
+        }
+
+        //!
+        //! Copy Constructor
+        //! p source parameter to copy values from
+        //!
+        public Parameter(Parameter<T> p)
+        {
+            _value = p._value;
+            _name = p._name;
+            _parent = p._parent;
+            _id = p._id;
+            _type = p._type;
+            _distribute = p._distribute;
+            _initialValue = p._initialValue;
         }
 
         [SerializeField]
@@ -230,29 +258,13 @@ namespace vpet
         private T _initialValue;
 
         //!
-        //! A list of last editings to this parameter for undo/redo functionality
-        //!
-        private List<T> _valueHistory;
-
-        //!
-        //! A list of last editings to this parameter for undo/redo functionality
-        //!
-        private int _currentHistoryPos;
-
-        //!
-        //! A list of last editings to this parameter for undo/redo functionality
-        //!
-        private int _maxHistory;
-
-        //!
         //! Event emitted when parameter changed.
         //!
         public event EventHandler<T> hasChanged;
 
         //!
-        //! Abstract definition of the function called to change a parameters value.
-        //! @param   sender     Object calling the change function
-        //! @param   a          Values to be passed to the change function
+        //! function called to change a parameters value.
+        //! @param   v new value to be set
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void setValue(T v)
@@ -262,62 +274,31 @@ namespace vpet
         }
 
         //!
-        //! adds the current value of the parameter to the history
+        //! function called to copy value of other parameter
+        //! might break if parameter types do not match 
+        //! @param p parameter to copy value from
         //!
-        public void addHistoryStep(object sender, bool e)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void copyValue(AbstractParameter p)
         {
-            if (_currentHistoryPos < _valueHistory.Count - 1)
-                _valueHistory.RemoveRange(_currentHistoryPos + 1, (_valueHistory.Count - _currentHistoryPos - 1));
-            _valueHistory.Add(_value);
-            if (_valueHistory.Count <= _maxHistory)
-                _currentHistoryPos++;
-            else
-                _valueHistory.RemoveAt(0);
-        }
-
-        //!
-        //! undo the latest change to the parameter
-        //! @return sucess of undo (false if no earlier versions are available)
-        //!
-        public bool undoStep()
-        {
-            if (_currentHistoryPos > 0)
+            try
             {
-                _value = _valueHistory[_currentHistoryPos - 1];
-                hasChanged?.Invoke(this, _value);
-                _currentHistoryPos--;
-                return true;
+                _value = ((Parameter<T>)p).value;
+                hasChanged?.Invoke(this, ((Parameter<T>)p).value);
             }
-            return false;
-        }
-
-        //!
-        //! redo the next change to the parameter
-        //! @return sucess of redo (false if no later versions are available)
-        //!
-        public bool redoStep()
-        {
-            if (_currentHistoryPos < (_valueHistory.Count - 1))
+            catch
             {
-                _value = _valueHistory[_currentHistoryPos + 1];
-                hasChanged?.Invoke(this, _value);
-                _currentHistoryPos++;
-                return true;
+                Debug.Log("Could not cast parameter while executing copyValue() for parameter " + this.name + " from " + this.parent.name);
             }
-            return false;
         }
 
         //!
         //! reset parameter to initial value
         //!
-        public void reset()
+        public override void reset()
         {
-            _currentHistoryPos = 0;
-            _valueHistory = new List<T>();
-            _valueHistory.Add(_initialValue);
             _value = _initialValue;
             hasChanged?.Invoke(this, _value);
-
         }
 
         //!

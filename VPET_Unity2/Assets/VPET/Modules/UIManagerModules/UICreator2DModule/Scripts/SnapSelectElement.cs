@@ -66,6 +66,11 @@ namespace vpet
         private SnapSelect snapSelect;
 
         //!
+        //! Reference to VPET UI Settings
+        //!
+        private VPETUISettings uiSettings;
+
+        //!
         //! index of the element in the menu
         //! reported back to SnapSelect when element is clicked
         //!
@@ -102,6 +107,9 @@ namespace vpet
 
             //attach reset function to click event
             snapSelect.highlightElement += setHighlight;
+
+            //get ui settings
+            uiSettings = snapSelect.uiSettings;
 
             //run initial transparency update
             updateTransparency(this, true);
@@ -153,10 +161,10 @@ namespace vpet
         {
             if (idx == index)
             {
-                if (txt.color == Helpers.getGlobalColor(0))
+                if (txt.color == uiSettings.colors.ElementSelection_Highlight)
                     txt.color = Color.white;
                 else
-                    txt.color = Helpers.getGlobalColor(0);
+                    txt.color = uiSettings.colors.ElementSelection_Highlight;
             }
             else
             {

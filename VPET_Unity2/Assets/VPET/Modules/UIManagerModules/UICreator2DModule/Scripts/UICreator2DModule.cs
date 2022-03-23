@@ -96,11 +96,22 @@ namespace vpet
             undoButton = UI2D.GetChild(2).GetChild(0).GetComponent<Button>();
             redoButton = UI2D.GetChild(2).GetChild(1).GetComponent<Button>();
             resetButton = UI2D.GetChild(2).GetChild(2).GetComponent<Button>();
+            undoButton.onClick.AddListener(() => manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().undoStep());
+            redoButton.onClick.AddListener(() => manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().redoStep());
 
 
             selectorPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Manipulator_Selector");
 
             HideMenu();
+        }
+
+        //!
+        //! Destructor
+        //!
+        ~UICreator2DModule()
+        {
+            undoButton.onClick.RemoveAllListeners();
+            redoButton.onClick.RemoveAllListeners();
         }
 
         //!
@@ -168,7 +179,7 @@ namespace vpet
                             break;
                     }
                     if (icon)
-                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, icon, (i==3)? -1 : i);
+                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, manager.uiSettings, icon, (i==3)? -1 : i);
 
 
                     paramIndex++;
@@ -180,6 +191,8 @@ namespace vpet
                     GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
                     currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
                     SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
+                    snapSelect.uiSettings = manager.uiSettings;
+
                     for (int i = 3; i < mainSelection.parameterList.Count; i++)
                     {
                         snapSelect.addElement(mainSelection.parameterList[i].name);
@@ -247,41 +260,8 @@ namespace vpet
             AbstractParameter abstractParam = mainSelection.parameterList[index];
             AbstractParameter.ParameterType type = abstractParam.vpetType;
 
-            //[TODO] Avoid Parameter casting
-            undoButton.onClick.RemoveAllListeners();
-            redoButton.onClick.RemoveAllListeners();
             resetButton.onClick.RemoveAllListeners();
-            switch (abstractParam.vpetType)
-            {
-                case AbstractParameter.ParameterType.FLOAT:
-                    undoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).undoStep());
-                    redoButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).redoStep());
-                    resetButton.onClick.AddListener(() => ((Parameter<float>)abstractParam).reset());
-                    break;
-                case AbstractParameter.ParameterType.VECTOR2:
-                    undoButton.onClick.AddListener(() => ((Parameter<Vector2>)abstractParam).undoStep());
-                    redoButton.onClick.AddListener(() => ((Parameter<Vector2>)abstractParam).redoStep());
-                    resetButton.onClick.AddListener(() => ((Parameter<Vector2>)abstractParam).reset());
-                    break;
-                case AbstractParameter.ParameterType.VECTOR3:
-                    undoButton.onClick.AddListener(() => ((Parameter<Vector3>)abstractParam).undoStep());
-                    redoButton.onClick.AddListener(() => ((Parameter<Vector3>)abstractParam).redoStep());
-                    resetButton.onClick.AddListener(() => ((Parameter<Vector3>)abstractParam).reset());
-                    break;
-                case AbstractParameter.ParameterType.QUATERNION:
-                    undoButton.onClick.AddListener(() => ((Parameter<Quaternion>)abstractParam).undoStep());
-                    redoButton.onClick.AddListener(() => ((Parameter<Quaternion>)abstractParam).redoStep());
-                    resetButton.onClick.AddListener(() => ((Parameter<Quaternion>)abstractParam).reset());
-                    break;
-                case AbstractParameter.ParameterType.COLOR:
-                    undoButton.onClick.AddListener(() => ((Parameter<Color>)abstractParam).undoStep());
-                    redoButton.onClick.AddListener(() => ((Parameter<Color>)abstractParam).redoStep());
-                    resetButton.onClick.AddListener(() => ((Parameter<Color>)abstractParam).reset());
-                    break;
-                default:
-                    break;
-            }
-
+            resetButton.onClick.AddListener(() => abstractParam.reset());
 
             switch (type)
             {
@@ -291,7 +271,9 @@ namespace vpet
                 case AbstractParameter.ParameterType.QUATERNION:
                     GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Spinner");
                     currentManipulator = SceneObject.Instantiate(spinnerPrefab, manipulatorPanel);
+                    currentManipulator.GetComponent<Spinner>().uiSettings = manager.uiSettings;
                     currentManipulator.GetComponent<Spinner>().Init(abstractParam);
+                    currentManipulator.GetComponent<Spinner>().doneEditing += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
                     break;
                 case AbstractParameter.ParameterType.COLOR:
                     GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");

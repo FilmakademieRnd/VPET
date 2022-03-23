@@ -69,7 +69,10 @@ namespace vpet
             GameObject canvas = GameObject.Instantiate(canvasRes);
             canvas.GetComponent<Canvas>().sortingOrder = 10;
             m_menuSelector = GameObject.Instantiate(menuSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
+            m_menuSelector.uiSettings = manager.uiSettings;
             SnapSelect buttonSelector = GameObject.Instantiate(buttonSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
+            buttonSelector.uiSettings = manager.uiSettings;
+
 
             manager.menuSelected += highlightMenuElement;
 

@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e0289cbd9f52484b9ddd662ca684346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionButton: {fileID: 6625517753202462005}
+  _selectionButton: {fileID: 6625517753202462005}
 --- !u!225 &-8720164199877219178
 CanvasGroup:
   m_ObjectHideFlags: 0

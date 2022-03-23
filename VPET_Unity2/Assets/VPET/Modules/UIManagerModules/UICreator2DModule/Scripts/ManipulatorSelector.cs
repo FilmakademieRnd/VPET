@@ -39,7 +39,13 @@ namespace vpet
     public class ManipulatorSelector : MonoBehaviour
     {
         //associated button, linked in prefab
-        public Button selectionButton;
+        public Button _selectionButton;
+
+        //!
+        //! Reference to VPET UI settings
+        //!
+        private VPETUISettings _uiSettings;
+
 
         //! 
         //! function to initialize the Selector
@@ -47,10 +53,11 @@ namespace vpet
         //! @param icon sprite to be used by this button
         //! @param index index of the associated manipulator in UICreator2DModule
         //!
-        public void Init(UICreator2DModule module, Sprite icon, int index)
+        public void Init(UICreator2DModule module, VPETUISettings uiSettings, Sprite icon, int index)
         {
-            selectionButton.onClick.AddListener(() => module.createManipulator(index));
-            selectionButton.image.sprite = icon;
+            _selectionButton.onClick.AddListener(() => module.createManipulator(index));
+            _selectionButton.image.sprite = icon;
+            _uiSettings = uiSettings;
         }
 
         //!
@@ -58,7 +65,7 @@ namespace vpet
         //!
         public void visualizeActive()
         {
-            selectionButton.gameObject.GetComponent<Image>().color = Helpers.getGlobalColor(0);
+            _selectionButton.gameObject.GetComponent<Image>().color = _uiSettings.colors.ElementSelection_Highlight;
         }
 
         //!
@@ -66,7 +73,7 @@ namespace vpet
         //!
         public void visualizeIdle()
         {
-            selectionButton.gameObject.GetComponent<Image>().color = selectionButton.colors.normalColor;
+            _selectionButton.gameObject.GetComponent<Image>().color = Color.white;
         }
     }
 }

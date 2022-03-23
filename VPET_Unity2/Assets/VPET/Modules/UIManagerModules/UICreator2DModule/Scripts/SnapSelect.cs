@@ -126,6 +126,16 @@ namespace vpet
         public GameObject _backgroundPrefab;
 
         //!
+        //! Reference to VPET ui Settings
+        //!
+        public VPETUISettings _uiSettings;
+        public VPETUISettings uiSettings
+        {
+            get => _uiSettings;
+            set => _uiSettings = value;
+        }
+
+        //!
         //! Is the menu fixed or dragable
         //!
         private bool _dragable = true;
