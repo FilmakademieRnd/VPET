@@ -174,13 +174,14 @@ namespace vpet
             if (menu.visible && m_oldMenu == menu)
                 menu.visible = false;
             else
-            {
+            {                
                 GameObject menuCanvas = GameObject.Instantiate(m_canvas);
                 m_uiElements.Add(menuCanvas);
                 GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;
                 m_uiElements.Add(rootPanel);
                 menu.Items.ForEach(p => createMenufromTree(p, rootPanel));
                 menu.visible = true;
+                
             }
 
             m_oldMenu = menu;
@@ -202,27 +203,21 @@ namespace vpet
                     newObject = GameObject.Instantiate(m_panel, parentObject.transform);
                     HorizontalLayoutGroup horizontalLayout = newObject.AddComponent<HorizontalLayoutGroup>();
                     horizontalLayout.childAlignment = TextAnchor.MiddleCenter;
-                    if ((parentObject.GetComponent<HorizontalLayoutGroup>() != null) ||
-                        (parentObject.GetComponent<VerticalLayoutGroup>() != null))
-                    {
-                        horizontalLayout.childForceExpandHeight = false;
-                        horizontalLayout.childForceExpandWidth = false;
-                        horizontalLayout.childControlHeight = false;
-                        horizontalLayout.childControlWidth = false;
-                    }
+                    horizontalLayout.childForceExpandHeight = false;
+                    horizontalLayout.childForceExpandWidth = false;
+                    horizontalLayout.childControlHeight = false;
+                    horizontalLayout.childControlWidth = false;
+                    horizontalLayout.spacing = 2;
                     break;
                 case MenuItem.IType.VSPLIT:
                     newObject = GameObject.Instantiate(m_panel, parentObject.transform);
                     VerticalLayoutGroup verticalLayout = newObject.AddComponent<VerticalLayoutGroup>();
                     verticalLayout.childAlignment = TextAnchor.MiddleCenter;
-                    if ((parentObject.GetComponent<HorizontalLayoutGroup>() != null) ||
-                        (parentObject.GetComponent<VerticalLayoutGroup>() != null))
-                    {
-                        verticalLayout.childForceExpandHeight = false;
-                        verticalLayout.childForceExpandWidth = false;
-                        verticalLayout.childControlHeight = true;
-                        verticalLayout.childControlWidth = true;
-                    }
+                    verticalLayout.childForceExpandHeight = false;
+                    verticalLayout.childForceExpandWidth = false;
+                    verticalLayout.childControlHeight = true;
+                    verticalLayout.childControlWidth = true;
+                    verticalLayout.spacing = 3;
                     break;
                 case MenuItem.IType.SPACE:
                     {
@@ -247,16 +242,17 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_button, parentObject.transform);
                                 Button button = newObject.GetComponent<Button>();
+                                // ColorBlock buttonColors = button.colors;
+                                //buttonColors.pressedColor = manager.uiSettings.colors.ElementSelection_Highlight;
                                 Action parameterAction = ((Parameter<Action>)item.Parameter).value;
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = manager.uiSettings.colors.FontColor;
+                                textComponent.color = manager.uiSettings.colors.FontColor;                                
                                 textComponent.font = manager.uiSettings.defaultFont;
                                 textComponent.fontSize = manager.uiSettings.defaultFontSize;
                                 Image imgButton = button.GetComponent<Image>();
-                                imgButton.color = manager.uiSettings.colors.ButtonBG;
-                                
+                                imgButton.color = manager.uiSettings.colors.ButtonBG;                                
                             }
                         break;
                         case AbstractParameter.ParameterType.BOOL:
@@ -282,6 +278,7 @@ namespace vpet
                                 inputField.textComponent.color = manager.uiSettings.colors.FontColor;
                                 inputField.textComponent.font = manager.uiSettings.defaultFont;
                                 inputField.textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                inputField.selectionColor = manager.uiSettings.colors.ElementSelection_Highlight;
                             }
                             break;
                         case AbstractParameter.ParameterType.LIST:
@@ -303,7 +300,10 @@ namespace vpet
                                 dropDown.itemText.color = manager.uiSettings.colors.FontColor;
                                 dropDown.itemText.font = manager.uiSettings.defaultFont;
                                 dropDown.itemText.fontSize = manager.uiSettings.defaultFontSize;
-
+                                //ColorBlock dd_Colors = dropDown.colors;
+                                //dd_Colors.selectedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                foreach (UnityEngine.UI.Image DD_image in dropDown.GetComponentsInChildren<Image>(true))
+                                    DD_image.color = manager.uiSettings.colors.DropDown_TextfieldBG;
                             }
                                 break;
                     }

@@ -93,10 +93,6 @@ namespace vpet
             parameterList2.Add(new Parameter<string>(null, "Lighting"));
 
             m_menu = new MenuTree()
-            .Begin(MenuItem.IType.HSPLIT)
-                .Begin(MenuItem.IType.VSPLIT)
-                    .Add(MenuItem.IType.SPACE)
-                .End()
                 .Begin(MenuItem.IType.VSPLIT)
                     .Begin(MenuItem.IType.HSPLIT)
                          .Add("Scene Source")
@@ -105,7 +101,7 @@ namespace vpet
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add("IP Address")
                          .Add(m_serverIP_Param)
-                     .End()
+                     .End()                     
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add("Choose Role")
                          .Add(new ListParameter(parameterList2, "Role"))
@@ -113,11 +109,7 @@ namespace vpet
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add(button)
                      .End()
-                .End()
-                .Begin(MenuItem.IType.VSPLIT)
-                    .Add(MenuItem.IType.SPACE)
-                .End()
-            .End();
+                .End();
 
             m_menu.caption = "Network Client";
             m_core.getManager<UIManager>().addMenu(m_menu);
