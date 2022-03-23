@@ -49,8 +49,6 @@ namespace vpet
             ERROR
         }
 
-        private static Color[] globalColors = { new Color(1f,170f/255f,0)};
-
         //!
         //! Function for message loggin in VPET
         //! @param objName the name of the script or object sending the message
@@ -137,12 +135,6 @@ namespace vpet
                     queue.Enqueue(t);
             }
             return null;
-        }
-
-        //!
-        public static Color getGlobalColor(int idx)
-        {
-            return globalColors[idx];
         }
     }
 }

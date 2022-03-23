@@ -39,29 +39,35 @@ namespace vpet
 {
     public class Spinner : Manipulator
     {
-        private int currentAxis;
-        private SnapSelect snapSelect;
+        //!
+        //! currently edited axis of the parameter (e.g. x, y or z)
+        //!
+        private int _currentAxis;
+
+        //!
+        //! Reference to _snapSelect
+        //!
+        private SnapSelect _snapSelect;
+
+        //!
+        //! Reference to VPET uiSettings
+        //!
+        private VPETUISettings _uiSettings;
+        public VPETUISettings uiSettings
+        {
+            get => _uiSettings;
+            set => _uiSettings = value;
+        }
+
+        //!
+        //! Event emitted when parameter has changed
+        //!
+        public event EventHandler<AbstractParameter> doneEditing;
 
         ~Spinner()
         {
-            if(abstractParam != null)
-                switch (abstractParam.vpetType)
-                {
-                    case AbstractParameter.ParameterType.FLOAT:
-                        snapSelect.editingEnded -= ((Parameter<float>)abstractParam).addHistoryStep;
-                        break;
-                    case AbstractParameter.ParameterType.VECTOR2:
-                        snapSelect.editingEnded -= ((Parameter<Vector2>)abstractParam).addHistoryStep;
-                        break;
-                    case AbstractParameter.ParameterType.VECTOR3:
-                        snapSelect.editingEnded -= ((Parameter<Vector3>)abstractParam).addHistoryStep;
-                        break;
-                    case AbstractParameter.ParameterType.QUATERNION:
-                        snapSelect.editingEnded -= ((Parameter<Quaternion>)abstractParam).addHistoryStep;
-                        break;
-                    default:
-                        break;
-                }
+            if (abstractParam != null)
+                _snapSelect.editingEnded -= editingDone;
         }
 
         //!
@@ -70,7 +76,8 @@ namespace vpet
         public void Init(AbstractParameter p)
         {
             abstractParam = p;
-            snapSelect = this.GetComponent<SnapSelect>();
+            _snapSelect = this.GetComponent<SnapSelect>();
+            _snapSelect.uiSettings = _uiSettings;
 
             AbstractParameter.ParameterType type = abstractParam.vpetType;
 
@@ -78,34 +85,34 @@ namespace vpet
             {
                 case AbstractParameter.ParameterType.FLOAT:
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
-                    paramFloat.hasChanged += snapSelect.setParam;
-                    snapSelect.setSensitivity(100f);
-                    snapSelect.addElement("", paramFloat.value);
+                    paramFloat.hasChanged += _snapSelect.setParam;
+                    _snapSelect.setSensitivity(100f);
+                    _snapSelect.addElement("", paramFloat.value);
                     break;
                 case AbstractParameter.ParameterType.VECTOR2:
                     Parameter<Vector2> paramVec2 = (Parameter<Vector2>)abstractParam;
-                    paramVec2.hasChanged += snapSelect.setParam;
-                    snapSelect.setSensitivity(10f);
-                    snapSelect.addElement("X", paramVec2.value.x);
-                    snapSelect.addElement("Y", paramVec2.value.y);
+                    paramVec2.hasChanged += _snapSelect.setParam;
+                    _snapSelect.setSensitivity(10f);
+                    _snapSelect.addElement("X", paramVec2.value.x);
+                    _snapSelect.addElement("Y", paramVec2.value.y);
                     break;
                 case AbstractParameter.ParameterType.VECTOR3:
                     Parameter<Vector3> paramVec3 = (Parameter<Vector3>)abstractParam;
-                    paramVec3.hasChanged += snapSelect.setParam;
-                    snapSelect.setSensitivity(10f);
-                    snapSelect.addElement("X", paramVec3.value.x);
-                    snapSelect.addElement("Y", paramVec3.value.y);
-                    snapSelect.addElement("Z", paramVec3.value.z);
-                    snapSelect.addElement("XYZ", (paramVec3.value.x + paramVec3.value.y + paramVec3.value.z) / 3f);
+                    paramVec3.hasChanged += _snapSelect.setParam;
+                    _snapSelect.setSensitivity(10f);
+                    _snapSelect.addElement("X", paramVec3.value.x);
+                    _snapSelect.addElement("Y", paramVec3.value.y);
+                    _snapSelect.addElement("Z", paramVec3.value.z);
+                    _snapSelect.addElement("XYZ", (paramVec3.value.x + paramVec3.value.y + paramVec3.value.z) / 3f);
                     break;
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
-                    paramQuat.hasChanged += snapSelect.setParam;
+                    paramQuat.hasChanged += _snapSelect.setParam;
                     Vector3 rot = paramQuat.value.eulerAngles;
-                    snapSelect.setSensitivity(500f);
-                    snapSelect.addElement("X", rot.x);
-                    snapSelect.addElement("Y", rot.y);
-                    snapSelect.addElement("Z", rot.z);
+                    _snapSelect.setSensitivity(500f);
+                    _snapSelect.addElement("X", rot.x);
+                    _snapSelect.addElement("Y", rot.y);
+                    _snapSelect.addElement("Z", rot.z);
                     break;
                 default:
                     Helpers.Log("Parameter Type cannot be edited with Spinner.");
@@ -113,28 +120,25 @@ namespace vpet
             }
         }
 
+        //!
+        //! function connecting the events
+        //!
         private void Start()
         {
-            snapSelect.parameterChanged += changeAxis;
-            snapSelect.valueChanged += setValue;
-            //[REVIEW] Avoid Parameter casting
-            switch (abstractParam.vpetType)
-            {
-                case AbstractParameter.ParameterType.FLOAT:
-                    snapSelect.editingEnded += ((Parameter<float>)abstractParam).addHistoryStep;
-                    break;
-                case AbstractParameter.ParameterType.VECTOR2:
-                    snapSelect.editingEnded += ((Parameter<Vector2>)abstractParam).addHistoryStep;
-                    break;
-                case AbstractParameter.ParameterType.VECTOR3:
-                    snapSelect.editingEnded += ((Parameter<Vector3>)abstractParam).addHistoryStep;
-                    break;
-                case AbstractParameter.ParameterType.QUATERNION:
-                    snapSelect.editingEnded += ((Parameter<Quaternion>)abstractParam).addHistoryStep;
-                    break;
-                default:
-                    break;
-            }
+            _snapSelect.parameterChanged += changeAxis;
+            _snapSelect.valueChanged += setValue;
+            _snapSelect.editingEnded += editingDone;
+        }
+
+        //!
+        //! event invoking the doneEditing event whenever the user stops editing a parameter (e.g. finger lifted)
+        //! @param sender source of the event
+        //! @param e payload
+        //!
+        private void editingDone(object sender, bool e)
+        {
+            abstractParam.addLatestUpdateToHistory = true;
+            doneEditing?.Invoke(this, abstractParam);
         }
 
         //!
@@ -154,7 +158,7 @@ namespace vpet
                 case AbstractParameter.ParameterType.VECTOR2:
                     Parameter<Vector2> paramVec2 = (Parameter<Vector2>)abstractParam;
                     Vector2 valVec2 = paramVec2.value;
-                    if (currentAxis == 0)
+                    if (_currentAxis == 0)
                         paramVec2.setValue(new Vector2(valVec2.x + val, valVec2.y));
                     else
                         paramVec2.setValue(new Vector2(valVec2.x, valVec2.y + val));
@@ -162,11 +166,11 @@ namespace vpet
                 case AbstractParameter.ParameterType.VECTOR3:
                     Parameter<Vector3> paramVec3 = (Parameter<Vector3>)abstractParam;
                     Vector3 valVec3 = paramVec3.value;
-                    if (currentAxis == 0)
+                    if (_currentAxis == 0)
                         paramVec3.setValue(new Vector3(valVec3.x + val, valVec3.y, valVec3.z));
-                    else if (currentAxis == 1)
+                    else if (_currentAxis == 1)
                         paramVec3.setValue(new Vector3(valVec3.x, valVec3.y + val, valVec3.z));
-                    else if (currentAxis == 2)
+                    else if (_currentAxis == 2)
                         paramVec3.setValue(new Vector3(valVec3.x, valVec3.y, valVec3.z + val));
                     else
                         paramVec3.setValue(new Vector3(valVec3.x + val, valVec3.y + val, valVec3.z + val));
@@ -174,9 +178,9 @@ namespace vpet
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
                     Vector3 rot = paramQuat.value.eulerAngles;
-                    if (currentAxis == 0)
+                    if (_currentAxis == 0)
                         rot = new Vector3(rot.x + val, rot.y, rot.z);
-                    else if (currentAxis == 1)
+                    else if (_currentAxis == 1)
                         rot = new Vector3(rot.x, rot.y + val, rot.z);
                     else
                         rot = new Vector3(rot.x, rot.y, rot.z + val);
@@ -188,9 +192,14 @@ namespace vpet
             }
         }
 
+        //!
+        //! function changing the axis
+        //! @param sender source of the event
+        //! @param new axis index
+        //!
         private void changeAxis(object sender, int index)
         {
-            currentAxis = index;
+            _currentAxis = index;
         }
     }
 }

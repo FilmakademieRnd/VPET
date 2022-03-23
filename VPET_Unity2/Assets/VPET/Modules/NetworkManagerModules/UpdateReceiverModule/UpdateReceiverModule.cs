@@ -48,6 +48,11 @@ namespace vpet
         private List<List<byte[]>> m_messageBuffer;
 
         //!
+        //! Event emitted when parameter change should be added to undo/redo history
+        //!
+        public event EventHandler<AbstractParameter> receivedHistoryUpdate;
+
+        //!
         //! A referece to VPET's scene manager.
         //!
         private SceneManager m_sceneManager;
@@ -216,13 +221,17 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeMessage(byte[] message)
         {
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
-            short parameterID = BitConverter.ToInt16(message, 5);
+            bool addToHistory = BitConverter.ToBoolean(message, 3);
+            short sceneObjectID = BitConverter.ToInt16(message, 4);
+            short parameterID = BitConverter.ToInt16(message, 6);
 
             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 
             if (sceneObject != null)
-                sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
+                sceneObject.parameterList[parameterID].deSerialize(ref message, 9);
+
+            if (addToHistory)
+                receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
         }
 
 

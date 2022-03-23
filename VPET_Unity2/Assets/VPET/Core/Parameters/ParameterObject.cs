@@ -38,6 +38,7 @@ namespace vpet
     //!
     //! Implementation of the VPET ParameterObject, collecting parameters and providing parameter update functionalities.
     //!
+    [System.Serializable]
     public class ParameterObject : MonoBehaviour
     {
         //!

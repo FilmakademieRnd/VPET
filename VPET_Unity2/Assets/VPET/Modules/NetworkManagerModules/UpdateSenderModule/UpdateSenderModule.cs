@@ -217,10 +217,11 @@ namespace vpet
         }
 
         //!
-        //! Function that creates a parameter update message (byte[]) based on a abstravt parameter and a time value.
+        //! Function that creates a parameter update message (byte[]) based on a abstract parameter and a time value.
         //!
         //! @param parameter The modified parameter the message will be based on.
-        //! @param time The pssed event arguments.
+        //! @param time The time for synchronization
+        //! @param addToHistory should this update be added to undo/redo history
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte[] createParameterMessage(AbstractParameter parameter, byte time)
@@ -231,17 +232,19 @@ namespace vpet
 
             lock (parameter)
             {
-                byte[] message = parameter.Serialize(8); // ParameterData;
+                byte[] message = parameter.Serialize(9); // ParameterData;
 
                 // header
                 message[0] = manager.cID;
                 message[1] = time;
                 message[2] = (byte)MessageType.PARAMETERUPDATE;
+                message[3] = Convert.ToByte(parameter.addLatestUpdateToHistory); //should this update be added to undo/redo history
+                parameter.addLatestUpdateToHistory = false;
 
                 // parameter
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, message, 3, 2);  // SceneObjectID
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, message, 5, 2);  // ParameterID
-                message[7] = (byte)parameter.vpetType;  // ParameterType
+                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, message, 4, 2);  // SceneObjectID
+                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, message, 6, 2);  // ParameterID
+                message[8] = (byte)parameter.vpetType;  // ParameterType
 
                 return message;
             }
