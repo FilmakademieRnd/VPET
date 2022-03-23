@@ -129,7 +129,17 @@ namespace vpet
             {
                 AbstractParameter sourceParam = _history[_currentHistoryPos];
                 AbstractParameter targetParam = sourceParam.parent.parameterList[sourceParam.id];
-                targetParam.copyValue(sourceParam);
+                bool success = false;
+                for (int i = _currentHistoryPos - 1; i > -1; i--)
+                    if (_history[i].parent.id == sourceParam.parent.id
+                        && _history[i].id == sourceParam.id)
+                    {
+                        targetParam.copyValue(_history[i]);
+                        success = true;
+                    }
+                if (!success)
+                    targetParam.reset();
+
                 _currentHistoryPos--;
             }
         }
