@@ -177,13 +177,16 @@ namespace vpet
             {                
                 GameObject menuCanvas = GameObject.Instantiate(m_canvas);
                 m_uiElements.Add(menuCanvas);
-                GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;
+                GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;                
+                TextMeshProUGUI menuTitle = menuCanvas.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+                menuTitle.font = manager.uiSettings.defaultFont;
+                menuTitle.fontSize = manager.uiSettings.defaultFontSize;
+                menuTitle.color = manager.uiSettings.colors.FontColor;
+                menuTitle.text = menu.caption;
                 m_uiElements.Add(rootPanel);
                 menu.Items.ForEach(p => createMenufromTree(p, rootPanel));
                 menu.visible = true;
-                
             }
-
             m_oldMenu = menu;
         }
 
@@ -241,9 +244,10 @@ namespace vpet
                         case AbstractParameter.ParameterType.ACTION:
                             {
                                 newObject = GameObject.Instantiate(m_button, parentObject.transform);
-                                Button button = newObject.GetComponent<Button>();
-                                // ColorBlock buttonColors = button.colors;
-                                //buttonColors.pressedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                Button button = newObject.GetComponent<Button>();                         
+                                ColorBlock buttonColors = button.colors;
+                                buttonColors.pressedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                button.colors = buttonColors;
                                 Action parameterAction = ((Parameter<Action>)item.Parameter).value;
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
@@ -300,8 +304,9 @@ namespace vpet
                                 dropDown.itemText.color = manager.uiSettings.colors.FontColor;
                                 dropDown.itemText.font = manager.uiSettings.defaultFont;
                                 dropDown.itemText.fontSize = manager.uiSettings.defaultFontSize;
-                                //ColorBlock dd_Colors = dropDown.colors;
-                                //dd_Colors.selectedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                ColorBlock ddColors = dropDown.colors;
+                                ddColors.pressedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                dropDown.colors = ddColors;
                                 foreach (UnityEngine.UI.Image DD_image in dropDown.GetComponentsInChildren<Image>(true))
                                     DD_image.color = manager.uiSettings.colors.DropDown_TextfieldBG;
                             }
