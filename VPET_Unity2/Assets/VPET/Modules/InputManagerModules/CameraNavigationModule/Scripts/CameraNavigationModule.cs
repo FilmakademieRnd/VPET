@@ -25,7 +25,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @brief implementation of VPET camera navigation features
 //! @author Paulo Scatena
 //! @version 0
-//! @date 22.02.2022
+//! @date 23.03.2022
 
 using System;
 using System.Collections.Generic;
@@ -38,78 +38,143 @@ namespace vpet
     //!
     public class CameraNavigationModule : InputManagerModule
     {
-        private Core vpetCore;
-
-
-        //!
-        //! A reference to the VPET input manager.
-        //!
-        private InputManager m_inputManager;
-
         //!
         //! A reference to the main camera transform.
         //!
-        private Transform camXform;
-
-        // Orbiting center
-        private Vector3 pivotPoint;
-
-        // Camera movement multiplies - todo: something more elegant than just magic numbers?
-        readonly float panFactor = .005f;
-        readonly float orbitFactor = .15f;
-        readonly float dollyFactor = .007f;
+        private Transform m_camXform;
 
         //!
-        //! Constructor
-        //! @param name Name of this module
-        //! @param core Reference to the VPET core
+        //! Flag to specify if there are objects selected. 
+        //!
+        private bool m_hasSelection;
+        //!
+        //! The average position of the selected objects.
+        //!
+        private Vector3 m_selectionCenter;
+
+        // TODO: maybe promote these variables to configuration options
+        //!
+        //! The speed factor for the pan movement.
+        //!
+        private static readonly float s_panSpeed = .005f;
+        //!
+        //! The speed factor for the orbit movement.
+        //!
+        private static readonly float s_orbitSpeed = .15f;
+        //!
+        //! The speed factor for the dolly movement.
+        //!
+        private static readonly float s_dollySpeed = .007f;
+
+        //!
+        //! Constructor.
+        //!
+        //! @param name Name of this module.
+        //! @param core Reference to the VPET core.
         //!
         public CameraNavigationModule(string name, Core core) : base(name, core)
         {
 
         }
 
-        //!
-        //! Init callback for the UICreator2D module.
-        //! Called after constructor. 
-        //!
+        //! 
+        //! Init callback for the CameraNavigation module.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
         protected override void Init(object sender, EventArgs e)
         {
-            camXform = Camera.main.transform;
-
-            // Grabbing from the input manager directly
-            m_inputManager = m_core.getManager<InputManager>();
+            m_camXform = Camera.main.transform;
 
             // Subscription to input events
-            m_inputManager.pinchEvent += CameraDolly;
-            m_inputManager.twoDragEvent += CameraOrbit;
-            m_inputManager.threeDragEvent += CameraPan;
+            manager.pinchEvent += CameraDolly;
+            manager.twoDragEvent += CameraOrbit;
+            manager.threeDragEvent += CameraPedestalTruck;
+
+            // Subscribe to selection change
+            UIManager uiManager = m_core.getManager<UIManager>();
+            uiManager.selectionChanged += SelectionUpdate;
+
+            // Initialize control variables
+            m_selectionCenter = Vector3.zero;
+            m_hasSelection = false;
         }
 
+
+        //! 
+        //! Dolly function: moves the camera forward.
+        //! 
+        //! @param sender The input manager.
+        //! @param e The distance between the touch gesture triggering the movement.
+        //!
         private void CameraDolly(object sender, InputManager.PinchEventArgs e)
         {
-            // dolly cam
-            camXform.Translate(0f, 0f, e.distance * dollyFactor);
+            // Dolly cam
+            m_camXform.Translate(0f, 0f, e.distance * s_dollySpeed);
         }
 
+        //! 
+        //! Orbit function: rotates the camera around a pivot point.
+        //! Currently the orbit point is set to a specific distance from the camera.
+        //! 
+        //! @param sender The input manager.
+        //! @param e The delta distance from the touch gesture triggering the movement.
+        //!
         private void CameraOrbit(object sender, InputManager.DragEventArgs e)
         {
-            // todo - do not execute in every call? one suffices
-            // pivot point at 6m into camera
-            pivotPoint = camXform.TransformPoint(Vector3.forward * 6f);
+            Vector3 pivotPoint;
+            // [REVIEW] TODO
+            // Change inpup methods so selection is maintained while camera operates (currently deselection is enforced)
+            // Set the pivot point
+            if (m_hasSelection)
+                pivotPoint = m_selectionCenter;
+            // In case of no selection, pivot point is a point in front of the camera
+            else
+                pivotPoint = m_camXform.TransformPoint(Vector3.forward * 6f);
+            // TODO: Redesign so it takes into account scene scale
 
-            // arc 
-            camXform.RotateAround(pivotPoint, Vector3.up, orbitFactor * e.delta.x);
-            // tilt
-            camXform.RotateAround(pivotPoint, camXform.right, -orbitFactor * e.delta.y);
+            // Arc
+            m_camXform.RotateAround(pivotPoint, Vector3.up, s_orbitSpeed * e.delta.x);
+            // Tilt
+            m_camXform.RotateAround(pivotPoint, m_camXform.right, -s_orbitSpeed * e.delta.y);
         }
 
-        private void CameraPan(object sender, InputManager.DragEventArgs e)
+        //! 
+        //! Pedestal & Truck function: moves the camera vertically or horizontally.
+        //! 
+        //! @param sender The input manager.
+        //! @param e The delta distance from the touch gesture triggering the movement.
+        //!
+        private void CameraPedestalTruck(object sender, InputManager.DragEventArgs e)
         {
-            Vector2 offset = -panFactor * e.delta;
+            // Adjust the input
+            Vector2 offset = -s_panSpeed * e.delta;
 
-            // Pan around
-            camXform.Translate(offset.x, offset.y, 0);
+            // Move around
+            m_camXform.Translate(offset.x, offset.y, 0);
         }
+
+        //!
+        //! Function called when selection has changed.
+        //!
+        private void SelectionUpdate(object sender, List<SceneObject> sceneObjects)
+        {
+            m_hasSelection = false;
+            if (sceneObjects.Count < 1)
+                return;
+
+            // Calculate the average position
+            Vector3 averagePos = Vector3.zero;
+            foreach (SceneObject obj in sceneObjects)
+            {
+                averagePos += obj.transform.position;
+            }
+            averagePos /= sceneObjects.Count;
+
+            m_selectionCenter = averagePos;
+            m_hasSelection = true;
+        }
+
     }
 }

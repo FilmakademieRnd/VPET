@@ -27,7 +27,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Jonas Trottnow
 //! @author Paulo Scatena
 //! @version 0
-//! @date 14.02.2022
+//! @date 24.03.2022
 
 
 using System;
@@ -44,6 +44,8 @@ namespace vpet
     //!
     public class InputManager : Manager
     {
+        // [REVIEW]
+        // Doesn't seem to be in use
         //!
         //! Enumeration defining supported input event types.
         //!
@@ -54,6 +56,7 @@ namespace vpet
             STARTED,
             PERFORMED
         }
+
         //!
         //! Class defining input event arguments.
         //!
@@ -65,30 +68,6 @@ namespace vpet
             public Vector2 delta;
             public double time;
         }
-
-        //!
-        //! The default input event.
-        //!
-        public event EventHandler<InputEventArgs> inputEvent;
-
-        // TRS Development events
-        // Touch start
-        public event EventHandler<InputEventArgs> InputPressStart;
-        //! Touch end
-        public event EventHandler<InputEventArgs> InputPressEnd;
-        //! Touch move
-        public event EventHandler<InputEventArgs> InputMove;
-
-
-        // Monitor variables - temporary?
-        // todo: drags on ui (e.g. spinner) should somehow invoke an event to let there's a drag happening
-        bool pressingOne = false;
-        bool pressingTwo = false;
-        bool pressingThree = false;
-        bool movingOne = false;
-        bool movingTwo = false;
-        bool movingThree = false;
-
         //!
         //! Class defining pinch input event arguments.
         //!
@@ -97,16 +76,35 @@ namespace vpet
             public float distance;
         }
         //!
-        //! The two finger pinch input event.
-        //!
-        public event EventHandler<PinchEventArgs> pinchEvent;
-        //!
         //! Class defining drag input event arguments.
         //!
         public class DragEventArgs : EventArgs
         {
             public Vector2 delta;
         }
+
+        //!
+        //! The default input event.
+        //!
+        public event EventHandler<InputEventArgs> inputEvent;
+
+        //!
+        //! Press start event, i.e. the begin of a click.
+        //!
+        public event EventHandler<InputEventArgs> inputPressStart;
+        //!
+        //! Press end event, i.e. the end of a click.
+        //!
+        public event EventHandler<InputEventArgs> inputPressEnd;
+        //!
+        //! Press move event, i.e. the moving of the cursor/finger.
+        //!
+        public event EventHandler<InputEventArgs> inputMove;
+
+        //!
+        //! The two finger pinch input event.
+        //!
+        public event EventHandler<PinchEventArgs> pinchEvent;
         //!
         //! The two finger drag input event.
         //!
@@ -116,12 +114,40 @@ namespace vpet
         //!
         public event EventHandler<DragEventArgs> threeDragEvent;
 
-        // Auxiliary variables
-        // todo: replace with more elegant ways
-        bool doOnce = true;
-        Vector2 posBuffer;
-        float distBuffer;
-        bool isDrag = true;
+        //!
+        //! Enumeration describing possible touch input gestures.
+        //!
+        private enum InputTouchType
+        {
+            ONE,
+            TWO,
+            THREE,
+            NONE
+        }
+        //!
+        //! The touch input gesture type.
+        //!
+        private InputTouchType m_touchType;
+        //!
+        //! Flag to determine if a touch drag gesture is being performed.
+        //!
+        private bool m_isTouchDrag;
+        //!
+        //! Flag to specify type of gesture. 
+        //!
+        private bool m_isPinch;
+        //!
+        //! Simple latch for buffering operations. 
+        //!
+        private bool m_doOnce;
+        //!
+        //! Buffer Vector2 for input position comparison.
+        //!
+        private Vector2 m_posBuffer;
+        //!
+        //! Buffer float for input distance comparison.
+        //!
+        private float m_distBuffer;
 
         //!
         //! The generated Unity input class defining all available user inputs.
@@ -134,48 +160,66 @@ namespace vpet
         {
             get { return ref m_inputs; }
         }
+
         //!
         //! Constructor initializing member variables.
         //!
         public InputManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
+            // Enable input
             m_inputs = new Inputs();
             m_inputs.Enable();
 
-            // bind individual input events
-            //m_inputs.Map.TouchPress.started += ctx => InputFunction(ctx);
-            //m_inputs.Map.TouchPosition.started += ctx => InputFunction(ctx);
-
+            // Binding of the click event
             m_inputs.VPETMap.Click.performed += ctx => TapFunction(ctx);
-            //m_inputs.tonioMap.Click.canceled += ctx => TapFunction(ctx);
 
-            // TRS development bindings
+            // Dedicated bindings for monitoring touch and drag interactions
             m_inputs.VPETMap.Click.performed += ctx => PressStart(ctx);
             m_inputs.VPETMap.Click.canceled += ctx => PressEnd(ctx);
 
             // Keep track of cursor/touch move
             m_inputs.VPETMap.Position.performed += ctx => MovePoint(ctx);
 
-            // Touch interface
+            // Enhaced touch interface API
             EnhancedTouchSupport.Enable();
+
             // Subscription to new touch or lift gestures
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerDown += FingerDown;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerUp += FingerUp;
+
             // Subscription to finger movement 
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove += FingerMove;
-            // Additional subscriptions for specific input
+
+            // Additional subscriptions for specific input gestures
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove += TwoFingerMove;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove += ThreeFingerMove;
-
-
         }
 
+        //! 
+        //! Function called when Unity initializes the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Init(object sender, EventArgs e)
+        {
+            // Global variables initialization
+            m_isPinch = false;
+            m_doOnce = true;
+            m_touchType = InputTouchType.NONE;
+        }
+
+
+        // [REVIEW]
+        // What is this?
         ~InputManager()
         {
             m_inputs.VPETMap.Click.performed -= ctx => TapFunction(ctx);
         }
 
-        // Single tap/touch operation
+        //!
+        //! Single tap/touch operation.
+        //!
         private void TapFunction(InputAction.CallbackContext c)
         {
             //Helpers.Log("Tapped");
@@ -202,108 +246,110 @@ namespace vpet
             }
         }
 
-        // Monitor single cursor/touch movement
+        //!
+        //! Input move function, for monitoring the moving of the cursor/finger.
+        //!
         private void MovePoint(InputAction.CallbackContext c)
         {
             InputEventArgs e = new InputEventArgs();
             e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-            InputMove?.Invoke(this, e);
+            inputMove?.Invoke(this, e);
 
-            if (pressingOne)
-                movingOne = true;
+            if (!m_isTouchDrag && m_touchType == InputTouchType.ONE)
+                m_isTouchDrag = true;
         }
 
-        // Single press operation - start
+        //!
+        //! Input press start function, for monitoring the start of touch/click interactions.
+        //!
         private void PressStart(InputAction.CallbackContext c)
         {
             InputEventArgs e = new InputEventArgs();
             e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
             if (!TappedUI(e.point))
-                InputPressStart?.Invoke(this, e);
+                inputPressStart?.Invoke(this, e);
         }
 
-        // Single press operation - end
+        //!
+        //! Input press end function, for monitoring the end of touch/click interactions.
+        //!
         private void PressEnd(InputAction.CallbackContext c)
         {
             InputEventArgs e = new InputEventArgs();
             e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-            InputPressEnd?.Invoke(this, e);
+            inputPressEnd?.Invoke(this, e);
 
             // Reset monitor variables
-            pressingOne = false;
-            movingOne = false;
+            m_touchType = InputTouchType.NONE;
+            m_isTouchDrag = false;
         }
 
-        // Function to handle any new finger touching the screen
+        //!
+        //! Function to handle  any new finger touching the screen.
+        //!
         private void FingerDown(Finger fgr)
         {
-            // In case there is a single cursor/touch in progress, do not accept new input
-            if (movingOne)
+            // If a specific gesture is in progress, do not accept new input
+            if (m_isTouchDrag)
                 return;
 
             // Reset monitor variables
-            pressingOne = false;
-            pressingTwo = false;
-            pressingThree = false;
+            m_touchType = InputTouchType.NONE;
 
             // Poll touch count 
             int touchCount = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count;
 
             // Single touch
-            pressingOne = touchCount == 1;
+            if (touchCount == 1)
+                m_touchType = InputTouchType.ONE;
             // Double touch
-            pressingTwo = touchCount == 2;
+            if (touchCount == 2)
+                m_touchType = InputTouchType.TWO;
             // Triple touch - ignored in case of a two finger operation in progress
-            pressingThree = touchCount == 3 && !movingTwo;
+            if (touchCount == 3)
+                m_touchType = InputTouchType.THREE;
         }
 
-        // Function to handle any finger being lifted from the screen
+        //!
+        //! Function to handle any finger being lifted from the screen.
+        //!
         private void FingerUp(Finger fgr)
         {
             // Suspend the touch input
-            pressingTwo = false;
-            pressingThree = false;
+            m_touchType = InputTouchType.NONE;
 
             // Also the moving
-            movingTwo = false;
-            movingThree = false;
+            m_isTouchDrag = false;
         }
 
-        // Function to handle initial finger movement on the screen
+        //!
+        //! Function to handle initial finger movement on the screen.
+        //!
         private void FingerMove(Finger fgr)
         {
             // If a specific gesture is in progress, do not accept new input
-            if (movingOne || movingTwo || movingThree)
+            if (m_isTouchDrag)
                 return;
 
             // Else (i.e., touch was made, but not moved)
             // and if operating with multi-finger input,
             // force the suspension of active selection.
-            if (pressingTwo || pressingThree)
+            if (m_touchType == InputTouchType.TWO || m_touchType == InputTouchType.THREE)
             {
-                // todo: factor this out of find more elegant solutions
-                // Invoke end of press event
-                InputPressEnd?.Invoke(this, null);
-
-                // Clear monitor variables
-                doOnce = true;
-                pressingOne = false;
-
-                // Force an empty selection
-                InputEventArgs e = new();
-                e.point = new(-5, -5);
-                inputEvent?.Invoke(this, e);
+                ClearClickInput();
             }
         }
 
-        // Function to handle initial specifically two-finger gestures
+        //!
+        //! Function to handle specifically two-finger gestures.
+        //!
         private void TwoFingerMove(Finger fgr)
         {
-            if (!pressingTwo)
+            if (m_touchType != InputTouchType.TWO)
                 return;
 
             // Register the gesture
-            movingTwo = true;
+            m_isTouchDrag = true;
 
             // Monitor touches
             var tcs = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
@@ -313,64 +359,66 @@ namespace vpet
             if (Vector2.Dot(tcs[0].delta, tcs[1].delta) > .2f)
             {
                 // Reset control variables
-                if (!isDrag)
-                    doOnce = true;
-                isDrag = true;
+                if (m_isPinch)
+                    m_doOnce = true;
+                m_isPinch = false;
 
                 // Grab the average position
                 Vector2 pos = .5f * (tcs[0].screenPosition + tcs[1].screenPosition);
 
                 // Store it once
-                if(doOnce)
+                if (m_doOnce)
                 {
-                    posBuffer = pos;
-                    doOnce = false;
+                    m_posBuffer = pos;
+                    m_doOnce = false;
                 }
 
                 // Invoke event
                 DragEventArgs e = new();
-                e.delta = pos - posBuffer;
+                e.delta = pos - m_posBuffer;
                 twoDragEvent?.Invoke(this, e);
 
                 // Update buffer
-                posBuffer = pos;
+                m_posBuffer = pos;
             }
             // Else trigger two finger pinch
             else
             {
                 // Reset control variables
-                if (isDrag)
-                    doOnce = true;
-                isDrag = false;
+                if (!m_isPinch)
+                    m_doOnce = true;
+                m_isPinch = true;
 
                 // Grab the distance
                 float dist = Vector2.Distance(tcs[0].screenPosition, tcs[1].screenPosition);
 
                 // Store it once
-                if (doOnce)
+                if (m_doOnce)
                 {
-                    distBuffer = dist;
-                    doOnce = false;
+                    m_distBuffer = dist;
+                    m_doOnce = false;
                 }
 
                 // Invoke event
                 PinchEventArgs e = new();
-                e.distance = dist - distBuffer;
+                e.distance = dist - m_distBuffer;
                 pinchEvent?.Invoke(this, e);
 
                 // Update buffer
-                distBuffer = dist;
+                m_distBuffer = dist;
             }
         }
 
-        // Function to handle initial specifically three-finger gestures
+        //!
+        //! Function to handle specifically three-finger gestures.
+        //!
         private void ThreeFingerMove(Finger fgr)
         {
-            if (!pressingThree)
+            if (m_touchType != InputTouchType.THREE)
                 return;
 
             // Register the gesture
-            movingThree = true;
+            m_isTouchDrag = true;
 
             // Monitor touches
             var tcs = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
@@ -379,24 +427,45 @@ namespace vpet
             Vector2 pos = 1f / 3f * (tcs[0].screenPosition + tcs[1].screenPosition + tcs[2].screenPosition);
 
             // Store it once
-            if (doOnce)
+            if (m_doOnce)
             {
-                posBuffer = pos;
-                doOnce = false;
+                m_posBuffer = pos;
+                m_doOnce = false;
             }
 
             // Invoke event
             DragEventArgs e = new();
-            e.delta = pos - posBuffer;
+            e.delta = pos - m_posBuffer;
             threeDragEvent?.Invoke(this, e);
 
             // Update buffer
-            posBuffer = pos;
+            m_posBuffer = pos;
         }
 
+        //!
+        //! Helper function to reset existing operations of an input click (e.g. object selection)
+        //!
+        private void ClearClickInput()
+        {
+            // Clear monitor variables
+            m_doOnce = true;
+
+            // Invoke end of press event
+            // [REVIEW]
+            // Doesn't seem to be needed - are we overlooking something if leaving it out? 
+            //inputPressEnd?.Invoke(this, null);
+
+            // Force an empty selection
+            // [REVIEW]
+            // Is this too much of a hack?
+            InputEventArgs e = new();
+            e.point = new(-5, -5);
+            inputEvent?.Invoke(this, e);
+        }
 
         //!
         //! returns true if tap was over any UI element (it goes over all raycaster in the scene - ideally that would be GraphicRaycaster from the 2D UI)
+        //!
         //! @param pos position of the tap
         //!
         private bool TappedUI(Vector2 pos)
@@ -411,6 +480,7 @@ namespace vpet
 
         //!
         //! returns true if tap was over the 3D manipulator objects (layerMask 5 for UI)
+        //!
         //! @param pos position of the tap
         //!
         private bool Tapped3DUI(Vector2 pos, int layerMask = 1 << 5)

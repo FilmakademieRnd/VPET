@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.06.2021
+//! @date 24.03.2022
 
 namespace vpet
 {
@@ -37,5 +37,13 @@ namespace vpet
         //! @param  name The name of the module.
         //!
         public InputManagerModule(string name, Core core) : base(name, core) { }
+
+        //!
+        //! set/get the manager of this module.
+        //!
+        public InputManager manager
+        {
+            get => m_core.getManager<InputManager>();
+        }
     }
 }

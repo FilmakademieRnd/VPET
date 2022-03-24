@@ -130,8 +130,8 @@ namespace vpet
             m_inputManager = m_core.getManager<InputManager>();
 
             // Hookup to input events
-            m_inputManager.InputPressStart += PressStart;
-            m_inputManager.InputPressEnd += PressEnd;
+            m_inputManager.inputPressStart += PressStart;
+            m_inputManager.inputPressEnd += PressEnd;
             
 
             // Instantiate TRS widgest but keep them hidden
@@ -178,7 +178,7 @@ namespace vpet
                 }
 
                 // monitor move
-                m_inputManager.InputMove += Move;
+                m_inputManager.inputMove += Move;
             }
             // hack - storing initial scale in case of ui operation
             if (selObj)
@@ -217,7 +217,7 @@ namespace vpet
             //Debug.Log("Press end: " + e.point.ToString());
 
             // stop monitoring move
-            m_inputManager.InputMove -= Move;
+            m_inputManager.inputMove -= Move;
             firstPress = true;
 
             // Hack - restore scale

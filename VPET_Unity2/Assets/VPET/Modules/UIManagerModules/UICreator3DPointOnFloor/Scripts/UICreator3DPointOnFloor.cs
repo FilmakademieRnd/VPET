@@ -87,8 +87,8 @@ namespace vpet
             m_inputManager = m_core.getManager<InputManager>();
 
             // Hookup to input events
-            m_inputManager.InputPressStart += PressStart;
-            m_inputManager.InputPressEnd += PressEnd;
+            m_inputManager.inputPressStart += PressStart;
+            m_inputManager.inputPressEnd += PressEnd;
 
             // Instantiate widget
             InstantiateModifier();
@@ -123,7 +123,7 @@ namespace vpet
                 pointToMoveModifier.SetActive(true);
 
                 //monitor move
-                m_inputManager.InputMove += Move;
+                m_inputManager.inputMove += Move;
             }
         }
 
@@ -183,7 +183,7 @@ namespace vpet
             //Debug.Log("Press end: " + e.point.ToString());
 
             // stop monitoring move
-            m_inputManager.InputMove -= Move;
+            m_inputManager.inputMove -= Move;
 
             pointToMoveModifier.SetActive(false);
             //noClickCanvas.SetActive(false);
