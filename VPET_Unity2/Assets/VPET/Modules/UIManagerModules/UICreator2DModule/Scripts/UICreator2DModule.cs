@@ -78,6 +78,7 @@ namespace vpet
         //!
         //! currently selected SceneObject
         //!
+        private List<SceneObject> selectedSceneObjects;
         private SceneObject mainSelection;
 
         //!
@@ -98,7 +99,7 @@ namespace vpet
             resetButton = UI2D.GetChild(2).GetChild(2).GetComponent<Button>();
             undoButton.onClick.AddListener(() => manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().undoStep());
             redoButton.onClick.AddListener(() => manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().redoStep());
-
+            resetButton.onClick.AddListener(() => resetCurrentSceneObjects());
 
             selectorPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Manipulator_Selector");
 
@@ -112,6 +113,7 @@ namespace vpet
         {
             undoButton.onClick.RemoveAllListeners();
             redoButton.onClick.RemoveAllListeners();
+            resetButton.onClick.RemoveAllListeners();
         }
 
         //!
@@ -144,7 +146,8 @@ namespace vpet
             ShowMenu();
 
             //TODO Account for more than the first sceneObject being selected
-            mainSelection = sceneObjects[0];
+            selectedSceneObjects = sceneObjects;
+            mainSelection = selectedSceneObjects[0];
 
             int paramIndex = 0;
             if (mainSelection.parameterList.Count > 2)
@@ -260,9 +263,6 @@ namespace vpet
             AbstractParameter abstractParam = mainSelection.parameterList[index];
             AbstractParameter.ParameterType type = abstractParam.vpetType;
 
-            resetButton.onClick.RemoveAllListeners();
-            resetButton.onClick.AddListener(() => abstractParam.reset());
-
             switch (type)
             {
                 case AbstractParameter.ParameterType.FLOAT:
@@ -308,6 +308,16 @@ namespace vpet
         {
             UI2D.GetComponent<CanvasGroup>().interactable = value;
             UI2D.GetComponent<CanvasGroup>().blocksRaycasts = value ? blocksRaycasts : false;
+        }
+
+        //!
+        //! resets the currently selected scene objects to it's initial values
+        //!
+        private void resetCurrentSceneObjects()
+        {
+            foreach(SceneObject s in selectedSceneObjects)
+                foreach (AbstractParameter p in s.parameterList)
+                    p.reset();
         }
 
         //!
