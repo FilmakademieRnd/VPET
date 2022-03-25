@@ -79,9 +79,13 @@ namespace vpet
 
             m_menu = new MenuTree()
                .Begin(MenuItem.IType.VSPLIT)
-                   .Add("Please enter own IP Adress!")
-                   .Add(m_serverIP_Param)
-                   .Add(button)
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("IP Address")
+                        .Add(m_serverIP_Param)
+                    .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add(button)
+                    .End()
               .End();
 
             m_menu.caption = "Network Server";
