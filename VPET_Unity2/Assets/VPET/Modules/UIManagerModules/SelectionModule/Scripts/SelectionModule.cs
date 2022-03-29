@@ -336,6 +336,10 @@ namespace vpet
                     m_properties = new MaterialPropertyBlock();
 
                 SceneObject sceneObject = renderer.gameObject.GetComponent<SceneObject>();
+
+                if ((sceneObject is SceneObjectCamera) || (sceneObject is SceneObjectLight))
+                    continue;
+
                 int id = 0;
                 if (sceneObject)
                     id = m_sceneManager.getSceneObjectId(ref sceneObject);
@@ -353,7 +357,6 @@ namespace vpet
                 renderer.SetPropertyBlock(m_properties);
 
                 renderer.sharedMaterial = GetSelectableMaterial(renderer.sharedMaterial);
-                
             }
         }
 
