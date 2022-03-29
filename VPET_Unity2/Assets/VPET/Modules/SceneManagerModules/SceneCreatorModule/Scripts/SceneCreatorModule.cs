@@ -138,15 +138,14 @@ namespace vpet
                 }
                 else if (matPack.type == 2)
                 {
-                    Debug.Log(matPack.src);
+                    Helpers.Log(matPack.src);
                     Material mat = new Material(Shader.Find(matPack.src));
                     mat.name = matPack.name;
 
+                    // shader configuration
                     if (matPack.shaderConfig[4])
                         mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
                     
-                    mat.SetColor("_EmissionColor", Color.white);
-
                     for (int i = 0; i < matPack.shaderConfig.Length; i++)
                     {
                         if (matPack.shaderConfig[i])
@@ -155,59 +154,59 @@ namespace vpet
                             mat.DisableKeyword(SceneManager.shaderKeywords[i]);
                     }
 
-                    int idx = 0;
-                    for (int i=0; i<matPack.shaderPropertyIds.Length; i++)
+                    // shader parameters
+                    int dataIdx = 0;
+                    int texIdx = 0;
+                    for (int i = 0; i < mat.shader.GetPropertyCount(); i++)
                     {
+                        int shaderPropertyId = mat.shader.GetPropertyNameId(i);
                         switch (matPack.shaderPropertyTypes[i])
                         {
                             // color
                             case 0:
-                                float r = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                float g = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                float b = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                float a = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                mat.SetColor(matPack.shaderPropertyIds[i], new Color(r, g, b, a));
+                                float r = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                float g = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                float b = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                float a = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                mat.SetColor(shaderPropertyId, new Color(r, g, b, a));
                                 break;
                             // vector 4
                             case 1:
-                                float x = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                float y = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                float z = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                float w = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                mat.SetVector(matPack.shaderPropertyIds[i], new Vector4(x, y, z, w));
+                                float x = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                float y = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                float z = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                float w = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                mat.SetVector(shaderPropertyId, new Vector4(x, y, z, w));
                                 break;
                             // float, range
-                            case 2: case 3:
-                                float f = BitConverter.ToSingle(matPack.shaderProperties, idx);
-                                idx += SceneManager.SceneDataHandler.size_float;
-                                mat.SetFloat(matPack.shaderPropertyIds[i], f);
+                            case 2:
+                            case 3:
+                                float f = BitConverter.ToSingle(matPack.shaderProperties, dataIdx);
+                                dataIdx += SceneManager.SceneDataHandler.size_float;
+                                mat.SetFloat(shaderPropertyId, f);
                                 break;
-                            // Texture (handled separately)
-                            //case 4:
-                            //  break;
+                            // Texture 
+                            case 4:
+                                int texID = matPack.textureIds[texIdx];
+                                if (texID > -1 && texID < SceneTextureList.Count)
+                                {
+                                    mat.SetTexture(shaderPropertyId, SceneTextureList[texID]);
+                                    mat.SetTextureOffset(shaderPropertyId, new Vector2(matPack.textureOffsets[texIdx * 2], matPack.textureOffsets[texIdx * 2 + 1]));
+                                    mat.SetTextureScale(shaderPropertyId, new Vector2(matPack.textureScales[texIdx * 2], matPack.textureScales[texIdx * 2 + 1]));
+                                }
+                                texIdx++;
+                                break;
                         }
                     }
 
-                    for (int i=0; i< matPack.textureNameIds.Length; i++)
-                    {
-                        int texID = matPack.textureIds[i];
-                        int texNameID = matPack.textureNameIds[i];
-                        if (texID > -1 && texID < SceneTextureList.Count)
-                        {
-                            mat.SetTexture(texNameID, SceneTextureList[texID]);
-                            mat.SetTextureOffset(texNameID, new Vector2(matPack.textureOffsets[i * 2], matPack.textureOffsets[i * 2 + 1]));
-                            mat.SetTextureScale(texNameID, new Vector2(matPack.textureScales[i * 2], matPack.textureScales[i * 2 + 1]));
-                        }
-                    }
-                    
                     SceneMaterialList.Add(mat);
                 }
             }
@@ -624,128 +623,6 @@ namespace vpet
             }
 
             return objMain;
-
-        }
-
-        // Dictionary< Name of the property in the material (target), KeyValuePair< name of the property at the node(source), type of target value > >
-        private static Dictionary<string, Tuple<string, Type>> ShaderPropertyMap = new Dictionary<string, Tuple<string, Type>> {
-                {"_Color", new Tuple<string, Type> ("color", typeof(Color))},
-                {"_Glossiness", new Tuple<string, Type> ("roughness", typeof(float))},
-                {"_MainTex", new Tuple<string, Type> ("textureIds", typeof(Texture))}
-            };
-        //! 
-        //! [REVIEW]
-        //!
-        public void MapMaterialProperties(Material material, SceneManager.SceneNodeGeo nodeGeo)
-        {
-            //available parameters in this physically based standard shader:
-            // _Color                   diffuse color (color including alpha)
-            // _MainTex                 diffuse texture (2D texture)
-            // _MainTex_ST
-            // _Cutoff                  alpha cutoff
-            // _Glossiness              smoothness of surface
-            // _Metallic                matallic look of the material
-            // _MetallicGlossMap        metallic texture (2D texture)
-            // _BumpScale               scale of the bump map (float)
-            // _BumpMap                 bumpmap (2D texture)
-            // _Parallax                scale of height map
-            // _ParallaxMap             height map (2D texture)
-            // _OcclusionStrength       scale of occlusion
-            // _OcclusionMap            occlusionMap (2D texture)
-            // _EmissionColor           color of emission (color without alpha)
-            // _EmissionMap             emission strength map (2D texture)
-            // _DetailMask              detail mask (2D texture)
-            // _DetailAlbedoMap         detail diffuse texture (2D texture)
-            // _DetailAlbedoMap_ST
-            // _DetailNormalMap
-            // _DetailNormalMapScale    scale of detail normal map (float)
-            // _DetailAlbedoMap         detail normal map (2D texture)
-            // _UVSec                   UV Set for secondary textures (float)
-            // _Mode                    rendering mode (float) 0 -> Opaque , 1 -> Cutout , 2 -> Transparent
-            // _SrcBlend                source blend mode (enum is UnityEngine.Rendering.BlendMode)
-            // _DstBlend                destination blend mode (enum is UnityEngine.Rendering.BlendMode)
-            // test texture
-            // WWW www = new WWW("file://F:/XML3D_Examples/tex/casual08a.jpg");
-            // Texture2D texture = www.texture;
-            foreach (KeyValuePair<string, Tuple<string, Type>> pair in ShaderPropertyMap)
-            {
-                FieldInfo fieldInfo = nodeGeo.GetType().GetField(pair.Value.Item1, BindingFlags.Instance | BindingFlags.Public);
-                Type propertyType = pair.Value.Item2;
-
-                if (material.HasProperty(pair.Key) && fieldInfo != null)
-                {
-                    if (propertyType == typeof(int))
-                    {
-                        material.SetInt(pair.Key, (int)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), propertyType));
-                    }
-                    else if (propertyType == typeof(float))
-                    {
-                        material.SetFloat(pair.Key, (float)Convert.ChangeType(fieldInfo.GetValue(nodeGeo), propertyType));
-                    }
-                    else if (propertyType == typeof(Color))
-                    {
-                        float[] v = (float[])fieldInfo.GetValue(nodeGeo);
-                        float a = v.Length > 3 ? v[3] : 1.0f;
-                        Color c = new Color(v[0], v[1], v[2], a);
-                        material.SetColor(pair.Key, c);
-
-                        //if (a < 1.0f)
-                        //{
-                        //    // set rendering mode
-                        //    material.SetFloat("_Mode", 1);
-                        //    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        //    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        //    material.SetInt("_ZWrite", 0);
-                        //    material.DisableKeyword("_ALPHATEST_ON");
-                        //    material.DisableKeyword("_ALPHABLEND_ON");
-                        //    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                        //    material.renderQueue = 3000;
-                        //}
-                    }
-                    else if (propertyType == typeof(Texture))
-                    {
-                        int[] ids = (int[])Convert.ChangeType(fieldInfo.GetValue(nodeGeo), typeof(int[]));
-                        int idx = 0;
-                        foreach(int id in ids)
-                        {
-                            if (id > -1 && id < SceneTextureList.Count)
-                            {
-                                Texture2D texRef = SceneTextureList[id];
-
-                                int[] nameIds = material.GetTexturePropertyNameIDs();
-
-                                material.SetTexture(nameIds[idx++], texRef);
-
-                                //// set materials render mode to fate to senable alpha blending
-                                //// TODO these values should be part of the geo node or material package !?
-                                //if (false )//hasAlpha(texRef))
-                                //{
-                                //    // set rendering mode
-                                //    material.SetFloat("_Mode", 1);
-                                //    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                                //    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                                //    material.SetInt("_ZWrite", 0);
-                                //    material.DisableKeyword("_ALPHATEST_ON");
-                                //    material.DisableKeyword("_ALPHABLEND_ON");
-                                //    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                                //    material.renderQueue = 3000;
-                                //}
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Can not map material property " + pair.Key);
-                    }
-
-
-                    // TODO implement the rest
-                    // .
-                    // .
-                    // .
-                }
-
-            }
 
         }
 
