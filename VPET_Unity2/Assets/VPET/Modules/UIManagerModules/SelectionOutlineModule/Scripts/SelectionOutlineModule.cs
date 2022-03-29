@@ -25,7 +25,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @brief Implementation of the VPET SelectionOutlineModule, adding a outline material to a selected scene object.
 //! @author Simon Spielmann
 //! @version 0
-//! @date 23.11.2021
+//! @date 29.03.2022
 
 using System;
 using System.Collections.Generic;
@@ -84,6 +84,9 @@ namespace vpet
         //!
         private void HighlightLocked(object sender, SceneObject sceneObject)
         {
+            if ((sceneObject is SceneObjectCamera) || sceneObject is SceneObjectLight)
+                return;
+
             Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
 
             foreach (Renderer renderer in renderers)
@@ -103,6 +106,9 @@ namespace vpet
         //!
         private void HighlightSelection(object sender, SceneObject sceneObject)
         {
+            if ((sceneObject is SceneObjectCamera) || sceneObject is SceneObjectLight)
+                return;
+
             Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
 
             foreach (Renderer renderer in renderers)
@@ -124,6 +130,9 @@ namespace vpet
         {
             if (sceneObject)
             {
+                if ((sceneObject is SceneObjectCamera) || sceneObject is SceneObjectLight)
+                    return;
+
                 Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
 
                 foreach (Renderer renderer in renderers)
@@ -145,6 +154,9 @@ namespace vpet
         //!
         private void DisableHighlightLocked(object sender, SceneObject sceneObject)
         {
+            if ((sceneObject is SceneObjectCamera) || sceneObject is SceneObjectLight)
+                return;
+
             Renderer[] renderers = sceneObject.GetComponentsInChildren<Renderer>();
 
             foreach (Renderer renderer in renderers)

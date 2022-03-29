@@ -349,23 +349,29 @@ namespace vpet
                 matPack.shaderPropertyIds = new int[propertyCount];
                 matPack.shaderPropertyTypes = new int[propertyCount];
                 matPack.shaderProperties = new byte[0];
-                // debug
-                //System.Tuple<string, int>[] propertyNames = new System.Tuple<string, int>[propertyCount];
+                // texture slots
+                int[] texNameIDs = material.GetTexturePropertyNameIDs();
+                matPack.textureIds = new int[texNameIDs.Length];
+                matPack.textureOffsets = new float[texNameIDs.Length * 2];
+                matPack.textureScales = new float[texNameIDs.Length * 2];
+                Array.Fill<int>(matPack.textureIds, -1);
+                Array.Fill<float>(matPack.textureOffsets, 0f);
+                Array.Fill<float>(matPack.textureScales, 1f);
+
+                int texIdx = 0;
                 for (int i = 0; i < propertyCount; i++)
                 {
-                    matPack.shaderPropertyIds[i] = material.shader.GetPropertyNameId(i);
+                    int shaderPropertyId = material.shader.GetPropertyNameId(i);
                     matPack.shaderPropertyTypes[i] = (int)material.shader.GetPropertyType(i);
-                    // debug
-                    //propertyNames[i] = new Tuple<string, int>(material.shader.GetPropertyName(i), (int)material.shader.GetPropertyType(i));
 
-                    byte[] shaderData;
+                    byte[] shaderData = null;
                     int dstIdx = 0;
                     switch (matPack.shaderPropertyTypes[i])
                     {
                         // color
                         case 0:
                             shaderData = new byte[4 * SceneManager.SceneDataHandler.size_float];
-                            Color color = material.GetColor(matPack.shaderPropertyIds[i]);
+                            Color color = material.GetColor(shaderPropertyId);
                             Buffer.BlockCopy(BitConverter.GetBytes(color.r), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
                             Buffer.BlockCopy(BitConverter.GetBytes(color.g), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
@@ -378,7 +384,7 @@ namespace vpet
                         // vector 4
                         case 1:
                             shaderData = new byte[4 * SceneManager.SceneDataHandler.size_float];
-                            Vector4 vec4 = material.GetVector(matPack.shaderPropertyIds[i]);
+                            Vector4 vec4 = material.GetVector(shaderPropertyId);
                             Buffer.BlockCopy(BitConverter.GetBytes(vec4.x), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
                             Buffer.BlockCopy(BitConverter.GetBytes(vec4.y), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
@@ -392,13 +398,24 @@ namespace vpet
                         case 2:
                         case 3:
                             shaderData = new byte[SceneManager.SceneDataHandler.size_float];
-                            float f = material.GetFloat(matPack.shaderPropertyIds[i]);
+                            float f = material.GetFloat(shaderPropertyId);
                             Buffer.BlockCopy(BitConverter.GetBytes(f), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
                             break;
                         // Texture (handled separately)
-                        //case 4:
-                        //  break;
+                        case 4:
+                            Texture2D texture = (Texture2D)material.GetTexture(shaderPropertyId);
+                            if (texture)
+                            {
+                                matPack.textureIds[texIdx] = processTexture(texture, ref sceneData.textureList);
+                                matPack.textureOffsets[texIdx * 2] = material.GetTextureOffset(shaderPropertyId).x;
+                                matPack.textureOffsets[texIdx * 2 + 1] = material.GetTextureOffset(shaderPropertyId).y;
+                                matPack.textureScales[texIdx * 2] = material.GetTextureScale(shaderPropertyId).x;
+                                matPack.textureScales[texIdx * 2 + 1] = material.GetTextureScale(shaderPropertyId).y;
+                            }
+                            shaderData = new byte[0];
+                            texIdx++;
+                            break;
                         default:
                             shaderData = new byte[0];
                             break;
@@ -406,15 +423,14 @@ namespace vpet
                     matPack.shaderProperties = SceneManager.SceneDataHandler.Concat<byte>(matPack.shaderProperties, shaderData);
                 }
 
+                // [REVIEW]
+                // depricated code
+                // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 // deprecated values stored in node
                 if (material.HasProperty("_Color"))
                 {
                     node.color = new float[4] { material.color.r, material.color.g, material.color.b, material.color.a };
                 }
-
-                // deprecated values stored in node
-                if (material.HasProperty("_Glossiness"))
-                    node.roughness = material.GetFloat("_Glossiness");
 
                 // if material within Resources/VPET than use load material
                 string matName = material.name.Replace("(Instance)", "").Trim();
@@ -431,35 +447,7 @@ namespace vpet
                     matPack.type = 2;
                     matPack.src = material.shader.name;
                 }
-
-                // debug
-                string[] texNames = material.GetTexturePropertyNames();
-                // texture slots
-                int[] texNameIDs = material.GetTexturePropertyNameIDs();
-                matPack.textureIds = new int[texNameIDs.Length];
-                matPack.textureNameIds = new int[texNameIDs.Length];
-                matPack.textureOffsets = new float[texNameIDs.Length * 2];
-                matPack.textureScales = new float[texNameIDs.Length * 2];
-                Array.Fill<int>(matPack.textureIds, -1);
-                Array.Fill<int>(matPack.textureNameIds, -1);
-                Array.Fill<float>(matPack.textureOffsets, 0f);
-                Array.Fill<float>(matPack.textureScales, 1f);
-
-                idx = 0;
-                foreach (int nameId in texNameIDs)
-                {
-                    Texture2D texture = (Texture2D)material.GetTexture(nameId);
-                    if (texture)
-                    {
-                        matPack.textureIds[idx] = processTexture(texture, ref sceneData.textureList);
-                        matPack.textureNameIds[idx] = texNameIDs[idx];
-                        matPack.textureOffsets[idx * 2] = material.GetTextureOffset(texNameIDs[idx]).x;
-                        matPack.textureOffsets[idx * 2 + 1] = material.GetTextureOffset(texNameIDs[idx]).y;
-                        matPack.textureScales[idx * 2] = material.GetTextureScale(texNameIDs[idx]).x;
-                        matPack.textureScales[idx * 2 + 1] = material.GetTextureScale(texNameIDs[idx]).y;
-                    }
-                    idx++;
-                }
+                // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
                 sceneData.materialList.Add(matPack);
                 node.materialId = sceneData.materialList.Count - 1;

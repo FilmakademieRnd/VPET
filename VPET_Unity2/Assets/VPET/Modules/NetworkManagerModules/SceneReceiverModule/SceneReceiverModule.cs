@@ -199,7 +199,7 @@ namespace vpet
             }
             finally
             {
-                NetMQConfig.Cleanup(false);
+                //NetMQConfig.Cleanup(false);
             }
 
         }

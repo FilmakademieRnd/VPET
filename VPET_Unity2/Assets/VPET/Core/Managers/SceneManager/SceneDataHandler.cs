@@ -31,12 +31,10 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UnityEngine;
 
-namespace vpet 
+namespace vpet
 {
     //!
     //! Class handling scene data deserialisation.
@@ -228,7 +226,7 @@ namespace vpet
                 m_headerByteData = new byte[0];
                 m_nodesByteData = new byte[0];
                 m_objectsByteData = new byte[0];
-                m_characterByteData = new byte[0]; 
+                m_characterByteData = new byte[0];
                 m_texturesByteData = new byte[0];
                 m_materialsByteData = new byte[0];
             }
@@ -243,7 +241,7 @@ namespace vpet
 
                 if (m_headerByteData != null && m_headerByteData.Length > 0)
                     sceneData.header = convertHeaderByteStream();
-                else  
+                else
                     Helpers.Log("SceneDataHandler: Header byte array null or empty!", Helpers.logMsgType.WARNING);
 
                 if (m_nodesByteData != null && m_nodesByteData.Length > 0)
@@ -400,68 +398,30 @@ namespace vpet
                     dataIdx += size_int;
 
                     // textureIds
-                    matPack.textureIds = new int[intValue];
-                    for (int i = 0; i < intValue; i++)
-                    {
-                        matPack.textureIds[i] = BitConverter.ToInt32(m_materialsByteData, dataIdx);
-                        dataIdx += size_int;
-                    }
-
-                    // textureNameIds
-                    matPack.textureNameIds = new int[intValue];
-                    for (int i = 0; i < intValue; i++)
-                    {
-                        matPack.textureNameIds[i] = BitConverter.ToInt32(m_materialsByteData, dataIdx);
-                        dataIdx += size_int;
-                    }
+                    dataIdx = deserialize(ref m_materialsByteData, out matPack.textureIds, dataIdx, intValue);
 
                     // textureOffsets
-                    matPack.textureOffsets = new float[intValue * 2];
-                    for (int i = 0; i < intValue * 2; i++)
-                    {
-                        matPack.textureOffsets[i] = BitConverter.ToSingle(m_materialsByteData, dataIdx);
-                        dataIdx += size_float;
-                    }
+                    dataIdx = deserialize(ref m_materialsByteData, out matPack.textureOffsets, dataIdx, intValue * 2);
 
                     // textureScales
-                    matPack.textureScales = new float[intValue * 2];
-                    for (int i = 0; i < intValue * 2; i++)
-                    {
-                        matPack.textureScales[i] = BitConverter.ToSingle(m_materialsByteData, dataIdx);
-                        dataIdx += size_float;
-                    }
+                    dataIdx = deserialize(ref m_materialsByteData, out matPack.textureScales, dataIdx, intValue * 2);
 
                     // size shaderConfig
                     intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
                     dataIdx += size_int;
 
                     // shaderConfig
-                    matPack.shaderConfig = new bool[intValue];
-                    for (int i = 0; i < intValue; i++)
-                    {
-                        matPack.shaderConfig[i] = BitConverter.ToBoolean(m_materialsByteData, dataIdx);
-                        dataIdx++;
-                    }
+                    dataIdx = deserialize(ref m_materialsByteData, out matPack.shaderConfig, dataIdx, intValue);
 
                     // size shaderProperties
                     intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
                     dataIdx += size_int;
 
                     // shader property IDs
-                    matPack.shaderPropertyIds = new int[intValue];
-                    for (int i = 0; i < intValue; i++)
-                    {
-                        matPack.shaderPropertyIds[i] = BitConverter.ToInt32(m_materialsByteData, dataIdx);
-                        dataIdx += size_int;
-                    }
+                    dataIdx = deserialize(ref m_materialsByteData, out matPack.shaderPropertyIds, dataIdx, intValue);
 
                     // shader property types
-                    matPack.shaderPropertyTypes = new int[intValue];
-                    for (int i = 0; i < intValue; i++)
-                    {
-                        matPack.shaderPropertyTypes[i] = BitConverter.ToInt32(m_materialsByteData, dataIdx);
-                        dataIdx += size_int;
-                    }
+                    dataIdx = deserialize(ref m_materialsByteData, out matPack.shaderPropertyTypes, dataIdx, intValue);
 
                     // size shaderProperties data
                     intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
@@ -475,6 +435,39 @@ namespace vpet
                     materialList.Add(matPack);
                 }
                 return materialList;
+            }
+
+            private int deserialize(ref byte[] srcData, out bool[] dstData, int srcOffset, int length)
+            {
+                dstData = new bool[length];
+                for (int i = 0; i < length; i++)
+                {
+                    dstData[i] = BitConverter.ToBoolean(m_materialsByteData, srcOffset);
+                    srcOffset++;
+                }
+                return srcOffset;
+            }
+
+            private int deserialize(ref byte[] srcData, out int[] dstData, int srcOffset, int length)
+            {
+                dstData = new int[length];
+                for (int i = 0; i < length; i++)
+                {
+                    dstData[i] = BitConverter.ToInt32(m_materialsByteData, srcOffset);
+                    srcOffset += size_int;
+                }
+                return srcOffset;
+            }
+
+            private int deserialize(ref byte[] srcData, out float[] dstData, int srcOffset, int length)
+            {
+                dstData = new float[length];
+                for (int i = 0; i < length; i++)
+                {
+                    dstData[i] = BitConverter.ToSingle(m_materialsByteData, srcOffset);
+                    srcOffset += size_float;
+                }
+                return srcOffset;
             }
 
             //!
@@ -880,7 +873,6 @@ namespace vpet
                         matPack.name.Length +
                         matPack.src.Length +
                         matPack.textureIds.Length * SceneDataHandler.size_int +
-                        matPack.textureNameIds.Length * SceneDataHandler.size_int +
                         matPack.textureOffsets.Length * SceneDataHandler.size_float +
                         matPack.textureScales.Length * SceneDataHandler.size_float +
                         matPack.shaderConfig.Length +
@@ -891,83 +883,69 @@ namespace vpet
                     int dstIdx = 0;
 
                     // type (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.type), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.type), ref matByteData, dstIdx);
 
                     // name length (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.name.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.name.Length), ref matByteData, dstIdx);
 
                     // name (byte[])
-                    byte[] nameByte = Encoding.ASCII.GetBytes(matPack.name);
-                    Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.name.Length);
-                    dstIdx += matPack.name.Length;
+                    dstIdx = serialize<byte>(Encoding.ASCII.GetBytes(matPack.name), ref matByteData, dstIdx);
 
                     // src length (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.src.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.src.Length), ref matByteData, dstIdx);
 
                     // src (string)
-                    nameByte = Encoding.ASCII.GetBytes(matPack.src);
-                    Buffer.BlockCopy(nameByte, 0, matByteData, dstIdx, matPack.src.Length);
-                    dstIdx += matPack.src.Length;
+                    dstIdx = serialize<byte>(Encoding.ASCII.GetBytes(matPack.src), ref matByteData, dstIdx);
 
                     // matID (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.materialID), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.materialID), ref matByteData, dstIdx);
 
-                    // size (int) for textureIds, textureNameIds, textureOffsets/2 (Vec2), textureScales/2 (Vec2)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.textureIds.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    // size (int) for textureIds, textureOffsets/2 (Vec2), textureScales/2 (Vec2)
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.textureIds.Length), ref matByteData, dstIdx);
 
                     // textureIds (int[])
-                    Buffer.BlockCopy(matPack.textureIds, 0, matByteData, dstIdx, matPack.textureIds.Length * SceneDataHandler.size_int);
-                    dstIdx += matPack.textureIds.Length * SceneDataHandler.size_int;
-
-                    // textureNameIds (int[])
-                    Buffer.BlockCopy(matPack.textureNameIds, 0, matByteData, dstIdx, matPack.textureNameIds.Length * SceneDataHandler.size_int);
-                    dstIdx += matPack.textureNameIds.Length * SceneDataHandler.size_int;
+                    dstIdx = serialize<int>(matPack.textureIds, ref matByteData, dstIdx);
 
                     // textureOffsets (float[])
-                    Buffer.BlockCopy(matPack.textureOffsets, 0, matByteData, dstIdx, matPack.textureOffsets.Length * SceneDataHandler.size_float);
-                    dstIdx += matPack.textureOffsets.Length * SceneDataHandler.size_float;
+                    dstIdx = serialize<float>(matPack.textureOffsets, ref matByteData, dstIdx);
 
                     // textureScales (float[])
-                    Buffer.BlockCopy(matPack.textureScales, 0, matByteData, dstIdx, matPack.textureScales.Length * SceneDataHandler.size_float);
-                    dstIdx += matPack.textureScales.Length * SceneDataHandler.size_float;
+                    dstIdx = serialize<float>(matPack.textureScales, ref matByteData, dstIdx);
 
                     // size shaderConfig (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.shaderConfig.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.shaderConfig.Length), ref matByteData, dstIdx);
 
                     // shaderConfig (bool[])
-                    Buffer.BlockCopy(matPack.shaderConfig, 0, matByteData, dstIdx, matPack.shaderConfig.Length);
-                    dstIdx += matPack.shaderConfig.Length;
+                    dstIdx = serialize<bool>(matPack.shaderConfig, ref matByteData, dstIdx);
 
                     // size shader properties (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.shaderPropertyIds.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.shaderPropertyIds.Length), ref matByteData, dstIdx);
 
                     // shader property IDs (int[])
-                    Buffer.BlockCopy(matPack.shaderPropertyIds, 0, matByteData, dstIdx, matPack.shaderPropertyIds.Length * SceneDataHandler.size_int);
-                    dstIdx += matPack.shaderPropertyIds.Length * SceneDataHandler.size_int;
+                    dstIdx = serialize<int>(matPack.shaderPropertyIds, ref matByteData, dstIdx);
 
                     // shader property types (int[])
-                    Buffer.BlockCopy(matPack.shaderPropertyTypes, 0, matByteData, dstIdx, matPack.shaderPropertyTypes.Length * SceneDataHandler.size_int);
-                    dstIdx += matPack.shaderPropertyTypes.Length * SceneDataHandler.size_int;
+                    dstIdx = serialize<int>(matPack.shaderPropertyTypes, ref matByteData, dstIdx);
 
                     // size shaderProperties data (int)
-                    Buffer.BlockCopy(BitConverter.GetBytes(matPack.shaderProperties.Length), 0, matByteData, dstIdx, SceneDataHandler.size_int);
-                    dstIdx += SceneDataHandler.size_int;
+                    dstIdx = serialize<byte>(BitConverter.GetBytes(matPack.shaderProperties.Length), ref matByteData, dstIdx);
 
                     // shader property data (byte[])
-                    Buffer.BlockCopy(matPack.shaderProperties, 0, matByteData, dstIdx, matPack.shaderProperties.Length);
-                    dstIdx += matPack.shaderProperties.Length;
+                    dstIdx = serialize<byte>(matPack.shaderProperties, ref matByteData, dstIdx);
 
 
                     // concate
                     m_materialsByteData = Concat<byte>(m_materialsByteData, matByteData);
                 }
+            }
+
+            private int serialize<T>(T[] srcData, ref byte[] dstData, int dstIdx)
+            {
+                int typeSize = Marshal.SizeOf(typeof(T));
+                if (typeof(T) == typeof(bool))
+                    typeSize = 1;
+                Buffer.BlockCopy(srcData, 0, dstData, dstIdx, srcData.Length * typeSize);
+                return dstIdx + srcData.Length * typeSize;
             }
 
             //! 

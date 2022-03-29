@@ -79,8 +79,6 @@ namespace vpet
             public int geoId;
             //! The ID for referencing the associated material data.
             public int materialId;
-            //! The roughness factor if the node has no material assigned.
-            public float roughness;
             //! The color if the node has no material assigned, stored as float array with the legth of 4.
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public float[] color;
@@ -257,19 +255,6 @@ namespace vpet
             public int materialID;
             //! The IDs for referencing the associated texture data.
             public int[] textureIds;
-            //! The texture Types used for associating the correct material slot.
-            //! [0]	"_MainTex"
-            //! [1]	"_BumpMap"
-            //! [2]	"_DetailNormalMap"
-            //! [3]	"_ParallaxMap"
-            //! [4]	"_OcclusionMap"
-            //! [5]	"_EmissionMap"
-            //! [6]	"_DetailMask"
-            //! [7]	"_DetailAlbedoMap"
-            //! [8]	"_MetallicGlossMap"
-            //! [9]	"_Occlusion"
-            //! [10] "_Detail"
-            public int[] textureNameIds;
             //! The textures UV offset as Vec2.
             public float[] textureOffsets;
             //! The textures UV scale as Vec2.
