@@ -124,6 +124,13 @@ namespace vpet
             return Add(MenuItem.IType.TEXT, new Parameter<string>(text, "InfoText" + Items.Count.ToString()));
         }
 
+        public MenuTree Add(string text, bool isTextSection = false)
+        {
+            if (isTextSection)
+                return Add(MenuItem.IType.TEXTSECTION, new Parameter<string>(text, "Text Section" + Items.Count.ToString()));
+            else
+                return Add(MenuItem.IType.TEXT, new Parameter<string>(text, "InfoText" + Items.Count.ToString()));
+        }
         //!
         //! Adds a new parameter item into the current branch.
         //! 
@@ -166,7 +173,7 @@ namespace vpet
         //!
         public enum IType
         {
-            HSPLIT, VSPLIT, SPACE, TEXT, PARAMETER
+            HSPLIT, VSPLIT, SPACE, TEXT, TEXTSECTION, PARAMETER
         }
         //!
         //! The type of the menu item.
