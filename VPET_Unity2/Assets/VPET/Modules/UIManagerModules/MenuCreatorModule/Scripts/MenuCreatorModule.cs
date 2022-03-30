@@ -76,6 +76,10 @@ namespace vpet
         //!
         private GameObject m_inputField;
         //!
+        //! Prefab for the Unity input field object, used as UI element for an string parameter.
+        //!
+        private GameObject m_numberInputField;
+        //!
         //! Prefab for the Unity dropdown object, used as UI element for a list parameter.
         //!
         private GameObject m_dropdown;
@@ -97,6 +101,7 @@ namespace vpet
             m_toggle = Resources.Load("Prefabs/MenuToggle") as GameObject;
             m_text = Resources.Load("Prefabs/MenuText") as GameObject;
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
+            m_numberInputField = Resources.Load("Prefabs/MenuNumberInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
 
             // [REVIEW]
@@ -132,6 +137,7 @@ namespace vpet
 
                .Begin(MenuItem.IType.VSPLIT)
                    .Add(new Parameter<string>("This is a test string", "StringParameter"))
+                   .Add(new Parameter<float>(123.456f, "FloatParameter"))
                    .Add(MenuItem.IType.SPACE)
                    .Add(new Parameter<bool>(true, "BoolParameter"))
                    .Add(MenuItem.IType.SPACE)
@@ -269,6 +275,20 @@ namespace vpet
                                 textComponent.text = item.Parameter.name;
                                 textComponent.color = manager.uiSettings.colors.FontColor;
                                 textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                            }
+                        break;
+                        case AbstractParameter.ParameterType.FLOAT:
+                            {
+                                newObject = GameObject.Instantiate(m_numberInputField, parentObject.transform);
+                                TMP_InputField numberInputField = newObject.GetComponent<TMP_InputField>();
+                                numberInputField.onEndEdit.AddListener(delegate { ((Parameter<float>)item.Parameter).setValue(float.Parse(numberInputField.text)); });
+                                numberInputField.text = ((Parameter<float>)item.Parameter).value.ToString();
+                                Image imgButton = numberInputField.GetComponent<Image>();
+                                imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                numberInputField.textComponent.color = manager.uiSettings.colors.FontColor;
+                                numberInputField.textComponent.font = manager.uiSettings.defaultFont;
+                                numberInputField.textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                numberInputField.caretPosition = numberInputField.text.Length;
                             }
                         break;
                         case AbstractParameter.ParameterType.STRING:
