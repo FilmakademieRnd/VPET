@@ -120,8 +120,8 @@ namespace vpet
             parameterList2.Add(new Parameter<string>(null, "Director"));
             parameterList2.Add(new Parameter<string>(null, "Lighting"));
 
-            Parameter<string> m_scale = new Parameter<string>("5.0", "Scene Scale");
-            Parameter<string> m_iconscale = new Parameter<string>("5.0", "Icon Scale");
+            Parameter<float> m_scale = new Parameter<float>(5, "Scene Scale");
+            Parameter<float> m_iconscale = new Parameter<float>(5, "Icon Scale");
 
             MenuTree menu = new MenuTree()
                 .Begin(MenuItem.IType.VSPLIT)
@@ -269,8 +269,8 @@ namespace vpet
                     verticalLayout.childControlHeight = true;
                     verticalLayout.childControlWidth = true;
                     verticalLayout.spacing = 2;
-                    verticalLayout.padding.top = 2;
-                    verticalLayout.padding.bottom = 2;
+                    verticalLayout.padding.top = 3;
+                    verticalLayout.padding.bottom = 3;
                     break;
                 case MenuItem.IType.SPACE:
                     {
