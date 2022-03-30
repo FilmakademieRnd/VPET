@@ -103,10 +103,6 @@ namespace vpet
                          .Add(m_serverIP_Param)
                      .End()                     
                      .Begin(MenuItem.IType.HSPLIT)
-                         .Add("Choose Role")
-                         .Add(new ListParameter(parameterList2, "Role"))
-                     .End()
-                     .Begin(MenuItem.IType.HSPLIT)
                          .Add(button)
                      .End()
                 .End();
