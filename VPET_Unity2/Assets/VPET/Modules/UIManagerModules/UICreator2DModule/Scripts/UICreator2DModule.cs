@@ -125,6 +125,7 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
+            resetButton.GetComponent<LongPressButton>().longPress += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().resetScene;
         }
 
         //!
@@ -315,9 +316,12 @@ namespace vpet
         //!
         private void resetCurrentSceneObjects()
         {
-            foreach(SceneObject s in selectedSceneObjects)
+            foreach (SceneObject s in selectedSceneObjects)
+            {
                 foreach (AbstractParameter p in s.parameterList)
                     p.reset();
+                manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().vanishHistory(s);
+            }
         }
 
         //!
