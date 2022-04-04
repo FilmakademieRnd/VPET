@@ -68,7 +68,7 @@ namespace vpet
         {
             _history = new List<AbstractParameter>();
             _currentHistoryPos = -1;
-            _maxHistory = 20;
+            _maxHistory = 100;
         }
 
         protected override void Start(object sender, EventArgs e)
@@ -121,7 +121,6 @@ namespace vpet
 
         //!
         //! undo the latest change to the parameter
-        //! @return sucess of undo (false if no earlier versions are available)
         //!
         public void undoStep()
         {
@@ -147,7 +146,6 @@ namespace vpet
 
         //!
         //! redo the next change to the parameter
-        //! @return sucess of redo (false if no later versions are available)
         //!
         public void redoStep()
         {
@@ -157,6 +155,33 @@ namespace vpet
                 AbstractParameter targetParam = sourceParam.parent.parameterList[sourceParam.id];
                 targetParam.copyValue(sourceParam);
                 _currentHistoryPos++;
+            }
+        }
+
+        //!
+        //! vanish history for a SceneObject
+        //!
+        public void vanishHistory(SceneObject s)
+        {
+            foreach (AbstractParameter p in _history)
+                if (p.parent.id == s.id)
+                {
+                    _history.Remove(p);
+                    _currentHistoryPos--;
+                }
+
+        }
+
+        //!
+        //! Reset all Parameters of all sceneObjects to their initial value
+        //!
+        public void resetScene(object sender, bool e)
+        {
+            foreach (SceneObject s in manager.sceneObjects)
+            {
+                foreach (AbstractParameter p in s.parameterList)
+                    p.reset();
+                manager.getModule<UndoRedoModule>().vanishHistory(s);
             }
         }
     }
