@@ -44,7 +44,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public UnityEditorModule(string name, Core core) : base(name, core)
+        public UnityEditorModule(string name, Manager manager) : base(name, manager)
         {
         }
 

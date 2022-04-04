@@ -79,7 +79,7 @@ namespace vpet
         //!
         public NetworkManager manager
         {
-            get => (NetworkManager) m_core.getManager<NetworkManager>();
+            get => (NetworkManager) m_manager;
         }
 
         //!
@@ -87,9 +87,9 @@ namespace vpet
         //! @param  name  The  name of the module.
         //! @param core A reference to the VPET core.
         //!
-        public NetworkManagerModule(string name, Core core) : base(name, core)
+        public NetworkManagerModule(string name, Manager manager) : base(name, manager) 
         {
-            core.destroyEvent += stopThread;
+            manager.cleanupEvent += stopThread;
         }
 
         //!
@@ -97,7 +97,7 @@ namespace vpet
         //!
         ~NetworkManagerModule() 
         {
-            m_core.destroyEvent -= stopThread;
+            core.destroyEvent -= stopThread;
         }
 
         //!

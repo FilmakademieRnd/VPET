@@ -52,7 +52,7 @@ namespace vpet
         //! @param  name  The  name of the module.
         //! @param core A reference to the VPET core.
         //!
-        public UpdateSenderModule(string name, Core core) : base(name, core)
+        public UpdateSenderModule(string name, Manager manager) : base(name, manager)
         {
         }
 
@@ -61,24 +61,24 @@ namespace vpet
         //!
         ~UpdateSenderModule()
         {
-            SceneManager sceneManager = m_core.getManager<SceneManager>();
-            UIManager uiManager = m_core.getManager<UIManager>();
+            SceneManager sceneManager = core.getManager<SceneManager>();
+            UIManager uiManager = core.getManager<UIManager>();
 
             sceneManager.sceneReady -= connectAndStart;
             uiManager.selectionAdded -= lockSceneObject;
             uiManager.selectionRemoved -= unlockSceneObject;
 
-            m_core.syncEvent -= queuePingMessage;
+            core.syncEvent -= queuePingMessage;
 
-            if (m_core.isServer)
-                m_core.syncEvent -= queueSyncMessage;
+            if (core.isServer)
+                core.syncEvent -= queueSyncMessage;
 
-            foreach (ParameterObject parameterObject in m_core.parameterObjectList)
+            foreach (ParameterObject parameterObject in core.parameterObjectList)
             {
                 parameterObject.hasChanged -= queueModifiedParameter;
             }
 
-            m_core.timeEvent -= sendParameterMessages;
+            core.timeEvent -= sendParameterMessages;
         }
 
         //!
@@ -91,7 +91,7 @@ namespace vpet
         {
             m_modifiedParameters = new List<AbstractParameter>();
 
-            SceneManager sceneManager = m_core.getManager<SceneManager>();
+            SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += connectAndStart;
         }
 
@@ -106,21 +106,21 @@ namespace vpet
             // [REVIEW] port should be in global config
             startUpdateSender(manager.settings.m_serverIP, "5557");
 
-            UIManager uiManager = m_core.getManager<UIManager>();
+            UIManager uiManager = core.getManager<UIManager>();
             uiManager.selectionAdded += lockSceneObject;
             uiManager.selectionRemoved += unlockSceneObject;
 
-            m_core.syncEvent += queuePingMessage;
+            core.syncEvent += queuePingMessage;
 
-            if (m_core.isServer)
-                m_core.syncEvent += queueSyncMessage;
+            if (core.isServer)
+                core.syncEvent += queueSyncMessage;
 
             foreach (SceneObject sceneObject in ((SceneManager) sender).sceneObjects)
             {
                 sceneObject.hasChanged += queueModifiedParameter;
             }
 
-            m_core.timeEvent += sendParameterMessages;
+            core.timeEvent += sendParameterMessages;
         }
 
         //!
@@ -135,7 +135,7 @@ namespace vpet
 
             // header
             m_controlMessage[0] = manager.cID;
-            m_controlMessage[1] = m_core.time;
+            m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
             Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             m_controlMessage[5] = Convert.ToByte(true);
@@ -156,7 +156,7 @@ namespace vpet
 
             // header
             m_controlMessage[0] = manager.cID;
-            m_controlMessage[1] = m_core.time;
+            m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
             Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             m_controlMessage[5] = Convert.ToByte(false);
@@ -279,7 +279,7 @@ namespace vpet
                     {
                         if (m_modifiedParameters.Count > 0)
                         {
-                            byte time = m_core.time;
+                            byte time = core.time;
                             foreach (AbstractParameter parameter in m_modifiedParameters)
                                 sender.SendFrame(createParameterMessage(parameter, time), false); // true not wait
                             m_modifiedParameters.Clear();
@@ -293,10 +293,12 @@ namespace vpet
                 sender.Disconnect("tcp://" + m_ip + ":" + m_port);
                 sender.Close();
                 sender.Dispose();
+                Helpers.Log(this.name + " disposed.");
+                Thread.Sleep(500);
             }
             finally
             {
-                NetMQConfig.Cleanup(false);
+                //NetMQConfig.Cleanup(false);
             }
 
         }

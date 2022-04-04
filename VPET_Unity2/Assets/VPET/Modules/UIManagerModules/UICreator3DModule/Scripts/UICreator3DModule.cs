@@ -105,7 +105,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public UICreator3DModule(string name, Core core) : base(name, core)
+        public UICreator3DModule(string name, Manager manager) : base(name, manager)
         {
 
         }
@@ -127,7 +127,7 @@ namespace vpet
             UI2DModule.parameterChanged += SetManipulatorMode;
 
             // Grabbing from the input manager directly
-            m_inputManager = m_core.getManager<InputManager>();
+            m_inputManager = core.getManager<InputManager>();
 
             // Hookup to input events
             m_inputManager.inputPressStart += PressStart;

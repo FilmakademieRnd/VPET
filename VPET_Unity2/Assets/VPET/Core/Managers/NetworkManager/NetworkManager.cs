@@ -30,6 +30,7 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Net;
+using NetMQ;
 
 namespace vpet
 {
@@ -75,6 +76,16 @@ namespace vpet
                     m_ip = ip.ToString();
                 }
             }
+        }
+
+        protected override void Cleanup(object sender, EventArgs e) 
+        {
+            base.Cleanup(sender, e);
+            // give the network threads some thime to finish.
+            
+            System.Threading.Thread.Sleep(1000);
+            NetMQConfig.Cleanup(false);
+            Helpers.Log("netMQ cleaned up.");
         }
 
 

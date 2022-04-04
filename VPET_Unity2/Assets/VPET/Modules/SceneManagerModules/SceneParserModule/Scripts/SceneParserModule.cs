@@ -62,7 +62,7 @@ namespace vpet
         //!
         //! Constructor
         //!
-        public SceneParserModule(string name, Core core) : base(name, core)
+        public SceneParserModule(string name, Manager manager) : base(name, manager)
         {
             if (!core.isServer)
                 load = false;
@@ -437,13 +437,11 @@ namespace vpet
                 Material _mat = Resources.Load(string.Format("VPET/Materials/{0}", matName), typeof(Material)) as Material;
                 if (_mat)
                 {
-                    Helpers.Log("mat type" + 1 + " material " + material.name);
                     matPack.type = 1;
                     matPack.src = matName;
                 }
                 else
                 {
-                    Helpers.Log("mat type" + 2 + " shader " + material.shader.name);
                     matPack.type = 2;
                     matPack.src = material.shader.name;
                 }
