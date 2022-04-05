@@ -59,9 +59,9 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public ARModule(string name, Core core) : base(name, core)
+        public ARModule(string name, Manager manager) : base(name, manager)
         {
-            sceneRoot = m_core.getManager<SceneManager>().scnRoot.transform;
+            sceneRoot = core.getManager<SceneManager>().scnRoot.transform;
             _arActive = false;
             if (!Application.isEditor)
             {
@@ -98,6 +98,7 @@ namespace vpet
         //!
         protected override void Init(object sender, EventArgs e)
         {
+            Debug.Log("I AM HERE");
             enableAR = new Parameter<bool>(true, "enableAR");
             enableOcclusionMapping = new Parameter<bool>(true, "enableOcclusion");
             enableMarkerTracking = new Parameter<bool>(true, "enableMarkerTracking");
@@ -123,7 +124,7 @@ namespace vpet
             enableMarkerTracking.hasChanged += changeMarkerTracking;
 
             _menu.caption = "AR";
-            m_core.getManager<UIManager>().addMenu(_menu);
+            core.getManager<UIManager>().addMenu(_menu);
 
             //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.started += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
             //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.performed += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
@@ -158,7 +159,7 @@ namespace vpet
             GameObject arSessionOriginPrefab = Resources.Load<GameObject>("Prefabs/ARSessionOrigin");
             arOrigin = SceneObject.Instantiate(arSessionOriginPrefab, Vector3.zero, Quaternion.identity).GetComponent<ARSessionOrigin>();
 
-            arOrigin.GetComponent<PlaceScene>().scene = m_core.getManager<SceneManager>().scnRoot;
+            arOrigin.GetComponent<PlaceScene>().scene = core.getManager<SceneManager>().scnRoot;
 
             arOrigin.transform.parent = Camera.main.transform.parent;
             Camera.main.transform.parent = arOrigin.transform;
