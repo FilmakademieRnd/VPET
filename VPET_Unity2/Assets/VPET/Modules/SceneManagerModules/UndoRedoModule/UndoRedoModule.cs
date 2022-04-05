@@ -181,7 +181,7 @@ namespace vpet
             {
                 foreach (AbstractParameter p in s.parameterList)
                     p.reset();
-                manager.getModule<UndoRedoModule>().vanishHistory(s);
+                vanishHistory(s);
             }
         }
     }

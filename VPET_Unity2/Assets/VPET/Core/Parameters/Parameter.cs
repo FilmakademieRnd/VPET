@@ -297,6 +297,7 @@ namespace vpet
         //!
         public override void reset()
         {
+            //[REVIEW]
             if (!EqualityComparer<T>.Default.Equals(_value, _initialValue))
             {
                 _value = _initialValue;
