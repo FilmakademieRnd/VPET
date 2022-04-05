@@ -25,5 +25,5 @@ MonoBehaviour:
       m_GuidHigh: 8494223773818047657
     m_Size: {x: 0.1, y: 0.1}
     m_SpecifySize: 1
-    m_Name: Marker_v2
+    m_Name: vpetMarker
     m_Texture: {fileID: 0}

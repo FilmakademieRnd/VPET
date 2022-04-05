@@ -44,6 +44,8 @@ namespace vpet
         ARSessionOrigin arOrigin;
         ARSession arSession;
         Transform sceneRoot;
+        ARTrackedImageManager arImgManager;
+
         MenuTree _menu;
 
         //user settings
@@ -61,6 +63,7 @@ namespace vpet
         //!
         public ARModule(string name, Manager manager) : base(name, manager)
         {
+            arImgManager = null;
             sceneRoot = core.getManager<SceneManager>().scnRoot.transform;
             _arActive = false;
             if (!Application.isEditor)
@@ -90,6 +93,13 @@ namespace vpet
                         break;
                 }
             }
+        }
+
+        ~ARModule()
+        {
+            if(arImgManager != null)
+                arImgManager.trackedImagesChanged -= MarkerTrackingChanged;
+
         }
 
         //!
@@ -168,18 +178,43 @@ namespace vpet
             Camera.main.gameObject.AddComponent<ARPoseDriver>();
             Camera.main.gameObject.AddComponent<ARCameraManager>();
             Camera.main.gameObject.AddComponent<AROcclusionManager>();
-
             Camera.main.gameObject.AddComponent<ARCameraBackground>();
 
             //Add Marker Tracking
-            ARTrackedImageManager arImgManager = Camera.main.gameObject.AddComponent<ARTrackedImageManager>();
+            arImgManager = arSession.gameObject.AddComponent<ARTrackedImageManager>();
             RuntimeReferenceImageLibrary imgLib = arImgManager.CreateRuntimeLibrary(Resources.Load<XRReferenceImageLibrary>("ReferenceImageLibrary"));
             arImgManager.referenceLibrary = imgLib;
             arImgManager.requestedMaxNumberOfMovingImages = 1;
-            //arImgManager.trackedImagePrefab = Resources.Load<GameObject>(xxx);
+            arImgManager.trackedImagesChanged += MarkerTrackingChanged;
             arImgManager.enabled = true;
             
             _arActive = true;
+        }
+
+        private void MarkerTrackingChanged(ARTrackedImagesChangedEventArgs e)
+        {
+            foreach (ARTrackedImage newImage in e.added)
+            {
+                if (newImage.referenceImage.name == "vpetMarker")
+                {
+                    sceneRoot.position = newImage.transform.position;
+                    sceneRoot.rotation = newImage.transform.rotation;
+                }
+            }
+
+            foreach (ARTrackedImage updatedImage in e.updated)
+            {
+                if (updatedImage.referenceImage.name == "vpetMarker")
+                {
+                    sceneRoot.position = updatedImage.transform.position;
+                    sceneRoot.rotation = updatedImage.transform.rotation;
+                }
+            }
+
+            //foreach (ARTrackedImage removedImage in e.removed)
+            //{
+                // Handle removed event
+            //}
         }
 
         private void changeActive(object sender, bool b)
