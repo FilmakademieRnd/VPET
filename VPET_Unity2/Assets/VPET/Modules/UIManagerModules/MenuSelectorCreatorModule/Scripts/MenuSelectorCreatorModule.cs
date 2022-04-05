@@ -51,7 +51,7 @@ namespace vpet
         //! @param sender A reference to the VPET core.
         //! @param e The event arguments for the start event.
         //!
-        protected override void Init(object sender, EventArgs e)
+        protected override void Start(object sender, EventArgs e)
         {
             // [REVIEW]
             // pls remove, only for testing...
