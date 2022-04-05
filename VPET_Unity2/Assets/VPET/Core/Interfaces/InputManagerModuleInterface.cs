@@ -36,14 +36,14 @@ namespace vpet
         //! constructor
         //! @param  name The name of the module.
         //!
-        public InputManagerModule(string name, Core core) : base(name, core) { }
+        public InputManagerModule(string name, Manager manager) : base(name, manager) { }
 
         //!
         //! set/get the manager of this module.
         //!
         public InputManager manager
         {
-            get => m_core.getManager<InputManager>();
+            get => (InputManager) m_manager;
         }
     }
 }

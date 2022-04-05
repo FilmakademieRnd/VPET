@@ -55,7 +55,12 @@ namespace vpet
         //! manager of this module
         //! assigned in addModule function in Manager.
         //!
-        protected Core m_core;
+        protected Manager m_manager;
+
+        //!
+        //! Returns a reference to the VPET core.
+        //!
+        protected ref Core core { get => ref m_manager.core; }
 
         //!
         //! Flad determin whether a module is loaded or not.
@@ -64,16 +69,16 @@ namespace vpet
 
         //!
         //! constructor
-        //! @param  name    name of the module.
+        //! @param  name name of the module.
         //!
-        public Module(string name, Core core)
+        public Module(string name, Manager manager)
         {
             m_name = name;
-            m_core = core;
+            m_manager = manager;
 
-            core.awakeEvent += Init;
-            core.startEvent += Start;
-            core.destroyEvent += Cleanup;
+            m_manager.initEvent += Init;
+            m_manager.startEvent += Start;
+            m_manager.cleanupEvent += Cleanup;
         }
 
         //!
@@ -86,19 +91,16 @@ namespace vpet
 
         public void Dispose()
         {
-            m_core.awakeEvent -= Init;
-            m_core.startEvent -= Start;
-            m_core.destroyEvent -= Cleanup;
+            m_manager.initEvent -= Init;
+            m_manager.startEvent -= Start;
+            m_manager.cleanupEvent -= Cleanup;
         }
 
         //!
         //! Get the name of the module.
         //! @return name of the module.
         //!
-        public string name
-        {
-            get => m_name;
-        }
+        public ref string name { get => ref m_name; }
 
         //! 
         //! Virtual function called when Unity initializes the VPET core.
@@ -121,7 +123,5 @@ namespace vpet
         //! @param e Arguments for these event. 
         //! 
         protected virtual void Cleanup(object sender, EventArgs e) { }
-
-        protected virtual void getMenus() { }
     }
 }

@@ -67,7 +67,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public UICreator3DPointOnFloor(string name, Core core) : base(name, core)
+        public UICreator3DPointOnFloor(string name, Manager manager) : base(name, manager)
         {
             // Disable module
             load = false;
@@ -84,7 +84,7 @@ namespace vpet
             manager.selectionChanged += SelectionUpdate;
 
             // Grabbing from the input manager directly
-            m_inputManager = m_core.getManager<InputManager>();
+            m_inputManager = core.getManager<InputManager>();
 
             // Hookup to input events
             m_inputManager.inputPressStart += PressStart;

@@ -41,12 +41,12 @@ namespace vpet
         //!
         public UIManager manager
         {
-            get => m_core.getManager<UIManager>();
+            get => (UIManager) m_manager;
         }
         //!
         //! constructor
         //! @param  name    name of the module.
         //!
-        public UIManagerModule(string name, Core core) : base(name, core) { }
+        public UIManagerModule(string name, Manager manager) : base(name, manager) { }
     }
 }

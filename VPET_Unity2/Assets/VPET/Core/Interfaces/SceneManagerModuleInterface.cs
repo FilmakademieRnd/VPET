@@ -45,12 +45,12 @@ namespace vpet
         //!
         public SceneManager manager
         {
-            get => m_core.getManager<SceneManager>();
+            get => (SceneManager) m_manager;
         }
         //!
         //! constructor
         //! @param  name    name of the module.
         //!
-        public SceneManagerModule(string name, Core core) : base(name, core) {}
+        public SceneManagerModule(string name, Manager manager) : base(name, manager) { }
     }
 }

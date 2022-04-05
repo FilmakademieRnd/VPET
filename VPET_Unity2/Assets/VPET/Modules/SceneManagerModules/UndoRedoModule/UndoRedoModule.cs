@@ -64,7 +64,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public UndoRedoModule(string name, Core core) : base(name, core)
+        public UndoRedoModule(string name, Manager manager) : base(name, manager)
         {
             _history = new List<AbstractParameter>();
             _currentHistoryPos = -1;
@@ -73,7 +73,7 @@ namespace vpet
 
         protected override void Start(object sender, EventArgs e)
         {
-            manager.core.getManager<NetworkManager>().getModule<UpdateReceiverModule>().receivedHistoryUpdate += addHistoryStep;
+            core.getManager<NetworkManager>().getModule<UpdateReceiverModule>().receivedHistoryUpdate += addHistoryStep;
         }
 
         //!

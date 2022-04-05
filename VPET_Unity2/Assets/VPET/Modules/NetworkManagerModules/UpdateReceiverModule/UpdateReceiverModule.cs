@@ -65,16 +65,17 @@ namespace vpet
         //! @param  name  The  name of the module.
         //! @param core A reference to the VPET core.
         //!
-        public UpdateReceiverModule(string name, Core core) : base(name, core)
+        public UpdateReceiverModule(string name, Manager manager) : base(name, manager)
         {
         }
 
         //!
-        //! Destructor, cleaning up event registrations. 
+        //! Cleaning up event registrations. 
         //!
-        ~UpdateReceiverModule()
+        protected override void Cleanup(object sender, EventArgs e)
         {
-            m_core.timeEvent -= consumeMessages;
+            base.Cleanup(sender, e);
+            core.timeEvent -= consumeMessages;
             m_sceneManager.sceneReady -= connectAndStart;
         }
 
@@ -86,14 +87,14 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_timesteps = ((int)(256f / m_core.settings.framerate)) * m_core.settings.framerate;
+            m_timesteps = ((int)(256f / core.settings.framerate)) * core.settings.framerate;
 
             // initialize message buffer
             m_messageBuffer = new List<List<byte[]>>(m_timesteps);
             for (int i = 0; i < m_timesteps; i++)
                 m_messageBuffer.Add(new List<byte[]>(256));
 
-            m_sceneManager = m_core.getManager<SceneManager>();
+            m_sceneManager = core.getManager<SceneManager>();
             m_sceneManager.sceneReady += connectAndStart;
         }
 
@@ -108,7 +109,7 @@ namespace vpet
             // [REVIEW] port should be in global config
             startUpdateReceiver(manager.settings.m_serverIP, "5556");
 
-            m_core.timeEvent += consumeMessages;
+            core.timeEvent += consumeMessages;
         }
 
         //!
@@ -138,7 +139,7 @@ namespace vpet
                                 decodeLockMessage(ref input);
                                 break;
                             case MessageType.SYNC:
-                                if (!m_core.isServer)
+                                if (!core.isServer)
                                     decodeSyncMessage(ref input);
                                 break;
                             case MessageType.PARAMETERUPDATE:
@@ -161,10 +162,11 @@ namespace vpet
                 receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 receiver.Close();
                 receiver.Dispose();
+                Helpers.Log(this.name + " disposed.");
+                Thread.Sleep(500);
             }
-            finally
+            catch
             {
-                NetMQConfig.Cleanup(false);
             }
         }
 
@@ -176,7 +178,7 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeSyncMessage(ref byte[] message)
         {
-            m_core.time = message[1];
+            core.time = message[1];
         }
 
         //! 
@@ -202,7 +204,7 @@ namespace vpet
             // define the buffer size by defining the time offset in the ringbuffer
             // % time steps to take ring (0 to m_timesteps) into account
             // set to 1/10 second
-            int bufferTime = (((m_core.time - m_core.settings.framerate/10) + m_timesteps) % m_timesteps);
+            int bufferTime = (((core.time - core.settings.framerate/10) + m_timesteps) % m_timesteps);
 
             lock (m_messageBuffer)
             {

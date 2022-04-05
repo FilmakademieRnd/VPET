@@ -59,7 +59,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public IconCreatorModule(string name, Core core) : base(name, core)
+        public IconCreatorModule(string name, Manager manager) : base(name, manager)
         {
         }
 
@@ -75,7 +75,7 @@ namespace vpet
             m_lightSprite = Resources.Load<Sprite>("Images/LightIcon");
             m_cameraSprite = Resources.Load<Sprite>("Images/CameraIcon");
 
-            SceneManager sceneManager = m_core.getManager<SceneManager>();
+            SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += createIcons;
         }
 

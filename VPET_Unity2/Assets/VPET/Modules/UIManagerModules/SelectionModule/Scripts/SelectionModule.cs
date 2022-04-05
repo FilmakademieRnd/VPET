@@ -108,7 +108,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public SelectionModule(string name, Core core) : base(name, core)
+        public SelectionModule(string name, Manager manager) : base(name, manager)
         {
             objectIdShader = Resources.Load<Shader>("Shader/SelectableId");
             m_materials = new Dictionary<Material, Material>();
@@ -123,12 +123,12 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_core.updateEvent += renderUpdate;
+            core.updateEvent += renderUpdate;
            
-            m_sceneManager = m_core.getManager<SceneManager>();
+            m_sceneManager = core.getManager<SceneManager>();
             m_sceneManager.sceneReady += modifyMaterials;
             
-            m_inputManager = m_core.getManager<InputManager>();
+            m_inputManager = core.getManager<InputManager>();
 
             // hookup to input events
             m_inputManager.inputEvent += SelectFunction;
@@ -140,7 +140,7 @@ namespace vpet
         //!
         ~SelectionModule()
         {
-            m_core.updateEvent -= renderUpdate;
+            core.updateEvent -= renderUpdate;
             m_sceneManager.sceneReady -= modifyMaterials;
             m_inputManager.inputEvent -= SelectFunction;
         }
