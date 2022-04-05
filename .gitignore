@@ -55,6 +55,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+*.dwlt
 
 #VPET specific
 /VPET_Unity/Assets/*
@@ -68,6 +69,7 @@ sysinfo.txt
 !/VPET_Unity2/Assets/VPET
 /VPET_Unity2/Packages
 !/VPET_Unity2/ProjectSettings
+/VPET_Unity2/UserSettings/EditorUserSettings.asset
 
 # Crashlytics generated file
 crashlytics-build.properties
