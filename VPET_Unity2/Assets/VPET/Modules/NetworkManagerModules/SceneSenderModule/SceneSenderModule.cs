@@ -60,7 +60,7 @@ namespace vpet
         //! @param  name  The  name of the module.
         //! @param core A reference to the VPET core.
         //!
-        public SceneSenderModule(string name, Core core) : base(name, core)
+        public SceneSenderModule(string name, Manager manager) : base(name, manager)
         {
             if (!core.isServer)
                 load = false;
@@ -89,7 +89,7 @@ namespace vpet
               .End();
 
             m_menu.caption = "Network Server";
-            m_core.getManager<UIManager>().addMenu(m_menu);
+            core.getManager<UIManager>().addMenu(m_menu);
         }
 
         //! 
@@ -100,7 +100,7 @@ namespace vpet
         //! 
         protected override void Start(object sender, EventArgs e)
         {
-            m_core.getManager<UIManager>().showMenu(m_menu);
+            core.getManager<UIManager>().showMenu(m_menu);
         }
 
         private void Connect()
@@ -108,9 +108,9 @@ namespace vpet
             manager.settings.m_serverIP = m_serverIP_Param.value;
             Helpers.Log(manager.settings.m_serverIP);
 
-            m_core.getManager<UIManager>().showMenu(null);
+            core.getManager<UIManager>().showMenu(null);
 
-            SceneParserModule sceneParserModule = m_core.getManager<SceneManager>().getModule<SceneParserModule>();
+            SceneParserModule sceneParserModule = core.getManager<SceneManager>().getModule<SceneParserModule>();
             sceneParserModule.ParseScene();
 
             sendScene(manager.settings.m_serverIP, "5555");
@@ -147,12 +147,12 @@ namespace vpet
             try
             {
                 dataSender.Disconnect("tcp://" + m_ip + ":" + m_port);
-                dataSender.Dispose();
                 dataSender.Close();
+                dataSender.Dispose();
+                Helpers.Log(this.name + " disposed.");
             }
-            finally
+            catch
             {
-                NetMQConfig.Cleanup(false);
             }
         }
 
@@ -165,7 +165,7 @@ namespace vpet
         {
             // [REVIEW]
             m_responses = new Dictionary<string, byte[]>();
-            SceneManager.SceneDataHandler dataHandler = m_core.getManager<SceneManager>().sceneDataHandler;
+            SceneManager.SceneDataHandler dataHandler = core.getManager<SceneManager>().sceneDataHandler;
 
             m_responses.Add("header", dataHandler.headerByteDataRef);
             m_responses.Add("nodes", dataHandler.nodesByteDataRef);

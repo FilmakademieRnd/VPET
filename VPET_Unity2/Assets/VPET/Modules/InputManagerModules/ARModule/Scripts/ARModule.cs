@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 09.11.2021
+//! @date 04.04.2022
 
 using System;
 using System.Collections.Generic;
@@ -41,20 +41,133 @@ namespace vpet
     //!
     public class ARModule : InputManagerModule
     {
-        private Core vpetCore;
-        private GameObject arOrigin;
+        ARSessionOrigin arOrigin;
+        ARSession arSession;
+        Transform sceneRoot;
+        ARTrackedImageManager arImgManager;
+
+        MenuTree _menu;
+
+        //user settings
+        Parameter<bool> enableAR;
+        Parameter<bool> enableOcclusionMapping;
+        Parameter<bool> enableMarkerTracking;
+
+        private bool _arActive;
+        public bool arActive { get => _arActive; }
+
         //!
         //! Constructor
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public ARModule(string name, Core core) : base(name, core)
+        public ARModule(string name, Manager manager) : base(name, manager)
         {
-            GameObject arSessionPrefab = Resources.Load<GameObject>("Prefabs/ARSession");
-            SceneObject.Instantiate(arSessionPrefab, Vector3.zero, Quaternion.identity);
+            arImgManager = null;
+            sceneRoot = core.getManager<SceneManager>().scnRoot.transform;
+            _arActive = false;
+            if (!Application.isEditor)
+            {
+                GameObject arSessionPrefab = Resources.Load<GameObject>("Prefabs/ARSession");
+                arSession = SceneObject.Instantiate(arSessionPrefab, Vector3.zero, Quaternion.identity).GetComponent<ARSession>();
 
+                switch (ARSession.state)
+                {
+                    case ARSessionState.CheckingAvailability:
+                        // still checking AR state
+                        Helpers.Log("ARModule: Checking availability...");
+                        ARSession.stateChanged += arStateChanged;
+                        break;
+                    case ARSessionState.Ready:
+                    case ARSessionState.SessionInitializing:
+                    case ARSessionState.SessionTracking:
+                        // AR is available
+                        Helpers.Log("ARModule: AR available.");
+                        ARSession.stateChanged -= arStateChanged;
+                        initialize();
+                        break;
+                    default:
+                        //AR not available
+                        Helpers.Log("ARModule: AR not available.");
+                        SceneObject.Destroy(arSession);
+                        break;
+                }
+            }
+        }
+
+        ~ARModule()
+        {
+            if(arImgManager != null)
+                arImgManager.trackedImagesChanged -= MarkerTrackingChanged;
+
+        }
+
+        //!
+        //! Init callback for the UICreator2D module.
+        //! Called after constructor. 
+        //!
+        protected override void Init(object sender, EventArgs e)
+        {
+            Debug.Log("I AM HERE");
+            enableAR = new Parameter<bool>(true, "enableAR");
+            enableOcclusionMapping = new Parameter<bool>(true, "enableOcclusion");
+            enableMarkerTracking = new Parameter<bool>(true, "enableMarkerTracking");
+
+            _menu = new MenuTree()
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Begin(MenuItem.IType.HSPLIT)
+                         .Add("Enable AR Tracking")
+                         .Add(enableAR)
+                     .End()
+                     .Begin(MenuItem.IType.HSPLIT)
+                         .Add("Enable Occlusion Mapping")
+                         .Add(enableOcclusionMapping)
+                     .End()
+                     .Begin(MenuItem.IType.HSPLIT)
+                         .Add("Enable Marker Tracking")
+                         .Add(enableMarkerTracking)
+                     .End()
+                .End();
+
+            enableAR.hasChanged += changeActive;
+            enableOcclusionMapping.hasChanged += changeOcclusion;
+            enableMarkerTracking.hasChanged += changeMarkerTracking;
+
+            _menu.caption = "AR";
+            core.getManager<UIManager>().addMenu(_menu);
+
+            //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.started += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
+            //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.performed += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
+            //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.canceled += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
+        }
+
+        //!
+        //! function being subscribed to the ARSession.stateChanged when it is yet unknown if the device supports AR
+        //!
+        private void arStateChanged(ARSessionStateChangedEventArgs obj)
+        {
+            switch (ARSession.state)
+            {
+                case ARSessionState.Ready:
+                case ARSessionState.SessionInitializing:
+                case ARSessionState.SessionTracking:
+                    // AR is available
+                    Helpers.Log("ARModule: AR available.");
+                    ARSession.stateChanged -= arStateChanged;
+                    initialize();
+                    break;
+                default:
+                    //AR not available
+                    Helpers.Log("ARModule: AR not available.");
+                    SceneObject.Destroy(arSession);
+                    break;
+            }
+        }
+
+        private void initialize()
+        {
             GameObject arSessionOriginPrefab = Resources.Load<GameObject>("Prefabs/ARSessionOrigin");
-            arOrigin = SceneObject.Instantiate(arSessionOriginPrefab, Vector3.zero, Quaternion.identity);
+            arOrigin = SceneObject.Instantiate(arSessionOriginPrefab, Vector3.zero, Quaternion.identity).GetComponent<ARSessionOrigin>();
 
             arOrigin.GetComponent<PlaceScene>().scene = core.getManager<SceneManager>().scnRoot;
 
@@ -64,21 +177,64 @@ namespace vpet
 
             Camera.main.gameObject.AddComponent<ARPoseDriver>();
             Camera.main.gameObject.AddComponent<ARCameraManager>();
-            //Camera.main.gameObject.AddComponent<AROcclusionManager>();
+            Camera.main.gameObject.AddComponent<AROcclusionManager>();
             Camera.main.gameObject.AddComponent<ARCameraBackground>();
 
-            vpetCore = core;
+            //Add Marker Tracking
+            arImgManager = arSession.gameObject.AddComponent<ARTrackedImageManager>();
+            RuntimeReferenceImageLibrary imgLib = arImgManager.CreateRuntimeLibrary(Resources.Load<XRReferenceImageLibrary>("ReferenceImageLibrary"));
+            arImgManager.referenceLibrary = imgLib;
+            arImgManager.requestedMaxNumberOfMovingImages = 1;
+            arImgManager.trackedImagesChanged += MarkerTrackingChanged;
+            arImgManager.enabled = true;
+            
+            _arActive = true;
         }
 
-        //!
-        //! Init callback for the UICreator2D module.
-        //! Called after constructor. 
-        //!
-        protected override void Init(object sender, EventArgs e)
+        private void MarkerTrackingChanged(ARTrackedImagesChangedEventArgs e)
         {
-            //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.started += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
-            //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.performed += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
-            //vpetCore.getManager<InputManager>().touchInputs.ARTouchScreen.PlaceScene.canceled += ctx => arOrigin.GetComponent<PlaceScene>().placeScene(ctx);
+            foreach (ARTrackedImage newImage in e.added)
+            {
+                if (newImage.referenceImage.name == "vpetMarker")
+                {
+                    sceneRoot.position = newImage.transform.position;
+                    sceneRoot.rotation = newImage.transform.rotation;
+                }
+            }
+
+            foreach (ARTrackedImage updatedImage in e.updated)
+            {
+                if (updatedImage.referenceImage.name == "vpetMarker")
+                {
+                    sceneRoot.position = updatedImage.transform.position;
+                    sceneRoot.rotation = updatedImage.transform.rotation;
+                }
+            }
+
+            //foreach (ARTrackedImage removedImage in e.removed)
+            //{
+                // Handle removed event
+            //}
+        }
+
+        private void changeActive(object sender, bool b)
+        {
+            arSession.enabled = b;
+        }
+
+        private void changeOcclusion(object sender, bool b)
+        {
+            Camera.main.gameObject.GetComponent<AROcclusionManager>().enabled = b;
+        }
+
+        private void changeMarkerTracking(object sender, bool b)
+        {
+            Camera.main.gameObject.AddComponent<ARTrackedImageManager>().enabled = b;
+        }
+
+        public void moveCamera(Vector3 pos, Quaternion rot)
+        {
+            arOrigin.MakeContentAppearAt(sceneRoot, pos, rot);
         }
     }
 }

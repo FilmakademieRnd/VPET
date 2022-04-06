@@ -95,7 +95,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public GizmoCreatorModule(string name, Core core) : base(name, core)
+        public GizmoCreatorModule(string name, Manager manager) : base(name, manager)
         {
             m_ParameterEventHandlers = new List<Tuple<SceneObject, EventHandler<AbstractParameter>>>();
             m_eventHandlersColor = new List<Tuple<Parameter<Color>, EventHandler<Color>>>();

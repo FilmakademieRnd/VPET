@@ -43,7 +43,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public MenuCreatorModule(string name, Core core) : base(name, core)
+        public MenuCreatorModule(string name, Manager manager) : base(name, manager)
         {
         }
 
@@ -72,9 +72,17 @@ namespace vpet
         //!
         private GameObject m_text;
         //!
+        //! Prefab for the Unity text object, used as UI element for an string (read only) parameter to seperate Menu section including background element.
+        //!
+        private GameObject m_textsection;
+        //!
         //! Prefab for the Unity input field object, used as UI element for an string parameter.
         //!
         private GameObject m_inputField;
+        //!
+        //! Prefab for the Unity input field object, used as UI element for an string parameter.
+        //!
+        private GameObject m_numberInputField;
         //!
         //! Prefab for the Unity dropdown object, used as UI element for a list parameter.
         //!
@@ -96,34 +104,67 @@ namespace vpet
             m_button = Resources.Load("Prefabs/MenuButton") as GameObject;
             m_toggle = Resources.Load("Prefabs/MenuToggle") as GameObject;
             m_text = Resources.Load("Prefabs/MenuText") as GameObject;
+            m_textsection = Resources.Load("Prefabs/MenuTextSection") as GameObject;
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
+            m_numberInputField = Resources.Load("Prefabs/MenuNumberInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
 
-            // [REVIEW]
-            // Just for testing, please remove!
-            //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             List<AbstractParameter> parameterList = new List<AbstractParameter>();
-            parameterList.Add(new Parameter<float>(1, "t1"));
-            parameterList.Add(new Parameter<float>(12, "t2"));
-            parameterList.Add(new Parameter<float>(100, "t4"));
-            parameterList.Add(new Parameter<float>(7, "t12"));
+            parameterList.Add(new Parameter<float>(25, "25"));
+            parameterList.Add(new Parameter<float>(24, "24"));
+            parameterList.Add(new Parameter<float>(30, "30"));
+            parameterList.Add(new Parameter<float>(50, "50"));
+
+            List<AbstractParameter> parameterList2 = new List<AbstractParameter>();
+            parameterList2.Add(new Parameter<string>(null, "Scout"));
+            parameterList2.Add(new Parameter<string>(null, "Director"));
+            parameterList2.Add(new Parameter<string>(null, "Lighting"));
+
+            Parameter<float> m_scale = new Parameter<float>(5, "Scene Scale");
+            Parameter<float> m_iconscale = new Parameter<float>(5, "Icon Scale");
 
             MenuTree menu = new MenuTree()
-               .Begin(MenuItem.IType.HSPLIT)
-                   .Begin(MenuItem.IType.VSPLIT)
-                       .Add(new Parameter<string>("This is a test string", "StringParameter"))
-                       .Add(MenuItem.IType.SPACE)
-                       .Add(new Parameter<bool>(true, "BoolParameter"))
-                       .Add(MenuItem.IType.SPACE)
-                       .Add("That's an info text string.")
-                   .End()
-                   .Begin(MenuItem.IType.HSPLIT)
-                       .Add(new Parameter<object>(null, "OK"))
-                       .Add(new Parameter<object>(null, "Abort"))
-                       .Add(new ListParameter(parameterList, "TestList"))
-                   .End()
-              .End();
-            menu.caption = "TestMenu";
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Begin(MenuItem.IType.VSPLIT)
+                        .Add(MenuItem.IType.SPACE) // this is needed as root panel has a menu bar that messes up layout center
+                        .Add("Scene", true)
+                    .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Scene Scale")
+                        .Add(m_scale)
+                    .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Frame Rate")
+                        .Add(new ListParameter(parameterList, "Framerate"))
+                    .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Choose Role")
+                        .Add(new ListParameter(parameterList2, "Role"))
+                    .End()
+                    .Begin(MenuItem.IType.VSPLIT)
+                        .Add("Display", true)
+                     .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Icon Scale")
+                        .Add(m_iconscale)
+                    .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Draw Shadows")
+                        .Add(new Parameter<bool>(true, ""))
+                    .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Enable Textures")
+                        .Add(new Parameter<bool>(true, ""))
+                    .End()
+                    .Begin(MenuItem.IType.VSPLIT)
+                        .Add("AR", true)
+                     .End()
+                    .Begin(MenuItem.IType.HSPLIT)
+                        .Add("Enable AR")
+                        .Add(new Parameter<bool>(true, ""))
+                    .End()
+                .End();
+            menu.caption = "Configuration";
             menu.setIcon("Images/button_translate");
             manager.addMenu(menu);
 
@@ -132,6 +173,7 @@ namespace vpet
 
                .Begin(MenuItem.IType.VSPLIT)
                    .Add(new Parameter<string>("This is a test string", "StringParameter"))
+                   .Add(new Parameter<float>(123.456f, "FloatParameter"))
                    .Add(MenuItem.IType.SPACE)
                    .Add(new Parameter<bool>(true, "BoolParameter"))
                    .Add(MenuItem.IType.SPACE)
@@ -140,6 +182,9 @@ namespace vpet
                .Begin(MenuItem.IType.HSPLIT)
                    .Add(new Parameter<object>(null, "OK"))
                    .Add(new Parameter<object>(null, "Abort"))
+               .End()
+               .Begin(MenuItem.IType.HSPLIT)
+                   .Add("Bla Hello", true)
                .End()
             .End();
 
@@ -180,9 +225,12 @@ namespace vpet
                 GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;                
                 TextMeshProUGUI menuTitle = menuCanvas.transform.Find("Text").GetComponent<TextMeshProUGUI>();
                 menuTitle.font = manager.uiSettings.defaultFont;
-                menuTitle.fontSize = manager.uiSettings.defaultFontSize;
+                menuTitle.fontSize = manager.uiSettings.defaultFontSize+1;
                 menuTitle.color = manager.uiSettings.colors.FontColor;
                 menuTitle.text = menu.caption;
+                //Image imageComponent = menuCanvas.GetComponentInChildren<Image>();
+                Image imageComponent = menuCanvas.transform.Find("Panel_Menu").GetComponent<Image>();
+                imageComponent.color = manager.uiSettings.colors.MenuTitleBG;
                 m_uiElements.Add(rootPanel);
                 menu.Items.ForEach(p => createMenufromTree(p, rootPanel));
                 menu.visible = true;
@@ -220,7 +268,9 @@ namespace vpet
                     verticalLayout.childForceExpandWidth = false;
                     verticalLayout.childControlHeight = true;
                     verticalLayout.childControlWidth = true;
-                    verticalLayout.spacing = 3;
+                    verticalLayout.spacing = 2;
+                    verticalLayout.padding.top = 3;
+                    verticalLayout.padding.bottom = 3;
                     break;
                 case MenuItem.IType.SPACE:
                     {
@@ -237,6 +287,19 @@ namespace vpet
                         textComponent.fontSize = manager.uiSettings.defaultFontSize;
                         textComponent.fontStyle = FontStyles.Bold;
                      }
+                    break;
+                case MenuItem.IType.TEXTSECTION:
+                    {
+                        newObject = GameObject.Instantiate(m_textsection, parentObject.transform);
+                        TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
+                        textComponent.text = ((Parameter<string>)item.Parameter).value;
+                        textComponent.color = manager.uiSettings.colors.FontColor;
+                        textComponent.font = manager.uiSettings.defaultFont;
+                        textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                        textComponent.fontStyle = FontStyles.Bold;
+                        Image imageComponent = newObject.GetComponentInChildren<Image>();
+                        imageComponent.color = manager.uiSettings.colors.MenuTitleBG;
+                    }
                     break;
                 case MenuItem.IType.PARAMETER:
                     switch (item.Parameter.vpetType) 
@@ -269,6 +332,27 @@ namespace vpet
                                 textComponent.text = item.Parameter.name;
                                 textComponent.color = manager.uiSettings.colors.FontColor;
                                 textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                ColorBlock toggleColors = toggle.colors;
+                                toggleColors.normalColor = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.highlightedColor = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.pressedColor = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.selectedColor = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.disabledColor = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                toggle.colors = toggleColors;
+                            }
+                        break;
+                        case AbstractParameter.ParameterType.FLOAT:
+                            {
+                                newObject = GameObject.Instantiate(m_numberInputField, parentObject.transform);
+                                TMP_InputField numberInputField = newObject.GetComponent<TMP_InputField>();
+                                numberInputField.onEndEdit.AddListener(delegate { ((Parameter<float>)item.Parameter).setValue(float.Parse(numberInputField.text)); });
+                                numberInputField.text = ((Parameter<float>)item.Parameter).value.ToString();
+                                Image imgButton = numberInputField.GetComponent<Image>();
+                                imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                numberInputField.textComponent.color = manager.uiSettings.colors.FontColor;
+                                numberInputField.textComponent.font = manager.uiSettings.defaultFont;
+                                numberInputField.textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                numberInputField.caretPosition = numberInputField.text.Length;
                             }
                         break;
                         case AbstractParameter.ParameterType.STRING:

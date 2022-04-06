@@ -48,6 +48,7 @@ namespace vpet
     //!
     public class Manager : ManagerInterface
     {
+
         //!
         //! A reference to VPET core.
         //!
@@ -56,10 +57,7 @@ namespace vpet
         //!
         //! Returns a reference to the VPET core.
         //!
-        public ref Core core
-        {
-            get => ref m_core;
-        }
+        public ref Core core { get => ref m_core; }
 
         //!
         //! Dictionary of loaded modules.
@@ -72,6 +70,21 @@ namespace vpet
         internal Settings _settings;
 
         //!
+        //! Event invoked when an VPET core Awake() callback is triggered.
+        //!
+        public event EventHandler initEvent;
+
+        //!
+        //! Event invoked when an VPET core Start() callback is triggered.
+        //!
+        public event EventHandler startEvent;
+
+        //!
+        //! Event invoked when an VPET core OnDestroy() callback is triggered.
+        //!
+        public event EventHandler cleanupEvent;
+
+        //!
         //! Constructor
         //! @param  moduleType The type of modules to be loaded by this manager.
         //! @param vpetCore A reference to the VPET core.
@@ -82,12 +95,13 @@ namespace vpet
             m_core = vpetCore;
             Type[] modules = Helpers.GetAllTypes(AppDomain.CurrentDomain, moduleType);
 
-            core.awakeEvent += Init;
-            core.destroyEvent += Cleanup;
+            m_core.awakeEvent += Init;
+            m_core.startEvent += Start;
+            m_core.destroyEvent += Cleanup;
 
             foreach (Type t in modules)
             {
-                Module module = (Module)Activator.CreateInstance(t, t.ToString(), core);
+                Module module = (Module)Activator.CreateInstance(t, t.ToString(), this);
                 if (module.load)
                     addModule(module, t);
                 else {
@@ -104,29 +118,41 @@ namespace vpet
                 _settings = (Settings)Activator.CreateInstance(settingsType);
         }
 
-        //!
-        //! Destructor, cleaning up event registrations. 
-        //!
-        ~Manager()
-        {
-            core.awakeEvent -= Init;
-            core.destroyEvent -= Cleanup;
-        }
-
         //! 
         //! Virtual function called when Unity initializes the VPET core.
         //! 
         //! @param sender A reference to the VPET core.
         //! @param e Arguments for these event. 
         //! 
-        protected virtual void Init(object sender, EventArgs e) { }
+        protected virtual void Init(object sender, EventArgs e) 
+        {
+            initEvent?.Invoke(this, e);
+        }
+
+        //! 
+        //! Virtual function called when Unity calls it's Start function.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected virtual void Start(object sender, EventArgs e) 
+        {
+            startEvent?.Invoke(this, e);
+        }
+
         //! 
         //! Virtual function called before Unity destroys the VPET core.
         //! 
         //! @param sender A reference to the VPET core.
         //! @param e Arguments for these event. 
         //! 
-        protected virtual void Cleanup(object sender, EventArgs e) { }
+        protected virtual void Cleanup(object sender, EventArgs e) 
+        {
+            cleanupEvent?.Invoke(this, e);
+            m_core.awakeEvent -= Init;
+            m_core.startEvent -= Start;
+            m_core.destroyEvent -= Cleanup;
+        }
 
         //!
         //! Function to add a module to the manager.
@@ -155,11 +181,6 @@ namespace vpet
             if (!m_modules.TryGetValue(typeof(T), out module))
                 Helpers.Log(this.GetType().ToString() + " no module of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.ERROR);
             return (T)(object) module;
-        }
-
-        public List<Module> getModules()
-        {
-            return new List<Module>(m_modules.Values);
         }
 
         //!

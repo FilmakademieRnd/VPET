@@ -66,7 +66,7 @@ namespace vpet
         //! @param  name  The  name of the module.
         //! @param core A reference to the VPET core.
         //!
-        public SceneReceiverModule(string name, Core core) : base(name, core)
+        public SceneReceiverModule(string name, Manager manager) : base(name, manager)
         {
             if (core.isServer)
                 load = false;
@@ -103,16 +103,12 @@ namespace vpet
                          .Add(m_serverIP_Param)
                      .End()                     
                      .Begin(MenuItem.IType.HSPLIT)
-                         .Add("Choose Role")
-                         .Add(new ListParameter(parameterList2, "Role"))
-                     .End()
-                     .Begin(MenuItem.IType.HSPLIT)
                          .Add(button)
                      .End()
                 .End();
 
             m_menu.caption = "Network Client";
-            m_core.getManager<UIManager>().addMenu(m_menu);
+            core.getManager<UIManager>().addMenu(m_menu);
         }
 
         //! 
@@ -123,7 +119,7 @@ namespace vpet
         //! 
         protected override void Start(object sender, EventArgs e)
         {
-            m_core.getManager<UIManager>().showMenu(m_menu);
+            core.getManager<UIManager>().showMenu(m_menu);
         }
 
         private void Connect()
@@ -131,7 +127,7 @@ namespace vpet
             manager.settings.m_serverIP = m_serverIP_Param.value;
             Helpers.Log(manager.settings.m_serverIP);
 
-            m_core.getManager<UIManager>().showMenu(null);
+            core.getManager<UIManager>().showMenu(null);
 
             receiveScene(manager.settings.m_serverIP, "5555");
         }
@@ -165,7 +161,7 @@ namespace vpet
             AsyncIO.ForceDotNet.Force();
             var sceneReceiver = new RequestSocket();
 
-            SceneManager sceneManager = m_core.getManager<SceneManager>();
+            SceneManager sceneManager = core.getManager<SceneManager>();
 
             sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
 
@@ -198,8 +194,9 @@ namespace vpet
             try
             {
                 sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
-                sceneReceiver.Dispose();
                 sceneReceiver.Close();
+                sceneReceiver.Dispose();
+                Helpers.Log(this.name + " disposed.");
             }
             finally
             {

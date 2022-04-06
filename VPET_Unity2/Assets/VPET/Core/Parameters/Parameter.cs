@@ -297,8 +297,12 @@ namespace vpet
         //!
         public override void reset()
         {
-            _value = _initialValue;
-            hasChanged?.Invoke(this, _value);
+            //[REVIEW]
+            if (!EqualityComparer<T>.Default.Equals(_value, _initialValue))
+            {
+                _value = _initialValue;
+                hasChanged?.Invoke(this, _value);
+            }
         }
 
         //!

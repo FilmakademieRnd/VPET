@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 03.03.2022
+//! @date 29.03.2022
 
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public IconCreatorModule(string name, Core core) : base(name, core)
+        public IconCreatorModule(string name, Manager manager) : base(name, manager)
         {
         }
 
@@ -75,7 +75,7 @@ namespace vpet
             m_lightSprite = Resources.Load<Sprite>("Images/LightIcon");
             m_cameraSprite = Resources.Load<Sprite>("Images/CameraIcon");
 
-            SceneManager sceneManager = m_core.getManager<SceneManager>();
+            SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += createIcons;
         }
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DATA_VPET_Colors
   m_EditorClassIdentifier: 
   defaultFont: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  defaultFontSize: 5
+  defaultFontSize: 4
   colors:
     FontColor: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
     FontRegular: {r: 0, g: 0, b: 0, a: 1}

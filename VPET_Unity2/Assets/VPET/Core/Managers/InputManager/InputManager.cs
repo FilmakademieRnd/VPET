@@ -203,6 +203,7 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
+            base.Init(sender, e);
             // Global variables initialization
             m_isPinch = false;
             m_doOnce = true;

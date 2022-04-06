@@ -86,7 +86,7 @@ namespace vpet
         //! @param name Name of this module
         //! @param core Reference to the VPET core
         //!
-        public UICreator2DModule(string name, Core core) : base(name, core)
+        public UICreator2DModule(string name, Manager manager) : base(name, manager)
         {
             GameObject canvas = Resources.Load<GameObject>("Prefabs/PRE_Canvas_2DUI");
             Transform canvasTrans = SceneObject.Instantiate(canvas).transform;
@@ -97,8 +97,8 @@ namespace vpet
             undoButton = UI2D.GetChild(2).GetChild(0).GetComponent<Button>();
             redoButton = UI2D.GetChild(2).GetChild(1).GetComponent<Button>();
             resetButton = UI2D.GetChild(2).GetChild(2).GetComponent<Button>();
-            undoButton.onClick.AddListener(() => manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().undoStep());
-            redoButton.onClick.AddListener(() => manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().redoStep());
+            undoButton.onClick.AddListener(() => core.getManager<SceneManager>().getModule<UndoRedoModule>().undoStep());
+            redoButton.onClick.AddListener(() => core.getManager<SceneManager>().getModule<UndoRedoModule>().redoStep());
             resetButton.onClick.AddListener(() => resetCurrentSceneObjects());
 
             selectorPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Manipulator_Selector");
@@ -125,6 +125,7 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             manager.selectionChanged += createUI;
+            resetButton.GetComponent<LongPressButton>().longPress += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().resetScene;
         }
 
         //!
@@ -315,9 +316,12 @@ namespace vpet
         //!
         private void resetCurrentSceneObjects()
         {
-            foreach(SceneObject s in selectedSceneObjects)
+            foreach (SceneObject s in selectedSceneObjects)
+            {
                 foreach (AbstractParameter p in s.parameterList)
                     p.reset();
+                manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().vanishHistory(s);
+            }
         }
 
         //!

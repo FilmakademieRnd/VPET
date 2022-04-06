@@ -72,7 +72,7 @@ namespace vpet
         //! @param name Name of this module.
         //! @param core Reference to the VPET core.
         //!
-        public CameraNavigationModule(string name, Core core) : base(name, core)
+        public CameraNavigationModule(string name, Manager manager) : base(name, manager)
         {
 
         }
@@ -93,7 +93,7 @@ namespace vpet
             manager.threeDragEvent += CameraPedestalTruck;
 
             // Subscribe to selection change
-            UIManager uiManager = m_core.getManager<UIManager>();
+            UIManager uiManager = core.getManager<UIManager>();
             uiManager.selectionChanged += SelectionUpdate;
 
             // Initialize control variables
