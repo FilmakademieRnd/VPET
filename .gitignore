@@ -69,7 +69,7 @@ sysinfo.txt
 !/VPET_Unity2/Assets/VPET
 /VPET_Unity2/Packages
 !/VPET_Unity2/ProjectSettings
-/VPET_Unity2/UserSettings/EditorUserSettings.asset
+/VPET_Unity2/UserSettings/*
 
 # Crashlytics generated file
 crashlytics-build.properties
@@ -122,5 +122,3 @@ VPET_Unity2/.vscode/settings.json
 *.rns filter=lfs diff=lfs merge=lfs -text
 *.reason filter=lfs diff=lfs merge=lfs -text
 *.lxo filter=lfs diff=lfs merge=lfs -text
-*.dwlt
-VPET_Unity2/UserSettings/Layouts/default-2021.dwlt
