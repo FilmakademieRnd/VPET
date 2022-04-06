@@ -269,10 +269,6 @@ namespace vpet
                 else
                     Helpers.Log("SceneDataHandler: Materieal byte array null or empty!", Helpers.logMsgType.WARNING);
 
-                // [REVIEW]
-                //VPETSettings.Instance.lightIntensityFactor = header.lightIntensityFactor;
-                //VPETSettings.Instance.textureBinaryType = header.textureBinaryType;
-
                 return sceneData;
             }
 

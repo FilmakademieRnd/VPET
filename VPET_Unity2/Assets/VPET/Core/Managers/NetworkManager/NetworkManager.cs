@@ -42,7 +42,8 @@ namespace vpet
         [Serializable]
         public class NetworkManagerSettings : Settings
         {
-            public string m_serverIP = "127.0.0.1";
+            // to store a parameters value into the settings files.
+            public Parameter<string> ipAddress;
         }
 
         //!
@@ -57,6 +58,8 @@ namespace vpet
         //!
         public NetworkManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
+            settings.ipAddress = new Parameter<string>("127.0.0.1", "ipAddress");
+
             //reads the network name of the device
             var hostName = Dns.GetHostName();
             var host = Dns.GetHostEntry(hostName);

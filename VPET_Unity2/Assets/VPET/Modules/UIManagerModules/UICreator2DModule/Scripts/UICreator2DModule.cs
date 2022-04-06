@@ -272,9 +272,14 @@ namespace vpet
                 case AbstractParameter.ParameterType.QUATERNION:
                     GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Spinner");
                     currentManipulator = SceneObject.Instantiate(spinnerPrefab, manipulatorPanel);
-                    currentManipulator.GetComponent<Spinner>().uiSettings = manager.uiSettings;
-                    currentManipulator.GetComponent<Spinner>().Init(abstractParam);
-                    currentManipulator.GetComponent<Spinner>().doneEditing += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
+                    Spinner spinner = currentManipulator.GetComponent<Spinner>();
+                    if (spinner)
+                    {
+                        spinner.uiSettings = manager.uiSettings;
+                        spinner.Init(abstractParam);
+                        spinner.doneEditing += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
+                        spinner.doneEditing += core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueUndoRedoMessage;
+                    }
                     break;
                 case AbstractParameter.ParameterType.COLOR:
                     GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");

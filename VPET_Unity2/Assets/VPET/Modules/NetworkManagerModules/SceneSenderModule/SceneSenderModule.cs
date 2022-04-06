@@ -42,11 +42,6 @@ namespace vpet
     //!
     public class SceneSenderModule : NetworkManagerModule
     {
-        // [REVIEW]
-        // needs to be replaced by an proper serialization fonctionality 
-        // to store a parameters value into the settings files.
-        private Parameter<string> m_serverIP_Param;
-
         //!
         //! The menu for the network configuration.
         //!
@@ -75,13 +70,12 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             Parameter<Action> button = new Parameter<Action>(Connect, "Start");
-            m_serverIP_Param = new Parameter<string>(manager.settings.m_serverIP, "IP Adress");
 
             m_menu = new MenuTree()
                .Begin(MenuItem.IType.VSPLIT)
                     .Begin(MenuItem.IType.HSPLIT)
                         .Add("IP Address")
-                        .Add(m_serverIP_Param)
+                        .Add(manager.settings.ipAddress)
                     .End()
                     .Begin(MenuItem.IType.HSPLIT)
                         .Add(button)
@@ -105,15 +99,14 @@ namespace vpet
 
         private void Connect()
         {
-            manager.settings.m_serverIP = m_serverIP_Param.value;
-            Helpers.Log(manager.settings.m_serverIP);
+            Helpers.Log(manager.settings.ipAddress.value);
 
             core.getManager<UIManager>().showMenu(null);
 
             SceneParserModule sceneParserModule = core.getManager<SceneManager>().getModule<SceneParserModule>();
             sceneParserModule.ParseScene();
 
-            sendScene(manager.settings.m_serverIP, "5555");
+            sendScene(manager.settings.ipAddress.value, "5555");
         }
 
         //!
@@ -163,7 +156,6 @@ namespace vpet
         //!
         public void sendScene(string ip, string port)
         {
-            // [REVIEW]
             m_responses = new Dictionary<string, byte[]>();
             SceneManager.SceneDataHandler dataHandler = core.getManager<SceneManager>().sceneDataHandler;
 

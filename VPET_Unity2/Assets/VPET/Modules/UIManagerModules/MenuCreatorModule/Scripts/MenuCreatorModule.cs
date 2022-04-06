@@ -166,7 +166,7 @@ namespace vpet
                 .End();
             menu.caption = "Configuration";
             menu.setIcon("Images/button_translate");
-            manager.addMenu(menu);
+            //manager.addMenu(menu);
 
             MenuTree menu2 = new MenuTree()
                .Begin(MenuItem.IType.VSPLIT)

@@ -103,8 +103,7 @@ namespace vpet
         //!
         private void connectAndStart(object sender, EventArgs e)
         {
-            // [REVIEW] port should be in global config
-            startUpdateSender(manager.settings.m_serverIP, "5557");
+            startUpdateSender(manager.settings.ipAddress.value, "5557");
 
             UIManager uiManager = core.getManager<UIManager>();
             uiManager.selectionAdded += lockSceneObject;
@@ -205,6 +204,38 @@ namespace vpet
         }
 
         //!
+        //! Function that creates a undo redo message.
+        //!
+        //! @param parameter The modified parameter the message will be based on.
+        //! @param time The time for synchronization
+        //! @param addToHistory should this update be added to undo/redo history
+        //!
+        public void queueUndoRedoMessage(object o, AbstractParameter parameter)
+        {
+            // Message structure: Header, Parameter (optional)
+            // Header: ClientID, Time, MessageType
+            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+
+            lock (parameter)
+            {
+                m_controlMessage = parameter.Serialize(8); // ParameterData;
+
+                // header
+                m_controlMessage[0] = manager.cID;
+                m_controlMessage[1] = 0;
+                m_controlMessage[2] = (byte)MessageType.UNDOREDOADD;
+
+                // parameter
+                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, m_controlMessage, 5, 2);  // ParameterID
+                m_controlMessage[7] = (byte)parameter.vpetType;  // ParameterType
+            }
+
+            m_mre.Set();
+            m_mre.Reset();
+        }
+
+        //!
         //! Function collects all parameter modifications within one global time tick for sending.
         //!
         //! @param sender The scene object containing the modified parameter.
@@ -232,19 +263,17 @@ namespace vpet
 
             lock (parameter)
             {
-                byte[] message = parameter.Serialize(9); // ParameterData;
+                byte[] message = parameter.Serialize(8); // ParameterData;
 
                 // header
                 message[0] = manager.cID;
                 message[1] = time;
                 message[2] = (byte)MessageType.PARAMETERUPDATE;
-                message[3] = Convert.ToByte(parameter.addLatestUpdateToHistory); //should this update be added to undo/redo history
-                parameter.addLatestUpdateToHistory = false;
-
+                
                 // parameter
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, message, 4, 2);  // SceneObjectID
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, message, 6, 2);  // ParameterID
-                message[8] = (byte)parameter.vpetType;  // ParameterType
+                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, message, 3, 2);  // SceneObjectID
+                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, message, 5, 2);  // ParameterID
+                message[7] = (byte)parameter.vpetType;  // ParameterType
 
                 return message;
             }

@@ -101,7 +101,9 @@ namespace vpet
         //!
         //! Flag to determine a selection render request. 
         //!
-        private bool hasAsyncRequest;
+        private bool m_hasAsyncRequest;
+        
+        private bool m_isTouchActive = false;
 
         //!
         //! Constructor
@@ -133,6 +135,8 @@ namespace vpet
             // hookup to input events
             m_inputManager.inputEvent += SelectFunction;
 
+            m_inputManager.inputPressStart += touchEnable;
+            m_inputManager.inputPressEnd += touchDisable;
         }
 
         //!
@@ -143,6 +147,19 @@ namespace vpet
             core.updateEvent -= renderUpdate;
             m_sceneManager.sceneReady -= modifyMaterials;
             m_inputManager.inputEvent -= SelectFunction;
+
+            m_inputManager.inputPressStart -= touchEnable;
+            m_inputManager.inputPressEnd -= touchDisable;
+        }
+
+        private void touchEnable(object o, EventArgs e)
+        {
+            m_isTouchActive = true;
+        }
+
+        private void touchDisable(object o, EventArgs e)
+        {
+            m_isTouchActive = true;
         }
 
         //!
@@ -229,7 +246,7 @@ namespace vpet
             if (cpuData.IsCreated) 
                 cpuData.Dispose();
 
-            hasAsyncRequest = false;
+            m_hasAsyncRequest = false;
             request = default(AsyncGPUReadbackRequest);
         }
 
@@ -283,9 +300,8 @@ namespace vpet
                 cpuData = new NativeArray<Color32>(dataWidth * dataHeight, Allocator.Persistent);
             }
 
-            // [REVIEW]
-            //if (Input.GetMouseButtonDown(0))
-            //{
+            if (m_isTouchActive)
+            {
                 RenderTexture oldRenderTexture = camera.targetTexture;
                 CameraClearFlags oldClearFlags = camera.clearFlags;
                 Color oldBackgroundColor = camera.backgroundColor;
@@ -305,11 +321,11 @@ namespace vpet
                 camera.backgroundColor = oldBackgroundColor;
                 camera.renderingPath = oldRenderingPath;
                 camera.allowMSAA = oldAllowMsaa;
-            //}
+            }
 
-            if (!hasAsyncRequest)
+            if (!m_hasAsyncRequest)
             {
-                hasAsyncRequest = true;
+                m_hasAsyncRequest = true;
                 request = AsyncGPUReadback.Request(gpuTexture);
             }
             else if (request.done)

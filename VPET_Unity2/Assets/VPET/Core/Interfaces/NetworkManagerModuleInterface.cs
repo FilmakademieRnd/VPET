@@ -44,7 +44,8 @@ namespace vpet
         public enum MessageType
         {
             PARAMETERUPDATE, LOCK, // node
-            SYNC, PING, RESENDUPDATE // sync and ping, [REVIEW] do we still need the RESENDUPDATE?
+            SYNC, PING, RESENDUPDATE, // sync
+            UNDOREDOADD, RESETOBJECT // undo redo
         }
 
         //!

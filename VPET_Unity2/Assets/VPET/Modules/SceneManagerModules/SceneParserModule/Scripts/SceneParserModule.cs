@@ -89,7 +89,6 @@ namespace vpet
             SceneManager.SceneDataHandler.SceneData sceneData = new SceneManager.SceneDataHandler.SceneData();
 
             sceneData.header.lightIntensityFactor = 1f;
-            sceneData.header.textureBinaryType = 0;
 
             List<GameObject> gameObjects = new List<GameObject>();
             recursiveGameObjectIdExtract(scene, ref gameObjects, getLowLayer, getHighLayer, getMixedLayer);
@@ -423,29 +422,13 @@ namespace vpet
                     matPack.shaderProperties = SceneManager.SceneDataHandler.Concat<byte>(matPack.shaderProperties, shaderData);
                 }
 
-                // [REVIEW]
-                // depricated code
-                // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                // deprecated values stored in node
                 if (material.HasProperty("_Color"))
                 {
                     node.color = new float[4] { material.color.r, material.color.g, material.color.b, material.color.a };
                 }
 
-                // if material within Resources/VPET than use load material
-                string matName = material.name.Replace("(Instance)", "").Trim();
-                Material _mat = Resources.Load(string.Format("VPET/Materials/{0}", matName), typeof(Material)) as Material;
-                if (_mat)
-                {
-                    matPack.type = 1;
-                    matPack.src = matName;
-                }
-                else
-                {
-                    matPack.type = 2;
-                    matPack.src = material.shader.name;
-                }
-                // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                matPack.type = 0;
+                matPack.src = material.shader.name;
 
                 sceneData.materialList.Add(matPack);
                 node.materialId = sceneData.materialList.Count - 1;

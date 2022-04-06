@@ -154,13 +154,6 @@ namespace vpet
         //!
         private Inputs m_inputs;
 
-        // [REVIEW]
-        // please replace, just for testing!
-        public ref Inputs touchInputs
-        {
-            get { return ref m_inputs; }
-        }
-
         //!
         //! Constructor initializing member variables.
         //!
@@ -212,10 +205,22 @@ namespace vpet
 
 
         // [REVIEW]
-        // What is this?
         ~InputManager()
         {
             m_inputs.VPETMap.Click.performed -= ctx => TapFunction(ctx);
+
+            m_inputs.VPETMap.Click.performed -= ctx => PressStart(ctx);
+            m_inputs.VPETMap.Click.canceled -= ctx => PressEnd(ctx);
+
+            m_inputs.VPETMap.Position.performed -= ctx => MovePoint(ctx);
+
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerDown -= FingerDown;
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerUp -= FingerUp;
+
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= FingerMove;
+
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= TwoFingerMove;
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= ThreeFingerMove;
         }
 
         //!

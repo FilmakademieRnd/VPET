@@ -53,6 +53,9 @@ namespace vpet
         //! The list storing Unity meshes in scene.
         private List<Mesh> SceneMeshList = new List<Mesh>();
 
+        //! The scaling factor for every VPET light source
+        private float m_LightScale;
+
 
         //!
         //! Constructor
@@ -97,6 +100,8 @@ namespace vpet
 
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
 
+            m_LightScale = sceneData.header.lightIntensityFactor;
+
             if (manager.settings.loadTextures)
                 createTextures(ref sceneData);
             
@@ -125,18 +130,11 @@ namespace vpet
             {
                 if (matPack.type == 1)
                 {
-                    Material mat = Resources.Load(string.Format("VPET/Materials/{0}", matPack.src), typeof(Material)) as Material;
-                    if (mat)
-                        SceneMaterialList.Add(mat);
-                    else
-                    {
-                        Debug.LogWarning(string.Format("[{0} createMaterials]: Cant find Resource: {1}. Create Standard.", this.GetType(), matPack.src));
-                        Material _mat = new Material(Shader.Find("Standard"));
-                        _mat.name = matPack.name;
-                        SceneMaterialList.Add(_mat);
-                    }
+                    Material _mat = new Material(Shader.Find("Standard"));
+                    _mat.name = matPack.name;
+                    SceneMaterialList.Add(_mat);
                 }
-                else if (matPack.type == 2)
+                else if (matPack.type == 0)
                 {
                     Helpers.Log(matPack.src);
                     Material mat = new Material(Shader.Find(matPack.src));
@@ -221,7 +219,7 @@ namespace vpet
         {
             foreach (SceneManager.TexturePackage texPack in sceneData.textureList)
             {
-                if (sceneData.header.textureBinaryType == 0)
+                if (texPack.format != 0)
                 {
                     Texture2D tex_2d = new Texture2D(texPack.width, texPack.height, texPack.format, false);
                     tex_2d.LoadRawTextureData(texPack.colorMapData);
@@ -230,11 +228,12 @@ namespace vpet
                 }
                 else
                 {
-#if UNITY_IPHONE
+#if UNITY_IOS
                     Texture2D tex_2d = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
 #else
                     Texture2D tex_2d = new Texture2D(16, 16, TextureFormat.DXT5Crunched, false);
 #endif
+                    // only supports PNG and JPEG
                     tex_2d.LoadImage(texPack.colorMapData);
                     SceneTextureList.Add(tex_2d);
                 }
@@ -300,7 +299,6 @@ namespace vpet
             }
         }
 
-        // [REVIEW]
         //!
         //! Function that recusively creates the gameObjects in the Unity scene.
         //!
@@ -451,13 +449,8 @@ namespace vpet
                     else // or set standard
                     {
                         mat = new Material(Shader.Find("Standard"));
+                        mat.color = new Color(nodeGeo.color[0], nodeGeo.color[1], nodeGeo.color[2], nodeGeo.color[3]);
                     }
-
-                    // map properties
-                    //if (manager.settings.loadSampleScene)
-                    //{
-                    //    MapMaterialProperties(mat, nodeGeo);
-                    //}
 
                     // Add Material
                     Renderer renderer;
@@ -529,7 +522,7 @@ namespace vpet
 
                     lightComponent.type = nodeLight.lightType;
                     lightComponent.color = new Color(nodeLight.color[0], nodeLight.color[1], nodeLight.color[2]);
-                    lightComponent.intensity = nodeLight.intensity * manager.settings.lightIntensityFactor;
+                    lightComponent.intensity = nodeLight.intensity * m_LightScale;
                     lightComponent.spotAngle = nodeLight.angle;
                     if (lightComponent.type == LightType.Directional)
                     {

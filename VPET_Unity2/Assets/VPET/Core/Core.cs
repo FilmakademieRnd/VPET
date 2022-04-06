@@ -50,7 +50,6 @@ namespace vpet
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
-            public Parameter<Color> test = new Parameter<Color>(new Color(1,2,3), "Color");
         }
         //!
         //! The core settings.

@@ -159,8 +159,6 @@ namespace vpet
         {
             //! Global factor for light intensity scaling. 
             public float lightIntensityFactor;
-            //! Determines wether a texture is send in RAW or Unity format.
-            public int textureBinaryType;
         }
 
         //!
@@ -245,7 +243,7 @@ namespace vpet
         //!
         public class MaterialPackage
         {
-            //! The type of the material. 0=standard, 1=load by name, 2=new with shader by name,  3=new with shader from source, 4= .. 
+            //! The type of the material. 0=Unity, 1=External
             public int type;
             //! The name of the material.
             public string name;

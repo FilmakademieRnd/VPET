@@ -55,11 +55,6 @@ namespace vpet
             public bool loadTextures = true;
 
             //!
-            //! Light Intensity multiplicator
-            //!
-            public float lightIntensityFactor = 1f;
-
-            //!
             //! global scale of the scene
             //!
             public float sceneScale = 1f;
@@ -158,10 +153,6 @@ namespace vpet
         {
             m_sceneDataHandler = new SceneDataHandler();
 
-            // [REVIEW]
-            // does it work like this??
-            Resources.Load<Material>("Materials/Standard");
-
             // create scene parent if not there
             scnRoot = GameObject.Find("Scene");
             if (scnRoot == null)
@@ -169,10 +160,7 @@ namespace vpet
                 scnRoot = new GameObject("VPETScene");
             }
         }
-
-
-        //[REVIEW]
-        // Should be accessable only from SceneManager/SceneManager modules
+   
         //!
         //! Function that emits the scene ready event. 
         //!

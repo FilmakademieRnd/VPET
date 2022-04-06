@@ -106,8 +106,7 @@ namespace vpet
         //!
         private void connectAndStart(object sender, EventArgs e)
         {
-            // [REVIEW] port should be in global config
-            startUpdateReceiver(manager.settings.m_serverIP, "5556");
+            startUpdateReceiver(manager.settings.ipAddress.value, "5556");
 
             core.timeEvent += consumeMessages;
         }
@@ -141,6 +140,9 @@ namespace vpet
                             case MessageType.SYNC:
                                 if (!core.isServer)
                                     decodeSyncMessage(ref input);
+                                break;
+                            case MessageType.UNDOREDOADD:
+                                    decodeUndoRedoMessage(ref input);
                                 break;
                             case MessageType.PARAMETERUPDATE:
                                 // make shure that producer and consumer exclude eachother
@@ -179,6 +181,22 @@ namespace vpet
         private void decodeSyncMessage(ref byte[] message)
         {
             core.time = message[1];
+        }
+
+        //! 
+        //! Function that decodes a undo redo message and adds it to the undo redo manager.
+        //!
+        //! @param message The message to be decoded.
+        //! 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void decodeUndoRedoMessage(ref byte[] message)
+        {
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+            short parameterID = BitConverter.ToInt16(message, 5);
+
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+
+            receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
         }
 
         //! 
@@ -223,17 +241,13 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeMessage(byte[] message)
         {
-            bool addToHistory = BitConverter.ToBoolean(message, 3);
-            short sceneObjectID = BitConverter.ToInt16(message, 4);
-            short parameterID = BitConverter.ToInt16(message, 6);
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+            short parameterID = BitConverter.ToInt16(message, 5);
 
             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 
             if (sceneObject != null)
-                sceneObject.parameterList[parameterID].deSerialize(ref message, 9);
-
-            if (addToHistory)
-                receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
+                sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
         }
 
 

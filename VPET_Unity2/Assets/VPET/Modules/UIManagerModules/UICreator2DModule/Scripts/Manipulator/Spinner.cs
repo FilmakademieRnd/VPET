@@ -137,7 +137,6 @@ namespace vpet
         //!
         private void editingDone(object sender, bool e)
         {
-            abstractParam.addLatestUpdateToHistory = true;
             doneEditing?.Invoke(this, abstractParam);
         }
 

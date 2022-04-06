@@ -647,7 +647,10 @@ namespace vpet
                 HideAxes();
                 modeTRS = -1;
                 // hack against first click selection?
-                manipT.transform.position = float.MaxValue * Vector3.one;
+                // [REVIEW]
+                // float max is not the best coise for hiding an object
+                if (manipT)
+                    manipT.transform.position = float.MaxValue * Vector3.one;
                 return;
             }
 

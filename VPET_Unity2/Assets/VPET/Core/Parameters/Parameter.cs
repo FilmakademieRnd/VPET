@@ -47,12 +47,6 @@ namespace vpet
         //! Flag that determines whether a Parameter will be distributed.
         //!
         public bool _distribute;
-
-        //!
-        //! Flag indicating if latest update sould be added to undo/redo history (used when distributing changes)
-        //! [REVIEW] Is there a better solution than placing it here?
-        //!
-        public bool addLatestUpdateToHistory;
         //!
         //! The unique id of this parameter.
         //!
@@ -60,6 +54,7 @@ namespace vpet
         //!
         //! The parameters C# type.
         //!
+        [SerializeField]
         protected ParameterType _type;
         //!
         //! The name of the parameter.
@@ -202,7 +197,6 @@ namespace vpet
             _parent = parent;
             _type = toVPETType(typeof(T));
             _distribute = distribute;
-            addLatestUpdateToHistory = false;
 
             //history initialization
             _initialValue = value;
@@ -252,6 +246,7 @@ namespace vpet
             set { setValue(value); }
         }
 
+        [SerializeField]
         //!
         //! The initial value of the parameter at constuction time
         //!
@@ -297,7 +292,6 @@ namespace vpet
         //!
         public override void reset()
         {
-            //[REVIEW]
             if (!EqualityComparer<T>.Default.Equals(_value, _initialValue))
             {
                 _value = _initialValue;
@@ -468,7 +462,7 @@ namespace vpet
         //! 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return String.Format("({0}, {1})", _value.ToString(), name);
+            return String.Format("({0}, {1}, {2}, {3})", _value.ToString(), _initialValue.ToString() , name, _type.ToString());
         }
 
     }

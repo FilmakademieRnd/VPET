@@ -55,11 +55,6 @@ namespace vpet
         //!
         private MenuTree m_menu;
 
-        // [REVIEW]
-        // needs to be replaced by an proper serialization fonctionality 
-        // to store a parameters value into the settings files.
-        private Parameter<string> m_serverIP_Param;
-
         //!
         //! Constructor
         //!
@@ -81,7 +76,6 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             Parameter<Action> button = new Parameter<Action>(Connect, "Start");
-            m_serverIP_Param = new Parameter<string>(manager.settings.m_serverIP, "IP Adress");
 
             List<AbstractParameter> parameterList1 = new List<AbstractParameter>();
             parameterList1.Add(new Parameter<string>(null, "Server"));
@@ -100,7 +94,7 @@ namespace vpet
                      .End()
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add("IP Address")
-                         .Add(m_serverIP_Param)
+                         .Add(manager.settings.ipAddress)
                      .End()                     
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add(button)
@@ -124,12 +118,11 @@ namespace vpet
 
         private void Connect()
         {
-            manager.settings.m_serverIP = m_serverIP_Param.value;
-            Helpers.Log(manager.settings.m_serverIP);
+            Helpers.Log(manager.settings.ipAddress.value);
 
             core.getManager<UIManager>().showMenu(null);
 
-            receiveScene(manager.settings.m_serverIP, "5555");
+            receiveScene(manager.settings.ipAddress.value, "5555");
         }
 
         //!
@@ -198,9 +191,8 @@ namespace vpet
                 sceneReceiver.Dispose();
                 Helpers.Log(this.name + " disposed.");
             }
-            finally
+            catch
             {
-                //NetMQConfig.Cleanup(false);
             }
 
         }
