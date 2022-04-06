@@ -214,7 +214,7 @@ PlayerSettings:
   iOSLaunchScreenBackgroundColor:
     serializedVersion: 2
     rgba: 4278386945
-  iOSLaunchScreenFillPct: 100
+  iOSLaunchScreenFillPct: 80
   iOSLaunchScreenSize: 100
   iOSLaunchScreenCustomXibPath: 
   iOSLaunchScreeniPadType: 1
@@ -222,7 +222,7 @@ PlayerSettings:
   iOSLaunchScreeniPadBackgroundColor:
     serializedVersion: 2
     rgba: 4278255617
-  iOSLaunchScreeniPadFillPct: 100
+  iOSLaunchScreeniPadFillPct: 80
   iOSLaunchScreeniPadSize: 100
   iOSLaunchScreeniPadCustomXibPath: 
   iOSLaunchScreenCustomStoryboardPath: 
