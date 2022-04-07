@@ -81,15 +81,7 @@ namespace vpet
             m_manager.cleanupEvent += Cleanup;
         }
 
-        //!
-        //! Destructor, cleaning up. 
-        //!
-        ~Module()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
+        public virtual void Dispose()
         {
             m_manager.initEvent -= Init;
             m_manager.startEvent -= Start;
@@ -122,6 +114,9 @@ namespace vpet
         //! @param sender A reference to the VPET core.
         //! @param e Arguments for these event. 
         //! 
-        protected virtual void Cleanup(object sender, EventArgs e) { }
+        protected virtual void Cleanup(object sender, EventArgs e)
+        {
+            Dispose();
+        }
     }
 }

@@ -236,6 +236,7 @@ namespace vpet
         //!
         protected override void Cleanup(object sender, EventArgs e)
         {
+            base.Cleanup(sender,e);
             dataWidth = 0;
             dataHeight = 0;
 

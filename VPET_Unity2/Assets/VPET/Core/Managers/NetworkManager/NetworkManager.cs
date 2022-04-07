@@ -47,6 +47,16 @@ namespace vpet
         }
 
         //!
+        //! number of threads
+        //!
+        public static int threadCount = 0;
+
+        //!
+        //! number of disposed network worker threads
+        //!
+        private int m_disposeCount = 0;
+
+        //!
         //! Cast for accessing the settings variable with the correct type.
         //!
         public NetworkManagerSettings settings { get => (NetworkManagerSettings)_settings; }
@@ -84,11 +94,25 @@ namespace vpet
         protected override void Cleanup(object sender, EventArgs e) 
         {
             base.Cleanup(sender, e);
-            // give the network threads some thime to finish.
-            
-            System.Threading.Thread.Sleep(1000);
-            NetMQConfig.Cleanup(false);
-            Helpers.Log("netMQ cleaned up.");
+        }
+
+        //!
+        //! Clean up the NetMQ COntext
+        //!
+        public void NetMQCleanup()
+        {
+            m_disposeCount++;
+            if (m_disposeCount == threadCount)
+            {
+                try
+                {
+                    NetMQConfig.Cleanup(false);
+                }
+                finally
+                {
+                    Helpers.Log("netMQ cleaned up.");
+                }
+            }
         }
 
 

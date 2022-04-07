@@ -142,7 +142,10 @@ namespace vpet
                 dataSender.Disconnect("tcp://" + m_ip + ":" + m_port);
                 dataSender.Close();
                 dataSender.Dispose();
+                while (!dataSender.IsDisposed)
+                    Thread.Yield();
                 Helpers.Log(this.name + " disposed.");
+                m_disposed?.Invoke();
             }
             catch
             {

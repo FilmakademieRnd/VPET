@@ -64,6 +64,11 @@ namespace vpet
         protected bool m_isRunning;
 
         //!
+        //! Action emitted when worker thread has been disposed
+        //!
+        protected Action m_disposed;
+
+        //!
         //! The Thread used for receiving or sending messages.
         //!
         private Thread m_transeiverThread;
@@ -96,9 +101,10 @@ namespace vpet
         //!
         //! Destructor, cleaning up event registrations. 
         //!
-        ~NetworkManagerModule() 
+        public override void Dispose() 
         {
-            core.destroyEvent -= stopThread;
+            base.Dispose();
+            manager.cleanupEvent -= stopThread;
         }
 
         //!
@@ -125,6 +131,9 @@ namespace vpet
             ThreadStart transeiver = new ThreadStart(run);
             m_transeiverThread = new Thread(transeiver);
             m_transeiverThread.Start();
+            m_disposed += manager.NetMQCleanup;
+            NetworkManager.threadCount++;
+
         }
 
         //!
@@ -134,7 +143,6 @@ namespace vpet
         {
             m_isRunning = false;
             m_mre.Set();
-            m_mre.Reset();
         }
     }
 }

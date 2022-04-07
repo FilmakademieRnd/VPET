@@ -59,8 +59,9 @@ namespace vpet
         //!
         //! Destructor, cleaning up event registrations. 
         //!
-        ~UpdateSenderModule()
+        public override void Dispose()
         {
+            base.Dispose(); 
             SceneManager sceneManager = core.getManager<SceneManager>();
             UIManager uiManager = core.getManager<UIManager>();
 
@@ -348,10 +349,12 @@ namespace vpet
                 sender.Disconnect("tcp://" + m_ip + ":" + m_port);
                 sender.Close();
                 sender.Dispose();
+                while(!sender.IsDisposed)
+                    Thread.Yield();
                 Helpers.Log(this.name + " disposed.");
-                Thread.Sleep(500);
+                m_disposed?.Invoke();
             }
-            finally
+            catch
             {
                 //NetMQConfig.Cleanup(false);
             }
