@@ -325,7 +325,8 @@ namespace vpet
             {
                 foreach (AbstractParameter p in s.parameterList)
                     p.reset();
-                manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().vanishHistory(s);
+                core.getManager<SceneManager>().getModule<UndoRedoModule>().vanishHistory(s);
+                core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueResetMessage(s);
             }
         }
 

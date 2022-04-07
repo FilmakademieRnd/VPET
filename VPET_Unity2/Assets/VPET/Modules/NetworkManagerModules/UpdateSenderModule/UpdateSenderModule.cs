@@ -207,8 +207,6 @@ namespace vpet
         //! Function that creates a undo redo message.
         //!
         //! @param parameter The modified parameter the message will be based on.
-        //! @param time The time for synchronization
-        //! @param addToHistory should this update be added to undo/redo history
         //!
         public void queueUndoRedoMessage(object o, AbstractParameter parameter)
         {
@@ -229,6 +227,34 @@ namespace vpet
                 Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
                 Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, m_controlMessage, 5, 2);  // ParameterID
                 m_controlMessage[7] = (byte)parameter.vpetType;  // ParameterType
+            }
+
+            m_mre.Set();
+            m_mre.Reset();
+        }
+
+        //!
+        //! Function that creates a reset message.
+        //!
+        //! @param parameter The modified parameter the message will be based on.
+        //!
+        public void queueResetMessage(SceneObject s)
+        {
+            // Message structure: Header, Parameter (optional)
+            // Header: ClientID, Time, MessageType
+            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+
+            lock (s)
+            {
+                m_controlMessage = new byte[5]; // ParameterData;
+
+                // header
+                m_controlMessage[0] = manager.cID;
+                m_controlMessage[1] = 0;
+                m_controlMessage[2] = (byte)MessageType.RESETOBJECT;
+
+                // parameter
+                Buffer.BlockCopy(BitConverter.GetBytes(s.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             }
 
             m_mre.Set();

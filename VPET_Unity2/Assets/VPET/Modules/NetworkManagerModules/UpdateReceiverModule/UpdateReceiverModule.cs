@@ -144,6 +144,9 @@ namespace vpet
                             case MessageType.UNDOREDOADD:
                                     decodeUndoRedoMessage(ref input);
                                 break;
+                            case MessageType.RESETOBJECT:
+                                decodeResetMessage(ref input);
+                                break;
                             case MessageType.PARAMETERUPDATE:
                                 // make shure that producer and consumer exclude eachother
                                 lock (m_messageBuffer)
@@ -197,6 +200,21 @@ namespace vpet
             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 
             receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
+        }
+
+        //! 
+        //! Function that decodes a undo redo message and adds it to the undo redo manager.
+        //!
+        //! @param message The message to be decoded.
+        //! 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void decodeResetMessage(ref byte[] message)
+        {
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+            foreach (AbstractParameter p in sceneObject.parameterList)
+                p.reset();
+            core.getManager<SceneManager>().getModule<UndoRedoModule>().vanishHistory(sceneObject);
         }
 
         //! 

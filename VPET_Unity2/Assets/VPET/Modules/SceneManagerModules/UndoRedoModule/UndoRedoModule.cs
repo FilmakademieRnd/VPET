@@ -182,6 +182,7 @@ namespace vpet
                 foreach (AbstractParameter p in s.parameterList)
                     p.reset();
                 vanishHistory(s);
+                core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueResetMessage(s);
             }
         }
     }
