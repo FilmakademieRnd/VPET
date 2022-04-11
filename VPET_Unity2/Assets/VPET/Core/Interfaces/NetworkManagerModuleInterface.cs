@@ -96,6 +96,7 @@ namespace vpet
         public NetworkManagerModule(string name, Manager manager) : base(name, manager) 
         {
             manager.cleanupEvent += stopThread;
+            m_disposed += this.manager.NetMQCleanup;
         }
 
         //!
@@ -105,6 +106,7 @@ namespace vpet
         {
             base.Dispose();
             manager.cleanupEvent -= stopThread;
+            m_disposed -= manager.NetMQCleanup;
         }
 
         //!
@@ -131,9 +133,7 @@ namespace vpet
             ThreadStart transeiver = new ThreadStart(run);
             m_transeiverThread = new Thread(transeiver);
             m_transeiverThread.Start();
-            m_disposed += manager.NetMQCleanup;
             NetworkManager.threadCount++;
-
         }
 
         //!

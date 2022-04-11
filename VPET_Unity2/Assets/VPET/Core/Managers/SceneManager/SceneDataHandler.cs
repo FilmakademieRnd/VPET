@@ -99,6 +99,7 @@ namespace vpet
             public byte[] headerByteData
             {
                 set { m_headerByteData = value; }
+                get { return m_headerByteData; }
             }
 
             //!

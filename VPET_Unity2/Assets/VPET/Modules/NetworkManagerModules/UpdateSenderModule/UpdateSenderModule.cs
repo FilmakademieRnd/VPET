@@ -239,13 +239,13 @@ namespace vpet
         //!
         //! @param parameter The modified parameter the message will be based on.
         //!
-        public void queueResetMessage(SceneObject s)
+        public void queueResetMessage(SceneObject sceneObject)
         {
             // Message structure: Header, Parameter (optional)
             // Header: ClientID, Time, MessageType
             // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
 
-            lock (s)
+            lock (sceneObject)
             {
                 m_controlMessage = new byte[5]; // ParameterData;
 
@@ -255,7 +255,7 @@ namespace vpet
                 m_controlMessage[2] = (byte)MessageType.RESETOBJECT;
 
                 // parameter
-                Buffer.BlockCopy(BitConverter.GetBytes(s.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+                Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             }
 
             m_mre.Set();
@@ -349,14 +349,14 @@ namespace vpet
                 sender.Disconnect("tcp://" + m_ip + ":" + m_port);
                 sender.Close();
                 sender.Dispose();
+                // wait until sender is disposed
                 while(!sender.IsDisposed)
-                    Thread.Yield();
+                    Thread.Sleep(25);
                 Helpers.Log(this.name + " disposed.");
                 m_disposed?.Invoke();
             }
             catch
             {
-                //NetMQConfig.Cleanup(false);
             }
 
         }

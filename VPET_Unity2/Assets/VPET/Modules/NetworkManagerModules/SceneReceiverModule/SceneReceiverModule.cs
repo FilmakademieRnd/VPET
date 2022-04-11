@@ -55,6 +55,8 @@ namespace vpet
         //!
         private MenuTree m_menu;
 
+        private RequestSocket m_sceneReceiver;
+
         //!
         //! Constructor
         //!
@@ -138,12 +140,32 @@ namespace vpet
             Helpers.Log(ip);
             m_port = port;
 
+            m_disposed += manager.NetMQCleanup;
+            NetworkManager.threadCount++;
+
             await Task.Run(() => run());
-            
-            // emit sceneReceived signal to trigger scene cration in the sceneCreator module
-            m_sceneReceived?.Invoke(this, new EventArgs());
+
+           // emit sceneReceived signal to trigger scene cration in the sceneCreator module
+           if (core.getManager<SceneManager>().sceneDataHandler.headerByteDataRef != null)
+                m_sceneReceived?.Invoke(this, new EventArgs());
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            
+            if ((m_sceneReceiver != null) && !m_sceneReceiver.IsDisposed)
+            {
+                m_sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                m_sceneReceiver.Close();
+                m_sceneReceiver.Dispose();
+                // wait until receiver is disposed
+                while (!m_sceneReceiver.IsDisposed)
+                    System.Threading.Thread.Sleep(25);
+                Helpers.Log(this.name + " disposed.");
+                m_disposed?.Invoke();
+            }
+        }
 
         //!
         //! Function, requesting scene packages and receiving package data (executed in separate thread).
@@ -152,49 +174,42 @@ namespace vpet
         protected override void run()
         {
             AsyncIO.ForceDotNet.Force();
-            var sceneReceiver = new RequestSocket();
+            m_sceneReceiver = new RequestSocket();
 
             SceneManager sceneManager = core.getManager<SceneManager>();
-
-            sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
-
+            m_sceneReceiver.Connect("tcp://" + m_ip + ":" + m_port);
             SceneManager.SceneDataHandler sceneDataHandler = sceneManager.sceneDataHandler;
-            foreach (string request in m_requests)
-            {
-                sceneReceiver.SendFrame(request);
-                switch (request)
-                {
-                    case "header":
-                        sceneDataHandler.headerByteData = sceneReceiver.ReceiveFrameBytes();
-                        break;
-                    case "nodes":
-                        sceneDataHandler.nodesByteData = sceneReceiver.ReceiveFrameBytes();
-                        break;
-                    case "objects":
-                        sceneDataHandler.objectsByteData = sceneReceiver.ReceiveFrameBytes();
-                        break;
-                    case "characters":
-                        sceneDataHandler.characterByteData = sceneReceiver.ReceiveFrameBytes();
-                        break;
-                    case "textures":
-                        sceneDataHandler.texturesByteData = sceneReceiver.ReceiveFrameBytes();
-                        break;
-                    case "materials":
-                        sceneDataHandler.materialsByteData = sceneReceiver.ReceiveFrameBytes();
-                        break;
-                }
-            }
+
             try
             {
-                sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
-                sceneReceiver.Close();
-                sceneReceiver.Dispose();
-                Helpers.Log(this.name + " disposed.");
+                foreach (string request in m_requests)
+                {
+                    m_sceneReceiver.SendFrame(request);
+                    switch (request)
+                    {
+                        case "header":
+                            sceneDataHandler.headerByteData = m_sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "nodes":
+                            sceneDataHandler.nodesByteData = m_sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "objects":
+                            sceneDataHandler.objectsByteData = m_sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "characters":
+                            sceneDataHandler.characterByteData = m_sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "textures":
+                            sceneDataHandler.texturesByteData = m_sceneReceiver.ReceiveFrameBytes();
+                            break;
+                        case "materials":
+                            sceneDataHandler.materialsByteData = m_sceneReceiver.ReceiveFrameBytes();
+                            break;
+                    }
+                }
             }
-            catch
-            {
-            }
-
+            catch { }
+            Dispose();
         }
 
 

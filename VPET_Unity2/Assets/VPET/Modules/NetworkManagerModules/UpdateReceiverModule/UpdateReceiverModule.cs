@@ -167,8 +167,9 @@ namespace vpet
                 receiver.Disconnect("tcp://" + m_ip + ":" + m_port);
                 receiver.Close();
                 receiver.Dispose();
+                // wait until receiver is disposed
                 while (!receiver.IsDisposed)
-                    Thread.Yield();
+                    Thread.Sleep(25);
                 Helpers.Log(this.name + " disposed.");
                 m_disposed?.Invoke();
             }
