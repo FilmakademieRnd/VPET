@@ -82,7 +82,7 @@ namespace vpet
                     .End()
               .End();
 
-            //m_menu.caption = "Network Server";
+            m_menu.caption = "Network Server";
             m_menu.iconResourceLocation = "Images/button_gear";
             core.getManager<UIManager>().addMenu(m_menu);
         }

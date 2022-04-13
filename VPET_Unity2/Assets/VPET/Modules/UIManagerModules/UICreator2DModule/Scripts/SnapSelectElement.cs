@@ -99,7 +99,7 @@ namespace vpet
                 snapSelect = this.transform.parent.GetComponent<SnapSelect>();
                 refRect = snapSelect.GetComponent<RectTransform>();
             }
-            txt = this.GetComponent<TextMeshProUGUI>();
+            txt = this.GetComponentInChildren<TextMeshProUGUI>();
             size = Mathf.Max(rect.sizeDelta.x, rect.sizeDelta.y);
 
             //attach updating function to drag event

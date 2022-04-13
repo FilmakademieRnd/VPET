@@ -239,8 +239,8 @@ namespace vpet
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
 
                 elementTrans.name = caption;
-                elementTrans.GetComponent<TextMeshProUGUI>().text = caption;
-                elementTrans.GetChild(0).GetComponent<Image>().color = new Color(255, 255, 255, 0);
+                elementTrans.GetChild(0).GetComponent<TextMeshProUGUI>().text = caption;
+                elementTrans.GetComponent<Image>().color = new Color(255, 255, 255, 0);
 
                 _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
             }
@@ -276,7 +276,7 @@ namespace vpet
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
 
                 elementTrans.name = sprite.name;
-                elementTrans.GetChild(0).GetComponent<Image>().sprite = sprite;
+                elementTrans.GetComponent<Image>().sprite = sprite;
 
                 _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
             }
@@ -313,8 +313,8 @@ namespace vpet
 
                 elementTrans.name = caption;
 
-                elementTrans.GetComponent<TextMeshProUGUI>().text = caption;
-                elementTrans.GetChild(0).GetComponent<Image>().sprite = sprite;
+                elementTrans.GetChild(0).GetComponent<TextMeshProUGUI>().text = caption;
+                elementTrans.GetComponent<Image>().sprite = sprite;
                 _elements.Add(elementTrans.GetComponent<SnapSelectElement>());
             }
 

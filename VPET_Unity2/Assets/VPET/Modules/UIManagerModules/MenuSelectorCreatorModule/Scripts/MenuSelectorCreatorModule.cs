@@ -82,7 +82,7 @@ namespace vpet
                 {
                     Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
                     if (resImage != null)
-                        m_menuSelector.addElement(menu.caption, resImage);
+                        m_menuSelector.addElement(/*menu.caption,*/ resImage);
 
                 }
                 else if (menu.caption.Length > 0)
