@@ -33,9 +33,9 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -50, y: 2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 2, y: 2}
   m_SizeDelta: {x: 15, y: 15}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1962044032279994414
@@ -59,6 +59,7 @@ MonoBehaviour:
   _selectByClick: 1
   _valueText: {fileID: 0}
   _backgroundPrefab: {fileID: 5359195211250848493, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}
+  _uiSettings: {fileID: 0}
 --- !u!222 &611602917781943624
 CanvasRenderer:
   m_ObjectHideFlags: 0

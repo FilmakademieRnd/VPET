@@ -123,6 +123,7 @@ namespace vpet
             Parameter<float> m_scale = new Parameter<float>(5, "Scene Scale");
             Parameter<float> m_iconscale = new Parameter<float>(5, "Icon Scale");
 
+            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             MenuTree menu = new MenuTree()
                 .Begin(MenuItem.IType.VSPLIT)
                     .Begin(MenuItem.IType.VSPLIT)
@@ -189,7 +190,7 @@ namespace vpet
             .End();
 
             menu2.caption = "Bla!";
-            manager.addMenu(menu2);
+            //manager.addMenu(menu2);
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
             manager.menuSelected += createMenu;

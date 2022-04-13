@@ -66,7 +66,11 @@ namespace vpet
         //! The optional icon for an menu.
         //!
         protected string m_iconResourceLocation = "";
-        public string iconResourceLocation { get => m_iconResourceLocation; }
+        public string iconResourceLocation 
+        {
+            set => m_iconResourceLocation = value;
+            get => m_iconResourceLocation; 
+        }
 
         public MenuButton(string caption = "", Action action = null, Role role = Role.NONE)
         {

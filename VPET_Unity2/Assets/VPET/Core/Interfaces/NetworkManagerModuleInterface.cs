@@ -106,7 +106,7 @@ namespace vpet
         {
             base.Dispose();
             manager.cleanupEvent -= stopThread;
-            m_disposed -= manager.NetMQCleanup;
+            //m_disposed -= manager.NetMQCleanup;
         }
 
         //!

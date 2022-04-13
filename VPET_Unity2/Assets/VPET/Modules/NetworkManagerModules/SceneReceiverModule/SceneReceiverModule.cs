@@ -55,6 +55,9 @@ namespace vpet
         //!
         private MenuTree m_menu;
 
+        //!
+        //! A local reference to the netMQ scene reciver socket.
+        //!
         private RequestSocket m_sceneReceiver;
 
         //!
@@ -103,7 +106,8 @@ namespace vpet
                      .End()
                 .End();
 
-            m_menu.caption = "Network Client";
+            m_menu.setIcon("Images/button_translate");
+            //m_menu.caption = "Network Client";
             core.getManager<UIManager>().addMenu(m_menu);
         }
 
