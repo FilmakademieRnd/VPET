@@ -148,6 +148,18 @@ namespace vpet
         //! Buffer float for input distance comparison.
         //!
         private float m_distBuffer;
+        //!
+        //! Buffers the main cameras initial rotation.
+        //!
+        private Quaternion m_cameraMainOffset;
+        //!
+        //! Buffers the sensors initial attitude.
+        //!
+        private Quaternion m_invAttitudeSensorOffset;
+        //!
+        //! Flag defining if the camera is controlled by the attitide sensor.
+        //!
+        private bool m_isAttitudeControlled = false;
 
         //!
         //! The generated Unity input class defining all available user inputs.
@@ -161,7 +173,7 @@ namespace vpet
         {
             // Enable input
             m_inputs = new Inputs();
-            m_inputs.Enable();
+            m_inputs.VPETMap.Enable();
 
             // Binding of the click event
             m_inputs.VPETMap.Click.performed += ctx => TapFunction(ctx);
@@ -201,8 +213,26 @@ namespace vpet
             m_isPinch = false;
             m_doOnce = true;
             m_touchType = InputTouchType.NONE;
-        }
 
+            // [REVIEW] need to be bound to a proper AR switch
+            // Enable attitude sensor and bind it to the camera update
+            if (!false /*AR*/)
+            {
+                if (AttitudeSensor.current != null)
+                {
+                    InputSystem.EnableDevice(AttitudeSensor.current);
+
+                    MenuButton attitudeButton = new MenuButton("Attitude", useAttitude);
+                    attitudeButton.setIcon("Images/button_frame_BG");
+                    core.getManager<UIManager>().addButton(attitudeButton);
+
+                    //setCameraAttituteOffsets();
+                    //m_inputs.VPETMap.Look.performed += updateCameraRotation;
+                }
+                else
+                    Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
+            }
+        }
 
         // [REVIEW]
         ~InputManager()
@@ -495,6 +525,34 @@ namespace vpet
                 return true;
 
             return false;
+        }
+
+        private void updateCameraRotation(InputAction.CallbackContext ctx)
+        {
+            Transform cam = Camera.main.transform;
+            Vector3 newRot = (m_cameraMainOffset * (ctx.ReadValue<Quaternion>() * m_invAttitudeSensorOffset)).eulerAngles;
+            cam.rotation = Quaternion.Euler(new Vector3(-newRot.y, -newRot.z, /*newRot.x*/ 0));
+        }
+
+        private void setCameraAttituteOffsets()
+        {
+            m_cameraMainOffset = Camera.main.transform.rotation;
+            m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue());
+        }
+
+        private void useAttitude()
+        {
+            if (m_isAttitudeControlled)
+            {
+                m_inputs.VPETMap.Look.performed -= updateCameraRotation;
+                m_isAttitudeControlled = false;
+            }
+            else
+            {
+                setCameraAttituteOffsets();
+                m_inputs.VPETMap.Look.performed += updateCameraRotation;
+                m_isAttitudeControlled = true;
+            }
         }
     }
 

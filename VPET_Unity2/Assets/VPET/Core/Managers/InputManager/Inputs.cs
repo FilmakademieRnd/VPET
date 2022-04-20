@@ -71,6 +71,15 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""cbab1f1a-130f-4b7b-98f3-53112a3532fc"",
+                    ""expectedControlType"": ""Quaternion"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -238,6 +247,17 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2618a06d-4a32-45c3-b190-66a20f46e2a6"",
+                    ""path"": ""<AttitudeSensor>/attitude"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -251,6 +271,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         m_VPETMap_RightClick = m_VPETMap.FindAction("RightClick", throwIfNotFound: true);
         m_VPETMap_Position = m_VPETMap.FindAction("Position", throwIfNotFound: true);
         m_VPETMap_Click = m_VPETMap.FindAction("Click", throwIfNotFound: true);
+        m_VPETMap_Look = m_VPETMap.FindAction("Look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -315,6 +336,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_VPETMap_RightClick;
     private readonly InputAction m_VPETMap_Position;
     private readonly InputAction m_VPETMap_Click;
+    private readonly InputAction m_VPETMap_Look;
     public struct VPETMapActions
     {
         private @Inputs m_Wrapper;
@@ -324,6 +346,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_VPETMap_RightClick;
         public InputAction @Position => m_Wrapper.m_VPETMap_Position;
         public InputAction @Click => m_Wrapper.m_VPETMap_Click;
+        public InputAction @Look => m_Wrapper.m_VPETMap_Look;
         public InputActionMap Get() { return m_Wrapper.m_VPETMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -348,6 +371,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Click.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnClick;
+                @Look.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
             }
             m_Wrapper.m_VPETMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -367,6 +393,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
             }
         }
     }
@@ -378,5 +407,6 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
 }

@@ -106,7 +106,7 @@ namespace vpet
                      .End()
                 .End();
 
-            m_menu.setIcon("Images/button_translate");
+            m_menu.setIcon("Images/button_gear");
             m_menu.caption = "Network Client";
             core.getManager<UIManager>().addMenu(m_menu);
         }
