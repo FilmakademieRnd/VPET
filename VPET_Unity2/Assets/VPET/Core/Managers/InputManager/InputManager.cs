@@ -527,19 +527,30 @@ namespace vpet
             return false;
         }
 
+        //!
+        //! Function that overwrites the main cameras rotation by the attitude sensors values.
+        //! Connected to VPETMap.Look which triggers when the input system fires a attitude sensor performed event.  
+        //!
         private void updateCameraRotation(InputAction.CallbackContext ctx)
         {
             Transform cam = Camera.main.transform;
-            Vector3 newRot = (m_cameraMainOffset * (ctx.ReadValue<Quaternion>() * m_invAttitudeSensorOffset)).eulerAngles;
-            cam.rotation = Quaternion.Euler(new Vector3(-newRot.y, -newRot.z, /*newRot.x*/ 0));
+
+            cam.localRotation = ctx.ReadValue<Quaternion>() * Quaternion.Euler(0f, 0f, 180f);
+            cam.rotation = m_cameraMainOffset * m_invAttitudeSensorOffset * cam.rotation;
         }
 
-        private void setCameraAttituteOffsets()
+        //!
+        //! Function that stores the current main camera and attitude sensors rotation offset.
+        //!
+        private void setCameraAttitudeOffsets()
         {
             m_cameraMainOffset = Camera.main.transform.rotation;
-            m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue());
+            m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue() * Quaternion.Euler(0f, 0f, 180f));
         }
 
+        //!
+        //! Function that toggles the main camera rotation overwrite by attitude sensor.
+        //!
         private void useAttitude()
         {
             if (m_isAttitudeControlled)
@@ -549,7 +560,7 @@ namespace vpet
             }
             else
             {
-                setCameraAttituteOffsets();
+                setCameraAttitudeOffsets();
                 m_inputs.VPETMap.Look.performed += updateCameraRotation;
                 m_isAttitudeControlled = true;
             }
