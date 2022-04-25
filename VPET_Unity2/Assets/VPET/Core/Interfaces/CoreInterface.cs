@@ -32,7 +32,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Reflection;
 
 namespace vpet
 {
@@ -71,7 +70,7 @@ namespace vpet
             return (T)(object) manager;
         }
 
-        protected List<Manager> getManagers()
+        internal List<Manager> getManagers()
         {
             return new List<Manager>(m_managerList.Values);
         }

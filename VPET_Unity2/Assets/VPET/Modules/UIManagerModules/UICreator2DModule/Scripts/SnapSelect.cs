@@ -571,7 +571,8 @@ namespace vpet
         public void OnDrag(PointerEventData data)
         {
             Vector2 contentPos = _contentPanel.anchoredPosition;
-            float scale = 1/_canvas.scaleFactor;
+            float scale = 1f/_canvas.scaleFactor;
+
 
             if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > (_isVertical? (_contentMask.sizeDelta.y / 8f) : (_contentMask.sizeDelta.x / 8f)))
             {

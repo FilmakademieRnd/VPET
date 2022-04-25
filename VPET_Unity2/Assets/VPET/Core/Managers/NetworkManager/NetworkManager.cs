@@ -42,6 +42,7 @@ namespace vpet
         [Serializable]
         public class NetworkManagerSettings : Settings
         {
+            [ShowInMenu]
             // to store a parameters value into the settings files.
             public Parameter<string> ipAddress;
         }

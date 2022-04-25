@@ -50,6 +50,8 @@ namespace vpet
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
+
+            public float uiScale = 0.5f;
         }
         //!
         //! The core settings.
@@ -146,7 +148,7 @@ namespace vpet
             m_managerList.Add(typeof(InputManager), inputManager);
 
             LoadSettings();
-            
+
             awakeEvent?.Invoke(this, new EventArgs());
             lateAwakeEvent?.Invoke(this, new EventArgs());
         }
@@ -163,6 +165,13 @@ namespace vpet
             InvokeRepeating("updateTime", 0f, 1f/settings.framerate);
 
             startEvent?.Invoke(this, new EventArgs());
+
+            Canvas[] canvases = this.GetComponentsInChildren<Canvas>();
+
+            foreach (Canvas canvas in canvases)
+            {
+                canvas.scaleFactor *= settings.uiScale;
+            }
         }
 
         //!

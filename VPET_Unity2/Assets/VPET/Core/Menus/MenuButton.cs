@@ -45,7 +45,7 @@ namespace vpet
         private Role m_role;
         public Role role
         {
-            get => role;
+            get => m_role;
         }
         private Action m_action;
         public Action action
