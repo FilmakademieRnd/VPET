@@ -157,6 +157,10 @@ namespace vpet
         //!
         private Quaternion m_invAttitudeSensorOffset;
         //!
+        //! A reference to the attitude button.
+        //!
+        private MenuButton m_attitudeButton;
+        //!
         //! Enum defining the automatic camera control state.
         //!
         public enum CameraControl
@@ -221,30 +225,30 @@ namespace vpet
             m_isPinch = false;
             m_doOnce = true;
             m_touchType = InputTouchType.NONE;
-
-            // [REVIEW] need to be bound to a proper AR switch
-            // Enable attitude sensor and bind it to the camera update
-            if (m_cameraControl == CameraControl.ATTITUDE)
-            {
-                if (AttitudeSensor.current != null)
-                {
-                    InputSystem.EnableDevice(AttitudeSensor.current);
-
-                    MenuButton attitudeButton = new MenuButton("Attitude", useAttitude);
-                    attitudeButton.setIcon("Images/button_frame_BG");
-                    core.getManager<UIManager>().addButton(attitudeButton);
-
-                    //setCameraAttituteOffsets();
-                    //m_inputs.VPETMap.Look.performed += updateCameraRotation;
-                }
-                else
-                    Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
-            }
         }
 
-        // [REVIEW]
-        ~InputManager()
+        //! 
+        //! Virtual function called when Unity calls it's Start function.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Start(object sender, EventArgs e)
         {
+            base.Start(sender, e);
+            enableAttitudeSensor();
+        }
+
+        //! 
+        //! Function called before Unity destroys the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Cleanup(object sender, EventArgs e)
+        {
+            base.Cleanup(sender, e);
+
             m_inputs.VPETMap.Click.performed -= ctx => TapFunction(ctx);
 
             m_inputs.VPETMap.Click.performed -= ctx => PressStart(ctx);
@@ -259,6 +263,38 @@ namespace vpet
 
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= TwoFingerMove;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= ThreeFingerMove;
+        }
+
+        public void enableAttitudeSensor()
+        {
+            // Enable attitude sensor and bind it to the camera update
+            if (m_cameraControl == CameraControl.NONE)
+            {
+                if (AttitudeSensor.current != null)
+                {
+                    InputSystem.EnableDevice(AttitudeSensor.current);
+
+                    m_attitudeButton = new MenuButton("Attitude", useAttitude);
+                    m_attitudeButton.setIcon("Images/button_frame_BG");
+                    core.getManager<UIManager>().addButton(m_attitudeButton);
+                }
+                else
+                    Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
+            }
+        }
+
+        public void disableAttitudeSensor()
+        {
+            // Enable attitude sensor and bind it to the camera update
+
+            if (AttitudeSensor.current != null)
+            {
+                InputSystem.DisableDevice(AttitudeSensor.current);
+                core.getManager<UIManager>().removeButton(m_attitudeButton);
+                m_cameraControl = CameraControl.NONE;
+            }
+            else
+                Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
         }
 
         //!

@@ -29,13 +29,34 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 11.03.2022
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace vpet
 {
     public class MenuSelectorCreatorModule : UIManagerModule
     {
+        //!
+        //! The UI canvas for the menu and button items.
+        //!
+        GameObject m_canvas;
+        //!
+        //! The UI item implemetation for the menu buttons.
+        //!
         SnapSelect m_menuSelector;
+        //!
+        //! The UI item implemetation for the action buttons.
+        //!
+        SnapSelect m_buttonSelector;
+        //!
+        //! The UI prefab for the menu buttons.
+        //!
+        GameObject m_menuSelectorPrefab;
+        //!
+        //! The UI prefab for the action buttons.
+        //!
+        GameObject m_buttonSelectorPrefab;
+
         //!
         //! Constructor
         //! @param name Name of this module
@@ -62,19 +83,46 @@ namespace vpet
             //<<<<<<<<<<<
 
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
-            
-            GameObject menuSelectorPrefab = Resources.Load("Prefabs/MenuSelectorPrefab") as GameObject;
-            GameObject buttonSelectorPrefab = Resources.Load("Prefabs/ButtonSelectorPrefab") as GameObject;
+            m_menuSelectorPrefab = Resources.Load("Prefabs/MenuSelectorPrefab") as GameObject;
+            m_buttonSelectorPrefab = Resources.Load("Prefabs/ButtonSelectorPrefab") as GameObject;
 
-            GameObject canvas = GameObject.Instantiate(canvasRes);
-            canvas.GetComponent<Canvas>().sortingOrder = 10;
-            m_menuSelector = GameObject.Instantiate(menuSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
-            m_menuSelector.uiSettings = manager.uiSettings;
-            SnapSelect buttonSelector = GameObject.Instantiate(buttonSelectorPrefab, canvas.transform).GetComponent<SnapSelect>();
-            buttonSelector.uiSettings = manager.uiSettings;
-
+            m_canvas = GameObject.Instantiate(canvasRes);
+            m_canvas.GetComponent<Canvas>().sortingOrder = 10;
 
             manager.menuSelected += highlightMenuElement;
+
+            createMenus(this, EventArgs.Empty);
+            createButtons(this, EventArgs.Empty);
+            
+            m_menuSelector.elementClicked += menuClicked;
+            manager.buttonsUpdated += createButtons;
+        }
+
+        //! 
+        //! Function called before Unity destroys the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Cleanup(object sender, EventArgs e)
+        {
+            base.Cleanup(sender, e);
+
+            manager.menuSelected -= highlightMenuElement;
+            m_menuSelector.elementClicked -= menuClicked;
+            manager.buttonsUpdated -= createButtons;
+        }
+
+        //!
+        //! Function that creates the menu UI elements based on the MenuTree items stored in the UI manager.
+        //!
+        private void createMenus(object sender, EventArgs e)
+        {
+            if (m_menuSelector != null)
+                GameObject.Destroy(m_menuSelector);
+
+            m_menuSelector = GameObject.Instantiate(m_menuSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
+            m_menuSelector.uiSettings = manager.uiSettings;
 
             foreach (MenuTree menu in manager.getMenus())
             {
@@ -93,6 +141,18 @@ namespace vpet
                     m_menuSelector.addElement("EMPTY");
                 }
             }
+        }
+
+        //!
+        //! Function that creates the button UI elements based on the button items stored in the UI manager.
+        //!
+        private void createButtons(object sender, EventArgs e)
+        {
+            if (m_buttonSelector != null)
+                GameObject.Destroy(m_buttonSelector);
+
+            m_buttonSelector = GameObject.Instantiate(m_buttonSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
+            m_buttonSelector.uiSettings = manager.uiSettings;
 
             foreach (MenuButton button in manager.getButtons())
             {
@@ -100,18 +160,17 @@ namespace vpet
                 {
                     Sprite resImage = Resources.Load<Sprite>(button.iconResourceLocation);
                     if (resImage != null)
-                        buttonSelector.addElement(button.caption, resImage, 0, button.action);
+                        m_buttonSelector.addElement(button.caption, resImage, 0, button.action);
 
                 }
                 else if (button.caption.Length > 0)
-                    buttonSelector.addElement(button.caption, 0, button.action);
+                    m_buttonSelector.addElement(button.caption, 0, button.action);
                 else
                 {
                     Helpers.Log("Button has no caption and Icon!", Helpers.logMsgType.WARNING);
-                    buttonSelector.addElement("EMPTY", 0, button.action);
+                    m_buttonSelector.addElement("EMPTY", 0, button.action);
                 }
             }
-            m_menuSelector.elementClicked += menuClicked;
         }
 
         //!

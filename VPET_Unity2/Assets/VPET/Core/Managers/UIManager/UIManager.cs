@@ -62,6 +62,10 @@ namespace vpet
         //!
         public event EventHandler<SceneObject> unhighlightLocked;
         //!
+        //! Event emitted when button list has been updated.
+        //!
+        public event EventHandler<EventArgs> buttonsUpdated; 
+        //!
         //! Load global VPET color names and values.
         //!
         private static VPETUISettings m_uiSettings;
@@ -132,6 +136,21 @@ namespace vpet
                 m_buttons.Add(button);
 
             button.id = m_buttons.Count - 1;
+        }
+
+        //!
+        //! Removes a given button to the buttonlist.
+        //!
+        //! @param button The button to be removed from the list.
+        //!
+        public void removeButton(MenuButton button)
+        {
+            if (!m_buttons.Contains(button))
+                Helpers.Log("Button not existing in UIManager!", Helpers.logMsgType.WARNING);
+            else
+                m_buttons.Remove(button);
+
+            buttonsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         //!

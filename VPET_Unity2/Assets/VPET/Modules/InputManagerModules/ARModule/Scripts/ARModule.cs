@@ -220,7 +220,6 @@ namespace vpet
         {
             manager.m_cameraControl = CameraControl.AR;
             arSession.enabled = b;
-            fdsfds
         }
 
         private void changeOcclusion(object sender, bool b)
