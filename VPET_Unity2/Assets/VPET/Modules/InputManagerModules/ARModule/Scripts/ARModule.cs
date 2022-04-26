@@ -153,11 +153,13 @@ namespace vpet
                     // AR is available
                     Helpers.Log("ARModule: AR available.");
                     ARSession.stateChanged -= arStateChanged;
+                    manager.m_cameraControl = InputManager.CameraControl.AR;
                     initialize();
                     break;
                 default:
                     //AR not available
                     Helpers.Log("ARModule: AR not available.");
+                    manager.m_cameraControl = InputManager.CameraControl.NONE;
                     SceneObject.Destroy(arSession);
                     break;
             }
@@ -218,9 +220,9 @@ namespace vpet
 
         private void changeActive(object sender, bool b)
         {
-            manager.m_cameraControl = CameraControl.AR;
+            if(b) manager.m_cameraControl = InputManager.CameraControl.AR;
+            else manager.m_cameraControl = InputManager.CameraControl.NONE;
             arSession.enabled = b;
-            fdsfds
         }
 
         private void changeOcclusion(object sender, bool b)
