@@ -108,7 +108,6 @@ namespace vpet
         //!
         protected override void Init(object sender, EventArgs e)
         {
-            Debug.Log("I AM HERE");
             enableAR = new Parameter<bool>(true, "enableAR");
             enableOcclusionMapping = new Parameter<bool>(true, "enableOcclusion");
             enableMarkerTracking = new Parameter<bool>(true, "enableMarkerTracking");
@@ -219,7 +218,9 @@ namespace vpet
 
         private void changeActive(object sender, bool b)
         {
+            manager.m_cameraControl = CameraControl.AR;
             arSession.enabled = b;
+            fdsfds
         }
 
         private void changeOcclusion(object sender, bool b)

@@ -157,10 +157,18 @@ namespace vpet
         //!
         private Quaternion m_invAttitudeSensorOffset;
         //!
+        //! Enum defining the automatic camera control state.
+        //!
+        public enum CameraControl
+        {
+            NONE,
+            ATTITUDE,
+            AR
+        }
+        //!
         //! Flag defining if the camera is controlled by the attitide sensor.
         //!
-        private bool m_isAttitudeControlled = false;
-
+        public CameraControl m_cameraControl = CameraControl.NONE;
         //!
         //! The generated Unity input class defining all available user inputs.
         //!
@@ -216,7 +224,7 @@ namespace vpet
 
             // [REVIEW] need to be bound to a proper AR switch
             // Enable attitude sensor and bind it to the camera update
-            if (!false /*AR*/)
+            if (m_cameraControl == CameraControl.ATTITUDE)
             {
                 if (AttitudeSensor.current != null)
                 {
@@ -553,16 +561,16 @@ namespace vpet
         //!
         private void useAttitude()
         {
-            if (m_isAttitudeControlled)
+            if (m_cameraControl == CameraControl.ATTITUDE)
             {
                 m_inputs.VPETMap.Look.performed -= updateCameraRotation;
-                m_isAttitudeControlled = false;
+                m_cameraControl = CameraControl.NONE;
             }
-            else
+            else if (m_cameraControl == CameraControl.NONE)
             {
                 setCameraAttitudeOffsets();
                 m_inputs.VPETMap.Look.performed += updateCameraRotation;
-                m_isAttitudeControlled = true;
+                m_cameraControl = CameraControl.ATTITUDE;
             }
         }
     }

@@ -21,7 +21,7 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "ARModule.cs"
+//! @file "CameraNavigationModule.cs"
 //! @brief implementation of VPET camera navigation features
 //! @author Paulo Scatena
 //! @version 0
