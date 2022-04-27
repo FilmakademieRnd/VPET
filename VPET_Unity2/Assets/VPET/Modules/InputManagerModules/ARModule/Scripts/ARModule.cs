@@ -156,6 +156,7 @@ namespace vpet
             m_poseDriver = Camera.main.gameObject.AddComponent<ARPoseDriver>();
             m_camManager = Camera.main.gameObject.AddComponent<ARCameraManager>();
             m_occlusionManager = Camera.main.gameObject.AddComponent<AROcclusionManager>();
+            m_occlusionManager.requestedEnvironmentDepthMode = EnvironmentDepthMode.Best;
             m_cameraBg = Camera.main.gameObject.AddComponent<ARCameraBackground>();
 
             //Add Marker Tracking
@@ -248,7 +249,10 @@ namespace vpet
 
         private void changeOcclusion(object sender, bool b)
         {
-            Camera.main.gameObject.GetComponent<AROcclusionManager>().enabled = b;
+            if(b)
+                m_occlusionManager.requestedEnvironmentDepthMode = EnvironmentDepthMode.Best;
+            else
+                m_occlusionManager.requestedEnvironmentDepthMode = EnvironmentDepthMode.Disabled;
         }
 
         private void changeMarkerTracking(object sender, bool b)
