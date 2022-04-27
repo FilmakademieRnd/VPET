@@ -3,7 +3,8 @@ var dir_416c66778e2dddb175143f4d7cf68ba5 =
     [ "InputManager.cs", "_input_manager_8cs.html", [
       [ "InputManager", "classvpet_1_1_input_manager.html", "classvpet_1_1_input_manager" ],
       [ "InputEventArgs", "classvpet_1_1_input_manager_1_1_input_event_args.html", "classvpet_1_1_input_manager_1_1_input_event_args" ],
-      [ "PinchEventArgs", "classvpet_1_1_input_manager_1_1_pinch_event_args.html", "classvpet_1_1_input_manager_1_1_pinch_event_args" ]
+      [ "PinchEventArgs", "classvpet_1_1_input_manager_1_1_pinch_event_args.html", "classvpet_1_1_input_manager_1_1_pinch_event_args" ],
+      [ "DragEventArgs", "classvpet_1_1_input_manager_1_1_drag_event_args.html", "classvpet_1_1_input_manager_1_1_drag_event_args" ]
     ] ],
     [ "Inputs.cs", "_inputs_8cs.html", [
       [ "Inputs", "class_inputs.html", "class_inputs" ],

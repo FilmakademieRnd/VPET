@@ -1,6 +1,6 @@
 var classvpet_1_1_u_i_creator3_d_module =
 [
-    [ "UICreator3DModule", "classvpet_1_1_u_i_creator3_d_module.html#a823d6e71e79dfa8c596c7f05235c473f", null ],
+    [ "UICreator3DModule", "classvpet_1_1_u_i_creator3_d_module.html#ae0b5e0f5ee20ac65d2fd55af18705296", null ],
     [ "CameraRaycast", "classvpet_1_1_u_i_creator3_d_module.html#a234005d596dfcdfa96ba28965127c728", null ],
     [ "GetModifierScale", "classvpet_1_1_u_i_creator3_d_module.html#ae5072f49056dc8418d5aab5f94067bf0", null ],
     [ "GrabParameterIndex", "classvpet_1_1_u_i_creator3_d_module.html#afc33bc72741f68a8ac7ba07fcfe663a2", null ],
@@ -18,12 +18,14 @@ var classvpet_1_1_u_i_creator3_d_module =
     [ "SetModeR", "classvpet_1_1_u_i_creator3_d_module.html#a87a5f2d0d1428bcce4b072c66bba0a70", null ],
     [ "SetModeS", "classvpet_1_1_u_i_creator3_d_module.html#a719103d20a7969bf7293f40b3a19162a", null ],
     [ "SetModeT", "classvpet_1_1_u_i_creator3_d_module.html#a45e9f22c6efd55b7d57af4af0293eaa6", null ],
+    [ "SetMultiManipulatorMode", "classvpet_1_1_u_i_creator3_d_module.html#a45e4bd7fa04c0882f544ee0d6839c91d", null ],
     [ "ShowAxis", "classvpet_1_1_u_i_creator3_d_module.html#a73e60681b4f5c6b498f671eaaafa5a24", null ],
     [ "TransformAxis", "classvpet_1_1_u_i_creator3_d_module.html#af08dd0e03b4d898a9e2001d7d9489689", null ],
+    [ "TransformAxisMulti", "classvpet_1_1_u_i_creator3_d_module.html#a22761cba1cb189183c59a13d208aba2e", null ],
+    [ "TransformManipR", "classvpet_1_1_u_i_creator3_d_module.html#a1b40629a0d4df6f78bb14fe316ffa568", null ],
     [ "UpdateManipulatorPosition", "classvpet_1_1_u_i_creator3_d_module.html#af70cc51eb8c80cf2e45018596d639d18", null ],
     [ "UpdateManipulatorRotation", "classvpet_1_1_u_i_creator3_d_module.html#aa8ab638fbfcb00ec5aafc3d35c638e46", null ],
     [ "UpdateManipulatorScale", "classvpet_1_1_u_i_creator3_d_module.html#a6d354a80616a05615c351549a63bffd7", null ],
-    [ "UpdateParameter", "classvpet_1_1_u_i_creator3_d_module.html#ab63dadfb90bc2b076b9a2be8e33e21d8", null ],
     [ "VecInvert", "classvpet_1_1_u_i_creator3_d_module.html#a30a0e6a476c67e611230f29a7f54223f", null ],
     [ "firstPress", "classvpet_1_1_u_i_creator3_d_module.html#a7cece24de7fb6cdad4195ccb987596ed", null ],
     [ "freeRotationColl", "classvpet_1_1_u_i_creator3_d_module.html#a35e9156acffcd4d5d294bef4c2434c99", null ],
@@ -46,12 +48,15 @@ var classvpet_1_1_u_i_creator3_d_module =
     [ "manipTz", "classvpet_1_1_u_i_creator3_d_module.html#ad88e543d0b2ced243527cbccef53b49e", null ],
     [ "manipulator", "classvpet_1_1_u_i_creator3_d_module.html#ad9ba0508e8e9ad67ca0d665ae64f8906", null ],
     [ "modeTRS", "classvpet_1_1_u_i_creator3_d_module.html#a3fc9fb6a8d8fe05c35a9ee798359df98", null ],
+    [ "objOffsets", "classvpet_1_1_u_i_creator3_d_module.html#a7cad0f2f5734c79f0d63792123475998", null ],
     [ "planeVec", "classvpet_1_1_u_i_creator3_d_module.html#a55e7ce751728e35b36e917a09bf85d4b", null ],
     [ "rIndex", "classvpet_1_1_u_i_creator3_d_module.html#aa6a067ae5b7064e8414993be45c12cfd", null ],
     [ "selObj", "classvpet_1_1_u_i_creator3_d_module.html#a9914b90442fb7292e7aa44a75b9e51d9", null ],
+    [ "selObjs", "classvpet_1_1_u_i_creator3_d_module.html#a20689e0ebb51d99f587e8841c6084fb7", null ],
     [ "sIndex", "classvpet_1_1_u_i_creator3_d_module.html#a82308e86b4c14b73dabd868a912dfd10", null ],
     [ "tIndex", "classvpet_1_1_u_i_creator3_d_module.html#aeb6a36820f316b53c1543f517eca38b3", null ],
-    [ "vecXY", "classvpet_1_1_u_i_creator3_d_module.html#ae3cb3550e7fd30594c5df627dc3bcc82", null ],
-    [ "vecXZ", "classvpet_1_1_u_i_creator3_d_module.html#a70fe34ab30c1999060facf5a6d4da71a", null ],
-    [ "vecYZ", "classvpet_1_1_u_i_creator3_d_module.html#ab0ee5278315ca7dc94f598a7072448a1", null ]
+    [ "vecXY", "classvpet_1_1_u_i_creator3_d_module.html#a1b3abc1be331cbc8a178defe1332450d", null ],
+    [ "vecXZ", "classvpet_1_1_u_i_creator3_d_module.html#a828c910731304c1e0dd7000d4f57d895", null ],
+    [ "vecYZ", "classvpet_1_1_u_i_creator3_d_module.html#ab174b0c99d6111b7522d07eac25605ad", null ],
+    [ "visualRot", "classvpet_1_1_u_i_creator3_d_module.html#a4075f4fb302be5b486a44a0ee9479fea", null ]
 ];

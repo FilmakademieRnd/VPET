@@ -179,7 +179,7 @@ namespace vpet
         {
             Module module;
             if (!m_modules.TryGetValue(typeof(T), out module))
-                Helpers.Log(this.GetType().ToString() + " no module of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.ERROR);
+                Helpers.Log(this.GetType().ToString() + " no module of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.WARNING);
             return (T)(object) module;
         }
 

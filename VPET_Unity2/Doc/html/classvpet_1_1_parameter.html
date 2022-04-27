@@ -88,6 +88,7 @@ $(document).ready(function(){initNavTree('classvpet_1_1_parameter.html',''); ini
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="#events">Events</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_parameter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.Parameter&lt; T &gt; Class Template Reference</div>  </div>
@@ -107,8 +108,14 @@ Inheritance diagram for vpet.Parameter&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acacab81f70584f7607637548119a6ce8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#acacab81f70584f7607637548119a6ce8">Parameter</a> (T <a class="el" href="classvpet_1_1_parameter.html#a2474931632671ebc215c24460f1f0e8a">value</a>, string <a class="el" href="classvpet_1_1_abstract_parameter.html#a85d71f55e01507391d1ec37bd353f885">name</a>, <a class="el" href="classvpet_1_1_parameter_object.html">ParameterObject</a> <a class="el" href="classvpet_1_1_abstract_parameter.html#accc7f7f61d8f968c7f84873aae6dae56">parent</a>=null, bool distribute=true)</td></tr>
 <tr class="separator:acacab81f70584f7607637548119a6ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1958315f31a5e3d04a0827a52fdf48ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a1958315f31a5e3d04a0827a52fdf48ff">Parameter</a> (<a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; T &gt; p)</td></tr>
+<tr class="separator:a1958315f31a5e3d04a0827a52fdf48ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed2371ae2bbb599a2d1d2baa935de95e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#aed2371ae2bbb599a2d1d2baa935de95e">setValue</a> (T v)</td></tr>
 <tr class="separator:aed2371ae2bbb599a2d1d2baa935de95e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15d1a70e5e6c7151d3575096250ce591"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a15d1a70e5e6c7151d3575096250ce591">copyValue</a> (<a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a> p)</td></tr>
+<tr class="separator:a15d1a70e5e6c7151d3575096250ce591"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2ade60f02b7f6b1c2f808c0b95f1709"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#ac2ade60f02b7f6b1c2f808c0b95f1709">reset</a> ()</td></tr>
+<tr class="separator:ac2ade60f02b7f6b1c2f808c0b95f1709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a547af4d9e91ea3f81eda7f50d09cb38b"><td class="memItemLeft" align="right" valign="top">override byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a547af4d9e91ea3f81eda7f50d09cb38b">Serialize</a> (int startoffset)</td></tr>
 <tr class="separator:a547af4d9e91ea3f81eda7f50d09cb38b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af57ee08afff713a14bd0ca8249cd84c6"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#af57ee08afff713a14bd0ca8249cd84c6">deSerialize</a> (ref byte[] data, int offset)</td></tr>
@@ -151,6 +158,11 @@ Events</h2></td></tr>
 <tr class="memitem:a6731b86ea9fef08e2a4365d8c0027f8c"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a6731b86ea9fef08e2a4365d8c0027f8c">hasChanged</a></td></tr>
 <tr class="separator:a6731b86ea9fef08e2a4365d8c0027f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a12046e175c0ef416ccb257b10ba225bf"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_parameter.html#a12046e175c0ef416ccb257b10ba225bf">_initialValue</a></td></tr>
+<tr class="separator:a12046e175c0ef416ccb257b10ba225bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classvpet_1_1_abstract_parameter"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classvpet_1_1_abstract_parameter')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classvpet_1_1_abstract_parameter.html">vpet.AbstractParameter</a></td></tr>
@@ -185,7 +197,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p><a class="el" href="classvpet_1_1_parameter.html">Parameter</a> class defining the fundamental functionality and interface </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acacab81f70584f7607637548119a6ce8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acacab81f70584f7607637548119a6ce8">&#9670;&nbsp;</a></span>Parameter()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acacab81f70584f7607637548119a6ce8">&#9670;&nbsp;</a></span>Parameter() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,7 +246,60 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a1958315f31a5e3d04a0827a52fdf48ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1958315f31a5e3d04a0827a52fdf48ff">&#9670;&nbsp;</a></span>Parameter() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;.<a class="el" href="classvpet_1_1_parameter.html">Parameter</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_parameter.html">Parameter</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Copy Constructor p source parameter to copy values from </p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a15d1a70e5e6c7151d3575096250ce591"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15d1a70e5e6c7151d3575096250ce591">&#9670;&nbsp;</a></span>copyValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void <a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;.copyValue </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>function called to copy value of other parameter might break if parameter types do not match </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>parameter to copy value from </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classvpet_1_1_abstract_parameter.html#a0d0333b619d68cb97ed989da44bd9309">vpet.AbstractParameter</a>.</p>
+
+</div>
+</div>
 <a id="af57ee08afff713a14bd0ca8249cd84c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af57ee08afff713a14bd0ca8249cd84c6">&#9670;&nbsp;</a></span>deSerialize()</h2>
 
@@ -277,6 +342,34 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p>Implements <a class="el" href="classvpet_1_1_abstract_parameter.html#ae2d729ebe5120da9223490bd2c25c0cd">vpet.AbstractParameter</a>.</p>
+
+</div>
+</div>
+<a id="ac2ade60f02b7f6b1c2f808c0b95f1709"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2ade60f02b7f6b1c2f808c0b95f1709">&#9670;&nbsp;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void <a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;.reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>reset parameter to initial value </p>
+
+<p>Implements <a class="el" href="classvpet_1_1_abstract_parameter.html#a64a0318b06a1a8db01a61e7814c841aa">vpet.AbstractParameter</a>.</p>
 
 </div>
 </div>
@@ -331,10 +424,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Abstract definition of the function called to change a parameters value. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>function called to change a parameters value. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sender</td><td>Object calling the change function </td></tr>
-    <tr><td class="paramname">a</td><td>Values to be passed to the change function </td></tr>
+    <tr><td class="paramname">v</td><td>new value to be set </td></tr>
   </table>
   </dd>
 </dl>
@@ -377,6 +469,29 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a12046e175c0ef416ccb257b10ba225bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12046e175c0ef416ccb257b10ba225bf">&#9670;&nbsp;</a></span>_initialValue</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T <a class="el" href="classvpet_1_1_parameter.html">vpet.Parameter</a>&lt; T &gt;._initialValue</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The initial value of the parameter at constuction time </p>
+
+</div>
+</div>
 <a id="abe2e8f21fccb16b4603b3586b9eb35aa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abe2e8f21fccb16b4603b3586b9eb35aa">&#9670;&nbsp;</a></span>_value</h2>
 

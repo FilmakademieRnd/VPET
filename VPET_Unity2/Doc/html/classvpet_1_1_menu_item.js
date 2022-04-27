@@ -5,6 +5,7 @@ var classvpet_1_1_menu_item =
       [ "VSPLIT", "classvpet_1_1_menu_item.html#a4e671846ea88863bbff4e5d87980eb1da8c5608a9199c3cb113a4aa19b05c667b", null ],
       [ "SPACE", "classvpet_1_1_menu_item.html#a4e671846ea88863bbff4e5d87980eb1da6506ae39fdca9845e3a6de3865183e57", null ],
       [ "TEXT", "classvpet_1_1_menu_item.html#a4e671846ea88863bbff4e5d87980eb1da61a96ffcb251bb9bf0abf8fec19d0ea8", null ],
+      [ "TEXTSECTION", "classvpet_1_1_menu_item.html#a4e671846ea88863bbff4e5d87980eb1da4964ddb604a19a8b6f4c6ab4bfb77384", null ],
       [ "PARAMETER", "classvpet_1_1_menu_item.html#a4e671846ea88863bbff4e5d87980eb1dabf1d4bbf6ed8626603df4a7cac94ee8c", null ]
     ] ],
     [ "MenuItem", "classvpet_1_1_menu_item.html#a310e1920c643a1bd3acc20a7565490d0", null ],

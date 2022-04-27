@@ -13,6 +13,7 @@ var class_inputs =
     [ "GetEnumerator", "class_inputs.html#a7ee843c61e6fc3a17f8c3bb210cda0e9", null ],
     [ "m_VPETMap", "class_inputs.html#a57a795f5574aeda9a3ef377ebc427366", null ],
     [ "m_VPETMap_Click", "class_inputs.html#a1544d95f41b6dce8694e35255801b756", null ],
+    [ "m_VPETMap_Look", "class_inputs.html#a3e7303997e72c32b54b6326355b0d7af", null ],
     [ "m_VPETMap_MiddleClick", "class_inputs.html#afc99e16bcafea9520a592c475e12e5a9", null ],
     [ "m_VPETMap_Navigate", "class_inputs.html#abfbdb755a5e8158e6431bddc83707f67", null ],
     [ "m_VPETMap_Position", "class_inputs.html#a2dfcb309c83802dc2606f522458b400d", null ],

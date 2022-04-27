@@ -9,6 +9,7 @@ var struct_inputs_1_1_v_p_e_t_map_actions =
     [ "m_Wrapper", "struct_inputs_1_1_v_p_e_t_map_actions.html#a719935f38c4e45dde92a86a12bd34e0a", null ],
     [ "Click", "struct_inputs_1_1_v_p_e_t_map_actions.html#a8acd7708d850d87a4166b86e0e4f1cb8", null ],
     [ "enabled", "struct_inputs_1_1_v_p_e_t_map_actions.html#a9fc43ba08c2f89aa222650b03ab8dfa3", null ],
+    [ "Look", "struct_inputs_1_1_v_p_e_t_map_actions.html#a571fcee42c95cb16fc33048f577dd526", null ],
     [ "MiddleClick", "struct_inputs_1_1_v_p_e_t_map_actions.html#a669893abcd400d407526490897ab9ad3", null ],
     [ "Navigate", "struct_inputs_1_1_v_p_e_t_map_actions.html#a96c98180cc33b4b527e41b1301d204e2", null ],
     [ "Position", "struct_inputs_1_1_v_p_e_t_map_actions.html#afff24c9087b9a1a17e6b9f75f6f4af77", null ],

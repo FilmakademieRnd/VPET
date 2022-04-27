@@ -87,8 +87,10 @@ $(document).ready(function(){initNavTree('classvpet_1_1_input_manager.html','');
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#properties">Properties</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#events">Events</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_input_manager-members.html">List of all members</a>  </div>
@@ -109,6 +111,8 @@ Inheritance diagram for vpet.InputManager:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager_1_1_drag_event_args.html">DragEventArgs</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager_1_1_pinch_event_args.html">PinchEventArgs</a></td></tr>
@@ -122,46 +126,80 @@ Public Types</h2></td></tr>
 , <a class="el" href="classvpet_1_1_input_manager.html#af0c52fcb01eb57d3865f1aae4490aaa0afb204d36ecf53353b3747998ff867582">PERFORMED</a>
  }</td></tr>
 <tr class="separator:af0c52fcb01eb57d3865f1aae4490aaa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20d8a741a9adae4b8a59cbe4043afc8d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8d">CameraControl</a> { <a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8dab50339a10e1de285ac99d4c3990b8693">NONE</a>
+, <a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8da16b57c4fc71c43ba346b1443a5073dcd">ATTITUDE</a>
+, <a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8da5b61a1b298a0d06efa6933a97e68d763">AR</a>
+ }</td></tr>
+<tr class="separator:a20d8a741a9adae4b8a59cbe4043afc8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c3d028a74f951749ed622309aa52f93"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a4c3d028a74f951749ed622309aa52f93">InputManager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core.html">Core</a> vpetCore)</td></tr>
 <tr class="separator:a4c3d028a74f951749ed622309aa52f93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29e6d391fe51abe33eb65987d8504fe9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a29e6d391fe51abe33eb65987d8504fe9">enableAttitudeSensor</a> ()</td></tr>
+<tr class="separator:a29e6d391fe51abe33eb65987d8504fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe90b5699b80f1abe3e900d0a517899e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#afe90b5699b80f1abe3e900d0a517899e">disableAttitudeSensor</a> ()</td></tr>
+<tr class="separator:afe90b5699b80f1abe3e900d0a517899e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
 <tr class="memitem:a36ad7cc7d92c772fc5e898dd93bca6a0 inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a36ad7cc7d92c772fc5e898dd93bca6a0">Manager</a> (Type moduleType, <a class="el" href="classvpet_1_1_core.html">Core</a> vpetCore)</td></tr>
 <tr class="separator:a36ad7cc7d92c772fc5e898dd93bca6a0 inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fc56919bb0603dc2ddf2c409828dcec inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a9fc56919bb0603dc2ddf2c409828dcec">getModule&lt; T &gt;</a> ()</td></tr>
 <tr class="separator:a9fc56919bb0603dc2ddf2c409828dcec inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a983818b90ee0a4c836b67599f85a07ab inherit pub_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="classvpet_1_1_module.html">Module</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a983818b90ee0a4c836b67599f85a07ab">getModules</a> ()</td></tr>
-<tr class="separator:a983818b90ee0a4c836b67599f85a07ab inherit pub_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
-Properties</h2></td></tr>
-<tr class="memitem:a1e44dcd9e3730c17c9450711bd4e2af7"><td class="memItemLeft" align="right" valign="top">ref <a class="el" href="class_inputs.html">Inputs</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a1e44dcd9e3730c17c9450711bd4e2af7">touchInputs</a><code> [get]</code></td></tr>
-<tr class="separator:a1e44dcd9e3730c17c9450711bd4e2af7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header properties_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('properties_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
-<tr class="memitem:ac86f85618bfd52fc204aa30fddff74a8 inherit properties_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">ref <a class="el" href="classvpet_1_1_core.html">Core</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ac86f85618bfd52fc204aa30fddff74a8">core</a><code> [get]</code></td></tr>
-<tr class="separator:ac86f85618bfd52fc204aa30fddff74a8 inherit properties_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a6c61301851869f92e6a869b1e195e875"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8d">CameraControl</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a6c61301851869f92e6a869b1e195e875">m_cameraControl</a> = <a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8dab50339a10e1de285ac99d4c3990b8693">CameraControl.NONE</a></td></tr>
+<tr class="separator:a6c61301851869f92e6a869b1e195e875"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a546b6f3189f12587430ea66aa9ee39ab"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a546b6f3189f12587430ea66aa9ee39ab">Init</a> (object sender, EventArgs e)</td></tr>
+<tr class="separator:a546b6f3189f12587430ea66aa9ee39ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e82f4d050aed035bd44dbf67b2ad420"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a7e82f4d050aed035bd44dbf67b2ad420">Start</a> (object sender, EventArgs e)</td></tr>
+<tr class="separator:a7e82f4d050aed035bd44dbf67b2ad420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31014c838d90c1e599c6f570a381067c"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a31014c838d90c1e599c6f570a381067c">Cleanup</a> (object sender, EventArgs e)</td></tr>
+<tr class="separator:a31014c838d90c1e599c6f570a381067c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
+<tr class="memitem:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ad5e118d1e323304f289b3d5ab970e8a1">addModule</a> (<a class="el" href="classvpet_1_1_module.html">Module</a> module, Type type)</td></tr>
+<tr class="separator:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#aaedf4eb371f9c8f0e7f11a025c8d2828">removeModule</a> (Type type)</td></tr>
+<tr class="separator:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="events"></a>
 Events</h2></td></tr>
 <tr class="memitem:a87eabbc7346f9d739b29c7916937bca5"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a87eabbc7346f9d739b29c7916937bca5">inputEvent</a></td></tr>
 <tr class="separator:a87eabbc7346f9d739b29c7916937bca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a874a04053f6c0091a5922146c435241b"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a874a04053f6c0091a5922146c435241b">InputPressStart</a></td></tr>
-<tr class="separator:a874a04053f6c0091a5922146c435241b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d837e983b5376b5f37002ab4a0d9d8c"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a3d837e983b5376b5f37002ab4a0d9d8c">InputPressEnd</a></td></tr>
-<tr class="memdesc:a3d837e983b5376b5f37002ab4a0d9d8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Touch end.  <a href="classvpet_1_1_input_manager.html#a3d837e983b5376b5f37002ab4a0d9d8c">More...</a><br /></td></tr>
-<tr class="separator:a3d837e983b5376b5f37002ab4a0d9d8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23a483ac4bd8bad2b22503d6536d5ca1"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a23a483ac4bd8bad2b22503d6536d5ca1">InputMove</a></td></tr>
-<tr class="memdesc:a23a483ac4bd8bad2b22503d6536d5ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Touch move.  <a href="classvpet_1_1_input_manager.html#a23a483ac4bd8bad2b22503d6536d5ca1">More...</a><br /></td></tr>
-<tr class="separator:a23a483ac4bd8bad2b22503d6536d5ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a346dbf269447eb9bd72522e40ef30275"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a346dbf269447eb9bd72522e40ef30275">inputPressStart</a></td></tr>
+<tr class="separator:a346dbf269447eb9bd72522e40ef30275"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a960963cf0b22d9ed4834d2917306c781"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a960963cf0b22d9ed4834d2917306c781">inputPressEnd</a></td></tr>
+<tr class="separator:a960963cf0b22d9ed4834d2917306c781"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a353a8f377a6721a7a284ee92af82e946"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a353a8f377a6721a7a284ee92af82e946">inputMove</a></td></tr>
+<tr class="separator:a353a8f377a6721a7a284ee92af82e946"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d540ef3f986f26a89910d2ca9642db5"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_pinch_event_args.html">PinchEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a7d540ef3f986f26a89910d2ca9642db5">pinchEvent</a></td></tr>
 <tr class="separator:a7d540ef3f986f26a89910d2ca9642db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f1c40ac40a5641faf9cf37432df9dae"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_drag_event_args.html">DragEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a4f1c40ac40a5641faf9cf37432df9dae">twoDragEvent</a></td></tr>
+<tr class="separator:a4f1c40ac40a5641faf9cf37432df9dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa63674995902b7fbf50f432e2b6b98fc"><td class="memItemLeft" align="right" valign="top">EventHandler&lt; <a class="el" href="classvpet_1_1_input_manager_1_1_drag_event_args.html">DragEventArgs</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#aa63674995902b7fbf50f432e2b6b98fc">threeDragEvent</a></td></tr>
+<tr class="separator:aa63674995902b7fbf50f432e2b6b98fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header events_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('events_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Events inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
+<tr class="memitem:a7beb2646a6be307a83552b04d14d5e74 inherit events_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">EventHandler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a7beb2646a6be307a83552b04d14d5e74">initEvent</a></td></tr>
+<tr class="separator:a7beb2646a6be307a83552b04d14d5e74 inherit events_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bcf2b782fc48bc63a00be16bb8ede91 inherit events_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">EventHandler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a5bcf2b782fc48bc63a00be16bb8ede91">startEvent</a></td></tr>
+<tr class="separator:a5bcf2b782fc48bc63a00be16bb8ede91 inherit events_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c0669557e584e49ce05f22f7734a6b0 inherit events_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">EventHandler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a2c0669557e584e49ce05f22f7734a6b0">cleanupEvent</a></td></tr>
+<tr class="separator:a2c0669557e584e49ce05f22f7734a6b0 inherit events_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:a021b754a3b1e93d52f36d566f1d251c8"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8">InputTouchType</a> { <a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8abc21e6484530fc9d0313cb816b733396">ONE</a>
+, <a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8a0f82d86afa0f5dc965c5c15aca58dcfb">TWO</a>
+, <a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8a413af0de1f97a2155acf2b8b26ab36e2">THREE</a>
+, <a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8ab50339a10e1de285ac99d4c3990b8693">NONE</a>
+ }</td></tr>
+<tr class="separator:a021b754a3b1e93d52f36d566f1d251c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a620578216b6395ec87a9784cd22518b8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a620578216b6395ec87a9784cd22518b8">~InputManager</a> ()</td></tr>
-<tr class="separator:a620578216b6395ec87a9784cd22518b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e6ed1ceb973259671aa63f8e28a25d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a4e6ed1ceb973259671aa63f8e28a25d7">TapFunction</a> (InputAction.CallbackContext c)</td></tr>
 <tr class="separator:a4e6ed1ceb973259671aa63f8e28a25d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ebf52f667b7ed885d09524cfd150ce3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a2ebf52f667b7ed885d09524cfd150ce3">MovePoint</a> (InputAction.CallbackContext c)</td></tr>
@@ -170,31 +208,89 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a5db63349b99ef400ea5fe13fde80dd05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc07ec4bd95bc3a1f81229afe8c2c08f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#afc07ec4bd95bc3a1f81229afe8c2c08f">PressEnd</a> (InputAction.CallbackContext c)</td></tr>
 <tr class="separator:afc07ec4bd95bc3a1f81229afe8c2c08f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62917795708b3233a4284d082701406b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a62917795708b3233a4284d082701406b">FingerDown</a> (Finger fgr)</td></tr>
+<tr class="separator:a62917795708b3233a4284d082701406b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c941168cbb02860183eebeaff2759ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a0c941168cbb02860183eebeaff2759ee">FingerUp</a> (Finger fgr)</td></tr>
+<tr class="separator:a0c941168cbb02860183eebeaff2759ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb8f653f898fabe452e7c41c03ae485d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#afb8f653f898fabe452e7c41c03ae485d">FingerMove</a> (Finger fgr)</td></tr>
+<tr class="separator:afb8f653f898fabe452e7c41c03ae485d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8380ed6346605493c680ecf3bf677165"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a8380ed6346605493c680ecf3bf677165">TwoFingerMove</a> (Finger fgr)</td></tr>
+<tr class="separator:a8380ed6346605493c680ecf3bf677165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b2f6da1d26796b03e3df556f688e7f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a8b2f6da1d26796b03e3df556f688e7f5">ThreeFingerMove</a> (Finger fgr)</td></tr>
+<tr class="separator:a8b2f6da1d26796b03e3df556f688e7f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23f26fa809e40b0532a7df5b794dec2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a23f26fa809e40b0532a7df5b794dec2b">ClearClickInput</a> ()</td></tr>
+<tr class="separator:a23f26fa809e40b0532a7df5b794dec2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcdef80adc222a2efe42dde00d645376"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#adcdef80adc222a2efe42dde00d645376">TappedUI</a> (Vector2 pos)</td></tr>
 <tr class="separator:adcdef80adc222a2efe42dde00d645376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a74b92b669f4c1f1f830f43a0579f15"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a9a74b92b669f4c1f1f830f43a0579f15">Tapped3DUI</a> (Vector2 pos, int layerMask=1&lt;&lt; 5)</td></tr>
 <tr class="separator:a9a74b92b669f4c1f1f830f43a0579f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c172d86c3bb6ea004e1cda8b501a118"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a9c172d86c3bb6ea004e1cda8b501a118">updateCameraRotation</a> (InputAction.CallbackContext ctx)</td></tr>
+<tr class="separator:a9c172d86c3bb6ea004e1cda8b501a118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a681ec50782ec2be9637240f39133e596"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a681ec50782ec2be9637240f39133e596">setCameraAttitudeOffsets</a> ()</td></tr>
+<tr class="separator:a681ec50782ec2be9637240f39133e596"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab903f4d33f420c6278063b09f4e0fb7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#aab903f4d33f420c6278063b09f4e0fb7">useAttitude</a> ()</td></tr>
+<tr class="separator:aab903f4d33f420c6278063b09f4e0fb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:a2acc00bc2e0071376a167a67f85568aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8">InputTouchType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a2acc00bc2e0071376a167a67f85568aa">m_touchType</a></td></tr>
+<tr class="separator:a2acc00bc2e0071376a167a67f85568aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ce2954dcbd636b354c38bb49cdeebb4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a8ce2954dcbd636b354c38bb49cdeebb4">m_isTouchDrag</a></td></tr>
+<tr class="separator:a8ce2954dcbd636b354c38bb49cdeebb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a126801c56f61082572a5407c163212a8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a126801c56f61082572a5407c163212a8">m_isPinch</a></td></tr>
+<tr class="separator:a126801c56f61082572a5407c163212a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f34850e52a6f6a72cdbc27458c18de1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a4f34850e52a6f6a72cdbc27458c18de1">m_doOnce</a></td></tr>
+<tr class="separator:a4f34850e52a6f6a72cdbc27458c18de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc47d47ef0619cf43daf10d83b411c11"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#adc47d47ef0619cf43daf10d83b411c11">m_posBuffer</a></td></tr>
+<tr class="separator:adc47d47ef0619cf43daf10d83b411c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01ab9fc3534084d22170ec256c8cd021"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a01ab9fc3534084d22170ec256c8cd021">m_distBuffer</a></td></tr>
+<tr class="separator:a01ab9fc3534084d22170ec256c8cd021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cd3ef4d2e575cd508a85733432197a2"><td class="memItemLeft" align="right" valign="top">Quaternion&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a4cd3ef4d2e575cd508a85733432197a2">m_cameraMainOffset</a></td></tr>
+<tr class="separator:a4cd3ef4d2e575cd508a85733432197a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eb96ff41d81142c8ba8d4c5fd59c3e5"><td class="memItemLeft" align="right" valign="top">Quaternion&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a9eb96ff41d81142c8ba8d4c5fd59c3e5">m_invAttitudeSensorOffset</a></td></tr>
+<tr class="separator:a9eb96ff41d81142c8ba8d4c5fd59c3e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6c316bf59c4249274c66a2aaef2a84a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_menu_button.html">MenuButton</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#ac6c316bf59c4249274c66a2aaef2a84a">m_attitudeButton</a></td></tr>
+<tr class="separator:ac6c316bf59c4249274c66a2aaef2a84a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b961c7b066f273d63ef17e2c96af9ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_inputs.html">Inputs</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_input_manager.html#a2b961c7b066f273d63ef17e2c96af9ad">m_inputs</a></td></tr>
 <tr class="separator:a2b961c7b066f273d63ef17e2c96af9ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
-<tr class="memitem:a5f06a46bf5516682ebeea72f7784e418 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#a5f06a46bf5516682ebeea72f7784e418">Init</a> (object sender, EventArgs e)</td></tr>
-<tr class="separator:a5f06a46bf5516682ebeea72f7784e418 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae441df204d0299ab3fae47b0b5431778 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ae441df204d0299ab3fae47b0b5431778">Cleanup</a> (object sender, EventArgs e)</td></tr>
-<tr class="separator:ae441df204d0299ab3fae47b0b5431778 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ad5e118d1e323304f289b3d5ab970e8a1">addModule</a> (<a class="el" href="classvpet_1_1_module.html">Module</a> module, Type type)</td></tr>
-<tr class="separator:ad5e118d1e323304f289b3d5ab970e8a1 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#aaedf4eb371f9c8f0e7f11a025c8d2828">removeModule</a> (Type type)</td></tr>
-<tr class="separator:aaedf4eb371f9c8f0e7f11a025c8d2828 inherit pro_methods_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header properties_classvpet_1_1_manager"><td colspan="2" onclick="javascript:toggleInherit('properties_classvpet_1_1_manager')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="classvpet_1_1_manager.html">vpet.Manager</a></td></tr>
+<tr class="memitem:ac86f85618bfd52fc204aa30fddff74a8 inherit properties_classvpet_1_1_manager"><td class="memItemLeft" align="right" valign="top">ref <a class="el" href="classvpet_1_1_core.html">Core</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manager.html#ac86f85618bfd52fc204aa30fddff74a8">core</a><code> [get]</code></td></tr>
+<tr class="separator:ac86f85618bfd52fc204aa30fddff74a8 inherit properties_classvpet_1_1_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class implementing the input manager, managing all user inupts and mapping. </p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a20d8a741a9adae4b8a59cbe4043afc8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20d8a741a9adae4b8a59cbe4043afc8d">&#9670;&nbsp;</a></span>CameraControl</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8d">vpet.InputManager.CameraControl</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Enum defining the automatic camera control state. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a20d8a741a9adae4b8a59cbe4043afc8dab50339a10e1de285ac99d4c3990b8693"></a>NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a20d8a741a9adae4b8a59cbe4043afc8da16b57c4fc71c43ba346b1443a5073dcd"></a>ATTITUDE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a20d8a741a9adae4b8a59cbe4043afc8da5b61a1b298a0d06efa6933a97e68d763"></a>AR&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="af0c52fcb01eb57d3865f1aae4490aaa0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0c52fcb01eb57d3865f1aae4490aaa0">&#9670;&nbsp;</a></span>InputEventType</h2>
 
@@ -220,6 +316,35 @@ Additional Inherited Members</h2></td></tr>
 <tr><td class="fieldname"><a id="af0c52fcb01eb57d3865f1aae4490aaa0aff3480bb59f4249a9453a0caaa1b2236"></a>DRAG&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af0c52fcb01eb57d3865f1aae4490aaa0a17130e6c806885e23770df1519b18eb7"></a>STARTED&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="af0c52fcb01eb57d3865f1aae4490aaa0afb204d36ecf53353b3747998ff867582"></a>PERFORMED&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a021b754a3b1e93d52f36d566f1d251c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a021b754a3b1e93d52f36d566f1d251c8">&#9670;&nbsp;</a></span>InputTouchType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8">vpet.InputManager.InputTouchType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Enumeration describing possible touch input gestures. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a021b754a3b1e93d52f36d566f1d251c8abc21e6484530fc9d0313cb816b733396"></a>ONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a021b754a3b1e93d52f36d566f1d251c8a0f82d86afa0f5dc965c5c15aca58dcfb"></a>TWO&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a021b754a3b1e93d52f36d566f1d251c8a413af0de1f97a2155acf2b8b26ab36e2"></a>THREE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a021b754a3b1e93d52f36d566f1d251c8ab50339a10e1de285ac99d4c3990b8693"></a>NONE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -254,8 +379,9 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a620578216b6395ec87a9784cd22518b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a620578216b6395ec87a9784cd22518b8">&#9670;&nbsp;</a></span>~InputManager()</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a31014c838d90c1e599c6f570a381067c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31014c838d90c1e599c6f570a381067c">&#9670;&nbsp;</a></span>Cleanup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -264,7 +390,53 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vpet.InputManager.~InputManager </td>
+          <td class="memname">override void vpet.InputManager.Cleanup </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">EventArgs&#160;</td>
+          <td class="paramname"><em>e</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function called before Unity destroys the VPET core.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>A reference to the VPET core. </td></tr>
+    <tr><td class="paramname">e</td><td>Arguments for these event. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classvpet_1_1_manager.html#ae441df204d0299ab3fae47b0b5431778">vpet.Manager</a>.</p>
+
+</div>
+</div>
+<a id="a23f26fa809e40b0532a7df5b794dec2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23f26fa809e40b0532a7df5b794dec2b">&#9670;&nbsp;</a></span>ClearClickInput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.ClearClickInput </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -276,10 +448,171 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Helper function to reset existing operations of an input click (e.g. object selection) </p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a id="afe90b5699b80f1abe3e900d0a517899e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe90b5699b80f1abe3e900d0a517899e">&#9670;&nbsp;</a></span>disableAttitudeSensor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.disableAttitudeSensor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a29e6d391fe51abe33eb65987d8504fe9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29e6d391fe51abe33eb65987d8504fe9">&#9670;&nbsp;</a></span>enableAttitudeSensor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.enableAttitudeSensor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a62917795708b3233a4284d082701406b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62917795708b3233a4284d082701406b">&#9670;&nbsp;</a></span>FingerDown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.FingerDown </td>
+          <td>(</td>
+          <td class="paramtype">Finger&#160;</td>
+          <td class="paramname"><em>fgr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function to handle any new finger touching the screen. </p>
+
+</div>
+</div>
+<a id="afb8f653f898fabe452e7c41c03ae485d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb8f653f898fabe452e7c41c03ae485d">&#9670;&nbsp;</a></span>FingerMove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.FingerMove </td>
+          <td>(</td>
+          <td class="paramtype">Finger&#160;</td>
+          <td class="paramname"><em>fgr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function to handle initial finger movement on the screen. </p>
+
+</div>
+</div>
+<a id="a0c941168cbb02860183eebeaff2759ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c941168cbb02860183eebeaff2759ee">&#9670;&nbsp;</a></span>FingerUp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.FingerUp </td>
+          <td>(</td>
+          <td class="paramtype">Finger&#160;</td>
+          <td class="paramname"><em>fgr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function to handle any finger being lifted from the screen. </p>
+
+</div>
+</div>
+<a id="a546b6f3189f12587430ea66aa9ee39ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a546b6f3189f12587430ea66aa9ee39ab">&#9670;&nbsp;</a></span>Init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void vpet.InputManager.Init </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">EventArgs&#160;</td>
+          <td class="paramname"><em>e</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function called when Unity initializes the VPET core.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>A reference to the VPET core. </td></tr>
+    <tr><td class="paramname">e</td><td>Arguments for these event. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classvpet_1_1_manager.html#a5f06a46bf5516682ebeea72f7784e418">vpet.Manager</a>.</p>
+
+</div>
+</div>
 <a id="a2ebf52f667b7ed885d09524cfd150ce3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ebf52f667b7ed885d09524cfd150ce3">&#9670;&nbsp;</a></span>MovePoint()</h2>
 
@@ -303,6 +636,7 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Input move function, for monitoring the moving of the cursor/finger. </p>
 
 </div>
 </div>
@@ -329,6 +663,7 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Input press end function, for monitoring the end of touch/click interactions. </p>
 
 </div>
 </div>
@@ -355,6 +690,79 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Input press start function, for monitoring the start of touch/click interactions. </p>
+
+</div>
+</div>
+<a id="a681ec50782ec2be9637240f39133e596"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a681ec50782ec2be9637240f39133e596">&#9670;&nbsp;</a></span>setCameraAttitudeOffsets()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.setCameraAttitudeOffsets </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that stores the current main camera and attitude sensors rotation offset. </p>
+
+</div>
+</div>
+<a id="a7e82f4d050aed035bd44dbf67b2ad420"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e82f4d050aed035bd44dbf67b2ad420">&#9670;&nbsp;</a></span>Start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void vpet.InputManager.Start </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">EventArgs&#160;</td>
+          <td class="paramname"><em>e</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Virtual function called when Unity calls it's Start function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td>A reference to the VPET core. </td></tr>
+    <tr><td class="paramname">e</td><td>Arguments for these event. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classvpet_1_1_manager.html#a2c82cd0f8cc336e96ae0bbb74a3584f8">vpet.Manager</a>.</p>
 
 </div>
 </div>
@@ -381,6 +789,7 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Single tap/touch operation. </p>
 
 </div>
 </div>
@@ -417,7 +826,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>returns true if tap was over the 3D manipulator objects (layerMask 5 for UI) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>returns true if tap was over the 3D manipulator objects (layerMask 5 for UI)</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pos</td><td>position of the tap </td></tr>
   </table>
@@ -449,7 +859,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>returns true if tap was over any UI element (it goes over all raycaster in the scene - ideally that would be GraphicRaycaster from the 2D UI) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>returns true if tap was over any UI element (it goes over all raycaster in the scene - ideally that would be GraphicRaycaster from the 2D UI)</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pos</td><td>position of the tap </td></tr>
   </table>
@@ -458,7 +869,222 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a8b2f6da1d26796b03e3df556f688e7f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2f6da1d26796b03e3df556f688e7f5">&#9670;&nbsp;</a></span>ThreeFingerMove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.ThreeFingerMove </td>
+          <td>(</td>
+          <td class="paramtype">Finger&#160;</td>
+          <td class="paramname"><em>fgr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function to handle specifically three-finger gestures. </p>
+
+</div>
+</div>
+<a id="a8380ed6346605493c680ecf3bf677165"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8380ed6346605493c680ecf3bf677165">&#9670;&nbsp;</a></span>TwoFingerMove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.TwoFingerMove </td>
+          <td>(</td>
+          <td class="paramtype">Finger&#160;</td>
+          <td class="paramname"><em>fgr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function to handle specifically two-finger gestures. </p>
+
+</div>
+</div>
+<a id="a9c172d86c3bb6ea004e1cda8b501a118"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c172d86c3bb6ea004e1cda8b501a118">&#9670;&nbsp;</a></span>updateCameraRotation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.updateCameraRotation </td>
+          <td>(</td>
+          <td class="paramtype">InputAction.CallbackContext&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that overwrites the main cameras rotation by the attitude sensors values. Connected to VPETMap.Look which triggers when the input system fires a attitude sensor performed event. <br  />
+ </p>
+
+</div>
+</div>
+<a id="aab903f4d33f420c6278063b09f4e0fb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab903f4d33f420c6278063b09f4e0fb7">&#9670;&nbsp;</a></span>useAttitude()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void vpet.InputManager.useAttitude </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that toggles the main camera rotation overwrite by attitude sensor. </p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac6c316bf59c4249274c66a2aaef2a84a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6c316bf59c4249274c66a2aaef2a84a">&#9670;&nbsp;</a></span>m_attitudeButton</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_menu_button.html">MenuButton</a> vpet.InputManager.m_attitudeButton</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>A reference to the attitude button. </p>
+
+</div>
+</div>
+<a id="a6c61301851869f92e6a869b1e195e875"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c61301851869f92e6a869b1e195e875">&#9670;&nbsp;</a></span>m_cameraControl</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8d">CameraControl</a> vpet.InputManager.m_cameraControl = <a class="el" href="classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8dab50339a10e1de285ac99d4c3990b8693">CameraControl.NONE</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Flag defining if the camera is controlled by the attitide sensor. </p>
+
+</div>
+</div>
+<a id="a4cd3ef4d2e575cd508a85733432197a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cd3ef4d2e575cd508a85733432197a2">&#9670;&nbsp;</a></span>m_cameraMainOffset</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Quaternion vpet.InputManager.m_cameraMainOffset</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Buffers the main cameras initial rotation. </p>
+
+</div>
+</div>
+<a id="a01ab9fc3534084d22170ec256c8cd021"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01ab9fc3534084d22170ec256c8cd021">&#9670;&nbsp;</a></span>m_distBuffer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float vpet.InputManager.m_distBuffer</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Buffer float for input distance comparison. </p>
+
+</div>
+</div>
+<a id="a4f34850e52a6f6a72cdbc27458c18de1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f34850e52a6f6a72cdbc27458c18de1">&#9670;&nbsp;</a></span>m_doOnce</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.InputManager.m_doOnce</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Simple latch for buffering operations. </p>
+
+</div>
+</div>
 <a id="a2b961c7b066f273d63ef17e2c96af9ad"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2b961c7b066f273d63ef17e2c96af9ad">&#9670;&nbsp;</a></span>m_inputs</h2>
 
@@ -482,9 +1108,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Property Documentation</h2>
-<a id="a1e44dcd9e3730c17c9450711bd4e2af7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e44dcd9e3730c17c9450711bd4e2af7">&#9670;&nbsp;</a></span>touchInputs</h2>
+<a id="a9eb96ff41d81142c8ba8d4c5fd59c3e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eb96ff41d81142c8ba8d4c5fd59c3e5">&#9670;&nbsp;</a></span>m_invAttitudeSensorOffset</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -493,15 +1118,108 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ref <a class="el" href="class_inputs.html">Inputs</a> vpet.InputManager.touchInputs</td>
+          <td class="memname">Quaternion vpet.InputManager.m_invAttitudeSensorOffset</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Buffers the sensors initial attitude. </p>
+
+</div>
+</div>
+<a id="a126801c56f61082572a5407c163212a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a126801c56f61082572a5407c163212a8">&#9670;&nbsp;</a></span>m_isPinch</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.InputManager.m_isPinch</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Flag to specify type of gesture. </p>
+
+</div>
+</div>
+<a id="a8ce2954dcbd636b354c38bb49cdeebb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ce2954dcbd636b354c38bb49cdeebb4">&#9670;&nbsp;</a></span>m_isTouchDrag</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool vpet.InputManager.m_isTouchDrag</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Flag to determine if a touch drag gesture is being performed. </p>
+
+</div>
+</div>
+<a id="adc47d47ef0619cf43daf10d83b411c11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc47d47ef0619cf43daf10d83b411c11">&#9670;&nbsp;</a></span>m_posBuffer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Vector2 vpet.InputManager.m_posBuffer</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Buffer Vector2 for input position comparison. </p>
+
+</div>
+</div>
+<a id="a2acc00bc2e0071376a167a67f85568aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2acc00bc2e0071376a167a67f85568aa">&#9670;&nbsp;</a></span>m_touchType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_input_manager.html#a021b754a3b1e93d52f36d566f1d251c8">InputTouchType</a> vpet.InputManager.m_touchType</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The touch input gesture type. </p>
 
 </div>
 </div>
@@ -521,49 +1239,48 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a23a483ac4bd8bad2b22503d6536d5ca1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a23a483ac4bd8bad2b22503d6536d5ca1">&#9670;&nbsp;</a></span>InputMove</h2>
+<a id="a353a8f377a6721a7a284ee92af82e946"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a353a8f377a6721a7a284ee92af82e946">&#9670;&nbsp;</a></span>inputMove</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a>&gt; vpet.InputManager.InputMove</td>
+          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a>&gt; vpet.InputManager.inputMove</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Touch move. </p>
+<p>Press move event, i.e. the moving of the cursor/finger. </p>
 
 </div>
 </div>
-<a id="a3d837e983b5376b5f37002ab4a0d9d8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d837e983b5376b5f37002ab4a0d9d8c">&#9670;&nbsp;</a></span>InputPressEnd</h2>
+<a id="a960963cf0b22d9ed4834d2917306c781"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a960963cf0b22d9ed4834d2917306c781">&#9670;&nbsp;</a></span>inputPressEnd</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a>&gt; vpet.InputManager.InputPressEnd</td>
+          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a>&gt; vpet.InputManager.inputPressEnd</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Touch end. </p>
+<p>Press end event, i.e. the end of a click. </p>
 
 </div>
 </div>
-<a id="a874a04053f6c0091a5922146c435241b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a874a04053f6c0091a5922146c435241b">&#9670;&nbsp;</a></span>InputPressStart</h2>
+<a id="a346dbf269447eb9bd72522e40ef30275"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a346dbf269447eb9bd72522e40ef30275">&#9670;&nbsp;</a></span>inputPressStart</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a>&gt; vpet.InputManager.InputPressStart</td>
+          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_input_event_args.html">InputEventArgs</a>&gt; vpet.InputManager.inputPressStart</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Press start event, i.e. the begin of a click. </p>
 
 </div>
 </div>
@@ -578,7 +1295,37 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The pinch input event. </p>
+<p>The two finger pinch input event. </p>
+
+</div>
+</div>
+<a id="aa63674995902b7fbf50f432e2b6b98fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa63674995902b7fbf50f432e2b6b98fc">&#9670;&nbsp;</a></span>threeDragEvent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_drag_event_args.html">DragEventArgs</a>&gt; vpet.InputManager.threeDragEvent</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The three finger drag input event. </p>
+
+</div>
+</div>
+<a id="a4f1c40ac40a5641faf9cf37432df9dae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f1c40ac40a5641faf9cf37432df9dae">&#9670;&nbsp;</a></span>twoDragEvent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">EventHandler&lt;<a class="el" href="classvpet_1_1_input_manager_1_1_drag_event_args.html">DragEventArgs</a>&gt; vpet.InputManager.twoDragEvent</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The two finger drag input event. </p>
 
 </div>
 </div>

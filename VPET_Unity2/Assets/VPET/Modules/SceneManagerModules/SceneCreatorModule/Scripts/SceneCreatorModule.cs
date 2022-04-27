@@ -431,10 +431,14 @@ namespace vpet
                 // set up object basics
                 objMain = new GameObject();
                 objMain.name = Encoding.ASCII.GetString(node.name);
+                
+                //place object
+                objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
 
                 objMain.transform.localPosition = pos;
                 objMain.transform.localRotation = rot;
                 objMain.transform.localScale = scl;
+
 
                 if (node.GetType() == typeof(SceneManager.SceneNodeGeo) || node.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                 {
@@ -606,9 +610,6 @@ namespace vpet
 
                 Vector3 sceneExtends = manager.sceneBoundsMax - manager.sceneBoundsMin;
                 manager.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
-
-                //place object
-                objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
             }
             else
             {

@@ -62,10 +62,10 @@ namespace vpet
         //!
         public T getManager<T>()
         {
-            Manager manager;
+            Manager manager = null;
 
             if (!m_managerList.TryGetValue(typeof(T), out manager))
-                Helpers.Log(this.GetType().ToString() + " no manager of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.ERROR);
+                Helpers.Log(this.GetType().ToString() + " no manager of type " + typeof(T).ToString() + " registered.", Helpers.logMsgType.WARNING);
 
             return (T)(object) manager;
         }

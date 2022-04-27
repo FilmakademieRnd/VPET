@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['inputeventtype_1470',['InputEventType',['../classvpet_1_1_input_manager.html#af0c52fcb01eb57d3865f1aae4490aaa0',1,'vpet::InputManager']]],
-  ['itype_1471',['IType',['../classvpet_1_1_menu_item.html#a4e671846ea88863bbff4e5d87980eb1d',1,'vpet::MenuItem']]]
+  ['cameracontrol_1893',['CameraControl',['../classvpet_1_1_input_manager.html#a20d8a741a9adae4b8a59cbe4043afc8d',1,'vpet::InputManager']]]
 ];

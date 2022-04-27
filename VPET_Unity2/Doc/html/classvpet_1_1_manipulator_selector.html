@@ -86,6 +86,7 @@ $(document).ready(function(){initNavTree('classvpet_1_1_manipulator_selector.htm
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classvpet_1_1_manipulator_selector-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">vpet.ManipulatorSelector Class Reference</div>  </div>
@@ -100,8 +101,8 @@ Inheritance diagram for vpet.ManipulatorSelector:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a14d8cd251b4eb326cbb0e6b8a1cd3878"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#a14d8cd251b4eb326cbb0e6b8a1cd3878">Init</a> (<a class="el" href="classvpet_1_1_u_i_creator2_d_module.html">UICreator2DModule</a> module, Sprite icon, int index)</td></tr>
-<tr class="separator:a14d8cd251b4eb326cbb0e6b8a1cd3878"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a511da795bf03e20ed7db9f6e7e624814"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#a511da795bf03e20ed7db9f6e7e624814">Init</a> (<a class="el" href="classvpet_1_1_u_i_creator2_d_module.html">UICreator2DModule</a> module, <a class="el" href="classvpet_1_1_v_p_e_t_u_i_settings.html">VPETUISettings</a> uiSettings, Sprite icon, int index)</td></tr>
+<tr class="separator:a511da795bf03e20ed7db9f6e7e624814"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a879ad67fe0451e7a3b327d33911de57a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#a879ad67fe0451e7a3b327d33911de57a">visualizeActive</a> ()</td></tr>
 <tr class="separator:a879ad67fe0451e7a3b327d33911de57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac77b7bc07fb3ed5583833dff42c7bf1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#ac77b7bc07fb3ed5583833dff42c7bf1f">visualizeIdle</a> ()</td></tr>
@@ -109,12 +110,17 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a3d80bbec83d9e9a49e14650b6c7690c5"><td class="memItemLeft" align="right" valign="top">Button&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#a3d80bbec83d9e9a49e14650b6c7690c5">selectionButton</a></td></tr>
-<tr class="separator:a3d80bbec83d9e9a49e14650b6c7690c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33877f83b52b63d4fb888970011b15fe"><td class="memItemLeft" align="right" valign="top">Button&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#a33877f83b52b63d4fb888970011b15fe">_selectionButton</a></td></tr>
+<tr class="separator:a33877f83b52b63d4fb888970011b15fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aa5194457ba1efb58d90ffcba13efb5d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_v_p_e_t_u_i_settings.html">VPETUISettings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_manipulator_selector.html#aa5194457ba1efb58d90ffcba13efb5d3">_uiSettings</a></td></tr>
+<tr class="separator:aa5194457ba1efb58d90ffcba13efb5d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a14d8cd251b4eb326cbb0e6b8a1cd3878"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a14d8cd251b4eb326cbb0e6b8a1cd3878">&#9670;&nbsp;</a></span>Init()</h2>
+<a id="a511da795bf03e20ed7db9f6e7e624814"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a511da795bf03e20ed7db9f6e7e624814">&#9670;&nbsp;</a></span>Init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -124,6 +130,12 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classvpet_1_1_u_i_creator2_d_module.html">UICreator2DModule</a>&#160;</td>
           <td class="paramname"><em>module</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_v_p_e_t_u_i_settings.html">VPETUISettings</a>&#160;</td>
+          <td class="paramname"><em>uiSettings</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -192,17 +204,40 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a3d80bbec83d9e9a49e14650b6c7690c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d80bbec83d9e9a49e14650b6c7690c5">&#9670;&nbsp;</a></span>selectionButton</h2>
+<a id="a33877f83b52b63d4fb888970011b15fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33877f83b52b63d4fb888970011b15fe">&#9670;&nbsp;</a></span>_selectionButton</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Button vpet.ManipulatorSelector.selectionButton</td>
+          <td class="memname">Button vpet.ManipulatorSelector._selectionButton</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa5194457ba1efb58d90ffcba13efb5d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5194457ba1efb58d90ffcba13efb5d3">&#9670;&nbsp;</a></span>_uiSettings</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classvpet_1_1_v_p_e_t_u_i_settings.html">VPETUISettings</a> vpet.ManipulatorSelector._uiSettings</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reference to VPET UI settings </p>
 
 </div>
 </div>

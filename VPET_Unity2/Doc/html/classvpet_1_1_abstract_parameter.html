@@ -129,10 +129,14 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a64a0318b06a1a8db01a61e7814c841aa"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_abstract_parameter.html#a64a0318b06a1a8db01a61e7814c841aa">reset</a> ()</td></tr>
+<tr class="separator:a64a0318b06a1a8db01a61e7814c841aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a064859141386075aab6109e76987e815"><td class="memItemLeft" align="right" valign="top">abstract byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_abstract_parameter.html#a064859141386075aab6109e76987e815">Serialize</a> (int startoffset)</td></tr>
 <tr class="separator:a064859141386075aab6109e76987e815"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2d729ebe5120da9223490bd2c25c0cd"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_abstract_parameter.html#ae2d729ebe5120da9223490bd2c25c0cd">deSerialize</a> (ref byte[] data, int offset)</td></tr>
 <tr class="separator:ae2d729ebe5120da9223490bd2c25c0cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d0333b619d68cb97ed989da44bd9309"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_abstract_parameter.html#a0d0333b619d68cb97ed989da44bd9309">copyValue</a> (<a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a> v)</td></tr>
+<tr class="separator:a0d0333b619d68cb97ed989da44bd9309"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -216,6 +220,40 @@ Static Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0d0333b619d68cb97ed989da44bd9309"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d0333b619d68cb97ed989da44bd9309">&#9670;&nbsp;</a></span>copyValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void vpet.AbstractParameter.copyValue </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classvpet_1_1_abstract_parameter.html">AbstractParameter</a>&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Abstract definition of function called to copy value of other parameter </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>new value to be set. Value will be casted automatically </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classvpet_1_1_parameter.html#a15d1a70e5e6c7151d3575096250ce591">vpet.Parameter&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <a id="ae2d729ebe5120da9223490bd2c25c0cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae2d729ebe5120da9223490bd2c25c0cd">&#9670;&nbsp;</a></span>deSerialize()</h2>
 
@@ -258,6 +296,34 @@ Static Private Attributes</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classvpet_1_1_parameter.html#af57ee08afff713a14bd0ca8249cd84c6">vpet.Parameter&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a64a0318b06a1a8db01a61e7814c841aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64a0318b06a1a8db01a61e7814c841aa">&#9670;&nbsp;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void vpet.AbstractParameter.reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>abstract reset function for the abstract parameter </p>
+
+<p>Implemented in <a class="el" href="classvpet_1_1_parameter.html#ac2ade60f02b7f6b1c2f808c0b95f1709">vpet.Parameter&lt; T &gt;</a>.</p>
 
 </div>
 </div>

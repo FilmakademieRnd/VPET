@@ -1,7 +1,27 @@
 var classvpet_1_1_a_r_module =
 [
-    [ "ARModule", "classvpet_1_1_a_r_module.html#a10f27633d655ee151cdc18c24fe23940", null ],
+    [ "ARModule", "classvpet_1_1_a_r_module.html#a40e90ebfefc55c04633f04292a3ea1fe", null ],
+    [ "~ARModule", "classvpet_1_1_a_r_module.html#a068fdf29e898470d8cf0a519fcad2bdb", null ],
+    [ "arStateChanged", "classvpet_1_1_a_r_module.html#af0a67cda70aa39387eac86ed0db11ceb", null ],
+    [ "changeActive", "classvpet_1_1_a_r_module.html#ae731aab7c86cf76be0b9781cef21dd0b", null ],
+    [ "changeMarkerTracking", "classvpet_1_1_a_r_module.html#aa42fc302bf8bcc5ad1c8a3ddde74e737", null ],
+    [ "changeOcclusion", "classvpet_1_1_a_r_module.html#a96b9d3f0f34321affe881dad0af4d07a", null ],
     [ "Init", "classvpet_1_1_a_r_module.html#a38200f5e157deaa9d6c7912e89bd1737", null ],
-    [ "arOrigin", "classvpet_1_1_a_r_module.html#a9f5574f5171933b486376d21c37a459a", null ],
-    [ "vpetCore", "classvpet_1_1_a_r_module.html#a1693435e71eeb14c3ea43bd7760ea7da", null ]
+    [ "initialize", "classvpet_1_1_a_r_module.html#a84c65dc63f2761745c409ecef5befad2", null ],
+    [ "MarkerTrackingChanged", "classvpet_1_1_a_r_module.html#aa61f9af9c982e313edecab62dff99274", null ],
+    [ "moveCamera", "classvpet_1_1_a_r_module.html#ad421e7cb38919014557c69328d9c0040", null ],
+    [ "_arActive", "classvpet_1_1_a_r_module.html#a5684d3ee915143a68f0fbea096ac36b9", null ],
+    [ "_menu", "classvpet_1_1_a_r_module.html#ae467de4f6ccbf6aabab71fec1c4f9904", null ],
+    [ "arImgManager", "classvpet_1_1_a_r_module.html#a14bef405a44abebce1dd1f6c61bbbfea", null ],
+    [ "arSession", "classvpet_1_1_a_r_module.html#a725e35e89871c59e1d6bbcc9ebf80776", null ],
+    [ "enableAR", "classvpet_1_1_a_r_module.html#a04419869d0320c02020ee91d748fd322", null ],
+    [ "enableMarkerTracking", "classvpet_1_1_a_r_module.html#abb47bfd736e00909a9d7ee14e02282c3", null ],
+    [ "enableOcclusionMapping", "classvpet_1_1_a_r_module.html#a4ad3394ffed175e83de57d9e58e45c9f", null ],
+    [ "m_arOrigin", "classvpet_1_1_a_r_module.html#a0b6754985a7d66065eda993975f39862", null ],
+    [ "m_cameraBg", "classvpet_1_1_a_r_module.html#a994ffa8c065dc103e990264373b23478", null ],
+    [ "m_camManager", "classvpet_1_1_a_r_module.html#a9bdbb0ba3b240e67a6a995e95168a02a", null ],
+    [ "m_occlusionManager", "classvpet_1_1_a_r_module.html#ac6f7a767700548b870fb5ad870435ccc", null ],
+    [ "m_poseDriver", "classvpet_1_1_a_r_module.html#a08289f78493e49586b718801824e2993", null ],
+    [ "sceneRoot", "classvpet_1_1_a_r_module.html#a62c3fcba2ce4d056ab99838386f8f5ef", null ],
+    [ "arActive", "classvpet_1_1_a_r_module.html#af4fc08f265e0c12774aea725ccd7b8f6", null ]
 ];

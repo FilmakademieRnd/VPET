@@ -14,7 +14,9 @@ var classvpet_1_1_abstract_parameter =
       [ "LIST", "classvpet_1_1_abstract_parameter.html#aff709d4f179748cab0b3dccabe4f5ee4a298cb25408234de02baf2085803a464a", null ],
       [ "UNKNOWN", "classvpet_1_1_abstract_parameter.html#aff709d4f179748cab0b3dccabe4f5ee4a696b031073e74bf2cb98e5ef201d4aa3", null ]
     ] ],
+    [ "copyValue", "classvpet_1_1_abstract_parameter.html#a0d0333b619d68cb97ed989da44bd9309", null ],
     [ "deSerialize", "classvpet_1_1_abstract_parameter.html#ae2d729ebe5120da9223490bd2c25c0cd", null ],
+    [ "reset", "classvpet_1_1_abstract_parameter.html#a64a0318b06a1a8db01a61e7814c841aa", null ],
     [ "Serialize", "classvpet_1_1_abstract_parameter.html#a064859141386075aab6109e76987e815", null ],
     [ "toCType", "classvpet_1_1_abstract_parameter.html#abc4cb937486284539cf19920db5a3d66", null ],
     [ "toVPETType", "classvpet_1_1_abstract_parameter.html#a859f2ec039e797e5baa060d8176fabf3", null ],

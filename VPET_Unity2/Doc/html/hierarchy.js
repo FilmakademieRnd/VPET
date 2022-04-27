@@ -3,20 +3,28 @@ var hierarchy =
     [ "vpet.AbstractParameter", "classvpet_1_1_abstract_parameter.html", [
       [ "vpet.Parameter< T >", "classvpet_1_1_parameter.html", null ]
     ] ],
+    [ "Attribute", null, [
+      [ "vpet.ShowInMenu", "classvpet_1_1_show_in_menu.html", null ]
+    ] ],
     [ "vpet.SceneManager.CharacterPackage", "classvpet_1_1_scene_manager_1_1_character_package.html", null ],
+    [ "vpet.Colors", "classvpet_1_1_colors.html", null ],
     [ "EventArgs", null, [
+      [ "vpet.InputManager.DragEventArgs", "classvpet_1_1_input_manager_1_1_drag_event_args.html", null ],
       [ "vpet.InputManager.InputEventArgs", "classvpet_1_1_input_manager_1_1_input_event_args.html", null ],
       [ "vpet.InputManager.PinchEventArgs", "classvpet_1_1_input_manager_1_1_pinch_event_args.html", null ]
     ] ],
     [ "vpet.Helpers", "classvpet_1_1_helpers.html", null ],
     [ "IBeginDragHandler", null, [
+      [ "NumberInputFieldUpdate", "class_number_input_field_update.html", null ],
+      [ "vpet.ColorSelect", "classvpet_1_1_color_select.html", null ],
       [ "vpet.SnapSelect", "classvpet_1_1_snap_select.html", null ]
     ] ],
     [ "IDisposable", null, [
       [ "Inputs", "class_inputs.html", null ],
       [ "vpet.Module", "classvpet_1_1_module.html", [
         [ "vpet.InputManagerModule", "classvpet_1_1_input_manager_module.html", [
-          [ "vpet.ARModule", "classvpet_1_1_a_r_module.html", null ]
+          [ "vpet.ARModule", "classvpet_1_1_a_r_module.html", null ],
+          [ "vpet.CameraNavigationModule", "classvpet_1_1_camera_navigation_module.html", null ]
         ] ],
         [ "vpet.NetworkManagerModule", "classvpet_1_1_network_manager_module.html", [
           [ "vpet.SceneReceiverModule", "classvpet_1_1_scene_receiver_module.html", null ],
@@ -27,6 +35,7 @@ var hierarchy =
         [ "vpet.SceneManagerModule", "classvpet_1_1_scene_manager_module.html", [
           [ "vpet.SceneCreatorModule", "classvpet_1_1_scene_creator_module.html", null ],
           [ "vpet.SceneParserModule", "classvpet_1_1_scene_parser_module.html", null ],
+          [ "vpet.UndoRedoModule", "classvpet_1_1_undo_redo_module.html", null ],
           [ "vpet.UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", null ]
         ] ],
         [ "vpet.UIManagerModule", "classvpet_1_1_u_i_manager_module.html", [
@@ -38,14 +47,19 @@ var hierarchy =
           [ "vpet.SelectionOutlineModule", "classvpet_1_1_selection_outline_module.html", null ],
           [ "vpet.UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html", null ],
           [ "vpet.UICreator3DModule", "classvpet_1_1_u_i_creator3_d_module.html", null ],
+          [ "vpet.UICreator3DPointOnFloor", "classvpet_1_1_u_i_creator3_d_point_on_floor.html", null ],
           [ "vpet.UnityEditorModule", "classvpet_1_1_unity_editor_module.html", null ]
         ] ]
       ] ]
     ] ],
     [ "IDragHandler", null, [
+      [ "NumberInputFieldUpdate", "class_number_input_field_update.html", null ],
+      [ "backup.ColorSelectBackupForHueSatOnly", "classbackup_1_1_color_select_backup_for_hue_sat_only.html", null ],
+      [ "vpet.ColorSelect", "classvpet_1_1_color_select.html", null ],
       [ "vpet.SnapSelect", "classvpet_1_1_snap_select.html", null ]
     ] ],
     [ "IEndDragHandler", null, [
+      [ "NumberInputFieldUpdate", "class_number_input_field_update.html", null ],
       [ "vpet.SnapSelect", "classvpet_1_1_snap_select.html", null ]
     ] ],
     [ "IFormattable", null, [
@@ -55,9 +69,15 @@ var hierarchy =
       [ "Inputs", "class_inputs.html", null ]
     ] ],
     [ "IPointerDownHandler", null, [
+      [ "NumberInputFieldUpdate", "class_number_input_field_update.html", null ],
+      [ "vpet.LongPressButton", "classvpet_1_1_long_press_button.html", null ],
       [ "vpet.SnapSelectElement", "classvpet_1_1_snap_select_element.html", null ]
     ] ],
+    [ "IPointerExitHandler", null, [
+      [ "vpet.LongPressButton", "classvpet_1_1_long_press_button.html", null ]
+    ] ],
     [ "IPointerUpHandler", null, [
+      [ "vpet.LongPressButton", "classvpet_1_1_long_press_button.html", null ],
       [ "vpet.SnapSelectElement", "classvpet_1_1_snap_select_element.html", null ]
     ] ],
     [ "Inputs.IVPETMapActions", "interface_inputs_1_1_i_v_p_e_t_map_actions.html", null ],
@@ -72,12 +92,15 @@ var hierarchy =
       ] ]
     ] ],
     [ "vpet.SceneManager.MaterialPackage", "classvpet_1_1_scene_manager_1_1_material_package.html", null ],
+    [ "vpet.MenuButton", "classvpet_1_1_menu_button.html", [
+      [ "vpet.MenuTree", "classvpet_1_1_menu_tree.html", null ]
+    ] ],
     [ "vpet.MenuItem", "classvpet_1_1_menu_item.html", null ],
-    [ "vpet.MenuTree", "classvpet_1_1_menu_tree.html", null ],
     [ "vpet.ModuleInterface", "interfacevpet_1_1_module_interface.html", [
       [ "vpet.Module", "classvpet_1_1_module.html", null ]
     ] ],
     [ "MonoBehaviour", null, [
+      [ "NumberInputFieldUpdate", "class_number_input_field_update.html", null ],
       [ "vpet.CoreInterface", "classvpet_1_1_core_interface.html", [
         [ "vpet.Core", "classvpet_1_1_core.html", null ]
       ] ],
@@ -88,6 +111,7 @@ var hierarchy =
       [ "vpet.LightCone", "classvpet_1_1_light_cone.html", null ],
       [ "vpet.LightIcon", "classvpet_1_1_light_icon.html", null ],
       [ "vpet.LightSphere", "classvpet_1_1_light_sphere.html", null ],
+      [ "vpet.LongPressButton", "classvpet_1_1_long_press_button.html", null ],
       [ "vpet.Manipulator", "classvpet_1_1_manipulator.html", [
         [ "vpet.Spinner", "classvpet_1_1_spinner.html", null ]
       ] ],
@@ -107,6 +131,7 @@ var hierarchy =
       [ "vpet.SnapSelectElement", "classvpet_1_1_snap_select_element.html", null ]
     ] ],
     [ "vpet.SceneManager.ObjectPackage", "classvpet_1_1_scene_manager_1_1_object_package.html", null ],
+    [ "vpet.Parameter< bool >", "classvpet_1_1_parameter.html", null ],
     [ "vpet.Parameter< Color >", "classvpet_1_1_parameter.html", null ],
     [ "vpet.Parameter< float >", "classvpet_1_1_parameter.html", null ],
     [ "vpet.Parameter< int >", "classvpet_1_1_parameter.html", [
@@ -124,6 +149,9 @@ var hierarchy =
       ] ],
       [ "vpet.SceneManager.SceneNodeLight", "classvpet_1_1_scene_manager_1_1_scene_node_light.html", null ]
     ] ],
+    [ "ScriptableObject", null, [
+      [ "vpet.VPETUISettings", "classvpet_1_1_v_p_e_t_u_i_settings.html", null ]
+    ] ],
     [ "vpet.Settings", "classvpet_1_1_settings.html", [
       [ "vpet.Core.coreSettings", "classvpet_1_1_core_1_1core_settings.html", null ],
       [ "vpet.NetworkManager.NetworkManagerSettings", "classvpet_1_1_network_manager_1_1_network_manager_settings.html", null ],
@@ -131,6 +159,8 @@ var hierarchy =
     ] ],
     [ "vpet.SceneManager.TexturePackage", "classvpet_1_1_scene_manager_1_1_texture_package.html", null ],
     [ "UIBehaviour", null, [
+      [ "backup.ColorSelectBackupForHueSatOnly", "classbackup_1_1_color_select_backup_for_hue_sat_only.html", null ],
+      [ "vpet.ColorSelect", "classvpet_1_1_color_select.html", null ],
       [ "vpet.SnapSelect", "classvpet_1_1_snap_select.html", null ]
     ] ],
     [ "vpet.VPETGizmo", "classvpet_1_1_v_p_e_t_gizmo.html", null ],

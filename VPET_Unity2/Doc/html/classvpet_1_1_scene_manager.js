@@ -32,6 +32,7 @@ var classvpet_1_1_scene_manager =
     [ "maxExtend", "classvpet_1_1_scene_manager.html#a08b823573741bd37faad667a9cf6adda", null ],
     [ "sceneBoundsMax", "classvpet_1_1_scene_manager.html#a5dbe2c160e67c4bd4b1ce49fc3a2dfbb", null ],
     [ "sceneBoundsMin", "classvpet_1_1_scene_manager.html#affef04a92a834b4a17a25cce85c30103", null ],
+    [ "shaderKeywords", "classvpet_1_1_scene_manager.html#a36be26cdfae07d4deda4b249f358886f", null ],
     [ "sceneCameraList", "classvpet_1_1_scene_manager.html#ac9d275fcbfa10d6b004ed759ba18adbd", null ],
     [ "sceneDataHandler", "classvpet_1_1_scene_manager.html#af07466dcd1a4211d428aec631084c384", null ],
     [ "sceneLightList", "classvpet_1_1_scene_manager.html#a6e972cb71aaa85594b5c67346929e2bc", null ],

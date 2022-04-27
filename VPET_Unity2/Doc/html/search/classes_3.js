@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['gizmocreatormodule_783',['GizmoCreatorModule',['../classvpet_1_1_gizmo_creator_module.html',1,'vpet']]],
-  ['gizmoelementupdate_784',['GizmoElementUpdate',['../classvpet_1_1_gizmo_element_update.html',1,'vpet']]]
+  ['editor_5fuimodechange_1013',['Editor_UIModeChange',['../classvpet_1_1_editor___u_i_mode_change.html',1,'vpet']]]
 ];

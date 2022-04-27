@@ -1,4 +1,4 @@
 var classvpet_1_1_network_manager_1_1_network_manager_settings =
 [
-    [ "m_serverIP", "classvpet_1_1_network_manager_1_1_network_manager_settings.html#af97801247b813ff4532cfc4af1a91c9d", null ]
+    [ "ipAddress", "classvpet_1_1_network_manager_1_1_network_manager_settings.html#a2c69cbafa7b59aeab923c2b71eada883", null ]
 ];

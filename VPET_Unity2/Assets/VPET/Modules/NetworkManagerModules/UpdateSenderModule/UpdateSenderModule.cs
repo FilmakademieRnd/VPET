@@ -65,9 +65,12 @@ namespace vpet
             SceneManager sceneManager = core.getManager<SceneManager>();
             UIManager uiManager = core.getManager<UIManager>();
 
-            sceneManager.sceneReady -= connectAndStart;
-            uiManager.selectionAdded -= lockSceneObject;
-            uiManager.selectionRemoved -= unlockSceneObject;
+            if (sceneManager != null && uiManager != null)
+            {
+                sceneManager.sceneReady -= connectAndStart;
+                uiManager.selectionAdded -= lockSceneObject;
+                uiManager.selectionRemoved -= unlockSceneObject;
+            }
 
             core.syncEvent -= queuePingMessage;
 

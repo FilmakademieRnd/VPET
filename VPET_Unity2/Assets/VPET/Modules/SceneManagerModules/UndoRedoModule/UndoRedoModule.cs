@@ -73,7 +73,9 @@ namespace vpet
 
         protected override void Start(object sender, EventArgs e)
         {
-            core.getManager<NetworkManager>().getModule<UpdateReceiverModule>().receivedHistoryUpdate += addHistoryStep;
+            UpdateReceiverModule updateReceiverModule = core.getManager<NetworkManager>().getModule<UpdateReceiverModule>();
+            if (updateReceiverModule != null)
+                updateReceiverModule.receivedHistoryUpdate += addHistoryStep;
         }
 
         //!

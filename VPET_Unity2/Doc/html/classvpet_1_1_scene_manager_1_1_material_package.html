@@ -94,7 +94,7 @@ $(document).ready(function(){initNavTree('classvpet_1_1_scene_manager_1_1_materi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:add4073697aec8657d6074c9e3f70a0c6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#add4073697aec8657d6074c9e3f70a0c6">type</a></td></tr>
-<tr class="memdesc:add4073697aec8657d6074c9e3f70a0c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the material. 0=standard, 1=load by name, 2=new with shader by name, 3=new with shader from source, 4= ..  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#add4073697aec8657d6074c9e3f70a0c6">More...</a><br /></td></tr>
+<tr class="memdesc:add4073697aec8657d6074c9e3f70a0c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the material. 0=Unity, 1=External.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#add4073697aec8657d6074c9e3f70a0c6">More...</a><br /></td></tr>
 <tr class="separator:add4073697aec8657d6074c9e3f70a0c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ac0327711e17449dd1ff6497e9c318d"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a0ac0327711e17449dd1ff6497e9c318d">name</a></td></tr>
 <tr class="memdesc:a0ac0327711e17449dd1ff6497e9c318d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the material.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a0ac0327711e17449dd1ff6497e9c318d">More...</a><br /></td></tr>
@@ -102,26 +102,44 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a3376a1706e1d34a6273038c2f4acff5a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a3376a1706e1d34a6273038c2f4acff5a">src</a></td></tr>
 <tr class="memdesc:a3376a1706e1d34a6273038c2f4acff5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Unity resource name the material uses to refrence its shaders.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a3376a1706e1d34a6273038c2f4acff5a">More...</a><br /></td></tr>
 <tr class="separator:a3376a1706e1d34a6273038c2f4acff5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62ac7ecf84857152bd589941f6c5d204"><td class="memItemLeft" align="right" valign="top">Material&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a62ac7ecf84857152bd589941f6c5d204">mat</a></td></tr>
-<tr class="memdesc:a62ac7ecf84857152bd589941f6c5d204"><td class="mdescLeft">&#160;</td><td class="mdescRight">The additionally stored Unity material.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a62ac7ecf84857152bd589941f6c5d204">More...</a><br /></td></tr>
-<tr class="separator:a62ac7ecf84857152bd589941f6c5d204"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d895072d01d1aac980087d5346a0c06"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a0d895072d01d1aac980087d5346a0c06">materialID</a></td></tr>
+<tr class="memdesc:a0d895072d01d1aac980087d5346a0c06"><td class="mdescLeft">&#160;</td><td class="mdescRight">The material ID for instancing.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a0d895072d01d1aac980087d5346a0c06">More...</a><br /></td></tr>
+<tr class="separator:a0d895072d01d1aac980087d5346a0c06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35e57a3c6ddd775c8007a30242713783"><td class="memItemLeft" align="right" valign="top">int[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a35e57a3c6ddd775c8007a30242713783">textureIds</a></td></tr>
+<tr class="memdesc:a35e57a3c6ddd775c8007a30242713783"><td class="mdescLeft">&#160;</td><td class="mdescRight">The IDs for referencing the associated texture data.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a35e57a3c6ddd775c8007a30242713783">More...</a><br /></td></tr>
+<tr class="separator:a35e57a3c6ddd775c8007a30242713783"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0151a729e4320ad5dbfc2fffad95bc25"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a0151a729e4320ad5dbfc2fffad95bc25">textureOffsets</a></td></tr>
+<tr class="memdesc:a0151a729e4320ad5dbfc2fffad95bc25"><td class="mdescLeft">&#160;</td><td class="mdescRight">The textures UV offset as Vec2.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a0151a729e4320ad5dbfc2fffad95bc25">More...</a><br /></td></tr>
+<tr class="separator:a0151a729e4320ad5dbfc2fffad95bc25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46cf7c34cc4de47acd956e66b14819e7"><td class="memItemLeft" align="right" valign="top">float[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a46cf7c34cc4de47acd956e66b14819e7">textureScales</a></td></tr>
+<tr class="memdesc:a46cf7c34cc4de47acd956e66b14819e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The textures UV scale as Vec2.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a46cf7c34cc4de47acd956e66b14819e7">More...</a><br /></td></tr>
+<tr class="separator:a46cf7c34cc4de47acd956e66b14819e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9eaf5855fb8f09b8097cd11a1e8c045"><td class="memItemLeft" align="right" valign="top">bool[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#ad9eaf5855fb8f09b8097cd11a1e8c045">shaderConfig</a></td></tr>
+<tr class="separator:ad9eaf5855fb8f09b8097cd11a1e8c045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a697b907568246e2eef14ffc49a23aa"><td class="memItemLeft" align="right" valign="top">int[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a2a697b907568246e2eef14ffc49a23aa">shaderPropertyIds</a></td></tr>
+<tr class="separator:a2a697b907568246e2eef14ffc49a23aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b63fab527bc3812e7575de61d61c544"><td class="memItemLeft" align="right" valign="top">int[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a6b63fab527bc3812e7575de61d61c544">shaderPropertyTypes</a></td></tr>
+<tr class="separator:a6b63fab527bc3812e7575de61d61c544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3460d5c463a4e3a80f399396f21b93fa"><td class="memItemLeft" align="right" valign="top">byte[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_scene_manager_1_1_material_package.html#a3460d5c463a4e3a80f399396f21b93fa">shaderProperties</a></td></tr>
+<tr class="memdesc:a3460d5c463a4e3a80f399396f21b93fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">All available shader parameter values as a byte stream.  <a href="classvpet_1_1_scene_manager_1_1_material_package.html#a3460d5c463a4e3a80f399396f21b93fa">More...</a><br /></td></tr>
+<tr class="separator:a3460d5c463a4e3a80f399396f21b93fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>VPET structure used to hold material data. This sructure is used for saving to disk or sending via network. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="a62ac7ecf84857152bd589941f6c5d204"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62ac7ecf84857152bd589941f6c5d204">&#9670;&nbsp;</a></span>mat</h2>
+<a id="a0d895072d01d1aac980087d5346a0c06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d895072d01d1aac980087d5346a0c06">&#9670;&nbsp;</a></span>materialID</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Material vpet.SceneManager.MaterialPackage.mat</td>
+          <td class="memname">int vpet.SceneManager.MaterialPackage.materialID</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The additionally stored Unity material. </p>
+<p>The material ID for instancing. </p>
 
 </div>
 </div>
@@ -141,6 +159,81 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ad9eaf5855fb8f09b8097cd11a1e8c045"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9eaf5855fb8f09b8097cd11a1e8c045">&#9670;&nbsp;</a></span>shaderConfig</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool [] vpet.SceneManager.MaterialPackage.shaderConfig</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Available shader configuration flags. [0] "_NORMALMAP" [1] "_ALPHATEST_ON" [2] "_ALPHABLEND_ON" [3] "_ALPHAPREMULTIPLY_ON" [4] "_EMISSION" [5] "_PARALLAXMAP" [6] "_DETAIL_MULX2" [7] "_METALLICGLOSSMAP" [8] "_SPECGLOSSMAP" </p>
+
+</div>
+</div>
+<a id="a3460d5c463a4e3a80f399396f21b93fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3460d5c463a4e3a80f399396f21b93fa">&#9670;&nbsp;</a></span>shaderProperties</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">byte [] vpet.SceneManager.MaterialPackage.shaderProperties</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>All available shader parameter values as a byte stream. </p>
+
+</div>
+</div>
+<a id="a2a697b907568246e2eef14ffc49a23aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a697b907568246e2eef14ffc49a23aa">&#9670;&nbsp;</a></span>shaderPropertyIds</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int [] vpet.SceneManager.MaterialPackage.shaderPropertyIds</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Available shader parameter IDs ( ID, type (not part of this array) ) [0] "_Color, Color" [1] "_MainTex, Texture" [2] "_Cutoff, float" <br  />
+ [3] "_Glossiness, float" [4] "_GlossMapScale, float" [5] "_SmoothnessTextureChannel, int" <br  />
+ [6] "_Metallic, float" <br  />
+ [7] "_MetallicGlossMap, Texture" <br  />
+ [8] "_SpecularHighlights, int" [9] "_GlossyReflections, int" <br  />
+ [10] "_BumpScale, int" <br  />
+ [11] "_BumpMap, Texture" <br  />
+ [12] "_Parallax, float" [13] "_ParallaxMap, Texture" <br  />
+ [14] "_OcclusionStrength, float" <br  />
+ [15] "_OcclusionMap, Texture" <br  />
+ [16] "_EmissionColor, Color" <br  />
+ [17] "_EmissionMap, Texture" <br  />
+ [18] "_DetailMask, Texture" [19] "_DetailAlbedoMap, Texture" [20] "_DetailNormalMapScale, int" [21] "_DetailNormalMap, Texture" [22] "_UVSec, int" [23] "_Mode, int" [24] "_SrcBlend, int" [25] "_DstBlend, int" [26] "_ZWrite, int" </p>
+
+</div>
+</div>
+<a id="a6b63fab527bc3812e7575de61d61c544"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b63fab527bc3812e7575de61d61c544">&#9670;&nbsp;</a></span>shaderPropertyTypes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int [] vpet.SceneManager.MaterialPackage.shaderPropertyTypes</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Available shader parameter types [0] "Color" [1] "Vector4" <br  />
+ [2] "int" <br  />
+ [3] "float" [4] "Texture" </p>
+
+</div>
+</div>
 <a id="a3376a1706e1d34a6273038c2f4acff5a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3376a1706e1d34a6273038c2f4acff5a">&#9670;&nbsp;</a></span>src</h2>
 
@@ -157,6 +250,54 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a35e57a3c6ddd775c8007a30242713783"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35e57a3c6ddd775c8007a30242713783">&#9670;&nbsp;</a></span>textureIds</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int [] vpet.SceneManager.MaterialPackage.textureIds</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The IDs for referencing the associated texture data. </p>
+
+</div>
+</div>
+<a id="a0151a729e4320ad5dbfc2fffad95bc25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0151a729e4320ad5dbfc2fffad95bc25">&#9670;&nbsp;</a></span>textureOffsets</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] vpet.SceneManager.MaterialPackage.textureOffsets</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The textures UV offset as Vec2. </p>
+
+</div>
+</div>
+<a id="a46cf7c34cc4de47acd956e66b14819e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46cf7c34cc4de47acd956e66b14819e7">&#9670;&nbsp;</a></span>textureScales</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float [] vpet.SceneManager.MaterialPackage.textureScales</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The textures UV scale as Vec2. </p>
+
+</div>
+</div>
 <a id="add4073697aec8657d6074c9e3f70a0c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#add4073697aec8657d6074c9e3f70a0c6">&#9670;&nbsp;</a></span>type</h2>
 
@@ -169,7 +310,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The type of the material. 0=standard, 1=load by name, 2=new with shader by name, 3=new with shader from source, 4= .. </p>
+<p>The type of the material. 0=Unity, 1=External. </p>
 
 </div>
 </div>
