@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace vpet
 {
@@ -50,8 +51,8 @@ namespace vpet
             public Vector2Int screenSize = new Vector2Int(1280,720);
             public int vSyncCount = 1;
             public int framerate = 60;
-
-            public float uiScale = 0.5f;
+            [ShowInMenu]
+            public Parameter<float> uiScale = new Parameter<float>(0.04f, "uiScale") ;
         }
         //!
         //! The core settings.
@@ -166,11 +167,11 @@ namespace vpet
 
             startEvent?.Invoke(this, new EventArgs());
 
-            Canvas[] canvases = this.GetComponentsInChildren<Canvas>();
+            CanvasScaler[] canvases = GameObject.FindObjectsOfType<CanvasScaler>();
 
-            foreach (Canvas canvas in canvases)
+            foreach (CanvasScaler canvas in canvases)
             {
-                canvas.scaleFactor *= settings.uiScale;
+                canvas.scaleFactor = Screen.dpi * settings.uiScale.value;
             }
         }
 

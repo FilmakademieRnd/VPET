@@ -79,7 +79,7 @@ namespace vpet
             //>>>>>>>>>>>
             MenuButton test = new MenuButton("TestButton", testAction);
             test.setIcon("Images/button_frame_BG");
-            manager.addButton(test);
+            //manager.addButton(test);
             //<<<<<<<<<<<
 
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
@@ -94,8 +94,9 @@ namespace vpet
             createMenus(this, EventArgs.Empty);
             createButtons(this, EventArgs.Empty);
             
-            m_menuSelector.elementClicked += menuClicked;
+            
             manager.buttonsUpdated += createButtons;
+            manager.menusUpdated += createMenus;
         }
 
         //! 
@@ -111,6 +112,8 @@ namespace vpet
             manager.menuSelected -= highlightMenuElement;
             m_menuSelector.elementClicked -= menuClicked;
             manager.buttonsUpdated -= createButtons;
+            manager.menusUpdated -= createMenus;
+
         }
 
         //!
@@ -119,7 +122,10 @@ namespace vpet
         private void createMenus(object sender, EventArgs e)
         {
             if (m_menuSelector != null)
-                GameObject.Destroy(m_menuSelector);
+            {
+                m_menuSelector.elementClicked -= menuClicked;
+                GameObject.Destroy(m_menuSelector.gameObject);
+            }
 
             m_menuSelector = GameObject.Instantiate(m_menuSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
             m_menuSelector.uiSettings = manager.uiSettings;
@@ -141,6 +147,7 @@ namespace vpet
                     m_menuSelector.addElement("EMPTY");
                 }
             }
+            m_menuSelector.elementClicked += menuClicked;
         }
 
         //!
@@ -149,7 +156,7 @@ namespace vpet
         private void createButtons(object sender, EventArgs e)
         {
             if (m_buttonSelector != null)
-                GameObject.Destroy(m_buttonSelector);
+                GameObject.Destroy(m_buttonSelector.gameObject);
 
             m_buttonSelector = GameObject.Instantiate(m_buttonSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
             m_buttonSelector.uiSettings = manager.uiSettings;

@@ -327,8 +327,8 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_toggle, parentObject.transform);
                                 Toggle toggle = newObject.GetComponent<Toggle>();
+                                toggle.isOn = ((Parameter<bool>)item.Parameter).value;
                                 toggle.onValueChanged.AddListener(delegate { ((Parameter<bool>)item.Parameter).setValue(toggle.isOn); });
-                                toggle.isOn = ((Parameter<bool>) item.Parameter).value;
                                 Text textComponent = newObject.GetComponentInChildren<Text>();
                                 textComponent.text = item.Parameter.name;
                                 textComponent.color = manager.uiSettings.colors.FontColor;
@@ -346,8 +346,8 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_numberInputField, parentObject.transform);
                                 TMP_InputField numberInputField = newObject.GetComponent<TMP_InputField>();
-                                numberInputField.onEndEdit.AddListener(delegate { ((Parameter<float>)item.Parameter).setValue(float.Parse(numberInputField.text)); });
                                 numberInputField.text = ((Parameter<float>)item.Parameter).value.ToString();
+                                numberInputField.onEndEdit.AddListener(delegate { ((Parameter<float>)item.Parameter).setValue(float.Parse(numberInputField.text)); });
                                 Image imgButton = numberInputField.GetComponent<Image>();
                                 imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
                                 numberInputField.textComponent.color = manager.uiSettings.colors.FontColor;
@@ -360,8 +360,8 @@ namespace vpet
                             {
                                 newObject = GameObject.Instantiate(m_inputField, parentObject.transform);
                                 TMP_InputField inputField = newObject.GetComponent<TMP_InputField>();
-                                inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
+                                inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 Image imgButton = inputField.GetComponent<Image>();
                                 imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
                                 inputField.textComponent.color = manager.uiSettings.colors.FontColor;

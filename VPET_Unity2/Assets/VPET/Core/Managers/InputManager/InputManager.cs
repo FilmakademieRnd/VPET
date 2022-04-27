@@ -236,7 +236,8 @@ namespace vpet
         protected override void Start(object sender, EventArgs e)
         {
             base.Start(sender, e);
-            enableAttitudeSensor();
+            if(m_cameraControl == CameraControl.NONE)
+                enableAttitudeSensor();
         }
 
         //! 
@@ -277,6 +278,7 @@ namespace vpet
                     m_attitudeButton = new MenuButton("Attitude", useAttitude);
                     m_attitudeButton.setIcon("Images/button_frame_BG");
                     core.getManager<UIManager>().addButton(m_attitudeButton);
+
                 }
                 else
                     Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
@@ -578,7 +580,6 @@ namespace vpet
         private void updateCameraRotation(InputAction.CallbackContext ctx)
         {
             Transform cam = Camera.main.transform;
-
             cam.localRotation = ctx.ReadValue<Quaternion>() * Quaternion.Euler(0f, 0f, 180f);
             cam.rotation = m_cameraMainOffset * m_invAttitudeSensorOffset * cam.rotation;
         }

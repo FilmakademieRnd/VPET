@@ -64,7 +64,11 @@ namespace vpet
         //!
         //! Event emitted when button list has been updated.
         //!
-        public event EventHandler<EventArgs> buttonsUpdated; 
+        public event EventHandler<EventArgs> buttonsUpdated;
+        //!
+        //! Event emitted when menu list has been updated.
+        //!
+        public event EventHandler<EventArgs> menusUpdated;
         //!
         //! Load global VPET color names and values.
         //!
@@ -121,6 +125,7 @@ namespace vpet
                 m_menus.Add(menu);
 
             menu.id = m_menus.Count - 1;
+            menusUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         //!
@@ -136,6 +141,7 @@ namespace vpet
                 m_buttons.Add(button);
 
             button.id = m_buttons.Count - 1;
+            buttonsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         //!
