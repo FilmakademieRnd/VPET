@@ -92,6 +92,7 @@ public class NumberInputFieldUpdate : MonoBehaviour, IPointerDownHandler, IDragH
     //!
     public void OnEndDrag(PointerEventData eventData)
     {
+        m_inputField.onEndEdit?.Invoke(m_inputField.text);
         m_inputField.DeactivateInputField(false);
     }
 
