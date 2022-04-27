@@ -1,8 +1,0 @@
-
-You will need to have the necessary third party libraries installed
-and you will need to have the following environment variables defined.
-
-KATANA_HOME  The Katana installation directory at compile-time
-
-Install Instructions
--
