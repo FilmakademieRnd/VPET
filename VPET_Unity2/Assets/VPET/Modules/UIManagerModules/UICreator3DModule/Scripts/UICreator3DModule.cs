@@ -752,6 +752,9 @@ namespace vpet
         // For scale adjustment
         private Vector3 GetModifierScale()
         {
+            // quick fix - TODO: double check event subscription at UpdateManipulatorPosition
+            if (!selObj)
+                return Vector3.one;
             return Vector3.one
                        * (Vector3.Distance(Camera.main.transform.position, selObj.transform.position)
                        * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
