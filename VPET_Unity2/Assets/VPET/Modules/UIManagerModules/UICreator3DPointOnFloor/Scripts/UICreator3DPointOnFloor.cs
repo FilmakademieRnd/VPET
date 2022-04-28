@@ -87,7 +87,7 @@ namespace vpet
             m_inputManager = core.getManager<InputManager>();
 
             // Hookup to input events
-            m_inputManager.inputPressStart += PressStart;
+            m_inputManager.inputPressPerformed += PressStart;
             m_inputManager.inputPressEnd += PressEnd;
 
             // Instantiate widget

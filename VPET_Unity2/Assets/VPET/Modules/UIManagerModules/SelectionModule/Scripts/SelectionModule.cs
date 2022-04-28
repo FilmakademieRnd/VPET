@@ -30,6 +30,7 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -102,8 +103,10 @@ namespace vpet
         //! Flag to determine a selection render request. 
         //!
         private bool m_hasAsyncRequest;
-        
-        private bool m_isTouchActive = false;
+        //!
+        //! Flag to determine if touch is active.
+        //!
+        private bool m_isRenderActive = false;
 
         //!
         //! Constructor
@@ -128,38 +131,53 @@ namespace vpet
             core.updateEvent += renderUpdate;
            
             m_sceneManager = core.getManager<SceneManager>();
-            m_sceneManager.sceneReady += modifyMaterials;
-            
             m_inputManager = core.getManager<InputManager>();
+            
+            m_sceneManager.sceneReady += modifyMaterials;
 
             // hookup to input events
-            m_inputManager.inputEvent += SelectFunction;
+            m_inputManager.inputPressPerformed += SelectFunction;
 
             m_inputManager.inputPressStart += touchEnable;
-            m_inputManager.inputPressEnd += touchDisable;
         }
 
         //!
-        //! Destructor, cleaning up event registrations. 
+        //! Callback from VPET core when Unity calls OnDestroy.
+        //! Used to cleanup resources used by the PixelSelector module.
         //!
-        ~SelectionModule()
+        protected override void Cleanup(object sender, EventArgs e)
         {
+            base.Cleanup(sender, e);
+
             core.updateEvent -= renderUpdate;
             m_sceneManager.sceneReady -= modifyMaterials;
-            m_inputManager.inputEvent -= SelectFunction;
+
+            m_inputManager.inputPressPerformed -= SelectFunction;
 
             m_inputManager.inputPressStart -= touchEnable;
-            m_inputManager.inputPressEnd -= touchDisable;
+
+            dataWidth = 0;
+            dataHeight = 0;
+
+            if (gpuTexture != null)
+                gpuTexture.Release();
+
+            if (cpuData.IsCreated)
+                cpuData.Dispose();
+
+            m_hasAsyncRequest = false;
+            request = default(AsyncGPUReadbackRequest);
         }
 
+        //!
+        //! Function that sets the internal m_isTouchActive flag to true.
+        //!
+        //! @param o The Input Manager.
+        //! @param e The Input event arguments.
+        //!
         private void touchEnable(object o, EventArgs e)
         {
-            m_isTouchActive = true;
-        }
-
-        private void touchDisable(object o, EventArgs e)
-        {
-            m_isTouchActive = true;
+            m_isRenderActive = true;
         }
 
         //!
@@ -169,8 +187,11 @@ namespace vpet
         //! @param sender The input manager.
         //! @param e The screen coorinates from the input event.
         //!
-        private void SelectFunction(object sender, InputManager.InputEventArgs e)
+        private async void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
+            // give the system some time to render the object id's
+            await System.Threading.Tasks.Task.Delay(50);
+
             manager.clearSelectedObject();
             
             SceneObject obj = GetSelectableAtCollider(e.point);
@@ -180,6 +201,8 @@ namespace vpet
             
             if (obj)
                 manager.addSelectedObject(obj);
+
+            m_isRenderActive = false;
         }
 
         //!
@@ -230,27 +253,6 @@ namespace vpet
             return null;
         }
 
-        //!
-        //! Callback from VPET core when Unity calls OnDestroy.
-        //! Used to cleanup resources used by the PixelSelector module.
-        //!
-        protected override void Cleanup(object sender, EventArgs e)
-        {
-            base.Cleanup(sender,e);
-            dataWidth = 0;
-            dataHeight = 0;
-
-
-            if (gpuTexture != null)
-                gpuTexture.Release();
-
-            if (cpuData.IsCreated) 
-                cpuData.Dispose();
-
-            m_hasAsyncRequest = false;
-            request = default(AsyncGPUReadbackRequest);
-        }
-
         //! 
         //! Gets a cached adjusted material or creates a new one based on the specified material.
         //! Selectable materials are identical to the specified material except that they have the
@@ -282,27 +284,28 @@ namespace vpet
         //!
         private void renderUpdate(object sender, EventArgs e)
         {
-            Camera camera = Camera.main;
-
-            // If camera size changed (e.g. window resize) adjust sizes of selection textures.
-            int currentWidth = camera.pixelWidth / scaleDivisor;
-            int currentHeight = camera.pixelHeight / scaleDivisor;
-            if (gpuTexture == null || dataWidth != currentWidth || dataHeight != currentHeight)
+            if (m_isRenderActive)
             {
-                if (gpuTexture != null) gpuTexture.Release();
-                if (cpuData.IsCreated) cpuData.Dispose();
+                Camera camera = Camera.main;
 
-                dataWidth = currentWidth;
-                dataHeight = currentHeight;
+                // If camera size changed (e.g. window resize) adjust sizes of selection textures.
+                int currentWidth = camera.pixelWidth / scaleDivisor;
+                int currentHeight = camera.pixelHeight / scaleDivisor;
+                if (gpuTexture == null || dataWidth != currentWidth || dataHeight != currentHeight)
+                {
+                    if (gpuTexture != null) gpuTexture.Release();
+                    if (cpuData.IsCreated) cpuData.Dispose();
 
-                int depthBits = camera.depthTextureMode == DepthTextureMode.None ? 16 : 0;
-                gpuTexture = new RenderTexture(dataWidth, dataHeight, depthBits, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-                gpuTexture.filterMode = FilterMode.Point;
-                cpuData = new NativeArray<Color32>(dataWidth * dataHeight, Allocator.Persistent);
-            }
+                    dataWidth = currentWidth;
+                    dataHeight = currentHeight;
 
-            if (m_isTouchActive)
-            {
+                    int depthBits = camera.depthTextureMode == DepthTextureMode.None ? 16 : 0;
+                    gpuTexture = new RenderTexture(dataWidth, dataHeight, depthBits, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+                    gpuTexture.filterMode = FilterMode.Point;
+                    cpuData = new NativeArray<Color32>(dataWidth * dataHeight, Allocator.Persistent);
+                }
+
+
                 RenderTexture oldRenderTexture = camera.targetTexture;
                 CameraClearFlags oldClearFlags = camera.clearFlags;
                 Color oldBackgroundColor = camera.backgroundColor;
@@ -322,21 +325,21 @@ namespace vpet
                 camera.backgroundColor = oldBackgroundColor;
                 camera.renderingPath = oldRenderingPath;
                 camera.allowMSAA = oldAllowMsaa;
-            }
 
-            if (!m_hasAsyncRequest)
-            {
-                m_hasAsyncRequest = true;
-                request = AsyncGPUReadback.Request(gpuTexture);
-            }
-            else if (request.done)
-            {
-                if (!request.hasError)
+                if (!m_hasAsyncRequest)
                 {
-                    request.GetData<Color32>().CopyTo(cpuData);
+                    m_hasAsyncRequest = true;
+                    request = AsyncGPUReadback.Request(gpuTexture);
                 }
+                else if (request.done)
+                {
+                    if (!request.hasError)
+                    {
+                        request.GetData<Color32>().CopyTo(cpuData);
+                    }
 
-                request = AsyncGPUReadback.Request(gpuTexture);
+                    request = AsyncGPUReadback.Request(gpuTexture);
+                }
             }
         }
 

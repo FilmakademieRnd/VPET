@@ -93,6 +93,10 @@ namespace vpet
         //!
         public event EventHandler<InputEventArgs> inputPressStart;
         //!
+        //! Press start event, i.e. the begin of a click.
+        //!
+        public event EventHandler<InputEventArgs> inputPressPerformed;
+        //!
         //! Press end event, i.e. the end of a click.
         //!
         public event EventHandler<InputEventArgs> inputPressEnd;
@@ -191,7 +195,8 @@ namespace vpet
             m_inputs.VPETMap.Click.performed += ctx => TapFunction(ctx);
 
             // Dedicated bindings for monitoring touch and drag interactions
-            m_inputs.VPETMap.Click.performed += ctx => PressStart(ctx);
+            m_inputs.VPETMap.Click.started += ctx => PressStart(ctx);
+            m_inputs.VPETMap.Click.performed += ctx => PressPerformed(ctx);
             m_inputs.VPETMap.Click.canceled += ctx => PressEnd(ctx);
 
             // Keep track of cursor/touch move
@@ -252,7 +257,7 @@ namespace vpet
 
             m_inputs.VPETMap.Click.performed -= ctx => TapFunction(ctx);
 
-            m_inputs.VPETMap.Click.performed -= ctx => PressStart(ctx);
+            m_inputs.VPETMap.Click.performed -= ctx => PressPerformed(ctx);
             m_inputs.VPETMap.Click.canceled -= ctx => PressEnd(ctx);
 
             m_inputs.VPETMap.Position.performed -= ctx => MovePoint(ctx);
@@ -353,12 +358,24 @@ namespace vpet
         }
 
         //!
+        //! Input press start function, for monitoring the start of touch/click interactions.
+        //!
+        private void PressPerformed(InputAction.CallbackContext c)
+        {
+            InputEventArgs e = new InputEventArgs();
+            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            if (!TappedUI(e.point))
+                inputPressPerformed?.Invoke(this, e);
+        }
+
+        //!
         //! Input press end function, for monitoring the end of touch/click interactions.
         //!
         private void PressEnd(InputAction.CallbackContext c)
         {
             InputEventArgs e = new InputEventArgs();
             e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+
             inputPressEnd?.Invoke(this, e);
 
             // Reset monitor variables

@@ -75,7 +75,10 @@ namespace vpet
             UIManager uiManager = core.getManager<UIManager>();
 
             if (m_cameraSelectButton != null)
+            {
                 uiManager.removeButton(m_cameraSelectButton);
+                m_cameraSelectButton = null;
+            }
 
             if (sceneObjects.Count > 0)
             {
@@ -111,7 +114,7 @@ namespace vpet
                 if (m_isLocked)
                 {
                     m_selectedObject.transform.parent = m_oldParent;
-                    copyCamera(this, EventArgs.Empty);
+                    //copyCamera(this, EventArgs.Empty);
                     m_isLocked = false;
                 }
                 else

@@ -116,7 +116,16 @@ namespace vpet
         //!
         protected override void Init(object sender, EventArgs e)
         {
+            base.Init(sender, e);
             manager.selectionChanged += createGizmos;
+        }
+
+        protected override void Cleanup(object sender, EventArgs e)
+        {
+            base.Cleanup(sender, e);
+
+            manager.selectionChanged -= createGizmos;
+            diosposeGizmos();
         }
 
         //!

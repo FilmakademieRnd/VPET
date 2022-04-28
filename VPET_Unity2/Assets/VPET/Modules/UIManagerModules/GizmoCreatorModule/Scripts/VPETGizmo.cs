@@ -75,21 +75,13 @@ namespace vpet
         }
 
         //!
-        //! Destructor
-        //!
-        ~VPETGizmo()
-        {
-            dispose();
-        }
-
-        //!
         //! Function for cleaning up and disposing all created elements.
         //!
         public void dispose()
         {
             foreach (GameObject gizmoElement in m_GizmoElements)
-                Object.Destroy(gizmoElement);
-            Object.Destroy(m_root);
+                Object.DestroyImmediate(gizmoElement);
+            Object.DestroyImmediate(m_root);
             m_GizmoElements.Clear();
         }
 
