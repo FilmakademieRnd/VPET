@@ -32,11 +32,29 @@ using System.Collections.Generic;
 using System;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace vpet
 {
     public class UIManager : Manager
     {
+        //!
+        //! Class containing the uiManager settings.
+        //! This is persistent data saved and loaded to/from disk.
+        //!
+        public class uiSettings : Settings
+        {
+            [ShowInMenu]
+            public Parameter<float> uiScale = new Parameter<float>(1f, "uiScale");
+        }
+        //!
+        //! Getter and setter for the UI settings.
+        //!
+        public uiSettings settings
+        {
+            get { return (uiSettings)_settings; }
+            set { _settings = value; }
+        }
         //!
         //! The list containing currently selected scene objects.
         //!
@@ -72,8 +90,8 @@ namespace vpet
         //!
         //! Load global VPET color names and values.
         //!
-        private static VPETUISettings m_uiSettings;
-        public VPETUISettings uiSettings { get => m_uiSettings; }
+        private static VPETUISettings m_uiAppearanceSettings;
+        public VPETUISettings uiAppearanceSettings { get => m_uiAppearanceSettings; }
         //!
         //! Event emitted when a MenuTree has been selected.
         //!
@@ -96,7 +114,20 @@ namespace vpet
             m_selectedObjects = new List<SceneObject>();
             m_menus = new List<MenuTree>();
             m_buttons = new List<MenuButton>();
-            m_uiSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
+            m_uiAppearanceSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
+        }
+
+        //!
+        //! function called before Unity destroys the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        //!
+        protected override void Cleanup(object sender, EventArgs e)
+        {
+            base.Cleanup(sender, e);
+            settings.uiScale.hasChanged -= updateCanvasScales;
         }
 
         //! 
@@ -108,8 +139,33 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             base.Init(sender, e);
-
             CreateSettingsMenu();
+        }
+
+        //!
+        //! Unity's Start callback, used for Late initialization.
+        //!
+        protected override void Start(object sender, EventArgs e)
+        {
+            base.Start(sender, e);
+            updateCanvasScales(this,0f);
+            settings.uiScale.hasChanged += updateCanvasScales;
+        }
+
+        //!
+        //! update canvas scale for all canvases in the scene
+        //!
+        private void updateCanvasScales(object sender, float e)
+        {
+            CanvasScaler[] canvases = GameObject.FindObjectsOfType<CanvasScaler>();
+
+            foreach (CanvasScaler canvas in canvases)
+            {
+                if(!canvas.gameObject.name.Contains("MenuCanvas"))
+                    // 0.04f to have default uiScale at 1f
+                    // Max /Min to prevent invalid UI
+                    canvas.scaleFactor = Screen.dpi * 0.04f * Mathf.Min(Mathf.Max(settings.uiScale.value, 0.4f),3f);
+            }
         }
 
         //!

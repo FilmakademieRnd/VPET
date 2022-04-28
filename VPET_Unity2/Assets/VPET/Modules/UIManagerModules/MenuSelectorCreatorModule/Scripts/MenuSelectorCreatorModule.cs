@@ -89,7 +89,7 @@ namespace vpet
 
             m_canvas = GameObject.Instantiate(canvasRes);
             m_canvas.GetComponent<Canvas>().sortingOrder = 10;
-            m_canvas.GetComponent<CanvasScaler>().scaleFactor = Screen.dpi * core.settings.uiScale.value;
+            m_canvas.GetComponent<CanvasScaler>().scaleFactor = Screen.dpi * core.getManager<UIManager>().settings.uiScale.value;
 
             manager.menuSelected += highlightMenuElement;
 
@@ -130,7 +130,7 @@ namespace vpet
             }
 
             m_menuSelector = GameObject.Instantiate(m_menuSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
-            m_menuSelector.uiSettings = manager.uiSettings;
+            m_menuSelector.uiSettings = manager.uiAppearanceSettings;
 
             foreach (MenuTree menu in manager.getMenus())
             {
@@ -161,7 +161,7 @@ namespace vpet
                 GameObject.Destroy(m_buttonSelector.gameObject);
 
             m_buttonSelector = GameObject.Instantiate(m_buttonSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
-            m_buttonSelector.uiSettings = manager.uiSettings;
+            m_buttonSelector.uiSettings = manager.uiAppearanceSettings;
 
             foreach (MenuButton button in manager.getButtons())
             {

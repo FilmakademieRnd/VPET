@@ -34,7 +34,7 @@ using TMPro;
 //!
 //! Implementation of the VPET NumberInputFieldUpdate component, updating number values on swipes.
 //!
-public class NumberInputFieldUpdate : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class NumberInputFieldUpdate : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     //!
     //! Variable defining the number of screen sections for value scaling.
@@ -48,6 +48,11 @@ public class NumberInputFieldUpdate : MonoBehaviour, IPointerDownHandler, IDragH
     //! The start value of the input field at first pointer down.
     //!
     private float m_startVal = 0;
+
+    //!
+    //! magnitude of the value
+    //!
+    private float m_magnitude;
     //!
     //! The start posion of the pointer at pointer down.
     //!
@@ -77,6 +82,8 @@ public class NumberInputFieldUpdate : MonoBehaviour, IPointerDownHandler, IDragH
     {
         m_startPos = eventData.position;
         m_startVal = float.Parse(m_inputField.text);
+        m_magnitude = (int)(Mathf.Log10(Mathf.Max(Mathf.Abs(m_startVal), 0.5f)) + 1f);
+        m_inputField.shouldHideSoftKeyboard = true;
     }
 
     //!
@@ -93,21 +100,28 @@ public class NumberInputFieldUpdate : MonoBehaviour, IPointerDownHandler, IDragH
     public void OnEndDrag(PointerEventData eventData)
     {
         m_inputField.onEndEdit?.Invoke(m_inputField.text);
-        m_inputField.DeactivateInputField(false);
     }
+
+    //!
+    //! Function called when clicked
+    //!
+    public void OnPointerClick(PointerEventData pointerEventData)
+    {
+        m_inputField.shouldHideSoftKeyboard = false;
+    }
+
 
     //!
     //! Function called during drag updates.
     //!
     public void OnDrag(PointerEventData eventData)
     {
-        float scale = Mathf.Floor(((eventData.position.y - m_startPos.y) / Screen.height) * m_sections) * m_sectionscale;  
-        
+        float scale = Mathf.Floor(((eventData.position.y - m_startPos.y) / Screen.height) * m_sections) * m_sectionscale;
         if (scale < 0)
-            scale = 1f / Mathf.Abs(scale);
+            scale = 0.01f / Mathf.Abs(scale);
         else if (scale == 0)
-            scale += 1;
-
-        m_inputField.text = (m_startVal + (eventData.position.x - m_startPos.x) * scale/m_canvas.scaleFactor).ToString();
+            scale += 0.01f;
+        Debug.Log(1 + m_magnitude);
+        m_inputField.text = (m_startVal + (eventData.position.x - m_startPos.x) * scale * (1f+m_magnitude)).ToString();
     }
 }

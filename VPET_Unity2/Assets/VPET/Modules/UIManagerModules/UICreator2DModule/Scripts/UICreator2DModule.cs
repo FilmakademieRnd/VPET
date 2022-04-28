@@ -183,7 +183,7 @@ namespace vpet
                             break;
                     }
                     if (icon)
-                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, manager.uiSettings, icon, (i==3)? -1 : i);
+                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, manager.uiAppearanceSettings, icon, (i==3)? -1 : i);
 
 
                     paramIndex++;
@@ -195,7 +195,7 @@ namespace vpet
                     GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
                     currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
                     SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
-                    snapSelect.uiSettings = manager.uiSettings;
+                    snapSelect.uiSettings = manager.uiAppearanceSettings;
 
                     for (int i = 3; i < mainSelection.parameterList.Count; i++)
                     {
@@ -275,7 +275,7 @@ namespace vpet
                     Spinner spinner = currentManipulator.GetComponent<Spinner>();
                     if (spinner)
                     {
-                        spinner.uiSettings = manager.uiSettings;
+                        spinner.uiSettings = manager.uiAppearanceSettings;
                         spinner.Init(abstractParam);
                         spinner.doneEditing += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
                         spinner.doneEditing += core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueUndoRedoMessage;

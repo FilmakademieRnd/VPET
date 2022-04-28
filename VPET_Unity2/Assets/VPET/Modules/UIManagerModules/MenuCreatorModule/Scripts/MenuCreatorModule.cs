@@ -222,17 +222,18 @@ namespace vpet
             else
             {                
                 GameObject menuCanvas = GameObject.Instantiate(m_canvas);
-                menuCanvas.GetComponent<CanvasScaler>().scaleFactor = Screen.dpi * core.settings.uiScale.value;
+                menuCanvas.GetComponent<Canvas>().sortingOrder = 15;
+                menuCanvas.GetComponent<CanvasScaler>().scaleFactor = Screen.dpi * 0.04f;
                 m_uiElements.Add(menuCanvas);
                 GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;                
                 TextMeshProUGUI menuTitle = menuCanvas.transform.Find("Text").GetComponent<TextMeshProUGUI>();
-                menuTitle.font = manager.uiSettings.defaultFont;
-                menuTitle.fontSize = manager.uiSettings.defaultFontSize+1;
-                menuTitle.color = manager.uiSettings.colors.FontColor;
+                menuTitle.font = manager.uiAppearanceSettings.defaultFont;
+                menuTitle.fontSize = manager.uiAppearanceSettings.defaultFontSize+1;
+                menuTitle.color = manager.uiAppearanceSettings.colors.FontColor;
                 menuTitle.text = menu.caption;
                 //Image imageComponent = menuCanvas.GetComponentInChildren<Image>();
                 Image imageComponent = menuCanvas.transform.Find("Panel_Menu").GetComponent<Image>();
-                imageComponent.color = manager.uiSettings.colors.MenuTitleBG;
+                imageComponent.color = manager.uiAppearanceSettings.colors.MenuTitleBG;
                 m_uiElements.Add(rootPanel);
                 menu.Items.ForEach(p => createMenufromTree(p, rootPanel));
                 menu.visible = true;
@@ -284,9 +285,9 @@ namespace vpet
                         newObject = GameObject.Instantiate(m_text, parentObject.transform);
                         TextMeshProUGUI textComponent = newObject.GetComponent<TextMeshProUGUI>();
                         textComponent.text = ((Parameter<string>)item.Parameter).value;                        
-                        textComponent.color = manager.uiSettings.colors.FontColor;
-                        textComponent.font = manager.uiSettings.defaultFont;
-                        textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                        textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
+                        textComponent.font = manager.uiAppearanceSettings.defaultFont;
+                        textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                         textComponent.fontStyle = FontStyles.Bold;
                      }
                     break;
@@ -295,12 +296,12 @@ namespace vpet
                         newObject = GameObject.Instantiate(m_textsection, parentObject.transform);
                         TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                         textComponent.text = ((Parameter<string>)item.Parameter).value;
-                        textComponent.color = manager.uiSettings.colors.FontColor;
-                        textComponent.font = manager.uiSettings.defaultFont;
-                        textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                        textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
+                        textComponent.font = manager.uiAppearanceSettings.defaultFont;
+                        textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                         textComponent.fontStyle = FontStyles.Bold;
                         Image imageComponent = newObject.GetComponentInChildren<Image>();
-                        imageComponent.color = manager.uiSettings.colors.MenuTitleBG;
+                        imageComponent.color = manager.uiAppearanceSettings.colors.MenuTitleBG;
                     }
                     break;
                 case MenuItem.IType.PARAMETER:
@@ -311,17 +312,17 @@ namespace vpet
                                 newObject = GameObject.Instantiate(m_button, parentObject.transform);
                                 Button button = newObject.GetComponent<Button>();                         
                                 ColorBlock buttonColors = button.colors;
-                                buttonColors.pressedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                buttonColors.pressedColor = manager.uiAppearanceSettings.colors.ElementSelection_Highlight;
                                 button.colors = buttonColors;
                                 Action parameterAction = ((Parameter<Action>)item.Parameter).value;
                                 button.onClick.AddListener(() => parameterAction());
                                 TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = manager.uiSettings.colors.FontColor;                                
-                                textComponent.font = manager.uiSettings.defaultFont;
-                                textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                textComponent.color = manager.uiAppearanceSettings.colors.FontColor;                                
+                                textComponent.font = manager.uiAppearanceSettings.defaultFont;
+                                textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                                 Image imgButton = button.GetComponent<Image>();
-                                imgButton.color = manager.uiSettings.colors.ButtonBG;                                
+                                imgButton.color = manager.uiAppearanceSettings.colors.ButtonBG;                                
                             }
                         break;
                         case AbstractParameter.ParameterType.BOOL:
@@ -332,14 +333,14 @@ namespace vpet
                                 toggle.onValueChanged.AddListener(delegate { ((Parameter<bool>)item.Parameter).setValue(toggle.isOn); });
                                 Text textComponent = newObject.GetComponentInChildren<Text>();
                                 textComponent.text = item.Parameter.name;
-                                textComponent.color = manager.uiSettings.colors.FontColor;
-                                textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
+                                textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                                 ColorBlock toggleColors = toggle.colors;
-                                toggleColors.normalColor = manager.uiSettings.colors.DropDown_TextfieldBG;
-                                toggleColors.highlightedColor = manager.uiSettings.colors.DropDown_TextfieldBG;
-                                toggleColors.pressedColor = manager.uiSettings.colors.DropDown_TextfieldBG;
-                                toggleColors.selectedColor = manager.uiSettings.colors.DropDown_TextfieldBG;
-                                toggleColors.disabledColor = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.normalColor = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.highlightedColor = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.pressedColor = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.selectedColor = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
+                                toggleColors.disabledColor = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
                                 toggle.colors = toggleColors;
                             }
                         break;
@@ -350,10 +351,10 @@ namespace vpet
                                 numberInputField.text = ((Parameter<float>)item.Parameter).value.ToString();
                                 numberInputField.onEndEdit.AddListener(delegate { ((Parameter<float>)item.Parameter).setValue(float.Parse(numberInputField.text)); });
                                 Image imgButton = numberInputField.GetComponent<Image>();
-                                imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
-                                numberInputField.textComponent.color = manager.uiSettings.colors.FontColor;
-                                numberInputField.textComponent.font = manager.uiSettings.defaultFont;
-                                numberInputField.textComponent.fontSize = manager.uiSettings.defaultFontSize;
+                                imgButton.color = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
+                                numberInputField.textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
+                                numberInputField.textComponent.font = manager.uiAppearanceSettings.defaultFont;
+                                numberInputField.textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                                 numberInputField.caretPosition = numberInputField.text.Length;
                             }
                         break;
@@ -364,11 +365,11 @@ namespace vpet
                                 inputField.text = ((Parameter<string>)item.Parameter).value;
                                 inputField.onEndEdit.AddListener(delegate { ((Parameter<string>)item.Parameter).setValue(inputField.text); });
                                 Image imgButton = inputField.GetComponent<Image>();
-                                imgButton.color = manager.uiSettings.colors.DropDown_TextfieldBG;
-                                inputField.textComponent.color = manager.uiSettings.colors.FontColor;
-                                inputField.textComponent.font = manager.uiSettings.defaultFont;
-                                inputField.textComponent.fontSize = manager.uiSettings.defaultFontSize;
-                                inputField.selectionColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                imgButton.color = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
+                                inputField.textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
+                                inputField.textComponent.font = manager.uiAppearanceSettings.defaultFont;
+                                inputField.textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
+                                inputField.selectionColor = manager.uiAppearanceSettings.colors.ElementSelection_Highlight;
                             }
                             break;
                         case AbstractParameter.ParameterType.LIST:
@@ -383,18 +384,18 @@ namespace vpet
                                 dropDown.AddOptions(names);
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
 
-                                dropDown.image.color = manager.uiSettings.colors.DropDown_TextfieldBG;                                
-                                dropDown.captionText.color = manager.uiSettings.colors.FontColor;
-                                dropDown.captionText.font = manager.uiSettings.defaultFont;
-                                dropDown.captionText.fontSize = manager.uiSettings.defaultFontSize;
-                                dropDown.itemText.color = manager.uiSettings.colors.FontColor;
-                                dropDown.itemText.font = manager.uiSettings.defaultFont;
-                                dropDown.itemText.fontSize = manager.uiSettings.defaultFontSize;
+                                dropDown.image.color = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;                                
+                                dropDown.captionText.color = manager.uiAppearanceSettings.colors.FontColor;
+                                dropDown.captionText.font = manager.uiAppearanceSettings.defaultFont;
+                                dropDown.captionText.fontSize = manager.uiAppearanceSettings.defaultFontSize;
+                                dropDown.itemText.color = manager.uiAppearanceSettings.colors.FontColor;
+                                dropDown.itemText.font = manager.uiAppearanceSettings.defaultFont;
+                                dropDown.itemText.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                                 ColorBlock ddColors = dropDown.colors;
-                                ddColors.pressedColor = manager.uiSettings.colors.ElementSelection_Highlight;
+                                ddColors.pressedColor = manager.uiAppearanceSettings.colors.ElementSelection_Highlight;
                                 dropDown.colors = ddColors;
                                 foreach (UnityEngine.UI.Image DD_image in dropDown.GetComponentsInChildren<Image>(true))
-                                    DD_image.color = manager.uiSettings.colors.DropDown_TextfieldBG;
+                                    DD_image.color = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;
                             }
                                 break;
                     }
