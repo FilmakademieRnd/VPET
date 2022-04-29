@@ -86,7 +86,7 @@ namespace vpet
         //!
         //! The default input event.
         //!
-        public event EventHandler<InputEventArgs> inputEvent;
+        public event EventHandler<InputEventArgs> objectSelectionEvent;
 
         //!
         //! Press start event, i.e. the begin of a click.
@@ -309,14 +309,16 @@ namespace vpet
         //!
         private void TapFunction(InputAction.CallbackContext c)
         {
-            //Helpers.Log("Tapped");
+            
             InputEventArgs e = new InputEventArgs();
 
             if (c.performed)
             {
                 e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
                 if (!TappedUI(e.point) && !Tapped3DUI(e.point))
-                    inputEvent?.Invoke(this, e);
+                {
+                    objectSelectionEvent?.Invoke(this, e);
+                }
             }
 
             // just an exampe, needs different code to discover correct type and values!
@@ -559,7 +561,7 @@ namespace vpet
             // Is this too much of a hack?
             InputEventArgs e = new();
             e.point = new(-5, -5);
-            inputEvent?.Invoke(this, e);
+            objectSelectionEvent?.Invoke(this, e);
         }
 
         //!

@@ -136,9 +136,7 @@ namespace vpet
             m_sceneManager.sceneReady += modifyMaterials;
 
             // hookup to input events
-            m_inputManager.inputPressPerformed += SelectFunction;
-
-            m_inputManager.inputPressStart += touchEnable;
+            m_inputManager.objectSelectionEvent += SelectFunction;
         }
 
         //!
@@ -151,10 +149,7 @@ namespace vpet
 
             core.updateEvent -= renderUpdate;
             m_sceneManager.sceneReady -= modifyMaterials;
-
-            m_inputManager.inputPressPerformed -= SelectFunction;
-
-            m_inputManager.inputPressStart -= touchEnable;
+            m_inputManager.objectSelectionEvent -= SelectFunction;
 
             dataWidth = 0;
             dataHeight = 0;
@@ -170,17 +165,6 @@ namespace vpet
         }
 
         //!
-        //! Function that sets the internal m_isTouchActive flag to true.
-        //!
-        //! @param o The Input Manager.
-        //! @param e The Input event arguments.
-        //!
-        private void touchEnable(object o, EventArgs e)
-        {
-            m_isRenderActive = true;
-        }
-
-        //!
         //! Function to connect input managers input event for estimating a scene object at
         //! a certain screen coortinate with UI managers scene object selection mechanism.
         //!
@@ -189,6 +173,8 @@ namespace vpet
         //!
         private async void SelectFunction(object sender, InputManager.InputEventArgs e)
         {
+            m_isRenderActive = true;
+
             // give the system some time to render the object id's
             await System.Threading.Tasks.Task.Delay(50);
 
@@ -203,6 +189,8 @@ namespace vpet
                 manager.addSelectedObject(obj);
 
             m_isRenderActive = false;
+            Debug.Log("Render False");
+
         }
 
         //!
@@ -304,7 +292,6 @@ namespace vpet
                     gpuTexture.filterMode = FilterMode.Point;
                     cpuData = new NativeArray<Color32>(dataWidth * dataHeight, Allocator.Persistent);
                 }
-
 
                 RenderTexture oldRenderTexture = camera.targetTexture;
                 CameraClearFlags oldClearFlags = camera.clearFlags;
