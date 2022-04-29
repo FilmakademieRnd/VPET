@@ -120,6 +120,12 @@ namespace vpet
             manager.selectionChanged += createGizmos;
         }
 
+        //! 
+        //! Virtual function called before Unity destroys the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
         protected override void Cleanup(object sender, EventArgs e)
         {
             base.Cleanup(sender, e);

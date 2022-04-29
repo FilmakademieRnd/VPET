@@ -283,7 +283,6 @@ namespace vpet
                     m_attitudeButton = new MenuButton("Attitude", useAttitude);
                     m_attitudeButton.setIcon("Images/button_frame_BG");
                     core.getManager<UIManager>().addButton(m_attitudeButton);
-
                 }
                 else
                     Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
@@ -606,7 +605,7 @@ namespace vpet
         //!
         //! Function that stores the current main camera and attitude sensors rotation offset.
         //!
-        private void setCameraAttitudeOffsets()
+        public void setCameraAttitudeOffsets()
         {
             m_cameraMainOffset = Camera.main.transform.rotation;
             m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue() * Quaternion.Euler(0f, 0f, 180f));

@@ -189,8 +189,6 @@ namespace vpet
                 manager.addSelectedObject(obj);
 
             m_isRenderActive = false;
-            Debug.Log("Render False");
-
         }
 
         //!

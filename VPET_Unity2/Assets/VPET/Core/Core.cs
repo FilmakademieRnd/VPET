@@ -96,7 +96,6 @@ namespace vpet
         //! Event invoked when an Unity Update() callback is triggered.
         //!
         public event EventHandler updateEvent;
-        public event EventHandler lateUpdateEvent;
         //!
         //! Event invoked when an Unity Awake() callback is triggered.
         //!
@@ -182,11 +181,6 @@ namespace vpet
         {
             QualitySettings.vSyncCount = 1;
             updateEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnRenderObject()
-        {
-            lateUpdateEvent?.Invoke(this, EventArgs.Empty);
         }
 
         //!
