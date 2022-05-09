@@ -47,8 +47,17 @@ namespace vpet
         //!
         public class coreSettings : Settings
         {
+            //!
+            //! Default screen size (unused)
+            //!
             public Vector2Int screenSize = new Vector2Int(1280,720);
+            //! 
+            //! VSync on every frame.
+            //!
             public int vSyncCount = 1;
+            //! 
+            //! Global frame rate in t per second.
+            //! 
             public int framerate = 60;
         }
         //!
@@ -78,6 +87,17 @@ namespace vpet
         { 
             set => m_time = value;
             get => m_time;
+        }
+        //!
+        //! The max value for the local time.
+        //!
+        private byte m_timesteps;
+        //!
+        //! The max value for the local time.
+        //!
+        public byte timesteps
+        {
+            get => m_timesteps;
         }
         //!
         //! The global list of parameter objects.
@@ -127,6 +147,7 @@ namespace vpet
         void Awake()
         {
             _settings = new coreSettings();
+            m_timesteps = (byte)(((int)(256f / settings.framerate)) * settings.framerate);
             m_parameterObjectList = new List<ParameterObject>();
 
             // Create network manager
@@ -189,7 +210,8 @@ namespace vpet
         private void updateTime()
         {
             timeEvent?.Invoke(this, EventArgs.Empty);
-            m_time = (m_time > 239 ? (byte)0 : m_time+=1);
+
+            m_time = (m_time > (m_timesteps-1) ? (byte)0 : m_time+=1);
 
             if ((m_time % settings.framerate) == 0)
                 syncEvent?.Invoke(this, m_time);

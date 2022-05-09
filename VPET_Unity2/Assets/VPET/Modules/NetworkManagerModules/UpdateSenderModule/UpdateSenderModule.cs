@@ -42,8 +42,13 @@ namespace vpet
     //!
     public class UpdateSenderModule : NetworkManagerModule
     {
-        
+        //!
+        //! List of medified parameters for undo/redo handling.
+        //!
         private List<AbstractParameter> m_modifiedParameters;
+        //!
+        //! Array of control messages, containing all vpet messages besides parameter updates.
+        //!
         private byte[] m_controlMessage;
 
         //!
@@ -175,7 +180,7 @@ namespace vpet
         //! @param sender The VPET core.
         //! @param time The clients global time.
         //!
-        private void queuePingMessage(object o, byte time)
+        private void queuePingMessage(object sender, byte time)
         {
             m_controlMessage = new byte[3];
 
@@ -192,9 +197,9 @@ namespace vpet
         //! Function that creates a sync message and adds it to the message queue for sending.
         //!
         //! @param sender The VPET core.
-        //! @param t The clients global time.
+        //! @param time The clients global time.
         //!
-        private void queueSyncMessage(object o, byte time)
+        private void queueSyncMessage(object sender, byte time)
         {
             m_controlMessage = new byte[3];
 
@@ -212,7 +217,7 @@ namespace vpet
         //!
         //! @param parameter The modified parameter the message will be based on.
         //!
-        public void queueUndoRedoMessage(object o, AbstractParameter parameter)
+        public void queueUndoRedoMessage(object sender, AbstractParameter parameter)
         {
             // Message structure: Header, Parameter (optional)
             // Header: ClientID, Time, MessageType

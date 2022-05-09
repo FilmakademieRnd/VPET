@@ -57,8 +57,6 @@ namespace vpet
         //!
         private SceneManager m_sceneManager;
 
-        private int m_timesteps;
-
         //!
         //! Constructor
         //!
@@ -87,11 +85,9 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_timesteps = ((int)(256f / core.settings.framerate)) * core.settings.framerate;
-
             // initialize message buffer
-            m_messageBuffer = new List<List<byte[]>>(m_timesteps);
-            for (int i = 0; i < m_timesteps; i++)
+            m_messageBuffer = new List<List<byte[]>>(core.timesteps);
+            for (int i = 0; i < core.timesteps; i++)
                 m_messageBuffer.Add(new List<byte[]>(256));
 
             m_sceneManager = core.getManager<SceneManager>();
@@ -241,9 +237,9 @@ namespace vpet
         private void consumeMessages(object o, EventArgs e)
         {
             // define the buffer size by defining the time offset in the ringbuffer
-            // % time steps to take ring (0 to m_timesteps) into account
+            // % time steps to take ring (0 to core.timesteps) into account
             // set to 1/10 second
-            int bufferTime = (((core.time - core.settings.framerate/10) + m_timesteps) % m_timesteps);
+            int bufferTime = (((core.time - core.settings.framerate/10) + core.timesteps) % core.timesteps);
 
             lock (m_messageBuffer)
             {

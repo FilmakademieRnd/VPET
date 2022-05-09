@@ -46,7 +46,10 @@ namespace vpet
         //! The menu for the network configuration.
         //!
         private MenuTree m_menu;
-
+        //!
+        //! Preloaded scene data split up into several packages for header, nodes, objects,
+        //! characters, textures and materials.
+        //!
         private Dictionary<string, byte[]> m_responses;
 
         //!
