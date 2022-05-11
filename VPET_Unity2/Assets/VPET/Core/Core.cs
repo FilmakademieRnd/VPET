@@ -103,6 +103,7 @@ namespace vpet
         //! The global list of parameter objects.
         //!
         private List<ParameterObject> m_parameterObjectList;
+        private DeviceOrientation m_orientation;
         //!
         //! Getter for the parameter object list.
         //!
@@ -181,6 +182,9 @@ namespace vpet
             QualitySettings.vSyncCount = settings.vSyncCount;
             Application.targetFrameRate = settings.framerate;
 
+            m_orientation = Input.deviceOrientation;
+
+            InvokeRepeating("checkDeviceOrientation", 0f, 1f);
             InvokeRepeating("updateTime", 0f, 1f/settings.framerate);
 
             startEvent?.Invoke(this, new EventArgs());
@@ -202,6 +206,27 @@ namespace vpet
         {
             QualitySettings.vSyncCount = 1;
             updateEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void checkDeviceOrientation()
+        {
+            if (Input.deviceOrientation != m_orientation)
+            {
+                Camera mainCamera = Camera.main;
+                if (((Input.deviceOrientation == DeviceOrientation.Portrait ||
+                      Input.deviceOrientation == DeviceOrientation.PortraitUpsideDown) &&
+                     (m_orientation == DeviceOrientation.LandscapeLeft ||
+                      m_orientation == DeviceOrientation.LandscapeRight))
+                      ||
+                     ((Input.deviceOrientation == DeviceOrientation.LandscapeLeft ||
+                      Input.deviceOrientation == DeviceOrientation.LandscapeRight) &&
+                     (m_orientation == DeviceOrientation.Portrait ||
+                      m_orientation == DeviceOrientation.PortraitUpsideDown)))
+                {
+                    mainCamera.aspect = 1f / mainCamera.aspect;
+                }
+                m_orientation = Input.deviceOrientation;
+            }
         }
 
         //!
