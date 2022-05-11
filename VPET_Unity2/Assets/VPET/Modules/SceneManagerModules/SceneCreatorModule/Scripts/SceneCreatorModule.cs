@@ -3,19 +3,19 @@
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
- 
+
 Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
- 
-This project has been initiated in the scope of the EU funded project 
+
+This project has been initiated in the scope of the EU funded project
 Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
- 
-Post Dreamspace the project has been further developed on behalf of the 
+
+Post Dreamspace the project has been further developed on behalf of the
 research and development activities of Animationsinstitut.
- 
+
 In 2018 some features (Character Animation Interface and USD support) were
-addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
+addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/)
 under grant agreement no 780470, 2018-2022
- 
+
 VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
 Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
@@ -71,10 +71,11 @@ namespace vpet
         }
 
         //!
-        //! Destructor, cleaning up event registrations. 
+        //! Cleaning up event registrations.
         //!
-        ~SceneCreatorModule()
+        protected override void Cleanup(object sender, EventArgs e)
         {
+            base.Cleanup(sender, e);
             if (!core.isServer)
             {
                 NetworkManager networkManager = core.getManager<NetworkManager>();
@@ -104,7 +105,7 @@ namespace vpet
 
             if (manager.settings.loadTextures)
                 createTextures(ref sceneData);
-            
+
             createMaterials(ref sceneData);
 
             createMeshes(ref sceneData);
@@ -143,7 +144,7 @@ namespace vpet
                     // shader configuration
                     if (matPack.shaderConfig[4])
                         mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
-                    
+
                     for (int i = 0; i < matPack.shaderConfig.Length; i++)
                     {
                         if (matPack.shaderConfig[i])
@@ -191,7 +192,7 @@ namespace vpet
                                 dataIdx += SceneManager.SceneDataHandler.size_float;
                                 mat.SetFloat(shaderPropertyId, f);
                                 break;
-                            // Texture 
+                            // Texture
                             case 4:
                                 int texID = matPack.textureIds[texIdx];
                                 if (texID > -1 && texID < SceneTextureList.Count)
@@ -431,7 +432,7 @@ namespace vpet
                 // set up object basics
                 objMain = new GameObject();
                 objMain.name = Encoding.ASCII.GetString(node.name);
-                
+
                 //place object
                 objMain.transform.parent = parentTransform; // GameObject.Find( "Scene" ).transform;
 

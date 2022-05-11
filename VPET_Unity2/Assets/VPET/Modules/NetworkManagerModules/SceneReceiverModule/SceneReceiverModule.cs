@@ -158,6 +158,7 @@ namespace vpet
             base.Dispose();
 
             disposeReceiver();
+            m_disposed?.Invoke();   // does stall for some reason [REVIEW]
         }
 
         private void disposeReceiver()
@@ -173,7 +174,6 @@ namespace vpet
                     while (!m_sceneReceiver.IsDisposed)
                         System.Threading.Thread.Sleep(25);
                     Helpers.Log(this.name + " disposed.");
-                    m_disposed?.Invoke();   // does stall for some reason [REVIEW]
                 }
             }
             catch { }
