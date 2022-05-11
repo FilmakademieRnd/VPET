@@ -100,7 +100,7 @@ namespace vpet
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add("IP Address")
                          .Add(manager.settings.ipAddress)
-                     .End()                     
+                     .End()
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add(button)
                      .End()
@@ -144,31 +144,39 @@ namespace vpet
             Helpers.Log(ip);
             m_port = port;
 
-            m_disposed += manager.NetMQCleanup;
             NetworkManager.threadCount++;
 
             await Task.Run(() => run());
 
-           // emit sceneReceived signal to trigger scene cration in the sceneCreator module
-           if (core.getManager<SceneManager>().sceneDataHandler.headerByteDataRef != null)
+            // emit sceneReceived signal to trigger scene cration in the sceneCreator module
+            if (core.getManager<SceneManager>().sceneDataHandler.headerByteDataRef != null)
                 m_sceneReceived?.Invoke(this, new EventArgs());
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            
-            if ((m_sceneReceiver != null) && !m_sceneReceiver.IsDisposed)
+
+            disposeReceiver();
+        }
+
+        private void disposeReceiver()
+        {
+            try
             {
-                m_sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
-                m_sceneReceiver.Close();
-                m_sceneReceiver.Dispose();
-                // wait until receiver is disposed
-                while (!m_sceneReceiver.IsDisposed)
-                    System.Threading.Thread.Sleep(25);
-                Helpers.Log(this.name + " disposed.");
-                m_disposed?.Invoke();
+                if ((m_sceneReceiver != null) && !m_sceneReceiver.IsDisposed)
+                {
+                    m_sceneReceiver.Disconnect("tcp://" + m_ip + ":" + m_port);
+                    m_sceneReceiver.Close();
+                    m_sceneReceiver.Dispose();
+                    // wait until receiver is disposed
+                    while (!m_sceneReceiver.IsDisposed)
+                        System.Threading.Thread.Sleep(25);
+                    Helpers.Log(this.name + " disposed.");
+                    m_disposed?.Invoke();   // does stall for some reason [REVIEW]
+                }
             }
+            catch { }
         }
 
         //!
@@ -213,7 +221,7 @@ namespace vpet
                 }
             }
             catch { }
-            Dispose();
+            disposeReceiver();
         }
 
 

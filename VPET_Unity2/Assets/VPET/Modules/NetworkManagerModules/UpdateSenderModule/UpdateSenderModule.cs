@@ -149,7 +149,6 @@ namespace vpet
             m_controlMessage[5] = Convert.ToByte(true);
 
             m_mre.Set();
-            m_mre.Reset();
         }
 
         //!
@@ -170,7 +169,6 @@ namespace vpet
             m_controlMessage[5] = Convert.ToByte(false);
 
             m_mre.Set();
-            m_mre.Reset();
         }
 
 
@@ -190,7 +188,6 @@ namespace vpet
             m_controlMessage[2] = (byte)MessageType.PING;
 
             m_mre.Set();
-            m_mre.Reset();
         }
 
         //!
@@ -209,13 +206,13 @@ namespace vpet
             m_controlMessage[2] = (byte)MessageType.SYNC;
 
             m_mre.Set();
-            m_mre.Reset();
         }
 
         //!
         //! Function that creates a undo redo message.
         //!
         //! @param parameter The modified parameter the message will be based on.
+        //! @param sender The spinner UI element.
         //!
         public void queueUndoRedoMessage(object sender, AbstractParameter parameter)
         {
@@ -239,7 +236,6 @@ namespace vpet
             }
 
             m_mre.Set();
-            m_mre.Reset();
         }
 
         //!
@@ -267,7 +263,6 @@ namespace vpet
             }
 
             m_mre.Set();
-            m_mre.Reset();
         }
 
         //!
@@ -341,15 +336,15 @@ namespace vpet
                 {
                     lock (m_modifiedParameters)
                     {
-                        if (m_modifiedParameters.Count > 0)
-                        {
-                            byte time = core.time;
-                            foreach (AbstractParameter parameter in m_modifiedParameters)
-                                sender.SendFrame(createParameterMessage(parameter, time), false); // true not wait
-                            m_modifiedParameters.Clear();
-                        }
+                        byte time = core.time;
+                        foreach (AbstractParameter parameter in m_modifiedParameters)
+                            sender.SendFrame(createParameterMessage(parameter, time), false); // true not wait
+                        m_modifiedParameters.Clear();
                     }
                 }
+                // reset to stop the thread after one loop is done
+                m_mre.Reset();
+
                 Thread.Yield();
             }
             try
@@ -372,14 +367,18 @@ namespace vpet
         //!
         //! Function that unlocks the sender thread once (called with every global tick event).
         //!
-        private void sendParameterMessages(object o, EventArgs e)
+        //! @param sender The VPET core.
+        //! @param e Empty.
+        //!
+        private void sendParameterMessages(object sender, EventArgs e)
         {
-            m_mre.Set();
-            m_mre.Reset();
+            if (m_modifiedParameters.Count > 0)
+                m_mre.Set();
         }
 
         //!
         //! Function to start the scene sender module.
+        //!
         //! @param ip The IP address to be used from the sender.
         //! @param port The port number to be used from the sender.
         //!

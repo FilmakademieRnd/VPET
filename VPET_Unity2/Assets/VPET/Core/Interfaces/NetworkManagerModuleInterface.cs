@@ -78,7 +78,10 @@ namespace vpet
         //!
         protected abstract void run();
 
-        protected static ManualResetEvent m_mre = new ManualResetEvent(false);
+        //!
+        //! Reset event for stopping and resetting the run thread.
+        //!
+        protected ManualResetEvent m_mre; 
 
         //!
         //! Ret the manager of this module.
@@ -95,6 +98,8 @@ namespace vpet
         //!
         public NetworkManagerModule(string name, Manager manager) : base(name, manager) 
         {
+            m_mre = new ManualResetEvent(false);
+
             manager.cleanupEvent += stopThread;
             m_disposed += this.manager.NetMQCleanup;
         }

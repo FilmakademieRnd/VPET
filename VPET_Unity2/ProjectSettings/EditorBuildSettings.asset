@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/VPET/Scenes/VPET_Server.unity
     guid: 3c478aa9a119b8746836036f8d04eaec
-  - enabled: 0
+  - enabled: 1
     path: Assets/VPET/Scenes/VPET_Client.unity
     guid: 231bc9c176d49ec4b8e48fce8132eb44
   m_configObjects:
