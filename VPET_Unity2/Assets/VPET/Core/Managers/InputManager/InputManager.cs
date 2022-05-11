@@ -176,7 +176,11 @@ namespace vpet
         //!
         //! Flag defining if the camera is controlled by the attitide sensor.
         //!
-        public CameraControl m_cameraControl = CameraControl.NONE;
+        private CameraControl m_cameraControl = CameraControl.NONE;
+        public CameraControl cameraControl
+        {
+            get => m_cameraControl;
+        }
         //!
         //! The generated Unity input class defining all available user inputs.
         //!

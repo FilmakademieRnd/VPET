@@ -189,7 +189,9 @@ namespace vpet
             // copy properties to main camera and set it use display 1 (0)
             copyCamera(this, EventArgs.Empty);
 
-            core.getManager<InputManager>().setCameraAttitudeOffsets();
+            InputManager inputManager = core.getManager<InputManager>();
+            if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE)
+                inputManager.setCameraAttitudeOffsets();
         }
 
         //!
@@ -200,10 +202,13 @@ namespace vpet
             if (manager.sceneCameraList.Count > 0)
             {
                 Camera mainCamera = Camera.main;
+                int targetDisplay = mainCamera.targetDisplay;
+                float aspect = mainCamera.aspect;
                 Camera newCamera = manager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
                 mainCamera.enabled = false;
                 mainCamera.CopyFrom(newCamera);
-                mainCamera.targetDisplay = 0;
+                mainCamera.targetDisplay = targetDisplay;
+                mainCamera.aspect = aspect;
                 mainCamera.enabled = true;
             }
         }
