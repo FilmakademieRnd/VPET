@@ -33,7 +33,7 @@ using UnityEngine;
 
 namespace vpet
 {
-    public class CameraSelectionModule : SceneManagerModule
+    public class CameraSelectionModule : UIManagerModule
     {
         //!
         //! Flag determining if the camera is locked to an object.
@@ -56,9 +56,17 @@ namespace vpet
         //!
         private SceneObject m_selectedObject = null;
         //!
-        //! An offset for differentiate between look through light/camera and lock object to camera.
+        //! A reference to the scene manager.
         //!
-        private Vector3 m_lockOffset = Vector3.zero;
+        private SceneManager m_sceneManager;
+        //!
+        //! The preloaded prafab of the safe frame overlay game object.
+        //!
+        private GameObject m_safeFramePrefab;
+        //!
+        //! The instance of the the safe frame overlay.
+        //!
+        private GameObject m_safeFrame = null;
         
         //!
         //! Constructor
@@ -79,12 +87,18 @@ namespace vpet
         {
             base.Start(sender, e);
 
+            m_sceneManager = core.getManager<SceneManager>();
+
+            m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
+            MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
+
             MenuButton cameraSelectButton = new MenuButton("Select Camera", selectNextCamera);
             cameraSelectButton.setIcon("Images/CameraIcon");
             
+            core.getManager<UIManager>().addButton(safeFrameButton);
             core.getManager<UIManager>().addButton(cameraSelectButton);
 
-            manager.sceneReady += copyCamera;
+            m_sceneManager.sceneReady += copyCamera;
             core.getManager<UIManager>().selectionChanged += createButtons;
         }
 
@@ -98,7 +112,7 @@ namespace vpet
         {
             base.Cleanup(sender, e);
 
-            manager.sceneReady -= copyCamera;
+            m_sceneManager.sceneReady -= copyCamera;
             core.getManager<UIManager>().selectionChanged -= createButtons;
         }
 
@@ -122,15 +136,14 @@ namespace vpet
             {
                 m_selectedObject = sceneObjects[0];
                 if (sceneObjects[0].GetType() == typeof(SceneObjectCamera) ||
-                    sceneObjects[0].GetType() == typeof(SceneObjectPointLight))
+                    sceneObjects[0].GetType() == typeof(SceneObjectDirectionalLight) ||
+                    sceneObjects[0].GetType() == typeof(SceneObjectSpotLight))
                 {
-                    m_lockOffset = Vector3.zero;
-                    m_cameraSelectButton = new MenuButton("Look through", lockToCamera);
+                    m_cameraSelectButton = new MenuButton("Look through", lookThrough);
                     m_cameraSelectButton.setIcon("Images/CameraIcon");
                 }
                 else
                 {
-                    m_lockOffset = new Vector3(0, 0, -5f);
                     m_cameraSelectButton = new MenuButton("Lock to Camera", lockToCamera);
                     m_cameraSelectButton.setIcon("Images/CameraIcon");
                 }
@@ -148,21 +161,20 @@ namespace vpet
         //!
         //! The function that moves the main camera to the selected object and parants it to the camera.
         //!
-        private void lockToCamera()
+        private void lookThrough()
         {
             if (m_selectedObject != null)
             {
                 if (m_isLocked)
                 {
                     m_selectedObject.transform.parent = m_oldParent;
-                    //copyCamera(this, EventArgs.Empty);
                     m_isLocked = false;
                 }
                 else
                 {
                     Camera mainCamera = Camera.main;
 
-                    mainCamera.transform.position = m_selectedObject.transform.position + m_lockOffset;
+                    mainCamera.transform.position = m_selectedObject.transform.position;
                     mainCamera.transform.rotation = m_selectedObject.transform.rotation;
 
                     m_oldParent = m_selectedObject.transform.parent;
@@ -171,6 +183,63 @@ namespace vpet
                     m_isLocked = true;
                 }
             }
+        }
+
+        //!
+        //! The function that moves the main camera to the selected object and parants it to the camera.
+        //!
+        private void lockToCamera()
+        {
+            if (m_selectedObject != null)
+            {
+                if (m_isLocked)
+                {
+                    m_selectedObject.transform.parent = m_oldParent;
+                    m_isLocked = false;
+                }
+                else
+                {
+                    m_oldParent = m_selectedObject.transform.parent;
+                    m_selectedObject.transform.parent = Camera.main.transform;
+
+                    m_isLocked = true;
+                }
+            }
+        }
+
+        //!
+        //! Toggles the safe frame overlay.
+        //!
+        private void showSafeFrame()
+        {
+
+            if (m_safeFrame == null)
+            {
+                m_safeFrame = GameObject.Instantiate(m_safeFramePrefab, Camera.main.transform);
+                updateSafeFrame();
+            }
+            else
+                GameObject.DestroyImmediate(m_safeFrame);
+        }
+
+        //!
+        //! Function for updating the aspect ratio of the safe frame based on the currently selected camera.
+        //!
+        private void updateSafeFrame()
+        {
+            Transform scaler = m_safeFrame.transform.Find("scaler");
+
+            Camera selectedCamera = null;
+            if (m_sceneManager.sceneCameraList.Count > 0)
+                selectedCamera = m_sceneManager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
+            else
+                selectedCamera = Camera.main;
+
+            float newAspect = selectedCamera.sensorSize.x / selectedCamera.sensorSize.y;
+            if (newAspect < selectedCamera.aspect)
+                scaler.localScale = new Vector3(1f / selectedCamera.aspect * (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f, 1f);
+            else
+                scaler.localScale = new Vector3(1f, selectedCamera.aspect / (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f);
         }
 
         //!
@@ -183,7 +252,7 @@ namespace vpet
             if (m_isLocked)
                 lockToCamera();
 
-            if (m_cameraIndex > manager.sceneCameraList.Count - 1)
+            if (m_cameraIndex > m_sceneManager.sceneCameraList.Count - 1)
                 m_cameraIndex = 0;
 
             // copy properties to main camera and set it use display 1 (0)
@@ -199,17 +268,20 @@ namespace vpet
         //!
         private void copyCamera(object sender, EventArgs e)
         {
-            if (manager.sceneCameraList.Count > 0)
+            if (m_sceneManager.sceneCameraList.Count > 0)
             {
                 Camera mainCamera = Camera.main;
                 int targetDisplay = mainCamera.targetDisplay;
                 float aspect = mainCamera.aspect;
-                Camera newCamera = manager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
+                Camera newCamera = m_sceneManager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
                 mainCamera.enabled = false;
                 mainCamera.CopyFrom(newCamera);
                 mainCamera.targetDisplay = targetDisplay;
                 mainCamera.aspect = aspect;
                 mainCamera.enabled = true;
+
+                if (m_safeFrame)
+                    updateSafeFrame();
             }
         }
     }

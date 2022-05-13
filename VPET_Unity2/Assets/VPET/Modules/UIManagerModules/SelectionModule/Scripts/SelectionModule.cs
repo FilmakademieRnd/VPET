@@ -222,10 +222,10 @@ namespace vpet
         //! @param layerMask The object layers to be considered for the ray intersection.
         //! @return The selectable at the traced collider or null if there is none.
         //!
-        public SceneObject GetSelectableAtCollider(Vector2 screenPosition, int layerMask = 1 << 5)
+        public SceneObject GetSelectableAtCollider(Vector2 screenPosition)
         {
-            RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(screenPosition), Mathf.Infinity, layerMask);
-            if (hit)
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(screenPosition), out hit, Mathf.Infinity))
             {
                 GameObject gameObject = hit.collider.gameObject;
                 SceneObject sceneObject = gameObject.GetComponent<SceneObject>();

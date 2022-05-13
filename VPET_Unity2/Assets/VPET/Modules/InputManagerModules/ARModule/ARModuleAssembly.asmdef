@@ -10,7 +10,6 @@
         "GUID:e40ba710768534012815d3193fa296cb"
     ],
     "includePlatforms": [
-        "Android",
         "iOS"
     ],
     "excludePlatforms": [],

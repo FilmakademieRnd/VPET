@@ -46,6 +46,7 @@ namespace vpet
         //!
         public UnityEditorModule(string name, Manager manager) : base(name, manager)
         {
+            load = false;
         }
 
         //! 
