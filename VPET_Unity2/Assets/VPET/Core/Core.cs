@@ -213,15 +213,13 @@ namespace vpet
             if (Input.deviceOrientation != m_orientation)
             {
                 Camera mainCamera = Camera.main;
-                if (((Input.deviceOrientation == DeviceOrientation.Portrait ||
-                      Input.deviceOrientation == DeviceOrientation.PortraitUpsideDown) &&
+                if ((Input.deviceOrientation == DeviceOrientation.Portrait &&
                      (m_orientation == DeviceOrientation.LandscapeLeft ||
                       m_orientation == DeviceOrientation.LandscapeRight))
                       ||
                      ((Input.deviceOrientation == DeviceOrientation.LandscapeLeft ||
                       Input.deviceOrientation == DeviceOrientation.LandscapeRight) &&
-                     (m_orientation == DeviceOrientation.Portrait ||
-                      m_orientation == DeviceOrientation.PortraitUpsideDown)))
+                     m_orientation == DeviceOrientation.Portrait))
                 {
                     mainCamera.aspect = 1f / mainCamera.aspect;
                 }

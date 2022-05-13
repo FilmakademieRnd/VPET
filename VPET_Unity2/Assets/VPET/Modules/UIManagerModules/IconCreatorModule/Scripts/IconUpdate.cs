@@ -59,7 +59,7 @@ namespace vpet
             float depth = Vector3.Dot(camera.position - transform.position, camera.forward);
 
             transform.rotation = camera.rotation;
-            transform.localScale = m_iconScale * depth * 0.1f;
+            transform.localScale = m_iconScale * Mathf.Abs(depth * 0.1f);
         }
     }
 }
