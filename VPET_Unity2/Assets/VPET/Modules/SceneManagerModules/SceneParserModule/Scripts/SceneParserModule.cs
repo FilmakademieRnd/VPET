@@ -64,8 +64,8 @@ namespace vpet
         //!
         public SceneParserModule(string name, Manager manager) : base(name, manager)
         {
-            if (!core.isServer)
-                load = false;
+            //if (!core.isServer)
+              //  load = false;
 
             m_lodLowLayer = LayerMask.NameToLayer("LodLow");
             m_lodHighLayer = LayerMask.NameToLayer("LodHigh");
@@ -84,7 +84,7 @@ namespace vpet
         //! @param getHighLayer Gather only scene elements from LOD high layer.
         //! @param getMixedLayer Gather only scene elements from LOD mixed layer.
         //!
-        public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true)
+        public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true, bool emitSceneReady = true)
         {
             SceneManager.SceneDataHandler.SceneData sceneData = new SceneManager.SceneDataHandler.SceneData();
 
@@ -98,44 +98,53 @@ namespace vpet
                 SceneManager.SceneNode node = new SceneManager.SceneNode();
                 Transform trans = gameObject.transform;
                 SceneObject sceneObject = null;
-                if (trans.GetComponent<Light>() != null)
+                Light light = trans.GetComponent<Light>();
+
+                if (light != null)
                 {
-                    Light light = trans.GetComponent<Light>();
                     node = ParseLight(light);
-                    switch (light.type)
+                    if (core.isServer)
                     {
-                        case LightType.Point:
-                            sceneObject = gameObject.AddComponent<SceneObjectPointLight>();
-                            break;
-                        case LightType.Directional:
-                            sceneObject = gameObject.AddComponent<SceneObjectDirectionalLight>();
-                            break;
-                        case LightType.Spot:
-                            sceneObject = gameObject.AddComponent<SceneObjectSpotLight>();
-                            break;
-                        case LightType.Area:
-                            sceneObject = gameObject.AddComponent<SceneObjectAreaLight>();
-                            break;
+                        switch (light.type)
+                        {
+                            case LightType.Point:
+                                sceneObject = gameObject.AddComponent<SceneObjectPointLight>();
+                                break;
+                            case LightType.Directional:
+                                sceneObject = gameObject.AddComponent<SceneObjectDirectionalLight>();
+                                break;
+                            case LightType.Spot:
+                                sceneObject = gameObject.AddComponent<SceneObjectSpotLight>();
+                                break;
+                            case LightType.Area:
+                                sceneObject = gameObject.AddComponent<SceneObjectAreaLight>();
+                                break;
+                        }
+                        manager.sceneLightList.Add((SceneObjectLight)sceneObject);
                     }
-                    manager.sceneLightList.Add((SceneObjectLight)sceneObject);
                 }
                 else if (trans.GetComponent<Camera>() != null)
                 {
                     node = ParseCamera(trans.GetComponent<Camera>());
-                    sceneObject = gameObject.AddComponent<SceneObjectCamera>();
-                    manager.sceneCameraList.Add((SceneObjectCamera)sceneObject);
+                    if (core.isServer)
+                    {
+                        sceneObject = gameObject.AddComponent<SceneObjectCamera>();
+                        manager.sceneCameraList.Add((SceneObjectCamera)sceneObject);
+                    }
                 }
                 else if (trans.GetComponent<MeshFilter>() != null)
                 {
                     node = ParseMesh(trans, ref sceneData);
                     if (gameObject.tag == "editable")
-                        sceneObject = gameObject.AddComponent<SceneObject>();
+                        if (core.isServer)
+                            sceneObject = gameObject.AddComponent<SceneObject>();
                 }
                 else if (trans.GetComponent<SkinnedMeshRenderer>() != null)
                 {
                     node = ParseSkinnedMesh(trans, ref gameObjects, ref sceneData);
                     if (gameObject.tag == "editable")
-                        sceneObject = gameObject.AddComponent<SceneObject>();
+                        if (core.isServer)
+                            sceneObject = gameObject.AddComponent<SceneObject>();
                 }
 
                 Animator animator = trans.GetComponent<Animator>();
@@ -156,7 +165,8 @@ namespace vpet
 
                 if (gameObject.tag == "editable")
                 {
-                    manager.sceneObjects.Add(sceneObject);
+                    if (core.isServer)
+                        manager.sceneObjects.Add(sceneObject);
                     node.editable = true;
                 }
                 else
@@ -165,8 +175,11 @@ namespace vpet
                 if (trans.name != "root")
                     sceneData.nodeList.Add(node);
             }
+
             manager.sceneDataHandler.setSceneData(ref sceneData);
-            manager.emitSceneReady();
+
+            if (emitSceneReady)
+                manager.emitSceneReady();
         }
 
         //!

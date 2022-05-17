@@ -80,7 +80,9 @@ namespace vpet
             {
                 NetworkManager networkManager = core.getManager<NetworkManager>();
                 SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
+                SceneStorageModule sceneStorageModule = manager.getModule<SceneStorageModule>();
                 sceneReceiverModule.m_sceneReceived -= CreateScene;
+                sceneStorageModule.sceneLoaded -= CreateScene;
             }
         }
 
@@ -88,7 +90,9 @@ namespace vpet
         {
             NetworkManager networkManager = core.getManager<NetworkManager>();
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
+            SceneStorageModule sceneStorageModule = manager.getModule<SceneStorageModule>();
             sceneReceiverModule.m_sceneReceived += CreateScene;
+            sceneStorageModule.sceneLoaded += CreateScene;
         }
 
         //!
@@ -96,7 +100,7 @@ namespace vpet
         //!
         public void CreateScene(object o, EventArgs e)
         {
-            SceneManager.SceneDataHandler sceneDataHandler = ((SceneManager)manager).sceneDataHandler;
+            SceneManager.SceneDataHandler sceneDataHandler = manager.sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
@@ -313,6 +317,7 @@ namespace vpet
 
             // process all registered build callbacks
             GameObject obj = CreateObject(node, parent);
+            obj.layer = LayerMask.NameToLayer("LodMixed");
 
             gameObjectList.Add(obj);
 
@@ -515,6 +520,7 @@ namespace vpet
 
                     if (nodeGeo.editable)
                     {
+                        objMain.tag = "editable";
                         SceneObject sco = objMain.AddComponent<SceneObject>();
                         manager.sceneObjects.Add(sco);
                     }
@@ -564,6 +570,7 @@ namespace vpet
 
                     if (nodeLight.editable)
                     {
+                        objMain.tag = "editable";
                         SceneObjectLight sco;
                         switch (lightComponent.type)
                         {
@@ -602,6 +609,7 @@ namespace vpet
 
                     if (nodeCam.editable)
                     {
+                        objMain.tag = "editable";
                         SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
 
                         manager.sceneCameraList.Add(sco);

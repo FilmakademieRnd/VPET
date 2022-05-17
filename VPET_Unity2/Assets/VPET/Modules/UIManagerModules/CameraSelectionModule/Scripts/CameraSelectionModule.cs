@@ -30,6 +30,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace vpet
 {
@@ -228,6 +229,7 @@ namespace vpet
         private void updateSafeFrame()
         {
             Transform scaler = m_safeFrame.transform.Find("scaler");
+            TextMeshProUGUI infoText = m_safeFrame.transform.FindDeepChild("InfoText").GetComponent<TextMeshProUGUI>();
 
             Camera selectedCamera = null;
             if (m_sceneManager.sceneCameraList.Count > 0)
@@ -235,11 +237,15 @@ namespace vpet
             else
                 selectedCamera = Camera.main;
 
+            string camInfo = String.Format("{0}mm | f/{1} | {2}:{3}mm", selectedCamera.focalLength, "2.8", selectedCamera.sensorSize.x, selectedCamera.sensorSize.y);
             float newAspect = selectedCamera.sensorSize.x / selectedCamera.sensorSize.y;
+            
             if (newAspect < selectedCamera.aspect)
                 scaler.localScale = new Vector3(1f / selectedCamera.aspect * (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f, 1f);
             else
                 scaler.localScale = new Vector3(1f, selectedCamera.aspect / (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f);
+
+            infoText.text = camInfo;
         }
 
         //!
