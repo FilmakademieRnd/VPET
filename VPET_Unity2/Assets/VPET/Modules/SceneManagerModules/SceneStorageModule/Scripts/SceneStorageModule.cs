@@ -26,10 +26,8 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 23.02.2021
+//! @date 20.05.2022
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
@@ -37,14 +35,17 @@ using System.IO;
 namespace vpet
 {
     //!
-    //! implementation VPET scene I/O
+    //! Implementation if VPET scene I/O
     //!
     public class SceneStorageModule : SceneManagerModule
     {
         public event EventHandler<EventArgs> sceneLoaded;
+        private MenuTree m_menu;
+
         //!
         //! constructor
-        //! @param   name    Name of this module
+        //! @param name The name of this module.
+        //! @param Manager The manager (SceneManager) of this module.
         //!
         public SceneStorageModule(string name, Manager manager) : base(name, manager) { }
 
@@ -52,23 +53,49 @@ namespace vpet
         {
             base.Start(sender, e);
 
-            MenuButton saveButton = new MenuButton("Save Scene", SaveScene);
-            MenuButton loadButton = new MenuButton("Load Scene", LoadScene);
+            Parameter<Action> loadButton = new Parameter<Action>(LoadScene, "Load");
+            Parameter<Action> saveButton = new Parameter<Action>(SaveScene, "Save");
 
-            core.getManager<UIManager>().addButton(saveButton);
-            core.getManager<UIManager>().addButton(loadButton);
+            m_menu = new MenuTree()
+              .Begin(MenuItem.IType.VSPLIT)
+                   .Begin(MenuItem.IType.HSPLIT)
+                       .Add("Filepath: ")
+                       .Add(manager.settings.sceneFilepath)
+                   .End()
+                   .Begin(MenuItem.IType.HSPLIT)
+                       .Add(loadButton)
+                       .Add(saveButton)
+                   .End()
+             .End();
+
+            m_menu.caption = "Load/Save";
+            m_menu.iconResourceLocation = "Images/button_save";
+            core.getManager<UIManager>().addMenu(m_menu);
         }
 
+        //!
+        //! Function that determines the current scene filepath and calls the save function.
+        //!
         private void SaveScene()
         {
-            SaveScene("VPET_default_Scene");
+            SaveScene(manager.settings.sceneFilepath.value);
+            core.getManager<UIManager>().hideMenu();
         }
 
+        //!
+        //! Function that determines the current scene filepath and calls the load function.
+        //!
         private void LoadScene()
         {
-            LoadScene("VPET_default_Scene");
+            LoadScene(manager.settings.sceneFilepath.value);
+            core.getManager<UIManager>().hideMenu();
         }
 
+        //!
+        //! Function that parses the current scene, and stores it to the persistent data path under the given name.
+        //!
+        //! @param sceneName The name under which the scene files will be stored.
+        //!
         public void SaveScene(string sceneName)
         {
             SceneParserModule sceneParserModule = manager.getModule<SceneParserModule>();
@@ -95,6 +122,11 @@ namespace vpet
             }
         }
 
+        //!
+        //! Function that loads and creates the scene stored with the given from the persistent data path.
+        //!
+        //! @param sceneName The name of the scene to be loaded.
+        //!
         public void LoadScene(string sceneName)
         {
             if (manager.sceneDataHandler != null)

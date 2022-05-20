@@ -59,6 +59,11 @@ namespace vpet
             //! global scale of the scene
             //!
             public float sceneScale = 1f;
+
+            //!
+            //! The filepath for loading and storing a scene.
+            //!
+            public Parameter<string> sceneFilepath;
         }
 
         //!
@@ -153,6 +158,7 @@ namespace vpet
         public SceneManager(Type moduleType, Core vpetCore) : base(moduleType, vpetCore)
         {
             m_sceneDataHandler = new SceneDataHandler();
+            settings.sceneFilepath = new Parameter<string>("VPETdefaultScene", "Filepath");
 
             // create scene parent if not there
             scnRoot = GameObject.Find("Scene");

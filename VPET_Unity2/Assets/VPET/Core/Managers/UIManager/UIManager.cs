@@ -97,6 +97,10 @@ namespace vpet
         //!
         public event EventHandler<MenuTree> menuSelected;
         //!
+        //! Event emitted when a MenuTree has been deselected.
+        //!
+        public event EventHandler<EventArgs> menuDeselected;
+        //!
         //! A list storing references to the menus (MenuTrees) created by the UI-Modules.
         //!
         private List<MenuTree> m_menus;
@@ -232,12 +236,14 @@ namespace vpet
         }
 
         //!
-        //! Function to create menus out of the core and manager settings.
+        //! Function to create the main settings menu out of the core and manager settings.
         //!
         private void CreateSettingsMenu()
         {
             MenuTree settingsMenu = new MenuTree();
             settingsMenu.caption = "Settings";
+            settingsMenu.setIcon("Images/button_gear");
+
             settingsMenu = settingsMenu.Begin(MenuItem.IType.VSPLIT); // <<< start VSPLIT
 
             // add core settings
@@ -287,7 +293,7 @@ namespace vpet
                     menu = menu.Add(info.Name);
                     menu = menu.Add((AbstractParameter)info.GetValue(settings));
                 }
-                else
+                else if ( info.GetValue(settings).GetType().BaseType != typeof(AbstractParameter))
                 {
                     menu = menu.Add(info.Name);
                     menu = menu.Add(info.GetValue(settings).ToString());
@@ -358,9 +364,20 @@ namespace vpet
             selectionChanged?.Invoke(this, m_selectedObjects);
         }
 
+        //!
+        //! Function that invokes the signal for creating the UI for the given menu.
+        //!
         public void showMenu(MenuTree menu)
         {
             menuSelected?.Invoke(this, menu);
+        }
+
+        //!
+        //! Function that invokes the signal for deleting the active menu UI.
+        //!
+        public void hideMenu()
+        {
+            menuDeselected?.Invoke(this, EventArgs.Empty);
         }
     }
 }

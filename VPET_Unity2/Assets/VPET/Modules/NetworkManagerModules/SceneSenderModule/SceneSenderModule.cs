@@ -85,8 +85,8 @@ namespace vpet
                     .End()
               .End();
 
-            m_menu.caption = "Network Server";
-            m_menu.iconResourceLocation = "Images/button_gear";
+            m_menu.caption = "Network Settings";
+            //m_menu.iconResourceLocation = "Images/button_gear";
             core.getManager<UIManager>().addMenu(m_menu);
         }
 
@@ -98,7 +98,7 @@ namespace vpet
         //! 
         protected override void Start(object sender, EventArgs e)
         {
-            core.getManager<UIManager>().showMenu(m_menu);
+            //core.getManager<UIManager>().showMenu(m_menu);
         }
 
         private void Connect()

@@ -194,14 +194,21 @@ namespace vpet
             // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
             manager.menuSelected += createMenu;
+            manager.menuDeselected += destroyMenu;
         }
 
         //!
-        //! Destructor, cleaning up event registrations. 
+        //! function called before Unity destroys the VPET core.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
         //!
-        ~MenuCreatorModule()
+        protected override void Cleanup(object sender, EventArgs e)
         {
+            base.Cleanup(sender, e);
             manager.menuSelected -= createMenu;
+            manager.menuDeselected -= destroyMenu;
         }
 
         //!
@@ -212,7 +219,7 @@ namespace vpet
         //!
         void createMenu(object sender, MenuTree menu)
         {
-            destroyMenu();
+            destroyMenu(this, EventArgs.Empty);
 
             if (menu == null)
                 return;
@@ -409,11 +416,11 @@ namespace vpet
         //!
         //! Function to destroy all created UI elements of a menu.
         //!
-        private void destroyMenu()
+        private void destroyMenu(object sender, EventArgs e)
         {
             foreach (GameObject uiElement in m_uiElements)
             {
-                UnityEngine.Object.Destroy(uiElement);
+                UnityEngine.Object.DestroyImmediate(uiElement);
             }
             m_uiElements.Clear();
         }
