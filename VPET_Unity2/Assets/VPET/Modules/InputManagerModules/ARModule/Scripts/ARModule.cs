@@ -227,11 +227,11 @@ namespace vpet
             if (b)
             {
                 manager.disableAttitudeSensor();
-                manager.m_cameraControl = InputManager.CameraControl.AR;
+                manager.cameraControl = InputManager.CameraControl.AR;
             }
             else
             {
-                manager.m_cameraControl = InputManager.CameraControl.NONE;
+                manager.cameraControl = InputManager.CameraControl.NONE;
                 manager.enableAttitudeSensor();
             }
             if (arSession)

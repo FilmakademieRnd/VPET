@@ -180,6 +180,7 @@ namespace vpet
         public CameraControl cameraControl
         {
             get => m_cameraControl;
+            set => m_cameraControl = value;
         }
         //!
         //! The generated Unity input class defining all available user inputs.
