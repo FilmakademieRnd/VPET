@@ -41,6 +41,7 @@ namespace vpet
     {
         public event EventHandler<EventArgs> sceneLoaded;
         private MenuTree m_menu;
+        private string m_applicationPath = Application.dataPath + "/VPET/Scenes/Resources/Storage";
 
         //!
         //! constructor
@@ -104,19 +105,19 @@ namespace vpet
                 sceneParserModule.ParseScene(true, false, true, false);
 
                 if (manager.sceneDataHandler.headerByteDataRef != null)
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, sceneName + ".header"), manager.sceneDataHandler.headerByteDataRef);
+                    File.WriteAllBytes(Path.Combine(m_applicationPath, sceneName + ".header"), manager.sceneDataHandler.headerByteDataRef);
                 if (manager.sceneDataHandler.nodesByteDataRef != null)
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, sceneName + ".nodes"), manager.sceneDataHandler.nodesByteDataRef);
+                    File.WriteAllBytes(Path.Combine(m_applicationPath, sceneName + ".nodes"), manager.sceneDataHandler.nodesByteDataRef);
                 if (manager.sceneDataHandler.objectsByteDataRef != null)
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, sceneName + ".objects"), manager.sceneDataHandler.objectsByteDataRef);
+                    File.WriteAllBytes(Path.Combine(m_applicationPath, sceneName + ".objects"), manager.sceneDataHandler.objectsByteDataRef);
                 if (manager.sceneDataHandler.characterByteDataRef != null)
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, sceneName + ".characters"), manager.sceneDataHandler.characterByteDataRef);
+                    File.WriteAllBytes(Path.Combine(m_applicationPath, sceneName + ".characters"), manager.sceneDataHandler.characterByteDataRef);
                 if (manager.sceneDataHandler.texturesByteDataRef != null)
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, sceneName + ".textures"), manager.sceneDataHandler.texturesByteDataRef);
+                    File.WriteAllBytes(Path.Combine(m_applicationPath, sceneName + ".textures"), manager.sceneDataHandler.texturesByteDataRef);
                 if (manager.sceneDataHandler.materialsByteDataRef != null)
-                    File.WriteAllBytes(Path.Combine(Application.persistentDataPath, sceneName + ".materials"), manager.sceneDataHandler.materialsByteDataRef);
+                    File.WriteAllBytes(Path.Combine(m_applicationPath, sceneName + ".materials"), manager.sceneDataHandler.materialsByteDataRef);
 
-                Helpers.Log("Scene saved to " + Application.persistentDataPath);
+                Helpers.Log("Scene saved to " + m_applicationPath);
 
                 manager.sceneDataHandler.clearSceneByteData();
             }
@@ -131,27 +132,27 @@ namespace vpet
         {
             if (manager.sceneDataHandler != null)
             {
-                string filepath = Path.Combine(Application.persistentDataPath, sceneName +".header");
+                string filepath = Path.Combine(m_applicationPath, sceneName +".header");
                 if (File.Exists(filepath))
                     manager.sceneDataHandler.headerByteData = File.ReadAllBytes(filepath);
 
-                filepath = Path.Combine(Application.persistentDataPath, sceneName +".nodes");
+                filepath = Path.Combine(m_applicationPath, sceneName +".nodes");
                 if (File.Exists(filepath))
                     manager.sceneDataHandler.nodesByteData = File.ReadAllBytes(filepath);
 
-                filepath = Path.Combine(Application.persistentDataPath, sceneName +".objects");
+                filepath = Path.Combine(m_applicationPath, sceneName +".objects");
                 if (File.Exists(filepath))
                     manager.sceneDataHandler.objectsByteData = File.ReadAllBytes(filepath);
 
-                filepath = Path.Combine(Application.persistentDataPath, sceneName +".characters");
+                filepath = Path.Combine(m_applicationPath, sceneName +".characters");
                 if (File.Exists(filepath))
                     manager.sceneDataHandler.characterByteData = File.ReadAllBytes(filepath);
 
-                filepath = Path.Combine(Application.persistentDataPath, sceneName +".textures");
+                filepath = Path.Combine(m_applicationPath, sceneName +".textures");
                 if (File.Exists(filepath))
                     manager.sceneDataHandler.texturesByteData = File.ReadAllBytes(filepath);
 
-                filepath = Path.Combine(Application.persistentDataPath, sceneName +".materials");
+                filepath = Path.Combine(m_applicationPath, sceneName +".materials");
                 if (File.Exists(filepath))
                     manager.sceneDataHandler.materialsByteData = File.ReadAllBytes(filepath);
 
