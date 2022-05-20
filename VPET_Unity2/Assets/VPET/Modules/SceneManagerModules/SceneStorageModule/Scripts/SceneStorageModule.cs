@@ -172,29 +172,17 @@ namespace vpet
         {
             if (manager.sceneDataHandler != null)
             {
-                string filepath = Path.Combine(Application.dataPath, "VPET/Scenes/Resources/Storage/VPETDemoScene" + ".header");
-                if (File.Exists(filepath))
-                    manager.sceneDataHandler.headerByteData = File.ReadAllBytes(filepath);
+                manager.sceneDataHandler.headerByteData = (Resources.Load("Storage/VPETDemoSceneHeader") as TextAsset).bytes;
 
-                filepath = Path.Combine(Application.dataPath, "VPET/Scenes/Resources/Storage/VPETDemoScene" + ".nodes");
-                if (File.Exists(filepath))
-                    manager.sceneDataHandler.nodesByteData = File.ReadAllBytes(filepath);
+                manager.sceneDataHandler.nodesByteData = (Resources.Load("Storage/VPETDemoSceneNodes") as TextAsset).bytes;
 
-                filepath = Path.Combine(Application.dataPath, "VPET/Scenes/Resources/Storage/VPETDemoScene" + ".objects");
-                if (File.Exists(filepath))
-                    manager.sceneDataHandler.objectsByteData = File.ReadAllBytes(filepath);
+                manager.sceneDataHandler.objectsByteData = (Resources.Load("Storage/VPETDemoSceneObjects") as TextAsset).bytes;
 
-                filepath = Path.Combine(Application.dataPath, "VPET/Scenes/Resources/Storage/VPETDemoScene" + ".characters");
-                if (File.Exists(filepath))
-                    manager.sceneDataHandler.characterByteData = File.ReadAllBytes(filepath);
+                manager.sceneDataHandler.characterByteData = (Resources.Load("Storage/VPETDemoSceneCharacters") as TextAsset).bytes;
 
-                filepath = Path.Combine(Application.dataPath, "VPET/Scenes/Resources/Storage/VPETDemoScene" + ".textures");
-                if (File.Exists(filepath))
-                    manager.sceneDataHandler.texturesByteData = File.ReadAllBytes(filepath);
+                manager.sceneDataHandler.texturesByteData = (Resources.Load("Storage/VPETDemoSceneTextures") as TextAsset).bytes;
 
-                filepath = Path.Combine(Application.dataPath, "VPET/Scenes/Resources/Storage/VPETDemoScene" + ".materials");
-                if (File.Exists(filepath))
-                    manager.sceneDataHandler.materialsByteData = File.ReadAllBytes(filepath);
+                manager.sceneDataHandler.materialsByteData = (Resources.Load("Storage/VPETDemoSceneMaterials") as TextAsset).bytes;
 
                 sceneLoaded?.Invoke(this, EventArgs.Empty);
 
