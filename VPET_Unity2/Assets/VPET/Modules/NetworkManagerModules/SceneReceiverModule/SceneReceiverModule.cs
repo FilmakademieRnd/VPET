@@ -106,7 +106,7 @@ namespace vpet
                      .End()
                 .End();
 
-            //m_menu.setIcon("Images/button_gear");
+            m_menu.iconResourceLocation = "Images/button_network";
             m_menu.caption = "Network Settings";
             core.getManager<UIManager>().addMenu(m_menu);
         }
