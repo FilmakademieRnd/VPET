@@ -579,6 +579,7 @@ namespace vpet
                 _majorAxisX = Mathf.Abs(_dragStart.x - data.position.x) > Mathf.Abs(_dragStart.y - data.position.y);
                 _axisDecided = true;
             }
+
             if(_axisDecided)
             {
                 if (_isVertical)
@@ -614,7 +615,7 @@ namespace vpet
                     {
                         //adjust Parameter
                         if (_allowValueSetting)
-                            valueChanged?.Invoke(this, (data.delta.y / Screen.height) * _sensitivity);
+                            valueChanged?.Invoke(this, (_majorAxisX? data.delta.x / Screen.width : data.delta.y / Screen.height) * _sensitivity);
                     }
                     else if (_dragable)
                     {

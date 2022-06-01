@@ -51,9 +51,19 @@ namespace vpet
         float size;
 
         //!
+        //! initial size of element
+        //!
+        Vector2 initialSize;
+
+        //!
         //! Reference to RectTransform representing the center of the SnapSelect
         //!
         private RectTransform refRect;
+
+        //!
+        //! center of the reference rect
+        //!
+        private Vector3 refRectCenter;
 
         //!
         //! Reference to Text field of the Element
@@ -76,10 +86,6 @@ namespace vpet
         //!
         public int index;
 
-        //!
-        //! Time of last pointer down
-        //!
-        float pointerDownTime;
 
         //!
         //! Event emitted when value has changed
@@ -98,6 +104,9 @@ namespace vpet
             {
                 snapSelect = this.transform.parent.GetComponent<SnapSelect>();
                 refRect = snapSelect.GetComponent<RectTransform>();
+                refRectCenter = refRect.position - new Vector3(refRect.sizeDelta.x, refRect.sizeDelta.y, 0f);
+                Debug.Log(refRectCenter);
+                initialSize = refRect.sizeDelta;
             }
             txt = this.GetComponentInChildren<TextMeshProUGUI>();
             size = Mathf.Max(rect.sizeDelta.x, rect.sizeDelta.y);
@@ -124,9 +133,11 @@ namespace vpet
         {
             if (!snapSelect._selectByClick)
             {
-                float d = Vector3.Distance(rect.position, refRect.position - new Vector3(refRect.sizeDelta.x / 2f, refRect.sizeDelta.y / 2f, 0)) / size;
+                float d = Vector3.Distance(rect.position, refRectCenter) / size;
                 float f = snapSelect._fadeFactor;
-                txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f / (d * (1f / f)));//((1f - (d * (1f - f))) / d) *255f);
+                rect.sizeDelta = Vector2.Scale(initialSize,new Vector2(1/(1 + d), 1/(1 + d)));
+                //if(index == 1) Debug.Log(initialSize + " * "+  d + " = " + rect.sizeDelta);
+                //txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f / (d * (1f / f)));//((1f - (d * (1f - f))) / d) *255f);
             }
         }
 
@@ -137,19 +148,16 @@ namespace vpet
         //!
         public void OnPointerDown(PointerEventData eventData)
         {
-            pointerDownTime = Time.time;
         }
+
         //!
         //! Unity function called by IPointerUpHandler when a touch ends on the menu
         //! @param data Data of the drag event e.g. postion, delta, ...
         //!
         public void OnPointerUp(PointerEventData data)
         {
-            if ((Time.time - pointerDownTime) < 0.2f)
-            {
-                clicked?.Invoke(this, this);
-                clickAction?.Invoke();
-            }
+            clicked?.Invoke(this, this);
+            clickAction?.Invoke();
         }
 
         //!
