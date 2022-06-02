@@ -31,6 +31,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 namespace vpet
 {
@@ -71,6 +72,11 @@ namespace vpet
         private TextMeshProUGUI txt;
 
         //!
+        //! Reference to Text field of the Element
+        //!
+        private Image image;
+
+        //!
         //! Reference to the associated snapSelect Instance
         //!
         private SnapSelect snapSelect;
@@ -109,6 +115,7 @@ namespace vpet
                 initialSize = refRect.sizeDelta;
             }
             txt = this.GetComponentInChildren<TextMeshProUGUI>();
+            image = this.GetComponent<Image>();
             size = Mathf.Max(rect.sizeDelta.x, rect.sizeDelta.y);
 
             //attach updating function to drag event
@@ -170,13 +177,20 @@ namespace vpet
             if (idx == index)
             {
                 if (txt.color == uiSettings.colors.ElementSelection_Highlight)
-                    txt.color = Color.white;
+                {
+                    txt.color = image.color = uiSettings.colors.ElementSelection_Default;
+                    image.color = uiSettings.colors.ElementSelection_Default;
+                }
                 else
+                {
                     txt.color = uiSettings.colors.ElementSelection_Highlight;
+                    image.color = uiSettings.colors.ElementSelection_Highlight;
+                }
             }
             else
             {
-                txt.color = Color.white;
+                txt.color = uiSettings.colors.ElementSelection_Default;
+                image.color = uiSettings.colors.ElementSelection_Default;
             }
         }
     }

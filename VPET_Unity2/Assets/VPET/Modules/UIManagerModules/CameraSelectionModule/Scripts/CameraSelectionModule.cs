@@ -93,7 +93,7 @@ namespace vpet
             m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
             MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
 
-            MenuButton cameraSelectButton = new MenuButton("Select Camera", selectNextCamera);
+            MenuButton cameraSelectButton = new MenuButton("", selectNextCamera);
             cameraSelectButton.setIcon("Images/CameraIcon");
             
             core.getManager<UIManager>().addButton(safeFrameButton);

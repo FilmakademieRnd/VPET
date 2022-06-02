@@ -23,6 +23,7 @@ namespace vpet
         public Color DropDown_TextfieldBG;
         public Color ButtonBG;
         public Color ElementSelection_Highlight;
+        public Color ElementSelection_Default;
         public Color DefaultBG;
         public Color FloatingButtonBG;
         public Color FloatingButtonIcon;

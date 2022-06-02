@@ -73,7 +73,7 @@ namespace vpet
         //! @param sender A reference to the VPET core.
         //! @param e The event arguments for the start event.
         //!
-        protected override void Start(object sender, EventArgs e)
+        protected override void Init(object sender, EventArgs e)
         {
             // [REVIEW]
             // pls remove, only for testing...
@@ -91,14 +91,23 @@ namespace vpet
             m_canvas.GetComponent<Canvas>().sortingOrder = 10;
             m_canvas.GetComponent<CanvasScaler>().scaleFactor = Screen.dpi * core.getManager<UIManager>().settings.uiScale.value;
 
-            manager.menuSelected += highlightMenuElement;
-
             createMenus(this, EventArgs.Empty);
             createButtons(this, EventArgs.Empty);
             
             
             manager.buttonsUpdated += createButtons;
             manager.menusUpdated += createMenus;
+        }
+
+        //! 
+        //! Function called when an Unity Start() callback is triggered
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Start(object sender, EventArgs e)
+        {
+            m_menuSelector.showHighlighted(0, true);
         }
 
         //! 
@@ -111,7 +120,6 @@ namespace vpet
         {
             base.Cleanup(sender, e);
 
-            manager.menuSelected -= highlightMenuElement;
             m_menuSelector.elementClicked -= menuClicked;
             manager.buttonsUpdated -= createButtons;
             manager.menusUpdated -= createMenus;
@@ -191,20 +199,6 @@ namespace vpet
         private void menuClicked(object sender, int id)
         {
             manager.showMenu((MenuTree)manager.getMenus()[id]);
-        }
-
-        //!
-        //! Function called when the UI manager selects a menu.
-        //!
-        //! @param sender The UI manager triggering this function.
-        //! @param t The selected menu.
-        //!
-        private void highlightMenuElement(object sender, MenuTree t)
-        {
-            if (t == null)
-                m_menuSelector.showHighlighted(-1);
-            else
-                m_menuSelector.showHighlighted(t.id);
         }
 
         //! [REVIEW]
