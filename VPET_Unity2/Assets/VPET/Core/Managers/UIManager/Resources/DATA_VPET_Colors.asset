@@ -23,7 +23,7 @@ MonoBehaviour:
     DropDown_TextfieldBG: {r: 0.11372549, g: 0.11372549, b: 0.11372549, a: 1}
     ButtonBG: {r: 0.32941177, g: 0.32941177, b: 0.32941177, a: 1}
     ElementSelection_Highlight: {r: 1, g: 0.56078434, b: 0.2509804, a: 1}
-    ElementSelection_Default: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
+    ElementSelection_Default: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
     DefaultBG: {r: 0.23921569, g: 0.23921569, b: 0.23921569, a: 0}
     FloatingButtonBG: {r: 0, g: 0, b: 0, a: 0.5019608}
     FloatingButtonIcon: {r: 1, g: 1, b: 1, a: 1}

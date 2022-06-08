@@ -161,7 +161,10 @@ namespace vpet
                 byte[] tmpName = Encoding.ASCII.GetBytes(trans.name);
                 Buffer.BlockCopy(tmpName, 0, node.name, 0, Math.Min(tmpName.Length, 256));
 
-                node.childCount = trans.childCount;
+                node.childCount = 0;
+                foreach (Transform child in trans)
+                    if (child.gameObject.activeSelf) 
+                        node.childCount++;
 
                 if (gameObject.tag == "editable")
                 {
