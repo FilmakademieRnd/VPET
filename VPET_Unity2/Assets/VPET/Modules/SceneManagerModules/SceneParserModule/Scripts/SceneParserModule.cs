@@ -97,13 +97,13 @@ namespace vpet
             {
                 SceneManager.SceneNode node = new SceneManager.SceneNode();
                 Transform trans = gameObject.transform;
-                SceneObject sceneObject = null;
+                SceneObject sceneObject = gameObject.GetComponent<SceneObject>();
                 Light light = trans.GetComponent<Light>();
 
                 if (light != null)
                 {
                     node = ParseLight(light);
-                    if (core.isServer)
+                    if (core.isServer && !sceneObject)
                     {
                         switch (light.type)
                         {
@@ -126,7 +126,7 @@ namespace vpet
                 else if (trans.GetComponent<Camera>() != null)
                 {
                     node = ParseCamera(trans.GetComponent<Camera>());
-                    if (core.isServer)
+                    if (core.isServer && !sceneObject)
                     {
                         sceneObject = gameObject.AddComponent<SceneObjectCamera>();
                         manager.sceneCameraList.Add((SceneObjectCamera)sceneObject);
@@ -136,14 +136,14 @@ namespace vpet
                 {
                     node = ParseMesh(trans, ref sceneData);
                     if (gameObject.tag == "editable")
-                        if (core.isServer)
+                        if (core.isServer && !sceneObject)
                             sceneObject = gameObject.AddComponent<SceneObject>();
                 }
                 else if (trans.GetComponent<SkinnedMeshRenderer>() != null)
                 {
                     node = ParseSkinnedMesh(trans, ref gameObjects, ref sceneData);
                     if (gameObject.tag == "editable")
-                        if (core.isServer)
+                        if (core.isServer && !sceneObject)
                             sceneObject = gameObject.AddComponent<SceneObject>();
                 }
 
