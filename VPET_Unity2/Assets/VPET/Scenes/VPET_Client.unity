@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.67
   m_LinearFogStart: -30.5
   m_LinearFogEnd: 305.1
-  m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 0.05}
+  m_AmbientSkyColor: {r: 0.43137255, g: 0.4627451, b: 0.5294118, a: 0.05}
   m_AmbientEquatorColor: {r: 0.03382353, g: 0.03382353, b: 0.03382353, a: 0.05}
   m_AmbientGroundColor: {r: 0.03382353, g: 0.03382353, b: 0.03382353, a: 0.05}
   m_AmbientIntensity: 0.05
@@ -366,7 +366,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
-  serializedVersion: 4
+  serializedVersion: 5
   m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 0
   m_EnableRealtimeLightmaps: 0
@@ -400,13 +400,13 @@ LightingSettings:
   m_PVRCulling: 1
   m_PVRSampling: 1
   m_PVRDirectSampleCount: 32
-  m_PVRSampleCount: 500
-  m_PVREnvironmentSampleCount: 500
+  m_PVRSampleCount: 512
+  m_PVREnvironmentSampleCount: 512
   m_PVREnvironmentReferencePointCount: 2048
   m_LightProbeSampleCountMultiplier: 4
   m_PVRBounces: 2
   m_PVRMinBounces: 1
-  m_PVREnvironmentMIS: 0
+  m_PVREnvironmentImportanceSampling: 0
   m_PVRFilteringMode: 2
   m_PVRDenoiserTypeDirect: 0
   m_PVRDenoiserTypeIndirect: 0
@@ -421,3 +421,4 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaIndirect: 2
   m_PVRFilteringAtrousPositionSigmaAO: 1
   m_PVRTiledBaking: 0
+  m_NumRaysToShootPerTexel: -1

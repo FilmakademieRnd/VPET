@@ -66,8 +66,8 @@ namespace vpet
         //!
         public SceneCreatorModule(string name, Manager manager) : base(name, manager)
         {
-            if (core.isServer)
-                load = false;
+            //if (core.isServer)
+            //    load = false;
         }
 
         //!
@@ -91,7 +91,8 @@ namespace vpet
             NetworkManager networkManager = core.getManager<NetworkManager>();
             SceneReceiverModule sceneReceiverModule = networkManager.getModule<SceneReceiverModule>();
             SceneStorageModule sceneStorageModule = manager.getModule<SceneStorageModule>();
-            sceneReceiverModule.m_sceneReceived += CreateScene;
+            if (sceneReceiverModule != null)
+                sceneReceiverModule.m_sceneReceived += CreateScene;
             sceneStorageModule.sceneLoaded += CreateScene;
         }
 
