@@ -105,7 +105,7 @@ namespace vpet
         {
             Helpers.Log(manager.settings.ipAddress.value);
 
-            core.getManager<UIManager>().showMenu(null);
+            core.getManager<UIManager>().hideMenu();
 
             SceneParserModule sceneParserModule = core.getManager<SceneManager>().getModule<SceneParserModule>();
             sceneParserModule.ParseScene();

@@ -126,7 +126,7 @@ namespace vpet
         {
             Helpers.Log(manager.settings.ipAddress.value);
 
-            core.getManager<UIManager>().showMenu(null);
+            core.getManager<UIManager>().hideMenu();
 
             receiveScene(manager.settings.ipAddress.value, "5555");
         }

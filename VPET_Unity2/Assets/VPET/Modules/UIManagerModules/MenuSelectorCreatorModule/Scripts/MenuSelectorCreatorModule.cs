@@ -139,6 +139,7 @@ namespace vpet
 
             m_menuSelector = GameObject.Instantiate(m_menuSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
             m_menuSelector.uiSettings = manager.uiAppearanceSettings;
+            core.getManager<UIManager>().menuDeselected += m_menuSelector.resetHighlighting;
 
             foreach (MenuTree menu in manager.getMenus())
             {

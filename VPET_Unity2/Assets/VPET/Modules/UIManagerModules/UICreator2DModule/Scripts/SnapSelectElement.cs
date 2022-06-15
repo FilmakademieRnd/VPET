@@ -129,6 +129,10 @@ namespace vpet
 
             //run initial transparency update
             updateTransparency(this, true);
+
+            txt.color = image.color = uiSettings.colors.ElementSelection_Default;
+            if (image.sprite)
+                image.color = uiSettings.colors.ElementSelection_Default;
         }
 
         //!
@@ -142,7 +146,7 @@ namespace vpet
             {
                 float d = Vector3.Distance(rect.position, refRectCenter) / size;
                 float f = snapSelect._fadeFactor;
-                rect.sizeDelta = Vector2.Scale(initialSize,new Vector2(1/(1 + d), 1/(1 + d)));
+                //rect.sizeDelta = Vector2.Scale(initialSize,new Vector2(1/(1 + d), 1/(1 + d)));
                 //if(index == 1) Debug.Log(initialSize + " * "+  d + " = " + rect.sizeDelta);
                 //txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f / (d * (1f / f)));//((1f - (d * (1f - f))) / d) *255f);
             }
@@ -179,18 +183,21 @@ namespace vpet
                 if (txt.color == uiSettings.colors.ElementSelection_Highlight)
                 {
                     txt.color = image.color = uiSettings.colors.ElementSelection_Default;
-                    image.color = uiSettings.colors.ElementSelection_Default;
+                    if(image.sprite)
+                        image.color = uiSettings.colors.ElementSelection_Default;
                 }
                 else
                 {
                     txt.color = uiSettings.colors.ElementSelection_Highlight;
-                    image.color = uiSettings.colors.ElementSelection_Highlight;
+                    if (image.sprite)
+                        image.color = uiSettings.colors.ElementSelection_Highlight;
                 }
             }
             else
             {
                 txt.color = uiSettings.colors.ElementSelection_Default;
-                image.color = uiSettings.colors.ElementSelection_Default;
+                if (image.sprite)
+                    image.color = uiSettings.colors.ElementSelection_Default;
             }
         }
     }

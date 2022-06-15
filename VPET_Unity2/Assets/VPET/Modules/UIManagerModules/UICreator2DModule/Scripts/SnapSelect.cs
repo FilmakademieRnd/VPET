@@ -396,12 +396,31 @@ namespace vpet
 
             if (_isVertical)
             {
+                if (!_contentPanel.gameObject.GetComponent<VerticalLayoutGroup>())
+                {
+                    VerticalLayoutGroup vG = _contentPanel.gameObject.AddComponent<VerticalLayoutGroup>();
+                    vG.childControlHeight = false;
+                    vG.childControlWidth = false;
+                    vG.childForceExpandWidth = false;
+                    vG.childForceExpandHeight = false;
+                }
                 switchToVerticalAlign(_contentMask);
                 switchToVerticalAlign(_contentPanel);
 
                 if (background)
                 {
                     switchToVerticalAlign(background);
+                }
+            }
+            else
+            {
+                if (!_contentPanel.gameObject.GetComponent<HorizontalLayoutGroup>())
+                {
+                    HorizontalLayoutGroup hG = _contentPanel.gameObject.AddComponent<HorizontalLayoutGroup>();
+                    hG.childControlHeight = false;
+                    hG.childControlWidth = false;
+                    hG.childForceExpandWidth = false;
+                    hG.childForceExpandHeight = false;
                 }
             }
 
@@ -422,15 +441,18 @@ namespace vpet
             }
 
             int repetitions = _loop ? 3 : 1;
+            int counter = 0;
             for (int r = 0; r < repetitions; r++)
                 for (int e = 0; e < _elementValues.Count; e++)
                 {
                     SnapSelectElement element = _elements[e * repetitions + r];
                     if (_isVertical)
                         switchToVerticalAlign(element.GetComponent<RectTransform>());
-                    element.transform.SetParent(_contentPanel, false);
-                    element.GetComponent<RectTransform>().sizeDelta = _elementSize * 0.8f; 
-                    element.GetComponent<RectTransform>().anchoredPosition = multiplyAlignedVector(_elementSize, false, -(0.1f + r * _elementValues.Count + e), true);
+                    element.transform.SetParent(_contentPanel);
+                    //fix for sorted ordering, defines expicit order of ContentPanel childs
+                    element.transform.SetSiblingIndex(counter++);
+                    element.GetComponent<RectTransform>().sizeDelta = _elementSize;
+                    //element.GetComponent<RectTransform>().anchoredPosition = multiplyAlignedVector(_elementSize, false, -(0.1f + r * _elementValues.Count + e), true);
                 }
 
             if(_elementCount == 1 && !_selectByClick)
@@ -487,9 +509,13 @@ namespace vpet
 
         public void showHighlighted(int id, bool force = false)
         {
-
             if(force || _currentAxis != id)
                 highlightElement?.Invoke(this, id);
+        }
+
+        public void resetHighlighting(object sender, EventArgs e)
+        {
+            highlightElement?.Invoke(this, -1);
         }
 
         //!
