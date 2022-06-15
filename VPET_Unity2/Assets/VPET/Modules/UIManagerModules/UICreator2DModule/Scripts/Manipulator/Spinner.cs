@@ -176,14 +176,14 @@ namespace vpet
                     break;
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
-                    Vector3 rot = paramQuat.value.eulerAngles;
+                    Quaternion rot = Quaternion.identity;
                     if (_currentAxis == 0)
-                        rot = new Vector3(rot.x + val, rot.y, rot.z);
+                        rot = Quaternion.Euler(val, 0, 0);
                     else if (_currentAxis == 1)
-                        rot = new Vector3(rot.x, rot.y + val, rot.z);
+                        rot = Quaternion.Euler(0, val, 0);
                     else
-                        rot = new Vector3(rot.x, rot.y, rot.z + val);
-                    paramQuat.setValue(Quaternion.Euler(rot));
+                        rot = Quaternion.Euler(0, 0, val); ;
+                    paramQuat.setValue(paramQuat.value * rot);
                     break;
                 default:
                     Helpers.Log("Parameter Type cannot be edited with Spinner.");
