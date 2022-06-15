@@ -154,7 +154,7 @@ namespace vpet
             if (mainSelection.parameterList.Count > 2)
             {
                 //inititalize selectors for translation, rotation, scale
-                for (int i = 0; i < ((mainSelection.parameterList.Count > 3)? 4 : 3); i++)
+                /*for (int i = 0; i < ((mainSelection.parameterList.Count > 3)? 4 : 3); i++)
                 {
                     GameObject createdManipSelector = SceneObject.Instantiate(selectorPrefab, manipulatorSelectionPanel);
                     createdManipSelector.GetComponent<RectTransform>().sizeDelta = new Vector2(selectorSize, selectorSize);
@@ -184,10 +184,10 @@ namespace vpet
                     }
                     if (icon)
                         createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, manager.uiAppearanceSettings, icon, (i==3)? -1 : i);
-
+                    
 
                     paramIndex++;
-                }
+                }*/
 
                 //handle additional parameters
                 if (mainSelection.parameterList.Count > 3)
@@ -197,12 +197,29 @@ namespace vpet
                     SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
                     snapSelect.uiSettings = manager.uiAppearanceSettings;
 
-                    for (int i = 3; i < mainSelection.parameterList.Count; i++)
+                    for (int i = 0; i < mainSelection.parameterList.Count; i++)
                     {
-                        snapSelect.addElement(mainSelection.parameterList[i].name);
+                        switch (i)
+                        {
+                            //translation
+                            case 0:
+                                snapSelect.addElement(Resources.Load<Sprite>("Images/button_translate"));
+                                break;
+                            //rotation
+                            case 1:
+                                snapSelect.addElement(Resources.Load<Sprite>("Images/button_rotate"));
+                                break;
+                            //scale
+                            case 2:
+                                snapSelect.addElement(Resources.Load<Sprite>("Images/button_scale"));
+                                break;
+                            default:
+                                snapSelect.addElement(mainSelection.parameterList[i].name);
+                                break;
+                        }
                     }
                     snapSelect.parameterChanged += createAdditionalManipulator;
-                    currentAddSelector.SetActive(false);
+                    currentAddSelector.SetActive(true);
                 }
 
                 createManipulator(0);
@@ -234,7 +251,7 @@ namespace vpet
 
         private void createAdditionalManipulator(object sender, int i)
         {
-            createManipulator(i + 3);
+            createManipulator(i);
         }
 
         //!
@@ -257,8 +274,8 @@ namespace vpet
             }
             else if (index < 3 && currentAddSelector)
             {
-                currentAddButton.SetActive(true);
-                currentAddSelector.SetActive(false);
+                //currentAddButton.SetActive(true);
+                //currentAddSelector.SetActive(false);
             }
 
             AbstractParameter abstractParam = mainSelection.parameterList[index];
@@ -302,8 +319,8 @@ namespace vpet
             foreach (GameObject g in instancedManipulatorSelectors)
                 g.GetComponent<ManipulatorSelector>().visualizeIdle();
 
-            if(index < 3)
-                instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
+            //if(index < 3)
+            //    instancedManipulatorSelectors[index].GetComponent<ManipulatorSelector>().visualizeActive();
         }
 
         //!

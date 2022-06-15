@@ -387,6 +387,12 @@ namespace vpet
             {
                 GameObject contentFramePrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_ContentFrame");
                 _contentMask = SceneObject.Instantiate(contentFramePrefab, this.transform).GetComponent<RectTransform>();
+                _contentMask.GetComponent<RectMask2D>().softness = Vector2Int.RoundToInt(_elementSize * (_previewExtend * 2.0f));
+                if (_isVertical)
+                    _contentMask.GetComponent<RectMask2D>().softness = new Vector2Int(0, _contentMask.GetComponent<RectMask2D>().softness.y);
+                else
+                    _contentMask.GetComponent<RectMask2D>().softness = new Vector2Int(_contentMask.GetComponent<RectMask2D>().softness.y, 0);
+
                 _contentPanel = _contentMask.GetChild(0).GetComponent<RectTransform>();
             }
 
