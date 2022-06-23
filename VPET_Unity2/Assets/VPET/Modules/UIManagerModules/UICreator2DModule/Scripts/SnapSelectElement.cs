@@ -182,7 +182,7 @@ namespace vpet
             {
                 if (txt.color == uiSettings.colors.ElementSelection_Highlight)
                 {
-                    txt.color = image.color = uiSettings.colors.ElementSelection_Default;
+                    txt.color = uiSettings.colors.ElementSelection_Default;
                     if(image.sprite)
                         image.color = uiSettings.colors.ElementSelection_Default;
                 }
