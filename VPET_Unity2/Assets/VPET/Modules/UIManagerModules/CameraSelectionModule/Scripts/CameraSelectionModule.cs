@@ -68,7 +68,12 @@ namespace vpet
         //! The instance of the the safe frame overlay.
         //!
         private GameObject m_safeFrame = null;
-        
+
+        //!
+        //! Event emitted when camera operations are in action
+        //!
+        public event EventHandler<bool> uiCameraOperation;
+
         //!
         //! Constructor
         //! @param name Name of this module
@@ -183,6 +188,7 @@ namespace vpet
 
                     m_isLocked = true;
                 }
+                uiCameraOperation.Invoke(this, m_isLocked);
             }
         }
 
@@ -205,6 +211,7 @@ namespace vpet
 
                     m_isLocked = true;
                 }
+                uiCameraOperation.Invoke(this, m_isLocked);
             }
         }
 

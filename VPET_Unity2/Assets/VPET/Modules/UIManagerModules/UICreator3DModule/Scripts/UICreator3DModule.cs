@@ -45,6 +45,8 @@ namespace vpet
         private GameObject manipR;
         private GameObject manipS;
 
+        private GameObject lastActiveManip;
+
         // Collider layer mask
         private int layerMask = 1 << 5;
 
@@ -124,7 +126,13 @@ namespace vpet
             // Subscribe to manipulator change
             //manager.manipulatorChange += SetManipulatorMode;
             UICreator2DModule UI2DModule = manager.getModule<UICreator2DModule>();
+            // safety check?
             UI2DModule.parameterChanged += SetManipulatorMode;
+
+            // Subscribe to camera change?
+            CameraSelectionModule CamModule = manager.getModule<CameraSelectionModule>();
+            if (CamModule != null)
+                CamModule.uiCameraOperation += SetCameraManipulator;
 
             // Grabbing from the input manager directly
             m_inputManager = core.getManager<InputManager>();
@@ -572,10 +580,16 @@ namespace vpet
             modeTRS = -1;
         }
 
+        private void UnhideAxis()
+        {
+            lastActiveManip.SetActive(true);
+            //TransformAxisMulti(lastActiveManip); // not really needed
+        }
 
         private void ShowAxis(GameObject manip)
         {
             manip.SetActive(true);
+            lastActiveManip = manip;
         }
 
 
@@ -729,6 +743,17 @@ namespace vpet
             manipSxy.transform.localPosition = UniX * UniY * Vector3.Scale(localDelta, vecXY);
             manipSxz.transform.localPosition = UniX * UniZ * Vector3.Scale(localDelta, vecXZ);
             manipSyz.transform.localPosition = UniY * UniZ * Vector3.Scale(localDelta, vecYZ);
+        }
+
+        private void SetCameraManipulator(object sender, bool cameraMode)
+        {
+            if (cameraMode)
+                HideAxes();
+            else
+            {
+                UnhideAxis();
+                Debug.Log("Unhide " + lastActiveManip.name.ToString());
+            }
         }
 
         private float NonZero(float number)
