@@ -33,8 +33,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 2, y: 2}
   m_SizeDelta: {x: 15, y: 15}
   m_Pivot: {x: 0, y: 0}
@@ -50,13 +50,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a97dbc8870a08416481461eb8dc315aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isVertical: 0
+  _isVertical: 1
   _loop: 0
   _allowValueSetting: 0
   _previewExtend: 1
   _fadeFactor: 0.5
   _selectableItems: 3
   _selectByClick: 1
+  _collapsable: 0
+  _collapsableIcon: {fileID: 0}
   _valueText: {fileID: 0}
   _backgroundPrefab: {fileID: 5359195211250848493, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}
   _uiSettings: {fileID: 0}

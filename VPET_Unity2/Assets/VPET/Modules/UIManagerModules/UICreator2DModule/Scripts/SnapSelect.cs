@@ -86,6 +86,16 @@ namespace vpet
         public bool _selectByClick = false;
 
         //!
+        //! Is the menu collapsable
+        //!
+        public bool _collapsable = false;
+
+        //!
+        //! Is the menu collapsable
+        //!
+        public Sprite _collapsableIcon;
+
+        //!
         //! Event emitted when parameter has changed
         //!
         public event EventHandler<int> parameterChanged;
@@ -340,7 +350,16 @@ namespace vpet
         protected override void Awake()
         {
             _canvas = GetComponentInParent<Canvas>();
-
+            if (_collapsable)
+            {
+                Image img = this.gameObject.AddComponent<Image>();
+                if (_collapsableIcon)
+                {
+                    img.sprite = _collapsableIcon;
+                }
+                Button button = this.gameObject.AddComponent<Button>();
+                button.onClick.AddListener(showHide) ;
+            }
             _elementValues = new List<float>();
             _elements = new List<SnapSelectElement>();
             background = null;
@@ -359,7 +378,6 @@ namespace vpet
 
         //!
         //! Init function of the SnapSelect that needs to be called manually before any elements apear
-        //! @param elementTupels Tupel value of elements to add to the SnapSelect (this are usually the axis), first value is the inital value and second the name displayed in the UI
         //!
         private void Init()
         {
@@ -437,6 +455,24 @@ namespace vpet
             if (background)
                 background.sizeDelta = multiplyAlignedVector(_elementSize, true, _menuElementCount);
 
+            if (_collapsable)
+            {
+                if (_isVertical)
+                {
+                    _contentMask.anchoredPosition -= new Vector2(0f, _elementSize.y * (1 + _previewExtend));
+                    //_contentPanel.anchoredPosition -= new Vector2(0f, _elementSize.y * (1 + _previewExtend));
+                    background.anchoredPosition = new Vector2(0f, -_elementSize.y * (1 + _previewExtend));
+                }
+                else
+                {
+                    _contentMask.anchoredPosition += new Vector2(_elementSize.x * (1 + _previewExtend), 0f);
+                    //_contentPanel.anchoredPosition += new Vector2(_elementSize.x * (1 + _previewExtend), 0f);
+                    background.anchoredPosition = new Vector2(_elementSize.x * (1 + _previewExtend), 0f);
+                }
+                background.gameObject.SetActive(false);
+                _contentMask.gameObject.SetActive(false);
+            }
+
             if (_allowValueSetting && _arrows == null)
             {
                 GameObject arrowsPrefab = Resources.Load<GameObject>("Prefabs/SnapSelectParts/PRE_Arrows");
@@ -497,6 +533,26 @@ namespace vpet
         }
 
         //!
+        //!
+        //!
+        public void showHide()
+        {
+            if (_collapsable)
+            {
+                if (_contentMask.gameObject.activeSelf)
+                {
+                    _contentMask.gameObject.SetActive(false);
+                    background.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _contentMask.gameObject.SetActive(true);
+                    background.gameObject.SetActive(true);
+                }
+            }
+        }
+
+        //!
         //! Function called when an element was clicked
         //! @param sender Sender of the event
         //! @param e SnapSelectElement that has been clicked
@@ -510,6 +566,59 @@ namespace vpet
                 parameterChanged?.Invoke(this, _currentAxis);
                 elementClicked?.Invoke(this, e.index);
                 highlightElement?.Invoke(this, e.index);
+            }
+            else if(!_axisDecided)
+            {
+                if (e.index != _currentAxis)
+                {
+                    int direction = 0;
+                    if (e.index == (_currentAxis + 1) % _elementCount)
+                        direction = -1;
+                    else if (e.index == (_elementCount + _currentAxis - 1) % _elementCount)
+                        direction = 1;
+                    Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
+                    if (_isVertical)
+                    {
+                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, (Mathf.Round(contentPos.y / _elementSize.y)+direction) * _elementSize.y);
+                    }
+                    else
+                    {
+                        _contentPanel.anchoredPosition = new Vector2((Mathf.Round(contentPos.x / _elementSize.x)+direction) * _elementSize.x, contentPos.y);
+                    }
+                    contentPos = _contentPanel.anchoredPosition;
+                    showHighlighted(e.index);
+                    _currentAxis = e.index;
+                    parameterChanged?.Invoke(this, _currentAxis);
+                    setText(_elementValues[_currentAxis]);
+                    _axisDecided = false;
+
+                    //realize infinit looping
+                    if (_initialized && _loop)
+                    {
+                        if (_isVertical)
+                        {
+                            if (contentPos.y > _elementSize.y * (-_previewExtend + (2 * _elementCount)))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
+                            }
+                            if (contentPos.y < _elementSize.y * (-_previewExtend + _elementCount))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
+                            }
+                        }
+                        else
+                        {
+                            if (contentPos.x > _elementSize.x * (_previewExtend - _elementCount))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x - (_elementSize.x * _elementCount), contentPos.y);
+                            }
+                            if (contentPos.x < _elementSize.x * (_previewExtend - (2 * _elementCount)))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x + (_elementSize.x * _elementCount), contentPos.y);
+                            }
+                        }
+                    }
+                }
             }
         }
 

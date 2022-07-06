@@ -167,9 +167,9 @@ namespace vpet
             arImgManager.trackedImagesChanged += MarkerTrackingChanged;
             arImgManager.enabled = true;
 
-            enableAR = new Parameter<bool>(true, "enableAR");
-            enableOcclusionMapping = new Parameter<bool>(true, "enableOcclusion");
-            enableMarkerTracking = new Parameter<bool>(true, "enableMarkerTracking");
+            enableAR = new Parameter<bool>(false, "enableAR");
+            enableOcclusionMapping = new Parameter<bool>(false, "enableOcclusion");
+            enableMarkerTracking = new Parameter<bool>(false, "enableMarkerTracking");
 
             _menu = new MenuTree()
                 .Begin(MenuItem.IType.VSPLIT)
@@ -192,6 +192,10 @@ namespace vpet
             enableAR.hasChanged += changeActive;
             enableOcclusionMapping.hasChanged += changeOcclusion;
             enableMarkerTracking.hasChanged += changeMarkerTracking;
+
+            changeActive(this, false);
+            changeOcclusion(this, false);
+            changeMarkerTracking(this, false);
 
             _arActive = true;
         }

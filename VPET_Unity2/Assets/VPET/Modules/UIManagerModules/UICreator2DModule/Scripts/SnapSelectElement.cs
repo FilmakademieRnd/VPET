@@ -111,7 +111,6 @@ namespace vpet
                 snapSelect = this.transform.parent.GetComponent<SnapSelect>();
                 refRect = snapSelect.GetComponent<RectTransform>();
                 refRectCenter = refRect.position - new Vector3(refRect.sizeDelta.x, refRect.sizeDelta.y, 0f);
-                Debug.Log(refRectCenter);
                 initialSize = refRect.sizeDelta;
             }
             txt = this.GetComponentInChildren<TextMeshProUGUI>();

@@ -68,7 +68,6 @@ namespace vpet
 
         private Transform UI2D;
         private Transform manipulatorPanel;
-        private Transform manipulatorSelectionPanel;
         private Button undoButton;
         private Button redoButton;
         private Button resetButton;
@@ -92,11 +91,10 @@ namespace vpet
             Transform canvasTrans = SceneObject.Instantiate(canvas).transform;
             canvasTrans.name = "Canvas_2DUI";
             UI2D = canvasTrans.GetChild(0).transform;
-            manipulatorSelectionPanel = UI2D.GetChild(0);
-            manipulatorPanel = UI2D.GetChild(1);
-            undoButton = UI2D.GetChild(2).GetChild(0).GetComponent<Button>();
-            redoButton = UI2D.GetChild(2).GetChild(1).GetComponent<Button>();
-            resetButton = UI2D.GetChild(2).GetChild(2).GetComponent<Button>();
+            manipulatorPanel = UI2D.GetChild(0);
+            undoButton = UI2D.GetChild(1).GetChild(1).GetComponent<Button>();
+            redoButton = UI2D.GetChild(1).GetChild(2).GetComponent<Button>();
+            resetButton = UI2D.GetChild(1).GetChild(3).GetComponent<Button>();
             undoButton.onClick.AddListener(() => core.getManager<SceneManager>().getModule<UndoRedoModule>().undoStep());
             redoButton.onClick.AddListener(() => core.getManager<SceneManager>().getModule<UndoRedoModule>().redoStep());
             resetButton.onClick.AddListener(() => resetCurrentSceneObjects());
