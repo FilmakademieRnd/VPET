@@ -68,6 +68,7 @@ namespace vpet
 
         private Transform UI2D;
         private Transform manipulatorPanel;
+        private Transform undoRedoPanel;
         private Button undoButton;
         private Button redoButton;
         private Button resetButton;
@@ -92,6 +93,7 @@ namespace vpet
             canvasTrans.name = "Canvas_2DUI";
             UI2D = canvasTrans.GetChild(0).transform;
             manipulatorPanel = UI2D.GetChild(0);
+            undoRedoPanel = UI2D.GetChild(1);
             undoButton = UI2D.GetChild(1).GetChild(1).GetComponent<Button>();
             redoButton = UI2D.GetChild(1).GetChild(2).GetComponent<Button>();
             resetButton = UI2D.GetChild(1).GetChild(3).GetComponent<Button>();
@@ -149,79 +151,37 @@ namespace vpet
             mainSelection = selectedSceneObjects[0];
 
             int paramIndex = 0;
-            if (mainSelection.parameterList.Count > 2)
+
+            GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
+            currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
+            SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
+            snapSelect.uiSettings = manager.uiAppearanceSettings;
+
+            for (int i = 0; i < mainSelection.parameterList.Count; i++)
             {
-                //inititalize selectors for translation, rotation, scale
-                /*for (int i = 0; i < ((mainSelection.parameterList.Count > 3)? 4 : 3); i++)
+                switch (i)
                 {
-                    GameObject createdManipSelector = SceneObject.Instantiate(selectorPrefab, manipulatorSelectionPanel);
-                    createdManipSelector.GetComponent<RectTransform>().sizeDelta = new Vector2(selectorSize, selectorSize);
-                    createdManipSelector.GetComponent<RectTransform>().localPosition = new Vector2((selectorSize + selectorSpacing) * paramIndex, -selectorSpacing);
-                    instancedManipulatorSelectors.Add(createdManipSelector.gameObject);
-
-                    Sprite icon = Resources.Load<Sprite>("Images/button_translate");
-                    switch (i)
-                    {
-                        //translation
-                        case 0:
-                            icon = Resources.Load<Sprite>("Images/button_translate");
-                            break;
-                        //rotation
-                        case 1:
-                            icon = Resources.Load<Sprite>("Images/button_rotate");
-                            break;
-                        //scale
-                        case 2:
-                            icon = Resources.Load<Sprite>("Images/button_scale");
-                            break;
-                        case 3:
-                            icon = Resources.Load<Sprite>("Images/button_more");
-                            createdManipSelector.GetComponent<RectTransform>().localPosition = new Vector2((selectorSize + selectorSpacing), -selectorSize - 2* selectorSpacing);
-                            currentAddButton = createdManipSelector;
-                            break;
-                    }
-                    if (icon)
-                        createdManipSelector.GetComponent<ManipulatorSelector>().Init(this, manager.uiAppearanceSettings, icon, (i==3)? -1 : i);
-                    
-
-                    paramIndex++;
-                }*/
-
-                //handle additional parameters
-                if (mainSelection.parameterList.Count > 3)
-                {
-                    GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
-                    currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
-                    SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
-                    snapSelect.uiSettings = manager.uiAppearanceSettings;
-
-                    for (int i = 0; i < mainSelection.parameterList.Count; i++)
-                    {
-                        switch (i)
-                        {
-                            //translation
-                            case 0:
-                                snapSelect.addElement(Resources.Load<Sprite>("Images/button_translate"));
-                                break;
-                            //rotation
-                            case 1:
-                                snapSelect.addElement(Resources.Load<Sprite>("Images/button_rotate"));
-                                break;
-                            //scale
-                            case 2:
-                                snapSelect.addElement(Resources.Load<Sprite>("Images/button_scale"));
-                                break;
-                            default:
-                                snapSelect.addElement(mainSelection.parameterList[i].name);
-                                break;
-                        }
-                    }
-                    snapSelect.parameterChanged += createAdditionalManipulator;
-                    currentAddSelector.SetActive(true);
+                    //translation
+                    case 0:
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_translate"));
+                        break;
+                    //rotation
+                    case 1:
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_rotate"));
+                        break;
+                    //scale
+                    case 2:
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_scale"));
+                        break;
+                    default:
+                        snapSelect.addElement(mainSelection.parameterList[i].name);
+                        break;
                 }
-
-                createManipulator(0);
             }
+            snapSelect.parameterChanged += createAdditionalManipulator;
+            currentAddSelector.SetActive(true);
+
+            createManipulator(0);
         }
 
         //!
@@ -233,12 +193,8 @@ namespace vpet
             GameObject.DestroyImmediate(currentAddSelector);
             if(manipulatorPanel)
                 manipulatorPanel.gameObject.SetActive(true);
-            if (undoButton)
-            {
-                undoButton.gameObject.SetActive(false);
-                redoButton.gameObject.SetActive(false);
-                resetButton.gameObject.SetActive(false);
-            }
+            if (undoRedoPanel)
+                undoRedoPanel.gameObject.SetActive(false);
 
             foreach (var manipSelec in instancedManipulatorSelectors)
             {
@@ -362,9 +318,7 @@ namespace vpet
         {
 
             SetAlpha(1f);
-            undoButton.gameObject.SetActive(true);
-            redoButton.gameObject.SetActive(true);
-            resetButton.gameObject.SetActive(true);
+            undoRedoPanel.gameObject.SetActive(true);
             if (setInteractable)
             {
                 SetInteractable(true);
@@ -378,9 +332,7 @@ namespace vpet
         public void HideMenu(bool setInteractable = true)
         {
             SetAlpha(0f);
-            undoButton.gameObject.SetActive(false);
-            redoButton.gameObject.SetActive(false);
-            resetButton.gameObject.SetActive(false);
+            undoRedoPanel.gameObject.SetActive(false);
 
             if (setInteractable)
                 SetInteractable(false);
