@@ -73,6 +73,15 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Tap"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9523916c-5742-4565-84c9-3c2af598c1df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Look"",
                     ""type"": ""Value"",
                     ""id"": ""cbab1f1a-130f-4b7b-98f3-53112a3532fc"",
@@ -258,6 +267,28 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""78fdeaff-2fa2-4c5f-88fb-fe721b7fd3c1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""715b8480-ec4b-444e-befa-a951b749e286"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -271,6 +302,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         m_VPETMap_RightClick = m_VPETMap.FindAction("RightClick", throwIfNotFound: true);
         m_VPETMap_Position = m_VPETMap.FindAction("Position", throwIfNotFound: true);
         m_VPETMap_Click = m_VPETMap.FindAction("Click", throwIfNotFound: true);
+        m_VPETMap_Tap = m_VPETMap.FindAction("Tap", throwIfNotFound: true);
         m_VPETMap_Look = m_VPETMap.FindAction("Look", throwIfNotFound: true);
     }
 
@@ -336,6 +368,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_VPETMap_RightClick;
     private readonly InputAction m_VPETMap_Position;
     private readonly InputAction m_VPETMap_Click;
+    private readonly InputAction m_VPETMap_Tap;
     private readonly InputAction m_VPETMap_Look;
     public struct VPETMapActions
     {
@@ -346,6 +379,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_VPETMap_RightClick;
         public InputAction @Position => m_Wrapper.m_VPETMap_Position;
         public InputAction @Click => m_Wrapper.m_VPETMap_Click;
+        public InputAction @Tap => m_Wrapper.m_VPETMap_Tap;
         public InputAction @Look => m_Wrapper.m_VPETMap_Look;
         public InputActionMap Get() { return m_Wrapper.m_VPETMap; }
         public void Enable() { Get().Enable(); }
@@ -371,6 +405,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Click.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnClick;
+                @Tap.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnTap;
+                @Tap.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnTap;
+                @Tap.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnTap;
                 @Look.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
@@ -393,6 +430,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @Tap.started += instance.OnTap;
+                @Tap.performed += instance.OnTap;
+                @Tap.canceled += instance.OnTap;
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
@@ -407,6 +447,7 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
+        void OnTap(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
     }
 }

@@ -59,7 +59,10 @@ namespace vpet
         private int tIndex;
         private int rIndex;
         private int sIndex;
-
+        
+        // UI Scale
+        float uiScale = 1;
+        
         // Auxiliary vector and plane for raycasting
         Vector3 planeVec = Vector3.zero;
         Plane helperPlane;
@@ -126,7 +129,7 @@ namespace vpet
             // Subscribe to manipulator change
             //manager.manipulatorChange += SetManipulatorMode;
             UICreator2DModule UI2DModule = manager.getModule<UICreator2DModule>();
-            // safety check?
+            // is a safety non-null check need?
             UI2DModule.parameterChanged += SetManipulatorMode;
 
             // Subscribe to camera change?
@@ -140,7 +143,11 @@ namespace vpet
             // Hookup to input events
             m_inputManager.inputPressPerformed += PressStart;
             m_inputManager.inputPressEnd += PressEnd;
-            
+
+            // Grabbing scene scale
+            UIManager m_UIManager = core.getManager<UIManager>();
+            if (m_UIManager != null)
+                uiScale = m_UIManager.settings.uiScale.value;
 
             // Instantiate TRS widgest but keep them hidden
             InstantiateAxes();
@@ -780,10 +787,14 @@ namespace vpet
             // quick fix - TODO: double check event subscription at UpdateManipulatorPosition
             if (!selObj)
                 return Vector3.one;
-            return Vector3.one
+            //return Vector3.one
+            //           * (Vector3.Distance(Camera.main.transform.position, selObj.transform.position)
+            //           * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+            //           * Screen.dpi / 1000);
+            return Vector3.one * uiScale
                        * (Vector3.Distance(Camera.main.transform.position, selObj.transform.position)
-                       * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
-                       * Screen.dpi / 1000);
+                       * (5.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+                       * Screen.dpi / (Screen.width + Screen.height));
         }
 
         public void SetModeT()

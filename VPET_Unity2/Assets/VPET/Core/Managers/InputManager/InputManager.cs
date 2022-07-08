@@ -118,6 +118,9 @@ namespace vpet
         //!
         public event EventHandler<DragEventArgs> threeDragEvent;
 
+        // Candidate event to stop the UI drag operations (snap select)
+        public event EventHandler<InputEventArgs> suspendDrag;
+
         //!
         //! Enumeration describing possible touch input gestures.
         //!
@@ -197,7 +200,7 @@ namespace vpet
             m_inputs.VPETMap.Enable();
 
             // Binding of the click event
-            m_inputs.VPETMap.Click.performed += ctx => TapFunction(ctx);
+            m_inputs.VPETMap.Tap.performed += ctx => TapFunction(ctx);
 
             // Dedicated bindings for monitoring touch and drag interactions
             m_inputs.VPETMap.Click.started += ctx => PressStart(ctx);
@@ -260,7 +263,7 @@ namespace vpet
         {
             base.Cleanup(sender, e);
 
-            m_inputs.VPETMap.Click.performed -= ctx => TapFunction(ctx);
+            m_inputs.VPETMap.Tap.performed -= ctx => TapFunction(ctx);
 
             m_inputs.VPETMap.Click.performed -= ctx => PressPerformed(ctx);
             m_inputs.VPETMap.Click.canceled -= ctx => PressEnd(ctx);
@@ -441,7 +444,8 @@ namespace vpet
             // force the suspension of active selection.
             if (m_touchType == InputTouchType.TWO || m_touchType == InputTouchType.THREE)
             {
-                ClearClickInput();
+                LockUIOperation();
+                //ClearClickInput();
             }
         }
 
@@ -545,6 +549,19 @@ namespace vpet
 
             // Update buffer
             m_posBuffer = pos;
+        }
+
+        //!
+        //! Helper function to stop UI operations while moving camera
+        //!
+        private void LockUIOperation()
+        {
+            // Clear monitor variables
+            m_doOnce = true;
+
+            // Invoke end of press event
+            inputPressEnd?.Invoke(this, null);
+            suspendDrag?.Invoke(this, null);
         }
 
         //!
