@@ -348,6 +348,28 @@ namespace vpet
                 int id = 0;
                 if (sceneObject)
                     id = m_sceneManager.getSceneObjectId(ref sceneObject);
+                else
+                {
+                    Transform t = renderer.transform;
+                    Transform root = core.getManager<SceneManager>().scnRoot.transform;
+                    
+                    while (t.parent != root)
+                    {
+                        if (t.parent.tag == "editable")
+                        {
+                            SceneObject so = t.parent.GetComponent<SceneObject>();
+                            if (so)
+                                id = m_sceneManager.getSceneObjectId(ref so);
+                            break;
+                        }
+                        else
+                        {
+                            t = t.parent;
+                        }
+
+                    }
+
+                }
 
                 Color32 packedId = EncodeId(id);
 

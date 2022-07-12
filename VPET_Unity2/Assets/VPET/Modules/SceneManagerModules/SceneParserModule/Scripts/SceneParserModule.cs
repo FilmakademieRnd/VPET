@@ -146,6 +146,12 @@ namespace vpet
                         if (core.isServer && !sceneObject)
                             sceneObject = gameObject.AddComponent<SceneObject>();
                 }
+                else
+                {
+                    if (gameObject.tag == "editable")
+                        if (core.isServer && !sceneObject)
+                            sceneObject = gameObject.AddComponent<SceneObject>();
+                }
 
                 Animator animator = trans.GetComponent<Animator>();
                 if (animator != null)
