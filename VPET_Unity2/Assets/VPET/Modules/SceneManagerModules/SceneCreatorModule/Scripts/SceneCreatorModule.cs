@@ -617,6 +617,15 @@ namespace vpet
                         manager.sceneObjects.Add(sco);
                     }
                 }
+                else
+                {
+                    if (node.editable)
+                    {
+                        objMain.tag = "editable";
+                        SceneObject sdo = objMain.AddComponent<SceneObject>();
+                        manager.sceneObjects.Add(sdo);
+                    }
+                }
 
                 Vector3 sceneExtends = manager.sceneBoundsMax - manager.sceneBoundsMin;
                 manager.maxExtend = Mathf.Max(Mathf.Max(sceneExtends.x, sceneExtends.y), sceneExtends.z);
