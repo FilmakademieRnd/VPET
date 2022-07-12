@@ -182,21 +182,24 @@ namespace vpet
                 if (txt.color == uiSettings.colors.ElementSelection_Highlight)
                 {
                     txt.color = uiSettings.colors.ElementSelection_Default;
-                    if(image.sprite)
-                        image.color = uiSettings.colors.ElementSelection_Default;
+                    if(image)
+                        if(image.sprite)
+                            image.color = uiSettings.colors.ElementSelection_Default;
                 }
                 else
                 {
                     txt.color = uiSettings.colors.ElementSelection_Highlight;
-                    if (image.sprite)
-                        image.color = uiSettings.colors.ElementSelection_Highlight;
+                    if (image)
+                        if (image.sprite)
+                            image.color = uiSettings.colors.ElementSelection_Highlight;
                 }
             }
             else
             {
                 txt.color = uiSettings.colors.ElementSelection_Default;
-                if (image.sprite)
-                    image.color = uiSettings.colors.ElementSelection_Default;
+                if (image)
+                    if (image.sprite)
+                        image.color = uiSettings.colors.ElementSelection_Default;
             }
         }
     }
