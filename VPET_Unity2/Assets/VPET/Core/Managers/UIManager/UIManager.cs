@@ -167,6 +167,9 @@ namespace vpet
             base.Start(sender, e);
             updateCanvasScales(this,0f);
             settings.uiScale.hasChanged += updateCanvasScales;
+
+            core.getManager<InputManager>().toggle2DUIInteraction += activate2DUIInteraction;
+
         }
 
         //!
@@ -391,6 +394,14 @@ namespace vpet
         public void hideMenu()
         {
             menuDeselected?.Invoke(this, EventArgs.Empty);
+        }
+
+        //!
+        //! Function that deactivates the 2D UI interaction
+        //!
+        private void activate2DUIInteraction(object sender, bool e)
+        {
+            _ui2Dinteractable = e;
         }
     }
 }
