@@ -108,6 +108,18 @@ namespace vpet
         //! A list storing references to menu buttons created by the UI-Modules.
         //!
         private List<MenuButton> m_buttons;
+        //!
+        //! activating/deactivating 2D UI interaction
+        //!
+        bool _ui2Dinteractable;
+        //!
+        //! Getter and setter for activating/deactivating 2D UI interaction
+        //!
+        public bool ui2Dinteractable
+        {
+            get { return _ui2Dinteractable; }
+            set { _ui2Dinteractable = value; }
+        }
 
 
         //!
@@ -119,6 +131,7 @@ namespace vpet
             m_menus = new List<MenuTree>();
             m_buttons = new List<MenuButton>();
             m_uiAppearanceSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
+            _ui2Dinteractable = true;
         }
 
         //!

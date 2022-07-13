@@ -156,6 +156,8 @@ namespace vpet
             currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);
             SnapSelect snapSelect = currentAddSelector.GetComponent<SnapSelect>();
             snapSelect.uiSettings = manager.uiAppearanceSettings;
+            snapSelect.manager = manager;
+
 
             for (int i = 0; i < mainSelection.parameterList.Count; i++)
             {
@@ -246,7 +248,7 @@ namespace vpet
                     Spinner spinner = currentManipulator.GetComponent<Spinner>();
                     if (spinner)
                     {
-                        spinner.uiSettings = manager.uiAppearanceSettings;
+                        spinner.manager = manager;
                         spinner.Init(abstractParam);
                         spinner.doneEditing += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
                         spinner.doneEditing += core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueUndoRedoMessage;
