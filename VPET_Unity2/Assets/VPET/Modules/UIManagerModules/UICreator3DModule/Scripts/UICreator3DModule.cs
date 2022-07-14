@@ -85,8 +85,8 @@ namespace vpet
         Vector3 localManipPosition;
 
         // Auxiliary collider for raycasting
-        Collider freeRotationColl;
-        bool insideFreeRotColl;
+        //Collider freeRotationColl;
+        //bool insideFreeRotColl;
 
         // Buffer quaternion for visualizing multi object rotation
         Quaternion visualRot = Quaternion.identity;
@@ -179,7 +179,7 @@ namespace vpet
                 planeVec = manipulator.transform.forward;
                 Vector3 center = manipulator.GetComponent<Collider>().bounds.center;
                 helperPlane = new Plane(planeVec, center);
-                Debug.DrawRay(center, planeVec * 10, Color.red, 1);
+                //Debug.DrawRay(center, planeVec * 10, Color.red, 1);
 
                 // if root modifier - plane normal is camera axis
                 if (manipulator.tag == "gizmoCenter")
@@ -191,10 +191,11 @@ namespace vpet
 
                 // semi hack - if manip = main rotator - free rotation
                 if (manipulator == manipR)
-                {
-                    freeRotationColl = manipulator.GetComponent<Collider>();
-                    helperPlane = new Plane(mainCamera.transform.forward, center);
-                }
+                //{
+                    //freeRotationColl = manipulator.GetComponent<Collider>();
+                    // make the collision plane a bit in front of the object
+                    helperPlane = new Plane(mainCamera.transform.forward, center - .2f * Vector3.Distance(mainCamera.transform.position, selObj.transform.position) * mainCamera.transform.forward);
+                //}
 
                 // store manipulator position in its object local space (to save multiple calls)
                 localManipPosition = selObj.transform.parent.transform.InverseTransformPoint(manipulator.transform.position);
@@ -352,32 +353,35 @@ namespace vpet
                 // if manip = main rotator - free rotation
                 if (manipulator == manipR)
                 {
-                    // If click within sphere collider
-                    if (freeRotationColl.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-                        //if (helperSphere.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-                    {
-                        hit = true;
-                        //Get the point that is clicked - on the sphere collider
-                        hitPoint = hitInfo.point;
-                        if (!insideFreeRotColl)
-                        {
-                            insideFreeRotColl = true;
-                            firstPress = true;
-                        }
-                    }
+                    //// If click within sphere collider
+                    //if (freeRotationColl.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+                    //    //if (helperSphere.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+                    //{
+                    //    hit = true;
+                    //    //Get the point that is clicked - on the sphere collider
+                    //    hitPoint = hitInfo.point;
+                    //    if (!insideFreeRotColl)
+                    //    {
+                    //        insideFreeRotColl = true;
+                    //        firstPress = true;
+                    //    }
+                    //}
                     // If click beyond sphere collider
-                    else if (helperPlane.Raycast(ray, out float enter))
+                    //else if (helperPlane.Raycast(ray, out float enter))
+                    if (helperPlane.Raycast(ray, out float enter))
                     {
-                        if (insideFreeRotColl)
-                        {
-                            insideFreeRotColl = false;
-                            firstPress = true;
-                        }
+                        //if (insideFreeRotColl)
+                        //{
+                        //    insideFreeRotColl = false;
+                        //    firstPress = true;
+                        //}
                         hit = true;
                         //Get the point that is clicked - on the normal to camera plane
                         hitPoint = ray.GetPoint(enter);
                         // Convert to camera space
-                        hitPoint = mainCamera.transform.InverseTransformPoint(hitPoint);
+                        //hitPoint = mainCamera.transform.InverseTransformPoint(hitPoint);
+                        // Convert to object space
+                        hitPoint = selObj.transform.parent.transform.InverseTransformPoint(hitPoint);
                     }
                 }
                 // else it's one of the axis spinner
@@ -397,9 +401,9 @@ namespace vpet
                     // store the offset between clicked point and center of obj
                     if (firstPress)
                     {
-                        if (manipulator == manipR && !insideFreeRotColl)
-                            hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
-                        else
+                        //if (manipulator == manipR && !insideFreeRotColl)
+                        //    hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
+                        //else
                             //hitPosOffset = hitPoint - manipulator.transform.position;
                             hitPosOffset = hitPoint - localManipPosition;
 
@@ -410,26 +414,31 @@ namespace vpet
                     Quaternion rotQuat = new Quaternion();
 
                     // Specific case of extension of rotation beyond sphere collider
-                    if (manipulator == manipR && !insideFreeRotColl)
-                    {
-                        // Use the difference between hit points in camera space
-                        Vector3 hitPos = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
-                        Vector3 click1 = hitPosOffset;
-                        Vector3 deltaPos = hitPos - hitPosOffset;
-                        float deltaAngle = Vector3.SignedAngle(hitPosOffset, hitPos, mainCamera.transform.forward);
-                        // Break in components
-                        float lateralComponent = MathF.Sin(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude;
-                        float frontalComponent = MathF.Cos(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude - click1.magnitude;
-                        // Spin
-                        rotQuat = Quaternion.AngleAxis(lateralComponent * 50, mainCamera.transform.forward);
-                        // Tumble
-                        Vector3 rotAxis = Quaternion.Euler(90, 90, 0) * new Vector3(deltaPos.x, deltaPos.y, 0);
-                        rotQuat *= Quaternion.AngleAxis(Mathf.Abs(frontalComponent) * 200, rotAxis);
-                    }
-                    // Default case
-                    else
-                        //rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
-                        rotQuat.SetFromToRotation(hitPosOffset, hitPoint - localManipPosition);
+                    //if (manipulator == manipR)// && !insideFreeRotColl)
+                    //{
+                    //    // Use the difference between hit points in camera space
+                    //    Vector3 hitPos = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
+                    //    Vector3 click1 = hitPosOffset;
+                    //    Vector3 deltaPos = hitPos - hitPosOffset;
+                    //    float deltaAngle = Vector3.SignedAngle(hitPosOffset, hitPos, mainCamera.transform.forward);
+                    //    // Break in components
+                    //    float lateralComponent = MathF.Sin(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude;
+                    //    float frontalComponent = MathF.Cos(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude - click1.magnitude;
+                    //    // Spin
+                    //    rotQuat = Quaternion.AngleAxis(lateralComponent * 50, mainCamera.transform.forward);
+                    //    // Tumble
+                    //    Vector3 rotAxis = Quaternion.Euler(90, 90, 0) * new Vector3(deltaPos.x, deltaPos.y, 0);
+                    //    rotQuat *= Quaternion.AngleAxis(Mathf.Abs(frontalComponent) * 200, rotAxis);
+                    //}
+                    //// Default case
+                    //rotQuat.SetFromToRotation(Vector3.zero, (hitPoint - localManipPosition)-hitPosOffset);
+                    //else
+                    //rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
+                    rotQuat.SetFromToRotation(hitPosOffset, hitPoint - localManipPosition);
+
+                    // Strengthen free rotation
+                    if (manipulator == manipR)
+                        rotQuat *= rotQuat;
 
                     // Actual rotation operation
                     // For a single object
@@ -462,9 +471,9 @@ namespace vpet
                     }
 
                     // update offset
-                    if (manipulator == manipR && !insideFreeRotColl)
-                        hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
-                    else
+                    //if (manipulator == manipR && !insideFreeRotColl)
+                    //    hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
+                    //else
                         //hitPosOffset = hitPoint - manipulator.transform.position;
                         hitPosOffset = hitPoint - localManipPosition;
                 }
@@ -820,10 +829,10 @@ namespace vpet
             if (cameraMode)
                 HideAxes();
             else
-            {
+            //{
                 UnhideAxis();
-                Debug.Log("Unhide " + lastActiveManip.name.ToString());
-            }
+            //    Debug.Log("Unhide " + lastActiveManip.name.ToString());
+            //}
         }
 
         private float NonZero(float number)
