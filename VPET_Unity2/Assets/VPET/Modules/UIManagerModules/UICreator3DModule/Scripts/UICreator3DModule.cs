@@ -82,6 +82,7 @@ namespace vpet
         Vector3 hitPosOffset = Vector3.zero;
         bool firstPress = true;
         Vector3 initialSca = Vector3.one;
+        Vector3 localManipPosition;
 
         // Auxiliary collider for raycasting
         Collider freeRotationColl;
@@ -178,6 +179,7 @@ namespace vpet
                 planeVec = manipulator.transform.forward;
                 Vector3 center = manipulator.GetComponent<Collider>().bounds.center;
                 helperPlane = new Plane(planeVec, center);
+                Debug.DrawRay(center, planeVec * 10, Color.red, 1);
 
                 // if root modifier - plane normal is camera axis
                 if (manipulator.tag == "gizmoCenter")
@@ -193,6 +195,9 @@ namespace vpet
                     freeRotationColl = manipulator.GetComponent<Collider>();
                     helperPlane = new Plane(mainCamera.transform.forward, center);
                 }
+
+                // store manipulator position in its object local space (to save multiple calls)
+                localManipPosition = selObj.transform.parent.transform.InverseTransformPoint(manipulator.transform.position);
 
                 // monitor move
                 m_inputManager.inputMove += Move;
@@ -383,6 +388,8 @@ namespace vpet
                         hit = true;
                         //Get the point that is clicked - on the plane
                         hitPoint = ray.GetPoint(enter);
+                        // change to the object local space
+                        hitPoint = selObj.transform.parent.transform.InverseTransformPoint(hitPoint);
                     }
                 }
                 if (hit)
@@ -393,7 +400,8 @@ namespace vpet
                         if (manipulator == manipR && !insideFreeRotColl)
                             hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
                         else
-                            hitPosOffset = hitPoint - manipulator.transform.position;
+                            //hitPosOffset = hitPoint - manipulator.transform.position;
+                            hitPosOffset = hitPoint - localManipPosition;
 
                         firstPress = false;
                     }
@@ -404,7 +412,7 @@ namespace vpet
                     // Specific case of extension of rotation beyond sphere collider
                     if (manipulator == manipR && !insideFreeRotColl)
                     {
-                        // Use the difference between hit points in camera spacestudy the delta
+                        // Use the difference between hit points in camera space
                         Vector3 hitPos = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
                         Vector3 click1 = hitPosOffset;
                         Vector3 deltaPos = hitPos - hitPosOffset;
@@ -420,7 +428,8 @@ namespace vpet
                     }
                     // Default case
                     else
-                        rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
+                        //rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
+                        rotQuat.SetFromToRotation(hitPosOffset, hitPoint - localManipPosition);
 
                     // Actual rotation operation
                     // For a single object
@@ -456,7 +465,8 @@ namespace vpet
                     if (manipulator == manipR && !insideFreeRotColl)
                         hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
                     else
-                        hitPosOffset = hitPoint - manipulator.transform.position;
+                        //hitPosOffset = hitPoint - manipulator.transform.position;
+                        hitPosOffset = hitPoint - localManipPosition;
                 }
             }
 
@@ -761,11 +771,11 @@ namespace vpet
 
         public void UpdateManipulatorPosition(object sender, Vector3 position)
         {
-            manipT.transform.position = position;
+            //manipT.transform.position = position;
             manipT.transform.localScale = GetModifierScale();
             // for multi selection
-            if (selObjs.Count > 1)
-            {
+            //if (selObjs.Count > 1)
+            //{
                 Vector3 averagePos = Vector3.zero;
                 foreach (SceneObject obj in selObjs)
                 {
@@ -773,13 +783,14 @@ namespace vpet
                 }
                 averagePos /= selObjs.Count;
                 manipT.transform.position = averagePos;
-            }
+            //}
         }
 
         public void UpdateManipulatorRotation(object sender, Quaternion rotation)
         {
             if (selObjs.Count <= 1) // only update here if single selection
-                manipR.transform.rotation = rotation;
+                //manipR.transform.rotation = rotation;
+                manipR.transform.localRotation = selObj.transform.rotation;
         }
 
         public void UpdateManipulatorScale(object sender, Vector3 scale)
