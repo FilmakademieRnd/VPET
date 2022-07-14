@@ -68,15 +68,15 @@ namespace vpet
         //!
         //! Position of the SceneObject
         //!
-        private Parameter<Vector3> position;
+        public Parameter<Vector3> position;
         //!
         //! Rotation of the SceneObject
         //!
-        private Parameter<Quaternion> rotation;
+        public Parameter<Quaternion> rotation;
         //!
         //! Scale of the SceneObject
         //!
-        private Parameter<Vector3> scale;
+        public Parameter<Vector3> scale;
         //!
         //! Initialisation
         //!
