@@ -47,9 +47,6 @@ namespace vpet
 
         private GameObject lastActiveManip;
 
-        // Collider layer mask
-        private int layerMask = 1 << 5;
-
         // Selected objects to manipulate
         private SceneObject selObj;
         List<SceneObject> selObjs = new List<SceneObject>();
@@ -81,13 +78,14 @@ namespace vpet
         GameObject manipSxz;
         GameObject manipSyz;
 
-        // Auxiliart vectors for correct manipulation
+        // Auxiliary vectors for correct manipulation
         Vector3 hitPosOffset = Vector3.zero;
         bool firstPress = true;
         Vector3 initialSca = Vector3.one;
 
         // Auxiliary collider for raycasting
         Collider freeRotationColl;
+        bool insideFreeRotColl;
 
         // Buffer quaternion for visualizing multi object rotation
         Quaternion visualRot = Quaternion.identity;
@@ -99,6 +97,9 @@ namespace vpet
         readonly Vector3 vecXY = new(1, 1, 0);
         readonly Vector3 vecXZ = new(1, 0, 1);
         readonly Vector3 vecYZ = new(0, 1, 1);
+
+        // Reference of main camera
+        Camera mainCamera;
 
         //!
         //! A reference to the VPET input manager.
@@ -122,6 +123,7 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             //Debug.Log("Init 3D module");
+            mainCamera = Camera.main;
 
             // Subscribe to selection change
             manager.selectionChanged += SelectionUpdate;
@@ -179,17 +181,17 @@ namespace vpet
 
                 // if root modifier - plane normal is camera axis
                 if (manipulator.tag == "gizmoCenter")
-                    helperPlane = new Plane(Camera.main.transform.forward, center);
+                    helperPlane = new Plane(mainCamera.transform.forward, center);
 
                 // HACK - if translate single axis - plane normal is camera axis projected on the axis plane
                 if (manipulator == manipTx || manipulator == manipTy || manipulator == manipTz)
-                    helperPlane = new Plane(Vector3.ProjectOnPlane(Camera.main.transform.forward, manipulator.transform.up), center);
-
+                    helperPlane = new Plane(Vector3.ProjectOnPlane(mainCamera.transform.forward, manipulator.transform.up), center);
 
                 // semi hack - if manip = main rotator - free rotation
                 if (manipulator == manipR)
                 {
                     freeRotationColl = manipulator.GetComponent<Collider>();
+                    helperPlane = new Plane(mainCamera.transform.forward, center);
                 }
 
                 // monitor move
@@ -214,7 +216,7 @@ namespace vpet
         private GameObject CameraRaycast(Vector3 pos, int layerMask = 1 << 5)
         {
 
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(pos), out RaycastHit hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(pos), out RaycastHit hit, Mathf.Infinity, layerMask))
                 return hit.collider.gameObject;
 
             return null;
@@ -278,7 +280,7 @@ namespace vpet
             if (modeTRS == 0) // multi obj dev
             {
                 //Create a ray from the Mouse click position
-                Ray ray = Camera.main.ScreenPointToRay(e.point);
+                Ray ray = mainCamera.ScreenPointToRay(e.point);
                 if (helperPlane.Raycast(ray, out float enter))
                 {
                     //Get the point that is clicked
@@ -338,16 +340,39 @@ namespace vpet
                 Vector3 hitPoint = Vector3.zero;
 
                 // reate a ray from the Mouse click position
-                Ray ray = Camera.main.ScreenPointToRay(e.point);
+                Ray ray = mainCamera.ScreenPointToRay(e.point);
+                //Debug.Log(e.point);
+                //Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
 
                 // if manip = main rotator - free rotation
                 if (manipulator == manipR)
                 {
+                    // If click within sphere collider
                     if (freeRotationColl.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+                        //if (helperSphere.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
                     {
                         hit = true;
                         //Get the point that is clicked - on the sphere collider
                         hitPoint = hitInfo.point;
+                        if (!insideFreeRotColl)
+                        {
+                            insideFreeRotColl = true;
+                            firstPress = true;
+                        }
+                    }
+                    // If click beyond sphere collider
+                    else if (helperPlane.Raycast(ray, out float enter))
+                    {
+                        if (insideFreeRotColl)
+                        {
+                            insideFreeRotColl = false;
+                            firstPress = true;
+                        }
+                        hit = true;
+                        //Get the point that is clicked - on the normal to camera plane
+                        hitPoint = ray.GetPoint(enter);
+                        // Convert to camera space
+                        hitPoint = mainCamera.transform.InverseTransformPoint(hitPoint);
                     }
                 }
                 // else it's one of the axis spinner
@@ -356,7 +381,7 @@ namespace vpet
                     if (helperPlane.Raycast(ray, out float enter))
                     {
                         hit = true;
-                        //Get the point that is clicked - on the place
+                        //Get the point that is clicked - on the plane
                         hitPoint = ray.GetPoint(enter);
                     }
                 }
@@ -365,13 +390,37 @@ namespace vpet
                     // store the offset between clicked point and center of obj
                     if (firstPress)
                     {
-                        hitPosOffset = hitPoint - manipulator.transform.position;
+                        if (manipulator == manipR && !insideFreeRotColl)
+                            hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
+                        else
+                            hitPosOffset = hitPoint - manipulator.transform.position;
+
                         firstPress = false;
                     }
 
                     // get orientation quaternion
                     Quaternion rotQuat = new Quaternion();
-                    rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
+
+                    // Specific case of extension of rotation beyond sphere collider
+                    if (manipulator == manipR && !insideFreeRotColl)
+                    {
+                        // Use the difference between hit points in camera spacestudy the delta
+                        Vector3 hitPos = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
+                        Vector3 click1 = hitPosOffset;
+                        Vector3 deltaPos = hitPos - hitPosOffset;
+                        float deltaAngle = Vector3.SignedAngle(hitPosOffset, hitPos, mainCamera.transform.forward);
+                        // Break in components
+                        float lateralComponent = MathF.Sin(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude;
+                        float frontalComponent = MathF.Cos(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude - click1.magnitude;
+                        // Spin
+                        rotQuat = Quaternion.AngleAxis(lateralComponent * 50, mainCamera.transform.forward);
+                        // Tumble
+                        Vector3 rotAxis = Quaternion.Euler(90, 90, 0) * new Vector3(deltaPos.x, deltaPos.y, 0);
+                        rotQuat *= Quaternion.AngleAxis(Mathf.Abs(frontalComponent) * 200, rotAxis);
+                    }
+                    // Default case
+                    else
+                        rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
 
                     // Actual rotation operation
                     // For a single object
@@ -404,7 +453,10 @@ namespace vpet
                     }
 
                     // update offset
-                    hitPosOffset = hitPoint - manipulator.transform.position;
+                    if (manipulator == manipR && !insideFreeRotColl)
+                        hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
+                    else
+                        hitPosOffset = hitPoint - manipulator.transform.position;
                 }
             }
 
@@ -412,7 +464,7 @@ namespace vpet
             if (modeTRS == 2)
             {
                 //Create a ray from the Mouse click position
-                Ray ray = Camera.main.ScreenPointToRay(e.point);
+                Ray ray = mainCamera.ScreenPointToRay(e.point);
                 if (helperPlane.Raycast(ray, out float enter))
                 {
                     //Get the point that is clicked
@@ -788,12 +840,12 @@ namespace vpet
             if (!selObj)
                 return Vector3.one;
             //return Vector3.one
-            //           * (Vector3.Distance(Camera.main.transform.position, selObj.transform.position)
-            //           * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+            //           * (Vector3.Distance(mainCamera.transform.position, selObj.transform.position)
+            //           * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
             //           * Screen.dpi / 1000);
             return Vector3.one * uiScale
-                       * (Vector3.Distance(Camera.main.transform.position, selObj.transform.position)
-                       * (5.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * Camera.main.fieldOfView)))
+                       * (Vector3.Distance(mainCamera.transform.position, selObj.transform.position)
+                       * (5.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
                        * Screen.dpi / (Screen.width + Screen.height));
         }
 
