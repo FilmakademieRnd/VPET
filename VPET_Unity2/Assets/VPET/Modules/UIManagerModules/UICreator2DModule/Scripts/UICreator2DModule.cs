@@ -258,8 +258,6 @@ namespace vpet
                     GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");
                     currentManipulator = SceneObject.Instantiate(resourcePrefab, manipulatorPanel);
                     currentManipulator.GetComponent<ColorSelect>().Init(abstractParam);
-                    // Set TRS manipulator to null
-                    parameterChanged.Invoke(this, -1);
                     break;
                 case AbstractParameter.ParameterType.ACTION:
                 case AbstractParameter.ParameterType.BOOL:

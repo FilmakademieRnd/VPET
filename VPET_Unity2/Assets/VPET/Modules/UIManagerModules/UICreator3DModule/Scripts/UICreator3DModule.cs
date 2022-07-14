@@ -725,7 +725,7 @@ namespace vpet
         private void SetManipulatorMode(object sender, int manipulatorMode)
         {
             // Disable manipulator
-            if (manipulatorMode < 0)
+            if (manipulatorMode < 0 || manipulatorMode > 2)
             {
                 HideAxes();
                 modeTRS = -1;
