@@ -169,6 +169,9 @@ namespace vpet
 
             LoadSettings();
 
+            settings.screenSize.x = Screen.currentResolution.width;
+            settings.screenSize.y = Screen.currentResolution.height;
+
             awakeEvent?.Invoke(this, new EventArgs());
             lateAwakeEvent?.Invoke(this, new EventArgs());
         }

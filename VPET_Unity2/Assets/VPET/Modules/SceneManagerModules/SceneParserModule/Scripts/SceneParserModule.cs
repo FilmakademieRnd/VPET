@@ -121,6 +121,7 @@ namespace vpet
                                 break;
                         }
                         manager.sceneLightList.Add((SceneObjectLight)sceneObject);
+                        gameObject.tag = "editable";
                     }
                 }
                 else if (trans.GetComponent<Camera>() != null)
@@ -130,6 +131,7 @@ namespace vpet
                     {
                         sceneObject = gameObject.AddComponent<SceneObjectCamera>();
                         manager.sceneCameraList.Add((SceneObjectCamera)sceneObject);
+                        gameObject.tag = "editable";
                     }
                 }
                 else if (trans.GetComponent<MeshFilter>() != null)

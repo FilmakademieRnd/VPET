@@ -282,6 +282,7 @@ namespace vpet
             addMenu(settingsMenu);
         }
 
+
         //!
         //! Function to add menu elements to a MenuTree object based on a given VPET Settings object.
         //!

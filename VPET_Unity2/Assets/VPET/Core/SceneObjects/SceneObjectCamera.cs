@@ -65,7 +65,12 @@ namespace vpet
         //!
         //! aperture
         //!
-        private Parameter<float> aperture;
+        public Parameter<float> aperture;
+
+        //!
+        //! aperture
+        //!
+        public Parameter<Vector2> sensorSize;
 
         //!
         //! reference to camera component
@@ -92,6 +97,8 @@ namespace vpet
                 focDist.hasChanged += updateFocalDistance;
                 aperture = new Parameter<float>(2.8f, "aperture", this);
                 aperture.hasChanged += updateAperture;
+                sensorSize = new Parameter<Vector2>(_camera.sensorSize, "sensorSize", this);
+                sensorSize.hasChanged += updateSensorSize;
             }
             else
                 Helpers.Log("no camera component found!");
@@ -109,6 +116,7 @@ namespace vpet
             far.hasChanged -= updateFarClipPlane;
             focDist.hasChanged -= updateFocalDistance;
             aperture.hasChanged -= updateAperture;
+            sensorSize.hasChanged -= updateSensorSize;
         }
 
         // Update is called once per frame
@@ -172,6 +180,7 @@ namespace vpet
         private void updateFocalDistance(object sender, float a)
         {
             //ToDO: Use this in PostEffect.
+            emitHasChanged((AbstractParameter)sender);
         }
 
         //!
@@ -182,6 +191,18 @@ namespace vpet
         private void updateAperture(object sender, float a)
         {
             //ToDO: Use this in PostEffect.
+            emitHasChanged((AbstractParameter)sender);
+        }
+
+        //!
+        //! Update the camera sensor size of the GameObject.
+        //! @param   sender     Object calling the update function
+        //! @param   a          new sensor size value
+        //!
+        private void updateSensorSize(object sender, Vector2 a)
+        {
+            _camera.sensorSize = a;
+            emitHasChanged((AbstractParameter)sender);
         }
 
 
@@ -198,6 +219,8 @@ namespace vpet
                 near.value = _camera.nearClipPlane;
             if (_camera.farClipPlane != far.value)
                 far.value = _camera.farClipPlane;
+            if (_camera.sensorSize != sensorSize.value)
+                sensorSize.value = _camera.sensorSize;
         }
     }
 }

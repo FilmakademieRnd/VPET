@@ -29,6 +29,8 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using TMPro;
 
@@ -61,6 +63,10 @@ namespace vpet
         //!
         private SceneManager m_sceneManager;
         //!
+        //! A reference to the input manager.
+        //!
+        private InputManager m_inputManager;
+        //!
         //! The preloaded prafab of the safe frame overlay game object.
         //!
         private GameObject m_safeFramePrefab;
@@ -68,7 +74,10 @@ namespace vpet
         //! The instance of the the safe frame overlay.
         //!
         private GameObject m_safeFrame = null;
-
+        private Transform m_scaler = null;
+        private TextMeshProUGUI m_infoText = null;
+        private SceneObjectCamera m_oldSOCamera = null;
+        private bool m_pollerActive = true;
         //!
         //! Event emitted when camera operations are in action
         //!
@@ -93,14 +102,17 @@ namespace vpet
         {
             base.Start(sender, e);
 
+            startUpdatePoller();
+
             m_sceneManager = core.getManager<SceneManager>();
+            m_inputManager = core.getManager<InputManager>();
 
             m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
             MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
 
             MenuButton cameraSelectButton = new MenuButton("", selectNextCamera);
             cameraSelectButton.setIcon("Images/CameraIcon");
-            
+
             core.getManager<UIManager>().addButton(safeFrameButton);
             core.getManager<UIManager>().addButton(cameraSelectButton);
 
@@ -117,6 +129,8 @@ namespace vpet
         protected override void Cleanup(object sender, EventArgs e)
         {
             base.Cleanup(sender, e);
+
+            m_pollerActive = false;
 
             m_sceneManager.sceneReady -= copyCamera;
             core.getManager<UIManager>().selectionChanged -= createButtons;
@@ -171,22 +185,41 @@ namespace vpet
         {
             if (m_selectedObject != null)
             {
-                if (m_isLocked)
+                InputManager inputManager = core.getManager<InputManager>();
+                Camera mainCamera = Camera.main;
+
+
+                if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE ||
+                    inputManager.cameraControl == InputManager.CameraControl.AR)
                 {
-                    m_selectedObject.transform.parent = m_oldParent;
-                    m_isLocked = false;
+                    if (m_isLocked)
+                    {
+                        core.updateEvent -= updateLookThrough;
+                        m_isLocked = false;
+                    }
+                    else
+                    {
+                        core.updateEvent += updateLookThrough;
+                        m_isLocked = true;
+                    }
                 }
-                else
+                else 
                 {
-                    Camera mainCamera = Camera.main;
+                    if (m_isLocked)
+                    {
+                        mainCamera.transform.parent = m_oldParent;
+                        m_isLocked = false;
+                    }
+                    else
+                    {
+                        mainCamera.transform.position = m_selectedObject.transform.position;
+                        mainCamera.transform.rotation = m_selectedObject.transform.rotation;
 
-                    mainCamera.transform.position = m_selectedObject.transform.position;
-                    mainCamera.transform.rotation = m_selectedObject.transform.rotation;
+                        m_oldParent = mainCamera.transform.parent;
+                        mainCamera.transform.parent = m_selectedObject.transform;
 
-                    m_oldParent = m_selectedObject.transform.parent;
-                    m_selectedObject.transform.parent = mainCamera.transform;
-
-                    m_isLocked = true;
+                        m_isLocked = true;
+                    }
                 }
                 uiCameraOperation.Invoke(this, m_isLocked);
             }
@@ -199,17 +232,36 @@ namespace vpet
         {
             if (m_selectedObject != null)
             {
-                if (m_isLocked)
+                InputManager inputManager = core.getManager<InputManager>();
+
+                if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE ||
+                    inputManager.cameraControl == InputManager.CameraControl.AR)
                 {
-                    m_selectedObject.transform.parent = m_oldParent;
-                    m_isLocked = false;
+                    if (m_isLocked)
+                    {
+                        core.updateEvent -= updateLockToCamera;
+                        m_isLocked = false;
+                    }
+                    else
+                    {
+                        core.updateEvent += updateLockToCamera;
+                        m_isLocked = true;
+                    }
                 }
                 else
                 {
-                    m_oldParent = m_selectedObject.transform.parent;
-                    m_selectedObject.transform.parent = Camera.main.transform;
+                    if (m_isLocked)
+                    {
+                        Camera.main.transform.parent = m_oldParent;
+                        m_isLocked = false;
+                    }
+                    else
+                    {
+                        m_oldParent = Camera.main.transform.parent;
+                        Camera.main.transform.parent = m_selectedObject.transform;
 
-                    m_isLocked = true;
+                        m_isLocked = true;
+                    }
                 }
                 uiCameraOperation.Invoke(this, m_isLocked);
             }
@@ -224,35 +276,54 @@ namespace vpet
             if (m_safeFrame == null)
             {
                 m_safeFrame = GameObject.Instantiate(m_safeFramePrefab, Camera.main.transform);
-                updateSafeFrame();
+                m_infoText = m_safeFrame.transform.FindDeepChild("InfoText").GetComponent<TextMeshProUGUI>();
+                m_scaler = m_safeFrame.transform.Find("scaler");
+                updateCamera(m_oldSOCamera, null);
             }
             else
+            {
                 GameObject.DestroyImmediate(m_safeFrame);
+                m_safeFrame = null;
+            }
+        }
+
+        private async void startUpdatePoller()
+        {
+            await Task.Run(() => test());
+        }
+
+        private void test()
+        {
+            while (m_pollerActive)
+            {
+                Debug.Log("Test!");
+                Thread.Sleep(1000);
+            }
         }
 
         //!
         //! Function for updating the aspect ratio of the safe frame based on the currently selected camera.
         //!
-        private void updateSafeFrame()
+        private void updateCamera(object sender, AbstractParameter parameter)
         {
-            Transform scaler = m_safeFrame.transform.Find("scaler");
-            TextMeshProUGUI infoText = m_safeFrame.transform.FindDeepChild("InfoText").GetComponent<TextMeshProUGUI>();
+            Camera cameraMain = Camera.main;
+            SceneObjectCamera soCamera = (SceneObjectCamera) sender;
 
-            Camera selectedCamera = null;
-            if (m_sceneManager.sceneCameraList.Count > 0)
-                selectedCamera = m_sceneManager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
-            else
-                selectedCamera = Camera.main;
+            cameraMain.fieldOfView = soCamera.fov.value;
+            cameraMain.sensorSize = soCamera.sensorSize.value;
 
-            string camInfo = String.Format("{0}mm | f/{1} | {2}:{3}mm", selectedCamera.focalLength, "2.8", selectedCamera.sensorSize.x, selectedCamera.sensorSize.y);
-            float newAspect = selectedCamera.sensorSize.x / selectedCamera.sensorSize.y;
-            
-            if (newAspect < selectedCamera.aspect)
-                scaler.localScale = new Vector3(1f / selectedCamera.aspect * (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f, 1f);
-            else
-                scaler.localScale = new Vector3(1f, selectedCamera.aspect / (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f);
+            if (m_safeFrame)
+            {
+                string camInfo = String.Format("{0}mm | f/{1} | {2}:{3}mm | {4} fps", cameraMain.focalLength, soCamera.aperture.value, cameraMain.sensorSize.x, cameraMain.sensorSize.y, core.settings.framerate);
+                float newAspect = cameraMain.sensorSize.x / cameraMain.sensorSize.y;
 
-            infoText.text = camInfo;
+                if (newAspect < cameraMain.aspect)
+                    m_scaler.localScale = new Vector3(1f / cameraMain.aspect * (cameraMain.sensorSize.x / cameraMain.sensorSize.y), 1f, 1f);
+                else
+                    m_scaler.localScale = new Vector3(1f, cameraMain.aspect / (cameraMain.sensorSize.x / cameraMain.sensorSize.y), 1f);
+
+                m_infoText.text = camInfo;
+            }
         }
 
         //!
@@ -283,18 +354,62 @@ namespace vpet
         {
             if (m_sceneManager.sceneCameraList.Count > 0)
             {
+                if (m_oldSOCamera)
+                {
+                    m_oldSOCamera.hasChanged -= updateCamera;
+                }
                 Camera mainCamera = Camera.main;
                 int targetDisplay = mainCamera.targetDisplay;
                 float aspect = mainCamera.aspect;
-                Camera newCamera = m_sceneManager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
+                SceneObjectCamera soCamera = m_sceneManager.sceneCameraList[m_cameraIndex];
+                Camera newCamera = soCamera.GetComponent<Camera>();
+                soCamera.hasChanged += updateCamera;
+                Debug.Log(soCamera.name + " Camera linked.");
+                m_oldSOCamera = soCamera;
                 mainCamera.enabled = false;
                 mainCamera.CopyFrom(newCamera);
                 mainCamera.targetDisplay = targetDisplay;
                 mainCamera.aspect = aspect;
                 mainCamera.enabled = true;
 
-                if (m_safeFrame)
-                    updateSafeFrame();
+                updateCamera(soCamera, null);
+            }
+        }
+
+        private void updateLookThrough(object sender, EventArgs e)
+        {
+            Transform camTransform = Camera.main.transform;
+            switch (m_inputManager.cameraControl)
+            {
+                case InputManager.CameraControl.ATTITUDE: 
+                case InputManager.CameraControl.AR:
+                    m_selectedObject.position.setValue(m_selectedObject.transform.InverseTransformPoint(camTransform.position));
+                    m_selectedObject.rotation.setValue(camTransform.rotation);
+                    
+                    break;
+                default:
+                    camTransform.position = m_selectedObject.transform.position;
+                    camTransform.rotation = m_selectedObject.transform.rotation;
+                    break;
+            }
+        }
+
+        private void updateLockToCamera(object sender, EventArgs e)
+        {
+            Transform camTransform = Camera.main.transform;
+            switch (m_inputManager.cameraControl)
+            {
+                case InputManager.CameraControl.ATTITUDE:
+                case InputManager.CameraControl.AR:
+                    Vector3 newPosition = m_selectedObject.transform.InverseTransformPoint(camTransform.position);
+
+                    m_selectedObject.position.setValue(newPosition);
+                    m_selectedObject.rotation.setValue(camTransform.rotation);
+                    break;
+                default:
+                    camTransform.localPosition = m_selectedObject.transform.position;
+                    camTransform.rotation = m_selectedObject.transform.rotation;
+                    break;
             }
         }
     }
