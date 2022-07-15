@@ -108,6 +108,18 @@ namespace vpet
         //! A list storing references to menu buttons created by the UI-Modules.
         //!
         private List<MenuButton> m_buttons;
+        //!
+        //! activating/deactivating 2D UI interaction
+        //!
+        bool _ui2Dinteractable;
+        //!
+        //! Getter and setter for activating/deactivating 2D UI interaction
+        //!
+        public bool ui2Dinteractable
+        {
+            get { return _ui2Dinteractable; }
+            set { _ui2Dinteractable = value; }
+        }
 
 
         //!
@@ -119,6 +131,7 @@ namespace vpet
             m_menus = new List<MenuTree>();
             m_buttons = new List<MenuButton>();
             m_uiAppearanceSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
+            _ui2Dinteractable = true;
         }
 
         //!
@@ -154,6 +167,9 @@ namespace vpet
             base.Start(sender, e);
             updateCanvasScales(this,0f);
             settings.uiScale.hasChanged += updateCanvasScales;
+
+            core.getManager<InputManager>().toggle2DUIInteraction += activate2DUIInteraction;
+
         }
 
         //!
@@ -265,6 +281,7 @@ namespace vpet
 
             addMenu(settingsMenu);
         }
+
 
         //!
         //! Function to add menu elements to a MenuTree object based on a given VPET Settings object.
@@ -378,6 +395,14 @@ namespace vpet
         public void hideMenu()
         {
             menuDeselected?.Invoke(this, EventArgs.Empty);
+        }
+
+        //!
+        //! Function that deactivates the 2D UI interaction
+        //!
+        private void activate2DUIInteraction(object sender, bool e)
+        {
+            _ui2Dinteractable = e;
         }
     }
 }

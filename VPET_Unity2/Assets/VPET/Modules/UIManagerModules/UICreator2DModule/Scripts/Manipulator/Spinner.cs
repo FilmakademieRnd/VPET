@@ -52,11 +52,10 @@ namespace vpet
         //!
         //! Reference to VPET uiSettings
         //!
-        private VPETUISettings _uiSettings;
-        public VPETUISettings uiSettings
+        private UIManager _manager;
+        public UIManager manager
         {
-            get => _uiSettings;
-            set => _uiSettings = value;
+            set => _manager = value;
         }
 
         //!
@@ -77,7 +76,8 @@ namespace vpet
         {
             abstractParam = p;
             _snapSelect = this.GetComponent<SnapSelect>();
-            _snapSelect.uiSettings = _uiSettings;
+            _snapSelect.uiSettings = _manager.uiAppearanceSettings;
+            _snapSelect.manager = _manager;
 
             AbstractParameter.ParameterType type = abstractParam.vpetType;
 

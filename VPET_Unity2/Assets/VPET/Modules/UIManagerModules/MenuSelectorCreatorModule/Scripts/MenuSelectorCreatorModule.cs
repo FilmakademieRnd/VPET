@@ -139,6 +139,7 @@ namespace vpet
 
             m_menuSelector = GameObject.Instantiate(m_menuSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
             m_menuSelector.uiSettings = manager.uiAppearanceSettings;
+            m_menuSelector.manager = manager;
             core.getManager<UIManager>().menuDeselected += m_menuSelector.resetHighlighting;
 
             foreach (MenuTree menu in manager.getMenus())
@@ -171,6 +172,7 @@ namespace vpet
 
             m_buttonSelector = GameObject.Instantiate(m_buttonSelectorPrefab, m_canvas.transform).GetComponent<SnapSelect>();
             m_buttonSelector.uiSettings = manager.uiAppearanceSettings;
+            m_buttonSelector.manager = manager;
 
             foreach (MenuButton button in manager.getButtons())
             {

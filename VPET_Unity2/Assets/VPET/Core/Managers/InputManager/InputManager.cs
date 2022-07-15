@@ -118,8 +118,10 @@ namespace vpet
         //!
         public event EventHandler<DragEventArgs> threeDragEvent;
 
-        // Candidate event to stop the UI drag operations (snap select)
-        public event EventHandler<InputEventArgs> suspendDrag;
+        //!
+        //! Event to stop the UI drag operations (snap select)
+        //!
+        public event EventHandler<bool> toggle2DUIInteraction;
 
         //!
         //! Enumeration describing possible touch input gestures.
@@ -428,6 +430,9 @@ namespace vpet
 
             // Also the moving
             m_isTouchDrag = false;
+
+            // Restore UI Interaction
+            toggle2DUIInteraction.Invoke(this, true);
         }
 
         //!
@@ -561,7 +566,7 @@ namespace vpet
 
             // Invoke end of press event
             inputPressEnd?.Invoke(this, null);
-            suspendDrag?.Invoke(this, null);
+            toggle2DUIInteraction?.Invoke(this, false);
         }
 
         //!

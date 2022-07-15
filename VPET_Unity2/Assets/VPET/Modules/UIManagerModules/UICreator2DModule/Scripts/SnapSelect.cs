@@ -146,6 +146,15 @@ namespace vpet
         }
 
         //!
+        //! Reference to VPET uiManager
+        //!
+        private UIManager _manager;
+        public UIManager manager
+        {
+            set => _manager = value;
+        }
+
+        //!
         //! Is the menu fixed or dragable
         //!
         private bool _dragable = true;
@@ -257,7 +266,7 @@ namespace vpet
 
             _elementCount++;
 
-            Init();
+            Create();
 
             return _elementCount - 1;
         }
@@ -293,7 +302,7 @@ namespace vpet
 
             _elementCount++;
 
-            Init();
+            Create();
 
             return _elementCount - 1;
         }
@@ -330,7 +339,7 @@ namespace vpet
 
             _elementCount++;
 
-            Init();
+            Create();
 
             return _elementCount - 1;
         }
@@ -345,7 +354,7 @@ namespace vpet
         }
 
         //!
-        //!
+        //! Unity Awake function
         //!
         protected override void Awake()
         {
@@ -379,7 +388,7 @@ namespace vpet
         //!
         //! Init function of the SnapSelect that needs to be called manually before any elements apear
         //!
-        private void Init()
+        private void Create()
         {
             //setup overall layout
             _elementSize = this.GetComponent<RectTransform>().sizeDelta;
@@ -559,62 +568,65 @@ namespace vpet
         //!
         private void handleClick(object sender, SnapSelectElement e)
         {
-            if (_selectByClick && !_axisDecided)
+            if (_manager.ui2Dinteractable)
             {
-                _currentAxis = e.index;
-                setText(_elementValues[_currentAxis]);
-                parameterChanged?.Invoke(this, _currentAxis);
-                elementClicked?.Invoke(this, e.index);
-                highlightElement?.Invoke(this, e.index);
-            }
-            else if(!_axisDecided)
-            {
-                if (e.index != _currentAxis)
+                if (_selectByClick && !_axisDecided)
                 {
-                    int direction = 0;
-                    if (e.index == (_currentAxis + 1) % _elementCount)
-                        direction = -1;
-                    else if (e.index == (_elementCount + _currentAxis - 1) % _elementCount)
-                        direction = 1;
-                    Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
-                    if (_isVertical)
-                    {
-                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, (Mathf.Round(contentPos.y / _elementSize.y)+direction) * _elementSize.y);
-                    }
-                    else
-                    {
-                        _contentPanel.anchoredPosition = new Vector2((Mathf.Round(contentPos.x / _elementSize.x)+direction) * _elementSize.x, contentPos.y);
-                    }
-                    contentPos = _contentPanel.anchoredPosition;
-                    showHighlighted(e.index);
                     _currentAxis = e.index;
-                    parameterChanged?.Invoke(this, _currentAxis);
                     setText(_elementValues[_currentAxis]);
-                    _axisDecided = false;
-
-                    //realize infinit looping
-                    if (_initialized && _loop)
+                    parameterChanged?.Invoke(this, _currentAxis);
+                    elementClicked?.Invoke(this, e.index);
+                    highlightElement?.Invoke(this, e.index);
+                }
+                else if (!_axisDecided)
+                {
+                    if (e.index != _currentAxis)
                     {
+                        int direction = 0;
+                        if (e.index == (_currentAxis + 1) % _elementCount)
+                            direction = -1;
+                        else if (e.index == (_elementCount + _currentAxis - 1) % _elementCount)
+                            direction = 1;
+                        Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
                         if (_isVertical)
                         {
-                            if (contentPos.y > _elementSize.y * (-_previewExtend + (2 * _elementCount)))
-                            {
-                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
-                            }
-                            if (contentPos.y < _elementSize.y * (-_previewExtend + _elementCount))
-                            {
-                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
-                            }
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, (Mathf.Round(contentPos.y / _elementSize.y) + direction) * _elementSize.y);
                         }
                         else
                         {
-                            if (contentPos.x > _elementSize.x * (_previewExtend - _elementCount))
+                            _contentPanel.anchoredPosition = new Vector2((Mathf.Round(contentPos.x / _elementSize.x) + direction) * _elementSize.x, contentPos.y);
+                        }
+                        contentPos = _contentPanel.anchoredPosition;
+                        showHighlighted(e.index);
+                        _currentAxis = e.index;
+                        parameterChanged?.Invoke(this, _currentAxis);
+                        setText(_elementValues[_currentAxis]);
+                        _axisDecided = false;
+
+                        //realize infinit looping
+                        if (_initialized && _loop)
+                        {
+                            if (_isVertical)
                             {
-                                _contentPanel.anchoredPosition = new Vector2(contentPos.x - (_elementSize.x * _elementCount), contentPos.y);
+                                if (contentPos.y > _elementSize.y * (-_previewExtend + (2 * _elementCount)))
+                                {
+                                    _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
+                                }
+                                if (contentPos.y < _elementSize.y * (-_previewExtend + _elementCount))
+                                {
+                                    _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
+                                }
                             }
-                            if (contentPos.x < _elementSize.x * (_previewExtend - (2 * _elementCount)))
+                            else
                             {
-                                _contentPanel.anchoredPosition = new Vector2(contentPos.x + (_elementSize.x * _elementCount), contentPos.y);
+                                if (contentPos.x > _elementSize.x * (_previewExtend - _elementCount))
+                                {
+                                    _contentPanel.anchoredPosition = new Vector2(contentPos.x - (_elementSize.x * _elementCount), contentPos.y);
+                                }
+                                if (contentPos.x < _elementSize.x * (_previewExtend - (2 * _elementCount)))
+                                {
+                                    _contentPanel.anchoredPosition = new Vector2(contentPos.x + (_elementSize.x * _elementCount), contentPos.y);
+                                }
                             }
                         }
                     }
@@ -701,8 +713,11 @@ namespace vpet
         //!
         public void OnBeginDrag(PointerEventData data)
         {
-            _dragStart = data.position;
-            _axisDecided = false;
+            if (_manager.ui2Dinteractable)
+            {
+                _dragStart = data.position;
+                _axisDecided = false;
+            }
         }
 
         //!
@@ -711,96 +726,99 @@ namespace vpet
         //!
         public void OnDrag(PointerEventData data)
         {
-            Vector2 contentPos = _contentPanel.anchoredPosition;
-            float scale = 1f/_canvas.scaleFactor;
-
-
-            if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > (_isVertical? (_contentMask.sizeDelta.y / 8f) : (_contentMask.sizeDelta.x / 8f)))
+            if (_manager.ui2Dinteractable)
             {
-                _majorAxisX = Mathf.Abs(_dragStart.x - data.position.x) > Mathf.Abs(_dragStart.y - data.position.y);
-                _axisDecided = true;
-            }
+                Vector2 contentPos = _contentPanel.anchoredPosition;
+                float scale = 1f / _canvas.scaleFactor;
 
-            if(_axisDecided)
-            {
-                if (_isVertical)
+
+                if (!_axisDecided && Vector2.Distance(_dragStart, data.position) > (_isVertical ? (_contentMask.sizeDelta.y / 8f) : (_contentMask.sizeDelta.x / 8f)))
                 {
-                    if (_majorAxisX)
-                    {
-                        //adjust Parameter
-                        if (_allowValueSetting)
-                            valueChanged?.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
-                    }
-                    else if (_dragable)
-                    {
-                        if (!_loop && (_contentPanel.anchoredPosition.y > (_previewExtend + 0.4f) * _elementSize.y))
-                        {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y * scale);
-                        }
-                        else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y))
-                        {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y * scale);
-                        }
-                        else if (_loop || ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
-                                    && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y)))
-                        {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y * scale);
-                        }
-                        draggingAxis?.Invoke(this, true);
+                    _majorAxisX = Mathf.Abs(_dragStart.x - data.position.x) > Mathf.Abs(_dragStart.y - data.position.y);
+                    _axisDecided = true;
+                }
 
+                if (_axisDecided)
+                {
+                    if (_isVertical)
+                    {
+                        if (_majorAxisX)
+                        {
+                            //adjust Parameter
+                            if (_allowValueSetting)
+                                valueChanged?.Invoke(this, (data.delta.x / Screen.width) * _sensitivity);
+                        }
+                        else if (_dragable)
+                        {
+                            if (!_loop && (_contentPanel.anchoredPosition.y > (_previewExtend + 0.4f) * _elementSize.y))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y * scale);
+                            }
+                            else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y * scale);
+                            }
+                            else if (_loop || ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
+                                        && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y)))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y * scale);
+                            }
+                            draggingAxis?.Invoke(this, true);
+
+                        }
+                    }
+                    else
+                    {
+                        if (!_majorAxisX)
+                        {
+                            //adjust Parameter
+                            if (_allowValueSetting)
+                                valueChanged?.Invoke(this, (_majorAxisX ? data.delta.x / Screen.width : data.delta.y / Screen.height) * _sensitivity);
+                        }
+                        else if (_dragable)
+                        {
+                            if (!_loop && (_contentPanel.anchoredPosition.x > (_previewExtend + 0.4f) * _elementSize.x))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2((_previewExtend + 0.4f) * _elementSize.x * scale, contentPos.y);
+                            }
+                            else if (!_loop && (_contentPanel.anchoredPosition.x < -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x * scale, contentPos.y);
+                            }
+                            else if (_loop || (_contentPanel.anchoredPosition.x < (_previewExtend + 0.4f) * _elementSize.x)
+                                        && (_contentPanel.anchoredPosition.x > -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
+                            {
+                                _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x * scale, contentPos.y);
+                            }
+                            draggingAxis?.Invoke(this, true);
+                        }
                     }
                 }
-                else
-                {
-                    if (!_majorAxisX)
-                    {
-                        //adjust Parameter
-                        if (_allowValueSetting)
-                            valueChanged?.Invoke(this, (_majorAxisX? data.delta.x / Screen.width : data.delta.y / Screen.height) * _sensitivity);
-                    }
-                    else if (_dragable)
-                    {
-                        if (!_loop && (_contentPanel.anchoredPosition.x > (_previewExtend + 0.4f) * _elementSize.x))
-                        {
-                            _contentPanel.anchoredPosition = new Vector2((_previewExtend + 0.4f) * _elementSize.x * scale, contentPos.y);
-                        }
-                        else if (!_loop && (_contentPanel.anchoredPosition.x < -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
-                        {
-                            _contentPanel.anchoredPosition = new Vector2(-_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x * scale, contentPos.y);
-                        }
-                        else if (_loop || (_contentPanel.anchoredPosition.x < (_previewExtend + 0.4f) * _elementSize.x)
-                                    && (_contentPanel.anchoredPosition.x > -_contentPanel.sizeDelta.x + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.x))
-                        {
-                            _contentPanel.anchoredPosition = new Vector2(contentPos.x + data.delta.x * scale, contentPos.y);
-                        }
-                        draggingAxis?.Invoke(this, true);
-                    }
-                }
-            }
 
-            //realize infinit looping
-            if (_initialized && _loop && _dragable)
-            {
-                if (_isVertical)
+                //realize infinit looping
+                if (_initialized && _loop && _dragable)
                 {
-                    if (contentPos.y > _elementSize.y * (-_previewExtend + (2 * _elementCount)))
+                    if (_isVertical)
                     {
-                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
+                        if (contentPos.y > _elementSize.y * (-_previewExtend + (2 * _elementCount)))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y - (_elementSize.y * _elementCount));
+                        }
+                        if (contentPos.y < _elementSize.y * (-_previewExtend + _elementCount))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
+                        }
                     }
-                    if (contentPos.y < _elementSize.y * (-_previewExtend + _elementCount))
+                    else
                     {
-                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + (_elementSize.y * _elementCount));
-                    }
-                }
-                else
-                {
-                    if (contentPos.x > _elementSize.x * (_previewExtend - _elementCount))
-                    {
-                        _contentPanel.anchoredPosition = new Vector2(contentPos.x - (_elementSize.x * _elementCount), contentPos.y);
-                    }
-                    if (contentPos.x < _elementSize.x * (_previewExtend - (2 * _elementCount)))
-                    {
-                        _contentPanel.anchoredPosition = new Vector2(contentPos.x + (_elementSize.x * _elementCount), contentPos.y);
+                        if (contentPos.x > _elementSize.x * (_previewExtend - _elementCount))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x - (_elementSize.x * _elementCount), contentPos.y);
+                        }
+                        if (contentPos.x < _elementSize.x * (_previewExtend - (2 * _elementCount)))
+                        {
+                            _contentPanel.anchoredPosition = new Vector2(contentPos.x + (_elementSize.x * _elementCount), contentPos.y);
+                        }
                     }
                 }
             }
@@ -812,34 +830,37 @@ namespace vpet
         //!
         public void OnEndDrag(PointerEventData data)
         {
-            int newAxis;
-            if (_axisDecided /*&& _dragable*/ && ((_isVertical && !_majorAxisX) || (!_isVertical && _majorAxisX)))
+            if (_manager.ui2Dinteractable)
             {
-                Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
-                if (_isVertical)
+                int newAxis;
+                if (_axisDecided /*&& _dragable*/ && ((_isVertical && !_majorAxisX) || (!_isVertical && _majorAxisX)))
                 {
-                    _contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / _elementSize.y) * _elementSize.y);
-                    newAxis = Mathf.FloorToInt(((_contentPanel.anchoredPosition.y / _elementSize.y) + 1) % (_elementCount));
+                    Vector2 contentPos = _contentPanel.GetComponent<RectTransform>().anchoredPosition;
+                    if (_isVertical)
+                    {
+                        _contentPanel.anchoredPosition = new Vector2(contentPos.x, Mathf.Round(contentPos.y / _elementSize.y) * _elementSize.y);
+                        newAxis = Mathf.FloorToInt(((_contentPanel.anchoredPosition.y / _elementSize.y) + 1) % (_elementCount));
+                    }
+                    else
+                    {
+                        _contentPanel.anchoredPosition = new Vector2(Mathf.Round(contentPos.x / _elementSize.x) * _elementSize.x, contentPos.y);
+                        newAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x) + 1) % (_elementCount));
+                    }
+                    if (newAxis < 0)
+                        newAxis = _elementCount + _currentAxis;
+                    if (!_selectByClick)
+                        showHighlighted(newAxis);
+                    _currentAxis = newAxis;
+                    parameterChanged?.Invoke(this, _currentAxis);
+                    setText(_elementValues[_currentAxis]);
                 }
-                else
+                else if (_axisDecided)
                 {
-                    _contentPanel.anchoredPosition = new Vector2(Mathf.Round(contentPos.x / _elementSize.x) * _elementSize.x, contentPos.y);
-                    newAxis = Mathf.FloorToInt((-(_contentPanel.anchoredPosition.x / _elementSize.x) + 1) % (_elementCount));
+                    editingEnded?.Invoke(this, true);
                 }
-                if (newAxis < 0)
-                    newAxis = _elementCount + _currentAxis;
-                if (!_selectByClick)
-                    showHighlighted(newAxis);
-                _currentAxis = newAxis;
-                parameterChanged?.Invoke(this, _currentAxis);
-                setText(_elementValues[_currentAxis]);
+                _axisDecided = false;
+                draggingAxis?.Invoke(this, true);
             }
-            else if (_axisDecided)
-            {
-                editingEnded?.Invoke(this, true);
-            }
-            _axisDecided = false;
-            draggingAxis?.Invoke(this, true);
         }
     }
 }
