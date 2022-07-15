@@ -96,10 +96,12 @@ namespace vpet
             m_sceneManager = core.getManager<SceneManager>();
 
             m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
-            MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
+            //MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
+            MenuButton safeFrameButton = new MenuButton("", showSafeFrame);
+            safeFrameButton.setIcon("Images/button_safeFrames");            
 
             MenuButton cameraSelectButton = new MenuButton("", selectNextCamera);
-            cameraSelectButton.setIcon("Images/CameraIcon");
+            cameraSelectButton.setIcon("Images/button_camera");
             
             core.getManager<UIManager>().addButton(safeFrameButton);
             core.getManager<UIManager>().addButton(cameraSelectButton);
@@ -145,13 +147,13 @@ namespace vpet
                     sceneObjects[0].GetType() == typeof(SceneObjectDirectionalLight) ||
                     sceneObjects[0].GetType() == typeof(SceneObjectSpotLight))
                 {
-                    m_cameraSelectButton = new MenuButton("Look through", lookThrough);
-                    m_cameraSelectButton.setIcon("Images/CameraIcon");
+                    m_cameraSelectButton = new MenuButton("", lookThrough);
+                    m_cameraSelectButton.setIcon("Images/button_lookTrough.png");
                 }
                 else
                 {
-                    m_cameraSelectButton = new MenuButton("Lock to Camera", lockToCamera);
-                    m_cameraSelectButton.setIcon("Images/CameraIcon");
+                    m_cameraSelectButton = new MenuButton("", lockToCamera);
+                    m_cameraSelectButton.setIcon("Images/button_lock2Camera");
                 }
                 uiManager.addButton(m_cameraSelectButton);
             }

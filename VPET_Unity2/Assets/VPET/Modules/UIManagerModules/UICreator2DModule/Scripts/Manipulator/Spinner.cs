@@ -87,32 +87,45 @@ namespace vpet
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
                     paramFloat.hasChanged += _snapSelect.setParam;
                     _snapSelect.setSensitivity(100f);
-                    _snapSelect.addElement("", paramFloat.value);
-                    break;
+                    _snapSelect._loop = true;                    
+                    switch (paramFloat.name) {
+                        case "intensity":
+                            _snapSelect._loop = false;
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_intensity"), paramFloat.value);
+                            break;
+                        case "range":
+                            _snapSelect._loop = false;
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_range"), paramFloat.value);
+                            break;
+                        default:                            
+                            _snapSelect.addElement("", paramFloat.value);
+                        break;
+                    }                    
+                break;
                 case AbstractParameter.ParameterType.VECTOR2:
                     Parameter<Vector2> paramVec2 = (Parameter<Vector2>)abstractParam;
                     paramVec2.hasChanged += _snapSelect.setParam;
                     _snapSelect.setSensitivity(10f);
-                    _snapSelect.addElement("X", paramVec2.value.x);
-                    _snapSelect.addElement("Y", paramVec2.value.y);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_x"), paramVec2.value.x);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_y"), paramVec2.value.y);                    
                     break;
                 case AbstractParameter.ParameterType.VECTOR3:
                     Parameter<Vector3> paramVec3 = (Parameter<Vector3>)abstractParam;
                     paramVec3.hasChanged += _snapSelect.setParam;
                     _snapSelect.setSensitivity(10f);
-                    _snapSelect.addElement("X", paramVec3.value.x);
-                    _snapSelect.addElement("Y", paramVec3.value.y);
-                    _snapSelect.addElement("Z", paramVec3.value.z);
-                    _snapSelect.addElement("XYZ", (paramVec3.value.x + paramVec3.value.y + paramVec3.value.z) / 3f);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_x"), paramVec3.value.x);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_y"), paramVec3.value.y);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_z"), paramVec3.value.z);                    
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_xyz"), (paramVec3.value.x + paramVec3.value.y + paramVec3.value.z) / 3f);
                     break;
                 case AbstractParameter.ParameterType.QUATERNION:
                     Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)abstractParam;
                     paramQuat.hasChanged += _snapSelect.setParam;
                     Vector3 rot = paramQuat.value.eulerAngles;
                     _snapSelect.setSensitivity(500f);
-                    _snapSelect.addElement("X", rot.x);
-                    _snapSelect.addElement("Y", rot.y);
-                    _snapSelect.addElement("Z", rot.z);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_x"), rot.x);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_y"), rot.y);
+                    _snapSelect.addElement(Resources.Load<Sprite>("Images/button_z"), rot.z);
                     break;
                 default:
                     Helpers.Log("Parameter Type cannot be edited with Spinner.");

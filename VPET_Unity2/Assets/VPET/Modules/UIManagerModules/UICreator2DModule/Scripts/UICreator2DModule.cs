@@ -159,21 +159,33 @@ namespace vpet
 
             for (int i = 0; i < mainSelection.parameterList.Count; i++)
             {
-                switch (i)
+                switch (mainSelection.parameterList[i].name)
                 {
                     //translation
-                    case 0:
+                    case "position":
                         snapSelect.addElement(Resources.Load<Sprite>("Images/button_translate"));
                         break;
                     //rotation
-                    case 1:
+                    case "rotation":
                         snapSelect.addElement(Resources.Load<Sprite>("Images/button_rotate"));
                         break;
                     //scale
-                    case 2:
+                    case "scale":
                         snapSelect.addElement(Resources.Load<Sprite>("Images/button_scale"));
                         break;
-                    default:
+                    case "intensity":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_intensity"));
+                        break;
+                    case "color":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_color"));
+                        break;
+                    case "range":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_range"));
+                        break;
+                    case "radius":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_radius"));
+                        break;
+                    default:                        
                         snapSelect.addElement(mainSelection.parameterList[i].name);
                         break;
                 }
