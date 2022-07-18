@@ -119,9 +119,19 @@ namespace vpet
         public event EventHandler<DragEventArgs> threeDragEvent;
 
         //!
+        //! Event to announce there is a finger gestures operation happening
+        //!
+        public event EventHandler<bool> fingerGestureEvent;
+
+        //!
         //! Event to stop the UI drag operations (snap select)
         //!
         public event EventHandler<bool> toggle2DUIInteraction;
+
+        //!
+        //! Event linked to the UI command of changing to the next available camera
+        //!
+        public event EventHandler<bool> nextCameraUICommand;
 
         //!
         //! Enumeration describing possible touch input gestures.
@@ -521,6 +531,8 @@ namespace vpet
                 // Update buffer
                 m_distBuffer = dist;
             }
+            // Announce gesture event
+            fingerGestureEvent?.Invoke(this, true);
         }
 
         //!
@@ -554,6 +566,9 @@ namespace vpet
 
             // Update buffer
             m_posBuffer = pos;
+
+            // Announce gesture event
+            fingerGestureEvent?.Invoke(this, true);
         }
 
         //!
@@ -636,6 +651,14 @@ namespace vpet
         {
             m_cameraMainOffset = Camera.main.transform.rotation;
             m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue() * Quaternion.Euler(0f, 0f, 180f));
+        }
+
+        //!
+        //! Function that fires an event for announcing change of current camera
+        //!
+        public void setNextCameraCommand()
+        {
+            nextCameraUICommand.Invoke(this, true);
         }
 
         //!

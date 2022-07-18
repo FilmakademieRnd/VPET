@@ -276,6 +276,9 @@ namespace vpet
             InputManager inputManager = core.getManager<InputManager>();
             if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE)
                 inputManager.setCameraAttitudeOffsets();
+
+            // announce the UI operation to the input manager
+            inputManager.setNextCameraCommand();
         }
 
         //!

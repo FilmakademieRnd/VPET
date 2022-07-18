@@ -41,25 +41,51 @@ namespace vpet
     //!
     public class UICreator3DModule : UIManagerModule
     {
+        //!
+        //! Reference to the translation manipulator
+        //!
         private GameObject manipT;
+
+        //!
+        //! Reference to the rotation manipulator
+        //!
         private GameObject manipR;
+
+        //!
+        //! Reference to the scale manipulator
+        //!
         private GameObject manipS;
 
+        //!
+        //! Reference to the last active manipulator (for hide/unhide cases)
+        //!
         private GameObject lastActiveManip;
 
-        // Selected objects to manipulate
+        //!
+        //! Selected object to be manipulated
+        //!
         private SceneObject selObj;
-        List<SceneObject> selObjs = new List<SceneObject>();
-        List<Vector3> objOffsets = new List<Vector3>();
 
-        // Indexes of T R S parameters
+        //!
+        //! List of selected objects to be manipulated (for multi-selection)
+        //!
+        List<SceneObject> selObjs = new();
+
+        //!
+        //! List of the positional offset of selected objects (for spatial preservation)
+        //!
+        List<Vector3> objOffsets = new();
+
+        // Indexes of T R S parameters - or can it always be assumed to be 0, 1, 2?
         private int tIndex;
         private int rIndex;
         private int sIndex;
-        
-        // UI Scale
+
+        //!
+        //! UI scale multiplier
+        //!
         float uiScale = 1;
-        
+
         // Auxiliary vector and plane for raycasting
         Vector3 planeVec = Vector3.zero;
         Plane helperPlane;
@@ -118,6 +144,34 @@ namespace vpet
         }
 
         //!
+        //! Destructor, cleaning up event registrations. 
+        //!
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            // Unsubscribe
+            manager.selectionChanged -= SelectionUpdate;
+
+            m_inputManager.inputPressPerformed -= PressStart;
+            m_inputManager.inputPressEnd -= PressEnd;
+
+            m_inputManager.fingerGestureEvent -= updateGizmoScale;
+            m_inputManager.nextCameraUICommand -= updateGizmoScale;
+
+            UICreator2DModule UI2DModule = manager.getModule<UICreator2DModule>();
+            CameraSelectionModule CamModule = manager.getModule<CameraSelectionModule>();
+            UIManager m_UIManager = core.getManager<UIManager>();
+            if (UI2DModule != null && CamModule != null && m_UIManager != null)
+            {
+                UI2DModule.parameterChanged -= SetManipulatorMode;
+                CamModule.uiCameraOperation -= SetCameraManipulator;
+                m_UIManager.settings.uiScale.hasChanged -= updateUIScale;
+            }
+
+        }
+
+        //!
         //! Init callback for the UICreator3D module.
         //! Called after constructor. 
         //!
@@ -147,10 +201,16 @@ namespace vpet
             m_inputManager.inputPressPerformed += PressStart;
             m_inputManager.inputPressEnd += PressEnd;
 
+            m_inputManager.fingerGestureEvent += updateGizmoScale;
+            m_inputManager.nextCameraUICommand += updateGizmoScale;
+
             // Grabbing scene scale
             UIManager m_UIManager = core.getManager<UIManager>();
             if (m_UIManager != null)
+            {
                 uiScale = m_UIManager.settings.uiScale.value;
+                m_UIManager.settings.uiScale.hasChanged += updateUIScale;
+            }
 
             // Instantiate TRS widgest but keep them hidden
             InstantiateAxes();
@@ -191,7 +251,7 @@ namespace vpet
 
                 // semi hack - if manip = main rotator - free rotation
                 if (manipulator == manipR)
-                //{
+                    //{
                     //freeRotationColl = manipulator.GetComponent<Collider>();
                     // make the collision plane a bit in front of the object
                     helperPlane = new Plane(mainCamera.transform.forward, center - .2f * Vector3.Distance(mainCamera.transform.position, selObj.transform.position) * mainCamera.transform.forward);
@@ -337,7 +397,7 @@ namespace vpet
                 }
             }
 
-            
+
 
             // drag rotate - manip version
             if (modeTRS == 1)
@@ -404,8 +464,8 @@ namespace vpet
                         //if (manipulator == manipR && !insideFreeRotColl)
                         //    hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
                         //else
-                            //hitPosOffset = hitPoint - manipulator.transform.position;
-                            hitPosOffset = hitPoint - localManipPosition;
+                        //hitPosOffset = hitPoint - manipulator.transform.position;
+                        hitPosOffset = hitPoint - localManipPosition;
 
                         firstPress = false;
                     }
@@ -474,8 +534,8 @@ namespace vpet
                     //if (manipulator == manipR && !insideFreeRotColl)
                     //    hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
                     //else
-                        //hitPosOffset = hitPoint - manipulator.transform.position;
-                        hitPosOffset = hitPoint - localManipPosition;
+                    //hitPosOffset = hitPoint - manipulator.transform.position;
+                    hitPosOffset = hitPoint - localManipPosition;
                 }
             }
 
@@ -515,7 +575,7 @@ namespace vpet
                     // hack to see if it's main controller and so would use uniform scale - average values
                     if (manipulator == manipS)
                         localDelta = Vector3.one * (localDelta.x + localDelta.y + localDelta.z) / 3f;
-                    
+
                     Vector3 scaleOffset = Vector3.one + localDelta;
                     sca = (Parameter<Vector3>)selObj.parameterList[sIndex];
                     sca.setValue(Vector3.Scale(initialSca, scaleOffset));
@@ -661,7 +721,6 @@ namespace vpet
         private void UnhideAxis()
         {
             lastActiveManip.SetActive(true);
-            //TransformAxisMulti(lastActiveManip); // not really needed
         }
 
         private void ShowAxis(GameObject manip)
@@ -686,13 +745,18 @@ namespace vpet
             }
             averagePos /= selObjs.Count;
 
-            manip.transform.position = averagePos;
-            manip.transform.rotation = selObj.transform.rotation;
+            manip.transform.SetPositionAndRotation(averagePos, selObj.transform.rotation);
             if (selObjs.Count > 1)
                 manip.transform.rotation = Quaternion.identity;
 
             // Adjust scale
             manip.transform.localScale = GetModifierScale();
+        }
+
+        private void UpdateManipScale()
+        {
+            if (lastActiveManip)
+                lastActiveManip.transform.localScale = GetModifierScale();
         }
 
         private void TransformManipR(Quaternion rot)
@@ -727,7 +791,7 @@ namespace vpet
             manipT.transform.rotation = Quaternion.identity;
             manipT.transform.localScale = GetModifierScale();
             modeTRS = 0;
-            
+
         }
 
         // now for multi
@@ -785,13 +849,13 @@ namespace vpet
             // for multi selection
             //if (selObjs.Count > 1)
             //{
-                Vector3 averagePos = Vector3.zero;
-                foreach (SceneObject obj in selObjs)
-                {
-                    averagePos += obj.transform.position;
-                }
-                averagePos /= selObjs.Count;
-                manipT.transform.position = averagePos;
+            Vector3 averagePos = Vector3.zero;
+            foreach (SceneObject obj in selObjs)
+            {
+                averagePos += obj.transform.position;
+            }
+            averagePos /= selObjs.Count;
+            manipT.transform.position = averagePos;
             //}
         }
 
@@ -808,7 +872,7 @@ namespace vpet
             Vector3 localDelta = vecOfsset - Vector3.one;
             //Vector3 deltaNorm = localDelta.normalized;
             //Debug.Log("DELTA " + localDelta.ToString());
-            
+
             // Grab "dimension" of delta
             float UniX = NonZero(localDelta.x);
             float UniY = NonZero(localDelta.y);
@@ -829,7 +893,7 @@ namespace vpet
             if (cameraMode)
                 HideAxes();
             else
-            //{
+                //{
                 UnhideAxis();
             //    Debug.Log("Unhide " + lastActiveManip.name.ToString());
             //}
@@ -865,7 +929,7 @@ namespace vpet
             //           * Screen.dpi / 1000);
             return Vector3.one * uiScale
                        * (Vector3.Distance(mainCamera.transform.position, selObj.transform.position)
-                       * (5.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
+                       * (4.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
                        * Screen.dpi / (Screen.width + Screen.height));
         }
 
@@ -908,5 +972,16 @@ namespace vpet
             }
         }
 
+        private void updateUIScale(object sender, float e)
+        {
+            uiScale = e;
+            //Debug.Log("UI Scale");
+            UpdateManipScale();
+        }
+
+        private void updateGizmoScale(object sender, bool e)
+        {
+            UpdateManipScale();
+        }
     }
 }
