@@ -301,7 +301,7 @@ namespace vpet
                     InputSystem.EnableDevice(AttitudeSensor.current);
 
                     m_attitudeButton = new MenuButton("Attitude", useAttitude);
-                    m_attitudeButton.setIcon("Images/button_frame_BG");
+                    m_attitudeButton.setIcon("Images/button_attitude");
                     core.getManager<UIManager>().addButton(m_attitudeButton);
                 }
                 else

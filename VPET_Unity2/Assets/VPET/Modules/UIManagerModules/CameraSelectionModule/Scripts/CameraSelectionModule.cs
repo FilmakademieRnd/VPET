@@ -148,12 +148,12 @@ namespace vpet
                     sceneObjects[0].GetType() == typeof(SceneObjectSpotLight))
                 {
                     m_cameraSelectButton = new MenuButton("", lookThrough);
-                    m_cameraSelectButton.setIcon("Images/button_lookTrough.png");
+                    m_cameraSelectButton.setIcon("Images/button_lookTrough");
                 }
                 else
                 {
                     m_cameraSelectButton = new MenuButton("", lockToCamera);
-                    m_cameraSelectButton.setIcon("Images/button_lock2Camera");
+                    m_cameraSelectButton.setIcon("Images/button_lockToCamera");
                 }
                 uiManager.addButton(m_cameraSelectButton);
             }

@@ -142,7 +142,6 @@ namespace vpet
                 }
                 else if (matPack.type == 0)
                 {
-                    Helpers.Log(matPack.src);
                     Material mat = new Material(Shader.Find(matPack.src));
                     mat.name = matPack.name;
 

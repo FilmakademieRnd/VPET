@@ -58,7 +58,7 @@ MonoBehaviour:
   _selectableItems: -1
   _selectByClick: 1
   _collapsable: 1
-  _collapsableIcon: {fileID: 21300000, guid: 4808f5d84b5fba340a920c790ec1854c, type: 3}
+  _collapsableIcon: {fileID: 21300000, guid: 62e715a134ee03c47bae13a0acd7ea53, type: 3}
   _valueText: {fileID: 0}
   _backgroundPrefab: {fileID: 5359195211250848493, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}
   _uiSettings: {fileID: 0}
