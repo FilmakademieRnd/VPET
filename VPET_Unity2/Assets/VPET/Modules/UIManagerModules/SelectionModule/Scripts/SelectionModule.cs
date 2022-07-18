@@ -225,18 +225,25 @@ namespace vpet
         public SceneObject GetSelectableAtCollider(Vector2 screenPosition)
         {
             RaycastHit hit;
+            SceneObject sceneObject = null;
+
             if (Physics.Raycast(Camera.main.ScreenPointToRay(screenPosition), out hit, Mathf.Infinity))
             {
                 GameObject gameObject = hit.collider.gameObject;
-                SceneObject sceneObject = gameObject.GetComponent<SceneObject>();
+                IconUpdate iconUpdate = gameObject.GetComponent<IconUpdate>();
+                // check if an icon has been hit
+                if (iconUpdate)
+                    sceneObject = iconUpdate.m_parentObject;
+
+                if (!sceneObject)
+                    sceneObject = gameObject.GetComponent<SceneObject>();
 
                 if (!sceneObject)
                     sceneObject = gameObject.transform.parent.GetComponent<SceneObject>();
 
-                return sceneObject;
             }
 
-            return null;
+            return sceneObject;
         }
 
         //! 

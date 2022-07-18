@@ -40,6 +40,8 @@ namespace vpet
         //! The calculated Depth between main camera and gizmo from last frame call.
         //!
         private Vector3 m_iconScale;
+
+        public SceneObject m_parentObject;
         
         //!
         //! Start is called before the first frame update
@@ -58,6 +60,7 @@ namespace vpet
             Transform camera = Camera.main.transform;
             float depth = Vector3.Dot(camera.position - transform.position, camera.forward);
 
+            transform.position = m_parentObject.transform.position;
             transform.rotation = camera.rotation;
             transform.localScale = m_iconScale * Mathf.Abs(depth * 0.1f);
         }

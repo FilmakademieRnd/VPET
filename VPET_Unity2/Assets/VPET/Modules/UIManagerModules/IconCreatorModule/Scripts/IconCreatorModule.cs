@@ -41,6 +41,8 @@ namespace vpet
         //! The list containing all UI elemets of the current menu.
         //!
         private List<SceneObject> m_sceneObjects;
+
+        private GameObject m_IconRoot;
         //!
         //! Prefab for the icon.
         //!
@@ -75,6 +77,8 @@ namespace vpet
             m_lightSprite = Resources.Load<Sprite>("Images/LightIcon");
             m_cameraSprite = Resources.Load<Sprite>("Images/CameraIcon");
 
+            m_IconRoot = new GameObject("Icons");
+
             SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += createIcons;
         }
@@ -94,7 +98,8 @@ namespace vpet
                 switch (sceneObject)
                 {
                     case SceneObjectLight:
-                        icon = GameObject.Instantiate(m_Icon, sceneObject.transform);
+                        icon = GameObject.Instantiate(m_Icon, m_IconRoot.transform);
+                        icon.GetComponent<IconUpdate>().m_parentObject = sceneObject;
                         renderer = icon.GetComponent<SpriteRenderer>();
                         renderer.sprite = m_lightSprite;
                         Parameter<Color> colorParameter = sceneObject.getParameter<Color>("color");
@@ -103,7 +108,8 @@ namespace vpet
                         m_sceneObjects.Add(sceneObject);
                         break;
                     case SceneObjectCamera:
-                        icon = GameObject.Instantiate(m_Icon, sceneObject.transform);
+                        icon = GameObject.Instantiate(m_Icon, m_IconRoot.transform);
+                        icon.GetComponent<IconUpdate>().m_parentObject = sceneObject;
                         renderer = icon.GetComponent<SpriteRenderer>();
                         renderer.sprite = m_cameraSprite;
                         m_sceneObjects.Add(sceneObject);
