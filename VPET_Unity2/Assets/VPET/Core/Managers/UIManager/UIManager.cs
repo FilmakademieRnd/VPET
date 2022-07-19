@@ -145,6 +145,7 @@ namespace vpet
         {
             base.Cleanup(sender, e);
             settings.uiScale.hasChanged -= updateCanvasScales;
+            core.orientationChangedEvent -= updateCanvasScales;
         }
 
         //! 
@@ -167,7 +168,7 @@ namespace vpet
             base.Start(sender, e);
             updateCanvasScales(this,0f);
             settings.uiScale.hasChanged += updateCanvasScales;
-
+            core.orientationChangedEvent += updateCanvasScales;
             core.getManager<InputManager>().toggle2DUIInteraction += activate2DUIInteraction;
 
         }
@@ -181,10 +182,31 @@ namespace vpet
 
             foreach (CanvasScaler canvas in canvases)
             {
-                if(!canvas.gameObject.name.Contains("MenuCanvas"))
+                if (!canvas.gameObject.name.Contains("MenuCanvas"))
+                {
                     // 0.04f to have default uiScale at 1f
                     // Max /Min to prevent invalid UI
-                    canvas.scaleFactor = Screen.dpi * 0.04f * Mathf.Min(Mathf.Max(settings.uiScale.value, 0.4f),3f);
+                    float physicalDeviceScale = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / Screen.dpi / 12f;
+                    Debug.Log(physicalDeviceScale);
+                    canvas.scaleFactor = Screen.dpi * 0.04f * Mathf.Min(Mathf.Max(settings.uiScale.value, 0.4f), 3f) * physicalDeviceScale;
+                }
+                if (canvas.transform.GetChild(0).name == "CanvasSafeFrame")
+                {
+                    RectTransform canvasRect = canvas.transform.GetChild(0).GetComponent<RectTransform>();
+                    Rect safeFrame = Screen.safeArea;
+                    if (Screen.orientation == ScreenOrientation.LandscapeLeft)
+                    {
+                        canvasRect.anchoredPosition = new Vector2(safeFrame.x / canvas.scaleFactor, 0f);
+                        canvasRect.sizeDelta = new Vector2((Screen.width - safeFrame.x) / canvas.scaleFactor,
+                                                            Screen.height / canvas.scaleFactor);
+                    }
+                    else if (Screen.orientation == ScreenOrientation.LandscapeRight)
+                    {
+                        canvasRect.anchoredPosition = new Vector2(0f, 0f);
+                        canvasRect.sizeDelta = new Vector2((Screen.width - safeFrame.x) / canvas.scaleFactor,
+                                                            Screen.height / canvas.scaleFactor);
+                    }
+                }
             }
         }
 

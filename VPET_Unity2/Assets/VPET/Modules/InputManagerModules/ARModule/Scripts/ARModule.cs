@@ -186,7 +186,6 @@ namespace vpet
                          .Add(enableMarkerTracking)
                      .End()
                 .End();
-            _menu.caption = "AR";
             _menu.iconResourceLocation = "Images/button_ar";
             core.getManager<UIManager>().addMenu(_menu);
 

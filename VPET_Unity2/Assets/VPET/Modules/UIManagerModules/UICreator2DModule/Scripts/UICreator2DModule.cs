@@ -91,7 +91,8 @@ namespace vpet
             GameObject canvas = Resources.Load<GameObject>("Prefabs/PRE_Canvas_2DUI");
             Transform canvasTrans = SceneObject.Instantiate(canvas).transform;
             canvasTrans.name = "Canvas_2DUI";
-            UI2D = canvasTrans.GetChild(0).transform;
+
+            UI2D = canvasTrans.GetChild(0).GetChild(0).transform;
             manipulatorPanel = UI2D.GetChild(0);
             undoRedoPanel = UI2D.GetChild(1);
             undoButton = UI2D.GetChild(1).GetChild(1).GetComponent<Button>();

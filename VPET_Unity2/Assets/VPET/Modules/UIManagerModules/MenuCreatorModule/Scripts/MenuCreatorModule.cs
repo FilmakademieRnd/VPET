@@ -230,7 +230,6 @@ namespace vpet
             {                
                 GameObject menuCanvas = GameObject.Instantiate(m_canvas);
                 menuCanvas.GetComponent<Canvas>().sortingOrder = 15;
-                menuCanvas.GetComponent<CanvasScaler>().scaleFactor = Screen.dpi * 0.04f;
                 m_uiElements.Add(menuCanvas);
                 GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;                
                 TextMeshProUGUI menuTitle = menuCanvas.transform.Find("Text").GetComponent<TextMeshProUGUI>();

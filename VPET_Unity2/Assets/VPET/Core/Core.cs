@@ -138,6 +138,10 @@ namespace vpet
         //!
         public event EventHandler timeEvent;
         //!
+        //! Event invoked when the device orientation has changed
+        //!
+        public event EventHandler<float> orientationChangedEvent;
+        //!
         //! Event invoked every second.
         //!
         public event EventHandler<byte> syncEvent;
@@ -215,6 +219,7 @@ namespace vpet
         {
             if (Input.deviceOrientation != m_orientation)
             {
+                orientationChangedEvent.Invoke(this, 0f);
                 Camera mainCamera = Camera.main;
                 if ((Input.deviceOrientation == DeviceOrientation.Portrait &&
                      (m_orientation == DeviceOrientation.LandscapeLeft ||
