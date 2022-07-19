@@ -41,6 +41,9 @@ namespace vpet
         //!
         private Vector3 m_iconScale;
 
+        //!
+        //! A reference to the parent Scene Object.
+        //!
         public SceneObject m_parentObject;
         
         //!
@@ -48,7 +51,8 @@ namespace vpet
         //!
         void Start()
         {
-            m_iconScale = transform.localScale;
+            Core core = GameObject.Find("VPET").GetComponent<Core>();
+            m_iconScale = Vector3.one * core.getManager<UIManager>().settings.uiScale.value;
             transform.right = Camera.main.transform.right;
         }
 
