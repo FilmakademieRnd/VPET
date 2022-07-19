@@ -187,7 +187,7 @@ namespace vpet
                      .End()
                 .End();
             _menu.caption = "AR";
-            _menu.icon = (Resources.Load<Sprite>("Images/button_ar");
+            _menu.iconResourceLocation = "Images/button_ar";
             core.getManager<UIManager>().addMenu(_menu);
 
             enableAR.hasChanged += changeActive;
