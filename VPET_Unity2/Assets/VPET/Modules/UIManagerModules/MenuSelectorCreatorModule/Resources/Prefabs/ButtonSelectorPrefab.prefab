@@ -55,7 +55,7 @@ MonoBehaviour:
   _allowValueSetting: 0
   _previewExtend: 1
   _fadeFactor: 0.5
-  _selectableItems: 3
+  _selectableItems: 4
   _selectByClick: 1
   _collapsable: 0
   _collapsableIcon: {fileID: 0}
