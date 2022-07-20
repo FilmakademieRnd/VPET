@@ -187,7 +187,6 @@ namespace vpet
                     // 0.04f to have default uiScale at 1f
                     // Max /Min to prevent invalid UI
                     float physicalDeviceScale = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / Screen.dpi / 12f;
-                    Debug.Log(physicalDeviceScale);
                     canvas.scaleFactor = Screen.dpi * 0.04f * Mathf.Min(Mathf.Max(settings.uiScale.value, 0.4f), 3f) * physicalDeviceScale;
                 }
                 if (canvas.transform.GetChild(0).name == "CanvasSafeFrame")
@@ -205,6 +204,14 @@ namespace vpet
                         canvasRect.anchoredPosition = new Vector2(0f, 0f);
                         canvasRect.sizeDelta = new Vector2((Screen.width - safeFrame.x) / canvas.scaleFactor,
                                                             Screen.height / canvas.scaleFactor);
+                    }
+                    else
+                    {
+                        //Desktop
+                        //no safe frame, span entire screen, automatically adjust when window / screen size changes
+                        canvasRect.anchorMin = new Vector2(0f, 0f);
+                        canvasRect.anchorMax = new Vector2(1f, 1f);
+                        canvasRect.anchoredPosition = new Vector2(0f, 0f);
                     }
                 }
             }
