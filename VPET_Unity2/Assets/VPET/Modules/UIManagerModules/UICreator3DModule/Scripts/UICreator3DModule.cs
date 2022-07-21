@@ -57,6 +57,11 @@ namespace vpet
         private GameObject manipS;
 
         //!
+        //! Active (clicked) manipulator object
+        //! 
+        GameObject manipulator;
+
+        //!
         //! Reference to the last active manipulator (for hide/unhide cases)
         //!
         private GameObject lastActiveManip;
@@ -86,46 +91,113 @@ namespace vpet
         //!
         float uiScale = 1;
 
-        // Auxiliary vector and plane for raycasting
+        //!
+        //! Auxiliary vector for raycasting
+        //!
         Vector3 planeVec = Vector3.zero;
+
+        //!
+        //! Auxiliary plane for raycasting
+        //!
         Plane helperPlane;
 
-        // Active (clicked) manipulator object
-        GameObject manipulator;
-
-        // Internal reference of manipulator parts
+        //!
+        //! Internal reference of manipulator parts - translate X
+        //!
         GameObject manipTx;
+
+        //!
+        //! Internal reference of manipulator parts - translate Y
+        //!
         GameObject manipTy;
+
+        //!
+        //! Internal reference of manipulator parts - translate Z
+        //!
         GameObject manipTz;
+
+        //!
+        //! Internal reference of manipulator parts - scale X
+        //!
         GameObject manipSx;
+
+        //!
+        //! Internal reference of manipulator parts - scale Y
+        //!
         GameObject manipSy;
+
+        //!
+        //! Internal reference of manipulator parts - scale Z
+        //!        
         GameObject manipSz;
+
+        //!
+        //! Internal reference of manipulator parts - scale XY
+        //!
         GameObject manipSxy;
+
+        //!
+        //! Internal reference of manipulator parts - scale XZ
+        //!        
         GameObject manipSxz;
+
+        //!
+        //! Internal reference of manipulator parts - scale YZ
+        //!
         GameObject manipSyz;
 
-        // Auxiliary vectors for correct manipulation
+        //!
+        //! 
+        //!
+
+        //!
+        //! Auxiliary vector for storing the click offset
+        //! 
         Vector3 hitPosOffset = Vector3.zero;
+
+        //!
+        //! Control boolean for single procedure for the first touch contact
+        //!
         bool firstPress = true;
+
+        //!
+        //! Reference to initial scale value for parameter change
+        //!
         Vector3 initialSca = Vector3.one;
+
+        //!
+        //! Stores manipulator position in its object local space (to save multiple calls)
+        //!
         Vector3 localManipPosition;
 
-        // Auxiliary collider for raycasting
-        //Collider freeRotationColl;
-        //bool insideFreeRotColl;
-
-        // Buffer quaternion for visualizing multi object rotation
+        //!
+        //! Buffer quaternion for visualizing multi object rotation
+        //!
         Quaternion visualRot = Quaternion.identity;
 
-        // Mode of operation of TRS manipulator
+        //!
+        //! Mode of operation of TRS manipulator
+        //!
         int modeTRS = -1;
 
-        // Auxiliary preconstructed vectors
+        //!
+        //! Auxiliary preconstructed vector - XY plane
+        //!
         readonly Vector3 vecXY = new(1, 1, 0);
+
+        //!
+        //! Auxiliary preconstructed vector - XZ plane
+        //!
         readonly Vector3 vecXZ = new(1, 0, 1);
+
+        //!
+        //! Auxiliary preconstructed vector - YZ plane
+        //!
         readonly Vector3 vecYZ = new(0, 1, 1);
 
-        // Reference of main camera
+        //!
+        //! Reference of main camera
+        //!
         Camera mainCamera;
 
         //!
@@ -168,7 +240,6 @@ namespace vpet
                 CamModule.uiCameraOperation -= SetCameraManipulator;
                 m_UIManager.settings.uiScale.hasChanged -= updateUIScale;
             }
-
         }
 
         //!
@@ -666,13 +737,11 @@ namespace vpet
                 if (selObj.parameterList[i].name.Equals("scale"))
                     sIndex = i;
             }
-            //Debug.Log(tIndex);
-            //Debug.Log(rIndex);
-            //Debug.Log(sIndex);
-
         }
 
-
+        //!
+        //! Initial call for gizmo prefabs instantiation
+        //!
         private void InstantiateAxes()
         {
             // Tranlation
@@ -689,13 +758,6 @@ namespace vpet
             manipTx = manipT.transform.GetChild(0).GetChild(0).gameObject;
             manipTy = manipT.transform.GetChild(0).GetChild(1).gameObject;
             manipTz = manipT.transform.GetChild(0).GetChild(2).gameObject;
-            //manipTxy = manipT.transform.GetChild(0).GetChild(3).gameObject;
-            //manipTxz = manipT.transform.GetChild(0).GetChild(4).gameObject;
-            //manipTyz = manipT.transform.GetChild(0).GetChild(5).gameObject;
-
-            //manipRx = manipR.transform.GetChild(0).GetChild(0).gameObject;
-            //manipRy = manipR.transform.GetChild(0).GetChild(1).gameObject;
-            //manipRz = manipR.transform.GetChild(0).GetChild(2).gameObject;
 
             manipSx = manipS.transform.GetChild(0).GetChild(0).gameObject;
             manipSy = manipS.transform.GetChild(0).GetChild(1).gameObject;
@@ -705,11 +767,17 @@ namespace vpet
             manipSyz = manipS.transform.GetChild(0).GetChild(5).gameObject;
         }
 
+        //!
+        //! Hide specific manipulator
+        //!
         private void HideAxis(GameObject manip)
         {
             manip.SetActive(false);
         }
 
+        //!
+        //! Hide all manipulators
+        //!
         private void HideAxes()
         {
             if (manipT) HideAxis(manipT);
@@ -718,23 +786,26 @@ namespace vpet
             modeTRS = -1;
         }
 
+        //!
+        //! Unhide last active manipulator
+        //!
         private void UnhideAxis()
         {
             lastActiveManip.SetActive(true);
         }
 
+        //!
+        //! Show specific manipulator
+        //!
         private void ShowAxis(GameObject manip)
         {
             manip.SetActive(true);
             lastActiveManip = manip;
         }
 
-
-        private void MoveAxis(Vector3 pos)
-        {
-            manipT.transform.position = pos;
-        }
-
+        //!
+        //! Update the transform gizmo based on one or more selected objects
+        //!
         private void TransformAxisMulti(GameObject manip)
         {
             // average position
@@ -753,30 +824,29 @@ namespace vpet
             manip.transform.localScale = GetModifierScale();
         }
 
+        //!
+        //! Update the transform gizmo scale
+        //!
         private void UpdateManipScale()
         {
             if (lastActiveManip)
                 lastActiveManip.transform.localScale = GetModifierScale();
         }
 
+        //!
+        //! Update the rotate transform gizmo 
+        //!
         private void TransformManipR(Quaternion rot)
         {
             manipR.transform.rotation = rot;
         }
 
-
-        private void TransformAxis(GameObject manip, Transform xform)
-        {
-            manip.transform.position = xform.position;
-            manip.transform.rotation = xform.rotation;
-
-            // Adjust scale
-            manip.transform.localScale = GetModifierScale();
-        }
-
+        //!
+        //! Update the rotate transform gizmo 
+        //!
         private void SetMultiManipulatorMode(object sender, int manipulatorMode)
         {
-            //if (selObjs.Count > 1)
+            // Start in translate mode
             HideAxes();
             ShowAxis(manipT);
             // transform axis for both
@@ -791,10 +861,12 @@ namespace vpet
             manipT.transform.rotation = Quaternion.identity;
             manipT.transform.localScale = GetModifierScale();
             modeTRS = 0;
-
+            // Incomplete function - lacking manipulator mode
         }
 
-        // now for multi
+        //!
+        //! Set the mode of operation of the manipulator and its respective event subscriptions
+        //!
         private void SetManipulatorMode(object sender, int manipulatorMode)
         {
             // Disable manipulator
@@ -802,7 +874,7 @@ namespace vpet
             {
                 HideAxes();
                 modeTRS = -1;
-                // hack against first click selection?
+                // Place manipulator out of range to avoid unwanted click recognition when it's activated
                 // [REVIEW]
                 // float max is not the best coise for hiding an object
                 if (manipT)
@@ -842,13 +914,13 @@ namespace vpet
 
         }
 
+        //!
+        //! Update the manipulator position according to position parameter changes
+        //!
         public void UpdateManipulatorPosition(object sender, Vector3 position)
         {
-            //manipT.transform.position = position;
             manipT.transform.localScale = GetModifierScale();
-            // for multi selection
-            //if (selObjs.Count > 1)
-            //{
+            // for one or more selected objects 
             Vector3 averagePos = Vector3.zero;
             foreach (SceneObject obj in selObjs)
             {
@@ -856,22 +928,24 @@ namespace vpet
             }
             averagePos /= selObjs.Count;
             manipT.transform.position = averagePos;
-            //}
         }
 
+        //!
+        //! Update the manipulator rotation according to rotation parameter changes
+        //!
         public void UpdateManipulatorRotation(object sender, Quaternion rotation)
         {
             if (selObjs.Count <= 1) // only update here if single selection
-                //manipR.transform.rotation = rotation;
                 manipR.transform.localRotation = selObj.transform.rotation;
         }
 
+        //!
+        //! Update the manipulator scale according to scale parameter changes
+        //!
         public void UpdateManipulatorScale(object sender, Vector3 scale)
         {
             Vector3 vecOfsset = Vector3.Scale(scale, VecInvert(initialSca));
             Vector3 localDelta = vecOfsset - Vector3.one;
-            //Vector3 deltaNorm = localDelta.normalized;
-            //Debug.Log("DELTA " + localDelta.ToString());
 
             // Grab "dimension" of delta
             float UniX = NonZero(localDelta.x);
@@ -888,17 +962,20 @@ namespace vpet
             manipSyz.transform.localPosition = UniY * UniZ * Vector3.Scale(localDelta, vecYZ);
         }
 
+        //!
+        //! Function coupled with UI camera operation to hide/unhide the manipulator
+        //!
         private void SetCameraManipulator(object sender, bool cameraMode)
         {
             if (cameraMode)
                 HideAxes();
             else
-                //{
                 UnhideAxis();
-            //    Debug.Log("Unhide " + lastActiveManip.name.ToString());
-            //}
         }
 
+        //!
+        //! Helper function for non-zero evaluation
+        //!
         private float NonZero(float number)
         {
             // Following short-version is not working
@@ -911,28 +988,31 @@ namespace vpet
             return 1f;
         }
 
-        // Invert vector by component
+        //!
+        //! Helper function for vector inversion by component
+        //!
         private Vector3 VecInvert(Vector3 vec)
         {
             return new Vector3(1 / vec.x, 1 / vec.y, 1 / vec.z);
         }
 
-        // For scale adjustment
+        //!
+        //! Helper function for transform gizmo scale adjustment according to screen and UI scale parameter
+        //!
         private Vector3 GetModifierScale()
         {
-            // quick fix - TODO: double check event subscription at UpdateManipulatorPosition
             if (!selObj)
                 return Vector3.one;
-            //return Vector3.one
-            //           * (Vector3.Distance(mainCamera.transform.position, selObj.transform.position)
-            //           * (2.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
-            //           * Screen.dpi / 1000);
+         
             return Vector3.one * uiScale
                        * (Vector3.Distance(mainCamera.transform.position, selObj.transform.position)
                        * (4.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
                        * Screen.dpi / (Screen.width + Screen.height));
         }
 
+        //!
+        //! Set transform gizmo to translate mode
+        //!
         public void SetModeT()
         {
             //Debug.Log("T mode");
@@ -940,12 +1020,14 @@ namespace vpet
             {
                 HideAxes();
                 ShowAxis(manipT);
-                //TransformAxis(manipT, selObj.transform);
                 TransformAxisMulti(manipT);
                 modeTRS = 0;
             }
         }
 
+        //!
+        //! Set transform gizmo to rotate mode
+        //!
         public void SetModeR()
         {
             //Debug.Log("R mode");
@@ -953,12 +1035,14 @@ namespace vpet
             {
                 HideAxes();
                 ShowAxis(manipR);
-                //TransformAxis(manipR, selObj.transform);
                 TransformAxisMulti(manipR);
                 modeTRS = 1;
             }
         }
 
+        //!
+        //! Set transform gizmo to scale mode
+        //!
         public void SetModeS()
         {
             //Debug.Log("S mode");
@@ -966,19 +1050,23 @@ namespace vpet
             {
                 HideAxes();
                 ShowAxis(manipS);
-                //TransformAxis(manipS, selObj.transform);
                 TransformAxisMulti(manipS);
                 modeTRS = 2;
             }
         }
 
+        //!
+        //! Function coupled to user UI scale changes to update the gizmo scale
+        //!
         private void updateUIScale(object sender, float e)
         {
             uiScale = e;
-            //Debug.Log("UI Scale");
             UpdateManipScale();
         }
 
+        //!
+        //! Function coupled to camera operations to update the gizmo scale
+        //!
         private void updateGizmoScale(object sender, bool e)
         {
             UpdateManipScale();

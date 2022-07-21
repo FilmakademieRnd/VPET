@@ -479,14 +479,27 @@ namespace vpet
             var tcs = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
 
             // Are they moving in the same direction?
-            // Then trigger two finger drag
-            if (Vector2.Dot(tcs[0].delta, tcs[1].delta) > .2f)
+            float dotProd = Vector2.Dot(tcs[0].delta, tcs[1].delta);
+            // If yes, it's a two finger drag
+            if (dotProd > 0)
             {
                 // Reset control variables
                 if (m_isPinch)
                     m_doOnce = true;
                 m_isPinch = false;
+            }
+            // Else it's a two finger pinch
+            else if (dotProd < 0)
+            {
+                // Reset control variables
+                if (!m_isPinch)
+                    m_doOnce = true;
+                m_isPinch = true;
+            }
 
+            // Two finger drag (used for orbit)
+            if(!m_isPinch)
+            { 
                 // Grab the average position
                 Vector2 pos = .5f * (tcs[0].screenPosition + tcs[1].screenPosition);
 
@@ -505,14 +518,9 @@ namespace vpet
                 // Update buffer
                 m_posBuffer = pos;
             }
-            // Else trigger two finger pinch
+            // Two finger pinch (used for zoom)
             else
             {
-                // Reset control variables
-                if (!m_isPinch)
-                    m_doOnce = true;
-                m_isPinch = true;
-
                 // Grab the distance
                 float dist = Vector2.Distance(tcs[0].screenPosition, tcs[1].screenPosition);
 
