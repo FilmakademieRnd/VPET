@@ -29,6 +29,8 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using TMPro;
 
@@ -45,9 +47,25 @@ namespace vpet
         //!
         private int m_cameraIndex = 0;
         //!
-        //! The old parent of the selected object.
+        //! The initial position of the selected object.
         //!
-        private Transform m_oldParent;
+        private Vector3 m_oldPosition = Vector3.zero;
+        //!
+        //! The initial rotation of the selected object.
+        //!
+        private Quaternion m_oldRotation = Quaternion.identity;
+        //!
+        //! The inverse initial posiotion of the main camara.
+        //!
+        private Quaternion m_inverseOldCamRotation = Quaternion.identity;
+        //!
+        //! The initial vector between the main camera and the selected object.
+        //!
+        private Vector3 m_positionOffset = Vector3.zero;
+        //!
+        //! The initial rotation between the main camera and the selected object.
+        //!
+        private Quaternion m_rotationOffset = Quaternion.identity;
         //!
         //! The UI button for logging the camera to an object.
         //!
@@ -61,6 +79,10 @@ namespace vpet
         //!
         private SceneManager m_sceneManager;
         //!
+        //! A reference to the input manager.
+        //!
+        private InputManager m_inputManager;
+        //!
         //! The preloaded prafab of the safe frame overlay game object.
         //!
         private GameObject m_safeFramePrefab;
@@ -68,7 +90,20 @@ namespace vpet
         //! The instance of the the safe frame overlay.
         //!
         private GameObject m_safeFrame = null;
+        //!
+        //! The scaler of the safe frame.
+        //!
+        private Transform m_scaler = null;
+        //!
+        //! The text of the safe frame.
+        //!
+        private TextMeshProUGUI m_infoText = null;
+        //!
+        //! A copy of the last selected camera.
+        //!
+        private SceneObjectCamera m_oldSOCamera = null;
 
+        private bool m_pollerActive = true;
         //!
         //! Event emitted when camera operations are in action
         //!
@@ -94,20 +129,21 @@ namespace vpet
             base.Start(sender, e);
 
             m_sceneManager = core.getManager<SceneManager>();
+            m_inputManager = core.getManager<InputManager>();
 
             m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
-            //MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
-            MenuButton safeFrameButton = new MenuButton("", showSafeFrame);
-            safeFrameButton.setIcon("Images/button_safeFrames");            
+            MenuButton safeFrameButton = new MenuButton("Safe Frame", showSafeFrame);
 
             MenuButton cameraSelectButton = new MenuButton("", selectNextCamera);
-            cameraSelectButton.setIcon("Images/button_camera");
-            
+            cameraSelectButton.setIcon("Images/CameraIcon");
+
             core.getManager<UIManager>().addButton(safeFrameButton);
             core.getManager<UIManager>().addButton(cameraSelectButton);
 
             m_sceneManager.sceneReady += copyCamera;
             core.getManager<UIManager>().selectionChanged += createButtons;
+
+            core.syncEvent += updateTrigger;
         }
 
         //! 
@@ -119,6 +155,8 @@ namespace vpet
         protected override void Cleanup(object sender, EventArgs e)
         {
             base.Cleanup(sender, e);
+
+            m_pollerActive = false;
 
             m_sceneManager.sceneReady -= copyCamera;
             core.getManager<UIManager>().selectionChanged -= createButtons;
@@ -147,13 +185,13 @@ namespace vpet
                     sceneObjects[0].GetType() == typeof(SceneObjectDirectionalLight) ||
                     sceneObjects[0].GetType() == typeof(SceneObjectSpotLight))
                 {
-                    m_cameraSelectButton = new MenuButton("", lookThrough);
-                    m_cameraSelectButton.setIcon("Images/button_lookTrough");
+                    m_cameraSelectButton = new MenuButton("Look through", lookThrough);
+                    m_cameraSelectButton.setIcon("Images/CameraIcon");
                 }
                 else
                 {
-                    m_cameraSelectButton = new MenuButton("", lockToCamera);
-                    m_cameraSelectButton.setIcon("Images/button_lockToCamera");
+                    m_cameraSelectButton = new MenuButton("Lock to Camera", lockToCamera);
+                    m_cameraSelectButton.setIcon("Images/CameraIcon");
                 }
                 uiManager.addButton(m_cameraSelectButton);
             }
@@ -173,23 +211,31 @@ namespace vpet
         {
             if (m_selectedObject != null)
             {
+                InputManager inputManager = core.getManager<InputManager>();
+
                 if (m_isLocked)
                 {
-                    m_selectedObject.transform.parent = m_oldParent;
+                    core.updateEvent -= updateLookThrough;
                     m_isLocked = false;
                 }
                 else
                 {
-                    Camera mainCamera = Camera.main;
+                    Camera.main.transform.position = m_selectedObject.transform.position;
+                    Camera.main.transform.rotation = m_selectedObject.transform.rotation;
+                    m_oldPosition = Vector3.zero;
+                    m_oldRotation = Quaternion.identity;
+                    m_inverseOldCamRotation = Quaternion.identity;
 
-                    mainCamera.transform.position = m_selectedObject.transform.position;
-                    mainCamera.transform.rotation = m_selectedObject.transform.rotation;
+                    m_positionOffset = Vector3.zero;
+                    m_rotationOffset = Quaternion.identity;
 
-                    m_oldParent = m_selectedObject.transform.parent;
-                    m_selectedObject.transform.parent = mainCamera.transform;
+                    if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE)
+                        inputManager.setCameraAttitudeOffsets();
 
+                    core.updateEvent += updateLookThrough;
                     m_isLocked = true;
                 }
+
                 uiCameraOperation.Invoke(this, m_isLocked);
             }
         }
@@ -201,18 +247,25 @@ namespace vpet
         {
             if (m_selectedObject != null)
             {
+                InputManager inputManager = core.getManager<InputManager>();
+
                 if (m_isLocked)
                 {
-                    m_selectedObject.transform.parent = m_oldParent;
+                    core.updateEvent -= updateLockToCamera;
                     m_isLocked = false;
                 }
                 else
                 {
-                    m_oldParent = m_selectedObject.transform.parent;
-                    m_selectedObject.transform.parent = Camera.main.transform;
+                    m_positionOffset = m_selectedObject.transform.position - Camera.main.transform.position;
+                    m_rotationOffset = m_selectedObject.transform.rotation * Quaternion.Inverse(Camera.main.transform.rotation);
 
+                    m_oldPosition = m_selectedObject.transform.position;
+                    m_oldRotation = m_selectedObject.transform.rotation;
+                    m_inverseOldCamRotation = Quaternion.Inverse(Camera.main.transform.rotation);
+                    core.updateEvent += updateLockToCamera;
                     m_isLocked = true;
                 }
+
                 uiCameraOperation.Invoke(this, m_isLocked);
             }
         }
@@ -226,35 +279,47 @@ namespace vpet
             if (m_safeFrame == null)
             {
                 m_safeFrame = GameObject.Instantiate(m_safeFramePrefab, Camera.main.transform);
-                updateSafeFrame();
+                m_infoText = m_safeFrame.transform.FindDeepChild("InfoText").GetComponent<TextMeshProUGUI>();
+                m_scaler = m_safeFrame.transform.Find("scaler");
+                if (m_oldSOCamera)
+                    updateCamera(m_oldSOCamera, null);
             }
             else
+            {
                 GameObject.DestroyImmediate(m_safeFrame);
+                m_safeFrame = null;
+            }
+        }
+
+        private void updateTrigger(object sender, byte data)
+        {
+            if (m_oldSOCamera)
+                updateCamera(m_oldSOCamera, null);
         }
 
         //!
         //! Function for updating the aspect ratio of the safe frame based on the currently selected camera.
         //!
-        private void updateSafeFrame()
+        private void updateCamera(object sender, AbstractParameter parameter)
         {
-            Transform scaler = m_safeFrame.transform.Find("scaler");
-            TextMeshProUGUI infoText = m_safeFrame.transform.FindDeepChild("InfoText").GetComponent<TextMeshProUGUI>();
+            Camera cameraMain = Camera.main;
+            SceneObjectCamera soCamera = (SceneObjectCamera) sender;
 
-            Camera selectedCamera = null;
-            if (m_sceneManager.sceneCameraList.Count > 0)
-                selectedCamera = m_sceneManager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
-            else
-                selectedCamera = Camera.main;
+            cameraMain.fieldOfView = soCamera.fov.value;
+            cameraMain.sensorSize = soCamera.sensorSize.value;
 
-            string camInfo = String.Format("{0}mm | f/{1} | {2}:{3}mm", selectedCamera.focalLength, "2.8", selectedCamera.sensorSize.x, selectedCamera.sensorSize.y);
-            float newAspect = selectedCamera.sensorSize.x / selectedCamera.sensorSize.y;
-            
-            if (newAspect < selectedCamera.aspect)
-                scaler.localScale = new Vector3(1f / selectedCamera.aspect * (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f, 1f);
-            else
-                scaler.localScale = new Vector3(1f, selectedCamera.aspect / (selectedCamera.sensorSize.x / selectedCamera.sensorSize.y), 1f);
+            if (m_safeFrame)
+            {
+                string camInfo = String.Format("{0}mm | f/{1} | {2}:{3}mm | {4:0.00} fps", cameraMain.focalLength, soCamera.aperture.value, cameraMain.sensorSize.x, cameraMain.sensorSize.y, 1.0f / Time.deltaTime);
+                float newAspect = cameraMain.sensorSize.x / cameraMain.sensorSize.y;
 
-            infoText.text = camInfo;
+                if (newAspect < cameraMain.aspect)
+                    m_scaler.localScale = new Vector3(1f / cameraMain.aspect * (cameraMain.sensorSize.x / cameraMain.sensorSize.y), 1f, 1f);
+                else
+                    m_scaler.localScale = new Vector3(1f, cameraMain.aspect / (cameraMain.sensorSize.x / cameraMain.sensorSize.y), 1f);
+
+                m_infoText.text = camInfo;
+            }
         }
 
         //!
@@ -276,9 +341,6 @@ namespace vpet
             InputManager inputManager = core.getManager<InputManager>();
             if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE)
                 inputManager.setCameraAttitudeOffsets();
-
-            // announce the UI operation to the input manager
-            inputManager.setNextCameraCommand();
         }
 
         //!
@@ -288,18 +350,70 @@ namespace vpet
         {
             if (m_sceneManager.sceneCameraList.Count > 0)
             {
+                if (m_oldSOCamera)
+                {
+                    m_oldSOCamera.hasChanged -= updateCamera;
+                }
                 Camera mainCamera = Camera.main;
                 int targetDisplay = mainCamera.targetDisplay;
                 float aspect = mainCamera.aspect;
-                Camera newCamera = m_sceneManager.sceneCameraList[m_cameraIndex].GetComponent<Camera>();
+                SceneObjectCamera soCamera = m_sceneManager.sceneCameraList[m_cameraIndex];
+                Camera newCamera = soCamera.GetComponent<Camera>();
+                soCamera.hasChanged += updateCamera;
+                Debug.Log(soCamera.name + " Camera linked.");
+                m_oldSOCamera = soCamera;
                 mainCamera.enabled = false;
                 mainCamera.CopyFrom(newCamera);
                 mainCamera.targetDisplay = targetDisplay;
                 mainCamera.aspect = aspect;
                 mainCamera.enabled = true;
 
-                if (m_safeFrame)
-                    updateSafeFrame();
+                updateCamera(soCamera, null);
+            }
+        }
+
+        //!
+        //! Function that updates based on the main cameras transformation the selectet objects transformation by using a look through metaphor.
+        //!
+        private void updateLookThrough(object sender, EventArgs e)
+        {
+            Transform camTransform = Camera.main.transform;
+            switch (m_inputManager.cameraControl)
+            {
+                case InputManager.CameraControl.ATTITUDE: 
+                case InputManager.CameraControl.AR:
+                    Vector3 newPosition = camTransform.position - m_selectedObject.transform.parent.position;
+                    Quaternion newRotation = camTransform.rotation * Quaternion.Inverse(m_selectedObject.transform.parent.rotation);
+                    m_selectedObject.position.setValue(newPosition);
+                    m_selectedObject.rotation.setValue(newRotation);
+                    break;
+                default:
+                    camTransform.position = m_selectedObject.transform.position;
+                    camTransform.rotation = m_selectedObject.transform.rotation;
+                    break;
+            }
+        }
+
+        //!
+        //! Function that updates based on the main cameras transformation the selectet objects transformation by using a grab and move metaphor.
+        //!
+        private void updateLockToCamera(object sender, EventArgs e)
+        {
+            Transform camTransform = Camera.main.transform;
+            switch (m_inputManager.cameraControl)
+            {
+                case InputManager.CameraControl.ATTITUDE:
+                case InputManager.CameraControl.AR:
+                    Quaternion camRotationOffset = camTransform.rotation * m_inverseOldCamRotation;
+                    Vector3 newPosition = camRotationOffset * (m_oldPosition - camTransform.position) + camTransform.position;
+
+                    m_selectedObject.position.setValue(m_selectedObject.transform.parent.InverseTransformPoint(newPosition));
+                    m_selectedObject.rotation.setValue(Quaternion.Inverse(m_selectedObject.transform.parent.rotation) * (camRotationOffset * m_oldRotation));
+                    break;
+                default:
+                    camTransform.position = m_selectedObject.transform.position + m_positionOffset;
+                    camTransform.rotation = m_selectedObject.transform.rotation * m_rotationOffset;
+                    break;
             }
         }
     }
