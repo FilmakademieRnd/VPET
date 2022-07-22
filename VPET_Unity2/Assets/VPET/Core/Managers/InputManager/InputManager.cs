@@ -131,7 +131,7 @@ namespace vpet
         //!
         //! Event linked to the UI command of changing to the next available camera
         //!
-        public event EventHandler<bool> nextCameraUICommand;
+        public event EventHandler<bool> updateCameraUICommand;
 
         //!
         //! Enumeration describing possible touch input gestures.
@@ -201,9 +201,14 @@ namespace vpet
         //! The generated Unity input class defining all available user inputs.
         //!
         private Inputs m_inputs;
-
-        public bool orbitClick = false;
-        public bool dragClick = false;
+        //!
+        //! Simple latch for in-editor right click input.
+        //!
+        private bool orbitClick = false;
+        //!
+        //! Simple latch for in-editor middle click input.
+        //!
+        private bool dragClick = false;
 
         //!
         //! Constructor initializing member variables.
@@ -614,7 +619,7 @@ namespace vpet
             }
 
             // Two finger drag (used for orbit)
-            if(!m_isPinch)
+            if(!m_isPinch && m_cameraControl == CameraControl.NONE)
             { 
                 // Grab the average position
                 Vector2 pos = .5f * (tcs[0].screenPosition + tcs[1].screenPosition);
@@ -780,9 +785,9 @@ namespace vpet
         //!
         //! Function that fires an event for announcing change of current camera
         //!
-        public void setNextCameraCommand()
+        public void updateCameraCommand()
         {
-            nextCameraUICommand.Invoke(this, true);
+            updateCameraUICommand.Invoke(this, true);
         }
 
         //!
