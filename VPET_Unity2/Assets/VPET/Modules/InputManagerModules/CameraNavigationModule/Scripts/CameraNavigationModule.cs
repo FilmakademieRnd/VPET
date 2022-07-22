@@ -39,6 +39,11 @@ namespace vpet
     public class CameraNavigationModule : InputManagerModule
     {
         //!
+        //! A reference to the main camera.
+        //!
+        private Camera m_cam;
+
+        //!
         //! A reference to the main camera transform.
         //!
         private Transform m_camXform;
@@ -85,7 +90,8 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            m_camXform = Camera.main.transform;
+            m_cam = Camera.main;
+            m_camXform = m_cam.transform;
 
             // Subscription to input events
             manager.pinchEvent += CameraDolly;
@@ -124,9 +130,12 @@ namespace vpet
         private void CameraOrbit(object sender, InputManager.DragEventArgs e)
         {
             Vector3 pivotPoint;
-            // [REVIEW] TODO
-            // Change inpup methods so selection is maintained while camera operates (currently deselection is enforced)
             // Set the pivot point
+
+            // check if selection within camera
+            Vector3 camCoord = m_cam.WorldToViewportPoint(m_selectionCenter);
+            //Debug.Log(camCoord);
+
             if (m_hasSelection)
                 pivotPoint = m_selectionCenter;
             // In case of no selection, pivot point is a point in front of the camera

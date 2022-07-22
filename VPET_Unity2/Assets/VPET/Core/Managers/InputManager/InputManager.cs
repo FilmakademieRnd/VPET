@@ -202,6 +202,9 @@ namespace vpet
         //!
         private Inputs m_inputs;
 
+        public bool orbitClick = false;
+        public bool dragClick = false;
+
         //!
         //! Constructor initializing member variables.
         //!
@@ -235,6 +238,109 @@ namespace vpet
             // Additional subscriptions for specific input gestures
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove += TwoFingerMove;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove += ThreeFingerMove;
+
+#if UNITY_EDITOR
+            // Editor-only mouse camera manipulation
+            m_inputs.VPETMap.OrbitClick.performed += OrbitClick_performed;
+            m_inputs.VPETMap.OrbitClick.canceled += OrbitClick_canceled;
+            m_inputs.VPETMap.DragClick.performed += DragClick_performed;
+            m_inputs.VPETMap.DragClick.canceled += DragClick_canceled;
+            m_inputs.VPETMap.Position.performed += Position_performed;
+            m_inputs.VPETMap.ZoomWheel.performed += ZoomWheel_performed;
+#endif
+        }
+
+        //!
+        //! Function to handle right mouse button input (editor only)
+        //!
+        private void OrbitClick_performed(InputAction.CallbackContext obj)
+        {
+            orbitClick = true;
+        }
+
+        //!
+        //! Function to handle right mouse button input (editor only)
+        //!
+        private void OrbitClick_canceled(InputAction.CallbackContext obj)
+        {
+            orbitClick = false;
+            m_doOnce = true;
+        }
+
+        //!
+        //! Function to handle middle mouse button input (editor only)
+        //!
+        private void DragClick_performed(InputAction.CallbackContext obj)
+        {
+            dragClick = true;
+        }
+
+        //!
+        //! Function to handle middle mouse button input (editor only)
+        //!
+        private void DragClick_canceled(InputAction.CallbackContext obj)
+        {
+            dragClick = false;
+            m_doOnce = true;
+        }
+
+        //!
+        //! Function to handle mouse movement for camera operation (editor only)
+        //!
+        private void Position_performed(InputAction.CallbackContext obj)
+        {
+            if (orbitClick)
+            {
+                Vector2 pos = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+
+                // Store it once
+                if (m_doOnce)
+                {
+                    m_posBuffer = pos;
+                    m_doOnce = false;
+                }
+
+                // Invoke event
+                DragEventArgs e = new();
+                e.delta = pos - m_posBuffer;
+                twoDragEvent?.Invoke(this, e);
+
+                // Update buffer
+                m_posBuffer = pos;
+            }
+            else if (dragClick)
+            {
+                // Grab the position
+                Vector2 pos = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+
+                // Store it once
+                if (m_doOnce)
+                {
+                    m_posBuffer = pos;
+                    m_doOnce = false;
+                }
+
+                // Invoke event
+                DragEventArgs e = new();
+                e.delta = pos - m_posBuffer;
+                threeDragEvent?.Invoke(this, e);
+
+                // Update buffer
+                m_posBuffer = pos;
+            }    
+        }
+
+        //!
+        //! Function to handle mouse zoom wheel input (editor only)
+        //!
+        private void ZoomWheel_performed(InputAction.CallbackContext obj)
+        {
+            float dist = 0.1f * m_inputs.VPETMap.ZoomWheel.ReadValue<float>();
+
+            // Invoke event
+            PinchEventArgs e = new();
+            e.distance = dist;
+            pinchEvent?.Invoke(this, e);
         }
 
         //! 
@@ -289,6 +395,16 @@ namespace vpet
 
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= TwoFingerMove;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= ThreeFingerMove;
+
+#if UNITY_EDITOR
+            // Editor-only mouse camera manipulation
+            m_inputs.VPETMap.OrbitClick.performed -= OrbitClick_performed;
+            m_inputs.VPETMap.OrbitClick.canceled -= OrbitClick_canceled;
+            m_inputs.VPETMap.DragClick.performed -= DragClick_performed;
+            m_inputs.VPETMap.DragClick.canceled -= DragClick_canceled;
+            m_inputs.VPETMap.Position.performed -= Position_performed;
+            m_inputs.VPETMap.ZoomWheel.performed -= ZoomWheel_performed;
+#endif
         }
 
         public void enableAttitudeSensor()

@@ -89,6 +89,33 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""OrbitClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""a950519f-0476-42db-83cd-857c420abf2e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DragClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0d60628-4b7a-45b7-9566-8f68e73cc8fb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomWheel"",
+                    ""type"": ""Value"",
+                    ""id"": ""40f8c425-a372-4fd3-bb25-b215531abf9b"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -289,6 +316,39 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                     ""action"": ""Tap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""164fd2fe-3e48-4e7d-bdb9-e8727926afb1"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OrbitClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""310391ce-651a-4f0c-ba29-12dbadd74063"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DragClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d0570901-3b5b-4bc4-9b01-1e2878c1ad0b"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomWheel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -304,6 +364,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         m_VPETMap_Click = m_VPETMap.FindAction("Click", throwIfNotFound: true);
         m_VPETMap_Tap = m_VPETMap.FindAction("Tap", throwIfNotFound: true);
         m_VPETMap_Look = m_VPETMap.FindAction("Look", throwIfNotFound: true);
+        m_VPETMap_OrbitClick = m_VPETMap.FindAction("OrbitClick", throwIfNotFound: true);
+        m_VPETMap_DragClick = m_VPETMap.FindAction("DragClick", throwIfNotFound: true);
+        m_VPETMap_ZoomWheel = m_VPETMap.FindAction("ZoomWheel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -370,6 +433,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_VPETMap_Click;
     private readonly InputAction m_VPETMap_Tap;
     private readonly InputAction m_VPETMap_Look;
+    private readonly InputAction m_VPETMap_OrbitClick;
+    private readonly InputAction m_VPETMap_DragClick;
+    private readonly InputAction m_VPETMap_ZoomWheel;
     public struct VPETMapActions
     {
         private @Inputs m_Wrapper;
@@ -381,6 +447,9 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         public InputAction @Click => m_Wrapper.m_VPETMap_Click;
         public InputAction @Tap => m_Wrapper.m_VPETMap_Tap;
         public InputAction @Look => m_Wrapper.m_VPETMap_Look;
+        public InputAction @OrbitClick => m_Wrapper.m_VPETMap_OrbitClick;
+        public InputAction @DragClick => m_Wrapper.m_VPETMap_DragClick;
+        public InputAction @ZoomWheel => m_Wrapper.m_VPETMap_ZoomWheel;
         public InputActionMap Get() { return m_Wrapper.m_VPETMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -411,6 +480,15 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Look.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnLook;
+                @OrbitClick.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnOrbitClick;
+                @OrbitClick.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnOrbitClick;
+                @OrbitClick.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnOrbitClick;
+                @DragClick.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnDragClick;
+                @DragClick.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnDragClick;
+                @DragClick.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnDragClick;
+                @ZoomWheel.started -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnZoomWheel;
+                @ZoomWheel.performed -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnZoomWheel;
+                @ZoomWheel.canceled -= m_Wrapper.m_VPETMapActionsCallbackInterface.OnZoomWheel;
             }
             m_Wrapper.m_VPETMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -436,6 +514,15 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
+                @OrbitClick.started += instance.OnOrbitClick;
+                @OrbitClick.performed += instance.OnOrbitClick;
+                @OrbitClick.canceled += instance.OnOrbitClick;
+                @DragClick.started += instance.OnDragClick;
+                @DragClick.performed += instance.OnDragClick;
+                @DragClick.canceled += instance.OnDragClick;
+                @ZoomWheel.started += instance.OnZoomWheel;
+                @ZoomWheel.performed += instance.OnZoomWheel;
+                @ZoomWheel.canceled += instance.OnZoomWheel;
             }
         }
     }
@@ -449,5 +536,8 @@ public partial class @Inputs : IInputActionCollection2, IDisposable
         void OnClick(InputAction.CallbackContext context);
         void OnTap(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnOrbitClick(InputAction.CallbackContext context);
+        void OnDragClick(InputAction.CallbackContext context);
+        void OnZoomWheel(InputAction.CallbackContext context);
     }
 }
