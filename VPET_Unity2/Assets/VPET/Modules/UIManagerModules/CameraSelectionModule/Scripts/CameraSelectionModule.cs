@@ -29,9 +29,8 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 namespace vpet
@@ -280,6 +279,9 @@ namespace vpet
             if (m_safeFrame == null)
             {
                 m_safeFrame = GameObject.Instantiate(m_safeFramePrefab, Camera.main.transform);
+                CanvasScaler scaler =  m_safeFrame.GetComponent<CanvasScaler>();
+                float physicalDeviceScale = Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height) / Screen.dpi / 12f;
+                scaler.scaleFactor = Screen.dpi * 0.04f * Mathf.Min(Mathf.Max(manager.settings.uiScale.value, 0.4f), 3f) * physicalDeviceScale;
                 m_infoText = m_safeFrame.transform.FindDeepChild("InfoText").GetComponent<TextMeshProUGUI>();
                 m_scaler = m_safeFrame.transform.Find("scaler");
                 if (m_oldSOCamera)
