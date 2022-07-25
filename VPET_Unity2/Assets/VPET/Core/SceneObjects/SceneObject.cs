@@ -59,7 +59,13 @@ namespace vpet
         {
             get => _physicsActive;
         }
+        //!
+        //! A reference to the scene objects gizmo.
+        //!
         public GameObject _gizmo = null;
+        //!
+        //! A reference to the scene objects icon.
+        //!
         public GameObject _icon = null;
         //!
         //! A reference to the VPET UI manager.

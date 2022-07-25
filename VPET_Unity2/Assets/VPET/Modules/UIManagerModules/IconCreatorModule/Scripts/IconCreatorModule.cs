@@ -37,11 +37,14 @@ namespace vpet
 
     public class IconCreatorModule : UIManagerModule
     {
+        private bool m_showIcons = true;
         //!
         //! The list containing all UI elemets of the current menu.
         //!
         private List<SceneObject> m_sceneObjects;
-
+        //!
+        //! The root scene object containing all icons.
+        //!
         private GameObject m_IconRoot;
         //!
         //! Prefab for the icon.
@@ -65,8 +68,6 @@ namespace vpet
         {
         }
 
-
-
         //!
         //! Init Function
         //!
@@ -79,8 +80,25 @@ namespace vpet
 
             m_IconRoot = new GameObject("Icons");
 
+            MenuButton hideIconButton = new MenuButton("Hide Icons", toggleIcons);
+            manager.addButton(hideIconButton);
+
             SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += createIcons;
+        }
+
+        private void toggleIcons()
+        {
+            if (m_showIcons)
+            {
+                disposeIcons();
+                m_showIcons = false;
+            }
+            else
+            {
+                createIcons(core.getManager<SceneManager>(), EventArgs.Empty);
+                m_showIcons = true;
+            }
         }
 
         //!
@@ -136,7 +154,7 @@ namespace vpet
         //!
         //! Function for disposing and cleanup of all created gizmos.
         //!
-        private void diosposeIcons()
+        private void disposeIcons()
         {
             foreach(SceneObject sceneObject in m_sceneObjects)
             {

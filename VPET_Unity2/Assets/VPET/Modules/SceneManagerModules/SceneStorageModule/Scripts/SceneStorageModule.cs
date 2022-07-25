@@ -74,7 +74,10 @@ namespace vpet
 
             m_menu.caption = "Load/Save";
             m_menu.iconResourceLocation = "Images/button_save";
-            core.getManager<UIManager>().addMenu(m_menu);
+            UIManager uiManager = core.getManager<UIManager>();
+            uiManager.addMenu(m_menu);
+
+            uiManager.showMenu(m_menu);
         }
 
         //!
