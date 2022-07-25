@@ -52,6 +52,7 @@ namespace vpet
         //! Flag to specify if there are objects selected. 
         //!
         private bool m_hasSelection;
+
         //!
         //! The average position of the selected objects.
         //!
@@ -62,14 +63,36 @@ namespace vpet
         //! The speed factor for the pan movement.
         //!
         private static readonly float s_panSpeed = .005f;
+
         //!
         //! The speed factor for the orbit movement.
         //!
         private static readonly float s_orbitSpeed = .15f;
+
         //!
         //! The speed factor for the dolly movement.
         //!
         private static readonly float s_dollySpeed = .007f;
+
+        //!
+        //! The camera center of interest point
+        //!
+        private Vector3 centerOfInterest;
+
+        //!
+        //! A buffer vector storing the position offset between camera and center of interest
+        //!
+        private Vector3 coiOffset;
+
+        //!
+        //! A control variable for orbiting operation
+        //!
+        private bool stickToOrbit = false;
+
+        //!
+        //! A parameter defining how close to the edge an object can be and still act as center of interest
+        //!
+        private float screenTolerance = .05f;
 
         //!
         //! Constructor.
@@ -80,6 +103,22 @@ namespace vpet
         public CameraNavigationModule(string name, Manager manager) : base(name, manager)
         {
 
+        }
+
+        //!
+        //! Destructor, cleaning up event registrations. 
+        //!
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            // Unsubscribe
+            manager.pinchEvent -= CameraDolly;
+            manager.twoDragEvent -= CameraOrbit;
+            manager.threeDragEvent -= CameraPedestalTruck;
+            UIManager uiManager = core.getManager<UIManager>();
+            uiManager.selectionChanged -= SelectionUpdate;
+            manager.updateCameraUICommand -= CameraUpdated;
         }
 
         //! 
@@ -102,9 +141,27 @@ namespace vpet
             UIManager uiManager = core.getManager<UIManager>();
             uiManager.selectionChanged += SelectionUpdate;
 
+            // Subscribe to camera change
+            manager.updateCameraUICommand += CameraUpdated;
+
             // Initialize control variables
             m_selectionCenter = Vector3.zero;
             m_hasSelection = false;
+        }
+
+        //! 
+        //! Function that updates the camera center of interest for new camera selection.
+        //! 
+        //! @param sender The input manager.
+        //! @param e Not used.
+        //!
+        private void CameraUpdated(object sender, bool e)
+        {
+            // Assign arbitrary center of interest
+            centerOfInterest = m_camXform.TransformPoint(Vector3.forward * 6f);
+
+            // Store positional offset
+            coiOffset = m_camXform.position - centerOfInterest;
         }
 
 
@@ -118,6 +175,16 @@ namespace vpet
         {
             // Dolly cam
             m_camXform.Translate(0f, 0f, e.distance * s_dollySpeed);
+
+            // Check if center of interest is in front of camera
+            Vector3 camCoord = m_cam.WorldToViewportPoint(centerOfInterest);
+            if(camCoord.z < 0)
+                // Else snap to camera
+                centerOfInterest = m_camXform.position;
+
+            // Store positional offset
+            coiOffset = m_camXform.position - centerOfInterest;
+
         }
 
         //! 
@@ -129,24 +196,44 @@ namespace vpet
         //!
         private void CameraOrbit(object sender, InputManager.DragEventArgs e)
         {
+            // Prepare the pivot point
             Vector3 pivotPoint;
-            // Set the pivot point
 
-            // check if selection within camera
-            Vector3 camCoord = m_cam.WorldToViewportPoint(m_selectionCenter);
-            //Debug.Log(camCoord);
-
+            // If an object is selected
             if (m_hasSelection)
+            {
                 pivotPoint = m_selectionCenter;
-            // In case of no selection, pivot point is a point in front of the camera
+                // Check if selection center is inside camera view
+                Vector3 camCoord = m_cam.WorldToViewportPoint(m_selectionCenter);
+                // If any element is negative, it out of camera
+                if (camCoord.x < screenTolerance || camCoord.y < screenTolerance || camCoord.x > 1 - screenTolerance || camCoord.y > 1 - screenTolerance || camCoord.z < 0 || stickToOrbit)
+                {
+                    // If center of interest coincides with selection center
+                    if (centerOfInterest == m_selectionCenter)
+                    {
+                        // It means the center of orbit was already set to an object, and needs to be reset to the center
+                        centerOfInterest = m_camXform.TransformPoint(Vector3.forward * 6f);
+                    }
+                    pivotPoint = centerOfInterest;
+                    // And it should not change until selection is changed (else orbiting pivot will jump to object as soon as it 
+                    stickToOrbit = true;
+                }
+            }
             else
-                pivotPoint = m_camXform.TransformPoint(Vector3.forward * 6f);
-            // TODO: Redesign so it takes into account scene scale
+            {
+                pivotPoint = centerOfInterest;
+            }
 
             // Arc
             m_camXform.RotateAround(pivotPoint, Vector3.up, s_orbitSpeed * e.delta.x);
             // Tilt
             m_camXform.RotateAround(pivotPoint, m_camXform.right, -s_orbitSpeed * e.delta.y);
+
+            // Update value
+            centerOfInterest = pivotPoint;
+            // Store positional offset
+            coiOffset = m_camXform.position - centerOfInterest;
+
         }
 
         //! 
@@ -162,6 +249,13 @@ namespace vpet
 
             // Move around
             m_camXform.Translate(offset.x, offset.y, 0);
+
+            // If it was not orbited
+            if (centerOfInterest != m_selectionCenter)
+            {
+                // Drag the center of interest with it
+                centerOfInterest = m_camXform.position - coiOffset;
+            }
         }
 
         //!
@@ -171,18 +265,33 @@ namespace vpet
         {
             m_hasSelection = false;
             if (sceneObjects.Count < 1)
+            {
+                // In case of deselection, set the center of interest back to the center of the view
+                // If it has been orbited (meaning center of interest coincides to selection), preserve distance to camera
+                if (centerOfInterest == m_selectionCenter)
+                {
+                    Vector3 bufferpos = m_cam.WorldToViewportPoint(m_selectionCenter);
+                    bufferpos.x = .5f;
+                    bufferpos.y = .5f;
+                    centerOfInterest = m_cam.ViewportToWorldPoint(bufferpos);
+
+                    // Store positional offset
+                    coiOffset = m_camXform.position - centerOfInterest;
+                }
                 return;
+            }
 
             // Calculate the average position
             Vector3 averagePos = Vector3.zero;
             foreach (SceneObject obj in sceneObjects)
-            {
                 averagePos += obj.transform.position;
-            }
             averagePos /= sceneObjects.Count;
 
             m_selectionCenter = averagePos;
             m_hasSelection = true;
+
+            // Reset control variable
+            stickToOrbit = false;
         }
 
     }

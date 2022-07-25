@@ -369,6 +369,9 @@ namespace vpet
                 mainCamera.enabled = true;
 
                 updateCamera(soCamera, null);
+
+                // announce the UI operation to the input manager
+                m_inputManager.updateCameraCommand();
             }
         }
 

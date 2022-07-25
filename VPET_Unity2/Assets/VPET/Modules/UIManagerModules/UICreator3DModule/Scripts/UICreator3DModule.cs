@@ -229,7 +229,7 @@ namespace vpet
             m_inputManager.inputPressEnd -= PressEnd;
 
             m_inputManager.fingerGestureEvent -= updateGizmoScale;
-            m_inputManager.nextCameraUICommand -= updateGizmoScale;
+            m_inputManager.updateCameraUICommand -= updateGizmoScale;
 
             UICreator2DModule UI2DModule = manager.getModule<UICreator2DModule>();
             CameraSelectionModule CamModule = manager.getModule<CameraSelectionModule>();
@@ -273,7 +273,7 @@ namespace vpet
             m_inputManager.inputPressEnd += PressEnd;
 
             m_inputManager.fingerGestureEvent += updateGizmoScale;
-            m_inputManager.nextCameraUICommand += updateGizmoScale;
+            m_inputManager.updateCameraUICommand += updateGizmoScale;
 
             // Grabbing scene scale
             UIManager m_UIManager = core.getManager<UIManager>();
