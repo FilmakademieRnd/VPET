@@ -38,7 +38,7 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include <QObject>
 #include <QMutex>
 #include <nzmqt/nzmqt.hpp>
-#include <QElapsedTimer>
+#include <QTime>
 #include <QStringList>
 #include "recordWriter.h"
 
@@ -58,7 +58,7 @@ private:
     zmq::socket_t* sendSocket_;
     QList<QStringList>* messagesStorage;
 
-    QElapsedTimer timer;
+    QTime timer;
     int lastTime;
 
     QString msg_;

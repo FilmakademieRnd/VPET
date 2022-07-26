@@ -182,7 +182,7 @@ void ZeroMQHandler::run()
                 }
                 else
                 {
-                    QElapsedTimer* t = new QElapsedTimer();
+                    QTime* t = new QTime();
                     t->start();
                     pingMap.insert(clientID,t);
                     std::cout << "New client registered: " << 256 + (int) clientID << std::endl;
@@ -208,7 +208,7 @@ void ZeroMQHandler::run()
             else if (paramType == LOCK){
                 //store locked object for each client
                 lockMap.insert(clientID,sceneObjectID);
-                objectStateMap.insert(msgKey, msgArray.replace((qsizetype)0,(qsizetype)1,&targetHostID,(qsizetype) 1));
+                objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
                 if(_debug)
                 {
                     std::cout << "LockMsg: ";
@@ -229,13 +229,13 @@ void ZeroMQHandler::run()
             }*/
             else if (paramType != PING){
                 //if(paramType != HIDDENLOCK)
-                objectStateMap.insert(msgKey, msgArray.replace((qsizetype)0,(qsizetype)1,&targetHostID,(qsizetype)1));
+                objectStateMap.insert(msgKey, msgArray.replace(0,1,&targetHostID,1));
                 sender_->send(message);
             }
         }
 
         //check if ping timed out for any client
-        foreach(QElapsedTimer* time, pingMap) {
+        foreach(QTime* time, pingMap) {
             if(time->elapsed() > 3000)
             {
                 //connection to client lost

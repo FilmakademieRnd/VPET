@@ -38,7 +38,7 @@ will have to contact Filmakademie (research<at>filmakademie.de).
 #include <QObject>
 #include <QMutex>
 #include <QMap>
-#include <QElapsedTimer>
+#include <QTime>
 #include <nzmqt/nzmqt.hpp>
 
 class ZeroMQHandler : public QObject
@@ -93,7 +93,7 @@ private:
     QMap<QByteArray, QByteArray> objectStateMap;
 
     //map of ping timings
-    QMap<char, QElapsedTimer*> pingMap;
+    QMap<char, QTime*> pingMap;
 
     //map of last states
     QMap<char, int> lockMap;

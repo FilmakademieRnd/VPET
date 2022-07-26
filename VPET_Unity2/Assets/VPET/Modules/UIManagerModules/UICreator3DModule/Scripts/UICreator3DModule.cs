@@ -896,19 +896,19 @@ namespace vpet
                 {
                     SetModeT();
                     // Subscribe to change
-                    //pos.hasChanged += UpdateManipulatorPosition;
+                    pos.hasChanged += UpdateManipulatorPosition;
                 }
                 else if (manipulatorMode == 1)
                 {
                     SetModeR();
                     // Subscribe to change
-                    //rot.hasChanged += UpdateManipulatorRotation;
+                    rot.hasChanged += UpdateManipulatorRotation;
                 }
                 else if (manipulatorMode == 2)
                 {
                     SetModeS();
                     // Subscribe to change
-                    //sca.hasChanged += UpdateManipulatorScale;
+                    sca.hasChanged += UpdateManipulatorScale;
                 }
             }
 
