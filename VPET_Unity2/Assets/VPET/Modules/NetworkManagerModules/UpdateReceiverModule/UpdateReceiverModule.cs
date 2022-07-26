@@ -131,18 +131,17 @@ namespace vpet
                         switch ((MessageType)input[2])
                         {
                             case MessageType.LOCK:
+                                Helpers.Log("Make me lock");
                                 decodeLockMessage(ref input);
                                 break;
                             case MessageType.SYNC:
                                 if (!core.isServer)
                                     decodeSyncMessage(ref input);
                                 break;
-                            case MessageType.UNDOREDOADD:
-                                    decodeUndoRedoMessage(ref input);
-                                break;
                             case MessageType.RESETOBJECT:
                                 decodeResetMessage(ref input);
                                 break;
+                            case MessageType.UNDOREDOADD:
                             case MessageType.PARAMETERUPDATE:
                                 // make shure that producer and consumer exclude eachother
                                 lock (m_messageBuffer)
@@ -191,22 +190,6 @@ namespace vpet
         //! @param message The message to be decoded.
         //! 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void decodeUndoRedoMessage(ref byte[] message)
-        {
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
-            short parameterID = BitConverter.ToInt16(message, 5);
-
-            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
-
-            receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
-        }
-
-        //! 
-        //! Function that decodes a undo redo message and adds it to the undo redo manager.
-        //!
-        //! @param message The message to be decoded.
-        //! 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeResetMessage(ref byte[] message)
         {
             short sceneObjectID = BitConverter.ToInt16(message, 3);
@@ -239,7 +222,7 @@ namespace vpet
             // define the buffer size by defining the time offset in the ringbuffer
             // % time steps to take ring (0 to core.timesteps) into account
             // set to 1/10 second
-            int bufferTime = (((core.time - core.settings.framerate/10) + core.timesteps) % core.timesteps);
+            int bufferTime = (((core.time - core.settings.framerate / 10) + core.timesteps) % core.timesteps);
 
             lock (m_messageBuffer)
             {
@@ -264,7 +247,13 @@ namespace vpet
             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 
             if (sceneObject != null)
-                sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
+            {
+                if ((MessageType)message[2] == MessageType.UNDOREDOADD)
+                    receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
+                else
+                    sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
+
+            }
         }
 
 

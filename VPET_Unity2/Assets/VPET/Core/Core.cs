@@ -220,6 +220,7 @@ namespace vpet
             if (Input.deviceOrientation != m_orientation)
             {
                 orientationChangedEvent.Invoke(this, 0f);
+                Debug.Log("ORIENTATION CHANGED TO: " + Input.deviceOrientation);
                 Camera mainCamera = Camera.main;
                 if ((Input.deviceOrientation == DeviceOrientation.Portrait &&
                      (m_orientation == DeviceOrientation.LandscapeLeft ||
