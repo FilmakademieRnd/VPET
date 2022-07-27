@@ -226,7 +226,7 @@ namespace vpet
 
                 // header
                 m_controlMessage[0] = manager.cID;
-                m_controlMessage[1] = 0;
+                m_controlMessage[1] = core.time;
                 m_controlMessage[2] = (byte)MessageType.UNDOREDOADD;
 
                 // parameter
@@ -255,7 +255,7 @@ namespace vpet
 
                 // header
                 m_controlMessage[0] = manager.cID;
-                m_controlMessage[1] = 0;
+                m_controlMessage[1] = core.time;
                 m_controlMessage[2] = (byte)MessageType.RESETOBJECT;
 
                 // parameter
