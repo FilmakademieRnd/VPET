@@ -64,6 +64,10 @@ private:
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 
+	// can it hold a variable?
+	FString debugString = TEXT("Hello");
+	TArray<UMaterialInterface*> debugArray;
+
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
 };
