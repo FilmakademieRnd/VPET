@@ -251,12 +251,13 @@ namespace vpet
 
             lock (sceneObject)
             {
-                m_controlMessage = new byte[5]; // ParameterData;
+                m_controlMessage = new byte[6]; // ParameterData;
 
                 // header
                 m_controlMessage[0] = manager.cID;
                 m_controlMessage[1] = core.time;
                 m_controlMessage[2] = (byte)MessageType.RESETOBJECT;
+                m_controlMessage[5] = 0;
 
                 // parameter
                 Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
