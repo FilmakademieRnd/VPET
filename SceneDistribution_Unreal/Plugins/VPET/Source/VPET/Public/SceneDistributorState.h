@@ -1,34 +1,5 @@
 /*
------------------------------------------------------------------------------
-This source file is part of VPET - Virtual Production Editing Tools
-http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/VPET
-
 Copyright (c) 2020 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
-
-This project has been initiated in the scope of the EU funded project
-Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
-http://dreamspaceproject.eu/
-Post Dreamspace the project has been further developed on behalf of the
-research and development activities of Animationsinstitut.
-
-The VPET component Unreal Scene Distribution is intended for research and development
-purposes only. Commercial use of any kind is not permitted.
-
-There is no support by Filmakademie. Since the Unreal Scene Distribution is available
-for free, Filmakademie shall only be liable for intent and gross negligence;
-warranty is limited to malice. Scene DistributiorUSD may under no circumstances
-be used for racist, sexual or any illegal purposes. In all non-commercial
-productions, scientific publications, prototypical non-commercial software tools,
-etc. using the Unreal Scene Distribution Filmakademie has to be named as follows:
-“VPET-Virtual Production Editing Tool by Filmakademie Baden-Württemberg,
-Animationsinstitut (http://research.animationsinstitut.de)“.
-
-In case a company or individual would like to use the Unreal Scene Distribution in
-a commercial surrounding or for commercial purposes, software based on these
-components or any part thereof, the company/individual will have to contact
-Filmakademie (research<at>filmakademie.de).
------------------------------------------------------------------------------
 */
 #pragma once
 
@@ -36,11 +7,10 @@ Filmakademie (research<at>filmakademie.de).
 
 namespace VPET
 {
-	enum LodMode { ALL, TAG };
-	enum NodeType { GROUP, GEO, LIGHT, CAMERA };
-	enum LightType { SPOT, DIRECTIONAL, POINT, AREA, NONE };
+	enum LodMode { ALL, TAG }; // is needed?
+	enum NodeType { GROUP, GEO, LIGHT, CAMERA, SKINNEDMESH };
+	enum LightType { SPOT, DIRECTIONAL, POINT, AREA, RECTANGLE, DISC, NONE };
 
-	//#pragma pack(4)
 	struct Node
 	{
 		bool editable = false;
@@ -54,9 +24,8 @@ namespace VPET
 	struct NodeGeo : Node
 	{
 		int geoId = -1;
-		int textureId = -1;
 		int materialId = -1;
-		float roughness = 0.166f;
+		//float roughness = 0.166f;
 		float color[4] = { 1,1,1,1 };
 	};
 
@@ -66,15 +35,17 @@ namespace VPET
 		float intensity = 1.0;
 		float angle = 60.0;
 		float range = 500.0;
-		float exposure = 3.0;
 		float color[3] = { 1.0,1.0,1.0 };
 	};
 
 	struct NodeCam : Node
 	{
-		float cFov = 70;
-		float cNear = 1.0f;
-		float cFar = 1000;
+		float fov = 70;
+		float aspect = 2;
+		float nearPlane = 1.0f;
+		float farPlane = 1000;
+		float focalDist = 5;
+		float aperture = 2;
 	};
 
 	struct ObjectPackage
@@ -95,16 +66,37 @@ namespace VPET
 
 	struct TexturePackage
 	{
-		std::string path;
+		//std::string path;
 		int colorMapDataSize;
+		int width;
+		int height;
+		// Texture format?
+		// Texture?
 		unsigned char* colorMapData;
 	};
 
-	//#pragma pack(4)
+	struct MaterialPackage
+	{
+		int type = 0; //! The type of the material. 0=standard, 1=load by name, 2=new with shader by name,  3=new with shader from source, 4= .. 
+		std::string name;
+		std::string src;
+		int materialId = -1;
+		std::vector<int> textureIds;
+		//std::vector<int> textureNameIds;
+		std::vector<float> textureOffsets;
+		std::vector<float> textureScales;
+		std::vector<bool> shaderConfig;
+		std::vector<int> shaderPropertyIds;
+		std::vector<int> shaderPropertyTypes;
+		//std::vector<char> shaderProperties; // maybe unsigned char* ?
+		//std::vector<float> shaderProperties;
+		std::vector<char> shaderProperties;
+	};
+
 	struct VpetHeader
 	{
 		float lightIntensityFactor = 1.0;
-		int textureBinaryType = 0;
+		//int textureBinaryType = 0;
 	};
 
 	class SceneDistributorState
@@ -136,6 +128,7 @@ namespace VPET
 		std::vector<NodeType> nodeTypeList;
 		std::vector<ObjectPackage> objPackList;
 		std::vector<TexturePackage> texPackList;
+		std::vector<MaterialPackage> matPackList;
 		int textureBinaryType;
 
 		// Currently processed node

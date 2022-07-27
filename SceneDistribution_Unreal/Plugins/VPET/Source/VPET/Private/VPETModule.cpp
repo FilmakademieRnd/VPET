@@ -1,46 +1,26 @@
-/*
------------------------------------------------------------------------------
-This source file is part of VPET - Virtual Production Editing Tools
-http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/VPET
-
-Copyright (c) 2020 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
-
-This project has been initiated in the scope of the EU funded project
-Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
-http://dreamspaceproject.eu/
-Post Dreamspace the project has been further developed on behalf of the
-research and development activities of Animationsinstitut.
-
-The VPET component Unreal Scene Distribution is intended for research and development
-purposes only. Commercial use of any kind is not permitted.
-
-There is no support by Filmakademie. Since the Unreal Scene Distribution is available
-for free, Filmakademie shall only be liable for intent and gross negligence;
-warranty is limited to malice. Scene DistributiorUSD may under no circumstances
-be used for racist, sexual or any illegal purposes. In all non-commercial
-productions, scientific publications, prototypical non-commercial software tools,
-etc. using the Unreal Scene Distribution Filmakademie has to be named as follows:
-“VPET-Virtual Production Editing Tool by Filmakademie Baden-Württemberg,
-Animationsinstitut (http://research.animationsinstitut.de)“.
-
-In case a company or individual would like to use the Unreal Scene Distribution in
-a commercial surrounding or for commercial purposes, software based on these
-components or any part thereof, the company/individual will have to contact
-Filmakademie (research<at>filmakademie.de).
------------------------------------------------------------------------------
-*/
+// Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
 #include "VPETModule.h"
 
 using namespace VPET;
 
+//#include <zmq.hpp>
+//#include <string>
+//#include <iostream>
+//#include <windows.h>
+
+// Sets default values
 AVPETModule::AVPETModule()
 {
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Default values
-	HostIP = FString("127.0.0.1");
+	//HostIP = FString("127.0.0.1");
+	OpenFile = false;
+	UseTexture = false;
+	FilePath = FString("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_4_6x6.astc");
+	HostIP = FString("192.168.1.66");
 	UseSendTag = true;
 	UseEditableTag = true;
 	BrightnessMultiplier = 1.0;
@@ -54,58 +34,231 @@ AVPETModule::AVPETModule()
 	LogFolder = false;
 	LogLayer = false;
 	LogGeoBuild = false;
-
-
 }
 
+// Called when the game starts or when spawned
 void AVPETModule::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DOL(LogBasic, Warning, "[VPET BeginPlay] Game began.");
+	FVector loc = emptyTransform.GetLocation();
+	for (size_t i = 0; i < 3; i++)
+	{
+		DOL(LogBasic, Log, "[VPET2 BeginPlay] VEC %d %f", i, loc[i]);
+	}
+
+	// Host IP identifier
+	int32 idIndex = INDEX_NONE;
+	if (HostIP.FindLastChar('.', idIndex))
+	{
+		FString onlyID = HostIP.RightChop(idIndex + 1);
+		m_id = FCString::Atoi(*onlyID);
+	}
+	DOL(LogBasic, Log, "[VPET2 BeginPlay] M_ID: %d", m_id);
+	OSD(FColor::Cyan, "[VPET2 BeginPlay] M_ID: %d", m_id);
+
+	//FString matName("test");
+	//DOL(LogBasic, Warning, "MATERIALDEV mat name 1: %s", *matName);
+	//std::string matStr = TCHAR_TO_UTF8(*FString("TestMaterial"));
+	//matName = UTF8_TO_TCHAR(matStr.c_str());
+	//DOL(LogBasic, Warning, "MATERIALDEV mat name 2: %s", *matName);
+
+	// Explore the texture
+	// 
+	//float texWid = Texture->GetSurfaceWidth();
+	//float texHei = Texture->GetSurfaceWidth();
+	//DOL(LogBasic, Warning, "TEXTURE DEV: W: %f H: %f", texWid, texHei);
+	if (Texture)
+	{
+		check(Texture);
+
+		int texWid = Texture->GetSizeX();
+		int texHei = Texture->GetSizeY();
+		DOL(LogBasic, Warning, "TEXTURE DEV: W: %i H: %i", texWid, texHei);
+
+		int fullSize = Texture->GetResourceSizeBytes(EResourceSizeMode::Exclusive);
+		DOL(LogBasic, Warning, "TEXTURE DEV: size: %i", fullSize);
+		int numMip = Texture->PlatformData->Mips.Num();
+		DOL(LogBasic, Warning, "TEXTURE DEV: num mips: %i", numMip);
+
+		Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+
+		numMip = Texture->PlatformData->Mips.Num();
+		DOL(LogBasic, Warning, "TEXTURE DEV: num mips: %i", numMip);
 
 
-	// Test ZMQ
-	int major, minor, patch;
-	zmq::version(&major, &minor, &patch);
-	DOL(LogBasic, Log, "[VPET BeginPlay] ZeroMQ version: v%d.%d.%d", major, minor, patch);
+		int texSize = fullSize / numMip;
+		DOL(LogBasic, Warning, "TEXTURE DEV: size: %i", texSize);
 
+		// which is closer to raw data?
+		auto texData = Texture->PlatformData;
+		auto tpf = texData->PixelFormat;
+		auto tpd = texData->PackedData;
+		DOL(LogBasic, Warning, "TEXTURE DEV: pixel format: %i packed data: %i", tpf, tpd);
+		auto texRes = Texture->Resource;
+		auto texMem = Texture->ResourceMem;
+		//texMem.
+
+		// read info
+		//uint8* raw = NULL;
+		//FTexture2DMipMap& Mip = Texture->PlatformData->Mips[0];
+		//void* Data = Mip.BulkData.Lock(LOCK_READ_WRITE);
+		//raw = (uint8*)Data;
+		// read here in low level:
+		////let's say I want pixel x = 300, y = 23
+		////basic formula, data[channels * (width * y + x)];
+		//FColor pixel = FColor(0, 0, 0, 255);
+		//pixel.B = raw[4 * (640 * y + x) + 0];
+		//pixel.G = raw[4 * (640 * y + x) + 1];
+		//pixel.R = raw[4 * (640 * y + x) + 2];
+		//DOL(LogBasic, Warning, "DATA");
+		//for (size_t i = 0; i < texSize; i++)
+		//{
+		//	DOL(LogBasic, Warning, "%i", raw[i]);
+		//}
+
+		//// alternative
+		//void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);//locking the data since it is multi threaded
+		//uint8* myData;
+		//myData = (uint8*)malloc(texSize);
+		//FMemory::Memmove(myData, TextureData, texSize);
+		//DOL(LogBasic, Warning, "DATA");
+		//for (size_t i = 0; i < texSize; i++)
+		//{
+		//	DOL(LogBasic, Warning, "%i", myData[i]);
+		//}
+
+		//// unlock
+		//Texture->PlatformData->Mips[0].BulkData.Unlock();
+
+		//// Small
+		//void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);//locking the data since it is multi threaded
+		//uint8* rawData;
+		//rawData = (uint8*)TextureData;
+		//DOL(LogBasic, Warning, "DATA");
+		//for (size_t i = 0; i < fullSize; i++)
+		//{
+		//	DOL(LogBasic, Warning, "%i", rawData[i]);
+		//}
+		//Texture->PlatformData->Mips[0].BulkData.Unlock();
+
+		//Texture->CompressionSettings = ;
+
+
+		////alternative - source - nah, this bad
+		//FTextureSource& SourceData = Texture->Source;
+		////DOL(LogBasic, Warning, "FORMAT %i", SourceData.GetFormat());
+		//if (SourceData.GetFormat() == TSF_BGRA8)
+		//{
+		//	uint32 BytesPerPixel = SourceData.GetBytesPerPixel();
+		//	DOL(LogBasic, Warning, "TEXTURE DEV2: W: %i H: %i", SourceData.GetSizeX(), SourceData.GetSizeY());
+		//	DOL(LogBasic, Warning, "bytes per pixel: %i", BytesPerPixel);
+		//	DOL(LogBasic, Warning, "size: %i", SourceData.GetSizeX() * SourceData.GetSizeY() * BytesPerPixel);
+		//	/*uint8* OffsetSource = SourceData.LockMip(0) + (SourceXY.X + SourceXY.Y * SourceData.GetSizeX()) * BytesPerPixel;*/
+		//	uint8* OffsetSource = SourceData.LockMip(0);
+
+		//	//TArray<uint8> TargetBuffer;
+		//	//TargetBuffer.Empty();
+		//	//TargetBuffer.AddZeroed(SourceData.GetSizeX() * SourceData.GetSizeY() * BytesPerPixel);
+		//	//uint8* OffsetDest = TargetBuffer.GetData();
+
+		//	//CopyTextureData(OffsetSource, OffsetDest, SourceSize.X, SourceSize.Y, BytesPerPixel, SourceData.GetSizeX() * BytesPerPixel, SourceSize.X * BytesPerPixel);
+		//	DOL(LogBasic, Warning, "DATA");
+		//	for (size_t i = 0; i < 8; i++)
+		//	{
+		//		DOL(LogBasic, Warning, "%i", OffsetSource[i]);
+		//	}
+
+
+		//	SourceData.UnlockMip(0);
+		//}
+		//else
+		//{
+		//	DOL(LogBasic, Warning, "Sprite texture %s is not BGRA8, which isn't supported in atlases yet", *Texture->GetName());
+
+
+	}
+
+	if (OpenFile)
+	{
+		// try loading external file
+		IPlatformFile& PlatformFile = IPlatformFile::GetPlatformPhysical();
+		//FString filename("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_4_6x6.astc");
+		const TCHAR* FullModulePath = *FilePath;
+		IFileHandle* File = PlatformFile.OpenRead(FullModulePath);
+
+		if (File)
+		{
+			int fileSize = File->Size();
+			DOL(LogBasic, Warning, "File size: %i", fileSize);
+
+			DOL(LogBasic, Warning, "FILE DATA");
+			uint8* rawData;
+			rawData = (uint8*)malloc(fileSize);
+			File->Read(rawData, fileSize);
+			for (size_t i = 0; i < fileSize; i++)
+			{
+				DOL(LogBasic, Warning, "%i", rawData[i]);
+			}
+
+		}
+	}
+	// maybe using TextureFormatASTC.cpp?
+	//virtual ITextureFormat* GetTextureFormat() = 0;
+	//FTextureFormatASTCModule test;
+
+	//FTextureFormatASTC test;
+
+	//// making our own texture
+	//FString TextureName("MyTexture");
+	//FString PackageName = TEXT("/Game/ProceduralTextures/");
+	//PackageName += TextureName;
+	//UPackage* Package = CreatePackage(NULL, *PackageName);
+	//Package->FullyLoad();
+
+	//UTexture2D* NewTexture = NewObject<UTexture2D>(Package, *TextureName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+
+	//// fill with data
+	//int TextureWidth = 4;
+	//int TextureHeight = 4;
+
+	//NewTexture->AddToRoot();				// This line prevents garbage collection of the texture
+	//NewTexture->PlatformData = new FTexturePlatformData();	// Then we initialize the PlatformData
+	//NewTexture->PlatformData->SizeX = TextureWidth;
+	//NewTexture->PlatformData->SizeY = TextureHeight;
+	//NewTexture->PlatformData->SetNumSlices(1);
+	//NewTexture->PlatformData->PixelFormat = EPixelFormat::PF_ASTC_6x6;
+
+
+	//NewTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+
+
+
+
+
+	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Game began.");
 
 	// Grab world
 	UWorld* MyWorld = GetWorld();
-
 	// And level if needed
 	ULevel* CurrLevel = MyWorld->GetCurrentLevel();
-
-	// Find world settings
-	//wrldSet = FindObject<AWorldSettings>(CurrLevel, *FString("WorldSettings"));
-	// Temporary use MonoCullingDistance as custom parameter
-	//if (wrldSet)
-	//{
-	//	lgtMult = wrldSet->MonoCullingDistance;
-	//	DOL(LogBasic, Log, "Found world settings, MonoCullingDistance: %f", lgtMult);
-	//}
-
 	// Print variable
-	DOL(LogBasic, Log, "[VPET BeginPlay] World name: %s", *MyWorld->GetName());
+	DOL(LogBasic, Log, "[VPET2 BeginPlay] World name: %s", *MyWorld->GetName());
 
-	// Populating the distribution state
+	// Start populating the distributor state
 
 	// Header values
 	m_state.vpetHeader.lightIntensityFactor = 1.0;
-	m_state.vpetHeader.textureBinaryType = 0;
+	//m_state.vpetHeader.textureBinaryType = 0;
 
-	// set init to all
-	m_state.lodMode = ALL;
-
-	// set tagging mode (from Katana)
+	// set LOD / tagging mode (from Katana)
 	m_state.lodMode = TAG;
 	m_state.lodTag = "lo";
 
-
 	DOL(LogBasic, Log, "[VPET BeginPlay] Building scene...");
 
-	// World tweak - creating a global root (perhaps better approach: ask user to attach everything that needs to be transmitted to a root actor)
+	// World tweak - creating a global root
+	// (perhaps better approach: ask user to attach everything that needs to be transmitted to a root actor)
 	buildWorld();
 
 	// Root nodes counter
@@ -122,56 +275,7 @@ void AVPETModule::BeginPlay()
 		if (!lActor->GetAttachParentActor())
 			if (buildLocation(lActor))
 				rootChildrenCount++;
-
-
-		// Development // check hierarchy nesting/attachment
-
-		// Test GetAttachedActors
-		TArray<AActor*> attActors;
-		lActor->GetAttachedActors(attActors);
-		for (size_t i = 0; i < attActors.Num(); i++)
-		{
-			DOL(LogAttachment, Log, "[VPET BeginPlay] AActor %s has attachment: %s", *lActor->GetActorLabel(), *attActors[i]->GetActorLabel());
-		}
-		// Test GetAttachParentActor
-		AActor* aParActor = lActor->GetAttachParentActor();
-		if (aParActor)
-		{
-			DOL(LogAttachment, Log, "[VPET BeginPlay] AActor %s has attach parent: %s", *lActor->GetActorLabel(), *aParActor->GetActorLabel());
-		}
-
-
-		// Check folder  -> folder paths are only available in development builds.
-		auto fPath = lActor->GetFolderPath();
-		DOL(LogFolder, Log, "[VPET BeginPlay] AActor %s is under folder %s", *lActor->GetActorLabel(), *fPath.ToString());
-
-
-		// Check layer
-		TArray<FName> aLayers = lActor->Layers;
-		DOL(LogLayer, Log, "[VPET BeginPlay] AActor %s is under layers:", *lActor->GetActorLabel());
-		for (size_t i = 0; i < aLayers.Num(); i++)
-			DOL(LogLayer, Log, "Layer %d: %d", i, *aLayers[i].ToString());
-
 	}
-
-	// Go over layers - this return ALL instances - both editor and PIE
-	//for (TObjectIterator<ULayer> uIt; uIt; ++uIt)
-	//{
-	//	ULayer* lLayer = *uIt;
-	//	DOL(LogLayer, Log, "Found ULayer. Name %s, fname %s, display name %s ", *lLayer->GetName(), *lLayer->GetFName().ToString(), *lLayer->LayerName.ToString());
-	//	DOL(LogLayer, Log, "layer ID: %d ", lLayer->GetUniqueID());
-
-	//	// grab stats
-	//	TArray <FLayerActorStats> lStats = lLayer->ActorStats;
-	//	//DOL(LogBasic, Log, "Num of stats: %d ", lStats.Num());
-	//	for (size_t i = 0; i < lStats.Num(); i++)
-	//	{
-	//		int lTot = lStats[i].Total;
-	//		UClass* lType = lStats[i].Type;
-	//		DOL(LogLayer, Log, "Stat %d, total %d", i, lTot);
-	//		DOL(LogLayer, Log, "type: %s", *lType->GetName());
-	//	}
-	//}
 
 
 	// Edit root child count
@@ -180,62 +284,19 @@ void AVPETModule::BeginPlay()
 
 	// Print stats
 	DOL(LogBasic, Log, "[VPET BeginPlay] Texture Count: %i", m_state.texPackList.size());
+	DOL(LogBasic, Log, "[VPET BeginPlay] Material Count: %i", m_state.matPackList.size());
 	DOL(LogBasic, Log, "[VPET BeginPlay] Object(Mesh) Count: %i", m_state.objPackList.size());
 	DOL(LogBasic, Log, "[VPET BeginPlay] Node Count: %i", m_state.nodeList.size());
 	DOL(LogBasic, Log, "[VPET BeginPlay] Objects: %i", m_state.numObjectNodes);
 	DOL(LogBasic, Log, "[VPET BeginPlay] Lights: %i", m_state.numLights);
 	DOL(LogBasic, Log, "[VPET BeginPlay] Cameras: %i", m_state.numCameras);
 
+
 	// Open ØMQ context
 	context = new zmq::context_t(1);
 
-	// Prepare synchronization thread - TODO promote this to somewhere easier to find
-	FString synchronizationPort(":5556");
-
-	// Prepare ZMQ listener socket
-	socket_s = new zmq::socket_t(*context, ZMQ_SUB);
-	// cpp method
-	socket_s->setsockopt(ZMQ_SUBSCRIBE, "", 0);
-	// zmq function
-	//int rc = zmq_setsockopt(socket_s, ZMQ_SUBSCRIBE, "", 0);
-	//assert(rc == 0);
-
-	try {
-		FString hostAddress = FString("tcp://") + HostIP + synchronizationPort;
-		std::string hostString = TCHAR_TO_UTF8(*hostAddress);
-		socket_s->connect(hostString);
-	}
-	catch (const zmq::error_t &e)
-	{
-		FString errName = FString(zmq_strerror(e.num()));
-		DOL(LogBasic, Error, "[VPET BeginPlay] ERROR - Failed to connect: %s", *errName);
-		OSD(FColor::Red, "[VPET BeginPlay] ERROR - Failed to connect: %s", *errName);
-		return;
-	}
-
-	DOL(LogBasic, Warning, "[VPET BeginPlay] Synchronization socket connected!");
-	OSD(FColor::Cyan, "[VPET BeginPlay] Synchronization socket connected!");
-
-	// Start the message queue?
-	msgQ.clear();
-
-	// Start synchronization (listener) thread
-	auto tListener = new FAutoDeleteAsyncTask<ThreadSyncDev>(socket_s, &msgQ, LogBasic);
-	tListener->StartBackgroundTask();
-
-	// Host IP identifier
-	int32 idIndex = INDEX_NONE;
-	if (HostIP.FindLastChar('.', idIndex))
-	{
-		FString onlyID = HostIP.RightChop(idIndex + 1);
-		m_id = FCString::Atoi(*onlyID);
-	}
-	DOL(LogBasic, Log, "[VPET BeginPlay] M_ID: %d", m_id);
-	OSD(FColor::Cyan, "[VPET BeginPlay] M_ID: %d", m_id);
-
-
 	// Prepare distribution thread - for hosting the scene - TODO promote this to somewhere easier to find
-	FString distributionPort(":5565");
+	FString distributionPort(":5555");
 	socket_d = new zmq::socket_t(*context, ZMQ_REP);
 
 	// Safe attempt to bind - if socket exists, stop it all
@@ -243,26 +304,105 @@ void AVPETModule::BeginPlay()
 		FString hostAddress = FString("tcp://") + HostIP + distributionPort;
 		std::string hostString(TCHAR_TO_UTF8(*hostAddress));
 		socket_d->bind(hostString);
-
 	}
-	catch (const zmq::error_t &e)
+	catch (const zmq::error_t& e)
 	{
 		FString errName = FString(zmq_strerror(e.num()));
-		DOL(LogBasic, Error, "[VPET BeginPlay] ERROR - Failed to bind: %s", *errName);
-		OSD(FColor::Red, "[VPET BeginPlay] ERROR - Failed to bind: %s", *errName);
+		DOL(LogBasic, Error, "[VPET2 BeginPlay] ERROR Distribution - Failed to bind: %s", *errName);
+		OSD(FColor::Red, "[VPET2 BeginPlay] ERROR Distribution - Failed to bind: %s", *errName);
 		return;
 	}
 
-	DOL(LogBasic, Warning, "[VPET BeginPlay] Distribution socket created!");
-	OSD(FColor::Cyan, "[VPET BeginPlay] Distribution socket created!");
+	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Distribution socket created!");
+	OSD(FColor::Cyan, "[VPET2 BeginPlay] Distribution socket created!");
 
+	// Start thread
 	// Start distribution (request / reply) thread
-	auto tDistribute = new FAutoDeleteAsyncTask<ThreadDistDev>(socket_d, &m_state, LogBasic);
+	//auto tDistribute = new FAutoDeleteAsyncTask<ThreadVPET2Dist>(socket_d, &m_state, LogBasic);
+	auto tDistribute = new FAutoDeleteAsyncTask<SceneSenderThread>(socket_d, &m_state, LogBasic);
 	tDistribute->StartBackgroundTask();
+
+
+	// Update Receiver Thread
+	FString updateReceiverPort(":5556");
+	// Prepare ZMQ Subscriber socket
+	socket_r = new zmq::socket_t(*context, ZMQ_SUB);
+	// cpp method
+	socket_r->setsockopt(ZMQ_SUBSCRIBE, "", 0);
+
+	// Safe attempt to connect - if socket exists, stop it all
+	try {
+		FString hostAddress = FString("tcp://") + HostIP + updateReceiverPort;
+		std::string hostString = TCHAR_TO_UTF8(*hostAddress);
+		socket_r->connect(hostString);
+	}
+	catch (const zmq::error_t& e)
+	{
+		FString errName = FString(zmq_strerror(e.num()));
+		DOL(LogBasic, Error, "[VPET2 BeginPlay] ERROR Receiver - Failed to connect: %s", *errName);
+		OSD(FColor::Red, "[VPET2 BeginPlay] ERROR Receiver - Failed to connect: %s", *errName);
+		return;
+	}
+
+	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Update receiver socket created!");
+	OSD(FColor::Cyan, "[VPET2 BeginPlay] Update receiver socket created!");
+
+	// Start the message queue?
+	msgQ.clear();
+
+	msgQs.clear();
+	msgData.clear();
+	msgLen.clear();
+
+
+
+	// Start synchronization (receiver) thread
+	//auto tUpdateReceiver = new FAutoDeleteAsyncTask<ThreadVPET2Recv>(socket_r, &msgQ, m_id, LogBasic);
+	auto tUpdateReceiver = new FAutoDeleteAsyncTask<UpdateReceiverThread>(socket_r, &msgQ, m_id, LogBasic, this);
+
+	tUpdateReceiver->StartBackgroundTask();
+
+
+	// Update Sender Thread
+	FString updateSenderPort(":5557");
+	// Prepare ZMQ Publisher socket
+	socket_s = new zmq::socket_t(*context, ZMQ_PUB);
+
+	// Safe attempt to connect - if socket exists, stop it all
+	try {
+		FString hostAddress = FString("tcp://") + HostIP + updateSenderPort;
+		std::string hostString = TCHAR_TO_UTF8(*hostAddress);
+		socket_s->connect(hostString);
+	}
+	catch (const zmq::error_t& e)
+	{
+		FString errName = FString(zmq_strerror(e.num()));
+		DOL(LogBasic, Error, "[VPET2 BeginPlay] ERROR Sender - Failed to connect: %s", *errName);
+		OSD(FColor::Red, "[VPET2 BeginPlay] ERROR Sender - Failed to connect: %s", *errName);
+		return;
+	}
+
+	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Update sender socket created!");
+	OSD(FColor::Cyan, "[VPET2 BeginPlay] Update sender socket created!");
+
+	// Start synchronization (sender) thread
+	//auto tUpdateSender = new FAutoDeleteAsyncTask<ThreadVPET2Send>(socket_s, &msgQs, m_id, LogBasic, &msgData, &msgLen);//, &runThreadSend);
+	auto tUpdateSender = new FAutoDeleteAsyncTask<UpdateSenderThread>(socket_s, &msgQs, m_id, LogBasic, &msgData, &msgLen);//, &runThreadSend);
+	tUpdateSender->StartBackgroundTask();
+
+
+	// selection changes test
+	FLevelEditorModule& levelEditor = FModuleManager::GetModuleChecked<FLevelEditorModule>("LevelEditor");
+	//levelEditor.OnActorSelectionChanged().AddUObject(this, &UElgEditorContext_LevelEditor::HandleOnActorSelectionChanged);
+	FLevelEditorModule::FActorSelectionChangedEvent fasce = levelEditor.OnActorSelectionChanged();
+	levelEditor.OnActorSelectionChanged().AddUObject(this, &AVPETModule::HandleOnActorSelectionChanged);
+
+	
 
 
 }
 
+// Called every frame
 void AVPETModule::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -275,241 +415,207 @@ void AVPETModule::Tick(float DeltaTime)
 		//ParseTransformation(msg);
 		// Vector paradigm
 		std::vector<uint8_t> msg = msgQ.at(i);
-		ParseTransformation(msg);
+		ParseParameterUpdate(msg);
 		count++;
 	}
 
 	// Clean processed messages
 	msgQ.erase(msgQ.begin(), msgQ.begin() + count);
 
-	// Development print
+
+	// dev tests
 	if (doItOnce)
 	{
 		doItOnce = false;
 		DOL(LogBasic, Log, "[VPET Once] Editable actors list:");
-		OSD(FColor::Turquoise, "[VPET List] Editable actors list:");
 		for (size_t i = 0; i < actorList.Num(); i++)
 		{
 			// Grab back the actors
 			AActor* aActor = actorList[i];
-			FString aName = aActor->GetActorLabel();
-			DOL(LogBasic, Log, "[VPET] %d: %s", i, *aName);
-			OSD(FColor::Turquoise, "[VPET List] %d: %s", i, *aName);
+			if (aActor)
+			{
+				FString aName = aActor->GetActorLabel();
+				DOL(LogBasic, Log, "[VPET] %d: %s", i, *aName);
+			}
 		}
 
 		// checking instancing
 		int objCount = m_state.objPackList.size();
 		DOL(LogBasic, Log, "[VPET List] Unique object count: %d", objCount);
+
+		// sub component operation
+		//devActor = actorList[4];
+		//FTransform test;
+		//devActor->AddComponentByClass(USceneObject::StaticClass(), false, test, false);
+		//devComp = Cast<USceneObject>(devActor->GetComponentByClass((USceneObject::StaticClass())));
+
+
+		// do some parameter magic?
+		//TArray<AbstractParameter*>* tempArray = devComp->GetParameterList();
+		//AbstractParameter* tempParam = (*tempArray)[3];
+		//FString fName(tempParam->GetName().c_str());
+		//UE_LOG(LogTemp, Warning, TEXT("Found param name %s"), *fName);
+
+		//tempParam->ParseMessage();
+
+		for (int kID : IDtoSend)
+		{
+			DOL(LogBasic, Log, "[VPET List] List of IDs: %d", kID);
+		}
 	}
 
+	//if (devActor)
+	//{
+	//	if (devComp)
+	//	{
+	//		float realtimeSeconds = 100 * UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	//		FVector buffer(1, 1, realtimeSeconds);
+	//		//devComp->UpdatePosition(buffer);
+	//	}
+	//}
+
+	//	// temp thing
+	//	//prim->AddComponent();
+	//DOL(LogBasic, Error, "[DIST buildLocation] ADD COMPONENTS");
+	////FTransform test;
+	////prim->AddComponentByClass(USceneObject::StaticClass(), false, test, false);
+
+	////if (ActorComponentClass->IsChildOf(baseClass))
+	//UActorComponent* NewComp = NewObject<UActorComponent>(prim, USceneObject::StaticClass());
+	//if (NewComp)
+	//{
+	//	DOL(LogBasic, Error, "[DIST buildLocation] NEW COMPONENTS");
+	//	NewComp->RegisterComponent();
+	//}
 }
 
-
-void AVPETModule::ParseTransformation(std::vector<uint8_t> kMsg)
+void AVPETModule::ParseParameterUpdate(std::vector<uint8_t> kMsg)
 {
-	//// Grab first byte
+	// Grab a byte
 	//uint8_t fByte;
-	////DOL(LogBasic, Log, "[Parse] First byte: %d", fByte);
-	//// Development print - print a bunch of bytes
-	//for (size_t i = 0; i < 30; i++)
+	// Development print - print a bunch of bytes
+	//for (size_t i = 0; i < 14; i++)
 	//{
 	//	fByte = kMsg[i];
 	//	DOL(LogBasic, Log, "[Parse] Byte: %d, value: %d", i, fByte);
 	//}
 
-	// Ignore message from host
-	if (kMsg[0] != m_id)
+	int16_t objectID = *reinterpret_cast<int16_t*>(&kMsg[3]);
+	DOL(LogBasic, Log, "[SYNC Parse] obj Id: %d", objectID);
+	//OSD(FColor::Yellow, "[SYNC Parse] obj Id: %d", objectID);
+
+	if (actorList.Num() <= objectID)
 	{
-		ParameterType paramType = (ParameterType)kMsg[1];
-
-		int32_t objectID = *reinterpret_cast<int32_t*>(&kMsg[2]);
-		DOL(LogBasic, Log, "[SYNC Parse] obj Id: %d", objectID);
-		OSD(FColor::Yellow, "[SYNC Parse] obj Id: %d", objectID);
-
-		if (actorList.Num() <= objectID)
-		{
-			DOL(LogBasic, Error, "[SYNC Parse] Failed to grab object refered by Id: %d", objectID);
-			OSD(FColor::Red, "[SYNC Parse] Failed to grab object refered by Id: %d", objectID);
-			return;
-		}
-
-		AActor* sceneActor = actorList[objectID];
-
-		switch (paramType)
-		{
-		case AVPETModule::POS:
-		{
-			float lX = *reinterpret_cast<float*>(&kMsg[6]);
-			float lY = *reinterpret_cast<float*>(&kMsg[10]);
-			float lZ = *reinterpret_cast<float*>(&kMsg[14]);
-			DOL(LogBasic, Log, "[SYNC Parse] Type POS: %f %f %f", lX, lY, lZ);
-
-			// Transform actor pos
-			FVector aLoc(-lX, lZ, lY);
-
-			aLoc *= 100.0;
-			//sceneActor->SetActorLocation(aLoc);
-			sceneActor->SetActorRelativeLocation(aLoc);
-
-			break;
-		}
-		case AVPETModule::ROT:
-		{
-			float lX = *reinterpret_cast<float*>(&kMsg[6]);
-			float lY = *reinterpret_cast<float*>(&kMsg[10]);
-			float lZ = *reinterpret_cast<float*>(&kMsg[14]);
-			float lW = *reinterpret_cast<float*>(&kMsg[18]);
-			DOL(LogBasic, Log, "[SYNC Parse] Type ROT: %f %f %f %f", lX, lY, lZ, lW);
-
-			// Transform actor rot
-			FQuat aRot(-lX, lZ, lY, lW);
-
-			// In the case of cameras and lights and maybe some other stuff that needs tweak (maybe could be transmitted from scene distribution as a bool already - no double chek)
-			FString className = sceneActor->GetClass()->GetName();
-			//DOL(LogBasic, Log, "[SYNC Parse] Class %s", *className);
-			if (className.Find("Light") > -1 || className == "CameraActor")
-			{
-				//DOL(LogBasic, Log, "[SYNC Parse] Tweak rot!");
-				FRotator tempRot(0, 90, 0);
-				FQuat transRot = tempRot.Quaternion();
-				aRot *= transRot;
-			}
-
-			//sceneActor->SetActorRotation(aRot);
-			sceneActor->SetActorRelativeRotation(aRot);
-
-			break;
-		}
-		case AVPETModule::SCALE:
-		{
-			float lX = *reinterpret_cast<float*>(&kMsg[6]);
-			float lY = *reinterpret_cast<float*>(&kMsg[10]);
-			float lZ = *reinterpret_cast<float*>(&kMsg[14]);
-			DOL(LogBasic, Log, "[SYNC Parse] Type SCALE: %f %f %f", lX, lY, lZ);
-
-			// transform actor sca
-			FVector aSca(lX, lZ, lY);
-
-			//sceneActor->SetActorScale3D(aSca);
-			sceneActor->SetActorRelativeScale3D(aSca);
-
-			break;
-		}
-
-		case AVPETModule::LOCK:
-			DOL(LogBasic, Log, "[SYNC Parse] LOCK paramType");
-			break;
-		case AVPETModule::HIDDENLOCK:
-			DOL(LogBasic, Log, "[SYNC Parse] HIDDENLOCK paramType");
-			break;
-		case AVPETModule::KINEMATIC:
-			DOL(LogBasic, Log, "[SYNC Parse] KINEMATIC paramType");
-			break;
-		case AVPETModule::FOV:
-		{
-			DOL(LogBasic, Log, "[SYNC Parse] FOV paramType");
-			ACameraActor* kCam = Cast<ACameraActor>(sceneActor);
-			if (kCam)
-				kCam->GetCameraComponent()->FieldOfView = *reinterpret_cast<float*>(&kMsg[6]);
-			break;
-		}
-		case AVPETModule::ASPECT:
-			DOL(LogBasic, Log, "[SYNC Parse] ASPECT paramType");
-			break;
-		case AVPETModule::FOCUSDIST:
-			DOL(LogBasic, Log, "[SYNC Parse] FOCUSDIST paramType");
-			break;
-		case AVPETModule::FOCUSSIZE:
-			DOL(LogBasic, Log, "[SYNC Parse] FOCUSSIZE paramType");
-			break;
-		case AVPETModule::APERTURE:
-			DOL(LogBasic, Log, "[SYNC Parse] APERTURE paramType");
-			break;
-		case AVPETModule::COLOR:
-		{
-			DOL(LogBasic, Log, "[SYNC Parse] COLOR paramType");
-			ALight* kLit = Cast<ALight>(sceneActor);
-			if (kLit)
-			{
-				float lR = *reinterpret_cast<float*>(&kMsg[6]);
-				float lG = *reinterpret_cast<float*>(&kMsg[10]);
-				float lB = *reinterpret_cast<float*>(&kMsg[14]);
-				kLit->SetLightColor(FLinearColor(lR, lG, lB));
-			}
-			break;
-		}
-		case AVPETModule::INTENSITY:
-		{
-			DOL(LogBasic, Log, "[SYNC Parse] INTENSITY paramType");
-			ALight* kLit = Cast<ALight>(sceneActor);
-			if (kLit)
-			{
-				float lB = *reinterpret_cast<float*>(&kMsg[6]);
-				float lightFactor = 0.2;
-				kLit->SetBrightness(lB / lightFactor / BrightnessMultiplier);
-			}
-			break;
-		}
-		case AVPETModule::EXPOSURE:
-			DOL(LogBasic, Log, "[SYNC Parse] EXPOSURE paramType");
-			break;
-		case AVPETModule::RANGE:
-		{
-			DOL(LogBasic, Log, "[SYNC Parse] RANGE paramType");
-			float lR = *reinterpret_cast<float*>(&kMsg[6]);
-			float rangeFactor = 0.005;
-			APointLight* kPointLgt = Cast<APointLight>(sceneActor);
-			if (kPointLgt)
-			{
-				UPointLightComponent* pointLgtCmp = kPointLgt->PointLightComponent;
-				pointLgtCmp->SetAttenuationRadius(lR / rangeFactor / RangeMultiplier);
-			}
-			ASpotLight* kSpotLgt = Cast<ASpotLight>(sceneActor);
-			if (kSpotLgt)
-			{
-				USpotLightComponent* spotLgtCmp = kSpotLgt->SpotLightComponent;
-				spotLgtCmp->SetAttenuationRadius(lR / rangeFactor / RangeMultiplier);
-			}
-			break;
-		}
-		case AVPETModule::ANGLE:
-		{
-			DOL(LogBasic, Log, "[SYNC Parse] ANGLE paramType");
-			ASpotLight* kSpotLgt = Cast<ASpotLight>(sceneActor);
-			if (kSpotLgt)
-			{
-				float lA = *reinterpret_cast<float*>(&kMsg[6]);
-				USpotLightComponent* spotLgtCmp = kSpotLgt->SpotLightComponent;
-				float coneFactor = 2.0;
-				spotLgtCmp->SetOuterConeAngle(lA / coneFactor);
-			}
-			break;
-		}
-		case AVPETModule::BONEANIM:
-			DOL(LogBasic, Log, "[SYNC Parse] BONEANIM paramType");
-			break;
-		case AVPETModule::VERTEXANIM:
-			DOL(LogBasic, Log, "[SYNC Parse] VERTEXANIM paramType");
-			break;
-		case AVPETModule::PING:
-			DOL(LogBasic, Log, "[SYNC Parse] PING paramType");
-			break;
-		case AVPETModule::RESENDUPDATE:
-			DOL(LogBasic, Log, "[SYNC Parse] RESENDUPDATE paramType");
-			break;
-		case AVPETModule::CHARACTERTARGET:
-			DOL(LogBasic, Log, "[SYNC Parse] CHARACTERTARGET paramType");
-			break;
-		default:
-			DOL(LogBasic, Log, "[SYNC Parse] Unknown paramType");
-			return;
-			break;
-		}
+		DOL(LogBasic, Error, "[SYNC Parse] Failed to grab object refered by Id: %d", objectID);
+		OSD(FColor::Red, "[SYNC Parse] Failed to grab object refered by Id: %d", objectID);
+		return;
 	}
+
+	AActor* sceneActor = actorList[objectID];
+
+	int16_t paramID = *reinterpret_cast<int16_t*>(&kMsg[5]);
+	DOL(LogBasic, Log, "[SYNC Parse] Param ID: %d", paramID);
+
+	//ParameterType paramType = (ParameterType)kMsg[7];
+	//DOL(LogBasic, Log, "[SYNC Parse] Param type: %d", paramType);
+
+	// pass actual message to a parameter from an object
+	USceneObject* sceneObj = objectList[objectID];
+	TArray<AbstractParameter*>* tempArray = sceneObj->GetParameterList();
+
+	if (paramID < tempArray->Num())
+	{
+		// pass actual message to a parameter from an object
+		AbstractParameter* tempParam = (*tempArray)[paramID];
+		tempParam->ParseMessage(kMsg);
+	}
+	else
+		DOL(LogBasic, Error, "[SYNC Parse] Trying to edid param ID %d but it's not available", paramID);
+
+
 }
 
 
+// Called when the game ends
+void AVPETModule::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
 
+	DOL(LogBasic, Warning, "[VPET2 EndPlay] Game ended.");
+
+	// Stop distribution thread
+	DOL(LogBasic, Warning, "[VPET2 Endplay] Closing Zmq distribution socket...");
+	if (socket_d)
+		socket_d->close();
+	delete socket_d;
+
+	// Stop listener thread
+	DOL(LogBasic, Warning, "[VPET2 Endplay] Closing Zmq update receiver socket...");
+	if (socket_r)
+		socket_r->close();
+	delete socket_r;
+
+	// Stop sender thread
+	DOL(LogBasic, Warning, "[VPET2 Endplay] Closing Zmq update sender socket...");
+	if (socket_s)
+		socket_s->close();
+	delete socket_s;
+
+	DOL(LogBasic, Warning, "[VPET2 Endplay] Destroying Zmq context...");
+	if (context)
+		context->close();
+	delete context;
+
+}
+
+void AVPETModule::HandleOnActorSelectionChanged(const TArray<UObject*>& NewSelection, bool bForceRefresh)
+{
+	UE_LOG(LogTemp, Log, TEXT("Selection change"));
+	int objI = 0;
+	std::vector<uint8_t> byteVector;
+	
+	TArray<UObject*> newSelectList;
+
+	for (UObject* obj : NewSelection)
+	{
+		byteVector.clear();
+		UE_LOG(LogTemp, Log, TEXT("Selection: %s"), *obj->GetName());
+
+		newSelectList.Add(obj);
+
+		// grab object id
+		actorList.Find((AActor*)obj, objI);
+
+
+		// Send lock
+		if (objI != INDEX_NONE && !objectList[objI]->_lock)
+			EncodeLockMessage(objI, true);
+	}
+	
+
+	// deselect
+	for (UObject* obj : selectedList)
+	{
+
+		if (newSelectList.Find(obj) == INDEX_NONE)
+		{
+			// Deselect
+			actorList.Find((AActor*)obj, objI);
+
+			// Make the unlock command
+			if (objI != INDEX_NONE && !objectList[objI]->_lock)
+				EncodeLockMessage(objI, false);
+		}
+		
+	}
+	// refresh list
+	selectedList = newSelectList;
+	
+	
+
+
+	return;
+}
 
 // Perhaps temporary root construction
 void AVPETModule::buildWorld()
@@ -539,12 +645,19 @@ void AVPETModule::buildWorld()
 	DOL(LogBasic, Log, "[DIST buildWorld] Added root Node");
 	m_state.nodeList.push_back(m_state.node);
 	m_state.node->editable = false;
+
+	// hack for VPET 2
+	AddActorPointer(NULL);
+	objectList.Add(NULL);
 }
 
-bool AVPETModule::buildLocation(AActor *prim)
+bool AVPETModule::buildLocation(AActor* prim)
 {
 	// TODO
 	// check LOD or equivalent tag
+
+	// VPET2 Hack - object type for enum
+	ObjectType objType = ObjectType::NODE;
 
 	FString aName = prim->GetActorLabel();
 	//DOL(LogBasic, Log, "[DIST buildLocation] Build: %s", *aName);
@@ -555,7 +668,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 	// Get class type
 	FString className = prim->GetClass()->GetName();
 
-
 	// If using tag system for selecting what to send
 	if (UseSendTag)
 	{
@@ -565,7 +677,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 			return false;
 		}
 	}
-
 
 	// HACK - skip spawn camera
 	if (prim->GetName().Compare(FString("CameraActor_0")) == 0)
@@ -578,7 +689,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 		return false;
 	}
 
-
 	// tag print - development test
 	TArray<FName> pTags = prim->Tags;
 	DOL(LogTag, Warning, "[DIST buildLocation] Actor %s has %d tags!", *aName, pTags.Num());
@@ -587,31 +697,36 @@ bool AVPETModule::buildLocation(AActor *prim)
 		DOL(LogTag, Log, "[DIST buildLocation] Tag %d: %s", i, *pTags[i].ToString());
 	}
 
-
 	m_state.node = 0;
 
-	//if (className == "StaticMeshActor") {
 	if (className == "StaticMeshActor" || prim->ActorHasTag(TEXT("mesh"))) {
 		m_state.node = new NodeGeo();
 		buildNode((NodeGeo*)m_state.node, prim);
 		DOL(LogBasic, Log, "[DIST buildLocation] Found geo actor, creating geo node out of %s; class: %s", *aName, *className);
+		objType = ObjectType::GEO;
 	}
 	else if (className == "CameraActor") {
 		m_state.node = new NodeCam();
 		buildNode((NodeCam*)m_state.node, prim);
 		DOL(LogBasic, Log, "[DIST buildLocation] Found camera actor, creating camera node out of %s; class: %s", *aName, *className);
 		tweakRot = true;
+		objType = ObjectType::CAMERA;
 	}
-	//else if (className.Find("Light") > -1) {
-	//else if (className.Find("DirectionalLight") > -1) {
 	else if (className.Find("Light") > -1) {
-		if (className.Find("Directional") > -1 || className.Find("Spot") > -1 || className.Find("Point") > -1)
-		{
-			m_state.node = new NodeLight();
-			buildNode((NodeLight*)m_state.node, prim, className);
-			DOL(LogBasic, Log, "[DIST buildLocation] Found light actor, creating light node out of %s; class: %s", *aName, *className);
-			tweakRot = true;
-		}
+		m_state.node = new NodeLight();
+		buildNode((NodeLight*)m_state.node, prim, className);
+		DOL(LogBasic, Log, "[DIST buildLocation] Found light actor, creating light node out of %s; class: %s", *aName, *className);
+		tweakRot = true;
+		if (className.Find("Directional") > -1)
+			objType = ObjectType::DIRECTIONALLIGHT;
+		else if (className.Find("Spot") > -1)
+			objType = ObjectType::SPOTLIGHT;
+		else if (className.Find("Point") > -1)
+			objType = ObjectType::POINTLIGHT;
+		else if (className.Find("Rect") > -1)
+			objType = ObjectType::AREALIGHT;
+		else
+			objType = ObjectType::LIGHT;
 	}
 	else
 	{
@@ -634,8 +749,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 
 	// Grab transform: pos rot sca
 	FTransform aTrans = prim->GetActorTransform();
-	//// vs? falls back to identity
-	//FTransform gTrans = prim->GetTransform();
 
 	// use relative transform if has parent
 	if (prim->GetAttachParentActor())
@@ -649,14 +762,13 @@ bool AVPETModule::buildLocation(AActor *prim)
 	// Scale position values
 	aPos *= .01;
 
-	// Tweak rotation if it is light
+	// Tweak rotation if it is light (due to axis conventions)
 	if (tweakRot)
 	{
 		FRotator tempRot(0, -90, 0);
 		FQuat transRot = tempRot.Quaternion();
 		aRot *= transRot;
 	}
-
 
 	// Alter rotations
 	FQuat modRot(-aRot.X, aRot.Z, aRot.Y, aRot.W);
@@ -676,9 +788,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 
 	//DOL(LogBasic, Log, "Node rot: %f, %f, %f, %f", m_state.node->rotation[0], m_state.node->rotation[1], m_state.node->rotation[2], m_state.node->rotation[3]);
 
-	//m_state.node->scale[0] = aSca.X * .01;
-	//m_state.node->scale[1] = aSca.Y * .01;
-	//m_state.node->scale[2] = aSca.Z * .01;
 	m_state.node->scale[0] = aSca.X;
 	m_state.node->scale[1] = aSca.Z;
 	m_state.node->scale[2] = aSca.Y;
@@ -697,7 +806,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 	FString nName(m_state.node->name);
 	DOL(LogBasic, Warning, "[DIST buildLocation] Added Node: %s", *nName);
 	m_state.nodeList.push_back(m_state.node);
-
 
 	// ideally temporary indexing workaround (to be able to tweak properties of this node later)
 	int nodeIndex = m_state.nodeList.size() - 1;
@@ -720,6 +828,52 @@ bool AVPETModule::buildLocation(AActor *prim)
 			// List it to be fetched at sync
 			AddActorPointer(prim);
 
+			// Add the scene object component
+			// Note: code formerly used was as follows:
+			// prim->AddComponentByClass(USceneObject::StaticClass(), false, emptyTransform, false);
+			// USceneObject* obj = Cast<USceneObject>(prim->GetComponentByClass((USceneObject::StaticClass())));
+			// Problem: using AddComponentByClass worked for having it registered automatically, but as soon as
+			// any parameter is adjusted via the Details panel, the component is unregistered (and ceases to 
+			// operate). Via NewObject, the component is unregistered, but instantly re-registered (effects can 
+			// be monitored with virtual fuctions OnRegister / OnUnregister
+
+			// Scene object that holds the parameter object to be added
+			USceneObject* obj;
+
+			// Add the specific node components
+			switch (objType)
+			{
+			case AVPETModule::ObjectType::AREALIGHT:
+				obj = NewObject<USceneObjectAreaLight>(prim, USceneObjectAreaLight::StaticClass());
+				break;
+			case AVPETModule::ObjectType::POINTLIGHT:
+				obj = NewObject<USceneObjectPointLight>(prim, USceneObjectPointLight::StaticClass());
+				break;
+			case AVPETModule::ObjectType::SPOTLIGHT:
+				obj = NewObject<USceneObjectSpotLight>(prim, USceneObjectSpotLight::StaticClass());
+				break;
+			case AVPETModule::ObjectType::DIRECTIONALLIGHT:
+				obj = NewObject<USceneObjectDirectionalLight>(prim, USceneObjectDirectionalLight::StaticClass());
+				break;
+			case AVPETModule::ObjectType::LIGHT:
+				obj = NewObject<USceneObjectLight>(prim, USceneObjectLight::StaticClass());
+				break;
+			case AVPETModule::ObjectType::CAMERA:
+				obj = NewObject<USceneObjectCamera>(prim, USceneObjectCamera::StaticClass());
+				break;
+			default:
+				obj = NewObject<USceneObject>(prim, USceneObject::StaticClass());
+				break;
+			}
+
+			if (!obj)
+				return NULL;
+			obj->RegisterComponent();
+			obj->SetID(objectList.Num());
+			obj->SetcID(m_id);
+			objectList.Add(obj);
+			obj->SetSenderQueue(&msgData, &msgLen);
+
 			// Warn in case is not movable
 			if (!prim->IsRootComponentMovable())
 			{
@@ -728,11 +882,36 @@ bool AVPETModule::buildLocation(AActor *prim)
 			}
 		}
 	}
+	// Not using tag for object selection
 	else
 	{
 		// as long as movable, set to editable
 		m_state.node->editable = prim->IsRootComponentMovable();
 		AddActorPointer(prim);
+
+		// Scene object that holds the parameter object to be added
+		USceneObject* obj;
+
+		switch (objType)
+		{
+		case AVPETModule::ObjectType::LIGHT:
+			obj = NewObject<USceneObjectLight>(prim, USceneObjectLight::StaticClass());
+			break;
+		case AVPETModule::ObjectType::CAMERA:
+			obj = NewObject<USceneObjectCamera>(prim, USceneObjectCamera::StaticClass());
+			break;
+		default:
+			obj = NewObject<USceneObject>(prim, USceneObject::StaticClass());
+			break;
+		}
+
+		if (!obj)
+			return NULL;
+		obj->RegisterComponent();
+		obj->SetID(objectList.Num());
+		obj->SetcID(m_id);
+		objectList.Add(obj);
+		obj->SetSenderQueue(&msgData, &msgLen);
 	}
 
 	// Development counter hack - add sub group for counter-rotating children, if it has any
@@ -740,7 +919,6 @@ bool AVPETModule::buildLocation(AActor *prim)
 	{
 		m_state.nodeList.at(nodeIndex)->childCount = 1;
 		buildEmptyRotator(nName);
-		//return true;
 		// point out that the empty will be the father
 		nodeIndex++;
 	}
@@ -806,8 +984,10 @@ void AVPETModule::buildEmptyRotator(FString parentName)
 }
 
 
-void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
+void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 {
+	//DOL(LogBasic, Error, "[Time] 784");
+
 	m_state.node = node;
 	m_state.nodeTypeList.push_back(NodeType::GEO);
 
@@ -826,6 +1006,14 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 	// Grab only the first
 	UStaticMeshComponent* staticMeshComponent = staticMeshComponents[0];
 	UStaticMesh* staticMesh = staticMeshComponent->GetStaticMesh();
+
+	// Extend options
+	DOL(LogBasic, Warning, "[DIST buildNode] Num of meshes: %d", staticMeshComponents.Num());
+	DOL(LogBasic, Warning, "[DIST buildNode] Vertex Count 1 : %d", staticMesh->GetNumVertices(0));
+	DOL(LogBasic, Warning, "[DIST buildNode] Num LODs: %d", staticMesh->GetNumLODs());
+	DOL(LogBasic, Warning, "[DIST buildNode] Min LOD: %d", staticMesh->MinLOD.Default);
+
+	DOL(LogBasic, Warning, "[DIST buildNode] Num LOD resources: %d", staticMesh->RenderData->LODResources.Num());
 
 	// Grab path of static mesh as mesh ID
 	FString pName = staticMesh->GetPathName();
@@ -864,11 +1052,16 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 		if (!staticMesh) return;
 		if (!staticMesh->RenderData) return;
 
+
 		if (staticMesh->RenderData->LODResources.Num() > 0)
 		{
-			FStaticMeshLODResources &resource = staticMesh->RenderData->LODResources[0];
+			// Before - use the first -> high LOD?
+			//FStaticMeshLODResources &resource = staticMesh->RenderData->LODResources[0];
+			// Modified - use last -> low LOD?
+			FStaticMeshLODResources& resource = staticMesh->RenderData->LODResources[staticMesh->RenderData->LODResources.Num() - 1];
+
 			// Index Buffer
-			FRawStaticIndexBuffer &ib = resource.IndexBuffer;
+			FRawStaticIndexBuffer& ib = resource.IndexBuffer;
 			// TODO - does it need to check if(&ib)?
 
 			// Build indices list - in reverse order, because why not?
@@ -876,6 +1069,7 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 			//	// Push to pack
 			//	objPack.indices.push_back(ib.GetIndex(j-1));
 			//}
+
 			//// Use this instead?
 			FIndexArrayView arrV = ib.GetArrayView();
 			for (size_t j = arrV.Num(); j > 0; j--) {
@@ -883,23 +1077,24 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 			}
 
 			// Vertex Buffer
-			FStaticMeshVertexBuffers &vbs = resource.VertexBuffers;
+			FStaticMeshVertexBuffers& vbs = resource.VertexBuffers;
 			// Color VertexBuffer
 			//FColorVertexBuffer &colVP = vbs.ColorVertexBuffer;
 			//for (size_t j = 0; j < colVP.GetNumVertices(); j++) {
 			//	DOL(LogBasic, Log, "i: %d - VCol: %f, %f, %f", j, colVP.VertexColor(j).R, colVP.VertexColor(j).G, colVP.VertexColor(j).B);
 			//}
 			// Position VertexBuffer
-			FPositionVertexBuffer &posVP = vbs.PositionVertexBuffer;
+			FPositionVertexBuffer& posVP = vbs.PositionVertexBuffer;
 			for (size_t j = 0; j < posVP.GetNumVertices(); j++) {
 				//DOL(LogBasic, Log, "i: %d - VPos: %f, %f, %f", j, posVP.VertexPosition(j).X, posVP.VertexPosition(j).Y, posVP.VertexPosition(j).Z);
 				// Push to pack
-				objPack.vertices.push_back(-posVP.VertexPosition(j).X*0.01);
-				objPack.vertices.push_back(posVP.VertexPosition(j).Z*0.01);
-				objPack.vertices.push_back(posVP.VertexPosition(j).Y*0.01);
+				objPack.vertices.push_back(-posVP.VertexPosition(j).X * 0.01);
+				objPack.vertices.push_back(posVP.VertexPosition(j).Z * 0.01);
+				objPack.vertices.push_back(posVP.VertexPosition(j).Y * 0.01);
 			}
+
 			// Mesh vertex buffer
-			FStaticMeshVertexBuffer &smVP = vbs.StaticMeshVertexBuffer;
+			FStaticMeshVertexBuffer& smVP = vbs.StaticMeshVertexBuffer;
 			for (size_t j = 0; j < smVP.GetNumVertices(); j++) {
 				//DOL(LogBasic, Log, "i: %d - VNormal: %f, %f, %f", j, smVP.VertexTangentZ(j).X, smVP.VertexTangentZ(j).Y, smVP.VertexTangentZ(j).Z);
 				// Push to pack
@@ -964,6 +1159,9 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 		TArray<UTexture*> kUTextures;
 		//cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::ES2_REMOVED, true); // >= 4.25
 		cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::Num, true);
+
+		//DOL(LogBasic, Error, "[Time] 968");
+
 		DOL(LogMaterial, Warning, "[DIST buildNode] length texture array: %d", kUTextures.Num());
 
 		//for (size_t j = 0; j < kUTextures.Num(); j++)
@@ -971,10 +1169,12 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 		for (UTexture* kTex : kUTextures)
 		{
 			//UTexture* kTex = kUTextures[j];
-			float kBri = kTex->GetAverageBrightness(false, false);
-			DOL(LogMaterial, Warning, "texture %d, named %s, brig: %f", j, *kTex->GetName(), kBri);
+			//float kBri = kTex->GetAverageBrightness(false, false);
+			//DOL(LogMaterial, Warning, "texture %d, named %s, brig: %f", j, *kTex->GetName(), kBri);
 			j++;
 		}
+
+		//DOL(LogBasic, Error, "[Time] 982");
 	}
 
 	// shading model? any useful?
@@ -990,7 +1190,6 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 		FMaterialTextureInfo kTex = texStr[j];
 		DOL(LogMaterial, Warning, "streaming data texture %d named: %s", j, *kTex.TextureName.ToString());
 	}
-
 
 	// width? - nope - unresolved function! - will not compile
 	//int kWid = cMat->GetWidth();
@@ -1057,7 +1256,6 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 
 					}
 				}
-
 			}
 			else if (exConst3 != NULL)
 			{
@@ -1086,8 +1284,217 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 				// This will only return valid if the texture is directly connected to the base color input
 				if (refTex)
 					DOL(LogMaterial, Warning, "text name %s", *refTex->GetName());
-
 			}
+
+
+			/*
+			// VPET2 Material test
+			// Create material package
+			// only two
+			//if (m_state.matPackList.size() < 0)
+
+			bool isTex = false;
+			bool isUnlit = false;
+
+			MaterialPackage matPack;
+			// Name
+			matPack.name = TCHAR_TO_ANSI(*cbMat->GetName());
+			//matPack.name = TCHAR_TO_ANSI(*FString("unlit (Instance)"));
+			// try to populate
+			// type
+			matPack.type = 0;
+			// src
+			matPack.src = TCHAR_TO_ANSI(*FString("Standard"));
+
+			if (cbMat->GetName().Equals(FString("BasicUnlit")))
+			{
+				isTex = true;
+				isUnlit = true;
+				matPack.src = TCHAR_TO_ANSI(*FString("Unlit/Texture"));
+			}
+
+			if (cbMat->GetName().Equals(FString("BasicTexture")))
+				isTex = true;
+
+			// shader config // 9 shaderKeywords
+			for (size_t j = 0; j < 9; j++)
+				matPack.shaderConfig.push_back(false);
+
+			// properties
+
+			// first one being color
+			matPack.shaderPropertyIds.push_back(0);
+			// MOD - color or texture
+			if(!isUnlit)
+				matPack.shaderPropertyTypes.push_back(0);
+
+			if (isTex)
+				matPack.shaderPropertyTypes.push_back(4);
+
+			// case color RGBA
+			float f;
+			unsigned char const* p;
+			// R
+			f = node->color[0];
+			p = reinterpret_cast<unsigned char const*>(&f);
+			matPack.shaderProperties.push_back(p[0]);
+			matPack.shaderProperties.push_back(p[1]);
+			matPack.shaderProperties.push_back(p[2]);
+			matPack.shaderProperties.push_back(p[3]);
+			// G
+			f = node->color[1];
+			p = reinterpret_cast<unsigned char const*>(&f);
+			matPack.shaderProperties.push_back(p[0]);
+			matPack.shaderProperties.push_back(p[1]);
+			matPack.shaderProperties.push_back(p[2]);
+			matPack.shaderProperties.push_back(p[3]);
+			// B
+			f = node->color[2];
+			p = reinterpret_cast<unsigned char const*>(&f);
+			matPack.shaderProperties.push_back(p[0]);
+			matPack.shaderProperties.push_back(p[1]);
+			matPack.shaderProperties.push_back(p[2]);
+			matPack.shaderProperties.push_back(p[3]);
+			// A
+			f = 1.0f;
+			p = reinterpret_cast<unsigned char const*>(&f);
+			matPack.shaderProperties.push_back(p[0]);
+			matPack.shaderProperties.push_back(p[1]);
+			matPack.shaderProperties.push_back(p[2]);
+			matPack.shaderProperties.push_back(p[3]);
+
+			int propertyCount = 26;
+			// populate the rest with nothing
+			for (size_t j = 0; j < propertyCount; j++)
+			{
+				matPack.shaderPropertyIds.push_back(0);
+				matPack.shaderPropertyTypes.push_back(-1);
+				//matPack.shaderProperties.push_back(0);
+			}
+			// hack - remove one
+			if (!isUnlit && isTex)
+				matPack.shaderPropertyTypes.pop_back();
+
+
+
+			// force material to texture?
+			if (isTex)
+			{
+				if (isUnlit)
+					for (size_t j = 0; j < 1; j++)
+						matPack.textureIds.push_back(0);
+				else
+					for (size_t j = 0; j < 1; j++)
+						matPack.textureIds.push_back(0);
+				for (size_t j = 0; j < 2; j++)
+					matPack.textureOffsets.push_back(0);
+				for (size_t j = 0; j < 2; j++)
+					matPack.textureScales.push_back(1);
+			}
+
+			// store the material package
+			m_state.matPackList.push_back(matPack);
+
+			// set material id
+			node->materialId = m_state.matPackList.size() - 1;
+			//node->materialId = 0;
+
+
+			// texture test
+			// only one
+			if (m_state.texPackList.size() < 1)
+			{
+				TexturePackage texPack;
+
+				// using 8x8
+				texPack.width = 8;
+				texPack.height = 8;
+				texPack.colorMapDataSize = 64;
+
+				// open from file
+				// try loading external file
+				IPlatformFile& PlatformFile = IPlatformFile::GetPlatformPhysical();
+				//FString filename("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_4_6x6.astc");
+				const TCHAR* FullModulePath = *FilePath;
+				IFileHandle* File = PlatformFile.OpenRead(FullModulePath);
+
+				//if (File)
+				//{
+				//	int fileSize = File->Size();
+				//	uint8* rawData;
+				//	rawData = (uint8*)malloc(fileSize);
+				//	File->Read(rawData, fileSize);
+				//	unsigned char* texData;
+				//	texData = (unsigned char*)malloc(texPack.colorMapDataSize);
+				//	for (size_t j = 0; j < texPack.colorMapDataSize; j++)
+				//		texData[j] = rawData[j + 16];
+
+				//	texPack.colorMapData = texData;
+				//}
+
+				//m_state.texPackList.push_back(texPack);
+
+
+				// prepare higher res texture also
+
+				// using 32
+				texPack.width = 256;
+				texPack.height = 256;
+				texPack.colorMapDataSize = 0;
+
+				// open from file
+				// try loading external file
+				FString filename("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_32_6x6.astc");
+				//File = PlatformFile.OpenRead(*filename);
+
+				if (File)
+				{
+					int fileSize = File->Size();
+					uint8* rawData;
+					rawData = (uint8*)malloc(fileSize);
+					File->Read(rawData, fileSize);
+					texPack.colorMapDataSize = fileSize;
+					unsigned char* texData;
+					texData = (unsigned char*)malloc(texPack.colorMapDataSize);
+					for (size_t j = 0; j < texPack.colorMapDataSize; j++)
+						texData[j] = rawData[j + 16];
+
+					texPack.colorMapData = texData;
+				}
+				delete(File);
+
+				m_state.texPackList.push_back(texPack);
+
+				// using 32
+				texPack.width = 3000;
+				texPack.height = 3000;
+				texPack.colorMapDataSize = 0;
+
+				// open from file
+				// try loading external file
+				filename = FString("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_v2.astc");
+				File = PlatformFile.OpenRead(*filename);
+
+				if (File)
+				{
+					int fileSize = File->Size();
+					DOL(LogMaterial, Warning, "FILE SIZE %d", fileSize);
+					texPack.colorMapDataSize = fileSize;
+					uint8* rawData;
+					rawData = (uint8*)malloc(fileSize);
+					File->Read(rawData, fileSize);
+					unsigned char* texData;
+					texData = (unsigned char*)malloc(texPack.colorMapDataSize);
+					for (size_t j = 0; j < texPack.colorMapDataSize; j++)
+						texData[j] = rawData[j + 16];
+
+					texPack.colorMapData = texData;
+				}
+				delete(File);
+
+				m_state.texPackList.push_back(texPack);
+			}
+			*/
 
 		}
 		else
@@ -1101,24 +1508,200 @@ void AVPETModule::buildNode(NodeGeo *node, AActor* prim)
 
 	}
 
+	if (cMat)
+	{
+		// VPET2 Material test
+		FString matName = *cMat->GetName();
+
+		// Create material package
+		MaterialPackage matPack;
+
+		bool prepTexture = false;
+		// Name
+		matPack.name = TCHAR_TO_ANSI(*matName);
+
+		// try to populate
+
+		// type
+		matPack.type = 0;
+		// src
+		matPack.src = TCHAR_TO_ANSI(*FString("Standard"));
+
+		// shader config // 9 shaderKeywords
+		for (size_t j = 0; j < 9; j++)
+			matPack.shaderConfig.push_back(false);
+
+		// properties
+
+		// first one being color
+		matPack.shaderPropertyIds.push_back(0);
+		// MOD - color or texture
+		matPack.shaderPropertyTypes.push_back(0);
+
+		if (UseTexture)
+			matPack.shaderPropertyTypes.push_back(4);
+
+		// case color RGBA
+		float f;
+		unsigned char const* p;
+		// R
+		f = node->color[0];
+		p = reinterpret_cast<unsigned char const*>(&f);
+		matPack.shaderProperties.push_back(p[0]);
+		matPack.shaderProperties.push_back(p[1]);
+		matPack.shaderProperties.push_back(p[2]);
+		matPack.shaderProperties.push_back(p[3]);
+		// G
+		f = node->color[1];
+		p = reinterpret_cast<unsigned char const*>(&f);
+		matPack.shaderProperties.push_back(p[0]);
+		matPack.shaderProperties.push_back(p[1]);
+		matPack.shaderProperties.push_back(p[2]);
+		matPack.shaderProperties.push_back(p[3]);
+		// B
+		f = node->color[2];
+		p = reinterpret_cast<unsigned char const*>(&f);
+		matPack.shaderProperties.push_back(p[0]);
+		matPack.shaderProperties.push_back(p[1]);
+		matPack.shaderProperties.push_back(p[2]);
+		matPack.shaderProperties.push_back(p[3]);
+		// A
+		f = 1.0f;
+		p = reinterpret_cast<unsigned char const*>(&f);
+		matPack.shaderProperties.push_back(p[0]);
+		matPack.shaderProperties.push_back(p[1]);
+		matPack.shaderProperties.push_back(p[2]);
+		matPack.shaderProperties.push_back(p[3]);
+
+		//// add a bunch of nothing
+		//for (size_t j = 0; j < 80; j++)
+		//	matPack.shaderProperties.push_back(0);
+
+		int propertyCount = 26;
+		// populate the rest with nothing
+		for (size_t j = 0; j < propertyCount; j++)
+		{
+			matPack.shaderPropertyIds.push_back(0);
+			matPack.shaderPropertyTypes.push_back(-1);
+			//matPack.shaderProperties.push_back(0);
+		}
+
+		if (UseTexture)
+		{
+			// hack - remove one - cos of the texture added before
+			matPack.shaderPropertyTypes.pop_back();
+
+
+			// force material to texture?
+			for (size_t j = 0; j < 2; j++)
+				matPack.textureOffsets.push_back(0);
+			for (size_t j = 0; j < 2; j++)
+				matPack.textureScales.push_back(1);
+
+			// identify texture index
+			int texInd;
+			if (matNameList.Find(matName, texInd))
+			{
+				DOL(LogMaterial, Warning, "FOUND TEX FOR %s IDX %d", *matName, texInd);
+			}
+			else
+			{
+				texInd = matNameList.Num();
+				DOL(LogMaterial, Warning, "MAKING TEX FOR %s IDX %d", *matName, texInd);
+				matNameList.Add(matName);
+				prepTexture = true;
+			}
+			matPack.textureIds.push_back(texInd);
+			DOL(LogMaterial, Warning, "PUSHED FOR %s IDX %d", *matName, texInd);
+		}
+
+		//// quick test with pushing 8 empty ones
+		//for (size_t j = 0; j < 8; j++)
+		//	matPack.textureIds.push_back(-1);
+		//for (size_t j = 0; j < 16; j++)
+		//	matPack.textureOffsets.push_back(0);
+		//for (size_t j = 0; j < 16; j++)
+		//	matPack.textureScales.push_back(1);
+
+		// store the material package
+		m_state.matPackList.push_back(matPack);
+
+		// set material id
+		node->materialId = m_state.matPackList.size() - 1;
+
+		// prepare texture if needed
+		if (prepTexture)
+		{
+			DOL(LogMaterial, Warning, "PREP TEXTURE FOR %s", *matName);
+			TexturePackage texPack;
+
+			// standard size
+			texPack.width = 256;
+			texPack.height = 256;
+			texPack.colorMapDataSize = 0;
+
+			// open from file
+			// try loading external file
+			IPlatformFile& PlatformFile = IPlatformFile::GetPlatformPhysical();
+			FString filename("C:/UnrealProjects/VPET427/Intermediate/VPET/dev1_");
+			filename += matName + FString(".astc");
+			IFileHandle* File = PlatformFile.OpenRead(*filename);
+
+			if (File)
+			{
+				int fileSize = File->Size();
+				DOL(LogMaterial, Warning, "FILE OPEN FOR %s SIZE %d", *matName, fileSize);
+				texPack.colorMapDataSize = fileSize;
+				uint8* rawData;
+				rawData = (uint8*)malloc(fileSize);
+				File->Read(rawData, fileSize);
+				unsigned char* texData;
+				texData = (unsigned char*)malloc(texPack.colorMapDataSize);
+				for (size_t j = 0; j < texPack.colorMapDataSize; j++)
+					texData[j] = rawData[j + 16];
+
+				texPack.colorMapData = texData;
+			}
+			else
+				DOL(LogMaterial, Error, "COULDNT OPEN FILE FOR %s", *matName);
+
+			m_state.texPackList.push_back(texPack);
+
+			// Close file?
+			delete File;
+		}
+
+	}
+
+
 	// store at sharedState to access it in iterator
 	m_state.node = node;
 	m_state.numObjectNodes++;
-
 }
 
-void AVPETModule::buildNode(NodeCam *node, AActor* prim)
+void AVPETModule::buildNode(NodeCam* node, AActor* prim)
 {
 	m_state.node = node;
 	m_state.nodeTypeList.push_back(NodeType::CAMERA);
 
 	// Grab camera
 	ACameraActor* kCam = Cast<ACameraActor>(prim);
-	node->cFov = kCam->GetCameraComponent()->FieldOfView;
+	UCameraComponent* kCamComp = kCam->GetCameraComponent();
+
+	float aspect = kCamComp->AspectRatio;
+	DOL(LogBasic, Error, "[DIST buildNode] Aspect: %f", aspect);
+	
+	// Convert horizontal fov to vertical
+	float fov = 2 * atan(tan(kCamComp->FieldOfView / 2.0 * DEG2RAD) / aspect) / DEG2RAD;
+	DOL(LogBasic, Error, "[DIST buildNode] FOV: %f", fov);
+
+	node->fov = fov;
+
+	node->aspect = aspect;
 
 	// magic number tests
-	node->cNear = 0.001;
-	node->cFar = 100;;
+	node->nearPlane = 0.001;
+	node->farPlane = 100;;
 	//node->editable = true;
 
 	// store at sharedState to access it in iterator
@@ -1126,7 +1709,7 @@ void AVPETModule::buildNode(NodeCam *node, AActor* prim)
 	m_state.numCameras++;
 }
 
-void AVPETModule::buildNode(NodeLight *node, AActor* prim, FString className)
+void AVPETModule::buildNode(NodeLight* node, AActor* prim, FString className)
 {
 	m_state.node = node;
 	m_state.nodeTypeList.push_back(NodeType::LIGHT);
@@ -1135,9 +1718,7 @@ void AVPETModule::buildNode(NodeLight *node, AActor* prim, FString className)
 
 	ALight* kLgt = Cast<ALight>(prim);
 
-
 	// Type
-
 	if (className.Find("Directional") > -1) {
 		node->type = VPET::DIRECTIONAL;
 	}
@@ -1171,6 +1752,18 @@ void AVPETModule::buildNode(NodeLight *node, AActor* prim, FString className)
 			node->range = spotLgtCmp->AttenuationRadius * rangeFactor * RangeMultiplier;
 		}
 	}
+	else if (className.Find("Rect") > -1) {
+		node->type = VPET::AREA;
+
+		ARectLight* kRectLgt = Cast<ARectLight >(kLgt);
+		if (kRectLgt)
+		{
+			URectLightComponent* rectLgtCmp = kRectLgt->RectLightComponent;
+
+			// Width can be found at rectLgtCmp->SourceWidth;
+			// Height can be found at rectLgtCmp->SourceHeight;
+		}
+	}
 	else
 	{
 		// ignore unknown light for now - should actually never get here
@@ -1192,367 +1785,47 @@ void AVPETModule::buildNode(NodeLight *node, AActor* prim, FString className)
 	float lightFactor = 0.2;
 	node->intensity = lgtBright * lightFactor * BrightnessMultiplier;
 
-	// exposure seems not to be used
-	node->exposure = 1;
-
-	// USD code
-	/*
-	UsdLuxLight light = UsdLuxLight(*prim);
-	std::string typeName = prim->GetTypeName();
-
-	GfVec3f color;
-	light.GetColorAttr().Get(&color);
-	node->color[0] = color[0];
-	node->color[1] = color[1];
-	node->color[2] = color[2];
-	float intensity;
-	light.GetIntensityAttr().Get(&node->intensity);
-	float exposure;
-	light.GetExposureAttr().Get(&node->exposure);
-
-	if (typeName == "SphereLight") {
-		node->type = VPET::POINT;
-	}
-	else if (typeName == "DistantLight") {
-		node->type = VPET::DIRECTIONAL;
-	}
-	else if (typeName == "RectLight" || typeName == "DiscLight") {
-		node->type = VPET::AREA;
-		node->angle = 180;
-	}
-	else {
-		UsdAttribute coneAngleAttr = prim->GetAttribute(UsdLuxTokens->shapingConeAngle);
-		if (coneAngleAttr) {
-			node->type = VPET::SPOT;
-			float coneAgle;
-			coneAngleAttr.Get(&node->angle);
-		}
-		else {
-			node->type = VPET::NONE;
-			delete node;
-			Node* node = new Node();
-			m_state.node = node;
-			std::cout << "[DIST SceneDistributor.LightScenegraphLocationDelegate] Found unknown Light (add as group)" << std::endl;
-			return;
-		}
-	}
-	std::cout << "[DIST SceneDistributor.LightScenegraphLocationDelegate] Light color: " << node->color[0] << " " << node->color[1] << " " << node->color[2] << " Type: " << typeName << " intensity: " << node->intensity << " exposure: " << node->exposure << " coneAngle: " << node->angle << std::endl;
-	*/
 	// store at sharedState to access it in iterator
 	m_state.node = node;
 	m_state.numLights++;
 
 }
 
-
-void AVPETModule::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AVPETModule::EncodeLockMessage(int16_t objID, bool lockState)
 {
-	Super::EndPlay(EndPlayReason);
-
-	DOL(LogBasic, Log, "[VPET EndPlay] Game ended.");
-
-	// Stop distribution thread
-	DOL(LogBasic, Warning, "[VPET Endplay] Closing Zmq distribution socket...");
-	if (socket_d)
-		socket_d->close();
-	delete socket_d;
-	// Stop listener thread
-	DOL(LogBasic, Warning, "[VPET Endplay] Closing Zmq synchronization socket...");
-	if (socket_s)
-		socket_s->close();
-	delete socket_s;
-
-	DOL(LogBasic, Warning, "[VPET Endplay] Destroying Zmq context...");
-	if (context)
-		context->close();
-	delete context;
-
-	DOL(LogBasic, Log, "[VPET Endplay] Endplay.");
-
+	// Prepare the byte array
+	char* responseMessageContent = NULL;
+	char* messageStart = NULL;
+	int responseLength = 6;
+	messageStart = responseMessageContent = (char*)malloc(responseLength);
+	// header
+	uint8_t intVal = m_id;
+	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
+	responseMessageContent += sizeof(uint8_t);
+	// time
+	intVal = 23; //m_id
+	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
+	responseMessageContent += sizeof(uint8_t);
+	// type lock
+	intVal = 1; //m_id
+	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
+	responseMessageContent += sizeof(uint8_t);
+	// object id - int 16
+	int16_t shortVal = objID;
+	memcpy(responseMessageContent, (char*)&shortVal, sizeof(uint16_t));
+	responseMessageContent += sizeof(uint16_t);
+	// true?
+	bool lockVal = lockState;
+	memcpy(responseMessageContent, (char*)&lockVal, sizeof(bool));
+	responseMessageContent += sizeof(bool);
+	
+	msgData.push_back(messageStart);
+	msgLen.push_back(responseLength);
 }
 
-
-// threads
-
-
-// Synchronization thread
-void ThreadSyncDev::DoWork()
+void AVPETModule::DecodeLockMessage(int16_t* objID, bool* lockState)
 {
-	DOL(doLog, Warning, "[SYNC Thread] zeroMQ subscriber thread running");
-
-	zmq::message_t message;
-	std::string msgString;
-	uint8_t* byteStream;
-	std::vector<uint8_t> byteVector;
-
-	std::vector<std::string> stringVect;
-
-	while (1)
-	{
-		char* responseMessageContent = NULL;
-		char* messageStart = NULL;
-		int responseLength = 0;
-
-		// Blocking receive
-		try {
-			socket->recv(&message);
-		}
-		catch (const zmq::error_t &e)
-		{
-			FString errName = FString(zmq_strerror(e.num()));
-			DOL(doLog, Error, "[SYNC Thread] recv exception: %s", *errName);
-			return;
-		}
-
-		const char* msgPointer = static_cast<const char*>(message.data());
-		if (msgPointer == NULL) {
-			DOL(doLog, Error, "[SYNC Thread] Error msgPointer is NULL");
-		}
-		else
-		{
-			// this reference gets lost
-			//uint8_t* byteStream;
-			//byteStream = static_cast<uint8_t*>(message.data()), message.size();
-			//DOL(true, Warning, "byte stream 0 1 2 3 4 5 6 7: %d %d %d %d %d %d %d %d", byteStream[0], byteStream[1], byteStream[2], byteStream[3], byteStream[4], byteStream[5], byteStream[6], byteStream[7]);
-			//msgQ->push_back(byteStream);
-
-			// Shifting into std::vector
-			byteVector.clear();
-			byteStream = static_cast<uint8_t*>(message.data()), message.size();
-			for (size_t i = 0; i < message.size(); i++)
-			{
-				byteVector.push_back(byteStream[i]);
-			}
-			msgQ->push_back(byteVector);
-		}
-
-		// Fallback for free-running while
-		//Sleep(10);
-	}
-}
-
-
-// Distribution thread
-void ThreadDistDev::DoWork()
-{
-	DOL(doLog, Warning, "[DIST Thread] zeroMQ request-reply thread running");
-
-	zmq::message_t message;
-	std::string msgString;
-
-	while (1)
-	{
-		char* responseMessageContent = NULL;
-		char* messageStart = NULL;
-		int responseLength = 0;
-
-		// Blocking receive
-		try {
-			socket->recv(&message, 0);
-		}
-		catch (const zmq::error_t &e)
-		{
-			FString errName = FString(zmq_strerror(e.num()));
-			DOL(doLog, Error, "[DIST Thread] recv exception: %s", *errName);
-			return;
-		}
-
-		const char* msgPointer = static_cast<const char*>(message.data());
-		if (msgPointer == NULL) {
-			DOL(doLog, Error, "[DIST Thread] Error msgPointer is NULL");
-		}
-		else {
-			msgString = std::string(static_cast<char*>(message.data()), message.size());
-		}
-
-		FString fString(msgString.c_str());
-		DOL(doLog, Log, "[DIST Thread] Got request string: %s", *fString);
-
-		// Header request
-		if (msgString == "header")
-		{
-			DOL(doLog, Log, "[DIST Thread] Got Header Request");
-			responseLength = sizeof(VpetHeader);
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
-			memcpy(responseMessageContent, (char*)&(m_sharedState->vpetHeader), sizeof(VpetHeader));
-		}
-		// Materials request
-
-		// Textures request
-		else if (msgString == "textures")
-		{
-			//DOL(doLog, Log, );
-			DOL(doLog, Log, "[DIST Thread] Got Textures Request");
-			DOL(doLog, Log, "[DIST Thread] Texture count: %d", m_sharedState->texPackList.size());
-
-			responseLength = sizeof(int) + sizeof(int)*m_sharedState->texPackList.size();
-			for (int i = 0; i < m_sharedState->texPackList.size(); i++)
-			{
-				responseLength += m_sharedState->texPackList[i].colorMapDataSize;
-			}
-
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
-
-			// texture binary type (image data (0) or raw unity texture data (1))
-			int textureBinaryType = m_sharedState->textureBinaryType;
-			//std::cout << " textureBinaryType: " << textureBinaryType << std::endl;
-			memcpy(responseMessageContent, (char*)&textureBinaryType, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			for (int i = 0; i < m_sharedState->texPackList.size(); i++)
-			{
-				memcpy(responseMessageContent, (char*)&m_sharedState->texPackList[i].colorMapDataSize, sizeof(int));
-				responseMessageContent += sizeof(int);
-				memcpy(responseMessageContent, m_sharedState->texPackList[i].colorMapData, m_sharedState->texPackList[i].colorMapDataSize);
-				responseMessageContent += m_sharedState->texPackList[i].colorMapDataSize;
-			}
-		}
-
-		// Objects request
-		else if (msgString == "objects")
-		{
-			DOL(doLog, Log, "[DIST Thread] Got Objects Request");
-			DOL(doLog, Log, "[DIST Thread] Object count: %d", m_sharedState->objPackList.size());
-
-			responseLength = sizeof(int) * 5 * m_sharedState->objPackList.size();
-			for (int i = 0; i < m_sharedState->objPackList.size(); i++)
-			{
-				responseLength += sizeof(float) * m_sharedState->objPackList[i].vertices.size();
-				responseLength += sizeof(int) * m_sharedState->objPackList[i].indices.size();
-				responseLength += sizeof(float) * m_sharedState->objPackList[i].normals.size();
-				responseLength += sizeof(float) * m_sharedState->objPackList[i].uvs.size();
-				responseLength += sizeof(float) * m_sharedState->objPackList[i].boneWeights.size();
-				responseLength += sizeof(int) * m_sharedState->objPackList[i].boneIndices.size();
-			}
-
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
-
-			for (int i = 0; i < m_sharedState->objPackList.size(); i++)
-			{
-				// vSize
-				int numValues = m_sharedState->objPackList[i].vertices.size() / 3.0;
-				memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
-				responseMessageContent += sizeof(int);
-				// vertices
-				memcpy(responseMessageContent, &m_sharedState->objPackList[i].vertices[0], sizeof(float) * m_sharedState->objPackList[i].vertices.size());
-				responseMessageContent += sizeof(float) * m_sharedState->objPackList[i].vertices.size();
-				// iSize
-				numValues = m_sharedState->objPackList[i].indices.size();
-				memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
-				responseMessageContent += sizeof(int);
-				// indices
-				memcpy(responseMessageContent, &m_sharedState->objPackList[i].indices[0], sizeof(int) * m_sharedState->objPackList[i].indices.size());
-				responseMessageContent += sizeof(int) * m_sharedState->objPackList[i].indices.size();
-				// nSize
-				numValues = m_sharedState->objPackList[i].normals.size() / 3.0;
-				memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
-				responseMessageContent += sizeof(int);
-				// normals
-				memcpy(responseMessageContent, &m_sharedState->objPackList[i].normals[0], sizeof(float) * m_sharedState->objPackList[i].normals.size());
-				responseMessageContent += sizeof(float) * m_sharedState->objPackList[i].normals.size();
-				// uSize
-				numValues = m_sharedState->objPackList[i].uvs.size() / 2.0;
-				memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
-				responseMessageContent += sizeof(int);
-				// uvs
-				memcpy(responseMessageContent, &m_sharedState->objPackList[i].uvs[0], sizeof(float) * m_sharedState->objPackList[i].uvs.size());
-				responseMessageContent += sizeof(float) * m_sharedState->objPackList[i].uvs.size();
-				// bWSize
-				numValues = m_sharedState->objPackList[i].boneWeights.size() / 4.0;
-				memcpy(responseMessageContent, (char*)&numValues, sizeof(int));
-				responseMessageContent += sizeof(int);
-				// bone Weights
-				memcpy(responseMessageContent, &m_sharedState->objPackList[i].boneWeights[0], sizeof(float) * m_sharedState->objPackList[i].boneWeights.size());
-				responseMessageContent += sizeof(float) * m_sharedState->objPackList[i].boneWeights.size();
-				// bone Indices
-				memcpy(responseMessageContent, &m_sharedState->objPackList[i].boneIndices[0], sizeof(int) * m_sharedState->objPackList[i].boneIndices.size());
-				responseMessageContent += sizeof(int) * m_sharedState->objPackList[i].boneIndices.size();
-			}
-
-		}
-
-		// Nodes request
-		else if (msgString == "nodes")
-		{
-			DOL(doLog, Log, "[DIST Thread] Got Nodes Request");
-			DOL(doLog, Log, "[DIST Thread] Node count: %d; Node Type count: %d", m_sharedState->nodeList.size(), m_sharedState->nodeList.size());
-
-			// set the size from type- and name length
-			responseLength = sizeof(NodeType) * m_sharedState->nodeList.size();
-
-			// extend with sizeof node depending on node type
-			for (int i = 0; i < m_sharedState->nodeList.size(); i++)
-			{
-
-				if (m_sharedState->nodeTypeList[i] == NodeType::GEO)
-					responseLength += sizeof_nodegeo;
-				else if (m_sharedState->nodeTypeList[i] == NodeType::LIGHT)
-					responseLength += sizeof_nodelight;
-				else if (m_sharedState->nodeTypeList[i] == NodeType::CAMERA)
-					responseLength += sizeof_nodecam;
-				else
-					responseLength += sizeof_node;
-
-			}
-
-			// allocate memory for out byte stream
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
-
-			// iterate over node list copy data to out byte stream
-			for (int i = 0; i < m_sharedState->nodeList.size(); i++)
-			{
-				Node* node = m_sharedState->nodeList[i];
-
-				// First Copy node type
-				int nodeType = m_sharedState->nodeTypeList[i];
-				memcpy(responseMessageContent, (char*)&nodeType, sizeof(int));
-				responseMessageContent += sizeof(int);
-
-				// Copy specific node data
-				if (m_sharedState->nodeTypeList[i] == NodeType::GEO)
-				{
-					memcpy(responseMessageContent, node, sizeof_nodegeo);
-					responseMessageContent += sizeof_nodegeo;
-				}
-				else if (m_sharedState->nodeTypeList[i] == NodeType::LIGHT)
-				{
-					memcpy(responseMessageContent, node, sizeof_nodelight);
-					responseMessageContent += sizeof_nodelight;
-				}
-				else if (m_sharedState->nodeTypeList[i] == NodeType::CAMERA)
-				{
-					memcpy(responseMessageContent, node, sizeof_nodecam);
-					responseMessageContent += sizeof_nodecam;
-				}
-				else
-				{
-					memcpy(responseMessageContent, node, sizeof_node);
-					responseMessageContent += sizeof_node;
-				}
-
-			}
-
-		}
-
-		// Characters request
-
-
-
-		// Send subsequent zmq_send (needed due to ZMQ_REP type socket)
-		DOL(doLog, Log, "[DIST Thread] Send message length: %d", responseLength);
-		zmq::message_t responseMessage((void*)messageStart, responseLength, NULL);
-		try {
-			socket->send(responseMessage);
-		}
-		catch (const zmq::error_t &e)
-		{
-			FString errName = FString(zmq_strerror(e.num()));
-			DOL(doLog, Error, "[DIST Thread] send exception: %s", *errName);
-			return;
-		}
-		// In case of infinite while
-		Sleep(10);
-
-
-	}
+	DOL(LogBasic, Error, "LOCK MESSAGE Id: %d %d", *objID, *lockState);
+	USceneObject* sceneObj = objectList[*objID];
+	sceneObj->_lock = *lockState;
 }

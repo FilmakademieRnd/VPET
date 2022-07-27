@@ -263,6 +263,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			GEditor->EndTransaction();
 			return FReply::Handled();
 		}
+
 		static FReply VisShowSelected()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -281,6 +282,61 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 				}
 			}
 			GEditor->EndTransaction();
+			return FReply::Handled();
+		}
+
+		static FReply VisTexAct1()
+		{
+			// Pick all actors that have the edit select tab
+			// Add a list of materials
+			// Print the material names
+
+			// Register
+			GEditor->BeginTransaction(LOCTEXT("TexAct1TransactionName", "Tex Act 1"));
+			UWorld* lWorld = GEditor->GetEditorWorldContext().World();
+			if (GEditor->PlayWorld)
+				lWorld = GEditor->PlayWorld;
+			if (lWorld)
+			{
+				// Iterate over all actors
+				for (TActorIterator<AActor> aIt(lWorld); aIt; ++aIt)
+				{
+					AActor* lActor = *aIt;
+					if (lActor->Tags.Find("Editable") != INDEX_NONE)
+					{
+						// Check if static mesh
+						if (lActor->GetClass()->GetName() == "StaticMeshActor")
+						{
+							TArray<UStaticMeshComponent*> staticMeshComponents;
+							lActor->GetComponents<UStaticMeshComponent>(staticMeshComponents);
+							// Test if got mesh
+							if (staticMeshComponents.Num() == 0) {
+								UE_LOG(LogTemp, Warning, TEXT("No Mesh Comp"));
+								return FReply::Unhandled();
+							}
+
+							// Grab only the first
+							UStaticMeshComponent* staticMeshComponent = staticMeshComponents[0];
+							UMaterialInterface* thisMaterial = staticMeshComponent->GetMaterial(0);
+							//auto me = this;
+							UE_LOG(LogTemp, Warning, TEXT("Material name: %s"), *thisMaterial->GetName());
+							//TArray<UMaterialInterface*> test = debugArray;
+							//GEditor->SelectActor(lActor, true, true);
+						}
+					}
+
+				}
+			}
+			GEditor->EndTransaction();
+			return FReply::Handled();
+		}
+
+		static FReply VisTexAct2()
+		{
+			//FString testds("This a test");
+
+			//UE_LOG(LogTemp, Warning, TEXT("Debug string: %s"), *debugString);
+			//UE_LOG(LogTemp, Warning, debugString);
 			return FReply::Handled();
 		}
 
@@ -434,6 +490,44 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			SNew(SButton)
 			.Text(LOCTEXT("VisShowButtonLabel", "Show"))
 		.OnClicked_Static(&Functions::VisShowSelected)
+		]
+		]
+	+ SVerticalBox::Slot()
+		.HAlign(HAlign_Center)
+		.AutoHeight()
+		.Padding(6)
+		[
+			SNew(STextBlock)
+			.AutoWrapText(true)
+		.Text(LOCTEXT("WidgetTexPrepText", "Texture preparation"))
+		]
+	+ SVerticalBox::Slot()
+		.HAlign(HAlign_Center)
+		.AutoHeight()
+		.Padding(4)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot()
+		.AutoWidth()
+		.Padding(4)
+		[
+			SNew(STextBlock)
+			.AutoWrapText(true)
+		.Text(LOCTEXT("WidgetTexDebugText", "Debug texture"))
+		]
+	+ SHorizontalBox::Slot()
+		.AutoWidth()
+		[
+			SNew(SButton)
+			.Text(LOCTEXT("VisTexAct1Label", "Action 1"))
+		.OnClicked_Static(&Functions::VisTexAct1)
+		]
+	+ SHorizontalBox::Slot()
+		.AutoWidth()
+		[
+			SNew(SButton)
+			.Text(LOCTEXT("VisTexAct2Label", "Action 2"))
+		.OnClicked_Static(&Functions::VisTexAct2)
 		]
 		]
 		];
