@@ -139,8 +139,6 @@ namespace vpet
                                     decodeSyncMessage(ref input);
                                 break;
                             case MessageType.RESETOBJECT:
-                                decodeResetMessage(ref input);
-                                break;
                             case MessageType.UNDOREDOADD:
                             case MessageType.PARAMETERUPDATE:
                                 // make shure that producer and consumer exclude eachother
@@ -182,21 +180,6 @@ namespace vpet
         private void decodeSyncMessage(ref byte[] message)
         {
             core.time = message[1];
-        }
-
-        //! 
-        //! Function that decodes a undo redo message and adds it to the undo redo manager.
-        //!
-        //! @param message The message to be decoded.
-        //! 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void decodeResetMessage(ref byte[] message)
-        {
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
-            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
-            foreach (AbstractParameter p in sceneObject.parameterList)
-                p.reset();
-            core.getManager<SceneManager>().getModule<UndoRedoModule>().vanishHistory(sceneObject);
         }
 
         //! 
@@ -248,11 +231,20 @@ namespace vpet
 
             if (sceneObject != null)
             {
-                if ((MessageType)message[2] == MessageType.UNDOREDOADD)
-                    receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
-                else
-                    sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
-
+                switch ((MessageType)message[2])
+                {
+                    case MessageType.UNDOREDOADD:
+                        receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
+                        break;
+                    case MessageType.RESETOBJECT:
+                        foreach (AbstractParameter p in sceneObject.parameterList)
+                            p.reset();
+                        m_sceneManager.getModule<UndoRedoModule>().vanishHistory(sceneObject);
+                        break;
+                    default:
+                        sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
+                        break;
+                }
             }
         }
 
