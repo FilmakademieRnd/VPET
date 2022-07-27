@@ -273,8 +273,11 @@ namespace vpet
         //!
         private void queueModifiedParameter(object sender, AbstractParameter parameter)
         {
-            if (!m_modifiedParameters.Contains(parameter))
-                m_modifiedParameters.Add(parameter);
+            lock (m_modifiedParameters)
+            {
+                if (!m_modifiedParameters.Contains(parameter))
+                    m_modifiedParameters.Add(parameter);
+            }
         }
 
         //!
