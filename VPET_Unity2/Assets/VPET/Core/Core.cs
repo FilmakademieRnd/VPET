@@ -220,6 +220,7 @@ namespace vpet
             if (Input.deviceOrientation != m_orientation)
             {
                 orientationChangedEvent.Invoke(this, 0f);
+                Debug.Log("ORIENTATION CHANGED TO: " + Input.deviceOrientation);
                 Camera mainCamera = Camera.main;
                 if ((Input.deviceOrientation == DeviceOrientation.Portrait &&
                      (m_orientation == DeviceOrientation.LandscapeLeft ||
@@ -242,7 +243,7 @@ namespace vpet
         {
             timeEvent?.Invoke(this, EventArgs.Empty);
 
-            m_time = (m_time > (m_timesteps-1) ? (byte)0 : m_time+=1);
+            m_time = (m_time >= (m_timesteps-1) ? (byte)0 : m_time+=1);
 
             if ((m_time % settings.framerate) == 0)
                 syncEvent?.Invoke(this, m_time);
