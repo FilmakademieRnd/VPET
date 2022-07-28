@@ -19,7 +19,6 @@ class UpdateReceiverThread : public FNonAbandonableTask
 	friend class FAutoDeleteAsyncTask<UpdateReceiverThread>;
 public:
 	zmq::socket_t* socket;
-	//std::vector<uint8_t*>* msgQ;
 	std::vector<std::vector<uint8_t>>* msgQ;
 	bool doLog;
 	uint8_t cID;
@@ -32,8 +31,6 @@ public:
 		UNDOREDOADD, RESETOBJECT // undo redo
 	};
 
-	//ThreadSyncDev(zmq::socket_t* pSocket, std::vector<uint8_t*>* pQueue, bool pLog) : socket(pSocket), msgQ(pQueue), doLog(pLog) { }
-	//ThreadVPET2Recv(zmq::socket_t* pSocket, std::vector<std::vector<uint8_t>>* pQueue, bool pLog) : socket(pSocket), msgQ(pQueue), doLog(pLog) { }
 	UpdateReceiverThread(zmq::socket_t* pSocket, std::vector<std::vector<uint8_t>>* pQueue, uint8_t m_ID, bool pLog, AVPETModule* pMod) : socket(pSocket), msgQ(pQueue), cID(m_ID), doLog(pLog), manager(pMod) { }
 
 	void DoWork();

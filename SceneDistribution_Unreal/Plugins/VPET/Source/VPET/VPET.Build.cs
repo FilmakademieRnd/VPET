@@ -56,7 +56,8 @@ public class VPET : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore"
+				"SlateCore",
+				"CinematicCamera"
 			}
 			);
 		

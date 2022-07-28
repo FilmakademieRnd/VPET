@@ -9,6 +9,8 @@
 
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
+#include "CineCameraActor.h"
+#include "CineCameraComponent.h"
 
 #include "SceneObjectCamera.generated.h"
 
@@ -27,8 +29,10 @@ protected:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	ACameraActor* kCam;
-	UCameraComponent* kCamComp;
+	ACameraActor* kCam = NULL;
+	UCameraComponent* kCamComp = NULL;
+	ACineCameraActor* kCineCam = NULL;
+	UCineCameraComponent* kCineCamComp = NULL;
 
 	// Parameter buffers
 	float fovBuffer;

@@ -926,7 +926,8 @@ namespace vpet
             {
                 averagePos += obj.transform.position;
             }
-            averagePos /= selObjs.Count;
+            if(selObjs.Count>0)
+                averagePos /= selObjs.Count;
             manipT.transform.position = averagePos;
         }
 

@@ -41,12 +41,6 @@ void AVPETModule::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FVector loc = emptyTransform.GetLocation();
-	for (size_t i = 0; i < 3; i++)
-	{
-		DOL(LogBasic, Log, "[VPET2 BeginPlay] VEC %d %f", i, loc[i]);
-	}
-
 	// Host IP identifier
 	int32 idIndex = INDEX_NONE;
 	if (HostIP.FindLastChar('.', idIndex))
@@ -456,12 +450,6 @@ void AVPETModule::Tick(float DeltaTime)
 		//FString fName(tempParam->GetName().c_str());
 		//UE_LOG(LogTemp, Warning, TEXT("Found param name %s"), *fName);
 
-		//tempParam->ParseMessage();
-
-		for (int kID : IDtoSend)
-		{
-			DOL(LogBasic, Log, "[VPET List] List of IDs: %d", kID);
-		}
 	}
 
 	//if (devActor)
@@ -705,7 +693,8 @@ bool AVPETModule::buildLocation(AActor* prim)
 		DOL(LogBasic, Log, "[DIST buildLocation] Found geo actor, creating geo node out of %s; class: %s", *aName, *className);
 		objType = ObjectType::GEO;
 	}
-	else if (className == "CameraActor") {
+	// Alternative to strict option: else if (className == "CameraActor") - this includes CineCameraActor
+	else if (className.Find("CameraActor") > -1) {
 		m_state.node = new NodeCam();
 		buildNode((NodeCam*)m_state.node, prim);
 		DOL(LogBasic, Log, "[DIST buildLocation] Found camera actor, creating camera node out of %s; class: %s", *aName, *className);

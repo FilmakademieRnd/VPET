@@ -146,13 +146,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
 		bool LogGeoBuild;
 
-	// Empty transform for AddComponentByClass
-	FTransform emptyTransform;
-
-	// Debug - Control bool 
+	// Development print latch
 	bool doItOnce = true;
-	//AActor* devActor;
-	//USceneObject* devComp;
 
 	// ZMQ settings
 	zmq::context_t* context;
@@ -160,12 +155,12 @@ public:
 	zmq::socket_t* socket_r;
 	zmq::socket_t* socket_s;
 
-	// Message Buffer
+	// Message buffer
 	std::vector<std::vector<uint8_t>> msgQ;
 
-	// Send message buffer
+	// Message buffer for sending
 	std::vector<std::vector<uint8_t>> msgQs;
-	// Byte message buffer test
+	// Binary buffer for message construction
 	std::vector<char*> msgData;
 	std::vector<int> msgLen;
 
@@ -178,25 +173,11 @@ public:
 	// List of selected objects in the editor
 	TArray<UObject*> selectedList;
 
-	// Additional list for easy parameter access
+	// List of scene objects - for easier parameter access
 	TArray<USceneObject*> objectList;
 
-
-	// From VPETRegister.cs
-	//enum class ParameterType
-	//{
-	//	POS, ROT, SCALE, LOCK, HIDDENLOCK, KINEMATIC, // node
-	//	FOV, ASPECT, FOCUSDIST, FOCUSSIZE, APERTURE,   // camera
-	//	COLOR, INTENSITY, EXPOSURE, RANGE, ANGLE, // light
-	//	BONEANIM, // animation bone
-	//	VERTEXANIM, // animation vertex
-	//	PING, RESENDUPDATE,  // sync and ping
-	//	CHARACTERTARGET
-	//};
-
-
-	// Definition of VPETs parameter types - not needed if I'll be specific on what arrives
-	//enum class ParameterType { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, LIST, UNKNOWN = 100 };
+	// Material name list - for texture identification
+	TArray<FString> matNameList;
 
 	// Object type - for attaching the right component types to it
 	enum class ObjectType
@@ -224,10 +205,7 @@ public:
 		FOV, ASPECTRATIO, NEARCLIPPLANE, FARCLIPPLANE, FOCALDISTANCE, APERTURE
 	};
 
-	// Temp texture name list
-	TArray<FString> matNameList;
 
-	TArray<int> IDtoSend;
 
 private:
 	// Distributor state
@@ -255,11 +233,6 @@ private:
 	void HandleOnActorSelectionChanged(const TArray<UObject*>& NewSelection, bool bForceRefresh);
 
 public:
-	void AddIdToSend(int objID)
-	{
-		IDtoSend.Add(objID);
-	}
-
 
 	void EncodeLockMessage(int16_t objID, bool lockState);
 

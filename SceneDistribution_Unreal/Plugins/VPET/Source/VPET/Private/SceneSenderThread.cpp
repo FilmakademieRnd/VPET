@@ -186,22 +186,14 @@ void SceneSenderThread::DoWork()
 		// Textures request
 		else if (msgString == "textures")
 		{
-			//DOL(doLog, Log, );
 			DOL(doLog, Log, "[DIST Thread] Got Textures Request");
 			DOL(doLog, Log, "[DIST Thread] Texture count: %d", m_sharedState->texPackList.size());
 
-			// todo - recheck sizing
 			responseLength = 4 * sizeof(int) * m_sharedState->texPackList.size();
 			for (int i = 0; i < m_sharedState->texPackList.size(); i++)
 				responseLength += m_sharedState->texPackList[i].colorMapDataSize;
 
 			messageStart = responseMessageContent = (char*)malloc(responseLength);
-
-			//// texture binary type (image data (0) or raw unity texture data (1))
-			//int textureBinaryType = m_sharedState->textureBinaryType;
-			////std::cout << " textureBinaryType: " << textureBinaryType << std::endl;
-			//memcpy(responseMessageContent, (char*)&textureBinaryType, sizeof(int));
-			//responseMessageContent += sizeof(int);
 
 			for (int i = 0; i < m_sharedState->texPackList.size(); i++)
 			{
@@ -227,193 +219,12 @@ void SceneSenderThread::DoWork()
 				responseMessageContent += m_sharedState->texPackList[i].colorMapDataSize;
 			}
 
-			// make a test texture
-			//TexturePackage texPack;
-
-
-			//texPack.width = texture.width;
-			//texPack.height = texture.height;
-			//texPack.format = texture.format;
-
-			//texPack.colorMapData = texture.GetRawTextureData();
-			//texPack.colorMapDataSize = texPack.colorMapData.Length;
-
 		}
 
 		// Materials request
 		else if (msgString == "materials")
 		{
 			DOL(doLog, Log, "[DIST Thread] Got Materials Request");
-
-			/*
-			// Test with temp material
-			MaterialPackage matPack;
-			// hack
-			matPack.materialId = 0;
-			matPack.name = TCHAR_TO_ANSI(*FString("TestMaterial"));
-			// try to populate
-			// type
-			matPack.type = 0;
-			// src
-			matPack.src = TCHAR_TO_ANSI(*FString("Standard"));
-
-			// shader config // 9 shaderKeywords
-			for (size_t i = 0; i < 9; i++)
-				matPack.shaderConfig.push_back(false);
-
-			// properties
-
-			// first one being color
-			matPack.shaderPropertyIds.push_back(0);
-			matPack.shaderPropertyTypes.push_back(0);
-			// case color RGBA
-			float f;
-			unsigned char const* p;
-			// R
-			f = 0.5f;
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-			// G
-			f = 1.0f;
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-			// B
-			f = 0.5f;
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-			// A
-			f = 1.0f;
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-
-			int propertyCount = 26;
-			// populate the rest with nothing
-			for (size_t i = 0; i < propertyCount; i++)
-			{
-				matPack.shaderPropertyIds.push_back(0);
-				matPack.shaderPropertyTypes.push_back(-1);
-				matPack.shaderProperties.push_back(0);
-			}
-
-
-
-
-			// Prepare response
-
-			// using one material only
-
-			// Sizing - based on Unity's
-			responseLength = sizeof(int) * 8;
-			responseLength += matPack.name.size();
-			responseLength += matPack.src.size();
-			responseLength += sizeof(int) * matPack.textureIds.size();
-			responseLength += sizeof(float) * matPack.textureOffsets.size();
-			responseLength += sizeof(float) * matPack.textureScales.size();
-			responseLength += matPack.shaderConfig.size();
-			responseLength += sizeof(int) * matPack.shaderPropertyIds.size();
-			responseLength += sizeof(int) * matPack.shaderPropertyTypes.size();
-			responseLength += matPack.shaderProperties.size();
-			//responseLength += sizeof(float) * matPack.shaderProperties.size();
-
-
-
-			// allocate
-			messageStart = responseMessageContent = (char*)malloc(responseLength);
-
-
-			// populate
-
-			// type (int)
-			memcpy(responseMessageContent, (char*)&matPack.type, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			// name length (int)
-			int nameLen = matPack.name.length();
-			memcpy(responseMessageContent, (char*)&nameLen, sizeof(int));
-			DOL(doLog, Warning, "MATERIALDEV mat name length: %d", nameLen);
-			responseMessageContent += sizeof(int);
-
-			// name (byte[])
-			memcpy(responseMessageContent, matPack.name.data(), nameLen);
-			responseMessageContent += nameLen;
-
-			// src length (int)
-			int srcLen = matPack.src.length();
-			memcpy(responseMessageContent, (char*)&srcLen, sizeof(int));
-			DOL(doLog, Warning, "MATERIALDEV src length: %d", srcLen);
-			responseMessageContent += sizeof(int);
-
-			// src (string)
-			memcpy(responseMessageContent, matPack.src.data(), srcLen);
-			responseMessageContent += srcLen;
-
-			// matID (int)
-			memcpy(responseMessageContent, (char*)&matPack.materialId, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			// size (int) for textureIds, textureOffsets/2 (Vec2), textureScales/2 (Vec2)
-			int texIdSize = matPack.textureIds.size();
-			memcpy(responseMessageContent, (char*)&texIdSize, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			// textureIds (int[])
-			memcpy(responseMessageContent, &matPack.textureIds[0], sizeof(int) * matPack.textureIds.size());
-			responseMessageContent += sizeof(int) * matPack.textureIds.size();
-
-			// textureOffsets (float[])
-			memcpy(responseMessageContent, &matPack.textureOffsets[0], sizeof(float) * matPack.textureOffsets.size());
-			responseMessageContent += sizeof(float) * matPack.textureOffsets.size();
-
-			// textureScales (float[])
-			memcpy(responseMessageContent, &matPack.textureScales[0], sizeof(float) * matPack.textureScales.size());
-			responseMessageContent += sizeof(float) * matPack.textureScales.size();
-
-			// size shaderConfig (int)
-			int shaderConfigSize = matPack.shaderConfig.size();
-			memcpy(responseMessageContent, (char*)&shaderConfigSize, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			// shaderConfig (bool[]) // why no [0]?
-			memcpy(responseMessageContent, &matPack.shaderConfig, matPack.shaderConfig.size());
-			responseMessageContent += matPack.shaderConfig.size();
-
-			// size shader properties (int)
-			int shaderPropertyIdsSize = matPack.shaderPropertyIds.size();
-			memcpy(responseMessageContent, (char*)&shaderPropertyIdsSize, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			// shader property IDs (int[])
-			memcpy(responseMessageContent, &matPack.shaderPropertyIds[0], sizeof(int)* matPack.shaderPropertyIds.size());
-			responseMessageContent += sizeof(int) * matPack.shaderPropertyIds.size();
-
-			// shader property types (int[])
-			memcpy(responseMessageContent, &matPack.shaderPropertyTypes[0], sizeof(int)* matPack.shaderPropertyTypes.size());
-			responseMessageContent += sizeof(int) * matPack.shaderPropertyTypes.size();
-
-			// size shaderProperties data (int)
-			int shaderPropertiesSize = matPack.shaderProperties.size();
-			memcpy(responseMessageContent, (char*)&shaderPropertiesSize, sizeof(int));
-			responseMessageContent += sizeof(int);
-
-			// shader property data (byte[])
-			memcpy(responseMessageContent, (char*)&matPack.shaderProperties[0], sizeof(float) * shaderPropertiesSize);
-			responseMessageContent += sizeof(float) * shaderPropertiesSize;
-			/**/
-
-			/**/
-			// For multi material
 
 			// Prepare response
 			responseLength = sizeof(int) * 8 * m_sharedState->matPackList.size();
@@ -531,7 +342,6 @@ void SceneSenderThread::DoWork()
 				memcpy(responseMessageContent, &m_sharedState->matPackList[i].shaderProperties[0], shaderPropertiesSize);
 				responseMessageContent += shaderPropertiesSize;
 			}
-			/**/
 		}
 
 		// Send subsequent zmq_send (needed due to ZMQ_REP type socket)

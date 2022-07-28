@@ -18,11 +18,14 @@ void USceneObjectCamera::BeginPlay()
 
 	kCam = Cast<ACameraActor>(thisActor);
 	kCamComp = kCam->GetCameraComponent();
+	kCineCam = Cast<ACineCameraActor>(thisActor);
+	if(kCineCam)
+		kCineCamComp = kCineCam->GetCineCameraComponent();
 	if (kCamComp)
 	{
 		float aspect = kCamComp->AspectRatio;
 
-		float fov = atan(tan(kCamComp->FieldOfView / 2) * aspect);
+		float fov = 2 * atan(tan(kCamComp->FieldOfView / 2.0 * DEG2RAD) / aspect) / DEG2RAD;
 		new Parameter<float>(fov, thisActor, "fov", &UpdateFov, this);
 		fovBuffer = fov;
 
@@ -37,17 +40,29 @@ void USceneObjectCamera::BeginPlay()
 		new Parameter<float>(far, thisActor, "farClipPlane", &UpdateFarClipPlane, this);
 		farBuffer = far;
 
+		// Default values
 		float focDist = 1;
+		float aperture = 2.8;
+		FVector2D sensor(36, 24);
+		
+		// Cine camera valupes
+		if (kCineCamComp)
+		{
+			focDist = kCineCamComp->CurrentFocusDistance;
+			aperture = kCineCamComp->CurrentAperture;
+			sensor.X = kCineCamComp->Filmback.SensorWidth;
+			sensor.Y = kCineCamComp->Filmback.SensorHeight;
+		}
+
 		new Parameter<float>(focDist, thisActor, "focalDistance", &UpdateFocalDistance, this);
 		focDistBuffer = focDist;
 
-		float aperture = 2.8;
 		new Parameter<float>(aperture, thisActor, "aperture", &UpdateAperture, this);
 		apertureBuffer = aperture;
 
-		FVector2D sensor(36, 24);
 		new Parameter<FVector2D>(sensor, thisActor, "sensorSize", &UpdateSensorSize, this);
 		sensorBuffer = sensor;
+	
 	}
 }
 
@@ -59,52 +74,59 @@ void USceneObjectCamera::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	if (kCamComp)
 	{
 		float aspect = kCamComp->AspectRatio; // default: 2
-		float fov = atan(tan(kCamComp->FieldOfView / 2) * aspect); // default: 90
+		float fov = 2 * atan(tan(kCamComp->FieldOfView / 2.0 * DEG2RAD) / aspect) / DEG2RAD; // default: 90
 		float near = 0.001; // default: 0.001
 		float far = 100; // default: 100
 		float focDist = 1; // default: 1
 		float aperture = 2.8; // default: 2.8
 		FVector2D sensor(36, 24); // default: 36, 24
+		if (kCineCamComp)
+		{
+			focDist = kCineCamComp->CurrentFocusDistance;
+			aperture = kCineCamComp->CurrentAperture;
+			sensor.X = kCineCamComp->Filmback.SensorWidth;
+			sensor.Y = kCineCamComp->Filmback.SensorHeight;
+		}
 
 		if (fov != fovBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("FOV CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("FOV CHANGE: %f"), fov);
 			fovBuffer = fov;
 			EncodeParameterFovMessage();
 		}
 		if (aspect != aspectBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("ASPECT CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("ASPECT CHANGE: %f"), aspect);
 			aspectBuffer = aspect;
 			EncodeParameterAspectMessage();
 		}
 		if (near != nearBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("NEAR CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("NEAR CHANGE: %f"), near);
 			nearBuffer = near;
 			EncodeParameterNearMessage();
 		}
 		if (far != farBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("FAR CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("FAR CHANGE: %f"), far);
 			farBuffer = far;
 			EncodeParameterFarMessage();
 		}
 		if (focDist != focDistBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("FOCDIST CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("FOCDIST CHANGE: %f"), focDist);
 			focDistBuffer = focDist;
 			EncodeParameterFocDistMessage();
 		}
 		if (aperture != apertureBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("APERTURE CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("APERTURE CHANGE: %f"), aperture);
 			apertureBuffer = aperture;
 			EncodeParameterApertureMessage();
 		}
 		if (sensor != sensorBuffer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("SENSOR CHANGE"));
+			UE_LOG(LogTemp, Warning, TEXT("SENSOR CHANGE: %f %f"), sensor.X, sensor.Y);
 			sensorBuffer = sensor;
 			EncodeParameterSensorMessage();
 		}
@@ -433,17 +455,24 @@ void USceneObjectCamera::EncodeParameterSensorMessage()
 void UpdateFov(std::vector<uint8_t> kMsg, AActor* actor)
 {
 	ACameraActor* kCam = Cast<ACameraActor>(actor);
+	ACineCameraActor* kCineCam = Cast<ACineCameraActor>(actor);
 	if (kCam)
 	{
 		float lK = *reinterpret_cast<float*>(&kMsg[8]);
 		UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type FOV: %f"), lK);
 
 		float aspect = kCam->GetCameraComponent()->AspectRatio;
-		kCam->GetCameraComponent()->FieldOfView = 2.0 * atan(tan(lK / 2.0 * DEG2RAD) * aspect) / DEG2RAD;
+		float fov = 2.0 * atan(tan(lK / 2.0 * DEG2RAD) * aspect) / DEG2RAD;
+		kCam->GetCameraComponent()->FieldOfView = fov;
+
+		if (kCineCam != NULL)
+		{
+			kCineCam->GetCineCameraComponent()->SetFieldOfView(fov);
+		}
 	}
 }
 
-// Parses a message for aspect ratio change
+// Parses a message for aspect ratio change - does not work properly with CineCameras
 void UpdateAspect(std::vector<uint8_t> kMsg, AActor* actor)
 {
 	ACameraActor* kCam = Cast<ACameraActor>(actor);
@@ -482,10 +511,21 @@ void UpdateFarClipPlane(std::vector<uint8_t> kMsg, AActor* actor)
 void UpdateFocalDistance(std::vector<uint8_t> kMsg, AActor* actor)
 {
 	ACameraActor* kCam = Cast<ACameraActor>(actor);
+	ACineCameraActor* kCineCam = Cast<ACineCameraActor>(actor);
 	if (kCam)
 	{
 		float lK = *reinterpret_cast<float*>(&kMsg[8]);
-		UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type FOCAL DISTANCE: %f (not used)"), lK);
+
+		if (kCineCam == NULL)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type FOCAL DISTANCE: %f (camera does not support it)"), lK);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type FOCAL DISTANCE: %f"), lK);
+			
+			kCineCam->GetCineCameraComponent()->FocusSettings.ManualFocusDistance = lK;
+		}
 	}
 }
 
@@ -493,10 +533,21 @@ void UpdateFocalDistance(std::vector<uint8_t> kMsg, AActor* actor)
 void UpdateAperture(std::vector<uint8_t> kMsg, AActor* actor)
 {
 	ACameraActor* kCam = Cast<ACameraActor>(actor);
+	ACineCameraActor* kCineCam = Cast<ACineCameraActor>(actor);
 	if (kCam)
 	{
 		float lK = *reinterpret_cast<float*>(&kMsg[8]);
-		UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type APERTURE: %f (not used)"), lK);
+
+		if (kCineCam == NULL)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type APERTURE: %f (camera does not support it)"), lK);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type APERTURE: %f"), lK);
+
+			kCineCam->GetCineCameraComponent()->CurrentAperture = lK;
+		}
 	}
 }
 
@@ -504,10 +555,22 @@ void UpdateAperture(std::vector<uint8_t> kMsg, AActor* actor)
 void UpdateSensorSize(std::vector<uint8_t> kMsg, AActor* actor)
 {
 	ACameraActor* kCam = Cast<ACameraActor>(actor);
+	ACineCameraActor* kCineCam = Cast<ACineCameraActor>(actor);
 	if (kCam)
 	{
 		float lX = *reinterpret_cast<float*>(&kMsg[8]);
 		float lY = *reinterpret_cast<float*>(&kMsg[12]);
-		UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type SENSOR SIZE: %f %f"), lX, lY);
+
+		if (kCineCam == NULL)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type SENSOR SIZE: %f %f (camera does not support it)"), lX, lY);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SYNC Parse] Type SENSOR SIZE: %f %f"), lX, lY);
+
+			kCineCam->GetCineCameraComponent()->Filmback.SensorWidth = lX;
+			kCineCam->GetCineCameraComponent()->Filmback.SensorHeight = lY;
+		}
 	}
 }

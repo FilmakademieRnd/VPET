@@ -92,8 +92,5 @@ void UpdateReceiverThread::DoWork()
 				UE_LOG(LogTemp, Log, TEXT("[VPET2 Parse] Message came from host, cID: %d"), cID);
 			}
 		}
-
-		// Fallback for free-running while
-		//Sleep(10);
 	}
 }
