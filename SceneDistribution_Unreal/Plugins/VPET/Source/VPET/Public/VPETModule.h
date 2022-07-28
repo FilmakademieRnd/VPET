@@ -28,10 +28,6 @@
 #include "Components/RectLightComponent.h"
 #include "Components/LocalLightComponent.h"
 
-
-// for texture
-//#include "Engine/Texture.h"
-
 // for level editor
 #include "LevelEditor.h"
 
@@ -54,7 +50,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "VPETModule.generated.h"
-
 
 
 
@@ -83,22 +78,13 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "VPET Settings")
-		bool OpenFile;
-
-	UPROPERTY(EditAnywhere, Category = "VPET Settings")
-		bool UseTexture;
-
-	UPROPERTY(EditAnywhere, Category = "VPET Settings")
-		FString FilePath;
-
 	// IP Address of the host server
 	UPROPERTY(EditAnywhere, Category = "VPET Settings")
 		FString HostIP;
 
-	// Texture
+	// Set to use textures (requires prior setup)
 	UPROPERTY(EditAnywhere, Category = "VPET Settings")
-		UTexture2D* Texture;
+		bool UseTexture;
 
 	// Multiplying factor for light intensity
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Light settings")
@@ -206,7 +192,6 @@ public:
 	};
 
 
-
 private:
 	// Distributor state
 	VPET::SceneDistributorState m_state;
@@ -229,7 +214,7 @@ private:
 		actorList.Add(pActor);
 	}
 
-	// seleciton
+	// Editor selection handler
 	void HandleOnActorSelectionChanged(const TArray<UObject*>& NewSelection, bool bForceRefresh);
 
 public:

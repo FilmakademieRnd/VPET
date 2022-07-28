@@ -4,11 +4,6 @@
 
 using namespace VPET;
 
-//#include <zmq.hpp>
-//#include <string>
-//#include <iostream>
-//#include <windows.h>
-
 // Sets default values
 AVPETModule::AVPETModule()
 {
@@ -16,11 +11,8 @@ AVPETModule::AVPETModule()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Default values
-	//HostIP = FString("127.0.0.1");
-	OpenFile = false;
+	HostIP = FString("127.0.0.1");
 	UseTexture = false;
-	FilePath = FString("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_4_6x6.astc");
-	HostIP = FString("192.168.1.66");
 	UseSendTag = true;
 	UseEditableTag = true;
 	BrightnessMultiplier = 1.0;
@@ -50,186 +42,7 @@ void AVPETModule::BeginPlay()
 	}
 	DOL(LogBasic, Log, "[VPET2 BeginPlay] M_ID: %d", m_id);
 	OSD(FColor::Cyan, "[VPET2 BeginPlay] M_ID: %d", m_id);
-
-	//FString matName("test");
-	//DOL(LogBasic, Warning, "MATERIALDEV mat name 1: %s", *matName);
-	//std::string matStr = TCHAR_TO_UTF8(*FString("TestMaterial"));
-	//matName = UTF8_TO_TCHAR(matStr.c_str());
-	//DOL(LogBasic, Warning, "MATERIALDEV mat name 2: %s", *matName);
-
-	// Explore the texture
-	// 
-	//float texWid = Texture->GetSurfaceWidth();
-	//float texHei = Texture->GetSurfaceWidth();
-	//DOL(LogBasic, Warning, "TEXTURE DEV: W: %f H: %f", texWid, texHei);
-	if (Texture)
-	{
-		check(Texture);
-
-		int texWid = Texture->GetSizeX();
-		int texHei = Texture->GetSizeY();
-		DOL(LogBasic, Warning, "TEXTURE DEV: W: %i H: %i", texWid, texHei);
-
-		int fullSize = Texture->GetResourceSizeBytes(EResourceSizeMode::Exclusive);
-		DOL(LogBasic, Warning, "TEXTURE DEV: size: %i", fullSize);
-		int numMip = Texture->PlatformData->Mips.Num();
-		DOL(LogBasic, Warning, "TEXTURE DEV: num mips: %i", numMip);
-
-		Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
-
-		numMip = Texture->PlatformData->Mips.Num();
-		DOL(LogBasic, Warning, "TEXTURE DEV: num mips: %i", numMip);
-
-
-		int texSize = fullSize / numMip;
-		DOL(LogBasic, Warning, "TEXTURE DEV: size: %i", texSize);
-
-		// which is closer to raw data?
-		auto texData = Texture->PlatformData;
-		auto tpf = texData->PixelFormat;
-		auto tpd = texData->PackedData;
-		DOL(LogBasic, Warning, "TEXTURE DEV: pixel format: %i packed data: %i", tpf, tpd);
-		auto texRes = Texture->Resource;
-		auto texMem = Texture->ResourceMem;
-		//texMem.
-
-		// read info
-		//uint8* raw = NULL;
-		//FTexture2DMipMap& Mip = Texture->PlatformData->Mips[0];
-		//void* Data = Mip.BulkData.Lock(LOCK_READ_WRITE);
-		//raw = (uint8*)Data;
-		// read here in low level:
-		////let's say I want pixel x = 300, y = 23
-		////basic formula, data[channels * (width * y + x)];
-		//FColor pixel = FColor(0, 0, 0, 255);
-		//pixel.B = raw[4 * (640 * y + x) + 0];
-		//pixel.G = raw[4 * (640 * y + x) + 1];
-		//pixel.R = raw[4 * (640 * y + x) + 2];
-		//DOL(LogBasic, Warning, "DATA");
-		//for (size_t i = 0; i < texSize; i++)
-		//{
-		//	DOL(LogBasic, Warning, "%i", raw[i]);
-		//}
-
-		//// alternative
-		//void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);//locking the data since it is multi threaded
-		//uint8* myData;
-		//myData = (uint8*)malloc(texSize);
-		//FMemory::Memmove(myData, TextureData, texSize);
-		//DOL(LogBasic, Warning, "DATA");
-		//for (size_t i = 0; i < texSize; i++)
-		//{
-		//	DOL(LogBasic, Warning, "%i", myData[i]);
-		//}
-
-		//// unlock
-		//Texture->PlatformData->Mips[0].BulkData.Unlock();
-
-		//// Small
-		//void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);//locking the data since it is multi threaded
-		//uint8* rawData;
-		//rawData = (uint8*)TextureData;
-		//DOL(LogBasic, Warning, "DATA");
-		//for (size_t i = 0; i < fullSize; i++)
-		//{
-		//	DOL(LogBasic, Warning, "%i", rawData[i]);
-		//}
-		//Texture->PlatformData->Mips[0].BulkData.Unlock();
-
-		//Texture->CompressionSettings = ;
-
-
-		////alternative - source - nah, this bad
-		//FTextureSource& SourceData = Texture->Source;
-		////DOL(LogBasic, Warning, "FORMAT %i", SourceData.GetFormat());
-		//if (SourceData.GetFormat() == TSF_BGRA8)
-		//{
-		//	uint32 BytesPerPixel = SourceData.GetBytesPerPixel();
-		//	DOL(LogBasic, Warning, "TEXTURE DEV2: W: %i H: %i", SourceData.GetSizeX(), SourceData.GetSizeY());
-		//	DOL(LogBasic, Warning, "bytes per pixel: %i", BytesPerPixel);
-		//	DOL(LogBasic, Warning, "size: %i", SourceData.GetSizeX() * SourceData.GetSizeY() * BytesPerPixel);
-		//	/*uint8* OffsetSource = SourceData.LockMip(0) + (SourceXY.X + SourceXY.Y * SourceData.GetSizeX()) * BytesPerPixel;*/
-		//	uint8* OffsetSource = SourceData.LockMip(0);
-
-		//	//TArray<uint8> TargetBuffer;
-		//	//TargetBuffer.Empty();
-		//	//TargetBuffer.AddZeroed(SourceData.GetSizeX() * SourceData.GetSizeY() * BytesPerPixel);
-		//	//uint8* OffsetDest = TargetBuffer.GetData();
-
-		//	//CopyTextureData(OffsetSource, OffsetDest, SourceSize.X, SourceSize.Y, BytesPerPixel, SourceData.GetSizeX() * BytesPerPixel, SourceSize.X * BytesPerPixel);
-		//	DOL(LogBasic, Warning, "DATA");
-		//	for (size_t i = 0; i < 8; i++)
-		//	{
-		//		DOL(LogBasic, Warning, "%i", OffsetSource[i]);
-		//	}
-
-
-		//	SourceData.UnlockMip(0);
-		//}
-		//else
-		//{
-		//	DOL(LogBasic, Warning, "Sprite texture %s is not BGRA8, which isn't supported in atlases yet", *Texture->GetName());
-
-
-	}
-
-	if (OpenFile)
-	{
-		// try loading external file
-		IPlatformFile& PlatformFile = IPlatformFile::GetPlatformPhysical();
-		//FString filename("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_4_6x6.astc");
-		const TCHAR* FullModulePath = *FilePath;
-		IFileHandle* File = PlatformFile.OpenRead(FullModulePath);
-
-		if (File)
-		{
-			int fileSize = File->Size();
-			DOL(LogBasic, Warning, "File size: %i", fileSize);
-
-			DOL(LogBasic, Warning, "FILE DATA");
-			uint8* rawData;
-			rawData = (uint8*)malloc(fileSize);
-			File->Read(rawData, fileSize);
-			for (size_t i = 0; i < fileSize; i++)
-			{
-				DOL(LogBasic, Warning, "%i", rawData[i]);
-			}
-
-		}
-	}
-	// maybe using TextureFormatASTC.cpp?
-	//virtual ITextureFormat* GetTextureFormat() = 0;
-	//FTextureFormatASTCModule test;
-
-	//FTextureFormatASTC test;
-
-	//// making our own texture
-	//FString TextureName("MyTexture");
-	//FString PackageName = TEXT("/Game/ProceduralTextures/");
-	//PackageName += TextureName;
-	//UPackage* Package = CreatePackage(NULL, *PackageName);
-	//Package->FullyLoad();
-
-	//UTexture2D* NewTexture = NewObject<UTexture2D>(Package, *TextureName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
-
-	//// fill with data
-	//int TextureWidth = 4;
-	//int TextureHeight = 4;
-
-	//NewTexture->AddToRoot();				// This line prevents garbage collection of the texture
-	//NewTexture->PlatformData = new FTexturePlatformData();	// Then we initialize the PlatformData
-	//NewTexture->PlatformData->SizeX = TextureWidth;
-	//NewTexture->PlatformData->SizeY = TextureHeight;
-	//NewTexture->PlatformData->SetNumSlices(1);
-	//NewTexture->PlatformData->PixelFormat = EPixelFormat::PF_ASTC_6x6;
-
-
-	//NewTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
-
-
-
-
-
+	
 	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Game began.");
 
 	// Grab world
@@ -252,7 +65,6 @@ void AVPETModule::BeginPlay()
 	DOL(LogBasic, Log, "[VPET BeginPlay] Building scene...");
 
 	// World tweak - creating a global root
-	// (perhaps better approach: ask user to attach everything that needs to be transmitted to a root actor)
 	buildWorld();
 
 	// Root nodes counter
@@ -271,7 +83,6 @@ void AVPETModule::BeginPlay()
 				rootChildrenCount++;
 	}
 
-
 	// Edit root child count
 	m_state.nodeList.at(0)->childCount = rootChildrenCount;
 	DOL(LogBasic, Log, "[VPET BeginPlay] Root children count: %i", m_state.nodeList.at(0)->childCount);
@@ -289,7 +100,8 @@ void AVPETModule::BeginPlay()
 	// Open ØMQ context
 	context = new zmq::context_t(1);
 
-	// Prepare distribution thread - for hosting the scene - TODO promote this to somewhere easier to find
+
+	// Distribution thread - for hosting the scene - TODO promote the port value to somewhere easier to find
 	FString distributionPort(":5555");
 	socket_d = new zmq::socket_t(*context, ZMQ_REP);
 
@@ -310,9 +122,7 @@ void AVPETModule::BeginPlay()
 	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Distribution socket created!");
 	OSD(FColor::Cyan, "[VPET2 BeginPlay] Distribution socket created!");
 
-	// Start thread
 	// Start distribution (request / reply) thread
-	//auto tDistribute = new FAutoDeleteAsyncTask<ThreadVPET2Dist>(socket_d, &m_state, LogBasic);
 	auto tDistribute = new FAutoDeleteAsyncTask<SceneSenderThread>(socket_d, &m_state, LogBasic);
 	tDistribute->StartBackgroundTask();
 
@@ -341,19 +151,14 @@ void AVPETModule::BeginPlay()
 	DOL(LogBasic, Warning, "[VPET2 BeginPlay] Update receiver socket created!");
 	OSD(FColor::Cyan, "[VPET2 BeginPlay] Update receiver socket created!");
 
-	// Start the message queue?
+	// Start the message queues
 	msgQ.clear();
-
 	msgQs.clear();
 	msgData.clear();
 	msgLen.clear();
 
-
-
 	// Start synchronization (receiver) thread
-	//auto tUpdateReceiver = new FAutoDeleteAsyncTask<ThreadVPET2Recv>(socket_r, &msgQ, m_id, LogBasic);
 	auto tUpdateReceiver = new FAutoDeleteAsyncTask<UpdateReceiverThread>(socket_r, &msgQ, m_id, LogBasic, this);
-
 	tUpdateReceiver->StartBackgroundTask();
 
 
@@ -380,21 +185,16 @@ void AVPETModule::BeginPlay()
 	OSD(FColor::Cyan, "[VPET2 BeginPlay] Update sender socket created!");
 
 	// Start synchronization (sender) thread
-	//auto tUpdateSender = new FAutoDeleteAsyncTask<ThreadVPET2Send>(socket_s, &msgQs, m_id, LogBasic, &msgData, &msgLen);//, &runThreadSend);
 	auto tUpdateSender = new FAutoDeleteAsyncTask<UpdateSenderThread>(socket_s, &msgQs, m_id, LogBasic, &msgData, &msgLen);//, &runThreadSend);
 	tUpdateSender->StartBackgroundTask();
 
 
-	// selection changes test
+	// Manage editor selection changes 
 	FLevelEditorModule& levelEditor = FModuleManager::GetModuleChecked<FLevelEditorModule>("LevelEditor");
-	//levelEditor.OnActorSelectionChanged().AddUObject(this, &UElgEditorContext_LevelEditor::HandleOnActorSelectionChanged);
 	FLevelEditorModule::FActorSelectionChangedEvent fasce = levelEditor.OnActorSelectionChanged();
 	levelEditor.OnActorSelectionChanged().AddUObject(this, &AVPETModule::HandleOnActorSelectionChanged);
-
-	
-
-
 }
+
 
 // Called every frame
 void AVPETModule::Tick(float DeltaTime)
@@ -405,9 +205,6 @@ void AVPETModule::Tick(float DeltaTime)
 	int count = 0;
 	for (size_t i = 0; i < msgQ.size(); i++)
 	{
-		//uint8_t* msg = msgQ.at(i);
-		//ParseTransformation(msg);
-		// Vector paradigm
 		std::vector<uint8_t> msg = msgQ.at(i);
 		ParseParameterUpdate(msg);
 		count++;
@@ -417,7 +214,7 @@ void AVPETModule::Tick(float DeltaTime)
 	msgQ.erase(msgQ.begin(), msgQ.begin() + count);
 
 
-	// dev tests
+	// Development prints
 	if (doItOnce)
 	{
 		doItOnce = false;
@@ -429,59 +226,23 @@ void AVPETModule::Tick(float DeltaTime)
 			if (aActor)
 			{
 				FString aName = aActor->GetActorLabel();
-				DOL(LogBasic, Log, "[VPET] %d: %s", i, *aName);
+				DOL(LogBasic, Log, "[VPET Once] %d: %s", i, *aName);
 			}
 		}
 
 		// checking instancing
 		int objCount = m_state.objPackList.size();
-		DOL(LogBasic, Log, "[VPET List] Unique object count: %d", objCount);
-
-		// sub component operation
-		//devActor = actorList[4];
-		//FTransform test;
-		//devActor->AddComponentByClass(USceneObject::StaticClass(), false, test, false);
-		//devComp = Cast<USceneObject>(devActor->GetComponentByClass((USceneObject::StaticClass())));
-
-
-		// do some parameter magic?
-		//TArray<AbstractParameter*>* tempArray = devComp->GetParameterList();
-		//AbstractParameter* tempParam = (*tempArray)[3];
-		//FString fName(tempParam->GetName().c_str());
-		//UE_LOG(LogTemp, Warning, TEXT("Found param name %s"), *fName);
-
+		DOL(LogBasic, Log, "[VPET Once] Unique object count: %d", objCount);
 	}
 
-	//if (devActor)
-	//{
-	//	if (devComp)
-	//	{
-	//		float realtimeSeconds = 100 * UGameplayStatics::GetRealTimeSeconds(GetWorld());
-	//		FVector buffer(1, 1, realtimeSeconds);
-	//		//devComp->UpdatePosition(buffer);
-	//	}
-	//}
-
-	//	// temp thing
-	//	//prim->AddComponent();
-	//DOL(LogBasic, Error, "[DIST buildLocation] ADD COMPONENTS");
-	////FTransform test;
-	////prim->AddComponentByClass(USceneObject::StaticClass(), false, test, false);
-
-	////if (ActorComponentClass->IsChildOf(baseClass))
-	//UActorComponent* NewComp = NewObject<UActorComponent>(prim, USceneObject::StaticClass());
-	//if (NewComp)
-	//{
-	//	DOL(LogBasic, Error, "[DIST buildLocation] NEW COMPONENTS");
-	//	NewComp->RegisterComponent();
-	//}
 }
+
 
 void AVPETModule::ParseParameterUpdate(std::vector<uint8_t> kMsg)
 {
+	// Development print - print a bunch of bytes
 	// Grab a byte
 	//uint8_t fByte;
-	// Development print - print a bunch of bytes
 	//for (size_t i = 0; i < 14; i++)
 	//{
 	//	fByte = kMsg[i];
@@ -507,7 +268,7 @@ void AVPETModule::ParseParameterUpdate(std::vector<uint8_t> kMsg)
 	//ParameterType paramType = (ParameterType)kMsg[7];
 	//DOL(LogBasic, Log, "[SYNC Parse] Param type: %d", paramType);
 
-	// pass actual message to a parameter from an object
+	// grab scene object and its parameters
 	USceneObject* sceneObj = objectList[objectID];
 	TArray<AbstractParameter*>* tempArray = sceneObj->GetParameterList();
 
@@ -605,7 +366,8 @@ void AVPETModule::HandleOnActorSelectionChanged(const TArray<UObject*>& NewSelec
 	return;
 }
 
-// Perhaps temporary root construction
+
+// Scene root construction
 void AVPETModule::buildWorld()
 {
 	// Create an empty root
@@ -634,7 +396,7 @@ void AVPETModule::buildWorld()
 	m_state.nodeList.push_back(m_state.node);
 	m_state.node->editable = false;
 
-	// hack for VPET 2
+	// Null entry needed for proper indexing
 	AddActorPointer(NULL);
 	objectList.Add(NULL);
 }
@@ -666,7 +428,7 @@ bool AVPETModule::buildLocation(AActor* prim)
 		}
 	}
 
-	// HACK - skip spawn camera
+	// Skip spawn camera
 	if (prim->GetName().Compare(FString("CameraActor_0")) == 0)
 		return false;
 
@@ -927,13 +689,11 @@ bool AVPETModule::buildLocation(AActor* prim)
 	// After iteration, update children count
 	m_state.nodeList.at(nodeIndex)->childCount = childCount;
 
-	/*
-	// development check
-	DOL(LogBasic, Warning, "[DIST buildLocation] Local node %s has %d children", *nName, childCount);
+	//// development check
+	//DOL(LogBasic, Warning, "[DIST buildLocation] Local node %s has %d children", *nName, childCount);
 
-	FString lName(m_state.nodeList.at(nodeIndex)->name);
-	DOL(LogBasic, Warning, "[DIST buildLocation] List node %s has %d children", *lName, m_state.nodeList.at(nodeIndex)->childCount);
-	*/
+	//FString lName(m_state.nodeList.at(nodeIndex)->name);
+	//DOL(LogBasic, Warning, "[DIST buildLocation] List node %s has %d children", *lName, m_state.nodeList.at(nodeIndex)->childCount);
 
 	return true;
 
@@ -975,8 +735,6 @@ void AVPETModule::buildEmptyRotator(FString parentName)
 
 void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 {
-	//DOL(LogBasic, Error, "[Time] 784");
-
 	m_state.node = node;
 	m_state.nodeTypeList.push_back(NodeType::GEO);
 
@@ -986,6 +744,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 	// Get mesh components
 	TArray<UStaticMeshComponent*> staticMeshComponents;
 	prim->GetComponents<UStaticMeshComponent>(staticMeshComponents);
+
 	// Test if got mesh
 	if (staticMeshComponents.Num() == 0) {
 		DOL(LogBasic, Log, "[DIST buildNode] No mesh found!");
@@ -997,12 +756,11 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 	UStaticMesh* staticMesh = staticMeshComponent->GetStaticMesh();
 
 	// Extend options
-	DOL(LogBasic, Warning, "[DIST buildNode] Num of meshes: %d", staticMeshComponents.Num());
-	DOL(LogBasic, Warning, "[DIST buildNode] Vertex Count 1 : %d", staticMesh->GetNumVertices(0));
-	DOL(LogBasic, Warning, "[DIST buildNode] Num LODs: %d", staticMesh->GetNumLODs());
-	DOL(LogBasic, Warning, "[DIST buildNode] Min LOD: %d", staticMesh->MinLOD.Default);
-
-	DOL(LogBasic, Warning, "[DIST buildNode] Num LOD resources: %d", staticMesh->RenderData->LODResources.Num());
+	DOL(LogGeoBuild, Warning, "[DIST buildNode] Num of meshes: %d", staticMeshComponents.Num());
+	DOL(LogGeoBuild, Warning, "[DIST buildNode] Vertex Count 1 : %d", staticMesh->GetNumVertices(0));
+	DOL(LogGeoBuild, Warning, "[DIST buildNode] Num LODs: %d", staticMesh->GetNumLODs());
+	DOL(LogGeoBuild, Warning, "[DIST buildNode] Min LOD: %d", staticMesh->MinLOD.Default);
+	DOL(LogGeoBuild, Warning, "[DIST buildNode] Num LOD resources: %d", staticMesh->RenderData->LODResources.Num());
 
 	// Grab path of static mesh as mesh ID
 	FString pName = staticMesh->GetPathName();
@@ -1029,10 +787,6 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		ObjectPackage objPack;
 		objPack.instanceId = instanceID;
 
-		// Vertices / Points
-		//staticMesh->GetNumVertices(0);
-		//DOL(LogBasic, Log, "[DIST Build] Vertex Count 1 : %d", staticMesh->GetNumVertices(0));
-
 		TArray<FVector> vertices = TArray<FVector>();
 
 		// Validity checks?
@@ -1053,13 +807,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 			FRawStaticIndexBuffer& ib = resource.IndexBuffer;
 			// TODO - does it need to check if(&ib)?
 
-			// Build indices list - in reverse order, because why not?
-			//for (size_t j = ib.GetNumIndices(); j > 0 ; j--) {
-			//	// Push to pack
-			//	objPack.indices.push_back(ib.GetIndex(j-1));
-			//}
-
-			//// Use this instead?
+			// Build indices list 
 			FIndexArrayView arrV = ib.GetArrayView();
 			for (size_t j = arrV.Num(); j > 0; j--) {
 				objPack.indices.push_back(arrV[j - 1]);
@@ -1111,26 +859,12 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 
 
 	// Grab first material
-	//UMaterialInterface* sMat = staticMesh->GetMaterial(0); // this is the material of the static mesh itself
 	UMaterialInterface* cMat = staticMeshComponent->GetMaterial(0);
 
 	DOL(LogMaterial, Warning, "[DIST buildNode] num mat: %d", staticMeshComponent->GetNumMaterials());
-	//if (sMat)
-	//	DOL(LogBasic, Log, "[DIST buildNode] sMat: %s", *sMat->GetName());
 	if (cMat)
 		DOL(LogMaterial, Log, "[DIST buildNode] cMat: %s", *cMat->GetName());
-	//prim->GetComponents<material>(staticMeshComponents);
 
-
-	// this returns the parent of the material (e.g. case of material instance)
-	//UMaterial* ccMat = cMat->GetMaterial();
-	//if (ccMat)
-	//	DOL(LogBasic, Log, "[DIST buildNode] ccMat: %s", *ccMat->GetName());
-
-	// So trying to get data from it is pointless
-	//FColorMaterialInput cbColor = ccMat->BaseColor;
-	//FColor cbCons = cbColor.Constant;
-	//DOL(LogBasic, Warning, "[DIST buildNode] base color: %d %d %d", cbCons.R, cbCons.G, cbCons.B);
 
 	// Using texture?
 	bool kHasTexture = cMat->HasTextureStreamingData();
@@ -1149,27 +883,12 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		//cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::ES2_REMOVED, true); // >= 4.25
 		cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::Num, true);
 
-		//DOL(LogBasic, Error, "[Time] 968");
-
 		DOL(LogMaterial, Warning, "[DIST buildNode] length texture array: %d", kUTextures.Num());
 
-		//for (size_t j = 0; j < kUTextures.Num(); j++)
-		size_t j = 0;
-		for (UTexture* kTex : kUTextures)
-		{
-			//UTexture* kTex = kUTextures[j];
-			//float kBri = kTex->GetAverageBrightness(false, false);
-			//DOL(LogMaterial, Warning, "texture %d, named %s, brig: %f", j, *kTex->GetName(), kBri);
-			j++;
-		}
 
-		//DOL(LogBasic, Error, "[Time] 982");
 	}
 
-	// shading model? any useful?
-	//FMaterialShadingModelField cShad = cMat->GetShadingModels();
-	//if (cShad.IsValid())
-	//	DOL(LogBasic, Warning, "[DIST buildNode] material HAS shading model");
+
 
 
 	// all textures?
@@ -1179,10 +898,6 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		FMaterialTextureInfo kTex = texStr[j];
 		DOL(LogMaterial, Warning, "streaming data texture %d named: %s", j, *kTex.TextureName.ToString());
 	}
-
-	// width? - nope - unresolved function! - will not compile
-	//int kWid = cMat->GetWidth();
-	//DOL(LogBasic, Warning, "width %d");
 
 
 	// Get base material that is being instanced
@@ -1225,16 +940,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 				if (cbExpr->GetParameterName().Compare(matParam) == 0)
 				{
 					FLinearColor paramColor;
-					//TEXT("kColor")
 
-					/*
-									if (cbExpr->GetParameterName().Compare(FName("kColor")) == 0)
-				{
-					FLinearColor kColor;
-					if (cMat->GetVectorParameterValue(TEXT("kColor"), kColor))
-
-					*/
-					//if (cMat->GetVectorParameterValue(matParam), paramColor)
 					if (cMat->GetVectorParameterValue(matParam, paramColor))
 					{
 						// Custom color attribute
@@ -1275,216 +981,6 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 					DOL(LogMaterial, Warning, "text name %s", *refTex->GetName());
 			}
 
-
-			/*
-			// VPET2 Material test
-			// Create material package
-			// only two
-			//if (m_state.matPackList.size() < 0)
-
-			bool isTex = false;
-			bool isUnlit = false;
-
-			MaterialPackage matPack;
-			// Name
-			matPack.name = TCHAR_TO_ANSI(*cbMat->GetName());
-			//matPack.name = TCHAR_TO_ANSI(*FString("unlit (Instance)"));
-			// try to populate
-			// type
-			matPack.type = 0;
-			// src
-			matPack.src = TCHAR_TO_ANSI(*FString("Standard"));
-
-			if (cbMat->GetName().Equals(FString("BasicUnlit")))
-			{
-				isTex = true;
-				isUnlit = true;
-				matPack.src = TCHAR_TO_ANSI(*FString("Unlit/Texture"));
-			}
-
-			if (cbMat->GetName().Equals(FString("BasicTexture")))
-				isTex = true;
-
-			// shader config // 9 shaderKeywords
-			for (size_t j = 0; j < 9; j++)
-				matPack.shaderConfig.push_back(false);
-
-			// properties
-
-			// first one being color
-			matPack.shaderPropertyIds.push_back(0);
-			// MOD - color or texture
-			if(!isUnlit)
-				matPack.shaderPropertyTypes.push_back(0);
-
-			if (isTex)
-				matPack.shaderPropertyTypes.push_back(4);
-
-			// case color RGBA
-			float f;
-			unsigned char const* p;
-			// R
-			f = node->color[0];
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-			// G
-			f = node->color[1];
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-			// B
-			f = node->color[2];
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-			// A
-			f = 1.0f;
-			p = reinterpret_cast<unsigned char const*>(&f);
-			matPack.shaderProperties.push_back(p[0]);
-			matPack.shaderProperties.push_back(p[1]);
-			matPack.shaderProperties.push_back(p[2]);
-			matPack.shaderProperties.push_back(p[3]);
-
-			int propertyCount = 26;
-			// populate the rest with nothing
-			for (size_t j = 0; j < propertyCount; j++)
-			{
-				matPack.shaderPropertyIds.push_back(0);
-				matPack.shaderPropertyTypes.push_back(-1);
-				//matPack.shaderProperties.push_back(0);
-			}
-			// hack - remove one
-			if (!isUnlit && isTex)
-				matPack.shaderPropertyTypes.pop_back();
-
-
-
-			// force material to texture?
-			if (isTex)
-			{
-				if (isUnlit)
-					for (size_t j = 0; j < 1; j++)
-						matPack.textureIds.push_back(0);
-				else
-					for (size_t j = 0; j < 1; j++)
-						matPack.textureIds.push_back(0);
-				for (size_t j = 0; j < 2; j++)
-					matPack.textureOffsets.push_back(0);
-				for (size_t j = 0; j < 2; j++)
-					matPack.textureScales.push_back(1);
-			}
-
-			// store the material package
-			m_state.matPackList.push_back(matPack);
-
-			// set material id
-			node->materialId = m_state.matPackList.size() - 1;
-			//node->materialId = 0;
-
-
-			// texture test
-			// only one
-			if (m_state.texPackList.size() < 1)
-			{
-				TexturePackage texPack;
-
-				// using 8x8
-				texPack.width = 8;
-				texPack.height = 8;
-				texPack.colorMapDataSize = 64;
-
-				// open from file
-				// try loading external file
-				IPlatformFile& PlatformFile = IPlatformFile::GetPlatformPhysical();
-				//FString filename("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_4_6x6.astc");
-				const TCHAR* FullModulePath = *FilePath;
-				IFileHandle* File = PlatformFile.OpenRead(FullModulePath);
-
-				//if (File)
-				//{
-				//	int fileSize = File->Size();
-				//	uint8* rawData;
-				//	rawData = (uint8*)malloc(fileSize);
-				//	File->Read(rawData, fileSize);
-				//	unsigned char* texData;
-				//	texData = (unsigned char*)malloc(texPack.colorMapDataSize);
-				//	for (size_t j = 0; j < texPack.colorMapDataSize; j++)
-				//		texData[j] = rawData[j + 16];
-
-				//	texPack.colorMapData = texData;
-				//}
-
-				//m_state.texPackList.push_back(texPack);
-
-
-				// prepare higher res texture also
-
-				// using 32
-				texPack.width = 256;
-				texPack.height = 256;
-				texPack.colorMapDataSize = 0;
-
-				// open from file
-				// try loading external file
-				FString filename("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_32_6x6.astc");
-				//File = PlatformFile.OpenRead(*filename);
-
-				if (File)
-				{
-					int fileSize = File->Size();
-					uint8* rawData;
-					rawData = (uint8*)malloc(fileSize);
-					File->Read(rawData, fileSize);
-					texPack.colorMapDataSize = fileSize;
-					unsigned char* texData;
-					texData = (unsigned char*)malloc(texPack.colorMapDataSize);
-					for (size_t j = 0; j < texPack.colorMapDataSize; j++)
-						texData[j] = rawData[j + 16];
-
-					texPack.colorMapData = texData;
-				}
-				delete(File);
-
-				m_state.texPackList.push_back(texPack);
-
-				// using 32
-				texPack.width = 3000;
-				texPack.height = 3000;
-				texPack.colorMapDataSize = 0;
-
-				// open from file
-				// try loading external file
-				filename = FString("C:/Program Files/Epic Games/UE_5.0/Engine/Binaries/ThirdParty/ARM/Win64/Marker_v2.astc");
-				File = PlatformFile.OpenRead(*filename);
-
-				if (File)
-				{
-					int fileSize = File->Size();
-					DOL(LogMaterial, Warning, "FILE SIZE %d", fileSize);
-					texPack.colorMapDataSize = fileSize;
-					uint8* rawData;
-					rawData = (uint8*)malloc(fileSize);
-					File->Read(rawData, fileSize);
-					unsigned char* texData;
-					texData = (unsigned char*)malloc(texPack.colorMapDataSize);
-					for (size_t j = 0; j < texPack.colorMapDataSize; j++)
-						texData[j] = rawData[j + 16];
-
-					texPack.colorMapData = texData;
-				}
-				delete(File);
-
-				m_state.texPackList.push_back(texPack);
-			}
-			*/
-
 		}
 		else
 		{
@@ -1524,9 +1020,9 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 
 		// first one being color
 		matPack.shaderPropertyIds.push_back(0);
-		// MOD - color or texture
+		
+		// type - color or texture
 		matPack.shaderPropertyTypes.push_back(0);
-
 		if (UseTexture)
 			matPack.shaderPropertyTypes.push_back(4);
 
@@ -1562,9 +1058,6 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		matPack.shaderProperties.push_back(p[2]);
 		matPack.shaderProperties.push_back(p[3]);
 
-		//// add a bunch of nothing
-		//for (size_t j = 0; j < 80; j++)
-		//	matPack.shaderProperties.push_back(0);
 
 		int propertyCount = 26;
 		// populate the rest with nothing
@@ -1577,9 +1070,8 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 
 		if (UseTexture)
 		{
-			// hack - remove one - cos of the texture added before
+			// pop back one item - because of the texture added before (a bit of a dirty trick)
 			matPack.shaderPropertyTypes.pop_back();
-
 
 			// force material to texture?
 			for (size_t j = 0; j < 2; j++)
@@ -1591,26 +1083,18 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 			int texInd;
 			if (matNameList.Find(matName, texInd))
 			{
-				DOL(LogMaterial, Warning, "FOUND TEX FOR %s IDX %d", *matName, texInd);
+				DOL(LogMaterial, Warning, "Found texture for %s, IDX %d", *matName, texInd);
 			}
 			else
 			{
 				texInd = matNameList.Num();
-				DOL(LogMaterial, Warning, "MAKING TEX FOR %s IDX %d", *matName, texInd);
+				DOL(LogMaterial, Warning, "Making texture for %s, IDX %d", *matName, texInd);
 				matNameList.Add(matName);
 				prepTexture = true;
 			}
 			matPack.textureIds.push_back(texInd);
-			DOL(LogMaterial, Warning, "PUSHED FOR %s IDX %d", *matName, texInd);
+			DOL(LogMaterial, Warning, "Pushed texture for for %s, IDX %d", *matName, texInd);
 		}
-
-		//// quick test with pushing 8 empty ones
-		//for (size_t j = 0; j < 8; j++)
-		//	matPack.textureIds.push_back(-1);
-		//for (size_t j = 0; j < 16; j++)
-		//	matPack.textureOffsets.push_back(0);
-		//for (size_t j = 0; j < 16; j++)
-		//	matPack.textureScales.push_back(1);
 
 		// store the material package
 		m_state.matPackList.push_back(matPack);
@@ -1621,25 +1105,28 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		// prepare texture if needed
 		if (prepTexture)
 		{
-			DOL(LogMaterial, Warning, "PREP TEXTURE FOR %s", *matName);
+			DOL(LogMaterial, Warning, "Preparing texture for %s", *matName);
 			TexturePackage texPack;
 
-			// standard size
+			// Standard size
 			texPack.width = 256;
 			texPack.height = 256;
 			texPack.colorMapDataSize = 0;
 
-			// open from file
-			// try loading external file
+			// Attempt to loading external file
 			IPlatformFile& PlatformFile = IPlatformFile::GetPlatformPhysical();
-			FString filename("C:/UnrealProjects/VPET427/Intermediate/VPET/dev1_");
-			filename += matName + FString(".astc");
+			// Get location of created pre-encoded texture files
+			FString texLocation = FPaths::GameSourceDir() + TEXT("../Intermediate/VPET/");
+			// Prefix of texture file names
+			FString texPrefix = TEXT("VPETtex_");
+			// Build file path
+			FString filename = texLocation + texPrefix + matName + FString(".astc");
 			IFileHandle* File = PlatformFile.OpenRead(*filename);
 
 			if (File)
 			{
 				int fileSize = File->Size();
-				DOL(LogMaterial, Warning, "FILE OPEN FOR %s SIZE %d", *matName, fileSize);
+				DOL(LogMaterial, Warning, "File open for %s, size %d", *matName, fileSize);
 				texPack.colorMapDataSize = fileSize;
 				uint8* rawData;
 				rawData = (uint8*)malloc(fileSize);
@@ -1652,16 +1139,15 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 				texPack.colorMapData = texData;
 			}
 			else
-				DOL(LogMaterial, Error, "COULDNT OPEN FILE FOR %s", *matName);
+				DOL(LogMaterial, Error, "Couldn't open file for %s", *matName);
 
 			m_state.texPackList.push_back(texPack);
 
-			// Close file?
+			// Close file
 			delete File;
 		}
 
 	}
-
 
 	// store at sharedState to access it in iterator
 	m_state.node = node;
@@ -1678,19 +1164,18 @@ void AVPETModule::buildNode(NodeCam* node, AActor* prim)
 	UCameraComponent* kCamComp = kCam->GetCameraComponent();
 
 	float aspect = kCamComp->AspectRatio;
-	DOL(LogBasic, Error, "[DIST buildNode] Aspect: %f", aspect);
-	
+
 	// Convert horizontal fov to vertical
 	float fov = 2 * atan(tan(kCamComp->FieldOfView / 2.0 * DEG2RAD) / aspect) / DEG2RAD;
-	DOL(LogBasic, Error, "[DIST buildNode] FOV: %f", fov);
 
-	node->fov = fov;
+	node->fov = fov; // Note: CineCameras have no exposed FoV property but it's focal length correlates to a FoV automatically
 
 	node->aspect = aspect;
 
 	// magic number tests
 	node->nearPlane = 0.001;
 	node->farPlane = 100;;
+	// Always make editable?
 	//node->editable = true;
 
 	// store at sharedState to access it in iterator
@@ -1722,7 +1207,6 @@ void AVPETModule::buildNode(NodeLight* node, AActor* prim, FString className)
 			float rangeFactor = 0.005;
 			node->range = pointLgtCmp->AttenuationRadius * rangeFactor * RangeMultiplier;
 			//DOL(LogBasic, Warning, "[DIST buildNode] light attenuation: %f", pointLgtCmp->AttenuationRadius);
-			//pointLgtCmp->SetAttenuationRadius(50);
 		}
 	}
 	else if (className.Find("Spot") > -1) {
@@ -1796,7 +1280,7 @@ void AVPETModule::EncodeLockMessage(int16_t objID, bool lockState)
 	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
 	responseMessageContent += sizeof(uint8_t);
 	// type lock
-	intVal = 1; //m_id
+	intVal = 1;
 	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
 	responseMessageContent += sizeof(uint8_t);
 	// object id - int 16
@@ -1814,7 +1298,7 @@ void AVPETModule::EncodeLockMessage(int16_t objID, bool lockState)
 
 void AVPETModule::DecodeLockMessage(int16_t* objID, bool* lockState)
 {
-	DOL(LogBasic, Error, "LOCK MESSAGE Id: %d %d", *objID, *lockState);
+	DOL(LogBasic, Log, "Lock message Id: %d %d", *objID, *lockState);
 	USceneObject* sceneObj = objectList[*objID];
 	sceneObj->_lock = *lockState;
 }
