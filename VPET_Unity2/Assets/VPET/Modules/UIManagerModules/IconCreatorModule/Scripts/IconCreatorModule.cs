@@ -37,6 +37,9 @@ namespace vpet
 
     public class IconCreatorModule : UIManagerModule
     {
+        //!
+        //! Flag that defines whether icons are shown or not.
+        //!
         private bool m_showIcons = true;
         //!
         //! The list containing all UI elemets of the current menu.
@@ -87,6 +90,9 @@ namespace vpet
             sceneManager.sceneReady += createIcons;
         }
 
+        //!
+        //! Function that toggles whether icons are shown or not.
+        //!
         private void toggleIcons()
         {
             if (m_showIcons)

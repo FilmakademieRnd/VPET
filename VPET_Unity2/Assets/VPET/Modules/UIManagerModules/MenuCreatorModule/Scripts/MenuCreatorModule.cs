@@ -256,6 +256,7 @@ namespace vpet
         private void createMenufromTree(MenuItem item, GameObject parentObject)
         {
             GameObject newObject = null;
+            ScrollRect scrollRect = parentObject.GetComponent<ScrollRect>();
 
             switch (item.Type)
             {
@@ -388,6 +389,7 @@ namespace vpet
                                     names.Add(parameter.name);
 
                                 dropDown.AddOptions(names);
+                                dropDown.value = ((ListParameter)item.Parameter).value;
                                 dropDown.onValueChanged.AddListener(delegate { ((ListParameter)item.Parameter).select(dropDown.value); });
 
                                 dropDown.image.color = manager.uiAppearanceSettings.colors.DropDown_TextfieldBG;                                
@@ -407,6 +409,9 @@ namespace vpet
                     }
                 break;
             }
+
+            if (scrollRect)
+                scrollRect.content = newObject.GetComponent<RectTransform>();
 
             m_uiElements.Add(newObject);
             item.Children.ForEach(p => createMenufromTree(p, newObject));

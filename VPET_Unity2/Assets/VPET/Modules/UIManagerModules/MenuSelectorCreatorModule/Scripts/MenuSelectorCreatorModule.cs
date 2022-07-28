@@ -93,7 +93,6 @@ namespace vpet
             createMenus(this, EventArgs.Empty);
             createButtons(this, EventArgs.Empty);
             
-            
             manager.buttonsUpdated += createButtons;
             manager.menusUpdated += createMenus;
         }
@@ -143,21 +142,26 @@ namespace vpet
 
             foreach (MenuTree menu in manager.getMenus())
             {
-                if (menu.iconResourceLocation.Length > 0)
+                if (menu.role == UIManager.Roles.NONE ||
+                    menu.role == manager.activeRole)
                 {
-                    Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
-                    if (resImage != null)
-                        m_menuSelector.addElement(/*menu.caption,*/ resImage);
+                    if (menu.iconResourceLocation.Length > 0)
+                    {
+                        Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
+                        if (resImage != null)
+                            m_menuSelector.addElement(/*menu.caption,*/ resImage);
 
-                }
-                else if (menu.caption.Length > 0)
-                    m_menuSelector.addElement(menu.caption);
-                else
-                {
-                    Helpers.Log("Menu has no caption and Icon!", Helpers.logMsgType.WARNING);
-                    m_menuSelector.addElement("EMPTY");
+                    }
+                    else if (menu.caption.Length > 0)
+                        m_menuSelector.addElement(menu.caption);
+                    else
+                    {
+                        Helpers.Log("Menu has no caption and Icon!", Helpers.logMsgType.WARNING);
+                        m_menuSelector.addElement("EMPTY");
+                    }
                 }
             }
+
             m_menuSelector.elementClicked += menuClicked;
         }
 
@@ -175,19 +179,23 @@ namespace vpet
 
             foreach (MenuButton button in manager.getButtons())
             {
-                if (button.iconResourceLocation.Length > 0)
+                if (button.role == UIManager.Roles.NONE ||
+                    button.role == manager.activeRole)
                 {
-                    Sprite resImage = Resources.Load<Sprite>(button.iconResourceLocation);
-                    if (resImage != null)
-                        m_buttonSelector.addElement(button.caption, resImage, 0, button.action);
+                    if (button.iconResourceLocation.Length > 0)
+                    {
+                        Sprite resImage = Resources.Load<Sprite>(button.iconResourceLocation);
+                        if (resImage != null)
+                            m_buttonSelector.addElement(button.caption, resImage, 0, button.action);
 
-                }
-                else if (button.caption.Length > 0)
-                    m_buttonSelector.addElement(button.caption, 0, button.action);
-                else
-                {
-                    Helpers.Log("Button has no caption and Icon!", Helpers.logMsgType.WARNING);
-                    m_buttonSelector.addElement("EMPTY", 0, button.action);
+                    }
+                    else if (button.caption.Length > 0)
+                        m_buttonSelector.addElement(button.caption, 0, button.action);
+                    else
+                    {
+                        Helpers.Log("Button has no caption and Icon!", Helpers.logMsgType.WARNING);
+                        m_buttonSelector.addElement("EMPTY", 0, button.action);
+                    }
                 }
             }
         }

@@ -48,9 +48,6 @@ namespace vpet
         //! 
         public List<MenuItem> Items { get; } = new List<MenuItem>();
 
-        //public MenuTree(string caption = "", Action action = null, Role role = Role.NONE) : base(caption, action, role)
-        //{ }
-
         //!
         //! Adds a new string item as branch into the menu tree.
         //! 

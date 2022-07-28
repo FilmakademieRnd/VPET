@@ -34,16 +34,9 @@ namespace vpet
 {
     public class MenuButton
     {
-        //!
-        //! Enumeration of all suppoted menuItem types.
-        //!
-        public enum Role
-        {
-            SCOUT, USER, EXPERT, NONE = -1
-        }
         public int id = -1;
-        private Role m_role;
-        public Role role
+        protected UIManager.Roles m_role;
+        public UIManager.Roles role
         {
             get => m_role;
         }
@@ -72,7 +65,7 @@ namespace vpet
             get => m_iconResourceLocation; 
         }
 
-        public MenuButton(string caption = "", Action action = null, Role role = Role.NONE)
+        public MenuButton(string caption = "", Action action = null, UIManager.Roles role = UIManager.Roles.NONE)
         {
             m_caption = caption;
             m_action = action;

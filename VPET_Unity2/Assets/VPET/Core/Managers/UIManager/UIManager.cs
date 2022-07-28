@@ -46,6 +46,8 @@ namespace vpet
         {
             [ShowInMenu]
             public Parameter<float> uiScale = new Parameter<float>(1f, "uiScale");
+            [ShowInMenu]
+            public ListParameter roles;
         }
         //!
         //! Getter and setter for the UI settings.
@@ -54,6 +56,18 @@ namespace vpet
         {
             get { return (uiSettings)_settings; }
             set { _settings = value; }
+        }
+        //!
+        //! Enumeration of all suppoted menuItem roles.
+        //!
+        public enum Roles
+        {
+            NONE, SCOUT, USER, EXPERT
+        }
+        private UIManager.Roles m_role = Roles.NONE;
+        public UIManager.Roles activeRole
+        {
+            get => m_role;
         }
         //!
         //! The list containing currently selected scene objects.
@@ -146,6 +160,8 @@ namespace vpet
             base.Cleanup(sender, e);
             settings.uiScale.hasChanged -= updateCanvasScales;
             core.orientationChangedEvent -= updateCanvasScales;
+            settings.roles.hasChanged -= changeActiveRole;
+
         }
 
         //! 
@@ -157,6 +173,15 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             base.Init(sender, e);
+
+            List<AbstractParameter> roleList = new List<AbstractParameter>();
+            roleList.Add(new Parameter<int>(0, "None"));
+            roleList.Add(new Parameter<int>(1, "Scout"));
+            roleList.Add(new Parameter<int>(2, "User"));
+            roleList.Add(new Parameter<int>(3, "Expert"));
+            settings.roles = new ListParameter(roleList, "Roles");
+            settings.roles.hasChanged += changeActiveRole;
+
             CreateSettingsMenu();
         }
 
@@ -166,11 +191,12 @@ namespace vpet
         protected override void Start(object sender, EventArgs e)
         {
             base.Start(sender, e);
+            
             updateCanvasScales(this,0f);
             settings.uiScale.hasChanged += updateCanvasScales;
             core.orientationChangedEvent += updateCanvasScales;
+            
             core.getManager<InputManager>().toggle2DUIInteraction += activate2DUIInteraction;
-
         }
 
         //!
@@ -215,6 +241,14 @@ namespace vpet
                     }
                 }
             }
+        }
+
+        private void changeActiveRole(object sender, int e)
+        {
+            m_role = (Roles)e;
+            buttonsUpdated?.Invoke(this, EventArgs.Empty);
+            menusUpdated?.Invoke(this, EventArgs.Empty);
+            Helpers.Log("Role changed to " + m_role.ToString());
         }
 
         //!
@@ -334,7 +368,9 @@ namespace vpet
 
                 menu = menu.Begin(MenuItem.IType.HSPLIT);  // <<< start HSPLIT
 
-                if (o.GetType().BaseType == typeof(AbstractParameter) && (a != null))
+                if ( (o.GetType().BaseType == typeof(AbstractParameter) ||
+                      o.GetType() == typeof(ListParameter)) && 
+                     (a != null) )
                 {
                     menu = menu.Add(info.Name);
                     menu = menu.Add((AbstractParameter)info.GetValue(settings));
