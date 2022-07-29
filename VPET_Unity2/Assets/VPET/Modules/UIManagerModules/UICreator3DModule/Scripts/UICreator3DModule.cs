@@ -81,10 +81,34 @@ namespace vpet
         //!
         List<Vector3> objOffsets = new();
 
-        // Indexes of T R S parameters - or can it always be assumed to be 0, 1, 2?
+        // Review: will it DEFINITELY always be 0, 1, 2 or should it be checked? (currently it is checked)
+        //!
+        //! Index of parameter T
+        //!
         private int tIndex;
+        //!
+        //! Index of parameter R
+        //!
         private int rIndex;
+        //!
+        //! Index of parameter S
+        //!
         private int sIndex;
+
+        //!
+        //! Position (T) parameter
+        //!
+        Parameter<Vector3> posParam;
+
+        //!
+        //! Rotation (R) parameter
+        //!
+        Parameter<Quaternion> rotParam;
+
+        //!
+        //! Scale (S) parameter
+        //!
+        Parameter<Vector3> scaParam;
 
         //!
         //! UI scale multiplier
@@ -869,6 +893,23 @@ namespace vpet
         //!
         private void SetManipulatorMode(object sender, int manipulatorMode)
         {
+            // Unsubscribe from parameter updates
+            if (posParam != null)
+            {
+                posParam.hasChanged -= UpdateManipulatorPosition;
+                posParam = null;
+            }
+            if (rotParam != null)
+            {
+                rotParam.hasChanged -= UpdateManipulatorRotation;
+                rotParam = null;
+            }
+            if (scaParam != null)
+            {
+                scaParam.hasChanged -= UpdateManipulatorScale;
+                scaParam = null;
+            }
+
             // Disable manipulator
             if (manipulatorMode < 0 || manipulatorMode > 2)
             {
@@ -876,7 +917,7 @@ namespace vpet
                 modeTRS = -1;
                 // Place manipulator out of range to avoid unwanted click recognition when it's activated
                 // [REVIEW]
-                // float max is not the best coise for hiding an object
+                // float max might not be the best choice for hiding an object
                 if (manipT)
                     manipT.transform.position = float.MaxValue * Vector3.one;
                 return;
@@ -884,31 +925,31 @@ namespace vpet
 
             if (selObj)
             {
-                // Unsubscribe all
-                Parameter<Vector3> pos = (Parameter<Vector3>)selObj.parameterList[tIndex];
-                Parameter<Quaternion> rot = (Parameter<Quaternion>)selObj.parameterList[rIndex];
-                Parameter<Vector3> sca = (Parameter<Vector3>)selObj.parameterList[sIndex];
-                pos.hasChanged -= UpdateManipulatorPosition;
-                rot.hasChanged -= UpdateManipulatorRotation;
-                sca.hasChanged -= UpdateManipulatorScale;
+                // Reset parameters
+                posParam = null;
+                rotParam = null;
+                scaParam = null;
 
                 if (manipulatorMode == 0)
                 {
+                    posParam = (Parameter<Vector3>)selObj.parameterList[tIndex];
                     SetModeT();
                     // Subscribe to change
-                    //pos.hasChanged += UpdateManipulatorPosition;
+                    posParam.hasChanged += UpdateManipulatorPosition;
                 }
                 else if (manipulatorMode == 1)
                 {
+                    rotParam = (Parameter<Quaternion>)selObj.parameterList[rIndex];
                     SetModeR();
                     // Subscribe to change
-                    //rot.hasChanged += UpdateManipulatorRotation;
+                    rotParam.hasChanged += UpdateManipulatorRotation;
                 }
                 else if (manipulatorMode == 2)
                 {
+                    scaParam = (Parameter<Vector3>)selObj.parameterList[sIndex];
                     SetModeS();
                     // Subscribe to change
-                    //sca.hasChanged += UpdateManipulatorScale;
+                    scaParam.hasChanged += UpdateManipulatorScale;
                 }
             }
 
