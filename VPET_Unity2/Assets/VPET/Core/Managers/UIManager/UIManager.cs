@@ -322,6 +322,7 @@ namespace vpet
             MenuTree settingsMenu = new MenuTree();
             settingsMenu.caption = "Settings";
             settingsMenu.setIcon("Images/button_gear");
+            settingsMenu.scrollable = true;
 
             settingsMenu = settingsMenu.Begin(MenuItem.IType.VSPLIT); // <<< start VSPLIT
 

@@ -40,6 +40,10 @@ namespace vpet
         //!
         public bool visible = false;
         //!
+        //! Flag determining whether a menu is scrollable.
+        //!
+        public bool scrollable = false;
+        //!
         //! Stack for inserting new items.
         //! 
         private Stack<MenuItem> m_stack = new Stack<MenuItem>();

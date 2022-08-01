@@ -241,8 +241,20 @@ namespace vpet
                 Image imageComponent = menuCanvas.transform.Find("Panel_Menu").GetComponent<Image>();
                 imageComponent.color = manager.uiAppearanceSettings.colors.MenuTitleBG;
                 m_uiElements.Add(rootPanel);
-                menu.Items.ForEach(p => createMenufromTree(p, rootPanel));
+
+                ScrollRect rect = rootPanel.GetComponent<ScrollRect>();
+                foreach (MenuItem p in menu.Items)
+                {
+                    GameObject gameObject = createMenufromTree(p, rootPanel);
+                    m_uiElements.Add(gameObject);
+                    if (menu.scrollable)
+                        rect.content = gameObject.GetComponent<RectTransform>();
+                    else
+                        GameObject.Destroy(rect.verticalScrollbar.transform.gameObject);
+                }
+                
                 menu.visible = true;
+
             }
             m_oldMenu = menu;
         }
@@ -253,10 +265,9 @@ namespace vpet
         //! @param item The start item for the tree traversal.
         //! @param parentObject The items parent Unity GameObject.
         //!
-        private void createMenufromTree(MenuItem item, GameObject parentObject)
+        private GameObject createMenufromTree(MenuItem item, GameObject parentObject)
         {
             GameObject newObject = null;
-            ScrollRect scrollRect = parentObject.GetComponent<ScrollRect>();
 
             switch (item.Type)
             {
@@ -410,11 +421,10 @@ namespace vpet
                 break;
             }
 
-            if (scrollRect)
-                scrollRect.content = newObject.GetComponent<RectTransform>();
+            foreach (MenuItem p in item.Children)
+                m_uiElements.Add(createMenufromTree(p, newObject));
 
-            m_uiElements.Add(newObject);
-            item.Children.ForEach(p => createMenufromTree(p, newObject));
+            return newObject;
         }
 
         //!

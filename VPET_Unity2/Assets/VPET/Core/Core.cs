@@ -220,18 +220,19 @@ namespace vpet
             if (Input.deviceOrientation != m_orientation)
             {
                 orientationChangedEvent.Invoke(this, 0f);
-                Debug.Log("ORIENTATION CHANGED TO: " + Input.deviceOrientation);
-                Camera mainCamera = Camera.main;
-                if ((Input.deviceOrientation == DeviceOrientation.Portrait &&
-                     (m_orientation == DeviceOrientation.LandscapeLeft ||
-                      m_orientation == DeviceOrientation.LandscapeRight))
-                      ||
-                     ((Input.deviceOrientation == DeviceOrientation.LandscapeLeft ||
-                      Input.deviceOrientation == DeviceOrientation.LandscapeRight) &&
-                     m_orientation == DeviceOrientation.Portrait))
-                {
-                    mainCamera.aspect = 1f / mainCamera.aspect;
-                }
+                /// [DEACTIVATED BACAUSE WE DONT USE PORTAIT MODE] ///
+                //Debug.Log("ORIENTATION CHANGED TO: " + Input.deviceOrientation);
+                //Camera mainCamera = Camera.main;
+                //if ((Input.deviceOrientation == DeviceOrientation.Portrait &&
+                //     (m_orientation == DeviceOrientation.LandscapeLeft ||
+                //      m_orientation == DeviceOrientation.LandscapeRight))
+                //      ||
+                //     ((Input.deviceOrientation == DeviceOrientation.LandscapeLeft ||
+                //      Input.deviceOrientation == DeviceOrientation.LandscapeRight) &&
+                //     m_orientation == DeviceOrientation.Portrait))
+                //{
+                //    mainCamera.aspect = 1f / mainCamera.aspect;
+                //}
                 m_orientation = Input.deviceOrientation;
             }
         }
