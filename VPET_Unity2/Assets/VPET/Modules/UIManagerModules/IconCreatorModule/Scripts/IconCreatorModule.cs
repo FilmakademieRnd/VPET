@@ -83,7 +83,8 @@ namespace vpet
 
             m_IconRoot = new GameObject("Icons");
 
-            MenuButton hideIconButton = new MenuButton("Hide Icons", toggleIcons);
+            MenuButton hideIconButton = new MenuButton("", toggleIcons);
+            hideIconButton.setIcon("Images/button_hideIcons");
             manager.addButton(hideIconButton);
 
             SceneManager sceneManager = core.getManager<SceneManager>();
