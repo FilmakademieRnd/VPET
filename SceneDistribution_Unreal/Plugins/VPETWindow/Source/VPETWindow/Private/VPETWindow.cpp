@@ -1,44 +1,15 @@
-/*
------------------------------------------------------------------------------
-This source file is part of VPET - Virtual Production Editing Tools
-http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/VPET
+// Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-Copyright (c) 2020 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
-
-This project has been initiated in the scope of the EU funded project
-Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
-http://dreamspaceproject.eu/
-Post Dreamspace the project has been further developed on behalf of the
-research and development activities of Animationsinstitut.
-
-The VPET component Unreal Scene Distribution is intended for research and development
-purposes only. Commercial use of any kind is not permitted.
-
-There is no support by Filmakademie. Since the Unreal Scene Distribution is available
-for free, Filmakademie shall only be liable for intent and gross negligence;
-warranty is limited to malice. Scene DistributiorUSD may under no circumstances
-be used for racist, sexual or any illegal purposes. In all non-commercial
-productions, scientific publications, prototypical non-commercial software tools,
-etc. using the Unreal Scene Distribution Filmakademie has to be named as follows:
-“VPET-Virtual Production Editing Tool by Filmakademie Baden-Württemberg,
-Animationsinstitut (http://research.animationsinstitut.de)“.
-
-In case a company or individual would like to use the Unreal Scene Distribution in
-a commercial surrounding or for commercial purposes, software based on these
-components or any part thereof, the company/individual will have to contact
-Filmakademie (research<at>filmakademie.de).
------------------------------------------------------------------------------
-*/
+// Do note: VPETWindow - or VPET Helper - was redone from scratch for VPET2 modifications
+// New plugin template derives from UE4.27
+// It might not be backwards compatible
+// For prior versions compatibility, check former source code (relative to original VPET, prior to 2022)
 
 #include "VPETWindow.h"
 #include "VPETWindowStyle.h"
 #include "VPETWindowCommands.h"
-#include "LevelEditor.h"
-#include "Widgets/Docking/SDockTab.h"
-#include "Widgets/Layout/SBox.h"
-#include "Widgets/Text/STextBlock.h"
-#include "Framework/MultiBox/MultiBoxBuilder.h"
+#include "Misc/MessageDialog.h"
+#include "ToolMenus.h"
 
 static const FName VPETWindowTabName("VPETWindow");
 
@@ -47,34 +18,20 @@ static const FName VPETWindowTabName("VPETWindow");
 void FVPETWindowModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-
+	
 	FVPETWindowStyle::Initialize();
 	FVPETWindowStyle::ReloadTextures();
 
 	FVPETWindowCommands::Register();
-
+	
 	PluginCommands = MakeShareable(new FUICommandList);
 
 	PluginCommands->MapAction(
-		FVPETWindowCommands::Get().OpenPluginWindow,
+		FVPETWindowCommands::Get().PluginAction,
 		FExecuteAction::CreateRaw(this, &FVPETWindowModule::PluginButtonClicked),
 		FCanExecuteAction());
 
-	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
-
-	{
-		TSharedPtr<FExtender> MenuExtender = MakeShareable(new FExtender());
-		MenuExtender->AddMenuExtension("WindowLayout", EExtensionHook::After, PluginCommands, FMenuExtensionDelegate::CreateRaw(this, &FVPETWindowModule::AddMenuExtension));
-
-		LevelEditorModule.GetMenuExtensibilityManager()->AddExtender(MenuExtender);
-	}
-
-	{
-		TSharedPtr<FExtender> ToolbarExtender = MakeShareable(new FExtender);
-		ToolbarExtender->AddToolBarExtension("Settings", EExtensionHook::After, PluginCommands, FToolBarExtensionDelegate::CreateRaw(this, &FVPETWindowModule::AddToolbarExtension));
-
-		LevelEditorModule.GetToolBarExtensibilityManager()->AddExtender(ToolbarExtender);
-	}
+	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FVPETWindowModule::RegisterMenus));
 
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(VPETWindowTabName, FOnSpawnTab::CreateRaw(this, &FVPETWindowModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FVPETWindowTabTitle", "VPETWindow"))
@@ -85,18 +42,24 @@ void FVPETWindowModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
+
+	UToolMenus::UnRegisterStartupCallback(this);
+
+	UToolMenus::UnregisterOwner(this);
+
 	FVPETWindowStyle::Shutdown();
 
 	FVPETWindowCommands::Unregister();
-
-	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(VPETWindowTabName);
 }
 
 TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
 {
+	//
+	// Functions
+	//
 	struct Functions
 	{
-
+		// Recursive helped for navigating upwards an attachment hierarchy
 		static void AddSendChain(AActor* aActor)
 		{
 			// Register
@@ -104,12 +67,13 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			// Add
 			if (aActor->Tags.Find("Send") == INDEX_NONE)
 				aActor->Tags.Add(FName("Send"));
-			// Wal up attachment chain
+			// Walk up attachment chain
 			AActor* aParActor = aActor->GetAttachParentActor();
 			if (aParActor)
 				AddSendChain(aParActor);
 		}
 
+		// Add "send" tag to selected objects
 		static FReply TagAddSend()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -131,6 +95,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Remove "send" tag from selected objects
 		static FReply TagCleanSend()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -152,6 +117,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Select objects with "send" tag
 		static FReply TagSelectSend()
 		{
 			// Register
@@ -176,6 +142,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Add "editable" tag to selected objects
 		static FReply TagAddEditable()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -198,6 +165,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Remove "editable" tag from selected objects
 		static FReply TagCleanEditable()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -219,6 +187,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Select objects with "editable" tag
 		static FReply TagSelectEditable()
 		{
 			// Register
@@ -243,6 +212,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Hide selected objects (in game)
 		static FReply VisHideSelected()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -264,6 +234,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
+		// Show selected objects (in game)
 		static FReply VisShowSelected()
 		{
 			USelection* sActors = GEditor->GetSelectedActors();
@@ -277,7 +248,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 					// Register actor in opened transaction (undo/redo)
 					lActor->Modify();
 
-					// Hide
+					// Show
 					lActor->SetActorHiddenInGame(false);
 				}
 			}
@@ -285,14 +256,35 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 			return FReply::Handled();
 		}
 
-		static FReply VisTexAct1()
+		// Texturer
+		// Generates a texture file based on the materials of all objects marked to be send
+		static FReply VisTexRun()
 		{
+			// Settings:
+			// Set location of created pre-encoded texture files
+			FString texLocation = FPaths::GameSourceDir() + TEXT("../Intermediate/VPET/");
+			// Prefix of texture file names
+			FString texPrefix = TEXT("VPETtex_");
+
+			//
+			// STEP 0
+			// 
+			// Confirm operation
+			FText levelNameText = FText::FromString(UEditorLevelLibrary::GetEditorWorld()->GetName());
+			// Can I check if the level has been modified or not.
+			FMessageDialog msgDiag;
+			FText msgText = FText::Format(LOCTEXT("ExampleFText", "Map {0} will be reloaded. \nUnsaved changes will be discarded."), levelNameText);
+
+			// Stops if cancelled
+			if (msgDiag.Open(EAppMsgType::OkCancel, msgText) == EAppReturnType::Cancel)
+				return FReply::Handled();
+
+			//
+			// STEP 1
+			// 
 			// Pick all actors that have the edit select tab
 			// Add a list of materials
-			// Print the material names
-
-			// Register
-			GEditor->BeginTransaction(LOCTEXT("TexAct1TransactionName", "Tex Act 1"));
+			TArray<UMaterialInterface*> matList;
 			UWorld* lWorld = GEditor->GetEditorWorldContext().World();
 			if (GEditor->PlayWorld)
 				lWorld = GEditor->PlayWorld;
@@ -302,7 +294,7 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 				for (TActorIterator<AActor> aIt(lWorld); aIt; ++aIt)
 				{
 					AActor* lActor = *aIt;
-					if (lActor->Tags.Find("Editable") != INDEX_NONE)
+					if (lActor->Tags.Find("Send") != INDEX_NONE)
 					{
 						// Check if static mesh
 						if (lActor->GetClass()->GetName() == "StaticMeshActor")
@@ -314,35 +306,207 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 								UE_LOG(LogTemp, Warning, TEXT("No Mesh Comp"));
 								return FReply::Unhandled();
 							}
-
 							// Grab only the first
 							UStaticMeshComponent* staticMeshComponent = staticMeshComponents[0];
 							UMaterialInterface* thisMaterial = staticMeshComponent->GetMaterial(0);
-							//auto me = this;
-							UE_LOG(LogTemp, Warning, TEXT("Material name: %s"), *thisMaterial->GetName());
-							//TArray<UMaterialInterface*> test = debugArray;
-							//GEditor->SelectActor(lActor, true, true);
+							int i = matList.AddUnique(thisMaterial);
+							if (i == matList.Num() - 1)
+								UE_LOG(LogTemp, Warning, TEXT("Added unique material %s"), *thisMaterial->GetName());
+
 						}
 					}
-
 				}
 			}
-			GEditor->EndTransaction();
-			return FReply::Handled();
-		}
 
-		static FReply VisTexAct2()
-		{
-			//FString testds("This a test");
+			//
+			// STEP 2
+			//
+			// Open a new level
+			FString srcLevelName = UEditorLevelLibrary::GetEditorWorld()->GetPathName();
+			UE_LOG(LogTemp, Warning, TEXT("Source level: %s"), *srcLevelName);
 
-			//UE_LOG(LogTemp, Warning, TEXT("Debug string: %s"), *debugString);
-			//UE_LOG(LogTemp, Warning, debugString);
+			// Start fresh
+			FString bufferDir("/Game/VPET/TextureCreation/");
+			FString levelName("TextureSample.TextureSample");
+
+			if (UEditorAssetLibrary::DoesDirectoryExist(bufferDir))
+				UEditorAssetLibrary::DeleteDirectory(bufferDir);
+
+			UEditorLevelLibrary::NewLevel(bufferDir + levelName);
+
+			//
+			// STEP 3
+			//
+			// Populate level
+			// Make Scene Capture 2D
+			FVector loc(0, 0, 50);
+			FRotator rot(-90, 0, 0);
+			ASceneCapture2D* cap = (ASceneCapture2D*)UEditorLevelLibrary::SpawnActorFromClass(ASceneCapture2D::StaticClass(), loc, rot);
+			USceneCaptureComponent2D* cap2D;
+			if (cap)
+			{
+				cap->SetActorLabel(TEXT("TextureCapture2DLabel"));
+				cap->Rename(TEXT("TextureCapture2DName"));
+				cap2D = cap->GetCaptureComponent2D();
+				cap2D->bCaptureEveryFrame = false;
+				cap2D->bCaptureOnMovement = false;
+			}
+			else
+				return FReply::Unhandled();
+
+
+			// Make Plane
+			loc = FVector(0, 0, 0);
+			rot = FRotator(0, 90, 0);
+			UObject* planeObj = UEditorAssetLibrary::LoadAsset(TEXT("/Engine/BasicShapes/Plane.Plane"));
+			AStaticMeshActor* plane = (AStaticMeshActor*)UEditorLevelLibrary::SpawnActorFromObject(planeObj, loc, rot);
+			UStaticMeshComponent* pla2D;
+			if (plane)
+			{
+				plane->SetMobility(EComponentMobility::Movable);
+				plane->SetActorRelativeScale3D(FVector(1, -1, 1));
+				plane->SetActorLabel(TEXT("TexturePlane"));
+				plane->Rename(TEXT("TexturePlane"));
+
+				pla2D = plane->GetStaticMeshComponent();
+			}
+			else
+				return FReply::Unhandled();
+
+			// Make totally flat light with a directional light
+			loc = FVector(0, 200, 0);
+			rot = FRotator(-90, 0, 0);
+			ADirectionalLight* ligt = (ADirectionalLight*)UEditorLevelLibrary::SpawnActorFromClass(ADirectionalLight::StaticClass(), loc, rot);
+			if (ligt)
+			{
+				ligt->SetBrightness(3);
+
+				ligt->SetActorLabel(TEXT("TextureLight"));
+				ligt->Rename(TEXT("TextureLight"));
+			}
+
+			// Make render target - can be transient
+			UTextureRenderTargetFactoryNew* NewFactory = NewObject<UTextureRenderTargetFactoryNew>();
+			UTextureRenderTarget2D* ScratchRenderTarget256;
+
+			NewFactory->Width = 256;
+			NewFactory->Height = 256;
+			UObject* NewObj = NewFactory->FactoryCreateNew(UTextureRenderTarget2D::StaticClass(), GetTransientPackage(), NAME_None, RF_Transient, NULL, GWarn);
+			ScratchRenderTarget256 = CastChecked<UTextureRenderTarget2D>(NewObj);
+
+			TArray<FString> kFileList;
+
+			if (ScratchRenderTarget256)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Source level: %s"), *ScratchRenderTarget256->GetPathName());
+
+				ScratchRenderTarget256->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA8_SRGB;
+
+				cap2D->TextureTarget = ScratchRenderTarget256;
+				for (size_t i = 0; i < matList.Num(); i++)
+				{
+					FString matName = matList[i]->GetName();
+
+					UE_LOG(LogTemp, Warning, TEXT("Material %d: %s"), i, *matName);
+
+					// set material
+					pla2D->SetMaterial(0, matList[i]);
+
+					// capture
+					cap2D->CaptureScene();
+
+					// now push it
+					FString pathOut = texLocation + texPrefix + matName + ".png";
+
+					kFileList.Add(pathOut);
+
+					FArchive* const FileAr = IFileManager::Get().CreateFileWriter(*pathOut);// , FILEWRITE_EvenIfReadOnly);
+					if (FileAr)
+					{
+						//ExportRenderTarget2DAsHDR
+						FImageUtils::ExportRenderTarget2DAsPNG(ScratchRenderTarget256, *FileAr);
+						FileAr->Close();
+					}
+				}
+			}
+
+			//
+			// STEP 4
+			//
+			// Encode to ASTC
+			for (size_t i = 0; i < kFileList.Num(); i++)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("File %d: %s"), i, *kFileList[i]);
+
+				FString InputFilePath = kFileList[i];
+				FString OutputFilePath = InputFilePath.LeftChop(3) + "astc";
+				FString CompressionParameters = TEXT("6x6 -medium");
+
+				// Compress PNG file to ASTC (using the reference astcenc.exe from ARM)
+				FString Params = FString::Printf(TEXT("-cs \"%s\" \"%s\" %s"),
+					*InputFilePath,
+					*OutputFilePath,
+					*CompressionParameters
+				);
+
+				// prepare compressor
+				FString CompressorPath(FPaths::EngineDir() + TEXT("Binaries/ThirdParty/ARM/Win32/astcenc.exe"));
+
+				FProcHandle Proc = FPlatformProcess::CreateProc(*CompressorPath, *Params, true, false, false, NULL, -1, NULL, NULL);
+
+				// Failed to start the compressor process
+				if (!Proc.IsValid())
+				{
+					UE_LOG(LogTemp, Error, TEXT("Failed to start astcenc for compressing images (%s)"), *CompressorPath);
+					return FReply::Unhandled();
+				}
+
+				// Wait for the process to complete
+				int ReturnCode;
+				while (!FPlatformProcess::GetProcReturnCode(Proc, &ReturnCode))
+					FPlatformProcess::Sleep(0.01f);
+
+				// Check status - unsure if this works
+				if (ReturnCode != 0)
+				{
+					UE_LOG(LogTemp, Error, TEXT("ASTC encoder failed with return code %d. Leaving '%s' for testing."), ReturnCode, *InputFilePath);
+					return FReply::Unhandled();
+				}
+
+				// Success
+				UE_LOG(LogTemp, Display, TEXT("ASTC encoder succeeded: %s"), *OutputFilePath);
+			}
+
+			//
+			// STEP 5
+			//
+			// Reopen level
+			UE_LOG(LogTemp, Warning, TEXT("Attempt to open level: %s"), *srcLevelName);
+
+			UEditorLevelLibrary::LoadLevel(srcLevelName);
+
+
+			//
+			// STEP 6
+			//
+			// Cleanup
+			// Local folder and temporary level
+			if (UEditorAssetLibrary::DoesDirectoryExist(bufferDir))
+				UEditorAssetLibrary::DeleteDirectory(bufferDir);
+			// External files
+			for (size_t i = 0; i < kFileList.Num(); i++)
+				IFileManager::Get().Delete(*kFileList[i]);
+
+
 			return FReply::Handled();
 		}
 
 	};
 
 
+	//
+	// UI definition
+	//
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
@@ -461,6 +625,37 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 		[
 			SNew(STextBlock)
 			.AutoWrapText(true)
+		.Text(LOCTEXT("WidgetTexPrepText", "Texture preparation"))
+		]
+	+ SVerticalBox::Slot()
+		.HAlign(HAlign_Center)
+		.AutoHeight()
+		.Padding(4)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot()
+		.AutoWidth()
+		.Padding(4)
+		[
+			SNew(STextBlock)
+			.AutoWrapText(true)
+		.Text(LOCTEXT("WidgetTexDebugText", "Set up materials"))
+		]
+	+ SHorizontalBox::Slot()
+		.AutoWidth()
+		[
+			SNew(SButton)
+			.Text(LOCTEXT("VisTexRunLabel", "Run"))
+		.OnClicked_Static(&Functions::VisTexRun)
+		]
+		]
+	+ SVerticalBox::Slot()
+		.HAlign(HAlign_Center)
+		.AutoHeight()
+		.Padding(6)
+		[
+			SNew(STextBlock)
+			.AutoWrapText(true)
 		.Text(LOCTEXT("WidgetRenderingText", "Unreal rendering"))
 		]
 	+ SVerticalBox::Slot()
@@ -492,62 +687,41 @@ TSharedRef<SDockTab> FVPETWindowModule::OnSpawnPluginTab(const FSpawnTabArgs& Sp
 		.OnClicked_Static(&Functions::VisShowSelected)
 		]
 		]
-	+ SVerticalBox::Slot()
-		.HAlign(HAlign_Center)
-		.AutoHeight()
-		.Padding(6)
-		[
-			SNew(STextBlock)
-			.AutoWrapText(true)
-		.Text(LOCTEXT("WidgetTexPrepText", "Texture preparation"))
-		]
-	+ SVerticalBox::Slot()
-		.HAlign(HAlign_Center)
-		.AutoHeight()
-		.Padding(4)
-		[
-			SNew(SHorizontalBox)
-			+ SHorizontalBox::Slot()
-		.AutoWidth()
-		.Padding(4)
-		[
-			SNew(STextBlock)
-			.AutoWrapText(true)
-		.Text(LOCTEXT("WidgetTexDebugText", "Debug texture"))
-		]
-	+ SHorizontalBox::Slot()
-		.AutoWidth()
-		[
-			SNew(SButton)
-			.Text(LOCTEXT("VisTexAct1Label", "Action 1"))
-		.OnClicked_Static(&Functions::VisTexAct1)
-		]
-	+ SHorizontalBox::Slot()
-		.AutoWidth()
-		[
-			SNew(SButton)
-			.Text(LOCTEXT("VisTexAct2Label", "Action 2"))
-		.OnClicked_Static(&Functions::VisTexAct2)
-		]
-		]
 		];
+
 }
 
 void FVPETWindowModule::PluginButtonClicked()
 {
-	FGlobalTabmanager::Get()->InvokeTab(VPETWindowTabName);
+	// Open UI layout
+	FGlobalTabmanager::Get()->TryInvokeTab(VPETWindowTabName);
 }
 
-void FVPETWindowModule::AddMenuExtension(FMenuBuilder& Builder)
+void FVPETWindowModule::RegisterMenus()
 {
-	Builder.AddMenuEntry(FVPETWindowCommands::Get().OpenPluginWindow);
-}
+	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
+	FToolMenuOwnerScoped OwnerScoped(this);
 
-void FVPETWindowModule::AddToolbarExtension(FToolBarBuilder& Builder)
-{
-	Builder.AddToolBarButton(FVPETWindowCommands::Get().OpenPluginWindow);
+	{
+		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Window");
+		{
+			FToolMenuSection& Section = Menu->FindOrAddSection("WindowLayout");
+			Section.AddMenuEntryWithCommandList(FVPETWindowCommands::Get().PluginAction, PluginCommands);
+		}
+	}
+
+	{
+		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar");
+		{
+			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("Settings");
+			{
+				FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(FVPETWindowCommands::Get().PluginAction));
+				Entry.SetCommandList(PluginCommands);
+			}
+		}
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
-
+	
 IMPLEMENT_MODULE(FVPETWindowModule, VPETWindow)

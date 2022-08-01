@@ -7,7 +7,7 @@ void UpdateSenderThread::DoWork()
 {
 	DOL(doLog, Warning, "[VPET2 SEND Thread] zeroMQ update sender thread running");
 
-	/* Retrieve high water mark into sndhwm */
+	// Variables for socket check test
 	int type;
 	size_t type_size = sizeof(type);
 

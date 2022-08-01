@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 0.11,
-	"VersionName": "0.1.1",
+	"Version": 1.11,
+	"VersionName": "1.1.1",
 	"FriendlyName": "VPET",
 	"Description": "VPET Plugin",
 	"Category": "Virtual Production",

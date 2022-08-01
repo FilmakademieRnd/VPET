@@ -865,132 +865,134 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 	if (cMat)
 		DOL(LogMaterial, Log, "[DIST buildNode] cMat: %s", *cMat->GetName());
 
-
-	// Using texture?
-	bool kHasTexture = cMat->HasTextureStreamingData();
-	if (kHasTexture)
+	// Development tests for understanding texture assignment
+	// Not essential for execution
+	if (true)
 	{
-		//DOL(LogBasic, Warning, "[DIST buildNode] material HAS texture streaming data");
-
-		//TArray<UTexture*> kTextures;
-		//TArray<TArray<int32>> kIndices;
-		//cMat->GetUsedTexturesAndIndices(kTextures, kIndices, EMaterialQualityLevel::Medium, ERHIFeatureLevel::ES2_REMOVED);
-
-		//DOL(LogBasic, Warning, "[DIST buildNode] length texture array: %d", kTextures.Num());
-		//DOL(LogBasic, Warning, "[DIST buildNode] length indices array: %d", kIndices.Num());
-
-		TArray<UTexture*> kUTextures;
-		//cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::ES2_REMOVED, true); // >= 4.25
-		cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::Num, true);
-
-		DOL(LogMaterial, Warning, "[DIST buildNode] length texture array: %d", kUTextures.Num());
-
-
-	}
-
-
-
-
-	// all textures?
-	TArray<FMaterialTextureInfo> texStr = cMat->GetTextureStreamingData();
-	for (size_t j = 0; j < texStr.Num(); j++)
-	{
-		FMaterialTextureInfo kTex = texStr[j];
-		DOL(LogMaterial, Warning, "streaming data texture %d named: %s", j, *kTex.TextureName.ToString());
-	}
-
-
-	// Get base material that is being instanced
-	UMaterial* cbMat = cMat->GetBaseMaterial();
-	if (cbMat)
-	{
-
-		DOL(LogMaterial, Log, "[DIST buildNode] cbMat: %s", *cbMat->GetName());
-
-		// Get base color input
-		FColorMaterialInput cbColor = cbMat->BaseColor;
-		if (cbColor.IsConnected())
+		// Using texture?
+		bool kHasTexture = cMat->HasTextureStreamingData();
+		if (kHasTexture)
 		{
-			UMaterialExpression* cbExpr = cbColor.Expression;
-			DOL(LogMaterial, Log, "Expression get name: %s", *cbExpr->GetName());
-			DOL(LogMaterial, Log, "Expression description: %s", *cbExpr->GetDescription());
+			//DOL(LogBasic, Warning, "[DIST buildNode] material HAS texture streaming data");
 
-			// This crashes
-			//DOL(LogBasic, Warning, "Expression editable name: %s", *cbExpr->GetEditableName());
+			//TArray<UTexture*> kTextures;
+			//TArray<TArray<int32>> kIndices;
+			//cMat->GetUsedTexturesAndIndices(kTextures, kIndices, EMaterialQualityLevel::Medium, ERHIFeatureLevel::ES2_REMOVED);
 
-			// Casting experiments
-			auto exParam = dynamic_cast<UMaterialExpressionParameter*>(cbExpr);
-			auto exConst3 = dynamic_cast<UMaterialExpressionConstant3Vector*>(cbExpr);
-			auto exConst4 = dynamic_cast<UMaterialExpressionConstant4Vector*>(cbExpr);
-			auto exTextu = dynamic_cast<UMaterialExpressionTextureBase*>(cbExpr);
+			//DOL(LogBasic, Warning, "[DIST buildNode] length texture array: %d", kTextures.Num());
+			//DOL(LogBasic, Warning, "[DIST buildNode] length indices array: %d", kIndices.Num());
 
-			// Parameter
-			if (exParam != NULL)
+			TArray<UTexture*> kUTextures;
+			//cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::ES2_REMOVED, true); // >= 4.25
+			cMat->GetUsedTextures(kUTextures, EMaterialQualityLevel::Medium, true, ERHIFeatureLevel::Num, true);
+
+			DOL(LogMaterial, Warning, "[DIST buildNode] length texture array: %d", kUTextures.Num());
+		}
+
+		// all textures?
+		TArray<FMaterialTextureInfo> texStr = cMat->GetTextureStreamingData();
+		for (size_t j = 0; j < texStr.Num(); j++)
+		{
+			FMaterialTextureInfo kTex = texStr[j];
+			DOL(LogMaterial, Warning, "streaming data texture %d named: %s", j, *kTex.TextureName.ToString());
+		}
+	}
+
+	// Development tests for understanding material composition
+	// If material is made by a Vec3 parameter connected to Base Color, this will find the color values and attribute it to the node
+	if (true)
+	{
+		// Get base material that is being instanced
+		UMaterial* cbMat = cMat->GetBaseMaterial();
+		if (cbMat)
+		{
+
+			DOL(LogMaterial, Log, "[DIST buildNode] cbMat: %s", *cbMat->GetName());
+
+			// Get base color input
+			FColorMaterialInput cbColor = cbMat->BaseColor;
+			if (cbColor.IsConnected())
 			{
-				// probably redundant since there is cbExpr->bIsParameterExpression
-				DOL(LogMaterial, Warning, "Cast to parameter ok!");
-				DOL(LogMaterial, Warning, "Expression has parameter: %s", *cbExpr->GetParameterName().ToString());
+				UMaterialExpression* cbExpr = cbColor.Expression;
+				DOL(LogMaterial, Log, "Expression get name: %s", *cbExpr->GetName());
+				DOL(LogMaterial, Log, "Expression description: %s", *cbExpr->GetDescription());
 
-				// The parameter value (as exposed in GetDescription()) does not represent the material instance parameter, but the source material instead
+				// This crashes
+				//DOL(LogBasic, Warning, "Expression editable name: %s", *cbExpr->GetEditableName());
 
-				FName matParam = cbExpr->GetParameterName();
+				// Casting experiments
+				auto exParam = dynamic_cast<UMaterialExpressionParameter*>(cbExpr);
+				auto exConst3 = dynamic_cast<UMaterialExpressionConstant3Vector*>(cbExpr);
+				auto exConst4 = dynamic_cast<UMaterialExpressionConstant4Vector*>(cbExpr);
+				auto exTextu = dynamic_cast<UMaterialExpressionTextureBase*>(cbExpr);
 
-				// Hack - using a parameter to be able to transmit color to node
-				// This conditional is not really needed since the GetVectorParameterValue will only be true if it already checks
-				if (cbExpr->GetParameterName().Compare(matParam) == 0)
+				// Parameter
+				if (exParam != NULL)
 				{
-					FLinearColor paramColor;
+					// probably redundant since there is cbExpr->bIsParameterExpression
+					DOL(LogMaterial, Warning, "Cast to parameter ok!");
+					DOL(LogMaterial, Warning, "Expression has parameter: %s", *cbExpr->GetParameterName().ToString());
 
-					if (cMat->GetVectorParameterValue(matParam, paramColor))
+					// The parameter value (as exposed in GetDescription()) does not represent the material instance parameter, but the source material instead
+
+					FName matParam = cbExpr->GetParameterName();
+
+					// Hack - using a parameter to be able to transmit color to node
+					// This conditional is not really needed since the GetVectorParameterValue will only be true if it already checks
+					if (cbExpr->GetParameterName().Compare(matParam) == 0)
 					{
-						// Custom color attribute
-						node->color[0] = paramColor.R;
-						node->color[1] = paramColor.G;
-						node->color[2] = paramColor.B;
-						DOL(LogMaterial, Warning, "[DIST buildNode] color: %f %f %f", paramColor.R, paramColor.G, paramColor.B);
+						FLinearColor paramColor;
 
+						if (cMat->GetVectorParameterValue(matParam, paramColor))
+						{
+							// Custom color attribute
+							node->color[0] = paramColor.R;
+							node->color[1] = paramColor.G;
+							node->color[2] = paramColor.B;
+							DOL(LogMaterial, Warning, "[DIST buildNode] color: %f %f %f", paramColor.R, paramColor.G, paramColor.B);
+
+						}
 					}
 				}
-			}
-			else if (exConst3 != NULL)
-			{
-				DOL(LogMaterial, Warning, "Cast to constant 3 ok!");
-				FLinearColor cColor = exConst3->Constant;
+				else if (exConst3 != NULL)
+				{
+					DOL(LogMaterial, Warning, "Cast to constant 3 ok!");
+					FLinearColor cColor = exConst3->Constant;
 
-				node->color[0] = cColor.R;
-				node->color[1] = cColor.G;
-				node->color[2] = cColor.B;
-			}
-			else if (exConst4 != NULL)
-			{
-				DOL(LogMaterial, Warning, "Cast to constant 4 ok!");
-				FLinearColor cColor = exConst4->Constant;
+					node->color[0] = cColor.R;
+					node->color[1] = cColor.G;
+					node->color[2] = cColor.B;
+				}
+				else if (exConst4 != NULL)
+				{
+					DOL(LogMaterial, Warning, "Cast to constant 4 ok!");
+					FLinearColor cColor = exConst4->Constant;
 
-				node->color[0] = cColor.R;
-				node->color[1] = cColor.G;
-				node->color[2] = cColor.B;
-			}
-			else if (exTextu != NULL)
-			{
-				DOL(LogMaterial, Warning, "Cast to texture ok!");
-				// See if has texture
-				UObject* refTex = cbExpr->GetReferencedTexture();
-				// UObject* refTex = exTextu->GetReferencedTexture();
-				// This will only return valid if the texture is directly connected to the base color input
-				if (refTex)
-					DOL(LogMaterial, Warning, "text name %s", *refTex->GetName());
-			}
+					node->color[0] = cColor.R;
+					node->color[1] = cColor.G;
+					node->color[2] = cColor.B;
+				}
+				else if (exTextu != NULL)
+				{
+					DOL(LogMaterial, Warning, "Cast to texture ok!");
+					// See if has texture
+					UObject* refTex = cbExpr->GetReferencedTexture();
+					// UObject* refTex = exTextu->GetReferencedTexture();
+					// This will only return valid if the texture is directly connected to the base color input
+					if (refTex)
+						DOL(LogMaterial, Warning, "text name %s", *refTex->GetName());
+				}
 
+			}
+			else
+			{
+				DOL(LogMaterial, Warning, "Base color not connected");
+				// Color in unreal would be black
+				node->color[0] = 0;
+				node->color[1] = 0;
+				node->color[2] = 0;
+			}
 		}
-		else
-		{
-			DOL(LogMaterial, Warning, "Base color not connected");
-			// Color in unreal would be black
-			node->color[0] = 0;
-			node->color[1] = 0;
-			node->color[2] = 0;
-		}
-
 	}
 
 	if (cMat)
@@ -1083,17 +1085,17 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 			int texInd;
 			if (matNameList.Find(matName, texInd))
 			{
-				DOL(LogMaterial, Warning, "Found texture for %s, IDX %d", *matName, texInd);
+				DOL(LogMaterial, Log, "Found texture for %s, IDX %d", *matName, texInd);
 			}
 			else
 			{
 				texInd = matNameList.Num();
-				DOL(LogMaterial, Warning, "Making texture for %s, IDX %d", *matName, texInd);
+				DOL(LogMaterial, Log, "Making texture for %s, IDX %d", *matName, texInd);
 				matNameList.Add(matName);
 				prepTexture = true;
 			}
 			matPack.textureIds.push_back(texInd);
-			DOL(LogMaterial, Warning, "Pushed texture for for %s, IDX %d", *matName, texInd);
+			DOL(LogMaterial, Log, "Pushed texture for for %s, IDX %d", *matName, texInd);
 		}
 
 		// store the material package
@@ -1105,7 +1107,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		// prepare texture if needed
 		if (prepTexture)
 		{
-			DOL(LogMaterial, Warning, "Preparing texture for %s", *matName);
+			DOL(LogMaterial, Log, "Preparing texture for %s", *matName);
 			TexturePackage texPack;
 
 			// Standard size
@@ -1126,7 +1128,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 			if (File)
 			{
 				int fileSize = File->Size();
-				DOL(LogMaterial, Warning, "File open for %s, size %d", *matName, fileSize);
+				DOL(LogMaterial, Log, "Texture file open for %s, size %d", *matName, fileSize);
 				texPack.colorMapDataSize = fileSize;
 				uint8* rawData;
 				rawData = (uint8*)malloc(fileSize);
@@ -1139,7 +1141,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 				texPack.colorMapData = texData;
 			}
 			else
-				DOL(LogMaterial, Error, "Couldn't open file for %s", *matName);
+				DOL(LogBasic, Error, "Couldn't open texture file for %s. Make sure textures were set-up through the VPETWindow plugin.", *matName);
 
 			m_state.texPackList.push_back(texPack);
 

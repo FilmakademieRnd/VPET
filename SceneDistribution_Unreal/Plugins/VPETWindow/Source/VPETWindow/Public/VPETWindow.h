@@ -1,35 +1,9 @@
-/*
------------------------------------------------------------------------------
-This source file is part of VPET - Virtual Production Editing Tools
-http://vpet.research.animationsinstitut.de/
-http://github.com/FilmakademieRnd/VPET
+// Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
-Copyright (c) 2020 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
-
-This project has been initiated in the scope of the EU funded project
-Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
-http://dreamspaceproject.eu/
-Post Dreamspace the project has been further developed on behalf of the
-research and development activities of Animationsinstitut.
-
-The VPET component Unreal Scene Distribution is intended for research and development
-purposes only. Commercial use of any kind is not permitted.
-
-There is no support by Filmakademie. Since the Unreal Scene Distribution is available
-for free, Filmakademie shall only be liable for intent and gross negligence;
-warranty is limited to malice. Scene DistributiorUSD may under no circumstances
-be used for racist, sexual or any illegal purposes. In all non-commercial
-productions, scientific publications, prototypical non-commercial software tools,
-etc. using the Unreal Scene Distribution Filmakademie has to be named as follows:
-“VPET-Virtual Production Editing Tool by Filmakademie Baden-Württemberg,
-Animationsinstitut (http://research.animationsinstitut.de)“.
-
-In case a company or individual would like to use the Unreal Scene Distribution in
-a commercial surrounding or for commercial purposes, software based on these
-components or any part thereof, the company/individual will have to contact
-Filmakademie (research<at>filmakademie.de).
------------------------------------------------------------------------------
-*/
+// Do note: VPETWindow - or VPET Helper - was redone from scratch for VPET2 modifications
+// New plugin template derives from UE4.27
+// It might not be backwards compatible
+// For prior versions compatibility, check former source code (relative to original VPET, prior to 2022)
 
 #pragma once
 
@@ -37,6 +11,31 @@ Filmakademie (research<at>filmakademie.de).
 #include "Engine/Selection.h"
 // TActorIterator
 #include "EngineUtils.h"
+// UEditorLevelLibrary
+#include "EditorLevelLibrary.h"
+// UEditorAssetLibrary
+#include "EditorAssetLibrary.h"
+// USceneCaptureComponent2D
+#include "Components/SceneCaptureComponent2D.h"
+// ASceneCapture2D
+#include "Engine/SceneCapture2D.h"
+// AStaticMeshActor
+#include "Engine/StaticMeshActor.h"
+// ADirectionalLight
+#include "Engine/DirectionalLight.h"
+// UTextureRenderTarget2D
+#include "Engine/TextureRenderTarget2D.h"
+// IAssetTools::CreateAsset
+//#include "IAssetTools.h"
+// UTextureRenderTargetFactoryNew
+#include "Factories/TextureRenderTargetFactoryNew.h"
+// FImageUtils::ExportRenderTarget2DAsPNG
+#include "ImageUtils.h"
+// FMessageDialog
+#include "Misc/MessageDialog.h"
+// GameSourceDir
+#include "Misc/Paths.h"
+
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
@@ -52,21 +51,15 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 	
-	/** This function will be bound to Command (by default it will bring up plugin window) */
+	/** This function will be bound to Command. */
 	void PluginButtonClicked();
-
 	
 private:
 
-	//void RegisterMenus();
-	void AddToolbarExtension(FToolBarBuilder& Builder);
-	void AddMenuExtension(FMenuBuilder& Builder);
+	void RegisterMenus();
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 
-	// can it hold a variable?
-	FString debugString = TEXT("Hello");
-	TArray<UMaterialInterface*> debugArray;
 
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
