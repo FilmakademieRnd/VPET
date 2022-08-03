@@ -252,6 +252,7 @@ namespace vpet
                     else
                         GameObject.Destroy(rect.verticalScrollbar.transform.gameObject);
                 }
+                rect.verticalScrollbar.transform.SetAsLastSibling();
                 
                 menu.visible = true;
 
