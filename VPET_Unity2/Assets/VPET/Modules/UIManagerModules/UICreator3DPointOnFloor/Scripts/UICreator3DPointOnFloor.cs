@@ -40,9 +40,6 @@ namespace vpet
     //!
     public class UICreator3DPointOnFloor : UIManagerModule
     {
-        // Collider layer mask
-        private int layerMask = 1 << 5;
-
         // Selected object to manipulate
         private SceneObject selObj;
 
