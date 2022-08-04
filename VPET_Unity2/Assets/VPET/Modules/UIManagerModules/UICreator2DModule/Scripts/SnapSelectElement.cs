@@ -98,7 +98,15 @@ namespace vpet
         //!
         public event EventHandler<SnapSelectElement> clicked;
 
+        //!
+        //! Action being executed by the button
+        //!
         public Action clickAction;
+
+        //!
+        //! Is the Button a toogle or switch button
+        //!
+        public bool isToggle = false;
 
         //!
         //! Unity OnEnable() function used to initialize all references
@@ -158,6 +166,14 @@ namespace vpet
         //!
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (isToggle)
+                if (txt.color != uiSettings.colors.ElementSelection_Highlight)
+                {
+                    txt.color = uiSettings.colors.ElementSelection_Highlight;
+                    if (image)
+                        if (image.sprite)
+                           image.color = uiSettings.colors.ElementSelection_Highlight;
+                }
         }
 
         //!
@@ -168,6 +184,13 @@ namespace vpet
         {
             clicked?.Invoke(this, this);
             clickAction?.Invoke();
+            if (isToggle)
+            {
+                txt.color = uiSettings.colors.ElementSelection_Default;
+                if (image)
+                    if (image.sprite)
+                        image.color = uiSettings.colors.ElementSelection_Default;
+            }
         }
 
         //!
@@ -194,7 +217,7 @@ namespace vpet
                             image.color = uiSettings.colors.ElementSelection_Highlight;
                 }
             }
-            else
+            else if (!snapSelect._multiSelect)
             {
                 txt.color = uiSettings.colors.ElementSelection_Default;
                 if (image)

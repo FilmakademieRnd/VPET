@@ -225,6 +225,11 @@ namespace vpet
         Camera mainCamera;
 
         //!
+        //! Event emitted when parameter has changed
+        //!
+        public event EventHandler<AbstractParameter> doneEditing;
+
+        //!
         //! A reference to the VPET input manager.
         //!
         private InputManager m_inputManager;
@@ -264,6 +269,10 @@ namespace vpet
                 CamModule.uiCameraOperation -= SetCameraManipulator;
                 m_UIManager.settings.uiScale.hasChanged -= updateUIScale;
             }
+
+            this.doneEditing -= manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
+            this.doneEditing -= core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueUndoRedoMessage;
+
         }
 
         //!
@@ -310,6 +319,9 @@ namespace vpet
             // Instantiate TRS widgest but keep them hidden
             InstantiateAxes();
             HideAxes();
+
+            this.doneEditing += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().addHistoryStep;
+            this.doneEditing += core.getManager<NetworkManager>().getModule<UpdateSenderModule>().queueUndoRedoMessage;
         }
 
 
@@ -418,7 +430,22 @@ namespace vpet
                 visualRot = Quaternion.identity;
                 TransformManipR(visualRot);
             }
-
+            if(selObj && manipulator)
+                switch (modeTRS)
+                {
+                    case 0:
+                        doneEditing?.Invoke(this, selObj.parameterList[0]);
+                        break;
+                    case 1:
+                        doneEditing?.Invoke(this, selObj.parameterList[1]);
+                        break;
+                    case 2:
+                        doneEditing?.Invoke(this, selObj.parameterList[2]);
+                        break;
+                    default:
+                        break;
+                }
+            manipulator = null;
         }
 
         //!

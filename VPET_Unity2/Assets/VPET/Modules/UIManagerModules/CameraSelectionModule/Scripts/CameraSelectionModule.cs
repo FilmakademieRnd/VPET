@@ -135,6 +135,7 @@ namespace vpet
 
             MenuButton cameraSelectButton = new MenuButton("", selectNextCamera);
             cameraSelectButton.setIcon("Images/button_camera");
+            cameraSelectButton.isToggle = true;
 
             core.getManager<UIManager>().addButton(safeFrameButton);
             core.getManager<UIManager>().addButton(cameraSelectButton);

@@ -186,15 +186,15 @@ namespace vpet
                     {
                         Sprite resImage = Resources.Load<Sprite>(button.iconResourceLocation);
                         if (resImage != null)
-                            m_buttonSelector.addElement(button.caption, resImage, 0, button.action);
+                            m_buttonSelector.addElement(button.caption, resImage, 0, button.action, button.isToggle);
 
                     }
                     else if (button.caption.Length > 0)
-                        m_buttonSelector.addElement(button.caption, 0, button.action);
+                        m_buttonSelector.addElement(button.caption, 0, button.action, button.isToggle);
                     else
                     {
                         Helpers.Log("Button has no caption and Icon!", Helpers.logMsgType.WARNING);
-                        m_buttonSelector.addElement("EMPTY", 0, button.action);
+                        m_buttonSelector.addElement("EMPTY", 0, button.action, button.isToggle);
                     }
                 }
             }

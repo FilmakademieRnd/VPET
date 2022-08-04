@@ -57,6 +57,7 @@ MonoBehaviour:
   _fadeFactor: 0.5
   _selectableItems: 5
   _selectByClick: 1
+  _multiSelect: 1
   _collapsable: 0
   _collapsableIcon: {fileID: 0}
   _valueText: {fileID: 0}

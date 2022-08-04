@@ -81,9 +81,14 @@ namespace vpet
         public float _selectableItems = 1;
 
         //!
-        //! The amount of elements that can be selected without sliding (similar to a usual menu)
+        //! Can elments be clicked
         //!
         public bool _selectByClick = false;
+
+        //!
+        //! Can multiple elements be selected at once
+        //!
+        public bool _multiSelect = false;
 
         //!
         //! Is the menu collapsable
@@ -238,7 +243,7 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(string caption, float initValue = 0f, Action action = null)
+        public int addElement(string caption, float initValue = 0f, Action action = null, bool isToogle = false)
         {
             //add element to element list
             _elementValues.Add(initValue);
@@ -256,6 +261,7 @@ namespace vpet
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
+                elementTrans.GetComponent<SnapSelectElement>().isToggle = isToogle;
 
                 elementTrans.name = caption;
                 elementTrans.GetChild(0).GetComponent<TextMeshProUGUI>().text = caption;
@@ -274,7 +280,7 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(Sprite sprite, float initValue = 0f, Action action = null)
+        public int addElement(Sprite sprite, float initValue = 0f, Action action = null, bool isToogle = false)
         {
             //add element to element list
             _elementValues.Add(initValue);
@@ -293,6 +299,7 @@ namespace vpet
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
+                elementTrans.GetComponent<SnapSelectElement>().isToggle = isToogle;
 
                 elementTrans.name = sprite.name;
                 elementTrans.GetComponent<Image>().sprite = sprite;
@@ -310,7 +317,7 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(string caption, Sprite sprite, float initValue = 0f, Action action = null)
+        public int addElement(string caption, Sprite sprite, float initValue = 0f, Action action = null, bool isToogle = false)
         {
             //add element to element list
             _elementValues.Add(initValue);
@@ -329,6 +336,7 @@ namespace vpet
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
+                elementTrans.GetComponent<SnapSelectElement>().isToggle = isToogle;
 
                 elementTrans.name = caption;
 
@@ -752,15 +760,18 @@ namespace vpet
                         {
                             if (!_loop && (_contentPanel.anchoredPosition.y > (_previewExtend + 0.4f) * _elementSize.y))
                             {
+                                Debug.Log("A");
                                 _contentPanel.anchoredPosition = new Vector2(contentPos.x, (_previewExtend + 0.4f) * _elementSize.y * scale);
                             }
                             else if (!_loop && (_contentPanel.anchoredPosition.y < -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y))
                             {
+                                Debug.Log("B");
                                 _contentPanel.anchoredPosition = new Vector2(contentPos.x, -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y * scale);
                             }
                             else if (_loop || ((_contentPanel.anchoredPosition.y < (_previewExtend + 0.4f) * _elementSize.y)
                                         && (_contentPanel.anchoredPosition.y > -_contentPanel.sizeDelta.y + (_previewExtend + _menuElementCount - 0.4f) * _elementSize.y)))
                             {
+                                Debug.Log("C");
                                 _contentPanel.anchoredPosition = new Vector2(contentPos.x, contentPos.y + data.delta.y * scale);
                             }
                             draggingAxis?.Invoke(this, true);

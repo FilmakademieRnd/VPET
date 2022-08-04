@@ -35,6 +35,7 @@ namespace vpet
     public class MenuButton
     {
         public int id = -1;
+        public bool isToggle = false;
         protected UIManager.Roles m_role;
         public UIManager.Roles role
         {
