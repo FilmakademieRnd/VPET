@@ -225,7 +225,7 @@ namespace backup
         float ModFloat(float a, float b)
         {
             return a % b;
-            return (a % b + b) % b; // more like actual modulo but not needed
+            //return (a % b + b) % b; // more like actual modulo but not needed
         }
 
         Vector3 ModVec(Vector3 inVec, float inFloat)

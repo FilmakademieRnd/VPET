@@ -42,10 +42,6 @@ namespace vpet
     //!
     public class UICreator2DModule : UIManagerModule
     {
-        // icon layout configuration
-        private int selectorSize = 15;
-        private int selectorSpacing = 2;
-
         //Currently displayed manipulator (can be null if none is displayed)
         GameObject currentManipulator;
 
@@ -54,9 +50,6 @@ namespace vpet
 
         //Button for additional parameters, hidden if currentAddSelector is active
         GameObject currentAddButton;
-
-        //Currently displayed manipulator (can be null if none is displayed)
-        GameObject selectorPrefab;
 
         //List of selection Buttons for Manipulators
         private List<GameObject> instancedManipulatorSelectors = new List<GameObject>();
@@ -101,8 +94,6 @@ namespace vpet
             undoButton.onClick.AddListener(() => core.getManager<SceneManager>().getModule<UndoRedoModule>().undoStep());
             redoButton.onClick.AddListener(() => core.getManager<SceneManager>().getModule<UndoRedoModule>().redoStep());
             resetButton.onClick.AddListener(() => resetCurrentSceneObjects());
-
-            selectorPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_Manipulator_Selector");
 
             HideMenu();
         }
@@ -150,8 +141,6 @@ namespace vpet
             //TODO Account for more than the first sceneObject being selected
             selectedSceneObjects = sceneObjects;
             mainSelection = selectedSceneObjects[0];
-
-            int paramIndex = 0;
 
             GameObject spinnerPrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_AddSelector");
             currentAddSelector = SceneObject.Instantiate(spinnerPrefab, UI2D);

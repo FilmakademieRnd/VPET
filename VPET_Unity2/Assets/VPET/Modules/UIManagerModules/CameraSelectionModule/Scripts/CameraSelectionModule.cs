@@ -102,7 +102,6 @@ namespace vpet
         //!
         private SceneObjectCamera m_oldSOCamera = null;
 
-        private bool m_pollerActive = true;
         //!
         //! Event emitted when camera operations are in action
         //!
@@ -155,8 +154,6 @@ namespace vpet
         protected override void Cleanup(object sender, EventArgs e)
         {
             base.Cleanup(sender, e);
-
-            m_pollerActive = false;
 
             m_sceneManager.sceneReady -= copyCamera;
             core.getManager<UIManager>().selectionChanged -= createButtons;

@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -55,7 +55,7 @@ MonoBehaviour:
   _allowValueSetting: 0
   _previewExtend: 1
   _fadeFactor: 0.5
-  _selectableItems: 4
+  _selectableItems: 5
   _selectByClick: 1
   _collapsable: 0
   _collapsableIcon: {fileID: 0}

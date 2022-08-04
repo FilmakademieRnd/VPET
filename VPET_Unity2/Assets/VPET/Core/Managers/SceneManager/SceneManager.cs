@@ -185,7 +185,7 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SceneObject getSceneObject(int id)
         {
-            if (id < 1)
+            if (id < 1 || id > sceneObjects.Count)
                 return null;
             else
                 return sceneObjects[id -1];
