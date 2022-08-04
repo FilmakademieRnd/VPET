@@ -196,7 +196,12 @@ namespace vpet
             else 
             {
                 if (m_isLocked)
-                    lockToCamera();
+                {
+                    core.updateEvent -= updateLookThrough;
+                    core.updateEvent -= updateLockToCamera;
+                    m_isLocked = false;
+                    uiCameraOperation.Invoke(this, m_isLocked);
+                }
 
                 m_selectedObject = null;
             }

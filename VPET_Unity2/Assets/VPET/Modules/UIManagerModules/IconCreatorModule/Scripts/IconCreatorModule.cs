@@ -98,13 +98,13 @@ namespace vpet
         {
             if (m_showIcons)
             {
-                disposeIcons();
                 m_showIcons = false;
+                disposeIcons();
             }
             else
             {
-                createIcons(core.getManager<SceneManager>(), EventArgs.Empty);
                 m_showIcons = true;
+                createIcons(core.getManager<SceneManager>(), EventArgs.Empty);
             }
         }
 
@@ -114,6 +114,9 @@ namespace vpet
         //!
         private void createIcons(object sender, EventArgs e)
         {
+            if (!m_showIcons)
+                return;
+
             SceneManager sceneManager = ((SceneManager)sender);
 
             foreach (SceneObject sceneObject in sceneManager.sceneObjects)
