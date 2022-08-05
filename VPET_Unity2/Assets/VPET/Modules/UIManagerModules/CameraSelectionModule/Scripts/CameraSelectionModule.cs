@@ -54,6 +54,10 @@ namespace vpet
         //!
         private Quaternion m_oldRotation = Quaternion.identity;
         //!
+        //! The initial rotation of the main camera.
+        //!
+        private Quaternion m_oldCamRotation = Quaternion.identity;
+        //!
         //! The inverse initial posiotion of the main camara.
         //!
         private Quaternion m_inverseOldCamRotation = Quaternion.identity;
@@ -61,10 +65,6 @@ namespace vpet
         //! The initial vector between the main camera and the selected object.
         //!
         private Vector3 m_positionOffset = Vector3.zero;
-        //!
-        //! The initial rotation between the main camera and the selected object.
-        //!
-        private Quaternion m_rotationOffset = Quaternion.identity;
         //!
         //! The UI button for logging the camera to an object.
         //!
@@ -230,7 +230,7 @@ namespace vpet
                     m_inverseOldCamRotation = Quaternion.identity;
 
                     m_positionOffset = Vector3.zero;
-                    m_rotationOffset = Quaternion.identity;
+                    m_oldRotation = Quaternion.identity;
 
                     if (inputManager.cameraControl == InputManager.CameraControl.ATTITUDE)
                         inputManager.setCameraAttitudeOffsets();
@@ -250,8 +250,6 @@ namespace vpet
         {
             if (m_selectedObject != null)
             {
-                InputManager inputManager = core.getManager<InputManager>();
-
                 if (m_isLocked)
                 {
                     core.updateEvent -= updateLockToCamera;
@@ -260,10 +258,9 @@ namespace vpet
                 else
                 {
                     m_positionOffset = m_selectedObject.transform.position - Camera.main.transform.position;
-                    m_rotationOffset = m_selectedObject.transform.rotation * Quaternion.Inverse(Camera.main.transform.rotation);
-
                     m_oldPosition = m_selectedObject.transform.position;
                     m_oldRotation = m_selectedObject.transform.rotation;
+                    m_oldCamRotation = Camera.main.transform.rotation;
                     m_inverseOldCamRotation = Quaternion.Inverse(Camera.main.transform.rotation);
                     core.updateEvent += updateLockToCamera;
                     m_isLocked = true;
@@ -387,18 +384,20 @@ namespace vpet
         private void updateLookThrough(object sender, EventArgs e)
         {
             Transform camTransform = Camera.main.transform;
+            Transform objTransform = m_selectedObject.transform;
+
             switch (m_inputManager.cameraControl)
             {
                 case InputManager.CameraControl.ATTITUDE: 
                 case InputManager.CameraControl.AR:
-                    Vector3 newPosition = camTransform.position - m_selectedObject.transform.parent.position;
-                    Quaternion newRotation = camTransform.rotation * Quaternion.Inverse(m_selectedObject.transform.parent.rotation);
+                    Vector3 newPosition = camTransform.position - objTransform.parent.position;
+                    Quaternion newRotation = camTransform.rotation * Quaternion.Inverse(objTransform.parent.rotation);
                     m_selectedObject.position.setValue(newPosition);
                     m_selectedObject.rotation.setValue(newRotation);
                     break;
                 default:
-                    camTransform.position = m_selectedObject.transform.position;
-                    camTransform.rotation = m_selectedObject.transform.rotation;
+                    camTransform.position = objTransform.position;
+                    camTransform.rotation = objTransform.rotation;
                     break;
             }
         }
@@ -409,19 +408,21 @@ namespace vpet
         private void updateLockToCamera(object sender, EventArgs e)
         {
             Transform camTransform = Camera.main.transform;
+            Transform objTransform = m_selectedObject.transform;
+
             switch (m_inputManager.cameraControl)
             {
                 case InputManager.CameraControl.ATTITUDE:
                 case InputManager.CameraControl.AR:
                     Quaternion camRotationOffset = camTransform.rotation * m_inverseOldCamRotation;
                     Vector3 newPosition = camRotationOffset * (m_oldPosition - camTransform.position) + camTransform.position;
-
-                    m_selectedObject.position.setValue(m_selectedObject.transform.parent.InverseTransformPoint(newPosition));
-                    m_selectedObject.rotation.setValue(Quaternion.Inverse(m_selectedObject.transform.parent.rotation) * (camRotationOffset * m_oldRotation));
+                    m_selectedObject.position.setValue(objTransform.parent.InverseTransformPoint(newPosition));
+                    m_selectedObject.rotation.setValue(Quaternion.Inverse(objTransform.parent.rotation) * (camRotationOffset * m_oldRotation));
                     break;
                 default:
-                    camTransform.position = m_selectedObject.transform.position + m_positionOffset;
-                    camTransform.rotation = m_selectedObject.transform.rotation * m_rotationOffset;
+                    Quaternion newRotation = objTransform.rotation * Quaternion.Inverse(m_oldRotation);
+                    camTransform.position = newRotation * (- m_positionOffset) + objTransform.position;
+                    camTransform.rotation = newRotation * m_oldCamRotation;
                     break;
             }
         }
