@@ -131,6 +131,11 @@ namespace vpet
         public event EventHandler<EventArgs> sceneReady;
 
         //!
+        //! Event emitted when scene has been reseted.
+        //!
+        public event EventHandler<EventArgs> sceneReset;
+
+        //!
         //! Getter returning a reference to the VPET scene root.
         //!
         //! @return A reference to the VPET scene root.
@@ -219,6 +224,7 @@ namespace vpet
                     GameObject.Destroy(child.gameObject);
                 }
             }
+            sceneReset?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -101,6 +101,7 @@ namespace vpet
         //!
         public void CreateScene(object o, EventArgs e)
         {
+            manager.ResetScene();
             SceneManager.SceneDataHandler sceneDataHandler = manager.sceneDataHandler;
             SceneManager.SceneDataHandler.SceneData sceneData = sceneDataHandler.getSceneData();
 

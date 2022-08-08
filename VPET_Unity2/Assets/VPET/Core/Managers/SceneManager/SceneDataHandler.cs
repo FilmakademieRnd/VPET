@@ -64,6 +64,17 @@ namespace vpet
                     textureList = new List<TexturePackage>();
                     materialList = new List<MaterialPackage>();
                 }
+
+                ~SceneData (){ clear(); }
+
+                public void clear()
+                {
+                    nodeList.Clear();
+                    objectList.Clear();
+                    characterList.Clear();
+                    textureList.Clear();
+                    materialList.Clear();
+                }
             }
 
             //!
@@ -217,6 +228,11 @@ namespace vpet
             //!
             public SceneDataHandler()
             {
+            }
+
+            ~SceneDataHandler()
+            {
+                clearSceneByteData();
             }
 
             //!

@@ -89,6 +89,7 @@ namespace vpet
 
             SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += createIcons;
+            sceneManager.sceneReset += disposeIcons;
         }
 
         //!
@@ -99,7 +100,7 @@ namespace vpet
             if (m_showIcons)
             {
                 m_showIcons = false;
-                disposeIcons();
+                disposeIcons(null, EventArgs.Empty);
             }
             else
             {
@@ -164,7 +165,7 @@ namespace vpet
         //!
         //! Function for disposing and cleanup of all created gizmos.
         //!
-        private void disposeIcons()
+        private void disposeIcons(object sender, EventArgs e)
         {
             foreach(SceneObject sceneObject in m_sceneObjects)
             {
