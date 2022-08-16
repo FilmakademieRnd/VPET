@@ -172,7 +172,7 @@ namespace vpet
                 if (sceneObject.GetType() == typeof(SceneObjectLight))
                     sceneObject.getParameter<Color>("color").hasChanged -= updateIconColor;
                 
-                UnityEngine.Object.Destroy(sceneObject._icon);
+                UnityEngine.Object.DestroyImmediate(sceneObject._icon);
             }
         }
     }

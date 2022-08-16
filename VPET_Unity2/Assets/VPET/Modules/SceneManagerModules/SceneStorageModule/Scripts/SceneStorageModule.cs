@@ -24,12 +24,12 @@ Syncronisation Server. They are licensed under the following terms:
 //! @file "SceneStorageModule.cs"
 //! @brief implementation of VPET scene I/O
 //! @author Simon Spielmann
-//! @author Jonas Trottnow
 //! @version 0
-//! @date 20.05.2022
+//! @date 16.08.2022
 
 using UnityEngine;
 using System;
+using System.Collections;
 using System.IO;
 
 namespace vpet
@@ -49,6 +49,9 @@ namespace vpet
         //!
         public SceneStorageModule(string name, Manager manager) : base(name, manager) { }
 
+        //!
+        //! Init and setup of the module and it's UI.
+        //!
         protected override void Start(object sender, EventArgs e)
         {
             base.Start(sender, e);
@@ -167,32 +170,65 @@ namespace vpet
         }
 
         //!
-        //! Function that loads and creates the scene stored with the given from the persistent data path.
+        //! Function that starts the coroutine to load and create the scene stored with the given from the persistent data path.
         //!
         //! @param sceneName The name of the scene to be loaded.
         //!
         public void LoadDemoScene()
         {
             if (manager.sceneDataHandler != null)
-            {
-                manager.sceneDataHandler.headerByteData = (Resources.Load("Storage/VPETDemoSceneHeader") as TextAsset).bytes;
-
-                manager.sceneDataHandler.nodesByteData = (Resources.Load("Storage/VPETDemoSceneNodes") as TextAsset).bytes;
-
-                manager.sceneDataHandler.objectsByteData = (Resources.Load("Storage/VPETDemoSceneObjects") as TextAsset).bytes;
-
-                manager.sceneDataHandler.characterByteData = (Resources.Load("Storage/VPETDemoSceneCharacters") as TextAsset).bytes;
-
-                manager.sceneDataHandler.texturesByteData = (Resources.Load("Storage/VPETDemoSceneTextures") as TextAsset).bytes;
-
-                manager.sceneDataHandler.materialsByteData = (Resources.Load("Storage/VPETDemoSceneMaterials") as TextAsset).bytes;
-
-                sceneLoaded?.Invoke(this, EventArgs.Empty);
-
-                core.getManager<UIManager>().hideMenu();
-
-            }
+                core.StartCoroutine(LoadDemoCoroutine());
         }
+
+        //!
+        //! Coproutine that loads and creates the scene stored with the given from the persistent data path.
+        //!
+        private IEnumerator LoadDemoCoroutine()
+        {
+            Dialog statusDialog = new Dialog();
+            UIManager UImanager = core.getManager<UIManager>();
+            UImanager.showDialog(statusDialog);
+            
+            core.getManager<UIManager>().hideMenu();
+
+            statusDialog.caption = "Load Header";
+            yield return null;
+            manager.sceneDataHandler.headerByteData = (Resources.Load("Storage/VPETDemoSceneHeader") as TextAsset).bytes;
+            statusDialog.progress += 14;
+
+            statusDialog.caption = "Load Scene Nodes";
+            yield return null;
+            manager.sceneDataHandler.nodesByteData = (Resources.Load("Storage/VPETDemoSceneNodes") as TextAsset).bytes;
+            statusDialog.progress += 14;
+
+            statusDialog.caption = "Load Scene Objects";
+            yield return null;
+            manager.sceneDataHandler.objectsByteData = (Resources.Load("Storage/VPETDemoSceneObjects") as TextAsset).bytes;
+            statusDialog.progress += 14;
+
+            statusDialog.caption = "Load Characters";
+            yield return null;
+            manager.sceneDataHandler.characterByteData = (Resources.Load("Storage/VPETDemoSceneCharacters") as TextAsset).bytes;
+            statusDialog.progress += 14;
+
+            statusDialog.caption = "Load Textures";
+            yield return null;
+            manager.sceneDataHandler.texturesByteData = (Resources.Load("Storage/VPETDemoSceneTextures") as TextAsset).bytes;
+            statusDialog.progress += 14;
+
+            statusDialog.caption = "Load Materials";
+            yield return null;
+            manager.sceneDataHandler.materialsByteData = (Resources.Load("Storage/VPETDemoSceneMaterials") as TextAsset).bytes;
+            statusDialog.progress += 14;
+
+            statusDialog.caption = "Build Scene";
+            yield return null;
+            sceneLoaded?.Invoke(this, EventArgs.Empty);
+            statusDialog.progress += 14;
+
+            UImanager.showDialog(null);   
+        }
+
     }
 
 }

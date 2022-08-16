@@ -213,17 +213,18 @@ namespace vpet
         //!
         public void ResetScene()
         {
-            m_sceneObjects.Clear();
-            m_sceneCameraList.Clear();
-            m_sceneLightList.Clear();
-            
             if (m_scnRoot != null)
             {
                 foreach (Transform child in m_scnRoot.transform)
                 {
-                    GameObject.Destroy(child.gameObject);
+                    GameObject.DestroyImmediate(child.gameObject);
                 }
             }
+
+            m_sceneObjects.Clear();
+            m_sceneCameraList.Clear();
+            m_sceneLightList.Clear();
+
             sceneReset?.Invoke(this, EventArgs.Empty);
         }
     }

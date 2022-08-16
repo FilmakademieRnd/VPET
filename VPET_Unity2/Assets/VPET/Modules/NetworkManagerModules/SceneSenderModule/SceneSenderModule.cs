@@ -101,6 +101,9 @@ namespace vpet
             //core.getManager<UIManager>().showMenu(m_menu);
         }
 
+        //!
+        //! Action called from the start Button, initializing the scene sender.
+        //!
         private void Connect()
         {
             Helpers.Log(manager.settings.ipAddress.value);

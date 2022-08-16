@@ -26,13 +26,12 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 03.02.2022
+//! @date 03.08.2022
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using System.Reflection;
 
 namespace vpet
 {
@@ -86,6 +85,9 @@ namespace vpet
             }
         }
 
+        //!
+        //! Init function of the module.
+        //!
         protected override void Init(object sender, EventArgs e)
         {
             NetworkManager networkManager = core.getManager<NetworkManager>();
@@ -121,6 +123,7 @@ namespace vpet
             createSkinnedMeshes(ref sceneData, manager.scnRoot.transform);
 
             sceneDataHandler.clearSceneByteData();
+            sceneData.clear();
             clearData();
 
             manager.emitSceneReady();

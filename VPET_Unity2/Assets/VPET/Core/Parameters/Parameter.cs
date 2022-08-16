@@ -180,7 +180,7 @@ namespace vpet
     //!
     //! Parameter class defining the fundamental functionality and interface
     //!
-    public class Parameter<T> : AbstractParameter, IFormattable
+    public class Parameter<T> : AbstractParameter
     {
         //!
         //! The paramters constructor, initializing members.
@@ -250,7 +250,7 @@ namespace vpet
         //!
         //! The initial value of the parameter at constuction time
         //!
-        private T _initialValue;
+        protected T _initialValue;
 
         //!
         //! Event emitted when parameter changed.
@@ -460,10 +460,7 @@ namespace vpet
         //! @param format The format string (not used).
         //! @formatProvider The format prvider used to format the string (not used).
         //! 
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return String.Format("({0}, {1}, {2}, {3})", _value.ToString(), _initialValue.ToString() , name, _type.ToString());
-        }
+       
 
     }
 
@@ -504,6 +501,7 @@ namespace vpet
         //!
         public List<AbstractParameter> parameterList
         {
+            set => _parameterList = value;
             get => _parameterList;
         }
 

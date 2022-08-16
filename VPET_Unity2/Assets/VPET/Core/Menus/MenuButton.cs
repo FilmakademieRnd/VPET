@@ -21,7 +21,7 @@ Syncronisation Server. They are licensed under the following terms:
 -------------------------------------------------------------------------------
 */
 
-//! @file "MenuTree.cs"
+//! @file "MenuButton.cs"
 //! @brief Implementation of the VPET UI Menu Tree, serving as internal structure to reflect menus.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow

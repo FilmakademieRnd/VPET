@@ -29,10 +29,11 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 25.06.2021
 
 using System.Collections.Generic;
+using System.Collections;
 using System;
+using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
-using System.Threading.Tasks;
 
 namespace vpet
 {
@@ -133,12 +134,13 @@ namespace vpet
 
         //!
         //! Function that overrides the default start function.
-        //! That prevents that the system creates a new thread.
+        //! Because of Unity's single threded design we have to 
+        //! split the work within a coroutine.
         //!
         //! @param ip IP address of the network interface.
         //! @param port Port number to be used.
         //!
-        protected async override void start(string ip, string port)
+        protected override void start(string ip, string port)
         {
             m_ip = ip;
             Helpers.Log(ip);
@@ -146,13 +148,39 @@ namespace vpet
 
             NetworkManager.threadCount++;
 
-            await Task.Run(() => run());
+            core.StartCoroutine(startReceive());
+        }
+
+        //!
+        //! Coroutine that creates a new thread receiving the scene data
+        //! and yielding to allow the main thread to update the statusDialog.
+        //!
+        private IEnumerator startReceive()
+        {
+            Dialog statusDialog = new Dialog("Recive Scene", "", Dialog.DTypes.BAR);
+            UIManager uiManager = core.getManager<UIManager>();
+            uiManager.showDialog(statusDialog);
+
+            Thread receiverThread = new Thread(run);
+            receiverThread.Start();
+
+            while (receiverThread.IsAlive)
+            {
+                yield return null;
+                statusDialog.progress += 3;
+            }
 
             // emit sceneReceived signal to trigger scene cration in the sceneCreator module
             if (core.getManager<SceneManager>().sceneDataHandler.headerByteDataRef != null)
-                m_sceneReceived?.Invoke(this, new EventArgs());
+                m_sceneReceived?.Invoke(this, EventArgs.Empty);
+
+            uiManager.showDialog(null);
         }
 
+        //!
+        //! Function for cleanup. Stopping the receiver thread and dispose
+        //! the netMQ sockets.
+        //!
         public override void Dispose()
         {
             base.Dispose();
@@ -161,8 +189,12 @@ namespace vpet
             m_disposed?.Invoke();   // does stall for some reason [REVIEW]
         }
 
+        //!
+        //! Funcrtion for dispoising the netMQ sockets of the receiver.
+        //!
         private void disposeReceiver()
         {
+
             try
             {
                 if ((m_sceneReceiver != null) && !m_sceneReceiver.IsDisposed)

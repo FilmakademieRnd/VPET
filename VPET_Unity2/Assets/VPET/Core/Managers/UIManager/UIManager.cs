@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 21.01.2022
+//! @date 21.08.2022
 
 using System.Collections.Generic;
 using System;
@@ -64,10 +64,9 @@ namespace vpet
         {
             NONE, SCOUT, USER, EXPERT
         }
-        private UIManager.Roles m_role = Roles.NONE;
-        public UIManager.Roles activeRole
+        public Roles activeRole
         {
-            get => m_role;
+            get => (Roles)settings.roles.value;
         }
         //!
         //! The list containing currently selected scene objects.
@@ -101,6 +100,10 @@ namespace vpet
         //! Event emitted when menu list has been updated.
         //!
         public event EventHandler<EventArgs> menusUpdated;
+        //!
+        //! Event emitted when a dialog shall be displayed.
+        //!
+        public event EventHandler<Dialog> dialogRequested;
         //!
         //! Load global VPET color names and values.
         //!
@@ -146,6 +149,14 @@ namespace vpet
             m_buttons = new List<MenuButton>();
             m_uiAppearanceSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
             _ui2Dinteractable = true;
+
+            List<AbstractParameter> roleList = new List<AbstractParameter>();
+            roleList.Add(new Parameter<int>(0, "None"));
+            roleList.Add(new Parameter<int>(1, "Scout"));
+            roleList.Add(new Parameter<int>(2, "User"));
+            roleList.Add(new Parameter<int>(3, "Expert"));
+
+            settings.roles = new ListParameter(roleList, "Roles");
         }
 
         //!
@@ -174,12 +185,19 @@ namespace vpet
         {
             base.Init(sender, e);
 
+            // [REVIEW]
+            // double init of settings.role (look into constructor) because parameter load can not handle List<AbstractParameter> :(
             List<AbstractParameter> roleList = new List<AbstractParameter>();
             roleList.Add(new Parameter<int>(0, "None"));
             roleList.Add(new Parameter<int>(1, "Scout"));
             roleList.Add(new Parameter<int>(2, "User"));
             roleList.Add(new Parameter<int>(3, "Expert"));
-            settings.roles = new ListParameter(roleList, "Roles");
+
+            if (settings.roles == null)
+                settings.roles = new ListParameter(roleList, "Roles");
+            else
+                settings.roles.parameterList = roleList;
+
             settings.roles.hasChanged += changeActiveRole;
 
             CreateSettingsMenu();
@@ -245,10 +263,9 @@ namespace vpet
 
         private void changeActiveRole(object sender, int e)
         {
-            m_role = (Roles)e;
             buttonsUpdated?.Invoke(this, EventArgs.Empty);
             menusUpdated?.Invoke(this, EventArgs.Empty);
-            Helpers.Log("Role changed to " + m_role.ToString());
+            Helpers.Log("Role changed to " + (Roles) e);
         }
 
         //!
@@ -312,6 +329,16 @@ namespace vpet
         public ref List<MenuButton> getButtons()
         {
             return ref m_buttons;
+        }
+
+        //!
+        //! Shows the given Dialog. Destroys the current dialog UI elements if dialog is null.
+        //!
+        //! @param dialog The Dialog to be shown.
+        //!
+        public void showDialog(Dialog dialog)
+        {
+            dialogRequested?.Invoke(this, dialog);
         }
 
         //!
