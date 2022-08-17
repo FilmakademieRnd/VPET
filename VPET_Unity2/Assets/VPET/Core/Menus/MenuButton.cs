@@ -29,6 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 21.01.2022
 
 using System;
+using System.Collections.Generic;
 
 namespace vpet
 {
@@ -36,10 +37,10 @@ namespace vpet
     {
         public int id = -1;
         public bool isToggle = false;
-        protected UIManager.Roles m_role;
-        public UIManager.Roles role
+        protected List<UIManager.Roles> m_roles = new List<UIManager.Roles>();
+        public ref List<UIManager.Roles> roles
         {
-            get => m_role;
+            get => ref m_roles;
         }
         private Action m_action;
         public Action action
@@ -66,11 +67,12 @@ namespace vpet
             get => m_iconResourceLocation; 
         }
 
-        public MenuButton(string caption = "", Action action = null, UIManager.Roles role = UIManager.Roles.NONE)
+        public MenuButton(string caption = "", Action action = null, List<UIManager.Roles> roles = null)
         {
             m_caption = caption;
             m_action = action;
-            m_role = role;
+            if (roles != null)
+                m_roles.AddRange(roles);
         }
 
         public void setIcon(string resourceLocation)

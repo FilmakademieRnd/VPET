@@ -29,9 +29,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @date 11.03.2022
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace vpet
 {
@@ -75,14 +73,6 @@ namespace vpet
         //!
         protected override void Init(object sender, EventArgs e)
         {
-            // [REVIEW]
-            // pls remove, only for testing...
-            //>>>>>>>>>>>
-            MenuButton test = new MenuButton("TestButton", testAction);
-            test.setIcon("Images/button_frame_BG");
-            //manager.addButton(test);
-            //<<<<<<<<<<<
-
             GameObject canvasRes = Resources.Load("Prefabs/MenuSelectorCanvas") as GameObject;
             m_menuSelectorPrefab = Resources.Load("Prefabs/MenuSelectorPrefab") as GameObject;
             m_buttonSelectorPrefab = Resources.Load("Prefabs/ButtonSelectorPrefab") as GameObject;
@@ -142,8 +132,9 @@ namespace vpet
 
             foreach (MenuTree menu in manager.getMenus())
             {
-                if (menu.role == UIManager.Roles.NONE ||
-                    menu.role == manager.activeRole)
+                if (menu.roles.Count == 0 ||
+                    manager.activeRole == UIManager.Roles.EXPERT ||
+                    menu.roles.Contains(manager.activeRole))
                 {
                     if (menu.iconResourceLocation.Length > 0)
                     {
@@ -179,8 +170,9 @@ namespace vpet
 
             foreach (MenuButton button in manager.getButtons())
             {
-                if (button.role == UIManager.Roles.NONE ||
-                    button.role == manager.activeRole)
+                if (button.roles.Count == 0 ||
+                    manager.activeRole == UIManager.Roles.EXPERT ||
+                    button.roles.Contains(manager.activeRole))
                 {
                     if (button.iconResourceLocation.Length > 0)
                     {
@@ -211,12 +203,6 @@ namespace vpet
             manager.showMenu((MenuTree)manager.getMenus()[id]);
         }
 
-        //! [REVIEW]
-        //! Just for testing, pls remove!!
-        public void testAction()
-        {
-            Debug.Log("Test Action!");
-        }
     }
 
 }

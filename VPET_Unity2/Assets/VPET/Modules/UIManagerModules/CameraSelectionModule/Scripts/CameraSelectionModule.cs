@@ -130,10 +130,10 @@ namespace vpet
             m_inputManager = core.getManager<InputManager>();
 
             m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
-            MenuButton safeFrameButton = new MenuButton("", showSafeFrame);
+            MenuButton safeFrameButton = new MenuButton("", showSafeFrame, new List<UIManager.Roles>() { UIManager.Roles.DOP });
             safeFrameButton.setIcon("Images/button_safeFrames");
 
-            MenuButton cameraSelectButton = new MenuButton("", selectNextCamera);
+            MenuButton cameraSelectButton = new MenuButton("", selectNextCamera, new List<UIManager.Roles>() { UIManager.Roles.DOP });
             cameraSelectButton.setIcon("Images/button_camera");
             cameraSelectButton.isToggle = true;
 

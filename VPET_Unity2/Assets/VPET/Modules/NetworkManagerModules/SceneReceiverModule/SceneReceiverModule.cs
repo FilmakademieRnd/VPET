@@ -83,14 +83,11 @@ namespace vpet
         {
             Parameter<Action> button = new Parameter<Action>(Connect, "Start");
 
-            List<AbstractParameter> parameterList1 = new List<AbstractParameter>();
-            parameterList1.Add(new Parameter<string>(null, "Server"));
-            parameterList1.Add(new Parameter<string>(null, "Device"));
-
-            List<AbstractParameter> parameterList2 = new List<AbstractParameter>();
-            parameterList2.Add(new Parameter<string>(null, "Scout"));
-            parameterList2.Add(new Parameter<string>(null, "Director"));
-            parameterList2.Add(new Parameter<string>(null, "Lighting"));
+            List<AbstractParameter> parameterList1 = new List<AbstractParameter>
+            {
+                new Parameter<string>(null, "Server"),
+                new Parameter<string>(null, "Device")
+            };
 
             m_menu = new MenuTree()
                 .Begin(MenuItem.IType.VSPLIT)

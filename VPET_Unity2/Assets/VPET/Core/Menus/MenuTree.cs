@@ -53,6 +53,12 @@ namespace vpet
         public List<MenuItem> Items { get; } = new List<MenuItem>();
 
         //!
+        //! Constructor
+        //!
+        public MenuTree() : base("", null, null) { }
+        public MenuTree(List<UIManager.Roles> roles) : base("", null, roles) { }
+
+        //!
         //! Adds a new string item as branch into the menu tree.
         //! 
         //! @param text The text stored in the menue item.

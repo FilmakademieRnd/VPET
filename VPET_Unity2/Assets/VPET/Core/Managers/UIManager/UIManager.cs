@@ -62,7 +62,7 @@ namespace vpet
         //!
         public enum Roles
         {
-            NONE, SCOUT, USER, EXPERT
+            EXPERT, LIGHTING, SET, DOP, VIEWER
         }
         public Roles activeRole
         {
@@ -150,13 +150,47 @@ namespace vpet
             m_uiAppearanceSettings = Resources.Load("DATA_VPET_Colors") as VPETUISettings;
             _ui2Dinteractable = true;
 
-            List<AbstractParameter> roleList = new List<AbstractParameter>();
-            roleList.Add(new Parameter<int>(0, "None"));
-            roleList.Add(new Parameter<int>(1, "Scout"));
-            roleList.Add(new Parameter<int>(2, "User"));
-            roleList.Add(new Parameter<int>(3, "Expert"));
+            List<AbstractParameter> roleList = new List<AbstractParameter> 
+            { 
+                new Parameter<int>(0, "Expert"),
+                new Parameter<int>(1, "Lighting"),
+                new Parameter<int>(2, "Set Dressing"),
+                new Parameter<int>(3, "DoP"),
+                new Parameter<int>(4, "Viewer")
+            };
 
             settings.roles = new ListParameter(roleList, "Roles");
+        }
+
+        //! 
+        //! Virtual function called when Unity calls it's Start function.
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Init(object sender, EventArgs e)
+        {
+            base.Init(sender, e);
+
+            // [REVIEW]
+            // double init of settings.role (look into constructor) because parameter load can not handle List<AbstractParameter> :(
+            List<AbstractParameter> roleList = new List<AbstractParameter>
+            {
+                new Parameter<int>(0, "Expert"),
+                new Parameter<int>(1, "Lighting"),
+                new Parameter<int>(2, "Set Dressing"),
+                new Parameter<int>(3, "DoP"),
+                new Parameter<int>(4, "Viewer")
+            };
+
+            if (settings.roles == null)
+                settings.roles = new ListParameter(roleList, "Roles");
+            else
+                settings.roles.parameterList = roleList;
+
+            settings.roles.hasChanged += changeActiveRole;
+
+            CreateSettingsMenu();
         }
 
         //!
@@ -173,34 +207,6 @@ namespace vpet
             core.orientationChangedEvent -= updateCanvasScales;
             settings.roles.hasChanged -= changeActiveRole;
 
-        }
-
-        //! 
-        //! Virtual function called when Unity calls it's Start function.
-        //! 
-        //! @param sender A reference to the VPET core.
-        //! @param e Arguments for these event. 
-        //! 
-        protected override void Init(object sender, EventArgs e)
-        {
-            base.Init(sender, e);
-
-            // [REVIEW]
-            // double init of settings.role (look into constructor) because parameter load can not handle List<AbstractParameter> :(
-            List<AbstractParameter> roleList = new List<AbstractParameter>();
-            roleList.Add(new Parameter<int>(0, "None"));
-            roleList.Add(new Parameter<int>(1, "Scout"));
-            roleList.Add(new Parameter<int>(2, "User"));
-            roleList.Add(new Parameter<int>(3, "Expert"));
-
-            if (settings.roles == null)
-                settings.roles = new ListParameter(roleList, "Roles");
-            else
-                settings.roles.parameterList = roleList;
-
-            settings.roles.hasChanged += changeActiveRole;
-
-            CreateSettingsMenu();
         }
 
         //!
@@ -261,11 +267,18 @@ namespace vpet
             }
         }
 
-        private void changeActiveRole(object sender, int e)
+        //!
+        //! Invoks signals to update buttons and menus, if the role parameter has changed.
+        //!
+        //! @param sender A reference to the role parameter.
+        //! @param r The new role as int number.
+        //!
+        private void changeActiveRole(object sender, int r)
         {
             buttonsUpdated?.Invoke(this, EventArgs.Empty);
             menusUpdated?.Invoke(this, EventArgs.Empty);
-            Helpers.Log("Role changed to " + (Roles) e);
+            clearSelectedObject();
+            Helpers.Log("Role changed to " + (Roles) r);
         }
 
         //!

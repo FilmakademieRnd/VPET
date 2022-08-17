@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace vpet
 {
@@ -99,10 +100,11 @@ namespace vpet
         }
 
         //!
-        //! Destructor
+        //! Cleanup
         //!
-        ~UICreator2DModule()
+        protected override void Cleanup(object sender, EventArgs e)
         {
+            base.Cleanup(sender, e);
             undoButton.onClick.RemoveAllListeners();
             redoButton.onClick.RemoveAllListeners();
             resetButton.onClick.RemoveAllListeners();
@@ -118,6 +120,20 @@ namespace vpet
         {
             manager.selectionChanged += createUI;
             resetButton.GetComponent<LongPressButton>().longPress += manager.core.getManager<SceneManager>().getModule<UndoRedoModule>().resetScene;
+
+            ColorBlock buttonColors = undoButton.colors;
+            Color newColor = manager.uiAppearanceSettings.colors.ElementSelection_Default;
+            buttonColors.highlightedColor = newColor;
+            buttonColors.normalColor = newColor;
+            buttonColors.selectedColor = newColor;
+
+            undoButton.colors = buttonColors;
+            redoButton.colors = buttonColors;
+            resetButton.colors = buttonColors;
+
+            undoButton.GetComponentInChildren<TextMeshProUGUI>().color = newColor;
+            redoButton.GetComponentInChildren<TextMeshProUGUI>().color = newColor;
+            resetButton.GetComponentInChildren<TextMeshProUGUI>().color = newColor;
         }
 
         //!

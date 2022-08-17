@@ -30,7 +30,6 @@ Syncronisation Server. They are licensed under the following terms:
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -184,9 +183,29 @@ namespace vpet
 
             if (!obj)
                 obj = GetSelectableAtPixel(e.point);
-            
+
             if (obj)
-                manager.addSelectedObject(obj);
+            {
+                switch (obj)
+                {
+                    case SceneObjectCamera:
+                        if (manager.activeRole == UIManager.Roles.EXPERT ||
+                            manager.activeRole == UIManager.Roles.DOP)
+                            manager.addSelectedObject(obj);
+                        break;
+                    case SceneObjectLight:
+                        if (manager.activeRole == UIManager.Roles.EXPERT ||
+                            manager.activeRole == UIManager.Roles.LIGHTING ||
+                            manager.activeRole == UIManager.Roles.SET)
+                            manager.addSelectedObject(obj);
+                        break;
+                    default:
+                        if (manager.activeRole == UIManager.Roles.EXPERT ||
+                            manager.activeRole == UIManager.Roles.SET)
+                            manager.addSelectedObject(obj);
+                        break;
+                }
+            }
 
             m_isRenderActive = false;
         }

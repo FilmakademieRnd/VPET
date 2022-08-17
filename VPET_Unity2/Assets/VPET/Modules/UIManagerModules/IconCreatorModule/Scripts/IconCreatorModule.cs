@@ -83,13 +83,20 @@ namespace vpet
 
             m_IconRoot = new GameObject("Icons");
 
-            MenuButton hideIconButton = new MenuButton("", toggleIcons);
+            MenuButton hideIconButton = new MenuButton("", toggleIcons, new List<UIManager.Roles>() {UIManager.Roles.LIGHTING, UIManager.Roles.SET, UIManager.Roles.DOP });
             hideIconButton.setIcon("Images/button_hideIcons");
             manager.addButton(hideIconButton);
 
             SceneManager sceneManager = core.getManager<SceneManager>();
             sceneManager.sceneReady += createIcons;
             sceneManager.sceneReset += disposeIcons;
+            manager.settings.roles.hasChanged += recreateIcons;
+        }
+
+        private void recreateIcons(object sender, int selectedIndex)
+        {
+            disposeIcons(this, EventArgs.Empty);
+            createIcons(core.getManager<SceneManager>(), EventArgs.Empty);
         }
 
         //!
@@ -127,21 +134,30 @@ namespace vpet
                 switch (sceneObject)
                 {
                     case SceneObjectLight:
-                        icon = GameObject.Instantiate(m_Icon, m_IconRoot.transform);
-                        icon.GetComponent<IconUpdate>().m_parentObject = sceneObject;
-                        renderer = icon.GetComponent<SpriteRenderer>();
-                        renderer.sprite = m_lightSprite;
-                        Parameter<Color> colorParameter = sceneObject.getParameter<Color>("color");
-                        renderer.color = colorParameter.value;
-                        colorParameter.hasChanged += updateIconColor;
-                        m_sceneObjects.Add(sceneObject);
+                        if (manager.activeRole == UIManager.Roles.EXPERT ||
+                            manager.activeRole == UIManager.Roles.LIGHTING ||
+                            manager.activeRole == UIManager.Roles.SET)
+                        {
+                            icon = GameObject.Instantiate(m_Icon, m_IconRoot.transform);
+                            icon.GetComponent<IconUpdate>().m_parentObject = sceneObject;
+                            renderer = icon.GetComponent<SpriteRenderer>();
+                            renderer.sprite = m_lightSprite;
+                            Parameter<Color> colorParameter = sceneObject.getParameter<Color>("color");
+                            renderer.color = colorParameter.value;
+                            colorParameter.hasChanged += updateIconColor;
+                            m_sceneObjects.Add(sceneObject);
+                        }
                         break;
                     case SceneObjectCamera:
-                        icon = GameObject.Instantiate(m_Icon, m_IconRoot.transform);
-                        icon.GetComponent<IconUpdate>().m_parentObject = sceneObject;
-                        renderer = icon.GetComponent<SpriteRenderer>();
-                        renderer.sprite = m_cameraSprite;
-                        m_sceneObjects.Add(sceneObject);
+                        if (manager.activeRole == UIManager.Roles.EXPERT ||
+                            manager.activeRole == UIManager.Roles.DOP)
+                        {
+                            icon = GameObject.Instantiate(m_Icon, m_IconRoot.transform);
+                            icon.GetComponent<IconUpdate>().m_parentObject = sceneObject;
+                            renderer = icon.GetComponent<SpriteRenderer>();
+                            renderer.sprite = m_cameraSprite;
+                            m_sceneObjects.Add(sceneObject);
+                        }
                         break;
                 }
 

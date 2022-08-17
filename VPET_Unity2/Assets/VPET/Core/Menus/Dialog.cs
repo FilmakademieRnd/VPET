@@ -105,7 +105,7 @@ namespace vpet
         //! @param type The type of the dialog.
         //! @param role The role of the dialog.
         //!
-        public Dialog(string caption, string message, DTypes type, UIManager.Roles role = UIManager.Roles.NONE)
+        public Dialog(string caption, string message, DTypes type, UIManager.Roles role = UIManager.Roles.EXPERT)
         {
             m_caption = caption;
             m_message = message;
@@ -115,7 +115,7 @@ namespace vpet
         //!
         //! Constructor of the dialog class.
         //!
-        public Dialog(string message, DTypes type, UIManager.Roles role = UIManager.Roles.NONE)
+        public Dialog(string message, DTypes type, UIManager.Roles role = UIManager.Roles.EXPERT)
         {
             if (type != DTypes.BAR)
             {
@@ -128,7 +128,7 @@ namespace vpet
         //!
         //! Constructor of the dialog class.
         //!
-        public Dialog (DTypes type = DTypes.BAR, UIManager.Roles role = UIManager.Roles.NONE) : this("", type, role)
+        public Dialog (DTypes type = DTypes.BAR, UIManager.Roles role = UIManager.Roles.EXPERT) : this("", type, role)
         {
         }
 

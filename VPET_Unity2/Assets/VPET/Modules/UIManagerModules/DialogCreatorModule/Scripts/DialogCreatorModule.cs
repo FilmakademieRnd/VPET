@@ -105,7 +105,7 @@ namespace vpet
             destroyDialog(this, EventArgs.Empty);
 
             if (dialog == null ||
-                (manager.activeRole != dialog.role && dialog.role != UIManager.Roles.NONE ))
+                (manager.activeRole != dialog.role && dialog.role != UIManager.Roles.EXPERT ))
                 return;
 
             m_oldDialog = dialog;

@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 02.03.2022
+//! @date 17.08.2022
 
 using System;
 using System.Collections.Generic;
@@ -108,90 +108,6 @@ namespace vpet
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
             m_numberInputField = Resources.Load("Prefabs/MenuNumberInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
-
-            List<AbstractParameter> parameterList = new List<AbstractParameter>();
-            parameterList.Add(new Parameter<float>(25, "25"));
-            parameterList.Add(new Parameter<float>(24, "24"));
-            parameterList.Add(new Parameter<float>(30, "30"));
-            parameterList.Add(new Parameter<float>(50, "50"));
-
-            List<AbstractParameter> parameterList2 = new List<AbstractParameter>();
-            parameterList2.Add(new Parameter<string>(null, "Scout"));
-            parameterList2.Add(new Parameter<string>(null, "Director"));
-            parameterList2.Add(new Parameter<string>(null, "Lighting"));
-
-            Parameter<float> m_scale = new Parameter<float>(5, "Scene Scale");
-            Parameter<float> m_iconscale = new Parameter<float>(5, "Icon Scale");
-
-            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            MenuTree menu = new MenuTree()
-                .Begin(MenuItem.IType.VSPLIT)
-                    .Begin(MenuItem.IType.VSPLIT)
-                        .Add(MenuItem.IType.SPACE) // this is needed as root panel has a menu bar that messes up layout center
-                        .Add("Scene", true)
-                    .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Scene Scale")
-                        .Add(m_scale)
-                    .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Frame Rate")
-                        .Add(new ListParameter(parameterList, "Framerate"))
-                    .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Choose Role")
-                        .Add(new ListParameter(parameterList2, "Role"))
-                    .End()
-                    .Begin(MenuItem.IType.VSPLIT)
-                        .Add("Display", true)
-                     .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Icon Scale")
-                        .Add(m_iconscale)
-                    .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Draw Shadows")
-                        .Add(new Parameter<bool>(true, ""))
-                    .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Enable Textures")
-                        .Add(new Parameter<bool>(true, ""))
-                    .End()
-                    .Begin(MenuItem.IType.VSPLIT)
-                        .Add("AR", true)
-                     .End()
-                    .Begin(MenuItem.IType.HSPLIT)
-                        .Add("Enable AR")
-                        .Add(new Parameter<bool>(true, ""))
-                    .End()
-                .End();
-            menu.caption = "Configuration";
-            menu.setIcon("Images/button_translate");
-            //manager.addMenu(menu);
-
-            MenuTree menu2 = new MenuTree()
-               .Begin(MenuItem.IType.VSPLIT)
-
-               .Begin(MenuItem.IType.VSPLIT)
-                   .Add(new Parameter<string>("This is a test string", "StringParameter"))
-                   .Add(new Parameter<float>(123.456f, "FloatParameter"))
-                   .Add(MenuItem.IType.SPACE)
-                   .Add(new Parameter<bool>(true, "BoolParameter"))
-                   .Add(MenuItem.IType.SPACE)
-                   .Add("That's an info text string.")
-               .End()
-               .Begin(MenuItem.IType.HSPLIT)
-                   .Add(new Parameter<object>(null, "OK"))
-                   .Add(new Parameter<object>(null, "Abort"))
-               .End()
-               .Begin(MenuItem.IType.HSPLIT)
-                   .Add("Bla Hello", true)
-               .End()
-            .End();
-
-            menu2.caption = "Bla!";
-            //manager.addMenu(menu2);
-            // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
             manager.menuSelected += createMenu;
             manager.menuDeselected += destroyMenu;
