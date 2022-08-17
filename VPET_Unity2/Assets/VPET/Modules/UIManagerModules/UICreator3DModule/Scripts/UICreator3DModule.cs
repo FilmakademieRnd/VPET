@@ -1073,7 +1073,7 @@ namespace vpet
             if (!selObj)
                 return Vector3.one;
          
-            return Vector3.one * uiScale * 2.54f
+            return Vector3.one * uiScale 
                        * (Vector3.Distance(mainCamera.transform.position, selObj.transform.position)
                        * (4.0f * Mathf.Tan(0.5f * (Mathf.Deg2Rad * mainCamera.fieldOfView)))
                        * Screen.dpi / (Screen.width + Screen.height));
