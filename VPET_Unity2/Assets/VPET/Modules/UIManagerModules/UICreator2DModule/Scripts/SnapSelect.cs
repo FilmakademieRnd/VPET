@@ -240,10 +240,26 @@ namespace vpet
         //!
         private float _sensitivity;
 
+        public int addElement(string caption, int buttonID)
+        {
+            return addElement(caption, 0f, null, false, buttonID);
+        }
+
+        public int addElement(Sprite sprite, int buttonID)
+        {
+            return addElement(sprite, 0f, null, false, buttonID);
+        }
+
+        public int addElement(string caption, Sprite sprite, int buttonID)
+        {
+            return addElement(caption,sprite, 0f, null, false, buttonID);
+        }
+
+
         //!
         //!
         //!
-        public int addElement(string caption, float initValue = 0f, Action action = null, bool isToogle = false)
+        public int addElement(string caption, float initValue = 0f, Action action = null, bool isToogle = false, int buttonID = -1)
         {
             //add element to element list
             _elementValues.Add(initValue);
@@ -258,6 +274,7 @@ namespace vpet
             for (int i = 0; i < repetitions; i++)
             {
                 Transform elementTrans = SceneObject.Instantiate(elementPrefab, this.transform).transform;
+                elementTrans.GetComponent<SnapSelectElement>().buttonID = (buttonID == -1) ? _elementCount : buttonID;
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
@@ -280,7 +297,7 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(Sprite sprite, float initValue = 0f, Action action = null, bool isToogle = false)
+        public int addElement(Sprite sprite, float initValue = 0f, Action action = null, bool isToogle = false, int buttonID = -1)
         {
             //add element to element list
             _elementValues.Add(initValue);
@@ -297,6 +314,7 @@ namespace vpet
             {
                 Transform elementTrans = SceneObject.Instantiate(elementPrefab, this.transform).transform;
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
+                elementTrans.GetComponent<SnapSelectElement>().buttonID = (buttonID == -1)? _elementCount : buttonID;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
                 elementTrans.GetComponent<SnapSelectElement>().isToggle = isToogle;
@@ -317,7 +335,7 @@ namespace vpet
         //!
         //!
         //!
-        public int addElement(string caption, Sprite sprite, float initValue = 0f, Action action = null, bool isToogle = false)
+        public int addElement(string caption, Sprite sprite, float initValue = 0f, Action action = null, bool isToogle = false, int buttonID = -1)
         {
             //add element to element list
             _elementValues.Add(initValue);
@@ -334,6 +352,7 @@ namespace vpet
             {
                 Transform elementTrans = SceneObject.Instantiate(elementPrefab, this.transform).transform;
                 elementTrans.GetComponent<SnapSelectElement>().index = _elementCount;
+                elementTrans.GetComponent<SnapSelectElement>().buttonID = (buttonID == -1) ? _elementCount : buttonID;
                 elementTrans.GetComponent<SnapSelectElement>().clicked += handleClick;
                 elementTrans.GetComponent<SnapSelectElement>().clickAction = action;
                 elementTrans.GetComponent<SnapSelectElement>().isToggle = isToogle;
@@ -583,7 +602,7 @@ namespace vpet
                     _currentAxis = e.index;
                     setText(_elementValues[_currentAxis]);
                     parameterChanged?.Invoke(this, _currentAxis);
-                    elementClicked?.Invoke(this, e.index);
+                    elementClicked?.Invoke(this, e.buttonID);
                     highlightElement?.Invoke(this, e.index);
                 }
                 else if (!_axisDecided)

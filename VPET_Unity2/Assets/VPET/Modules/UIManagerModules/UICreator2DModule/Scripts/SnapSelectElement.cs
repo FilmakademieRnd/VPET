@@ -88,9 +88,14 @@ namespace vpet
 
         //!
         //! index of the element in the menu
-        //! reported back to SnapSelect when element is clicked
         //!
         public int index;
+
+        //!
+        //! id of the corresponding menu button
+        //! reported back to SnapSelect when element is clicked
+        //!
+        public int buttonID;
 
 
         //!

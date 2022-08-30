@@ -346,7 +346,6 @@ namespace vpet
         //!
         private void destroyMenu(object sender, EventArgs e)
         {
-            Debug.Log("Destroy");
             foreach (GameObject uiElement in m_uiElements)
             {
                 UnityEngine.Object.DestroyImmediate(uiElement);

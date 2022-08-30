@@ -140,15 +140,15 @@ namespace vpet
                     {
                         Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
                         if (resImage != null)
-                            m_menuSelector.addElement(/*menu.caption,*/ resImage);
+                            m_menuSelector.addElement(/*menu.caption,*/ resImage, menu.id);
 
                     }
                     else if (menu.caption.Length > 0)
-                        m_menuSelector.addElement(menu.caption);
+                        m_menuSelector.addElement(menu.caption, menu.id);
                     else
                     {
                         Helpers.Log("Menu has no caption and Icon!", Helpers.logMsgType.WARNING);
-                        m_menuSelector.addElement("EMPTY");
+                        m_menuSelector.addElement("EMPTY", menu.id);
                     }
                 }
             }
