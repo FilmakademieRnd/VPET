@@ -195,6 +195,12 @@ namespace vpet
 
             CreateSettingsMenu();
             createStartMenu();
+
+            startMenu
+                .Begin(MenuItem.IType.HSPLIT)
+                    .Add("Role")
+                    .Add(settings.roles)
+                .End();
         }
 
         //!
@@ -367,7 +373,7 @@ namespace vpet
         //!
         private void CreateSettingsMenu()
         {
-            MenuTree settingsMenu = new MenuTree();
+            MenuTree settingsMenu = new MenuTree(new List<Roles> {Roles.EXPERT});
             settingsMenu.caption = "Settings";
             settingsMenu.setIcon("Images/button_gear");
             settingsMenu.scrollable = true;
@@ -399,7 +405,7 @@ namespace vpet
             m_startMenu = new MenuTree()
                 .Begin(MenuItem.IType.VSPLIT)
                     .Begin(MenuItem.IType.VSPLIT)
-                        .Add("Connet to a Server or load the Demo Scene...", true)
+                        .Add("Connect to a server or load the demo scene...", true)
                     .End();
 
             m_startMenu.caption = "VPET";

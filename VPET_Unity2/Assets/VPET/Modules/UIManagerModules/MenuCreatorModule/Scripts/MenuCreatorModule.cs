@@ -138,20 +138,22 @@ namespace vpet
             if (menu.visible && m_oldMenu == menu)
                 menu.visible = false;
             else
-            {                
+            {    
                 GameObject menuCanvas = GameObject.Instantiate(m_canvas);
                 menuCanvas.GetComponent<Canvas>().sortingOrder = 15;
                 m_uiElements.Add(menuCanvas);
                 GameObject rootPanel = menuCanvas.transform.Find("Panel").gameObject;                
-                TextMeshProUGUI menuTitle = menuCanvas.transform.Find("Text").GetComponent<TextMeshProUGUI>();
-                menuTitle.font = manager.uiAppearanceSettings.defaultFont;
-                menuTitle.fontSize = manager.uiAppearanceSettings.defaultFontSize+1;
-                menuTitle.color = manager.uiAppearanceSettings.colors.FontColor;
-                menuTitle.text = menu.caption;
                 //Image imageComponent = menuCanvas.GetComponentInChildren<Image>();
                 Image imageComponent = menuCanvas.transform.Find("Panel_Menu").GetComponent<Image>();
                 imageComponent.color = manager.uiAppearanceSettings.colors.MenuTitleBG;
                 m_uiElements.Add(rootPanel);
+                TextMeshProUGUI menuTitle = menuCanvas.transform.FindDeepChild("Text").GetComponent<TextMeshProUGUI>();
+                menuTitle.font = manager.uiAppearanceSettings.defaultFont;
+                menuTitle.fontSize = manager.uiAppearanceSettings.defaultFontSize + 1;
+                menuTitle.color = manager.uiAppearanceSettings.colors.FontColor;
+                menuTitle.text = menu.caption;
+                GameObject button = menuCanvas.transform.FindDeepChild("Button").gameObject;
+                button.GetComponent<Button>().onClick.AddListener(() => destroyMenu(this, EventArgs.Empty));
 
                 ScrollRect rect = rootPanel.GetComponent<ScrollRect>();
                 foreach (MenuItem p in menu.Items)
@@ -344,6 +346,7 @@ namespace vpet
         //!
         private void destroyMenu(object sender, EventArgs e)
         {
+            Debug.Log("Destroy");
             foreach (GameObject uiElement in m_uiElements)
             {
                 UnityEngine.Object.DestroyImmediate(uiElement);
