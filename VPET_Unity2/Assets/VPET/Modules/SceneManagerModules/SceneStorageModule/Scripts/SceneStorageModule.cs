@@ -80,7 +80,13 @@ namespace vpet
             UIManager uiManager = core.getManager<UIManager>();
             uiManager.addMenu(m_menu);
 
-            uiManager.showMenu(m_menu);
+            // add elements to start menu
+            uiManager.startMenu
+                .Begin(MenuItem.IType.HSPLIT)
+                    .Add(loadDemoButton)
+                .End();
+
+            //uiManager.showMenu(m_menu);
         }
 
         //!

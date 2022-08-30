@@ -72,10 +72,6 @@ namespace vpet
         //!
         private GameObject m_text;
         //!
-        //! Prefab for the Unity text object, used as UI element for an string (read only) parameter to seperate Menu section including background element.
-        //!
-        private GameObject m_textsection;
-        //!
         //! Prefab for the Unity input field object, used as UI element for an string parameter.
         //!
         private GameObject m_inputField;
@@ -104,7 +100,6 @@ namespace vpet
             m_button = Resources.Load("Prefabs/MenuButton") as GameObject;
             m_toggle = Resources.Load("Prefabs/MenuToggle") as GameObject;
             m_text = Resources.Load("Prefabs/MenuText") as GameObject;
-            m_textsection = Resources.Load("Prefabs/MenuTextSection") as GameObject;
             m_inputField = Resources.Load("Prefabs/MenuInputField") as GameObject;
             m_numberInputField = Resources.Load("Prefabs/MenuNumberInputField") as GameObject;
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
@@ -228,15 +223,15 @@ namespace vpet
                     break;
                 case MenuItem.IType.TEXTSECTION:
                     {
-                        newObject = GameObject.Instantiate(m_textsection, parentObject.transform);
-                        TextMeshProUGUI textComponent = newObject.GetComponentInChildren<TextMeshProUGUI>();
+                        newObject = GameObject.Instantiate(m_text, parentObject.transform);
+                        TextMeshProUGUI textComponent = newObject.GetComponent<TextMeshProUGUI>();
                         textComponent.text = ((Parameter<string>)item.Parameter).value;
                         textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
                         textComponent.font = manager.uiAppearanceSettings.defaultFont;
                         textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
                         textComponent.fontStyle = FontStyles.Bold;
-                        Image imageComponent = newObject.GetComponentInChildren<Image>();
-                        imageComponent.color = manager.uiAppearanceSettings.colors.MenuTitleBG;
+                        textComponent.alignment = TextAlignmentOptions.Midline;
+                        textComponent.enableWordWrapping = true;
                     }
                     break;
                 case MenuItem.IType.PARAMETER:

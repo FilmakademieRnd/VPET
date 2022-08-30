@@ -59,7 +59,7 @@ namespace vpet
         //!
         //! A reference to the vpet core.
         //!
-        static protected Core _core = null;
+        static public Core _core = null;
         //!
         //! Event emitted when parameter changed.
         //!

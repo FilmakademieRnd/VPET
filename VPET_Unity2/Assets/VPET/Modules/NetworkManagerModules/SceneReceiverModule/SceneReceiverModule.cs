@@ -81,7 +81,18 @@ namespace vpet
         //! 
         protected override void Init(object sender, EventArgs e)
         {
-            Parameter<Action> button = new Parameter<Action>(Connect, "Start");
+
+        }
+
+        //! 
+        //! Function called when an Unity Start() callback is triggered
+        //! 
+        //! @param sender A reference to the VPET core.
+        //! @param e Arguments for these event. 
+        //! 
+        protected override void Start(object sender, EventArgs e)
+        {
+            Parameter<Action> button = new Parameter<Action>(Connect, "Connect");
 
             List<AbstractParameter> parameterList1 = new List<AbstractParameter>
             {
@@ -106,17 +117,19 @@ namespace vpet
 
             m_menu.iconResourceLocation = "Images/button_network";
             m_menu.caption = "Network Settings";
-            core.getManager<UIManager>().addMenu(m_menu);
-        }
+            UIManager uiManager = core.getManager<UIManager>();
+            uiManager.addMenu(m_menu);
 
-        //! 
-        //! Function called when an Unity Start() callback is triggered
-        //! 
-        //! @param sender A reference to the VPET core.
-        //! @param e Arguments for these event. 
-        //! 
-        protected override void Start(object sender, EventArgs e)
-        {
+            // add elements to start menu;
+            uiManager.startMenu
+                .Begin(MenuItem.IType.HSPLIT)
+                    .Add("IP Address")
+                    .Add(manager.settings.ipAddress)
+                .End()
+                .Begin(MenuItem.IType.HSPLIT)
+                     .Add(button)
+                .End();
+
             //core.getManager<UIManager>().showMenu(m_menu);
         }
 

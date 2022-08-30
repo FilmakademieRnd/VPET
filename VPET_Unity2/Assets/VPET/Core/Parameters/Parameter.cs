@@ -464,6 +464,122 @@ namespace vpet
 
     }
 
+    public class AnimatedParameter<T> : Parameter<T>
+    {
+        private AnimationManager m_animationManager;
+        private int m_nextIdx, m_prevIdx;
+        private List<Key<T>> m_keyList;
+        public ref List<Key<T>> key_List { get => ref m_keyList; }
+        //!
+        //! The AnimatedParameter's Constructor
+        //!
+        public AnimatedParameter(T value, string name, AnimationManager animationManager, ParameterObject parent = null, bool distribute = true) : base(value, name, parent, distribute) 
+        {
+            m_keyList = new List<Key<T>>();
+            m_nextIdx = 0;
+            m_prevIdx = 0;
+            m_animationManager = ParameterObject._core.getManager<AnimationManager>();
+            m_animationManager.animationUpdate += updateValue;
+            m_animationManager.cleanupEvent += Cleanup;
+        }
+
+        //!
+        //! The AnimatedParameter's Destructor
+        //!
+        private void Cleanup(object o, EventArgs e)
+        {
+            m_keyList.Clear();
+            m_animationManager.animationUpdate -= updateValue;
+            m_animationManager.cleanupEvent -= Cleanup;
+        }
+
+        private void updateValue(object o, float time)
+        {
+            if (isAnimated())
+            {
+                // current time is NOT in between the two active keys
+                if (time < m_keyList[m_prevIdx].time || time > m_keyList[m_nextIdx].time)
+                {
+                    int i = findNextKeyIndex(time);
+                    // current time is bigger than all keys in list
+                    if (i == -1)
+                        m_nextIdx = m_prevIdx = m_keyList.Count - 1;
+                    else
+                    {
+                        // current time is smaller than all keys in list
+                        if (i == 0)
+                            m_nextIdx = m_prevIdx = 0;
+                        // current time is somewhere between all keys in list
+                        else
+                        {
+                            m_nextIdx = i;
+                            m_prevIdx = i - 1;
+                        }
+                    }
+                }
+                value = interpolate(time);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool isAnimated()
+        {
+            return m_keyList.Count > 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T interpolate(float time)
+        {
+            switch (_type)
+            {
+                case ParameterType.FLOAT:
+                    float inBetween = (time - m_keyList[m_prevIdx].time) / (m_keyList[m_prevIdx].time - m_keyList[m_nextIdx].time);
+                    float s1 = 1.0f - (m_keyList[m_nextIdx].time - inBetween) / (m_keyList[m_nextIdx].time - m_keyList[m_prevIdx].time);
+                    return (T)(object) (((float) (object)m_keyList[m_prevIdx].value) * (1.0f - s1) + ((float) (object)m_keyList[m_nextIdx].value) * s1);
+                default:
+                    return default(T);
+            }
+        }
+
+        public void addKey(Key<T> key)
+        {
+            int i = findNextKeyIndex(key);
+            if (i == -1)
+            {
+                int i2 = m_keyList.IndexOf(key);
+                if (i2 > -1)
+                    m_keyList[i2].value = key.value;
+                else
+                    m_keyList.Add(key);
+            }
+            else
+                m_keyList.Insert(i, key);
+
+        }
+
+        public void removeKey(Key<T> key)
+        {
+            m_keyList.Remove(key);
+        }
+
+        public void setKey()
+        {
+            addKey(new Key<T>(m_animationManager.time, value));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int findNextKeyIndex(Key<T> key)
+        {
+            return m_keyList.FindIndex(i => i.time > key.time);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int findNextKeyIndex(float time)
+        {
+            return m_keyList.FindIndex(i => i.time >= time);
+        }
+    }
+
     [Serializable]
     //!
     //! ListParameter class defining the fundamental functionality and interface

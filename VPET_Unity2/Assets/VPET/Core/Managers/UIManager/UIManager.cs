@@ -132,6 +132,9 @@ namespace vpet
         //!
         //! Getter and setter for activating/deactivating 2D UI interaction
         //!
+        private MenuTree m_startMenu;
+        public ref MenuTree startMenu
+        { get => ref m_startMenu; }
         public bool ui2Dinteractable
         {
             get { return _ui2Dinteractable; }
@@ -191,6 +194,7 @@ namespace vpet
             settings.roles.hasChanged += changeActiveRole;
 
             CreateSettingsMenu();
+            createStartMenu();
         }
 
         //!
@@ -221,6 +225,10 @@ namespace vpet
             core.orientationChangedEvent += updateCanvasScales;
             
             core.getManager<InputManager>().toggle2DUIInteraction += activate2DUIInteraction;
+
+            // close open menu layout and show start menu
+            m_startMenu.End();
+            showMenu(m_startMenu);
         }
 
         //!
@@ -384,6 +392,17 @@ namespace vpet
             settingsMenu.End();  // <<< end VSPLIT
 
             addMenu(settingsMenu);
+        }
+
+        private void createStartMenu()
+        {
+            m_startMenu = new MenuTree()
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Begin(MenuItem.IType.VSPLIT)
+                        .Add("Connet to a Server or load the Demo Scene...", true)
+                    .End();
+
+            m_startMenu.caption = "VPET";
         }
 
 

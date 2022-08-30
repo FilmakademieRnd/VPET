@@ -103,6 +103,9 @@ namespace vpet
         //! The global list of parameter objects.
         //!
         private List<ParameterObject> m_parameterObjectList;
+        //!
+        //! The current orientation of the device;
+        //!
         private DeviceOrientation m_orientation;
         //!
         //! Getter for the parameter object list.
@@ -170,6 +173,10 @@ namespace vpet
             //Create Input manager
             InputManager inputManager = new InputManager(typeof(InputManagerModule), this);
             m_managerList.Add(typeof(InputManager), inputManager);
+
+            //Create Animation manager
+            AnimationManager animationManager = new AnimationManager(typeof(AnimationManagerModule), this);
+            m_managerList.Add(typeof(AnimationManager), animationManager);
 
             LoadSettings();
 
