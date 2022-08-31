@@ -37,6 +37,14 @@ namespace vpet
     public class Key<T>
     {
         //!
+        //! The key's value and tangent value.
+        //!
+        public T value, tangentValue;
+        //!
+        //! The key's time and tangent time.
+        //!
+        public float time, tangentTime;
+        //!
         //! Enumeration for the different interpolation types
         //!
         public enum KeyType { STEP, LINEAR, BEZIER }
@@ -44,14 +52,6 @@ namespace vpet
         //! The key's type.
         //!
         public KeyType type;
-        //!
-        //! The key's time and tangent time.
-        //!
-        public float time, tangentTime;
-        //!
-        //! The key's value and tangent value.
-        //!
-        public T value, tangentValue;
 
         //!
         //! The Key's constructor for generic types.

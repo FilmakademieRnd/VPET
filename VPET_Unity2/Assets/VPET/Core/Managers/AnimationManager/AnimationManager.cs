@@ -22,9 +22,8 @@ Syncronisation Server. They are licensed under the following terms:
 */
 
 //! @file "AnimationManager.cs"
-//! @brief Implementation of the VPET Input Manager, managing all user inupts and mapping.
+//! @brief Implementation of the VPET Animation Manager, managing all animation.
 //! @author Simon Spielmann
-//! @author Jonas Trottnow
 //! @version 0
 //! @date 22.08.2022
 

@@ -44,14 +44,6 @@ namespace vpet
     public abstract class AbstractParameter
     {
         //!
-        //! Flag that determines whether a Parameter will be distributed.
-        //!
-        public bool _distribute;
-        //!
-        //! The unique id of this parameter.
-        //!
-        protected short _id;
-        //!
         //! The parameters C# type.
         //!
         [SerializeField]
@@ -62,9 +54,17 @@ namespace vpet
         [SerializeField]
         protected string _name;
         //!
+        //! The unique id of this parameter.
+        //!
+        protected short _id;
+        //!
         //! A reference to the parameters parent object.
         //!
         protected ParameterObject _parent;
+        //!
+        //! Flag that determines whether a Parameter will be distributed.
+        //!
+        public bool _distribute;
         //!
         //! Definition of VPETs parameter types
         //!
@@ -182,6 +182,38 @@ namespace vpet
     //!
     public class Parameter<T> : AbstractParameter
     {
+        [SerializeField]
+        //!
+        //! The parameters value as a template.
+        //!
+        protected T _value;
+
+        [SerializeField]
+        //!
+        //! The initial value of the parameter at constuction time.
+        //!
+        protected T _initialValue;
+        //!
+        //! The next and the previous active keyframe index (for animation).
+        //!
+        private int _nextIdx, _prevIdx;
+        //!
+        //! The list of keyframes (for animation).
+        //!
+        private List<Key<T>> _keyList = null;
+        //!
+        //! A reference to the key list (for animation).
+        //!
+        public ref List<Key<T>> key_List { get => ref _keyList; }
+        //!
+        //! A reference to the Animation Manager.
+        //!
+        private AnimationManager _animationManager = null;
+        //!
+        //! Event emitted when parameter changed.
+        //!
+        public event EventHandler<T> hasChanged;
+
         //!
         //! The paramters constructor, initializing members.
         //!
@@ -190,16 +222,16 @@ namespace vpet
         //! @param name The parameters parent ParameterObject.
         //! @param name Flag that determines whether a Parameter will be distributed.
         //!
-        public Parameter(T value, string name, ParameterObject parent = null, bool distribute = true) 
+        public Parameter(T value, string name, ParameterObject parent = null, bool distribute = true)
         {
             _value = value;
             _name = name;
             _parent = parent;
             _type = toVPETType(typeof(T));
             _distribute = distribute;
-
-            //history initialization
             _initialValue = value;
+            _nextIdx = 0;
+            _prevIdx = 0;
 
             if (parent)
             {
@@ -227,13 +259,18 @@ namespace vpet
             _type = p._type;
             _distribute = p._distribute;
             _initialValue = p._initialValue;
-        }
+            _nextIdx = 0;
+            _prevIdx = 0;
+            _keyList = p._keyList;
+            _animationManager = p._animationManager;
 
-        [SerializeField]
-        //!
-        //! The parameters value as a template.
-        //!
-        protected T _value;
+            if (_keyList != null && _animationManager != null)
+                _animationManager.animationUpdate += updateValue;
+        }
+        ~Parameter()
+        {
+            clearKeys();
+        }
 
         //!
         //! Getter and setter for the parameters value. 
@@ -245,17 +282,6 @@ namespace vpet
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { setValue(value); }
         }
-
-        [SerializeField]
-        //!
-        //! The initial value of the parameter at constuction time
-        //!
-        protected T _initialValue;
-
-        //!
-        //! Event emitted when parameter changed.
-        //!
-        public event EventHandler<T> hasChanged;
 
         //!
         //! function called to change a parameters value.
@@ -298,6 +324,182 @@ namespace vpet
                 hasChanged?.Invoke(this, _value);
             }
         }
+
+          /////////////////////////////////////////////////////////
+         /////////////////////// Animation ///////////////////////
+        /////////////////////////////////////////////////////////
+
+        //!
+        //! Initializes the parameters animation functionality,
+        //!
+        private void initAnimation()
+        {
+            if (_keyList == null)
+                _keyList = new List<Key<T>>();
+
+            if (_animationManager == null)
+            {
+                _animationManager = ParameterObject._core.getManager<AnimationManager>();
+                _animationManager.animationUpdate += updateValue;
+            }
+        }
+
+        //!
+        //! Insert a given key element to the parameters key list, at the corresponding index.
+        //!
+        //! @param key The key to be added to the parameters key list.
+        //!
+        public void addKey(Key<T> key)
+        {
+            if (!isAnimated())
+                initAnimation();
+
+            int i = findNextKeyIndex(key);
+            if (i == -1)
+            {
+                int i2 = _keyList.IndexOf(key);
+                if (i2 > -1)
+                    _keyList[i2].value = key.value;
+                else
+                    _keyList.Add(key);
+            }
+            else
+                _keyList.Insert(i, key);
+
+        }
+
+        //!
+        //! Revove a given key element from the parameters key list.
+        //!
+        //! @param key The key to be removed from the parameters key list.
+        //!
+        public void removeKey(Key<T> key)
+        {
+            if (_keyList != null)
+            {
+                _keyList.Remove(key);
+                if (_keyList.Count == 0)
+                    _animationManager.animationUpdate -= updateValue;
+            }
+        }
+
+        //!
+        //! Create and insert a new key element to the parameters key list, 
+        //! based on the current parameter value and Animation Manager time.
+        //!
+        public void setKey()
+        {
+            addKey(new Key<T>(_animationManager.time, value));
+        }
+
+        //!
+        //! Clear the parameters key list and disable the animation functionality.
+        //!
+        private void clearKeys()
+        {
+            if (_animationManager != null)
+                _animationManager.animationUpdate -= updateValue;
+
+            if (_keyList != null)
+                _keyList.Clear();
+        }
+
+        //!
+        //! Calculate the parameters value based on the keylist and given time.
+        //!
+        //! @param o A reference to the Animation Manager.
+        //! @param time The given time used to calulate the parameters new value.
+        //!
+        private void updateValue(object o, float time)
+        {
+            if (isAnimated())
+            {
+                // current time is NOT in between the two active keys
+                if (time < _keyList[_prevIdx].time || time > _keyList[_nextIdx].time)
+                {
+                    int i = findNextKeyIndex(time);
+                    // current time is bigger than all keys in list
+                    if (i == -1)
+                        _nextIdx = _prevIdx = _keyList.Count - 1;
+                    else
+                    {
+                        // current time is smaller than all keys in list
+                        if (i == 0)
+                            _nextIdx = _prevIdx = 0;
+                        // current time is somewhere between all keys in list
+                        else
+                        {
+                            _nextIdx = i;
+                            _prevIdx = i - 1;
+                        }
+                    }
+                }
+                value = interpolate(time);
+            }
+        }
+
+        //!
+        //! Function for searching the next bigger key index in the key list.
+        //!
+        //! @param key The key on which the index is to be searched.
+        //! @return The next bigger index in the keylist.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int findNextKeyIndex(Key<T> key)
+        {
+            return _keyList.FindIndex(i => i.time > key.time);
+        }
+
+        //!
+        //! Function for searching the next bigger key index in the key list.
+        //!
+        //! @param time The time on which the index is to be searched.
+        //! @return The next bigger index in the keylist.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int findNextKeyIndex(float time)
+        {
+            return _keyList.FindIndex(i => i.time >= time);
+        }
+
+        //!
+        //! Function that returns the current animation state of the parameter.
+        //!
+        //! @return The current animation state of the parameter.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool isAnimated()
+        {
+            if (_keyList != null)
+                return _keyList.Count > 0;
+            else
+                return false;
+        }
+
+        //!
+        //! Function that interpolates the current parameter value based on a given
+        //! time and the previous and next time indices.
+        //!
+        //! @parameter time The given time used to interpolate the parameters value.
+        //! @return The interpolated parameter value.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T interpolate(float time)
+        {
+            switch (_type)
+            {
+                case ParameterType.FLOAT:
+                    float inBetween = (time - _keyList[_prevIdx].time) / (_keyList[_prevIdx].time - _keyList[_nextIdx].time);
+                    float s1 = 1.0f - (_keyList[_nextIdx].time - inBetween) / (_keyList[_nextIdx].time - _keyList[_prevIdx].time);
+                    return (T)(object)(((float)(object)_keyList[_prevIdx].value) * (1.0f - s1) + ((float)(object)_keyList[_nextIdx].value) * s1);
+                default:
+                    return default(T);
+            }
+        }
+
+          /////////////////////////////////////////////////////////////
+         /////////////////////// Serialisation ///////////////////////
+        /////////////////////////////////////////////////////////////
 
         //!
         //! Function for serializing the parameters data.
@@ -452,131 +654,6 @@ namespace vpet
                     return;
             }
             hasChanged?.Invoke(this, _value);
-        }
-
-        //!
-        //! Function for string serialization. Used for storing parameters to disk.
-        //! 
-        //! @param format The format string (not used).
-        //! @formatProvider The format prvider used to format the string (not used).
-        //! 
-       
-
-    }
-
-    public class AnimatedParameter<T> : Parameter<T>
-    {
-        private AnimationManager m_animationManager;
-        private int m_nextIdx, m_prevIdx;
-        private List<Key<T>> m_keyList;
-        public ref List<Key<T>> key_List { get => ref m_keyList; }
-        //!
-        //! The AnimatedParameter's Constructor
-        //!
-        public AnimatedParameter(T value, string name, AnimationManager animationManager, ParameterObject parent = null, bool distribute = true) : base(value, name, parent, distribute) 
-        {
-            m_keyList = new List<Key<T>>();
-            m_nextIdx = 0;
-            m_prevIdx = 0;
-            m_animationManager = ParameterObject._core.getManager<AnimationManager>();
-            m_animationManager.animationUpdate += updateValue;
-            m_animationManager.cleanupEvent += Cleanup;
-        }
-
-        //!
-        //! The AnimatedParameter's Destructor
-        //!
-        private void Cleanup(object o, EventArgs e)
-        {
-            m_keyList.Clear();
-            m_animationManager.animationUpdate -= updateValue;
-            m_animationManager.cleanupEvent -= Cleanup;
-        }
-
-        private void updateValue(object o, float time)
-        {
-            if (isAnimated())
-            {
-                // current time is NOT in between the two active keys
-                if (time < m_keyList[m_prevIdx].time || time > m_keyList[m_nextIdx].time)
-                {
-                    int i = findNextKeyIndex(time);
-                    // current time is bigger than all keys in list
-                    if (i == -1)
-                        m_nextIdx = m_prevIdx = m_keyList.Count - 1;
-                    else
-                    {
-                        // current time is smaller than all keys in list
-                        if (i == 0)
-                            m_nextIdx = m_prevIdx = 0;
-                        // current time is somewhere between all keys in list
-                        else
-                        {
-                            m_nextIdx = i;
-                            m_prevIdx = i - 1;
-                        }
-                    }
-                }
-                value = interpolate(time);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool isAnimated()
-        {
-            return m_keyList.Count > 0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T interpolate(float time)
-        {
-            switch (_type)
-            {
-                case ParameterType.FLOAT:
-                    float inBetween = (time - m_keyList[m_prevIdx].time) / (m_keyList[m_prevIdx].time - m_keyList[m_nextIdx].time);
-                    float s1 = 1.0f - (m_keyList[m_nextIdx].time - inBetween) / (m_keyList[m_nextIdx].time - m_keyList[m_prevIdx].time);
-                    return (T)(object) (((float) (object)m_keyList[m_prevIdx].value) * (1.0f - s1) + ((float) (object)m_keyList[m_nextIdx].value) * s1);
-                default:
-                    return default(T);
-            }
-        }
-
-        public void addKey(Key<T> key)
-        {
-            int i = findNextKeyIndex(key);
-            if (i == -1)
-            {
-                int i2 = m_keyList.IndexOf(key);
-                if (i2 > -1)
-                    m_keyList[i2].value = key.value;
-                else
-                    m_keyList.Add(key);
-            }
-            else
-                m_keyList.Insert(i, key);
-
-        }
-
-        public void removeKey(Key<T> key)
-        {
-            m_keyList.Remove(key);
-        }
-
-        public void setKey()
-        {
-            addKey(new Key<T>(m_animationManager.time, value));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int findNextKeyIndex(Key<T> key)
-        {
-            return m_keyList.FindIndex(i => i.time > key.time);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int findNextKeyIndex(float time)
-        {
-            return m_keyList.FindIndex(i => i.time >= time);
         }
     }
 
