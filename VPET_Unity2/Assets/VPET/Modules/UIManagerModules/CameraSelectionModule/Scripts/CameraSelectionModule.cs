@@ -333,7 +333,13 @@ namespace vpet
             m_cameraIndex++;
 
             if (m_isLocked)
-                lockToCamera();
+            {
+                core.updateEvent -= updateLockToCamera;
+                core.updateEvent -= updateLookThrough;
+                m_isLocked = false;
+
+                uiCameraOperation.Invoke(this, m_isLocked);
+            }
 
             if (m_cameraIndex > m_sceneManager.sceneCameraList.Count - 1)
                 m_cameraIndex = 0;

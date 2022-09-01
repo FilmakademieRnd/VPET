@@ -44,32 +44,10 @@ namespace vpet
     public abstract class AbstractParameter
     {
         //!
-        //! The parameters C# type.
-        //!
-        [SerializeField]
-        protected ParameterType _type;
-        //!
         //! The name of the parameter.
         //!
         [SerializeField]
         protected string _name;
-        //!
-        //! The unique id of this parameter.
-        //!
-        protected short _id;
-        //!
-        //! A reference to the parameters parent object.
-        //!
-        protected ParameterObject _parent;
-        //!
-        //! Flag that determines whether a Parameter will be distributed.
-        //!
-        public bool _distribute;
-        //!
-        //! Definition of VPETs parameter types
-        //!
-        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, LIST, UNKNOWN = 100 }
-
         //!
         //! List for mapping VPET parameter types to C# types and visa versa.
         //!
@@ -84,6 +62,27 @@ namespace vpet
                                                                           typeof(Color),
                                                                           typeof(string),
                                                                           typeof(int)};
+        //!
+        //! Definition of VPETs parameter types
+        //!
+        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, LIST, UNKNOWN = 100 }
+        //!
+        //! The parameters C# type.
+        //!
+        [SerializeField]
+        protected ParameterType _type;
+        //!
+        //! A reference to the parameters parent object.
+        //!
+        protected ParameterObject _parent;
+        //!
+        //! The unique id of this parameter.
+        //!
+        protected short _id;
+        //!
+        //! Flag that determines whether a Parameter will be distributed.
+        //!
+        public bool _distribute;
         //!
         //! Getter for unique id of this parameter.
         //!
@@ -248,7 +247,7 @@ namespace vpet
 
         //!
         //! Copy Constructor
-        //! p source parameter to copy values from
+        //! @param p source parameter to copy values from
         //!
         public Parameter(Parameter<T> p)
         {
@@ -267,6 +266,10 @@ namespace vpet
             if (_keyList != null && _animationManager != null)
                 _animationManager.animationUpdate += updateValue;
         }
+
+        //!
+        //! Destructor
+        //!
         ~Parameter()
         {
             clearKeys();
