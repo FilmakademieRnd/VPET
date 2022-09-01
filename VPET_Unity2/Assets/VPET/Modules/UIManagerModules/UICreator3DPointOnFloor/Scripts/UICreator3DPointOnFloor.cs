@@ -194,9 +194,6 @@ namespace vpet
             // using its monobehaviour quality
             selObj.StopAllCoroutines();
             selObj.StartCoroutine(SmoothMove());
-
-
-
         }
 
         //!

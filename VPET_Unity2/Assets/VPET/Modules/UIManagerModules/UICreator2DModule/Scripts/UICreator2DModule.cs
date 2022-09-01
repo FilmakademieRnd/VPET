@@ -190,8 +190,29 @@ namespace vpet
                     case "range":
                         snapSelect.addElement(Resources.Load<Sprite>("Images/button_range"));
                         break;
+                    case "aperture":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_aperture"));
+                        break;
+                    case "aspectRatio":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_aspect"));
+                        break;
                     case "radius":
                         snapSelect.addElement(Resources.Load<Sprite>("Images/button_radius"));
+                        break;
+                    case "fov":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_fov"));
+                        break;
+                    case "farClipPlane":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_farClipPlane_text"));
+                        break;
+                    case "nearClipPlane":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_nearClipPlane_text"));
+                        break;
+                    case "focalDistance":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_focalDistance"));
+                        break;
+                    case "sensorSize":
+                        snapSelect.addElement(Resources.Load<Sprite>("Images/button_sensorSize_text"));
                         break;
                     default:                        
                         snapSelect.addElement(mainSelection.parameterList[i].name);

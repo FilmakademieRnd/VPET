@@ -136,6 +136,8 @@ namespace vpet
             //attach reset function to click event
             snapSelect.highlightElement += setHighlight;
 
+            snapSelect.updateHighlightElement += updateHighlight;
+
             //get ui settings
             uiSettings = snapSelect.uiSettings;
 
@@ -229,6 +231,26 @@ namespace vpet
                     if (image.sprite)
                         image.color = uiSettings.colors.ElementSelection_Default;
             }
+        }
+
+        public void updateHighlight(object sender, MenuButton.HighlightEventArgs e)
+        {
+            if (e.id == buttonID)
+                if (e.highlight)
+                {
+                    txt.color = uiSettings.colors.ElementSelection_Highlight;
+                    if (image)
+                        if (image.sprite)
+                            image.color = uiSettings.colors.ElementSelection_Highlight;
+                }
+                else
+                {
+                    txt.color = uiSettings.colors.ElementSelection_Default;
+                    if (image)
+                        if (image.sprite)
+                            image.color = uiSettings.colors.ElementSelection_Default;
+                }
+
         }
     }
 }

@@ -87,19 +87,39 @@ namespace vpet
                     Parameter<float> paramFloat = (Parameter<float>)abstractParam;
                     paramFloat.hasChanged += _snapSelect.setParam;
                     _snapSelect.setSensitivity(100f);
-                    _snapSelect._loop = true;                    
+                    _snapSelect._loop = false;                    
                     switch (paramFloat.name) {
                         case "intensity":
-                            _snapSelect._loop = false;
                             _snapSelect.addElement(Resources.Load<Sprite>("Images/button_intensity"), paramFloat.value);
                             break;
                         case "range":
-                            _snapSelect._loop = false;
                             _snapSelect.addElement(Resources.Load<Sprite>("Images/button_range"), paramFloat.value);
+                            break;
+                        case "aperture":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_aperture"), paramFloat.value);
+                            break;
+                        case "aspectRatio":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_aspect"), paramFloat.value);
+                            break;
+                        case "radius":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_radius"), paramFloat.value);
+                            break;
+                        case "fov":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_fov"), paramFloat.value);
+                            break;
+                        case "farClipPlane":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_farClipPlane_text"), paramFloat.value);
+                            break;
+                        case "nearClipPlane":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_nearClipPlane_text"), paramFloat.value);
+                            break;
+                        case "focalDistance":
+                            _snapSelect.addElement(Resources.Load<Sprite>("Images/button_focalDistance"), paramFloat.value);
                             break;
                         default:                            
                             _snapSelect.addElement("", paramFloat.value);
-                        break;
+                            _snapSelect._loop = true;
+                            break;
                     }                    
                 break;
                 case AbstractParameter.ParameterType.VECTOR2:

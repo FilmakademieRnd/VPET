@@ -141,7 +141,6 @@ namespace vpet
                         Sprite resImage = Resources.Load<Sprite>(menu.iconResourceLocation);
                         if (resImage != null)
                             m_menuSelector.addElement(/*menu.caption,*/ resImage, menu.id);
-
                     }
                     else if (menu.caption.Length > 0)
                         m_menuSelector.addElement(menu.caption, menu.id);
@@ -161,6 +160,9 @@ namespace vpet
         //!
         private void createButtons(object sender, EventArgs e)
         {
+            foreach (MenuButton button in manager.getButtons())
+                button.m_highlightEvent -= m_menuSelector.updateHighlight;
+
             if (m_buttonSelector != null)
                 GameObject.Destroy(m_buttonSelector.gameObject);
 
@@ -178,15 +180,22 @@ namespace vpet
                     {
                         Sprite resImage = Resources.Load<Sprite>(button.iconResourceLocation);
                         if (resImage != null)
-                            m_buttonSelector.addElement(button.caption, resImage, 0, button.action, button.isToggle);
+                        {
+                            m_buttonSelector.addElement(button.caption, resImage, 0, button.action, button.isToggle, button.id);
+                            button.m_highlightEvent += m_buttonSelector.updateHighlight;
+                        }
 
                     }
                     else if (button.caption.Length > 0)
-                        m_buttonSelector.addElement(button.caption, 0, button.action, button.isToggle);
+                    {
+                        m_buttonSelector.addElement(button.caption, 0, button.action, button.isToggle, button.id);
+                        button.m_highlightEvent += m_buttonSelector.updateHighlight;
+                    }
                     else
                     {
                         Helpers.Log("Button has no caption and Icon!", Helpers.logMsgType.WARNING);
-                        m_buttonSelector.addElement("EMPTY", 0, button.action, button.isToggle);
+                        m_buttonSelector.addElement("EMPTY", 0, button.action, button.isToggle, button.id);
+                        button.m_highlightEvent += m_buttonSelector.updateHighlight;
                     }
                 }
             }

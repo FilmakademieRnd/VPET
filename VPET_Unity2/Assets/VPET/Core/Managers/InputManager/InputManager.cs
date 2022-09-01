@@ -147,6 +147,7 @@ namespace vpet
         //! The touch input gesture type.
         //!
         private InputTouchType m_touchType;
+
         //!
         //! Flag to determine if a touch drag gesture is being performed.
         //!
@@ -186,6 +187,7 @@ namespace vpet
         {
             NONE,
             ATTITUDE,
+            TOUCH,
             AR
         }
         //!
@@ -197,6 +199,10 @@ namespace vpet
             get => m_cameraControl;
             set => m_cameraControl = value;
         }
+        //!
+        //! The previous camera control type
+        //!
+        private CameraControl m_oldcameraControl;
         //!
         //! The generated Unity input class defining all available user inputs.
         //!
@@ -559,6 +565,8 @@ namespace vpet
             // Suspend the touch input
             m_touchType = InputTouchType.NONE;
 
+            m_cameraControl = m_oldcameraControl;
+
             // Also the moving
             m_isTouchDrag = false;
 
@@ -619,7 +627,7 @@ namespace vpet
             }
 
             // Two finger drag (used for orbit)
-            if(!m_isPinch && m_cameraControl == CameraControl.NONE)
+            if(!m_isPinch && (m_cameraControl == CameraControl.NONE || m_cameraControl == CameraControl.TOUCH))
             { 
                 // Grab the average position
                 Vector2 pos = .5f * (tcs[0].screenPosition + tcs[1].screenPosition);
@@ -634,6 +642,8 @@ namespace vpet
                 // Invoke event
                 DragEventArgs e = new();
                 e.delta = pos - m_posBuffer;
+                m_oldcameraControl = m_cameraControl;
+                m_cameraControl = CameraControl.TOUCH;
                 twoDragEvent?.Invoke(this, e);
 
                 // Update buffer
@@ -655,6 +665,8 @@ namespace vpet
                 // Invoke event
                 PinchEventArgs e = new();
                 e.distance = dist - m_distBuffer;
+                m_oldcameraControl = m_cameraControl;
+                m_cameraControl = CameraControl.TOUCH;
                 pinchEvent?.Invoke(this, e);
 
                 // Update buffer
@@ -691,6 +703,8 @@ namespace vpet
             // Invoke event
             DragEventArgs e = new();
             e.delta = pos - m_posBuffer;
+            m_oldcameraControl = m_cameraControl;
+            m_cameraControl = CameraControl.TOUCH; 
             threeDragEvent?.Invoke(this, e);
 
             // Update buffer

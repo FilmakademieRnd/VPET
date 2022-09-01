@@ -120,6 +120,8 @@ namespace vpet
         //!
         public event EventHandler<int> highlightElement;
 
+        public event EventHandler<MenuButton.HighlightEventArgs> updateHighlightElement;
+
         //!
         //! Event emitted when editing of the current parameter ended (finger is lifted)
         //!
@@ -659,6 +661,11 @@ namespace vpet
                     }
                 }
             }
+        }
+
+        public void updateHighlight(object sender, MenuButton.HighlightEventArgs e)
+        {
+            updateHighlightElement?.Invoke(this, e);
         }
 
         public void showHighlighted(int id, bool force = false)

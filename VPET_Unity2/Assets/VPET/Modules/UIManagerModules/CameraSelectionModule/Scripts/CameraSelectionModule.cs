@@ -338,7 +338,8 @@ namespace vpet
                 core.updateEvent -= updateLookThrough;
                 m_isLocked = false;
 
-                uiCameraOperation.Invoke(this, m_isLocked);
+                uiCameraOperation?.Invoke(this, m_isLocked);
+                m_cameraSelectButton.showHighlighted(false);
             }
 
             if (m_cameraIndex > m_sceneManager.sceneCameraList.Count - 1)
@@ -396,6 +397,7 @@ namespace vpet
             {
                 case InputManager.CameraControl.ATTITUDE: 
                 case InputManager.CameraControl.AR:
+                case InputManager.CameraControl.TOUCH:
                     Vector3 newPosition = camTransform.position - objTransform.parent.position;
                     Quaternion newRotation = camTransform.rotation * Quaternion.Inverse(objTransform.parent.rotation);
                     m_selectedObject.position.setValue(newPosition);
@@ -420,6 +422,7 @@ namespace vpet
             {
                 case InputManager.CameraControl.ATTITUDE:
                 case InputManager.CameraControl.AR:
+                case InputManager.CameraControl.TOUCH:
                     Quaternion camRotationOffset = camTransform.rotation * m_inverseOldCamRotation;
                     Vector3 newPosition = camRotationOffset * (m_oldPosition - camTransform.position) + camTransform.position;
                     m_selectedObject.position.setValue(objTransform.parent.InverseTransformPoint(newPosition));

@@ -37,6 +37,15 @@ namespace vpet
     {
         public int id = -1;
         public bool isToggle = false;
+        //!
+        //! Class defining button highlighting event arguments.
+        //!
+        public class HighlightEventArgs : EventArgs
+        {
+            public int id;
+            public bool highlight;
+        }
+        public event EventHandler<HighlightEventArgs> m_highlightEvent;
         protected List<UIManager.Roles> m_roles = new List<UIManager.Roles>();
         public ref List<UIManager.Roles> roles
         {
@@ -78,6 +87,14 @@ namespace vpet
         public void setIcon(string resourceLocation)
         {
             m_iconResourceLocation = resourceLocation;
+        }
+
+        public void showHighlighted(bool highlighted)
+        {
+            HighlightEventArgs h = new HighlightEventArgs();
+            h.id = id;
+            h.highlight = highlighted;
+            m_highlightEvent?.Invoke(this, h);
         }
     }
 
