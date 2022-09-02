@@ -5,7 +5,7 @@ var classvpet_1_1_scene_parser_module =
     [ "ParseCamera", "classvpet_1_1_scene_parser_module.html#a94ba3463701dd2dae10b00454eaf7b6b", null ],
     [ "ParseLight", "classvpet_1_1_scene_parser_module.html#a08d17bd0dbc71038cd3dd19ec67d8b5e", null ],
     [ "ParseMesh", "classvpet_1_1_scene_parser_module.html#add0ca1c767927572ced4c5b7890077af", null ],
-    [ "ParseScene", "classvpet_1_1_scene_parser_module.html#a23c4e8de1a55b4ad1f35698632c7907e", null ],
+    [ "ParseScene", "classvpet_1_1_scene_parser_module.html#a79e691c09b6bba585e23b9e6c325d8d0", null ],
     [ "ParseSkinnedMesh", "classvpet_1_1_scene_parser_module.html#a31236c2a001bc6c3cb520e58543e8d80", null ],
     [ "processCharacter", "classvpet_1_1_scene_parser_module.html#a525bb228879da7407c07586e7159333b", null ],
     [ "processGeometry", "classvpet_1_1_scene_parser_module.html#a9158d3f58eb25c62ae1d8c1b0f1662d3", null ],

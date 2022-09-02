@@ -2,8 +2,7 @@ var dir_8fadf1bec17543a5d6af25d683d358fe =
 [
     [ "Manipulator", "dir_3b2613c8a2f005784cc74b1bb51798c5.html", "dir_3b2613c8a2f005784cc74b1bb51798c5" ],
     [ "ColorSelect.cs", "_color_select_8cs.html", [
-      [ "ColorSelect", "classvpet_1_1_color_select.html", "classvpet_1_1_color_select" ],
-      [ "ColorSelectBackupForHueSatOnly", "classbackup_1_1_color_select_backup_for_hue_sat_only.html", "classbackup_1_1_color_select_backup_for_hue_sat_only" ]
+      [ "ColorSelect", "classvpet_1_1_color_select.html", "classvpet_1_1_color_select" ]
     ] ],
     [ "LongPressButton.cs", "_long_press_button_8cs.html", [
       [ "LongPressButton", "classvpet_1_1_long_press_button.html", "classvpet_1_1_long_press_button" ]

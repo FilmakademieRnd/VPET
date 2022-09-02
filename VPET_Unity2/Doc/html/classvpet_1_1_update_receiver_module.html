@@ -147,10 +147,6 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a9997ecf2a43e1804a76845fc3ea739c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd0a058eb498fc609f36aa06ad32baf5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#acd0a058eb498fc609f36aa06ad32baf5">decodeSyncMessage</a> (ref byte[] message)</td></tr>
 <tr class="separator:acd0a058eb498fc609f36aa06ad32baf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15e357e8a60667eeb9760c373204a666"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#a15e357e8a60667eeb9760c373204a666">decodeUndoRedoMessage</a> (ref byte[] message)</td></tr>
-<tr class="separator:a15e357e8a60667eeb9760c373204a666"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d211d52c2bd55594b83e1a3f5d676b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#a9d211d52c2bd55594b83e1a3f5d676b4">decodeResetMessage</a> (ref byte[] message)</td></tr>
-<tr class="separator:a9d211d52c2bd55594b83e1a3f5d676b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38716a3788e05822c2537376d4b309df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#a38716a3788e05822c2537376d4b309df">decodeLockMessage</a> (ref byte[] message)</td></tr>
 <tr class="separator:a38716a3788e05822c2537376d4b309df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84082294d0395455635a531a25183968"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#a84082294d0395455635a531a25183968">consumeMessages</a> (object o, EventArgs e)</td></tr>
@@ -166,8 +162,6 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a3e4fa6cf467092e345ea29dd552db35b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9a83815bb3c611645bba9ec81a3a1bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_scene_manager.html">SceneManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#ae9a83815bb3c611645bba9ec81a3a1bf">m_sceneManager</a></td></tr>
 <tr class="separator:ae9a83815bb3c611645bba9ec81a3a1bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a284dd64d20688a91b3209e4aa53904a7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_update_receiver_module.html#a284dd64d20688a91b3209e4aa53904a7">m_timesteps</a></td></tr>
-<tr class="separator:a284dd64d20688a91b3209e4aa53904a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -196,14 +190,13 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a9edd7aa546a1efe37aff19881456f5ea inherit pro_attribs_classvpet_1_1_network_manager_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66e45c9d64e1d9243388be948441af31 inherit pro_attribs_classvpet_1_1_network_manager_module"><td class="memItemLeft" align="right" valign="top">Action&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a66e45c9d64e1d9243388be948441af31">m_disposed</a></td></tr>
 <tr class="separator:a66e45c9d64e1d9243388be948441af31 inherit pro_attribs_classvpet_1_1_network_manager_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab43b852dc1f8460964a10769a174ce86 inherit pro_attribs_classvpet_1_1_network_manager_module"><td class="memItemLeft" align="right" valign="top">ManualResetEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ab43b852dc1f8460964a10769a174ce86">m_mre</a></td></tr>
+<tr class="separator:ab43b852dc1f8460964a10769a174ce86 inherit pro_attribs_classvpet_1_1_network_manager_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classvpet_1_1_module"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classvpet_1_1_module')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classvpet_1_1_module.html">vpet.Module</a></td></tr>
 <tr class="memitem:a7d1ec1e3f55d940fa5f3bff3c2d53dbd inherit pro_attribs_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a7d1ec1e3f55d940fa5f3bff3c2d53dbd">m_name</a></td></tr>
 <tr class="separator:a7d1ec1e3f55d940fa5f3bff3c2d53dbd inherit pro_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c2f0a5711ac770f1fbac082518ab8b8 inherit pro_attribs_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_manager.html">Manager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a4c2f0a5711ac770f1fbac082518ab8b8">m_manager</a></td></tr>
 <tr class="separator:a4c2f0a5711ac770f1fbac082518ab8b8 inherit pro_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_static_attribs_classvpet_1_1_network_manager_module"><td colspan="2" onclick="javascript:toggleInherit('pro_static_attribs_classvpet_1_1_network_manager_module')"><img src="closed.png" alt="-"/>&#160;Static Protected Attributes inherited from <a class="el" href="classvpet_1_1_network_manager_module.html">vpet.NetworkManagerModule</a></td></tr>
-<tr class="memitem:ab43b852dc1f8460964a10769a174ce86 inherit pro_static_attribs_classvpet_1_1_network_manager_module"><td class="memItemLeft" align="right" valign="top">static ManualResetEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ab43b852dc1f8460964a10769a174ce86">m_mre</a> = new ManualResetEvent(false)</td></tr>
-<tr class="separator:ab43b852dc1f8460964a10769a174ce86 inherit pro_static_attribs_classvpet_1_1_network_manager_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header properties_classvpet_1_1_network_manager_module"><td colspan="2" onclick="javascript:toggleInherit('properties_classvpet_1_1_network_manager_module')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="classvpet_1_1_network_manager_module.html">vpet.NetworkManagerModule</a></td></tr>
 <tr class="memitem:afc1472e915034f427c9700333a2f50aa inherit properties_classvpet_1_1_network_manager_module"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_network_manager.html">NetworkManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#afc1472e915034f427c9700333a2f50aa">manager</a><code> [get]</code></td></tr>
 <tr class="separator:afc1472e915034f427c9700333a2f50aa inherit properties_classvpet_1_1_network_manager_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -439,39 +432,6 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a9d211d52c2bd55594b83e1a3f5d676b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d211d52c2bd55594b83e1a3f5d676b4">&#9670;&nbsp;</a></span>decodeResetMessage()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.UpdateReceiverModule.decodeResetMessage </td>
-          <td>(</td>
-          <td class="paramtype">ref byte[]&#160;</td>
-          <td class="paramname"><em>message</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Function that decodes a undo redo message and adds it to the undo redo manager.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">message</td><td>The message to be decoded. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="acd0a058eb498fc609f36aa06ad32baf5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd0a058eb498fc609f36aa06ad32baf5">&#9670;&nbsp;</a></span>decodeSyncMessage()</h2>
 
@@ -496,39 +456,6 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Function that decodes a sync message and set the clients global time.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">message</td><td>The message to be decoded. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a15e357e8a60667eeb9760c373204a666"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a15e357e8a60667eeb9760c373204a666">&#9670;&nbsp;</a></span>decodeUndoRedoMessage()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void vpet.UpdateReceiverModule.decodeUndoRedoMessage </td>
-          <td>(</td>
-          <td class="paramtype">ref byte[]&#160;</td>
-          <td class="paramname"><em>message</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Function that decodes a undo redo message and adds it to the undo redo manager.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td>The message to be decoded. </td></tr>
@@ -699,28 +626,6 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>A referece to VPET's scene manager. </p>
-
-</div>
-</div>
-<a id="a284dd64d20688a91b3209e4aa53904a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a284dd64d20688a91b3209e4aa53904a7">&#9670;&nbsp;</a></span>m_timesteps</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int vpet.UpdateReceiverModule.m_timesteps</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

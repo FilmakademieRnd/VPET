@@ -88,7 +88,6 @@ $(document).ready(function(){initNavTree('classvpet_1_1_network_manager_module.h
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
@@ -163,16 +162,13 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a9edd7aa546a1efe37aff19881456f5ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66e45c9d64e1d9243388be948441af31"><td class="memItemLeft" align="right" valign="top">Action&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#a66e45c9d64e1d9243388be948441af31">m_disposed</a></td></tr>
 <tr class="separator:a66e45c9d64e1d9243388be948441af31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab43b852dc1f8460964a10769a174ce86"><td class="memItemLeft" align="right" valign="top">ManualResetEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ab43b852dc1f8460964a10769a174ce86">m_mre</a></td></tr>
+<tr class="separator:ab43b852dc1f8460964a10769a174ce86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classvpet_1_1_module"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classvpet_1_1_module')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classvpet_1_1_module.html">vpet.Module</a></td></tr>
 <tr class="memitem:a7d1ec1e3f55d940fa5f3bff3c2d53dbd inherit pro_attribs_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a7d1ec1e3f55d940fa5f3bff3c2d53dbd">m_name</a></td></tr>
 <tr class="separator:a7d1ec1e3f55d940fa5f3bff3c2d53dbd inherit pro_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c2f0a5711ac770f1fbac082518ab8b8 inherit pro_attribs_classvpet_1_1_module"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classvpet_1_1_manager.html">Manager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_module.html#a4c2f0a5711ac770f1fbac082518ab8b8">m_manager</a></td></tr>
 <tr class="separator:a4c2f0a5711ac770f1fbac082518ab8b8 inherit pro_attribs_classvpet_1_1_module"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
-Static Protected Attributes</h2></td></tr>
-<tr class="memitem:ab43b852dc1f8460964a10769a174ce86"><td class="memItemLeft" align="right" valign="top">static ManualResetEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvpet_1_1_network_manager_module.html#ab43b852dc1f8460964a10769a174ce86">m_mre</a> = new ManualResetEvent(false)</td></tr>
-<tr class="separator:ab43b852dc1f8460964a10769a174ce86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
@@ -372,7 +368,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_receiver_module.html#a08a08abe97a90f794155bb5579a00569">vpet.SceneReceiverModule</a>.</p>
+<p>Reimplemented in <a class="el" href="classvpet_1_1_scene_receiver_module.html#a06462913de0868d535c9a45e239af502">vpet.SceneReceiverModule</a>.</p>
 
 </div>
 </div>
@@ -511,15 +507,16 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ManualResetEvent vpet.NetworkManagerModule.m_mre = new ManualResetEvent(false)</td>
+          <td class="memname">ManualResetEvent vpet.NetworkManagerModule.m_mre</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Reset event for stopping and resetting the run thread. </p>
 
 </div>
 </div>

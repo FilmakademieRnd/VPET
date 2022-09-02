@@ -1,6 +1,7 @@
 var classvpet_1_1_gizmo_creator_module =
 [
     [ "GizmoCreatorModule", "classvpet_1_1_gizmo_creator_module.html#ae3eb941b8a877baf55dcc6048fa9c69a", null ],
+    [ "Cleanup", "classvpet_1_1_gizmo_creator_module.html#aac1144376292166ac9c7f93422fcc43f", null ],
     [ "createGizmos", "classvpet_1_1_gizmo_creator_module.html#add0cbca54e69718dfc42d5930f75241a", null ],
     [ "diosposeGizmos", "classvpet_1_1_gizmo_creator_module.html#a8b9637c8f7620f5cd6306c3961673498", null ],
     [ "Init", "classvpet_1_1_gizmo_creator_module.html#a9979f478a89728912a6a82034b457e55", null ],

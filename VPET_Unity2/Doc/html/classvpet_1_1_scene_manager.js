@@ -39,5 +39,6 @@ var classvpet_1_1_scene_manager =
     [ "sceneObjects", "classvpet_1_1_scene_manager.html#a002c142304a882a0b18dc69488164123", null ],
     [ "scnRoot", "classvpet_1_1_scene_manager.html#a84ff38e8cd817b72c998f65d99254d0e", null ],
     [ "settings", "classvpet_1_1_scene_manager.html#a5d77480301e6b61eee0f96d48d54b05f", null ],
-    [ "sceneReady", "classvpet_1_1_scene_manager.html#a1f73a8976a8ae011760d39d9ef7b9cb7", null ]
+    [ "sceneReady", "classvpet_1_1_scene_manager.html#a1f73a8976a8ae011760d39d9ef7b9cb7", null ],
+    [ "sceneReset", "classvpet_1_1_scene_manager.html#af8b48ecee4e80746493a2a5cff1dbd6f", null ]
 ];

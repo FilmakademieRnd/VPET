@@ -10,11 +10,13 @@ var classvpet_1_1_scene_object_camera =
     [ "updateFocalDistance", "classvpet_1_1_scene_object_camera.html#af691b3f7b206cecf9b4fd3f32a5e2fbe", null ],
     [ "updateFov", "classvpet_1_1_scene_object_camera.html#af47d96a83b21b2a7505222bdddf6265f", null ],
     [ "updateNearClipPlane", "classvpet_1_1_scene_object_camera.html#aec0a8b0fdef8cb71b1c47a0def6f2205", null ],
+    [ "updateSensorSize", "classvpet_1_1_scene_object_camera.html#a070d52f6df0512ab4afe53aa775ba6c8", null ],
     [ "_camera", "classvpet_1_1_scene_object_camera.html#a0f4b68e35e2e1789cf3b374ceb61227e", null ],
     [ "aperture", "classvpet_1_1_scene_object_camera.html#a37ad2e982629bf4a1565829c7d748263", null ],
     [ "aspect", "classvpet_1_1_scene_object_camera.html#a64ddcd3a4484e21ef7213ac0f4f7288c", null ],
     [ "far", "classvpet_1_1_scene_object_camera.html#a006b7a448cf89c2ddc078ccdd1bdec10", null ],
     [ "focDist", "classvpet_1_1_scene_object_camera.html#af22db9bbb69b14a563289eb831d27666", null ],
     [ "fov", "classvpet_1_1_scene_object_camera.html#a9eb667c1bc029bb33d19d17d01297553", null ],
-    [ "near", "classvpet_1_1_scene_object_camera.html#aee128c24bb5811e5afefeda207e03b56", null ]
+    [ "near", "classvpet_1_1_scene_object_camera.html#aee128c24bb5811e5afefeda207e03b56", null ],
+    [ "sensorSize", "classvpet_1_1_scene_object_camera.html#a659cdd4a45834902d262065356bc0a42", null ]
 ];

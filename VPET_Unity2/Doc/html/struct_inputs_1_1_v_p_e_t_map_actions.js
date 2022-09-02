@@ -8,10 +8,14 @@ var struct_inputs_1_1_v_p_e_t_map_actions =
     [ "SetCallbacks", "struct_inputs_1_1_v_p_e_t_map_actions.html#a677e57b6fd5c2274266cc9db37ec0f02", null ],
     [ "m_Wrapper", "struct_inputs_1_1_v_p_e_t_map_actions.html#a719935f38c4e45dde92a86a12bd34e0a", null ],
     [ "Click", "struct_inputs_1_1_v_p_e_t_map_actions.html#a8acd7708d850d87a4166b86e0e4f1cb8", null ],
+    [ "DragClick", "struct_inputs_1_1_v_p_e_t_map_actions.html#a536b5166941e20ba722d6071071d8f1f", null ],
     [ "enabled", "struct_inputs_1_1_v_p_e_t_map_actions.html#a9fc43ba08c2f89aa222650b03ab8dfa3", null ],
     [ "Look", "struct_inputs_1_1_v_p_e_t_map_actions.html#a571fcee42c95cb16fc33048f577dd526", null ],
     [ "MiddleClick", "struct_inputs_1_1_v_p_e_t_map_actions.html#a669893abcd400d407526490897ab9ad3", null ],
     [ "Navigate", "struct_inputs_1_1_v_p_e_t_map_actions.html#a96c98180cc33b4b527e41b1301d204e2", null ],
+    [ "OrbitClick", "struct_inputs_1_1_v_p_e_t_map_actions.html#aa22b09f58c26ee689874d8f101556b6e", null ],
     [ "Position", "struct_inputs_1_1_v_p_e_t_map_actions.html#afff24c9087b9a1a17e6b9f75f6f4af77", null ],
-    [ "RightClick", "struct_inputs_1_1_v_p_e_t_map_actions.html#ad8414976e07b8d12daf730b0d73996c6", null ]
+    [ "RightClick", "struct_inputs_1_1_v_p_e_t_map_actions.html#ad8414976e07b8d12daf730b0d73996c6", null ],
+    [ "Tap", "struct_inputs_1_1_v_p_e_t_map_actions.html#a2134525a3f4cc5ceb0da2a3681ab7830", null ],
+    [ "ZoomWheel", "struct_inputs_1_1_v_p_e_t_map_actions.html#a07e7190f4a012b674a216e5c4f98b096", null ]
 ];

@@ -121,135 +121,135 @@ namespace vpet
     }
 }
 
-namespace backup
-{
-    //public class ColorSelect : UIBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
-    public class ColorSelectBackupForHueSatOnly : UIBehaviour, IDragHandler
-    {
-        private Vector2 pickerSize;
+//namespace backup
+//{
+//    //public class ColorSelect : UIBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+//    public class ColorSelectBackupForHueSatOnly : UIBehaviour, IDragHandler
+//    {
+//        private Vector2 pickerSize;
 
-        private Color outputColor;
+//        private Color outputColor;
 
-        private Material mat;
+//        private Material mat;
 
-        // development phase
-        private Image testImage;
-        private float hue;
-        private float sat;
+//        // development phase
+//        private Image testImage;
+//        private float hue;
+//        private float sat;
 
-        //!
-        //! Unity function called when the object becomes enabled and active.
-        //!
-        protected override void OnEnable()
-        {
-            // Grab picker dimensions
-            RectTransform rect = GetComponent<RectTransform>();
-            pickerSize = rect.sizeDelta;
+//        //!
+//        //! Unity function called when the object becomes enabled and active.
+//        //!
+//        protected override void OnEnable()
+//        {
+//            // Grab picker dimensions
+//            RectTransform rect = GetComponent<RectTransform>();
+//            pickerSize = rect.sizeDelta;
 
-            // Grab material
-            mat = GetComponent<Image>().material;
+//            // Grab material
+//            mat = GetComponent<Image>().material;
 
-            // Grab selected object - development version
-            var obj = GameObject.Find("TestImage");
-            testImage = obj.GetComponent<Image>();
+//            // Grab selected object - development version
+//            var obj = GameObject.Find("TestImage");
+//            testImage = obj.GetComponent<Image>();
 
-            // Initial color from selected object
-            Color startCol = testImage.color;
+//            // Initial color from selected object
+//            Color startCol = testImage.color;
 
-            // Decompose into HSV components
-            Color.RGBToHSV(startCol, out hue, out sat, out _);
-            Color shaderColor = Color.HSVToRGB(hue, 1f, 1f);
+//            // Decompose into HSV components
+//            Color.RGBToHSV(startCol, out hue, out sat, out _);
+//            Color shaderColor = Color.HSVToRGB(hue, 1f, 1f);
 
-            mat.SetColor("_InputColor", shaderColor);
+//            mat.SetColor("_InputColor", shaderColor);
 
-            outputColor = Color.HSVToRGB(hue, sat, 1f);
-        }
-
-
-        //!
-        //! Unity function called by IBeginDragHandler when a drag starts
-        //! @param data Data of the drag event e.g. postion, delta, ...
-        //!
-        //public void OnBeginDrag(PointerEventData data)
-        //{
-        //    //Vector3 clickPos = data.position;
-        //    //clickPos -= transform.position;
-        //    //Debug.Log("Begin: " + clickPos.ToString());
-        //}
-
-        //!
-        //! Unity function called by IDragHandler when a drag is currently performed
-        //! @param data Data of the drag event e.g. postion, delta, ...
-        //!
-        public void OnDrag(PointerEventData data)
-        {
-            Vector3 clickPos = data.position;
-            clickPos -= transform.position;
-            clickPos /= pickerSize;
-            clickPos.y = Mathf.Clamp(clickPos.y + .5f, 0f, 1f);
-            Debug.Log("Drag: " + clickPos.ToString());
-            if (clickPos.x < 0)
-            {
-                //myCol = Gradient(clickPos.y);
-                //mat.SetColor("_InputColor", myCol);
-
-                hue = clickPos.y;
-                mat.SetColor("_InputColor", Color.HSVToRGB(hue, 1f, 1f));
-            }
-            else
-            {
-                //finalCol = Color.Lerp(Color.white, myCol, clickPos.y);
-
-                sat = clickPos.y;
-            }
-            outputColor = Color.HSVToRGB(hue, sat, 1f);
-
-            testImage.color = outputColor;
-        }
-
-        //!
-        //! Unity function called by IEndDragHandler when a drag ends
-        //! @param data Data of the drag event e.g. postion, delta, ...
-        //!
-        //public void OnEndDrag(PointerEventData data)
-        //{
-        //    //Debug.Log("End: " + data.position.ToString());
-        //}
+//            outputColor = Color.HSVToRGB(hue, sat, 1f);
+//        }
 
 
-        // Mathematical helpers
-        Vector3 AddVec(Vector3 inVec, float inFloat)
-        {
-            return new(inVec.x + inFloat, inVec.y + inFloat, inVec.z + inFloat);
-        }
-        float ModFloat(float a, float b)
-        {
-            return a % b;
-            //return (a % b + b) % b; // more like actual modulo but not needed
-        }
+//        //!
+//        //! Unity function called by IBeginDragHandler when a drag starts
+//        //! @param data Data of the drag event e.g. postion, delta, ...
+//        //!
+//        //public void OnBeginDrag(PointerEventData data)
+//        //{
+//        //    //Vector3 clickPos = data.position;
+//        //    //clickPos -= transform.position;
+//        //    //Debug.Log("Begin: " + clickPos.ToString());
+//        //}
 
-        Vector3 ModVec(Vector3 inVec, float inFloat)
-        {
-            return new(ModFloat(inVec.x, inFloat), ModFloat(inVec.y, inFloat), ModFloat(inVec.z, inFloat));
-        }
+//        //!
+//        //! Unity function called by IDragHandler when a drag is currently performed
+//        //! @param data Data of the drag event e.g. postion, delta, ...
+//        //!
+//        public void OnDrag(PointerEventData data)
+//        {
+//            Vector3 clickPos = data.position;
+//            clickPos -= transform.position;
+//            clickPos /= pickerSize;
+//            clickPos.y = Mathf.Clamp(clickPos.y + .5f, 0f, 1f);
+//            Debug.Log("Drag: " + clickPos.ToString());
+//            if (clickPos.x < 0)
+//            {
+//                //myCol = Gradient(clickPos.y);
+//                //mat.SetColor("_InputColor", myCol);
 
-        Vector3 AbsVec(Vector3 inVec)
-        {
-            return new(Mathf.Abs(inVec.x), Mathf.Abs(inVec.y), Mathf.Abs(inVec.z));
-        }
+//                hue = clickPos.y;
+//                mat.SetColor("_InputColor", Color.HSVToRGB(hue, 1f, 1f));
+//            }
+//            else
+//            {
+//                //finalCol = Color.Lerp(Color.white, myCol, clickPos.y);
 
-        Vector3 ClampVec(Vector3 inVec, float a, float b)
-        {
-            return new(Mathf.Clamp(inVec.x, a, b), Mathf.Clamp(inVec.y, a, b), Mathf.Clamp(inVec.z, a, b));
-        }
+//                sat = clickPos.y;
+//            }
+//            outputColor = Color.HSVToRGB(hue, sat, 1f);
 
-        Color Gradient(float c)
-        {
-            Vector3 rgb = ClampVec(AddVec(AbsVec(AddVec(ModVec(AddVec(new(0f, 4f, 2f), c * 6f), 6f), -3f)), -1f), 0f, 1f);
-            rgb = Vector3.Scale(Vector3.Scale(rgb, rgb), AddVec(-2f * rgb, 3f));
-            return new(rgb.x, rgb.y, rgb.z, 1f);
-        }
-    }
-}
+//            testImage.color = outputColor;
+//        }
+
+//        //!
+//        //! Unity function called by IEndDragHandler when a drag ends
+//        //! @param data Data of the drag event e.g. postion, delta, ...
+//        //!
+//        //public void OnEndDrag(PointerEventData data)
+//        //{
+//        //    //Debug.Log("End: " + data.position.ToString());
+//        //}
+
+
+//        // Mathematical helpers
+//        Vector3 AddVec(Vector3 inVec, float inFloat)
+//        {
+//            return new(inVec.x + inFloat, inVec.y + inFloat, inVec.z + inFloat);
+//        }
+//        float ModFloat(float a, float b)
+//        {
+//            return a % b;
+//            //return (a % b + b) % b; // more like actual modulo but not needed
+//        }
+
+//        Vector3 ModVec(Vector3 inVec, float inFloat)
+//        {
+//            return new(ModFloat(inVec.x, inFloat), ModFloat(inVec.y, inFloat), ModFloat(inVec.z, inFloat));
+//        }
+
+//        Vector3 AbsVec(Vector3 inVec)
+//        {
+//            return new(Mathf.Abs(inVec.x), Mathf.Abs(inVec.y), Mathf.Abs(inVec.z));
+//        }
+
+//        Vector3 ClampVec(Vector3 inVec, float a, float b)
+//        {
+//            return new(Mathf.Clamp(inVec.x, a, b), Mathf.Clamp(inVec.y, a, b), Mathf.Clamp(inVec.z, a, b));
+//        }
+
+//        Color Gradient(float c)
+//        {
+//            Vector3 rgb = ClampVec(AddVec(AbsVec(AddVec(ModVec(AddVec(new(0f, 4f, 2f), c * 6f), 6f), -3f)), -1f), 0f, 1f);
+//            rgb = Vector3.Scale(Vector3.Scale(rgb, rgb), AddVec(-2f * rgb, 3f));
+//            return new(rgb.x, rgb.y, rgb.z, 1f);
+//        }
+//    }
+//}
 
 

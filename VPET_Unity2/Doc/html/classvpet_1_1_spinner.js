@@ -7,8 +7,8 @@ var classvpet_1_1_spinner =
     [ "setValue", "classvpet_1_1_spinner.html#afc541b9d77f1f2cd67ac2b19679d3f0e", null ],
     [ "Start", "classvpet_1_1_spinner.html#ae5267e43eaaf6778730b18b180fb01ff", null ],
     [ "_currentAxis", "classvpet_1_1_spinner.html#acbb52b7d43e2192dcaacd0a4ff0ed88c", null ],
+    [ "_manager", "classvpet_1_1_spinner.html#a4b2f8385ddbce59844741c2b59b50976", null ],
     [ "_snapSelect", "classvpet_1_1_spinner.html#a6e945107adbc51b718f33437d50c1680", null ],
-    [ "_uiSettings", "classvpet_1_1_spinner.html#a7a07b18b8ad9a3b58f6cf040f944f9c5", null ],
-    [ "uiSettings", "classvpet_1_1_spinner.html#a345e0db6f5ceaa9d6d29fad80bfb6219", null ],
+    [ "manager", "classvpet_1_1_spinner.html#a4ba924586ac7f94db7e3e6805606e81f", null ],
     [ "doneEditing", "classvpet_1_1_spinner.html#a17d0b17bbcb23ee9ab9314c5d9f20af5", null ]
 ];

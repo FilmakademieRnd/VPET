@@ -1,6 +1,8 @@
 var classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data =
 [
     [ "SceneData", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a64fe54d21059c62c24b970f3754143a9", null ],
+    [ "~SceneData", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a1b523d192730000e59773a9d0c629ad1", null ],
+    [ "clear", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#aa28e5a6dc59d73a7b8d22497e7e71b3c", null ],
     [ "characterList", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#ab690b71d579580dcf58b87b37ce710be", null ],
     [ "header", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#a027c94413163fb5a2918bb44134e5713", null ],
     [ "materialList", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html#abeb295cc36adf856b1ff7e9cf20bc3e6", null ],
