@@ -25,6 +25,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @brief Implementation of the VPET UI Manager, managing creation of UI elements.
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
+//! @author Paulo Scatena
 //! @version 0
 //! @date 21.08.2022
 
@@ -68,6 +69,10 @@ namespace vpet
         {
             get => (Roles)settings.roles.value;
         }
+        //!
+        //! Areference to the About Menu prefab.
+        //!
+        private GameObject m_aboutMenu;
         //!
         //! The list containing currently selected scene objects.
         //!
@@ -390,14 +395,28 @@ namespace vpet
             foreach (Manager manager in core.getManagers())
             {
                 if (manager._settings != null)
+                {
+                    settingsMenu = settingsMenu.Add(MenuItem.IType.SPACE);
                     createMenuTreefromSettings(manager.GetType().ToString().Split('.')[1], ref settingsMenu, manager._settings);
-                
-                settingsMenu = settingsMenu.Add(MenuItem.IType.SPACE);
+                }
             }
+
+            // load about menu prefab and add about button
+            m_aboutMenu = Resources.Load("AboutMenu/AboutMenu") as GameObject;
+            settingsMenu = settingsMenu.Add(MenuItem.IType.SPACE);
+            Parameter<Action> aboutButton = new Parameter<Action>(showAboutMenu, "About");
+            settingsMenu.Begin(MenuItem.IType.HSPLIT)
+                .Add(aboutButton);
+            settingsMenu.End();
 
             settingsMenu.End();  // <<< end VSPLIT
 
             addMenu(settingsMenu);
+        }
+
+        private void showAboutMenu()
+        {
+            GameObject.Instantiate(m_aboutMenu);
         }
 
         private void createStartMenu()

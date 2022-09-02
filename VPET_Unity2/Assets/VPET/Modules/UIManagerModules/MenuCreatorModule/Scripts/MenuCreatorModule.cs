@@ -220,7 +220,7 @@ namespace vpet
                         textComponent.color = manager.uiAppearanceSettings.colors.FontColor;
                         textComponent.font = manager.uiAppearanceSettings.defaultFont;
                         textComponent.fontSize = manager.uiAppearanceSettings.defaultFontSize;
-                        textComponent.fontStyle = FontStyles.Bold;
+                        textComponent.fontStyle = FontStyles.Normal;
                      }
                     break;
                 case MenuItem.IType.TEXTSECTION:
