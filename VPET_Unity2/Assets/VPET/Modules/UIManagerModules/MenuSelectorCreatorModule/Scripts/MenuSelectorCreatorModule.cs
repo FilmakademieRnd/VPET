@@ -95,7 +95,6 @@ namespace vpet
         //! 
         protected override void Start(object sender, EventArgs e)
         {
-            m_menuSelector.showHighlighted(0, true);
         }
 
         //! 
@@ -195,6 +194,10 @@ namespace vpet
                         {
                             m_buttonSelector.addElement(button.caption, resImage, 0, button.action, button.isToggle, button.id);
                             button.m_highlightEvent += m_buttonSelector.updateHighlight;
+                            MenuButton.HighlightEventArgs args = new MenuButton.HighlightEventArgs();
+                            args.id = button.id;
+                            args.highlight = button.isHighlighted;
+                            m_buttonSelector.updateHighlight(this, args);
                         }
 
                     }
@@ -211,6 +214,22 @@ namespace vpet
                     }
                 }
             }
+
+            m_buttonSelector.elementClicked += buttonClicked;
+
+        }
+
+        //!
+        //! Function called when a button has clicked.
+        //!
+        //! @param sender The snapSelect triggering this function.
+        //! @param id The snapSelect internal id for the corresponding button.
+        //!
+        private void buttonClicked(object sender, int id)
+        {
+            MenuButton b = manager.getButtons()[id];
+            if (!b.isToggle)
+                b.isHighlighted = !b.isHighlighted;
         }
 
         //!

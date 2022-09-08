@@ -37,6 +37,8 @@ namespace vpet
     {
         public int id = -1;
         public bool isToggle = false;
+        public bool isHighlighted = false;
+
         //!
         //! Class defining button highlighting event arguments.
         //!

@@ -425,11 +425,13 @@ namespace vpet
             {
                 if (AttitudeSensor.current != null)
                 {
-                    InputSystem.EnableDevice(AttitudeSensor.current);
-
-                    m_attitudeButton = new MenuButton("", useAttitude);
-                    m_attitudeButton.setIcon("Images/button_attitude");
-                    core.getManager<UIManager>().addButton(m_attitudeButton);
+                    if (!AttitudeSensor.current.enabled)
+                    {
+                        InputSystem.EnableDevice(AttitudeSensor.current);
+                        m_attitudeButton = new MenuButton("", useAttitude);
+                        m_attitudeButton.setIcon("Images/button_attitude");
+                        core.getManager<UIManager>().addButton(m_attitudeButton);
+                    }
                 }
                 else
                     Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
@@ -445,6 +447,7 @@ namespace vpet
                 InputSystem.DisableDevice(AttitudeSensor.current);
                 core.getManager<UIManager>().removeButton(m_attitudeButton);
                 m_cameraControl = CameraControl.NONE;
+                Debug.Log("CAMCONTROL: disableAttitudeSensor() " + m_cameraControl);
             }
             else
                 Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
@@ -566,6 +569,8 @@ namespace vpet
             m_touchType = InputTouchType.NONE;
 
             m_cameraControl = m_oldcameraControl;
+            Debug.Log("CAMCONTROL: FingerUp() " + m_cameraControl);
+
 
             // Also the moving
             m_isTouchDrag = false;
@@ -642,8 +647,10 @@ namespace vpet
                 // Invoke event
                 DragEventArgs e = new();
                 e.delta = pos - m_posBuffer;
-                m_oldcameraControl = m_cameraControl;
+                if(m_cameraControl != CameraControl.TOUCH)
+                    m_oldcameraControl = m_cameraControl;
                 m_cameraControl = CameraControl.TOUCH;
+                Debug.Log("CAMCONTROL: TwoFingerMove() nonPinch" + m_cameraControl);
                 twoDragEvent?.Invoke(this, e);
 
                 // Update buffer
@@ -665,8 +672,11 @@ namespace vpet
                 // Invoke event
                 PinchEventArgs e = new();
                 e.distance = dist - m_distBuffer;
-                m_oldcameraControl = m_cameraControl;
+                if (m_cameraControl != CameraControl.TOUCH)
+                    m_oldcameraControl = m_cameraControl;
                 m_cameraControl = CameraControl.TOUCH;
+                Debug.Log("CAMCONTROL: TwoFingerMove() Pinch" + m_cameraControl);
+
                 pinchEvent?.Invoke(this, e);
 
                 // Update buffer
@@ -703,8 +713,10 @@ namespace vpet
             // Invoke event
             DragEventArgs e = new();
             e.delta = pos - m_posBuffer;
-            m_oldcameraControl = m_cameraControl;
-            m_cameraControl = CameraControl.TOUCH; 
+            if (m_cameraControl != CameraControl.TOUCH)
+                m_oldcameraControl = m_cameraControl;
+            m_cameraControl = CameraControl.TOUCH;
+            Debug.Log("CAMCONTROL: ThreeFingerMove() " + m_cameraControl);
             threeDragEvent?.Invoke(this, e);
 
             // Update buffer
@@ -812,13 +824,17 @@ namespace vpet
             if (m_cameraControl == CameraControl.ATTITUDE)
             {
                 m_inputs.VPETMap.Look.performed -= updateCameraRotation;
+                m_oldcameraControl = CameraControl.NONE;
                 m_cameraControl = CameraControl.NONE;
+                Debug.Log("CAMCONTROL: useAttitude() " + m_cameraControl);
             }
             else if (m_cameraControl == CameraControl.NONE)
             {
                 setCameraAttitudeOffsets();
                 m_inputs.VPETMap.Look.performed += updateCameraRotation;
+                m_oldcameraControl = CameraControl.ATTITUDE;
                 m_cameraControl = CameraControl.ATTITUDE;
+                Debug.Log("CAMCONTROL: useAttitude() " + m_cameraControl);
             }
         }
     }

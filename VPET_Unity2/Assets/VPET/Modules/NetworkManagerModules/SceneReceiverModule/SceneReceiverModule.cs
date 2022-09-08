@@ -57,7 +57,7 @@ namespace vpet
         private MenuTree m_menu;
 
         //!
-        //! A local reference to the netMQ scene reciver socket.
+        //! A local reference to the netMQ scene receiver socket.
         //!
         private RequestSocket m_sceneReceiver;
 
@@ -167,7 +167,7 @@ namespace vpet
         //!
         private IEnumerator startReceive()
         {
-            Dialog statusDialog = new Dialog("Recive Scene", "", Dialog.DTypes.BAR);
+            Dialog statusDialog = new Dialog("Receive Scene", "", Dialog.DTypes.BAR);
             UIManager uiManager = core.getManager<UIManager>();
             uiManager.showDialog(statusDialog);
 
