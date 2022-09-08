@@ -153,7 +153,7 @@ namespace vpet
                 menuTitle.color = manager.uiAppearanceSettings.colors.FontColor;
                 menuTitle.text = menu.caption;
                 GameObject button = menuCanvas.transform.FindDeepChild("Button").gameObject;
-                button.GetComponent<Button>().onClick.AddListener(() => destroyMenu(this, EventArgs.Empty));
+                button.GetComponent<Button>().onClick.AddListener(() => manager.hideMenu());
 
                 ScrollRect rect = rootPanel.GetComponent<ScrollRect>();
                 foreach (MenuItem p in menu.Items)
@@ -346,6 +346,7 @@ namespace vpet
         //!
         private void destroyMenu(object sender, EventArgs e)
         {
+
             foreach (GameObject uiElement in m_uiElements)
             {
                 UnityEngine.Object.DestroyImmediate(uiElement);

@@ -116,7 +116,7 @@ namespace vpet
         //!
         //! Unity OnEnable() function used to initialize all references
         //!
-        void OnEnable()
+        void Awake()
         {
             rect = this.GetComponent<RectTransform>();
             if (!snapSelect)
