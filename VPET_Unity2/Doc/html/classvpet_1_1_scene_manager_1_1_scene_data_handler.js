@@ -2,6 +2,7 @@ var classvpet_1_1_scene_manager_1_1_scene_data_handler =
 [
     [ "SceneData", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data.html", "classvpet_1_1_scene_manager_1_1_scene_data_handler_1_1_scene_data" ],
     [ "SceneDataHandler", "classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a9dd12e76031128b99de8618cc8b9d9c3", null ],
+    [ "~SceneDataHandler", "classvpet_1_1_scene_manager_1_1_scene_data_handler.html#ac42a3b446584f1a6107e5dd02e5e72ac", null ],
     [ "ByteArrayToStructure< T >", "classvpet_1_1_scene_manager_1_1_scene_data_handler.html#aef6bd279eabae9c4c69491f8cda396b7", null ],
     [ "clearSceneByteData", "classvpet_1_1_scene_manager_1_1_scene_data_handler.html#aff4561f031037ba858071ab41842a87d", null ],
     [ "Concat< T >", "classvpet_1_1_scene_manager_1_1_scene_data_handler.html#a81d432f70cee3ca4bf46fd96513beac3", null ],

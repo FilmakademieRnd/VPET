@@ -1,5 +1,8 @@
 var dir_9802a26d2bfd71d53ed5cd06de49ef71 =
 [
+    [ "AnimationManagerModuleInterface.cs", "_animation_manager_module_interface_8cs.html", [
+      [ "AnimationManagerModule", "classvpet_1_1_animation_manager_module.html", "classvpet_1_1_animation_manager_module" ]
+    ] ],
     [ "CoreInterface.cs", "_core_interface_8cs.html", [
       [ "CoreInterface", "classvpet_1_1_core_interface.html", "classvpet_1_1_core_interface" ]
     ] ],

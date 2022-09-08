@@ -1,10 +1,8 @@
 var annotated_dup =
 [
-    [ "backup", "namespacebackup.html", [
-      [ "ColorSelectBackupForHueSatOnly", "classbackup_1_1_color_select_backup_for_hue_sat_only.html", "classbackup_1_1_color_select_backup_for_hue_sat_only" ]
-    ] ],
     [ "vpet", "namespacevpet.html", [
       [ "Core", "classvpet_1_1_core.html", "classvpet_1_1_core" ],
+      [ "AnimationManagerModule", "classvpet_1_1_animation_manager_module.html", "classvpet_1_1_animation_manager_module" ],
       [ "CoreInterface", "classvpet_1_1_core_interface.html", "classvpet_1_1_core_interface" ],
       [ "InputManagerModule", "classvpet_1_1_input_manager_module.html", "classvpet_1_1_input_manager_module" ],
       [ "ManagerInterface", "interfacevpet_1_1_manager_interface.html", null ],
@@ -14,12 +12,15 @@ var annotated_dup =
       [ "NetworkManagerModule", "classvpet_1_1_network_manager_module.html", "classvpet_1_1_network_manager_module" ],
       [ "SceneManagerModule", "classvpet_1_1_scene_manager_module.html", "classvpet_1_1_scene_manager_module" ],
       [ "UIManagerModule", "classvpet_1_1_u_i_manager_module.html", "classvpet_1_1_u_i_manager_module" ],
+      [ "AnimationManager", "classvpet_1_1_animation_manager.html", "classvpet_1_1_animation_manager" ],
+      [ "Key", "classvpet_1_1_key.html", "classvpet_1_1_key" ],
       [ "InputManager", "classvpet_1_1_input_manager.html", "classvpet_1_1_input_manager" ],
       [ "NetworkManager", "classvpet_1_1_network_manager.html", "classvpet_1_1_network_manager" ],
       [ "SceneManager", "classvpet_1_1_scene_manager.html", "classvpet_1_1_scene_manager" ],
       [ "UIManager", "classvpet_1_1_u_i_manager.html", "classvpet_1_1_u_i_manager" ],
       [ "VPETUISettings", "classvpet_1_1_v_p_e_t_u_i_settings.html", "classvpet_1_1_v_p_e_t_u_i_settings" ],
       [ "Colors", "classvpet_1_1_colors.html", "classvpet_1_1_colors" ],
+      [ "Dialog", "classvpet_1_1_dialog.html", "classvpet_1_1_dialog" ],
       [ "MenuButton", "classvpet_1_1_menu_button.html", "classvpet_1_1_menu_button" ],
       [ "MenuTree", "classvpet_1_1_menu_tree.html", "classvpet_1_1_menu_tree" ],
       [ "MenuItem", "classvpet_1_1_menu_item.html", "classvpet_1_1_menu_item" ],
@@ -46,12 +47,10 @@ var annotated_dup =
       [ "UpdateSenderModule", "classvpet_1_1_update_sender_module.html", "classvpet_1_1_update_sender_module" ],
       [ "SceneCreatorModule", "classvpet_1_1_scene_creator_module.html", "classvpet_1_1_scene_creator_module" ],
       [ "SceneParserModule", "classvpet_1_1_scene_parser_module.html", "classvpet_1_1_scene_parser_module" ],
+      [ "SceneStorageModule", "classvpet_1_1_scene_storage_module.html", "classvpet_1_1_scene_storage_module" ],
       [ "UndoRedoModule", "classvpet_1_1_undo_redo_module.html", "classvpet_1_1_undo_redo_module" ],
-      [ "LightArrow", "classvpet_1_1_light_arrow.html", "classvpet_1_1_light_arrow" ],
-      [ "LightCone", "classvpet_1_1_light_cone.html", "classvpet_1_1_light_cone" ],
-      [ "LightIcon", "classvpet_1_1_light_icon.html", "classvpet_1_1_light_icon" ],
-      [ "LightSphere", "classvpet_1_1_light_sphere.html", "classvpet_1_1_light_sphere" ],
-      [ "UnitySceneLoaderModule", "classvpet_1_1_unity_scene_loader_module.html", "classvpet_1_1_unity_scene_loader_module" ],
+      [ "CameraSelectionModule", "classvpet_1_1_camera_selection_module.html", "classvpet_1_1_camera_selection_module" ],
+      [ "DialogCreatorModule", "classvpet_1_1_dialog_creator_module.html", "classvpet_1_1_dialog_creator_module" ],
       [ "GizmoCreatorModule", "classvpet_1_1_gizmo_creator_module.html", "classvpet_1_1_gizmo_creator_module" ],
       [ "GizmoElementUpdate", "classvpet_1_1_gizmo_element_update.html", "classvpet_1_1_gizmo_element_update" ],
       [ "VPETGizmo", "classvpet_1_1_v_p_e_t_gizmo.html", "classvpet_1_1_v_p_e_t_gizmo" ],
@@ -74,6 +73,7 @@ var annotated_dup =
       [ "UICreator3DPointOnFloor", "classvpet_1_1_u_i_creator3_d_point_on_floor.html", "classvpet_1_1_u_i_creator3_d_point_on_floor" ],
       [ "UnityEditorModule", "classvpet_1_1_unity_editor_module.html", "classvpet_1_1_unity_editor_module" ]
     ] ],
+    [ "destroyMenu", "classdestroy_menu.html", "classdestroy_menu" ],
     [ "Inputs", "class_inputs.html", "class_inputs" ],
     [ "NumberInputFieldUpdate", "class_number_input_field_update.html", "class_number_input_field_update" ]
 ];

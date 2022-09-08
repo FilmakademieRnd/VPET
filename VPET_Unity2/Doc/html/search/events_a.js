@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['receivedhistoryupdate_2033',['receivedHistoryUpdate',['../classvpet_1_1_update_receiver_module.html#a36f68ba627c2faae075903bfd6d51abb',1,'vpet::UpdateReceiverModule']]]
+  ['objectselectionevent_2301',['objectSelectionEvent',['../classvpet_1_1_input_manager.html#a9b39482faab99194c69b19c92e1a4936',1,'vpet::InputManager']]],
+  ['orientationchangedevent_2302',['orientationChangedEvent',['../classvpet_1_1_core.html#aea6b2fe6d6ab061b387434635f5374d6',1,'vpet::Core']]]
 ];

@@ -42,7 +42,11 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ]
+      [ "File List", "files.html", "files_dup" ],
+      [ "File Members", "globals.html", [
+        [ "All", "globals.html", null ],
+        [ "Enumerations", "globals_enum.html", null ]
+      ] ]
     ] ]
   ] ]
 ];
@@ -50,11 +54,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_r_module_8cs.html",
-"classvpet_1_1_editor___u_i_mode_change.html#afda27c37d08bfe0163f40c432f758680",
-"classvpet_1_1_menu_tree.html#a3bd1b1f003b574c9baf8866964fa4e58",
-"classvpet_1_1_scene_manager_1_1_scene_node_skinned_geo.html",
-"classvpet_1_1_spinner.html#ae5267e43eaaf6778730b18b180fb01ff",
-"dir_9a2f3b2813079587d3ec0ca6bc57805f.html"
+"classvpet_1_1_colors.html#a339e9381335b8b22977b1be30596dcd2",
+"classvpet_1_1_manager.html#a36ad7cc7d92c772fc5e898dd93bca6a0",
+"classvpet_1_1_scene_manager_1_1_material_package.html#a0d895072d01d1aac980087d5346a0c06",
+"classvpet_1_1_selection_module.html#a10ae760517a5b542258f4b5ad721102c",
+"classvpet_1_1_u_i_creator3_d_point_on_floor.html#aeb24d40e4f6ac968b8a775d80aeb85b8",
+"functions_vars_m.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,7 +1,7 @@
 var classvpet_1_1_u_i_creator2_d_module =
 [
     [ "UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html#a9bae998925fb5dec1607842d80e7e17e", null ],
-    [ "~UICreator2DModule", "classvpet_1_1_u_i_creator2_d_module.html#ad102bac20fd88d3653d64b35299a6319", null ],
+    [ "Cleanup", "classvpet_1_1_u_i_creator2_d_module.html#ada4c8171a232ef0f13e572760be1cc82", null ],
     [ "clearUI", "classvpet_1_1_u_i_creator2_d_module.html#ab7405904f9e41501a2d94cc8b2cf7fe5", null ],
     [ "createAdditionalManipulator", "classvpet_1_1_u_i_creator2_d_module.html#a3a93de46348dac6958bc9704589ec925", null ],
     [ "createManipulator", "classvpet_1_1_u_i_creator2_d_module.html#adc150f526d794b02dad51f1863bc2108", null ],
@@ -19,14 +19,11 @@ var classvpet_1_1_u_i_creator2_d_module =
     [ "instancedManipulatorSelectors", "classvpet_1_1_u_i_creator2_d_module.html#a3cd8c3916d53413179570ca691ed2fc3", null ],
     [ "mainSelection", "classvpet_1_1_u_i_creator2_d_module.html#a1bba4c90d24de350d457bbfe2c4ebc21", null ],
     [ "manipulatorPanel", "classvpet_1_1_u_i_creator2_d_module.html#a447aeb850bb3f89a4e79268a4fff05cd", null ],
-    [ "manipulatorSelectionPanel", "classvpet_1_1_u_i_creator2_d_module.html#a92fed697084b8e856308a4cc74808fdb", null ],
     [ "redoButton", "classvpet_1_1_u_i_creator2_d_module.html#aefc0492662faba4e5c4eea7f0d0119d5", null ],
     [ "resetButton", "classvpet_1_1_u_i_creator2_d_module.html#a5ccd6c164fcfe6c48bc6b3a398d98ba7", null ],
     [ "selectedSceneObjects", "classvpet_1_1_u_i_creator2_d_module.html#ae28585ad5276cbd885b30a2dc100dee1", null ],
-    [ "selectorPrefab", "classvpet_1_1_u_i_creator2_d_module.html#af857971a0a8453e94c20b06c1cb2cf70", null ],
-    [ "selectorSize", "classvpet_1_1_u_i_creator2_d_module.html#ab38068990f7b5e240640613d248d9a31", null ],
-    [ "selectorSpacing", "classvpet_1_1_u_i_creator2_d_module.html#a35e13bac074b091259b8a0b5effb532a", null ],
     [ "UI2D", "classvpet_1_1_u_i_creator2_d_module.html#acd959687f765bf05be937dc6d014b4ce", null ],
     [ "undoButton", "classvpet_1_1_u_i_creator2_d_module.html#a3f206ea4280141eeb2d4e3eba4604ade", null ],
+    [ "undoRedoPanel", "classvpet_1_1_u_i_creator2_d_module.html#acd7b4c7476ef7236720f8344ee91412c", null ],
     [ "parameterChanged", "classvpet_1_1_u_i_creator2_d_module.html#a673a789f4d236719451ccf3d14140180", null ]
 ];

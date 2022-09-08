@@ -1,7 +1,7 @@
 var classvpet_1_1_scene_creator_module =
 [
     [ "SceneCreatorModule", "classvpet_1_1_scene_creator_module.html#a3ae39ffe78a65c99b236096259ee557e", null ],
-    [ "~SceneCreatorModule", "classvpet_1_1_scene_creator_module.html#abd9b1d5ec059dab90550486a8dce6fd7", null ],
+    [ "Cleanup", "classvpet_1_1_scene_creator_module.html#ad140aa89a02facc3502db150194094fa", null ],
     [ "clearData", "classvpet_1_1_scene_creator_module.html#ace59266f5e435072aeca8b7031b2832f", null ],
     [ "createMaterials", "classvpet_1_1_scene_creator_module.html#aa9a8ff93b8db33420f5f458272de6df7", null ],
     [ "createMeshes", "classvpet_1_1_scene_creator_module.html#a5604fa44a1e646950c411df202731c82", null ],

@@ -3,6 +3,7 @@ var classvpet_1_1_colors =
     [ "ButtonBG", "classvpet_1_1_colors.html#aecf31b26874767569c1ab781c31184a4", null ],
     [ "DefaultBG", "classvpet_1_1_colors.html#a203d3813eef91fb6a3c6a1ab5626fb0a", null ],
     [ "DropDown_TextfieldBG", "classvpet_1_1_colors.html#a5dc3fc086733e22493f917ebad9359bb", null ],
+    [ "ElementSelection_Default", "classvpet_1_1_colors.html#a97efd4c482ad624b4596bcde2f1ef5ad", null ],
     [ "ElementSelection_Highlight", "classvpet_1_1_colors.html#af89355ad2e5fd7ca6fb978ebad4d6a3a", null ],
     [ "FloatingButtonBG", "classvpet_1_1_colors.html#a2005399ceb5af8b42b505aa134900428", null ],
     [ "FloatingButtonIcon", "classvpet_1_1_colors.html#a41c7aecb665d5f4f5d7870251ae77b9a", null ],

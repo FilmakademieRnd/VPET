@@ -1,7 +1,6 @@
 var classvpet_1_1_v_p_e_t_gizmo =
 [
     [ "VPETGizmo", "classvpet_1_1_v_p_e_t_gizmo.html#a9c2898b2f8649cd7d3b328fb08844ac9", null ],
-    [ "~VPETGizmo", "classvpet_1_1_v_p_e_t_gizmo.html#ae2349f903b916e84535ea82b5d51e742", null ],
     [ "addElement", "classvpet_1_1_v_p_e_t_gizmo.html#a1b2751efb6169263a3cffcf63db569c8", null ],
     [ "dispose", "classvpet_1_1_v_p_e_t_gizmo.html#a742392b7f395dfa53bcf0a13f296541b", null ],
     [ "removeElement", "classvpet_1_1_v_p_e_t_gizmo.html#a400555008346ae481b89f1cf025956e4", null ],
