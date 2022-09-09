@@ -27,7 +27,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Jonas Trottnow
 //! @author Paulo Scatena
 //! @version 0
-//! @date 24.03.2022
+//! @date 08.09.2022
 
 
 using System;
@@ -202,7 +202,7 @@ namespace vpet
         //!
         //! The previous camera control type
         //!
-        private CameraControl m_oldcameraControl;
+        private CameraControl m_oldcameraControl = CameraControl.NONE;
         //!
         //! The generated Unity input class defining all available user inputs.
         //!

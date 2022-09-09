@@ -108,7 +108,7 @@ namespace vpet
             base.Cleanup(sender, e);
 
             m_menuSelector.elementClicked -= menuClicked;
-            manager.menuDeselected -= deselectMenu;
+            manager.menuDeselected -= unhighlightMenu;
             manager.buttonsUpdated -= createButtons;
             manager.menusUpdated -= createMenus;
 
@@ -122,7 +122,7 @@ namespace vpet
             if (m_menuSelector != null)
             {
                 m_menuSelector.elementClicked -= menuClicked;
-                manager.menuDeselected -= deselectMenu;
+                manager.menuDeselected -= unhighlightMenu;
                 GameObject.Destroy(m_menuSelector.gameObject);
             }
 
@@ -154,17 +154,8 @@ namespace vpet
             }
 
             m_menuSelector.elementClicked += menuClicked;
-            manager.menuDeselected += deselectMenu;
+            manager.menuDeselected += unhighlightMenu;
         }
-
-        //!
-        //!
-        //!
-        private void deselectMenu(object sender, EventArgs e)
-        {
-            m_menuSelector.showHighlighted(-1);
-        }
-
 
         //!
         //! Function that creates the button UI elements based on the button items stored in the UI manager.
@@ -241,6 +232,18 @@ namespace vpet
         private void menuClicked(object sender, int id)
         {
             manager.showMenu((MenuTree)manager.getMenus()[id]);
+        }
+
+        //!
+        //! Function called when a menu has been deselected.
+        //!  It will unhighlights all menus.
+        //!
+        //! @param sender A reference to the UI manager.
+        //! @param e Empty.
+        //!
+        private void unhighlightMenu(object sender, EventArgs e)
+        {
+            m_menuSelector.showHighlighted(-1);
         }
 
     }

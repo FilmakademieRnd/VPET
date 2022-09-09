@@ -346,12 +346,13 @@ namespace vpet
         //!
         private void destroyMenu(object sender, EventArgs e)
         {
-
             foreach (GameObject uiElement in m_uiElements)
             {
                 UnityEngine.Object.DestroyImmediate(uiElement);
             }
             m_uiElements.Clear();
+            if (m_oldMenu != null)
+                m_oldMenu.visible = false;
         }
     }
 }

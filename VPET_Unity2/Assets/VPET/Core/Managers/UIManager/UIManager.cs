@@ -317,6 +317,30 @@ namespace vpet
         }
 
         //!
+        //! Returns a reference to to list of menus.
+        //!
+        public ref List<MenuTree> getMenus()
+        {
+            return ref m_menus;
+        }
+
+        //!
+        //! Function that invokes the signal for creating the UI for the given menu.
+        //!
+        public void showMenu(MenuTree menu)
+        {
+            menuSelected?.Invoke(this, menu);
+        }
+
+        //!
+        //! Function that invokes the signal for deleting the active menu UI.
+        //!
+        public void hideMenu()
+        {
+            menuDeselected?.Invoke(this, EventArgs.Empty);
+        }
+
+        //!
         //! Adds a given button to the buttonlist.
         //!
         //! @param button The button to be added to the list.
@@ -345,14 +369,6 @@ namespace vpet
                 m_buttons.Remove(button);
 
             buttonsUpdated?.Invoke(this, EventArgs.Empty);
-        }
-
-        //!
-        //! Returns a reference to to list of menus.
-        //!
-        public ref List<MenuTree> getMenus()
-        {
-            return ref m_menus;
         }
 
         //!
@@ -414,23 +430,6 @@ namespace vpet
             addMenu(settingsMenu);
         }
 
-        private void showAboutMenu()
-        {
-            GameObject.Instantiate(m_aboutMenu);
-        }
-
-        private void createStartMenu()
-        {
-            m_startMenu = new MenuTree()
-                .Begin(MenuItem.IType.VSPLIT)
-                    .Begin(MenuItem.IType.VSPLIT)
-                        .Add("Connect to a server or load the demo scene...", true)
-                    .End();
-
-            m_startMenu.caption = "VPET";
-        }
-
-
         //!
         //! Function to add menu elements to a MenuTree object based on a given VPET Settings object.
         //!
@@ -453,14 +452,14 @@ namespace vpet
 
                 menu = menu.Begin(MenuItem.IType.HSPLIT);  // <<< start HSPLIT
 
-                if ( (o.GetType().BaseType == typeof(AbstractParameter) ||
-                      o.GetType() == typeof(ListParameter)) && 
-                     (a != null) )
+                if ((o.GetType().BaseType == typeof(AbstractParameter) ||
+                      o.GetType() == typeof(ListParameter)) &&
+                     (a != null))
                 {
                     menu = menu.Add(info.Name);
                     menu = menu.Add((AbstractParameter)info.GetValue(settings));
                 }
-                else if ( info.GetValue(settings).GetType().BaseType != typeof(AbstractParameter))
+                else if (info.GetValue(settings).GetType().BaseType != typeof(AbstractParameter))
                 {
                     menu = menu.Add(info.Name);
                     menu = menu.Add(info.GetValue(settings).ToString());
@@ -468,6 +467,28 @@ namespace vpet
 
                 menu.End();  // <<< end HSPLIT
             }
+        }
+
+        //!
+        //! Function to create the start menu shown on VPET startup.
+        //!
+        private void createStartMenu()
+        {
+            m_startMenu = new MenuTree()
+                .Begin(MenuItem.IType.VSPLIT)
+                    .Begin(MenuItem.IType.VSPLIT)
+                        .Add("Connect to a server or load the demo scene...", true)
+                    .End();
+
+            m_startMenu.caption = "VPET";
+        }
+
+        //!
+        //! Function to instantiate the about menu out of the stored prefab.
+        //!
+        private void showAboutMenu()
+        {
+            GameObject.Instantiate(m_aboutMenu);
         }
 
         //!
@@ -529,22 +550,6 @@ namespace vpet
 
             m_selectedObjects.Clear();
             selectionChanged?.Invoke(this, m_selectedObjects);
-        }
-
-        //!
-        //! Function that invokes the signal for creating the UI for the given menu.
-        //!
-        public void showMenu(MenuTree menu)
-        {
-            menuSelected?.Invoke(this, menu);
-        }
-
-        //!
-        //! Function that invokes the signal for deleting the active menu UI.
-        //!
-        public void hideMenu()
-        {
-            menuDeselected?.Invoke(this, EventArgs.Empty);
         }
 
         //!
