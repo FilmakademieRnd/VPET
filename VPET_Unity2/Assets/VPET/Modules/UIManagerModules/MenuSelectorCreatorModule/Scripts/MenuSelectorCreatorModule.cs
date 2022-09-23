@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 11.03.2022
+//! @date 19.09.2022
 
 using System;
 using UnityEngine;
@@ -109,9 +109,9 @@ namespace vpet
 
             m_menuSelector.elementClicked -= menuClicked;
             manager.menuDeselected -= unhighlightMenu;
+            manager.menuSelected -= unhighlightMenu;
             manager.buttonsUpdated -= createButtons;
             manager.menusUpdated -= createMenus;
-
         }
 
         //!
@@ -123,6 +123,7 @@ namespace vpet
             {
                 m_menuSelector.elementClicked -= menuClicked;
                 manager.menuDeselected -= unhighlightMenu;
+                manager.menuSelected -= unhighlightMenu;
                 GameObject.Destroy(m_menuSelector.gameObject);
             }
 
@@ -155,6 +156,7 @@ namespace vpet
 
             m_menuSelector.elementClicked += menuClicked;
             manager.menuDeselected += unhighlightMenu;
+            manager.menuSelected += unhighlightMenu;
         }
 
         //!
@@ -207,7 +209,6 @@ namespace vpet
             }
 
             m_buttonSelector.elementClicked += buttonClicked;
-
         }
 
         //!
@@ -244,6 +245,19 @@ namespace vpet
         private void unhighlightMenu(object sender, EventArgs e)
         {
             m_menuSelector.showHighlighted(-1);
+        }
+
+        //!
+        //! Function called when a menu has been deselected.
+        //!  It will unhighlights all menus.
+        //!
+        //! @param sender A reference to the UI manager.
+        //! @param e If null.
+        //!
+        private void unhighlightMenu(object sender, MenuTree menu)
+        {
+            if (menu == null)
+                m_menuSelector.showHighlighted(-1);
         }
 
     }

@@ -145,7 +145,7 @@ namespace vpet
             m_controlMessage[0] = manager.cID;
             m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
-            Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             m_controlMessage[5] = Convert.ToByte(true);
 
             m_mre.Set();
@@ -165,7 +165,7 @@ namespace vpet
             m_controlMessage[0] = manager.cID;
             m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
-            Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             m_controlMessage[5] = Convert.ToByte(false);
 
             m_mre.Set();
@@ -230,8 +230,8 @@ namespace vpet
                 m_controlMessage[2] = (byte)MessageType.UNDOREDOADD;
 
                 // parameter
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, m_controlMessage, 5, 2);  // ParameterID
+                Helpers.copyArray(BitConverter.GetBytes(parameter.parent.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+                Helpers.copyArray(BitConverter.GetBytes(parameter.id), 0, m_controlMessage, 5, 2);  // ParameterID
                 m_controlMessage[7] = (byte)parameter.vpetType;  // ParameterType
             }
 
@@ -261,7 +261,7 @@ namespace vpet
                 m_controlMessage[6] = 0;
 
                 // parameter
-                Buffer.BlockCopy(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+                Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
             }
 
             m_mre.Set();
@@ -304,10 +304,10 @@ namespace vpet
                 message[0] = manager.cID;
                 message[1] = time;
                 message[2] = (byte)MessageType.PARAMETERUPDATE;
-                
+
                 // parameter
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.parent.id), 0, message, 3, 2);  // SceneObjectID
-                Buffer.BlockCopy(BitConverter.GetBytes(parameter.id), 0, message, 5, 2);  // ParameterID
+                Helpers.copyArray(BitConverter.GetBytes(parameter.parent.id), 0, message, 3, 2);  // SceneObjectID
+                Helpers.copyArray(BitConverter.GetBytes(parameter.id), 0, message, 5, 2);  // ParameterID
                 message[7] = (byte)parameter.vpetType;  // ParameterType
 
                 return message;
@@ -342,6 +342,8 @@ namespace vpet
                     lock (m_modifiedParameters)
                     {
                         byte time = core.time;
+                        // [REVIEW]
+                        // maybe better to send a concatenated byte stream every core time tick
                         foreach (AbstractParameter parameter in m_modifiedParameters)
                             sender.SendFrame(createParameterMessage(parameter, time), false); // true not wait
                         m_modifiedParameters.Clear();

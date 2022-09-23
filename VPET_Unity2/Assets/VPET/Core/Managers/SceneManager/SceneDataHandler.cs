@@ -80,15 +80,15 @@ namespace vpet
             //!
             //! storing system specific int size for faster access.
             //!
-            public static int size_bool = sizeof(bool);
+            public static readonly int size_bool = sizeof(bool);
             //!
             //! storing system specific int size for faster access.
             //!
-            public static int size_int = sizeof(int);
+            public static readonly int size_int = sizeof(int);
             //!
             //! storing system specific float size for faster access.
             //!
-            public static int size_float = sizeof(float);
+            public static readonly int size_float = sizeof(float);
             //!
             //! The list containing the serialised header.
             //!
@@ -751,27 +751,27 @@ namespace vpet
                                                         objPack.bWSize * 4 * SceneDataHandler.size_int];
                     int dstIdx = 0;
                     // vertices
-                    Buffer.BlockCopy(BitConverter.GetBytes(objPack.vSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(objPack.vSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.vertices, 0, objByteData, dstIdx, objPack.vSize * 3 * SceneDataHandler.size_float);
                     dstIdx += objPack.vSize * 3 * SceneDataHandler.size_float;
                     // indices
-                    Buffer.BlockCopy(BitConverter.GetBytes(objPack.iSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(objPack.iSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.indices, 0, objByteData, dstIdx, objPack.iSize * SceneDataHandler.size_int);
                     dstIdx += objPack.iSize * SceneDataHandler.size_int;
                     // normals
-                    Buffer.BlockCopy(BitConverter.GetBytes(objPack.nSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(objPack.nSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.normals, 0, objByteData, dstIdx, objPack.nSize * 3 * SceneDataHandler.size_float);
                     dstIdx += objPack.nSize * 3 * SceneDataHandler.size_float;
                     // uvs
-                    Buffer.BlockCopy(BitConverter.GetBytes(objPack.uvSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(objPack.uvSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.uvs, 0, objByteData, dstIdx, objPack.uvSize * 2 * SceneDataHandler.size_float);
                     dstIdx += objPack.uvSize * 2 * SceneDataHandler.size_float;
                     // bone weights
-                    Buffer.BlockCopy(BitConverter.GetBytes(objPack.bWSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(objPack.bWSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.boneWeights, 0, objByteData, dstIdx, objPack.bWSize * 4 * SceneDataHandler.size_float);
                     dstIdx += objPack.bWSize * 4 * SceneDataHandler.size_float;
@@ -800,15 +800,15 @@ namespace vpet
                                                     chrPack.sSize * SceneDataHandler.size_float * 10];
                     int dstIdx = 0;
                     // bone mapping size
-                    Buffer.BlockCopy(BitConverter.GetBytes(chrPack.bMSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(chrPack.bMSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
 
                     // skeleton mapping size
-                    Buffer.BlockCopy(BitConverter.GetBytes(chrPack.sSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(chrPack.sSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
 
                     // root dag id
-                    Buffer.BlockCopy(BitConverter.GetBytes(chrPack.rootId), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(chrPack.rootId), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
 
                     // bone mapping
@@ -850,16 +850,16 @@ namespace vpet
                     byte[] texByteData = new byte[4 * SceneDataHandler.size_int + texPack.colorMapDataSize];
                     int dstIdx = 0;
                     // width
-                    Buffer.BlockCopy(BitConverter.GetBytes(texPack.width), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(texPack.width), 0, texByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     // height
-                    Buffer.BlockCopy(BitConverter.GetBytes(texPack.height), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(texPack.height), 0, texByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     // format
-                    Buffer.BlockCopy(BitConverter.GetBytes((int)texPack.format), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes((int)texPack.format), 0, texByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     // data size
-                    Buffer.BlockCopy(BitConverter.GetBytes(texPack.colorMapDataSize), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    Helpers.copyArray(BitConverter.GetBytes(texPack.colorMapDataSize), 0, texByteData, dstIdx, SceneDataHandler.size_int);
                     dstIdx += SceneDataHandler.size_int;
                     // pixel data
                     Buffer.BlockCopy(texPack.colorMapData, 0, texByteData, dstIdx, texPack.colorMapDataSize);
@@ -952,7 +952,15 @@ namespace vpet
                 }
             }
 
-            private int serialize<T>(T[] srcData, ref byte[] dstData, int dstIdx)
+            //!
+            //! Function that serializes an arbitrary formated array into a byte array.
+            //!
+            //! @param srcData The arbitrary source data array.
+            //! @param srcData The byte formated destination array.
+            //! @param dstIdx The the destination intex within the destination array.
+            //! @return The new destination index after copying the source data.
+            //!
+            private static int serialize<T>(T[] srcData, ref byte[] dstData, int dstIdx)
             {
                 int typeSize = Marshal.SizeOf(typeof(T));
                 if (typeof(T) == typeof(bool))
@@ -1000,10 +1008,10 @@ namespace vpet
                 T[] result = new T[length];
 
                 length = first.Length;
-                Array.Copy(first, 0, result, 0, first.Length);
+                Buffer.BlockCopy(first, 0, result, 0, first.Length);
                 foreach (T[] array in arrays)
                 {
-                    Array.Copy(array, 0, result, length, array.Length);
+                    Buffer.BlockCopy(array, 0, result, length, array.Length);
                     length += array.Length;
                 }
                 return result;

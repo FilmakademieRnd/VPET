@@ -527,13 +527,13 @@ namespace vpet
                 case ParameterType.INT:
                     {
                         data = new byte[4 + startoffset];
-                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToInt32(_value)), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(Convert.ToInt32(_value)), 0, data, startoffset, 4);
                         return data;
                     }
                 case ParameterType.FLOAT:
                     {
                         data = new byte[4 + startoffset];
-                        Buffer.BlockCopy(BitConverter.GetBytes(Convert.ToSingle(_value)), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(Convert.ToSingle(_value)), 0, data, startoffset, 4);
                         return data;
                     }
                 case ParameterType.VECTOR2:
@@ -541,8 +541,8 @@ namespace vpet
                         data = new byte[8 + startoffset];
                         Vector2 obj = (Vector2)Convert.ChangeType(_value, typeof(Vector2));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
                         return data;
                     }
                 case ParameterType.VECTOR3:
@@ -550,9 +550,9 @@ namespace vpet
                         data = new byte[12 + startoffset];
                         Vector3 obj = (Vector3)Convert.ChangeType(_value, typeof(Vector3));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
                         return data;
                     }
                 case ParameterType.VECTOR4:
@@ -560,10 +560,10 @@ namespace vpet
                         data = new byte[16 + startoffset];
                         Vector4 obj = (Vector4)Convert.ChangeType(_value, typeof(Vector4));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset + 12, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.w), 0, data, startoffset + 12, 4);
                         return data;
                     }
                 case ParameterType.QUATERNION:
@@ -571,10 +571,10 @@ namespace vpet
                         data = new byte[16 + startoffset];
                         Quaternion obj = (Quaternion)Convert.ChangeType(_value, typeof(Quaternion));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.w), 0, data, startoffset + 12, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, data, startoffset + 4, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.z), 0, data, startoffset + 8, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.w), 0, data, startoffset + 12, 4);
                         return data;
                     }
                 case ParameterType.COLOR:
@@ -582,10 +582,10 @@ namespace vpet
                         data = new byte[16 + startoffset];
                         Color obj = (Color)Convert.ChangeType(_value, typeof(Color));
 
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.r), 0, data, startoffset, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.g), 0, data, startoffset + 4, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.b), 0, data, startoffset + 8, 4);
-                        Buffer.BlockCopy(BitConverter.GetBytes(obj.a), 0, data, startoffset + 12, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.r), 0, data, startoffset, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.g), 0, data, startoffset + 4, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.b), 0, data, startoffset + 8, 4);
+                        Helpers.copyArray(BitConverter.GetBytes(obj.a), 0, data, startoffset + 12, 4);
                         return data;
                     }
                 case ParameterType.STRING:
@@ -714,7 +714,6 @@ namespace vpet
             }
             else
                 Helpers.Log("Parameter index for" + p.name + "exceeds length of list " + this.name, Helpers.logMsgType.WARNING);
-
         }
 
         //!

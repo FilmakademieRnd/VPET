@@ -31,6 +31,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 namespace vpet
 {
@@ -92,7 +93,6 @@ namespace vpet
             }
             return result.ToArray();
         }
-
         //!
         //! Searches and returns first element of a given list within another list.
         //! @param  a The list containing elements to be searched for.
@@ -135,6 +135,22 @@ namespace vpet
                     queue.Enqueue(t);
             }
             return null;
+        }
+        //!
+        //! Copys a byte array into another.
+        //! This function is faster for array sizes < 20 bytes!
+        //!
+        //! @param src The source array.
+        //! @param srcOffset The index offset within the source array.        
+        //! @param dst The destination array.
+        //! @param srcOffset The index offset within the destination array.
+        //! @param length The length of the byte array to be copied.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void copyArray(byte[] src, int srcOffset, byte[] dst, int dstOffset, int length)
+        {
+            for (int i = 0; i < length; i++)
+                dst[dstOffset + i] = src[srcOffset + i];
         }
     }
 }

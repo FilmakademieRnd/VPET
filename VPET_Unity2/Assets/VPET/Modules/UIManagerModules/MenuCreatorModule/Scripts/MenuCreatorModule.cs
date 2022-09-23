@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 17.08.2022
+//! @date 19.09.2022
 
 using System;
 using System.Collections.Generic;
@@ -105,7 +105,7 @@ namespace vpet
             m_dropdown = Resources.Load("Prefabs/MenuDropdown") as GameObject;
 
             manager.menuSelected += createMenu;
-            manager.menuDeselected += destroyMenu;
+            manager.menuDeselected += hideMenu;
         }
 
         //!
@@ -119,7 +119,7 @@ namespace vpet
         {
             base.Cleanup(sender, e);
             manager.menuSelected -= createMenu;
-            manager.menuDeselected -= destroyMenu;
+            manager.menuDeselected -= hideMenu;
         }
 
         //!
@@ -130,10 +130,13 @@ namespace vpet
         //!
         void createMenu(object sender, MenuTree menu)
         {
-            destroyMenu(this, EventArgs.Empty);
+            destroyMenu();
 
             if (menu == null)
+            {
+                m_oldMenu.visible = false;
                 return;
+            }
 
             if (menu.visible && m_oldMenu == menu)
                 menu.visible = false;
@@ -344,15 +347,22 @@ namespace vpet
         //!
         //! Function to destroy all created UI elements of a menu.
         //!
-        private void destroyMenu(object sender, EventArgs e)
+        private void hideMenu(object sender, EventArgs e)
+        {
+            m_oldMenu.visible = false;
+            destroyMenu();
+        }
+
+        //!
+        //! Function to destroy all created UI elements of a menu.
+        //!
+        private void destroyMenu()
         {
             foreach (GameObject uiElement in m_uiElements)
             {
                 UnityEngine.Object.DestroyImmediate(uiElement);
             }
             m_uiElements.Clear();
-            if (m_oldMenu != null)
-                m_oldMenu.visible = false;
         }
     }
 }

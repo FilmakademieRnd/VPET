@@ -395,26 +395,26 @@ namespace vpet
                         case 0:
                             shaderData = new byte[4 * SceneManager.SceneDataHandler.size_float];
                             Color color = material.GetColor(shaderPropertyId);
-                            Buffer.BlockCopy(BitConverter.GetBytes(color.r), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(color.r), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
-                            Buffer.BlockCopy(BitConverter.GetBytes(color.g), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(color.g), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
-                            Buffer.BlockCopy(BitConverter.GetBytes(color.b), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(color.b), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
-                            Buffer.BlockCopy(BitConverter.GetBytes(color.a), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(color.a), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
                             break;
                         // vector 4
                         case 1:
                             shaderData = new byte[4 * SceneManager.SceneDataHandler.size_float];
                             Vector4 vec4 = material.GetVector(shaderPropertyId);
-                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.x), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(vec4.x), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
-                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.y), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(vec4.y), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
-                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.z), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(vec4.z), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
-                            Buffer.BlockCopy(BitConverter.GetBytes(vec4.w), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(vec4.w), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
                             break;
                         // float, range
@@ -422,7 +422,7 @@ namespace vpet
                         case 3:
                             shaderData = new byte[SceneManager.SceneDataHandler.size_float];
                             float f = material.GetFloat(shaderPropertyId);
-                            Buffer.BlockCopy(BitConverter.GetBytes(f), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
+                            Helpers.copyArray(BitConverter.GetBytes(f), 0, shaderData, dstIdx, SceneManager.SceneDataHandler.size_float);
                             dstIdx += SceneManager.SceneDataHandler.size_float;
                             break;
                         // Texture (handled separately)
