@@ -126,32 +126,32 @@ namespace vpet
             {
                 if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(1), out input))
                 {
-                    if (input[0] != manager.cID)
-                    {
-                        switch ((MessageType)input[2])
+                    if (input != null)
+                        if (input[0] != manager.cID)
                         {
-                            case MessageType.LOCK:
-                                Helpers.Log("Make me lock");
-                                decodeLockMessage(ref input);
-                                break;
-                            case MessageType.SYNC:
-                                if (!core.isServer)
-                                    decodeSyncMessage(ref input);
-                                break;
-                            case MessageType.RESETOBJECT:
-                            case MessageType.UNDOREDOADD:
-                            case MessageType.PARAMETERUPDATE:
-                                // make shure that producer and consumer exclude eachother
-                                lock (m_messageBuffer)
-                                {
-                                    // input[1] is time
-                                    m_messageBuffer[input[1]].Add(input);
-                                }
-                                break;
-                            default:
-                                break;
+                            switch ((MessageType)input[2])
+                            {
+                                case MessageType.LOCK:
+                                    decodeLockMessage(ref input);
+                                    break;
+                                case MessageType.SYNC:
+                                    if (!core.isServer)
+                                        decodeSyncMessage(ref input);
+                                    break;
+                                case MessageType.RESETOBJECT:
+                                case MessageType.UNDOREDOADD:
+                                case MessageType.PARAMETERUPDATE:
+                                    // make shure that producer and consumer exclude eachother
+                                    lock (m_messageBuffer)
+                                    {
+                                        // input[1] is time
+                                        m_messageBuffer[input[1]].Add(input);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
                 }
                 Thread.Yield();
             }

@@ -154,6 +154,14 @@ namespace vpet
         //!
         void Awake()
         {
+            // enable/disable logging
+#if UNITY_EDITOR
+            Debug.unityLogger.logEnabled = true;
+#else
+            Helpers.Log("Warning, Unity Logging has been disabled, look at Core.cs!", Helpers.logMsgType.WARNING);
+            Debug.unityLogger.logEnabled = false;
+#endif
+
             _settings = new coreSettings();
             m_timesteps = (byte)(((int)(256f / settings.framerate)) * settings.framerate);
             m_parameterObjectList = new List<ParameterObject>();
