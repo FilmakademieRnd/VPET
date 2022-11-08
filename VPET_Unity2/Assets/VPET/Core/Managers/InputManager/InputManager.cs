@@ -58,65 +58,39 @@ namespace vpet
         }
 
         //!
-        //! Class defining input event arguments.
-        //!
-        public class InputEventArgs : EventArgs
-        {
-            public InputEventType type;
-            public InputActionPhase phase;
-            public Vector2 point;
-            public Vector2 delta;
-            public double time;
-        }
-        //!
-        //! Class defining pinch input event arguments.
-        //!
-        public class PinchEventArgs : EventArgs
-        {
-            public float distance;
-        }
-        //!
-        //! Class defining drag input event arguments.
-        //!
-        public class DragEventArgs : EventArgs
-        {
-            public Vector2 delta;
-        }
-
-        //!
         //! The default input event.
         //!
-        public event EventHandler<InputEventArgs> objectSelectionEvent;
+        public event EventHandler<Vector2> objectSelectionEvent;
 
         //!
         //! Press start event, i.e. the begin of a click.
         //!
-        public event EventHandler<InputEventArgs> inputPressStart;
+        public event EventHandler<Vector2> inputPressStart;
         //!
         //! Press start event, i.e. the begin of a click.
         //!
-        public event EventHandler<InputEventArgs> inputPressPerformed;
+        public event EventHandler<Vector2> inputPressPerformed;
         //!
         //! Press end event, i.e. the end of a click.
         //!
-        public event EventHandler<InputEventArgs> inputPressEnd;
+        public event EventHandler<Vector2> inputPressEnd;
         //!
         //! Press move event, i.e. the moving of the cursor/finger.
         //!
-        public event EventHandler<InputEventArgs> inputMove;
+        public event EventHandler<Vector2> inputMove;
 
         //!
         //! The two finger pinch input event.
         //!
-        public event EventHandler<PinchEventArgs> pinchEvent;
+        public event EventHandler<float> pinchEvent;
         //!
         //! The two finger drag input event.
         //!
-        public event EventHandler<DragEventArgs> twoDragEvent;
+        public event EventHandler<Vector2> twoDragEvent;
         //!
         //! The three finger drag input event.
         //!
-        public event EventHandler<DragEventArgs> threeDragEvent;
+        public event EventHandler<Vector2> threeDragEvent;
 
         //!
         //! Event to announce there is a finger gestures operation happening
@@ -312,9 +286,7 @@ namespace vpet
                 }
 
                 // Invoke event
-                DragEventArgs e = new();
-                e.delta = pos - m_posBuffer;
-                twoDragEvent?.Invoke(this, e);
+                twoDragEvent?.Invoke(this, pos - m_posBuffer);
 
                 // Update buffer
                 m_posBuffer = pos;
@@ -332,9 +304,7 @@ namespace vpet
                 }
 
                 // Invoke event
-                DragEventArgs e = new();
-                e.delta = pos - m_posBuffer;
-                threeDragEvent?.Invoke(this, e);
+                threeDragEvent?.Invoke(this, pos - m_posBuffer);
 
                 // Update buffer
                 m_posBuffer = pos;
@@ -349,9 +319,7 @@ namespace vpet
             float dist = 0.1f * m_inputs.VPETMap.ZoomWheel.ReadValue<float>();
 
             // Invoke event
-            PinchEventArgs e = new();
-            e.distance = dist;
-            pinchEvent?.Invoke(this, e);
+            pinchEvent?.Invoke(this, dist);
         }
 
         //! 
@@ -447,7 +415,6 @@ namespace vpet
                 InputSystem.DisableDevice(AttitudeSensor.current);
                 core.getManager<UIManager>().removeButton(m_attitudeButton);
                 m_cameraControl = CameraControl.NONE;
-                Debug.Log("CAMCONTROL: disableAttitudeSensor() " + m_cameraControl);
             }
             else
                 Helpers.Log("No attitude sensor found, feature will not be available.", Helpers.logMsgType.WARNING);
@@ -459,14 +426,12 @@ namespace vpet
         private void TapFunction(InputAction.CallbackContext c)
         {
             
-            InputEventArgs e = new InputEventArgs();
-
             if (c.performed)
             {
-                e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-                if (!TappedUI(e.point) && !Tapped3DUI(e.point))
+                Vector2 point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+                if (!TappedUI(point) && !Tapped3DUI(point))
                 {
-                    objectSelectionEvent?.Invoke(this, e);
+                    objectSelectionEvent?.Invoke(this, point);
                 }
             }
 
@@ -489,9 +454,8 @@ namespace vpet
         //!
         private void MovePoint(InputAction.CallbackContext c)
         {
-            InputEventArgs e = new InputEventArgs();
-            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-            inputMove?.Invoke(this, e);
+            Vector2 point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            inputMove?.Invoke(this, m_inputs.VPETMap.Position.ReadValue<Vector2>());
 
             if (!m_isTouchDrag && m_touchType == InputTouchType.ONE)
                 m_isTouchDrag = true;
@@ -502,10 +466,9 @@ namespace vpet
         //!
         private void PressStart(InputAction.CallbackContext c)
         {
-            InputEventArgs e = new InputEventArgs();
-            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-            if (!TappedUI(e.point))
-                inputPressStart?.Invoke(this, e);
+            Vector2 point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            if (!TappedUI(point))
+                inputPressStart?.Invoke(this, point);
         }
 
         //!
@@ -513,10 +476,9 @@ namespace vpet
         //!
         private void PressPerformed(InputAction.CallbackContext c)
         {
-            InputEventArgs e = new InputEventArgs();
-            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
-            if (!TappedUI(e.point))
-                inputPressPerformed?.Invoke(this, e);
+            Vector2 point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            if (!TappedUI(point))
+                inputPressPerformed?.Invoke(this, point);
         }
 
         //!
@@ -524,10 +486,9 @@ namespace vpet
         //!
         private void PressEnd(InputAction.CallbackContext c)
         {
-            InputEventArgs e = new InputEventArgs();
-            e.point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
+            Vector2 point = m_inputs.VPETMap.Position.ReadValue<Vector2>();
 
-            inputPressEnd?.Invoke(this, e);
+            inputPressEnd?.Invoke(this, point);
 
             // Reset monitor variables
             m_touchType = InputTouchType.NONE;
@@ -569,7 +530,6 @@ namespace vpet
             m_touchType = InputTouchType.NONE;
 
             m_cameraControl = m_oldcameraControl;
-            Debug.Log("CAMCONTROL: FingerUp() " + m_cameraControl);
 
 
             // Also the moving
@@ -645,13 +605,10 @@ namespace vpet
                 }
 
                 // Invoke event
-                DragEventArgs e = new();
-                e.delta = pos - m_posBuffer;
                 if(m_cameraControl != CameraControl.TOUCH)
                     m_oldcameraControl = m_cameraControl;
                 m_cameraControl = CameraControl.TOUCH;
-                Debug.Log("CAMCONTROL: TwoFingerMove() nonPinch" + m_cameraControl);
-                twoDragEvent?.Invoke(this, e);
+                twoDragEvent?.Invoke(this, pos - m_posBuffer);
 
                 // Update buffer
                 m_posBuffer = pos;
@@ -670,14 +627,11 @@ namespace vpet
                 }
 
                 // Invoke event
-                PinchEventArgs e = new();
-                e.distance = dist - m_distBuffer;
                 if (m_cameraControl != CameraControl.TOUCH)
                     m_oldcameraControl = m_cameraControl;
                 m_cameraControl = CameraControl.TOUCH;
-                Debug.Log("CAMCONTROL: TwoFingerMove() Pinch" + m_cameraControl);
 
-                pinchEvent?.Invoke(this, e);
+                pinchEvent?.Invoke(this, dist - m_distBuffer);
 
                 // Update buffer
                 m_distBuffer = dist;
@@ -711,13 +665,10 @@ namespace vpet
             }
 
             // Invoke event
-            DragEventArgs e = new();
-            e.delta = pos - m_posBuffer;
             if (m_cameraControl != CameraControl.TOUCH)
                 m_oldcameraControl = m_cameraControl;
             m_cameraControl = CameraControl.TOUCH;
-            Debug.Log("CAMCONTROL: ThreeFingerMove() " + m_cameraControl);
-            threeDragEvent?.Invoke(this, e);
+            threeDragEvent?.Invoke(this, pos - m_posBuffer);
 
             // Update buffer
             m_posBuffer = pos;
@@ -735,7 +686,7 @@ namespace vpet
             m_doOnce = true;
 
             // Invoke end of press event
-            inputPressEnd?.Invoke(this, null);
+            inputPressEnd?.Invoke(this, Vector2.zero);
             toggle2DUIInteraction?.Invoke(this, false);
         }
 
@@ -755,9 +706,8 @@ namespace vpet
             // Force an empty selection
             // [REVIEW]
             // Is this too much of a hack?
-            InputEventArgs e = new();
-            e.point = new(-5, -5);
-            objectSelectionEvent?.Invoke(this, e);
+            Vector2 point = new(-5, -5);
+            objectSelectionEvent?.Invoke(this, point);
         }
 
         //!
@@ -826,7 +776,6 @@ namespace vpet
                 m_inputs.VPETMap.Look.performed -= updateCameraRotation;
                 m_oldcameraControl = CameraControl.NONE;
                 m_cameraControl = CameraControl.NONE;
-                Debug.Log("CAMCONTROL: useAttitude() " + m_cameraControl);
             }
             else if (m_cameraControl == CameraControl.NONE)
             {
@@ -834,7 +783,6 @@ namespace vpet
                 m_inputs.VPETMap.Look.performed += updateCameraRotation;
                 m_oldcameraControl = CameraControl.ATTITUDE;
                 m_cameraControl = CameraControl.ATTITUDE;
-                Debug.Log("CAMCONTROL: useAttitude() " + m_cameraControl);
             }
         }
     }

@@ -170,7 +170,7 @@ namespace vpet
         //! @param sender The input manager.
         //! @param e The screen coorinates from the input event.
         //!
-        private async void SelectFunction(object sender, InputManager.InputEventArgs e)
+        private async void SelectFunction(object sender, Vector2 point)
         {
             m_isRenderActive = true;
 
@@ -179,10 +179,10 @@ namespace vpet
 
             manager.clearSelectedObject();
             
-            SceneObject obj = GetSelectableAtCollider(e.point);
+            SceneObject obj = GetSelectableAtCollider(point);
 
             if (!obj)
-                obj = GetSelectableAtPixel(e.point);
+                obj = GetSelectableAtPixel(point);
 
             if (obj)
             {

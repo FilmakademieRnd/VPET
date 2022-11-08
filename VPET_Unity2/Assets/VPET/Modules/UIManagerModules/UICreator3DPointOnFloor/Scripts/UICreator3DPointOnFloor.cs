@@ -101,13 +101,13 @@ namespace vpet
         //! @param sender callback sender
         //! @param e event reference
         //!
-        private void PressStart(object sender, InputManager.InputEventArgs e)
+        private void PressStart(object sender, Vector2 point)
         {
             //Debug.Log("Press start: " + e.point.ToString());
             if (selObj == null)
                 return;
 
-            Ray ray = Camera.main.ScreenPointToRay(e.point);
+            Ray ray = Camera.main.ScreenPointToRay(point);
             if (helperPlane.Raycast(ray, out float enter))
             {
                 //Get the point that is clicked
@@ -127,14 +127,14 @@ namespace vpet
         // This for mouse drag
         // Should only operate in case of existing selection
         // But what happens if touch input is moving the object and other function change the selection
-        private void Move(object sender, InputManager.InputEventArgs e)
+        private void Move(object sender, Vector2 point)
         {
 
             //Debug.Log("Moving: " + e.point.ToString());
             if (selObj == null)
                 return;
 
-            Ray ray = Camera.main.ScreenPointToRay(e.point);
+            Ray ray = Camera.main.ScreenPointToRay(point);
             if (helperPlane.Raycast(ray, out float enter))
             {
                 //Get the point that is clicked
@@ -175,7 +175,7 @@ namespace vpet
         //! @param sender callback sender
         //! @param e event reference
         //!
-        private void PressEnd(object sender, InputManager.InputEventArgs e)
+        private void PressEnd(object sender, Vector2 point)
         {
             //Debug.Log("Press end: " + e.point.ToString());
 

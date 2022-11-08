@@ -171,10 +171,10 @@ namespace vpet
         //! @param sender The input manager.
         //! @param e The distance between the touch gesture triggering the movement.
         //!
-        private void CameraDolly(object sender, InputManager.PinchEventArgs e)
+        private void CameraDolly(object sender, float distance)
         {
             // Dolly cam
-            m_camXform.Translate(0f, 0f, e.distance * s_dollySpeed);
+            m_camXform.Translate(0f, 0f, distance * s_dollySpeed);
 
             // Check if center of interest is in front of camera
             Vector3 camCoord = m_cam.WorldToViewportPoint(centerOfInterest);
@@ -194,7 +194,7 @@ namespace vpet
         //! @param sender The input manager.
         //! @param e The delta distance from the touch gesture triggering the movement.
         //!
-        private void CameraOrbit(object sender, InputManager.DragEventArgs e)
+        private void CameraOrbit(object sender, Vector2 delta)
         {
             // Prepare the pivot point
             Vector3 pivotPoint;
@@ -225,9 +225,9 @@ namespace vpet
             }
 
             // Arc
-            m_camXform.RotateAround(pivotPoint, Vector3.up, s_orbitSpeed * e.delta.x);
+            m_camXform.RotateAround(pivotPoint, Vector3.up, s_orbitSpeed * delta.x);
             // Tilt
-            m_camXform.RotateAround(pivotPoint, m_camXform.right, -s_orbitSpeed * e.delta.y);
+            m_camXform.RotateAround(pivotPoint, m_camXform.right, -s_orbitSpeed * delta.y);
 
             // Update value
             centerOfInterest = pivotPoint;
@@ -242,10 +242,10 @@ namespace vpet
         //! @param sender The input manager.
         //! @param e The delta distance from the touch gesture triggering the movement.
         //!
-        private void CameraPedestalTruck(object sender, InputManager.DragEventArgs e)
+        private void CameraPedestalTruck(object sender, Vector2 delta)
         {
             // Adjust the input
-            Vector2 offset = -s_panSpeed * e.delta;
+            Vector2 offset = -s_panSpeed * delta;
 
             // Move around
             m_camXform.Translate(offset.x, offset.y, 0);

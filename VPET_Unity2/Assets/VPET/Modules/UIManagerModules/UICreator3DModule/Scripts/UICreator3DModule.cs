@@ -330,12 +330,12 @@ namespace vpet
         //! @param sender callback sender
         //! @param e event reference
         //!
-        private void PressStart(object sender, InputManager.InputEventArgs e)
+        private void PressStart(object sender, Vector2 point)
         {
             //Debug.Log("Press start: " + e.point.ToString());
 
             // grab the hit manip
-            manipulator = CameraRaycast(e.point);
+            manipulator = CameraRaycast(point);
 
             if (manipulator)
             {
@@ -401,7 +401,7 @@ namespace vpet
         //! @param sender callback sender
         //! @param e event reference
         //!
-        private void PressEnd(object sender, InputManager.InputEventArgs e)
+        private void PressEnd(object sender, Vector2 point)
         {
             //Debug.Log("Press end: " + e.point.ToString());
 
@@ -456,7 +456,7 @@ namespace vpet
         // Warning?
         // Should only operate in case of existing selection
         // But what happens if touch input is moving the object and other function change the selection?
-        private void Move(object sender, InputManager.InputEventArgs e)
+        private void Move(object sender, Vector2 point)
         {
 
             //Debug.Log("Moving: " + e.point.ToString());
@@ -467,7 +467,7 @@ namespace vpet
             if (modeTRS == 0) // multi obj dev
             {
                 //Create a ray from the Mouse click position
-                Ray ray = mainCamera.ScreenPointToRay(e.point);
+                Ray ray = mainCamera.ScreenPointToRay(point);
                 if (helperPlane.Raycast(ray, out float enter))
                 {
                     //Get the point that is clicked
@@ -519,7 +519,6 @@ namespace vpet
             }
 
 
-
             // drag rotate - manip version
             if (modeTRS == 1)
             {
@@ -527,40 +526,16 @@ namespace vpet
                 Vector3 hitPoint = Vector3.zero;
 
                 // reate a ray from the Mouse click position
-                Ray ray = mainCamera.ScreenPointToRay(e.point);
-                //Debug.Log(e.point);
-                //Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
+                Ray ray = mainCamera.ScreenPointToRay(point);
 
                 // if manip = main rotator - free rotation
                 if (manipulator == manipR)
                 {
-                    //// If click within sphere collider
-                    //if (freeRotationColl.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-                    //    //if (helperSphere.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-                    //{
-                    //    hit = true;
-                    //    //Get the point that is clicked - on the sphere collider
-                    //    hitPoint = hitInfo.point;
-                    //    if (!insideFreeRotColl)
-                    //    {
-                    //        insideFreeRotColl = true;
-                    //        firstPress = true;
-                    //    }
-                    //}
-                    // If click beyond sphere collider
-                    //else if (helperPlane.Raycast(ray, out float enter))
                     if (helperPlane.Raycast(ray, out float enter))
                     {
-                        //if (insideFreeRotColl)
-                        //{
-                        //    insideFreeRotColl = false;
-                        //    firstPress = true;
-                        //}
                         hit = true;
                         //Get the point that is clicked - on the normal to camera plane
                         hitPoint = ray.GetPoint(enter);
-                        // Convert to camera space
-                        //hitPoint = mainCamera.transform.InverseTransformPoint(hitPoint);
                         // Convert to object space
                         hitPoint = selObj.transform.parent.transform.InverseTransformPoint(hitPoint);
                     }
@@ -582,10 +557,6 @@ namespace vpet
                     // store the offset between clicked point and center of obj
                     if (firstPress)
                     {
-                        //if (manipulator == manipR && !insideFreeRotColl)
-                        //    hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
-                        //else
-                        //hitPosOffset = hitPoint - manipulator.transform.position;
                         hitPosOffset = hitPoint - localManipPosition;
 
                         firstPress = false;
@@ -594,27 +565,6 @@ namespace vpet
                     // get orientation quaternion
                     Quaternion rotQuat = new Quaternion();
 
-                    // Specific case of extension of rotation beyond sphere collider
-                    //if (manipulator == manipR)// && !insideFreeRotColl)
-                    //{
-                    //    // Use the difference between hit points in camera space
-                    //    Vector3 hitPos = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
-                    //    Vector3 click1 = hitPosOffset;
-                    //    Vector3 deltaPos = hitPos - hitPosOffset;
-                    //    float deltaAngle = Vector3.SignedAngle(hitPosOffset, hitPos, mainCamera.transform.forward);
-                    //    // Break in components
-                    //    float lateralComponent = MathF.Sin(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude;
-                    //    float frontalComponent = MathF.Cos(deltaAngle * Mathf.Deg2Rad) * hitPos.magnitude - click1.magnitude;
-                    //    // Spin
-                    //    rotQuat = Quaternion.AngleAxis(lateralComponent * 50, mainCamera.transform.forward);
-                    //    // Tumble
-                    //    Vector3 rotAxis = Quaternion.Euler(90, 90, 0) * new Vector3(deltaPos.x, deltaPos.y, 0);
-                    //    rotQuat *= Quaternion.AngleAxis(Mathf.Abs(frontalComponent) * 200, rotAxis);
-                    //}
-                    //// Default case
-                    //rotQuat.SetFromToRotation(Vector3.zero, (hitPoint - localManipPosition)-hitPosOffset);
-                    //else
-                    //rotQuat.SetFromToRotation(hitPosOffset, hitPoint - manipulator.transform.position);
                     rotQuat.SetFromToRotation(hitPosOffset, hitPoint - localManipPosition);
 
                     // Strengthen free rotation
@@ -652,10 +602,6 @@ namespace vpet
                     }
 
                     // update offset
-                    //if (manipulator == manipR && !insideFreeRotColl)
-                    //    hitPosOffset = hitPoint - mainCamera.transform.InverseTransformPoint(manipulator.transform.position);
-                    //else
-                    //hitPosOffset = hitPoint - manipulator.transform.position;
                     hitPosOffset = hitPoint - localManipPosition;
                 }
             }
@@ -664,7 +610,7 @@ namespace vpet
             if (modeTRS == 2)
             {
                 //Create a ray from the Mouse click position
-                Ray ray = mainCamera.ScreenPointToRay(e.point);
+                Ray ray = mainCamera.ScreenPointToRay(point);
                 if (helperPlane.Raycast(ray, out float enter))
                 {
                     //Get the point that is clicked
@@ -684,9 +630,6 @@ namespace vpet
                     {
                         hitPosOffset = projectedVec;
                         firstPress = false;
-                        //initialSca = GameObject.Find("CubeUni").transform.localScale;
-                        //sca = (Parameter<Vector3>)selObj.parameterList[sIndex];
-                        //initialSca = sca.value;
                     }
 
                     //actual scale things - vpet assets
@@ -700,30 +643,6 @@ namespace vpet
                     Vector3 scaleOffset = Vector3.one + localDelta;
                     sca = (Parameter<Vector3>)selObj.parameterList[sIndex];
                     sca.setValue(Vector3.Scale(initialSca, scaleOffset));
-
-                    //// make gizmo follow - for UX feedback only
-                    //// try moving the individual manipulator
-                    //if (manipulator != manipS)
-                    //{
-                    //    manipulator.transform.localPosition = localDelta;
-                    //    // if a double one
-                    //    if (manipulator == manipSxy || manipulator == manipSxz || manipulator == manipSyz)
-                    //    {
-                    //        // also move the axes
-                    //        manipSx.transform.localPosition = Vector3.Scale(localDelta, Vector3.right) / .61f;
-                    //        manipSy.transform.localPosition = Vector3.Scale(localDelta, Vector3.up) / .61f;
-                    //        manipSz.transform.localPosition = Vector3.Scale(localDelta, Vector3.forward) / .61f;
-                    //    }
-                    //}
-                    //else // move them all to follow
-                    //{
-                    //    manipSx.transform.localPosition = Vector3.Scale(localDelta, Vector3.right) / .61f;
-                    //    manipSy.transform.localPosition = Vector3.Scale(localDelta, Vector3.up) / .61f;
-                    //    manipSz.transform.localPosition = Vector3.Scale(localDelta, Vector3.forward) / .61f;
-                    //    manipSxy.transform.localPosition = Vector3.Scale(localDelta, new Vector3(1, 1, 0));
-                    //    manipSxz.transform.localPosition = Vector3.Scale(localDelta, new Vector3(1, 0, 1));
-                    //    manipSyz.transform.localPosition = Vector3.Scale(localDelta, new Vector3(0, 1, 1));
-                    //}
                 }
 
             }
