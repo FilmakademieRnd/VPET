@@ -40,11 +40,11 @@ namespace vpet
         //!
         //! the range of the light
         //!
-        private Parameter<float> range;
+        public Parameter<float> range;
         //!
         //! the angle of the lights spot
         //!
-        private Parameter<float> spotAngle;
+        public Parameter<float> spotAngle;
 
         // Start is called before the first frame update
         public override void Awake()

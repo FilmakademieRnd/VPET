@@ -60,7 +60,7 @@ namespace vpet
         //!
         //! focus distance (in world space, meter)
         //!
-        private Parameter<float> focDist;
+        public Parameter<float> focDist;
 
         //!
         //! aperture

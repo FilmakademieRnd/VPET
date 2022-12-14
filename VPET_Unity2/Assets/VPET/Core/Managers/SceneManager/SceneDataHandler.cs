@@ -1001,16 +1001,17 @@ namespace vpet
             public static T[] Concat<T>(T[] first, params T[][] arrays)
             {
                 int length = first.Length;
-                foreach (T[] array in arrays)
+                for (int i=0; i<arrays.Length; i++)
                 {
-                    length += array.Length;
+                    length += arrays[i].Length;
                 }
                 T[] result = new T[length];
 
                 length = first.Length;
                 Buffer.BlockCopy(first, 0, result, 0, first.Length);
-                foreach (T[] array in arrays)
+                for (int i = 0; i < arrays.Length; i++)
                 {
+                    var array = arrays[i];
                     Buffer.BlockCopy(array, 0, result, length, array.Length);
                     length += array.Length;
                 }

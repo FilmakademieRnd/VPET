@@ -209,8 +209,8 @@ namespace vpet
 
             lock (m_messageBuffer)
             {
-                foreach (Byte[] message in m_messageBuffer[bufferTime])
-                    decodeMessage(message);
+                for (int i=0; i<m_messageBuffer[bufferTime].Count; i++)
+                    decodeMessage(m_messageBuffer[bufferTime][i]);
 
                 m_messageBuffer[bufferTime].Clear();
             }

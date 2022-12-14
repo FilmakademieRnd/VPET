@@ -40,7 +40,7 @@ namespace vpet
         //!
         //! the range of the light
         //!
-        private Parameter<float> range;
+        public Parameter<float> range;
 
         // Start is called before the first frame update
         public override void Awake()

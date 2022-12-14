@@ -216,9 +216,9 @@ namespace vpet
         //!
         private void updateScalePoint(object sender, AbstractParameter parameter)
         {
-            SceneObject sceneObject = (SceneObject) sender;
+            SceneObjectPointLight sceneObject = (SceneObjectPointLight) sender;
 
-            float range = sceneObject.getParameter<float>("range").value;
+            float range = sceneObject.range.value;
             sceneObject._gizmo.transform.localScale = new Vector3(range, range, range);
         }
 
@@ -227,9 +227,9 @@ namespace vpet
         //!
         private void updateScaleSpot(object sender, AbstractParameter parameter)
         {
-            SceneObject sceneObject = (SceneObject) sender;
-            float range = sceneObject.getParameter<float>("range").value;
-            float angle = sceneObject.getParameter<float>("spotAngle").value;
+            SceneObjectSpotLight sceneObject = (SceneObjectSpotLight) sender;
+            float range = sceneObject.range.value;
+            float angle = sceneObject.spotAngle.value;
 
             // diameter = 2 * distance * tan( angle * 0.5 )
             float dia = 2f * range * MathF.Tan(angle / 180f * Mathf.PI * 0.5f);
@@ -242,10 +242,10 @@ namespace vpet
         //!
         private void updateScaleCamera(object sender, AbstractParameter parameter)
         {
-            SceneObject sceneObject = (SceneObject)sender;
-            float far = sceneObject.getParameter<float>("farClipPlane").value;
-            float fov = sceneObject.getParameter<float>("fov").value;
-            float aspect = sceneObject.getParameter<float>("aspectRatio").value;
+            SceneObjectCamera sceneObject = (SceneObjectCamera)sender;
+            float far = sceneObject.far.value;
+            float fov = sceneObject.fov.value;
+            float aspect = sceneObject.aspect.value;
 
             // diameter = 2 * distance * tan( angle * 0.5 )
             float dia = 2f * far * MathF.Tan(fov / 180f * Mathf.PI * 0.5f);
