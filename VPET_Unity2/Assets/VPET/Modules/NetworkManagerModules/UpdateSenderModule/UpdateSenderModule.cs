@@ -34,6 +34,7 @@ using System;
 using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
+using System.Diagnostics;
 
 namespace vpet
 {
@@ -46,6 +47,12 @@ namespace vpet
         //! List of medified parameters for undo/redo handling.
         //!
         private List<AbstractParameter> m_modifiedParameters;
+
+        //!
+        //! The size of all currently modified parameters in byte;
+        //!
+        private int m_modifiedParametersDataSize = 0;
+
         //!
         //! Array of control messages, containing all vpet messages besides parameter updates.
         //!
@@ -222,7 +229,9 @@ namespace vpet
 
             lock (parameter)
             {
-                m_controlMessage = parameter.Serialize(8); // ParameterData;
+                int parameterSize = parameter.dataSize();
+                m_controlMessage = new byte[8 + parameterSize];
+                parameter.Serialize(new Span<byte>(m_controlMessage, 8, parameterSize)); // ParameterData;
 
                 // header
                 m_controlMessage[0] = manager.cID;
@@ -278,7 +287,10 @@ namespace vpet
             lock (m_modifiedParameters)
             {
                 if (!m_modifiedParameters.Contains(parameter))
+                {
                     m_modifiedParameters.Add(parameter);
+                    m_modifiedParametersDataSize += parameter.dataSize();
+                }
             }
         }
 
@@ -290,28 +302,38 @@ namespace vpet
         //! @param addToHistory should this update be added to undo/redo history
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte[] createParameterMessage(AbstractParameter parameter, byte time)
+        private byte[] createParameterMessage(byte time)
         {
             // Message structure: Header, Parameter (optional)
             // Header: ClientID, Time, MessageType
             // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
 
-            lock (parameter)
+            byte[] message = new byte[3 + m_modifiedParametersDataSize + 6 * m_modifiedParameters.Count];
+
+            // header
+            message[0] = manager.cID; // ClientID
+            message[1] = time; // Time
+            message[2] = (byte)MessageType.PARAMETERUPDATE; // MessageType
+
+            int start = 3;
+            foreach (AbstractParameter parameter in m_modifiedParameters)
             {
-                byte[] message = parameter.Serialize(8); // ParameterData;
+                lock (parameter)
+                {
+                    int length = 6 + parameter.dataSize();
+                    Span<byte> newSpan = new Span<byte>(message, start, length);
 
-                // header
-                message[0] = manager.cID;
-                message[1] = time;
-                message[2] = (byte)MessageType.PARAMETERUPDATE;
+                    BitConverter.TryWriteBytes(newSpan.Slice(0, 2), parameter.parent.id);  // SceneObjectID
+                    BitConverter.TryWriteBytes(newSpan.Slice(2, 2), parameter.id);  // ParameterID
+                    newSpan[4] = (byte)parameter.vpetType;  // ParameterType
+                    newSpan[5] = (byte)newSpan.Length;  // Parameter message length
+                    parameter.Serialize(newSpan.Slice(6)); // Parameter data
 
-                // parameter
-                Helpers.copyArray(BitConverter.GetBytes(parameter.parent.id), 0, message, 3, 2);  // SceneObjectID
-                Helpers.copyArray(BitConverter.GetBytes(parameter.id), 0, message, 5, 2);  // ParameterID
-                message[7] = (byte)parameter.vpetType;  // ParameterType
-
-                return message;
+                    start += length;
+                }
             }
+
+            return message;
         }
 
         //!
@@ -341,12 +363,9 @@ namespace vpet
                 {
                     lock (m_modifiedParameters)
                     {
-                        byte time = core.time;
-                        // [REVIEW]
-                        // maybe better to send a concatenated byte stream every core time tick
-                        foreach (AbstractParameter parameter in m_modifiedParameters)
-                            sender.SendFrame(createParameterMessage(parameter, time), false); // true not wait
+                        sender.SendFrame(createParameterMessage(core.time), false); // true not wait
                         m_modifiedParameters.Clear();
+                        m_modifiedParametersDataSize = 0;
                     }
                 }
                 // reset to stop the thread after one loop is done
@@ -360,7 +379,7 @@ namespace vpet
                 sender.Close();
                 sender.Dispose();
                 // wait until sender is disposed
-                while(!sender.IsDisposed)
+                while (!sender.IsDisposed)
                     Thread.Sleep(25);
                 Helpers.Log(this.name + " disposed.");
                 m_disposed?.Invoke();
@@ -368,7 +387,6 @@ namespace vpet
             catch
             {
             }
-
         }
 
         //!

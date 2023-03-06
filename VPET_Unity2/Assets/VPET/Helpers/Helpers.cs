@@ -152,5 +152,21 @@ namespace vpet
             for (int i = 0; i < length; i++)
                 dst[dstOffset + i] = src[srcOffset + i];
         }
+        //!
+        //! Copys a byte array into another using spans.
+        //! This function is faster for array sizes < 20 bytes!
+        //!
+        //! @param src The source span.
+        //! @param srcOffset The index offset within the source span.        
+        //! @param dst The destination span.
+        //! @param srcOffset The index offset within the destination array.
+        //! @param length The length of the span to be copied.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void copyArray(Span<byte> src, int srcOffset, Span<byte> dst, int dstOffset)
+        {
+            for (int i = 0; i < src.Length; i++)
+                dst[dstOffset + i] = src[srcOffset + i];
+        }
     }
 }

@@ -1184,7 +1184,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1504,7 +1504,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 2158523315591179438}
     m_Modifications:
     - target: {fileID: 5359195211250848492, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}
@@ -1596,7 +1596,9 @@ PrefabInstance:
       value: PRE_Background
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5d052f4d827e40e498aac83b34c9385, type: 3}
 --- !u!224 &5508083965489811827 stripped
 RectTransform:

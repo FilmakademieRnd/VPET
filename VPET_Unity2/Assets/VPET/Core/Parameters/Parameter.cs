@@ -26,7 +26,7 @@ Syncronisation Server. They are licensed under the following terms:
 //! @author Simon Spielmann
 //! @author Jonas Trottnow
 //! @version 0
-//! @date 01.03.2022
+//! @date 01.02.2023
 
 using System;
 using System.Text;
@@ -109,12 +109,10 @@ namespace vpet
         //!
         //! Getter for parameters name.
         //!
-        public string name
+        public ref string name
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _name;
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            protected set => _name = value;
+            get => ref _name;
         }
         //!
         //! Getter for parameters parent.
@@ -155,24 +153,26 @@ namespace vpet
                 return (ParameterType)idx;
         }
         //!
-        //! Abstract definition of the function for serializing the parameters _data.
+        //! Abstract definition of the function for serializing the parameters data.
         //! 
-        //! @param startoffset The offset in bytes within the generated array at which the _data should start at.
-        //! @return The Parameters _data serialized as a byte array.
+        //! @param startoffset The offset in bytes within the generated array at which the data should start at.
+        //! @return The Parameters data serialized as a byte array.
         //! 
-        public abstract byte[] Serialize(int startoffset);
+        public abstract void Serialize(Span<byte> targetSpan);
         //!
-        //! Abstract definition of the function for deserializing parameter _data.
+        //! Abstract definition of the function for deserializing parameter data.
         //! 
-        //! @param _data The byte _data to be deserialized and copyed to the parameters value.
+        //! @param data The byte data to be deserialized and copyed to the parameters value.
         //! 
-        public abstract void deSerialize(ref byte[] data, int offset);
+        public abstract void deSerialize(byte[] data, int offset);
 
         //!
         //! Abstract definition of function called to copy value of other parameter
         //! @param v new value to be set. Value will be casted automatically
         //!
         public abstract void copyValue(AbstractParameter v);
+
+        public abstract int dataSize();
     }
 
     [Serializable]
@@ -193,9 +193,23 @@ namespace vpet
         //!
         protected T _initialValue;
         //!
-        //! The serialized data of the parameter.
+        //! The size of the serialized data of the parameter.
         //!
-        protected byte[] _data;
+        protected short _dataSize = -1;
+        //!
+        //! Getter for the size of the serialized data of the parameter.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int dataSize()
+        {
+            switch (_type)
+            {
+                case ParameterType.STRING:
+                    return ((string)Convert.ChangeType(_value, typeof(string))).Length;
+                default:
+                    return _dataSize;
+            }
+        }
         //!
         //! The next and the previous active keyframe index (for animation).
         //!
@@ -235,8 +249,34 @@ namespace vpet
             _initialValue = value;
             _nextIdx = 0;
             _prevIdx = 0;
-            _data = null;
 
+            // initialize data size
+            switch (_type)
+            {
+                case ParameterType.BOOL:
+                    _dataSize = 1;
+                    break;
+                case ParameterType.INT:
+                case ParameterType.FLOAT:
+                    _dataSize = 4;
+                    break;
+                case ParameterType.VECTOR2:
+                    _dataSize = 8;
+                    break;
+                case ParameterType.VECTOR3:
+                    _dataSize = 12;
+                    break;
+                case ParameterType.VECTOR4:
+                case ParameterType.QUATERNION:
+                case ParameterType.COLOR:
+                    _dataSize = 16;
+                    break;
+                default:
+                    _dataSize = -1;
+                    break;
+            }
+
+            // check parent
             if (parent)
             {
                 _id = (short)_parent.parameterList.Count;
@@ -247,7 +287,6 @@ namespace vpet
                 _id = -1;
                 _distribute = false;
             }
-
         }
 
         //!
@@ -261,11 +300,11 @@ namespace vpet
             _parent = p._parent;
             _id = p._id;
             _type = p._type;
+            _dataSize = p._dataSize;
             _distribute = p._distribute;
             _initialValue = p._initialValue;
             _nextIdx = 0;
             _prevIdx = 0;
-            _data = null;
             _keyList = p._keyList;
             _animationManager = p._animationManager;
 
@@ -334,8 +373,8 @@ namespace vpet
             }
         }
 
-          /////////////////////////////////////////////////////////
-         /////////////////////// Animation ///////////////////////
+        /////////////////////////////////////////////////////////
+        /////////////////////// Animation ///////////////////////
         /////////////////////////////////////////////////////////
 
         //!
@@ -516,93 +555,84 @@ namespace vpet
         //! @return The Parameters data serialized as a byte array.
         //! 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override byte[] Serialize(int startoffset)
+        public override void Serialize(Span<byte> targetSpan)
         {
-            ParameterType vpetType = _type;
-
-            switch (vpetType)
+            switch (_type)
             {
                 case ParameterType.BOOL:
                     {
-                        _data ??= new byte[1 + startoffset];
-                        _data[1 + startoffset] = Convert.ToByte(_value);
-                        return _data;
+                        targetSpan[0] = Convert.ToByte(_value);
+                        break;
                     }
                 case ParameterType.INT:
                     {
-                        _data ??= new byte[4 + startoffset];
-                        Helpers.copyArray(BitConverter.GetBytes(Convert.ToInt32(_value)), 0, _data, startoffset, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan, Convert.ToInt32(_value));
+                        break;
                     }
                 case ParameterType.FLOAT:
                     {
-                        _data ??= new byte[4 + startoffset];
-                        Helpers.copyArray(BitConverter.GetBytes(Convert.ToSingle(_value)), 0, _data, startoffset, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan, Convert.ToSingle(_value));
+                        break;
                     }
                 case ParameterType.VECTOR2:
                     {
-                        _data ??= new byte[8 + startoffset];
                         Vector2 obj = (Vector2)Convert.ChangeType(_value, typeof(Vector2));
 
-                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, _data, startoffset, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, _data, startoffset + 4, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan.Slice(0, 4), obj.x);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(4, 4), obj.y);
+
+                        break;
                     }
                 case ParameterType.VECTOR3:
                     {
-                        _data ??= new byte[12 + startoffset];
                         Vector3 obj = (Vector3)Convert.ChangeType(_value, typeof(Vector3));
 
-                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, _data, startoffset, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, _data, startoffset + 4, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.z), 0, _data, startoffset + 8, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan.Slice(0, 4), obj.x);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(4, 4), obj.y);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(8, 4), obj.z);
+
+                        break;
                     }
                 case ParameterType.VECTOR4:
                     {
-                        _data ??= new byte[16 + startoffset];
                         Vector4 obj = (Vector4)Convert.ChangeType(_value, typeof(Vector4));
 
-                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, _data, startoffset, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, _data, startoffset + 4, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.z), 0, _data, startoffset + 8, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.w), 0, _data, startoffset + 12, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan.Slice(0, 4), obj.x);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(4, 4), obj.y);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(8, 4), obj.z);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(12, 4), obj.w);
+
+                        break;
                     }
                 case ParameterType.QUATERNION:
                     {
-                        _data ??= new byte[16 + startoffset];
                         Quaternion obj = (Quaternion)Convert.ChangeType(_value, typeof(Quaternion));
 
-                        Helpers.copyArray(BitConverter.GetBytes(obj.x), 0, _data, startoffset, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.y), 0, _data, startoffset + 4, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.z), 0, _data, startoffset + 8, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.w), 0, _data, startoffset + 12, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan.Slice(0, 4), obj.x);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(4, 4), obj.y);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(8, 4), obj.z);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(12, 4), obj.w);
+
+                        break;
                     }
                 case ParameterType.COLOR:
                     {
-                        _data ??= new byte[16 + startoffset];
                         Color obj = (Color)Convert.ChangeType(_value, typeof(Color));
 
-                        Helpers.copyArray(BitConverter.GetBytes(obj.r), 0, _data, startoffset, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.g), 0, _data, startoffset + 4, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.b), 0, _data, startoffset + 8, 4);
-                        Helpers.copyArray(BitConverter.GetBytes(obj.a), 0, _data, startoffset + 12, 4);
-                        return _data;
+                        BitConverter.TryWriteBytes(targetSpan.Slice(0, 4), obj.r);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(4, 4), obj.g);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(8, 4), obj.b);
+                        BitConverter.TryWriteBytes(targetSpan.Slice(12, 4), obj.a);
+
+                        break;
                     }
                 case ParameterType.STRING:
                     {
                         string obj = (string)Convert.ChangeType(_value, typeof(string));
-                        _data ??= new byte[obj.Length + startoffset];
+                        targetSpan = Encoding.UTF8.GetBytes(obj);
 
-                        Buffer.BlockCopy(Encoding.UTF8.GetBytes(obj), 0, _data, startoffset, obj.Length);
-
-                        return _data;
+                        break;
                     }
-                default:
-                    return _data;
 
             }
         }
@@ -613,13 +643,12 @@ namespace vpet
         //! @param _data The byte _data to be deserialized and copyed to the parameters value.
         //! 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void deSerialize(ref byte[] data, int offset)
+        public override void deSerialize(byte[] data, int offset)
         {
             // [REVIEW]
             // Would a read from a span be faster then from byte[] ???
             //ReadOnlySpan<byte> dataSpan = new ReadOnlySpan<byte>(data);
-            ParameterType t = _type;
-            switch (t)
+            switch (_type)
             {
                 case ParameterType.BOOL:
                     _value = (T)(object)BitConverter.ToBoolean(data, offset);

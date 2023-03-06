@@ -132,14 +132,18 @@ namespace vpet
                             switch ((MessageType)input[2])
                             {
                                 case MessageType.LOCK:
-                                    decodeLockMessage(ref input);
+                                    decodeLockMessage(input);
                                     break;
                                 case MessageType.SYNC:
                                     if (!core.isServer)
-                                        decodeSyncMessage(ref input);
+                                        decodeSyncMessage(input);
                                     break;
                                 case MessageType.RESETOBJECT:
+                                    decodeResetMessage(input);
+                                    break;
                                 case MessageType.UNDOREDOADD:
+                                    decodeUndoRedoMessage(input);
+                                    break;
                                 case MessageType.PARAMETERUPDATE:
                                     // make shure that producer and consumer exclude eachother
                                     lock (m_messageBuffer)
@@ -177,7 +181,7 @@ namespace vpet
         //! @param message The message to be decoded.
         //! 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void decodeSyncMessage(ref byte[] message)
+        private void decodeSyncMessage(byte[] message)
         {
             core.time = message[1];
         }
@@ -188,7 +192,7 @@ namespace vpet
         //! @param message The message to be decoded.
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void decodeLockMessage(ref byte[] message)
+        private void decodeLockMessage(byte[] message)
         {
             bool lockState = BitConverter.ToBoolean(message, 5);
             short sceneObjectID = BitConverter.ToInt16(message, 3);
@@ -197,8 +201,28 @@ namespace vpet
             sceneObject._lock = lockState;
         }
 
+        private void decodeUndoRedoMessage(byte[] message)
+        {
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+            short parameterID = BitConverter.ToInt16(message, 5);
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+
+            receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
+        }
+
+        private void decodeResetMessage(byte[] message)
+        {
+            short sceneObjectID = BitConverter.ToInt16(message, 3);
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+
+            foreach (AbstractParameter p in sceneObject.parameterList)
+                p.reset();
+            m_sceneManager.getModule<UndoRedoModule>().vanishHistory(sceneObject);
+        }
+
         //!
         //! Function that triggers the parameter updates (called once a global time tick).
+        //! It also decodes all parameter messages and update the corresponding parameters. 
         //!
         private void consumeMessages(object o, EventArgs e)
         {
@@ -209,45 +233,28 @@ namespace vpet
 
             lock (m_messageBuffer)
             {
-                for (int i=0; i<m_messageBuffer[bufferTime].Count; i++)
-                    decodeMessage(m_messageBuffer[bufferTime][i]);
+                for (int i = 0; i < m_messageBuffer[bufferTime].Count; i++)
+                {
+                    byte[] messages = m_messageBuffer[bufferTime][i];
+                    int j = 3;
+                    while (j < messages.Length)
+                    {
+                        short sceneObjectID = BitConverter.ToInt16(messages, j);
+                        short parameterID = BitConverter.ToInt16(messages, j + 2);
+                        int length = messages[j + 5];
+
+                        SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+
+                        if (sceneObject != null)
+                            sceneObject.parameterList[parameterID].deSerialize(messages, j + 6);
+
+                        j += length;
+                    }
+                }
 
                 m_messageBuffer[bufferTime].Clear();
             }
         }
-
-        //!
-        //! Function to decode a parameter message and update the corresponding parameter. 
-        //!
-        //! @param message The message to be decoded.
-        //!
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void decodeMessage(byte[] message)
-        {
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
-            short parameterID = BitConverter.ToInt16(message, 5);
-
-            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
-
-            if (sceneObject != null)
-            {
-                switch ((MessageType)message[2])
-                {
-                    case MessageType.UNDOREDOADD:
-                        receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
-                        break;
-                    case MessageType.RESETOBJECT:
-                        foreach (AbstractParameter p in sceneObject.parameterList)
-                            p.reset();
-                        m_sceneManager.getModule<UndoRedoModule>().vanishHistory(sceneObject);
-                        break;
-                    default:
-                        sceneObject.parameterList[parameterID].deSerialize(ref message, 8);
-                        break;
-                }
-            }
-        }
-
 
         //!
         //! Function to start the scene sender module.

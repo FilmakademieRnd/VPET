@@ -65,7 +65,7 @@ namespace vpet
                     materialList = new List<MaterialPackage>();
                 }
 
-                ~SceneData (){ clear(); }
+                ~SceneData() { clear(); }
 
                 public void clear()
                 {
@@ -387,8 +387,7 @@ namespace vpet
                     dataIdx += size_int;
 
                     // get material name
-                    byte[] nameByte = new byte[intValue];
-                    Buffer.BlockCopy(m_materialsByteData, dataIdx, nameByte, 0, intValue);
+                    ReadOnlySpan<byte> nameByte = new ReadOnlySpan<byte>(m_materialsByteData, dataIdx, intValue);
                     matPack.name = Encoding.ASCII.GetString(nameByte);
                     dataIdx += intValue;
 
@@ -397,8 +396,7 @@ namespace vpet
                     dataIdx += size_int;
 
                     // get material src
-                    nameByte = new byte[intValue];
-                    Buffer.BlockCopy(m_materialsByteData, dataIdx, nameByte, 0, intValue);
+                    nameByte = new ReadOnlySpan<byte>(m_materialsByteData, dataIdx, intValue);
                     matPack.src = Encoding.ASCII.GetString(nameByte);
                     dataIdx += intValue;
 
@@ -411,30 +409,30 @@ namespace vpet
                     dataIdx += size_int;
 
                     // textureIds
-                    dataIdx = deserialize(ref m_materialsByteData, out matPack.textureIds, dataIdx, intValue);
+                    dataIdx = deserialize(m_materialsByteData, out matPack.textureIds, dataIdx, intValue);
 
                     // textureOffsets
-                    dataIdx = deserialize(ref m_materialsByteData, out matPack.textureOffsets, dataIdx, intValue * 2);
+                    dataIdx = deserialize(m_materialsByteData, out matPack.textureOffsets, dataIdx, intValue * 2);
 
                     // textureScales
-                    dataIdx = deserialize(ref m_materialsByteData, out matPack.textureScales, dataIdx, intValue * 2);
+                    dataIdx = deserialize(m_materialsByteData, out matPack.textureScales, dataIdx, intValue * 2);
 
                     // size shaderConfig
                     intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
                     dataIdx += size_int;
 
                     // shaderConfig
-                    dataIdx = deserialize(ref m_materialsByteData, out matPack.shaderConfig, dataIdx, intValue);
+                    dataIdx = deserialize(m_materialsByteData, out matPack.shaderConfig, dataIdx, intValue);
 
                     // size shaderProperties
                     intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
                     dataIdx += size_int;
 
                     // shader property IDs
-                    dataIdx = deserialize(ref m_materialsByteData, out matPack.shaderPropertyIds, dataIdx, intValue);
+                    dataIdx = deserialize(m_materialsByteData, out matPack.shaderPropertyIds, dataIdx, intValue);
 
                     // shader property types
-                    dataIdx = deserialize(ref m_materialsByteData, out matPack.shaderPropertyTypes, dataIdx, intValue);
+                    dataIdx = deserialize(m_materialsByteData, out matPack.shaderPropertyTypes, dataIdx, intValue);
 
                     // size shaderProperties data
                     intValue = BitConverter.ToInt32(m_materialsByteData, dataIdx);
@@ -450,7 +448,7 @@ namespace vpet
                 return materialList;
             }
 
-            private int deserialize(ref byte[] srcData, out bool[] dstData, int srcOffset, int length)
+            private int deserialize(byte[] srcData, out bool[] dstData, int srcOffset, int length)
             {
                 dstData = new bool[length];
                 for (int i = 0; i < length; i++)
@@ -461,7 +459,7 @@ namespace vpet
                 return srcOffset;
             }
 
-            private int deserialize(ref byte[] srcData, out int[] dstData, int srcOffset, int length)
+            private int deserialize(byte[] srcData, out int[] dstData, int srcOffset, int length)
             {
                 dstData = new int[length];
                 for (int i = 0; i < length; i++)
@@ -472,7 +470,7 @@ namespace vpet
                 return srcOffset;
             }
 
-            private int deserialize(ref byte[] srcData, out float[] dstData, int srcOffset, int length)
+            private int deserialize(byte[] srcData, out float[] dstData, int srcOffset, int length)
             {
                 dstData = new float[length];
                 for (int i = 0; i < length; i++)
@@ -751,27 +749,27 @@ namespace vpet
                                                         objPack.bWSize * 4 * SceneDataHandler.size_int];
                     int dstIdx = 0;
                     // vertices
-                    Helpers.copyArray(BitConverter.GetBytes(objPack.vSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(objByteData, dstIdx, SceneDataHandler.size_int), objPack.vSize);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.vertices, 0, objByteData, dstIdx, objPack.vSize * 3 * SceneDataHandler.size_float);
                     dstIdx += objPack.vSize * 3 * SceneDataHandler.size_float;
                     // indices
-                    Helpers.copyArray(BitConverter.GetBytes(objPack.iSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(objByteData, dstIdx, SceneDataHandler.size_int), objPack.iSize);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.indices, 0, objByteData, dstIdx, objPack.iSize * SceneDataHandler.size_int);
                     dstIdx += objPack.iSize * SceneDataHandler.size_int;
                     // normals
-                    Helpers.copyArray(BitConverter.GetBytes(objPack.nSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(objByteData, dstIdx, SceneDataHandler.size_int), objPack.nSize);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.normals, 0, objByteData, dstIdx, objPack.nSize * 3 * SceneDataHandler.size_float);
                     dstIdx += objPack.nSize * 3 * SceneDataHandler.size_float;
                     // uvs
-                    Helpers.copyArray(BitConverter.GetBytes(objPack.uvSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(objByteData, dstIdx, SceneDataHandler.size_int), objPack.uvSize);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.uvs, 0, objByteData, dstIdx, objPack.uvSize * 2 * SceneDataHandler.size_float);
                     dstIdx += objPack.uvSize * 2 * SceneDataHandler.size_float;
                     // bone weights
-                    Helpers.copyArray(BitConverter.GetBytes(objPack.bWSize), 0, objByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(objByteData, dstIdx, SceneDataHandler.size_int), objPack.bWSize);
                     dstIdx += SceneDataHandler.size_int;
                     Buffer.BlockCopy(objPack.boneWeights, 0, objByteData, dstIdx, objPack.bWSize * 4 * SceneDataHandler.size_float);
                     dstIdx += objPack.bWSize * 4 * SceneDataHandler.size_float;
@@ -800,15 +798,15 @@ namespace vpet
                                                     chrPack.sSize * SceneDataHandler.size_float * 10];
                     int dstIdx = 0;
                     // bone mapping size
-                    Helpers.copyArray(BitConverter.GetBytes(chrPack.bMSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(characterByteData, dstIdx, SceneDataHandler.size_int), chrPack.bMSize);
                     dstIdx += SceneDataHandler.size_int;
 
                     // skeleton mapping size
-                    Helpers.copyArray(BitConverter.GetBytes(chrPack.sSize), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(characterByteData, dstIdx, SceneDataHandler.size_int), chrPack.sSize);
                     dstIdx += SceneDataHandler.size_int;
 
                     // root dag id
-                    Helpers.copyArray(BitConverter.GetBytes(chrPack.rootId), 0, characterByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(characterByteData, dstIdx, SceneDataHandler.size_int), chrPack.rootId);
                     dstIdx += SceneDataHandler.size_int;
 
                     // bone mapping
@@ -850,16 +848,16 @@ namespace vpet
                     byte[] texByteData = new byte[4 * SceneDataHandler.size_int + texPack.colorMapDataSize];
                     int dstIdx = 0;
                     // width
-                    Helpers.copyArray(BitConverter.GetBytes(texPack.width), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(texByteData, dstIdx, SceneDataHandler.size_int), texPack.width);
                     dstIdx += SceneDataHandler.size_int;
                     // height
-                    Helpers.copyArray(BitConverter.GetBytes(texPack.height), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(texByteData, dstIdx, SceneDataHandler.size_int), texPack.height);
                     dstIdx += SceneDataHandler.size_int;
                     // format
-                    Helpers.copyArray(BitConverter.GetBytes((int)texPack.format), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(texByteData, dstIdx, SceneDataHandler.size_int), (int)texPack.format);
                     dstIdx += SceneDataHandler.size_int;
                     // data size
-                    Helpers.copyArray(BitConverter.GetBytes(texPack.colorMapDataSize), 0, texByteData, dstIdx, SceneDataHandler.size_int);
+                    BitConverter.TryWriteBytes(new Span<byte>(texByteData, dstIdx, SceneDataHandler.size_int), (int)texPack.colorMapDataSize);
                     dstIdx += SceneDataHandler.size_int;
                     // pixel data
                     Buffer.BlockCopy(texPack.colorMapData, 0, texByteData, dstIdx, texPack.colorMapDataSize);
@@ -1001,7 +999,7 @@ namespace vpet
             public static T[] Concat<T>(T[] first, params T[][] arrays)
             {
                 int length = first.Length;
-                for (int i=0; i<arrays.Length; i++)
+                for (int i = 0; i < arrays.Length; i++)
                 {
                     length += arrays[i].Length;
                 }
@@ -1015,6 +1013,22 @@ namespace vpet
                     Buffer.BlockCopy(array, 0, result, length, array.Length);
                     length += array.Length;
                 }
+                return result;
+            }
+
+            //!
+            //! Template function for concatination of arrays. 
+            //!
+            //! @param first The array field to be appended to.
+            //! @param arrays The arrays to be append.
+            //!
+            public static T[] Concat<T>(T[] first, params T[] array)
+            {
+                T[] result = new T[first.Length + array.Length];
+
+                Buffer.BlockCopy(first, 0, result, 0, first.Length);
+                Buffer.BlockCopy(array, 0, result, first.Length, array.Length);
+
                 return result;
             }
 
