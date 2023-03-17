@@ -34,6 +34,9 @@ using System;
 using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
+using UnityEditor.VersionControl;
+using System.Linq;
+using System.Text;
 
 namespace vpet
 {
@@ -43,7 +46,7 @@ namespace vpet
     public class UpdateReceiverModule : NetworkManagerModule
     {
         //!
-        //! Buffer for storing incoming messages by time.
+        //! Buffer for storing incoming message by time.
         //!
         private List<List<byte[]>> m_messageBuffer;
 
@@ -108,8 +111,8 @@ namespace vpet
         }
 
         //!
-        //! Function, waiting for incoming messages (executed in separate thread).
-        //! Control messages are executed immediately, parameter update messages are buffered
+        //! Function, waiting for incoming message (executed in separate thread).
+        //! Control message are executed immediately, parameter update message are buffered
         //! and executed later to obtain synchronicity.
         //!
         protected override void run()
@@ -195,10 +198,16 @@ namespace vpet
         private void decodeLockMessage(byte[] message)
         {
             bool lockState = BitConverter.ToBoolean(message, 5);
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
 
-            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
-            sceneObject._lock = lockState;
+            if (lockState)
+            {
+                short sceneObjectID = BitConverter.ToInt16(message, 3);
+
+                SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+                sceneObject._lock = lockState;
+            }
+            else
+                m_messageBuffer[message[1]].Add(message);
         }
 
         private void decodeUndoRedoMessage(byte[] message)
@@ -222,7 +231,7 @@ namespace vpet
 
         //!
         //! Function that triggers the parameter updates (called once a global time tick).
-        //! It also decodes all parameter messages and update the corresponding parameters. 
+        //! It also decodes all parameter message and update the corresponding parameters. 
         //!
         private void consumeMessages(object o, EventArgs e)
         {
@@ -235,20 +244,36 @@ namespace vpet
             {
                 for (int i = 0; i < m_messageBuffer[bufferTime].Count; i++)
                 {
-                    byte[] messages = m_messageBuffer[bufferTime][i];
-                    int j = 3;
-                    while (j < messages.Length)
+                    byte[] message = m_messageBuffer[bufferTime][i];
+
+                    if ((MessageType)message[2] == MessageType.LOCK)
                     {
-                        short sceneObjectID = BitConverter.ToInt16(messages, j);
-                        short parameterID = BitConverter.ToInt16(messages, j + 2);
-                        int length = messages[j + 5];
+                        short sceneObjectID = BitConverter.ToInt16(message, 3);
+                        bool lockState = BitConverter.ToBoolean(message, 5);
 
                         SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+                        sceneObject._lock = lockState;
+                    }
+                    else
+                    {
+                        int start = 3;
+                        while (start < message.Length)
+                        {
+                            short sceneObjectID = BitConverter.ToInt16(message, start);
+                            short parameterID = BitConverter.ToInt16(message, start + 2);
+                            int length = message[start + 5];
 
-                        if (sceneObject != null)
-                            sceneObject.parameterList[parameterID].deSerialize(messages, j + 6);
+                            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 
-                        j += length;
+                            if (sceneObject != null)
+                            {
+                                sceneObject.Lock(true);
+                                sceneObject.parameterList[parameterID].deSerialize(message, start + 6);
+                                sceneObject.Lock(false);
+                            }
+
+                            start += length;
+                        }
                     }
                 }
 

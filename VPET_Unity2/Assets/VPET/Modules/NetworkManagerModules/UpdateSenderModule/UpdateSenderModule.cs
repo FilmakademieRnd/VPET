@@ -34,7 +34,6 @@ using System;
 using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
-using System.Diagnostics;
 
 namespace vpet
 {
@@ -57,6 +56,7 @@ namespace vpet
         //! Array of control messages, containing all vpet messages besides parameter updates.
         //!
         private byte[] m_controlMessage;
+        private byte[] m_synchronizedControlMessage;
 
         //!
         //! Constructor
@@ -73,7 +73,7 @@ namespace vpet
         //!
         public override void Dispose()
         {
-            base.Dispose(); 
+            base.Dispose();
             SceneManager sceneManager = core.getManager<SceneManager>();
             UIManager uiManager = core.getManager<UIManager>();
 
@@ -130,7 +130,7 @@ namespace vpet
             if (core.isServer)
                 core.syncEvent += queueSyncMessage;
 
-            foreach (SceneObject sceneObject in ((SceneManager) sender).sceneObjects)
+            foreach (SceneObject sceneObject in ((SceneManager)sender).sceneObjects)
             {
                 sceneObject.hasChanged += queueModifiedParameter;
             }
@@ -166,16 +166,16 @@ namespace vpet
         //!
         private void unlockSceneObject(object sender, SceneObject sceneObject)
         {
-            m_controlMessage = new byte[6];
+            m_synchronizedControlMessage = new byte[6];
 
             // header
-            m_controlMessage[0] = manager.cID;
-            m_controlMessage[1] = core.time;
-            m_controlMessage[2] = (byte)MessageType.LOCK;
-            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
-            m_controlMessage[5] = Convert.ToByte(false);
+            m_synchronizedControlMessage[0] = manager.cID;
+            m_synchronizedControlMessage[1] = core.time;
+            m_synchronizedControlMessage[2] = (byte)MessageType.LOCK;
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_synchronizedControlMessage, 3, 2);  // SceneObjectID
+            m_synchronizedControlMessage[5] = Convert.ToByte(false);
 
-            m_mre.Set();
+            //m_mre.Set();
         }
 
 
@@ -302,7 +302,7 @@ namespace vpet
         //! @param addToHistory should this update be added to undo/redo history
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte[] createParameterMessage(byte time)
+        private byte[] createParameterMessage()
         {
             // Message structure: Header, Parameter (optional)
             // Header: ClientID, Time, MessageType
@@ -312,12 +312,13 @@ namespace vpet
 
             // header
             message[0] = manager.cID; // ClientID
-            message[1] = time; // Time
+            message[1] = core.time; // Time
             message[2] = (byte)MessageType.PARAMETERUPDATE; // MessageType
 
             int start = 3;
-            foreach (AbstractParameter parameter in m_modifiedParameters)
+            for (int i = 0; i < m_modifiedParameters.Count; i++)
             {
+                AbstractParameter parameter = m_modifiedParameters[i];
                 lock (parameter)
                 {
                     int length = 6 + parameter.dataSize();
@@ -359,13 +360,22 @@ namespace vpet
                         m_controlMessage = null;
                     }
                 }
-                else
+                else if (m_modifiedParameters.Count > 0)
                 {
                     lock (m_modifiedParameters)
                     {
-                        sender.SendFrame(createParameterMessage(core.time), false); // true not wait
+                        sender.SendFrame(createParameterMessage(), false); // true not wait
                         m_modifiedParameters.Clear();
                         m_modifiedParametersDataSize = 0;
+                    }
+                }
+                if (m_synchronizedControlMessage != null)
+                {
+                    lock (m_synchronizedControlMessage)
+                    {
+                        m_synchronizedControlMessage[1] = core.time;
+                        sender.SendFrame(m_synchronizedControlMessage, false); // true not wait
+                        m_synchronizedControlMessage = null;
                     }
                 }
                 // reset to stop the thread after one loop is done

@@ -87,6 +87,7 @@ namespace vpet
         //!
         public List<SceneObject> sceneObjects
         {
+            // [REVIEW] put into ParameterObjectList!
             get { return m_sceneObjects; }
             set { m_sceneObjects = value; }
         }

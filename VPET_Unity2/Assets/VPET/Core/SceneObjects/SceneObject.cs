@@ -47,7 +47,11 @@ namespace vpet
         //!
         //! Previous lock state.
         //!
-        private bool m_oldLock;
+        private bool _storedLock = false;
+        //!
+        //! Previous lock state for highlighting the sceneObject.
+        //!
+        private bool m_highlightLock;
         //!
         //! Is the sceneObject reacting to physics
         //!
@@ -162,18 +166,27 @@ namespace vpet
         //!
         public virtual void Update()
         {
-            if (_lock != m_oldLock)
+            if (_lock != m_highlightLock)
             {
                 if (_lock)
                     m_uiManager.highlightSceneObject(this);
                 else
                     m_uiManager.unhighlightSceneObject(this);
-                m_oldLock = _lock;
+                m_highlightLock = _lock;
             }
 
 #if UNITY_EDITOR
             updateSceneObjectTransform();
 #endif
+        }
+
+        public void Lock(bool state)
+        {
+            _storedLock = _lock;
+            if (state)
+                _lock = true;
+            else if (!_storedLock)
+                _lock = false;
         }
 
         //!
