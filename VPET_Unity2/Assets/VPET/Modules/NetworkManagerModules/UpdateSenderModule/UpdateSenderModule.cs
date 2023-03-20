@@ -56,7 +56,6 @@ namespace vpet
         //! Array of control messages, containing all vpet messages besides parameter updates.
         //!
         private byte[] m_controlMessage;
-        private byte[] m_synchronizedControlMessage;
 
         //!
         //! Constructor
@@ -166,16 +165,16 @@ namespace vpet
         //!
         private void unlockSceneObject(object sender, SceneObject sceneObject)
         {
-            m_synchronizedControlMessage = new byte[6];
+            m_controlMessage = new byte[6];
 
             // header
-            m_synchronizedControlMessage[0] = manager.cID;
-            m_synchronizedControlMessage[1] = core.time;
-            m_synchronizedControlMessage[2] = (byte)MessageType.LOCK;
-            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_synchronizedControlMessage, 3, 2);  // SceneObjectID
-            m_synchronizedControlMessage[5] = Convert.ToByte(false);
+            m_controlMessage[0] = manager.cID;
+            m_controlMessage[1] = core.time;
+            m_controlMessage[2] = (byte)MessageType.LOCK;
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+            m_controlMessage[5] = Convert.ToByte(false);
 
-            //m_mre.Set();
+            m_mre.Set();
         }
 
 
@@ -286,7 +285,16 @@ namespace vpet
         {
             lock (m_modifiedParameters)
             {
-                if (!m_modifiedParameters.Contains(parameter))
+                bool paramInList = m_modifiedParameters.Contains(parameter);
+                if (parameter.isNetworkLocked)
+                {
+                    if (paramInList)
+                    {
+                        m_modifiedParameters.Remove(parameter);
+                        m_modifiedParametersDataSize -= parameter.dataSize();
+                    }
+                }
+                else if (!paramInList)
                 {
                     m_modifiedParameters.Add(parameter);
                     m_modifiedParametersDataSize += parameter.dataSize();
@@ -367,15 +375,6 @@ namespace vpet
                         sender.SendFrame(createParameterMessage(), false); // true not wait
                         m_modifiedParameters.Clear();
                         m_modifiedParametersDataSize = 0;
-                    }
-                }
-                if (m_synchronizedControlMessage != null)
-                {
-                    lock (m_synchronizedControlMessage)
-                    {
-                        m_synchronizedControlMessage[1] = core.time;
-                        sender.SendFrame(m_synchronizedControlMessage, false); // true not wait
-                        m_synchronizedControlMessage = null;
                     }
                 }
                 // reset to stop the thread after one loop is done

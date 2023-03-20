@@ -34,9 +34,6 @@ using System;
 using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
-using UnityEditor.VersionControl;
-using System.Linq;
-using System.Text;
 
 namespace vpet
 {
@@ -124,35 +121,35 @@ namespace vpet
             receiver.Connect("tcp://" + m_ip + ":" + m_port);
 
             Helpers.Log("Update receiver connected: " + "tcp://" + m_ip + ":" + m_port);
-            byte[] input = null;
+            byte[] message = null;
             while (m_isRunning)
             {
-                if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(1), out input))
+                if (receiver.TryReceiveFrameBytes(System.TimeSpan.FromSeconds(1), out message))
                 {
-                    if (input != null)
-                        if (input[0] != manager.cID)
+                    if (message != null)
+                        if (message[0] != manager.cID)
                         {
-                            switch ((MessageType)input[2])
+                            switch ((MessageType)message[2])
                             {
                                 case MessageType.LOCK:
-                                    decodeLockMessage(input);
+                                    decodeLockMessage(message);
                                     break;
                                 case MessageType.SYNC:
                                     if (!core.isServer)
-                                        decodeSyncMessage(input);
+                                        decodeSyncMessage(message);
                                     break;
                                 case MessageType.RESETOBJECT:
-                                    decodeResetMessage(input);
+                                    decodeResetMessage(message);
                                     break;
                                 case MessageType.UNDOREDOADD:
-                                    decodeUndoRedoMessage(input);
+                                    decodeUndoRedoMessage(message);
                                     break;
                                 case MessageType.PARAMETERUPDATE:
                                     // make shure that producer and consumer exclude eachother
                                     lock (m_messageBuffer)
                                     {
-                                        // input[1] is time
-                                        m_messageBuffer[input[1]].Add(input);
+                                        // message[1] is time
+                                        m_messageBuffer[message[1]].Add(message);
                                     }
                                     break;
                                 default:
@@ -206,8 +203,12 @@ namespace vpet
                 SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
                 sceneObject._lock = lockState;
             }
+            // delay unlock message
             else
-                m_messageBuffer[message[1]].Add(message);
+            {
+                int bufferTime = (((message[1] + core.settings.framerate / 4) + core.timesteps) % core.timesteps);
+                m_messageBuffer[bufferTime].Add(message);
+            }
         }
 
         private void decodeUndoRedoMessage(byte[] message)
@@ -266,11 +267,7 @@ namespace vpet
                             SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
 
                             if (sceneObject != null)
-                            {
-                                sceneObject.Lock(true);
                                 sceneObject.parameterList[parameterID].deSerialize(message, start + 6);
-                                sceneObject.Lock(false);
-                            }
 
                             start += length;
                         }

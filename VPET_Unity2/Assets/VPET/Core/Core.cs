@@ -89,7 +89,11 @@ namespace vpet
             get => m_time;
         }
         //!
-        //! The max value for the local time.
+        //! The base for the number of time steps the System uses.
+        //!
+        private static int s_timestepsBase = 128;
+        //!
+        //! The max value for the local time (multiples of framerate).
         //!
         private byte m_timesteps;
         //!
@@ -163,7 +167,7 @@ namespace vpet
 #endif
 
             _settings = new coreSettings();
-            m_timesteps = (byte)(((int)(256f / settings.framerate)) * settings.framerate);
+            m_timesteps = (byte)((s_timestepsBase / settings.framerate) * settings.framerate);
             m_parameterObjectList = new List<ParameterObject>();
 
             // Create network manager

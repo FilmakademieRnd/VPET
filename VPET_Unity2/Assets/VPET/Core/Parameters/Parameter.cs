@@ -84,11 +84,22 @@ namespace vpet
         //!
         public bool _distribute;
         //!
+        //! Flag that determines whether a Parameter will be networl locked.
+        //!
+        protected bool _networkLock;
+        //!
         //! Getter for unique id of this parameter.
         //!
         public short id
         {
             get => _id;
+        }
+        //!
+        //! Flag that determines whether a Parameter will be locked for network comunication.
+        //!
+        public bool isNetworkLocked
+        {
+            get => _networkLock;
         }
         //!
         //! Getter for parameters C# type.
@@ -221,7 +232,7 @@ namespace vpet
         //!
         //! A reference to the key list (for animation).
         //!
-        public ref List<Key<T>> key_List { get => ref _keyList; }
+        public ref List<Key<T>> _key_List { get => ref _keyList; }
         //!
         //! A reference to the Animation Manager.
         //!
@@ -386,7 +397,7 @@ namespace vpet
 
             if (_animationManager == null)
             {
-                _animationManager = ParameterObject._core.getManager<AnimationManager>();
+                _animationManager = ParameterObject.core.getManager<AnimationManager>();
                 _animationManager.animationUpdate += updateValue;
             }
         }
@@ -692,7 +703,9 @@ namespace vpet
                 default:
                     return;
             }
-            hasChanged?.Invoke(this, _value);
+            _networkLock = true;
+                hasChanged?.Invoke(this, _value);
+            _networkLock = false;
         }
     }
 

@@ -45,10 +45,6 @@ namespace vpet
         //!
         public bool _lock = false;
         //!
-        //! Previous lock state.
-        //!
-        private bool _storedLock = false;
-        //!
         //! Previous lock state for highlighting the sceneObject.
         //!
         private bool m_highlightLock;
@@ -178,15 +174,6 @@ namespace vpet
 #if UNITY_EDITOR
             updateSceneObjectTransform();
 #endif
-        }
-
-        public void Lock(bool state)
-        {
-            _storedLock = _lock;
-            if (state)
-                _lock = true;
-            else if (!_storedLock)
-                _lock = false;
         }
 
         //!

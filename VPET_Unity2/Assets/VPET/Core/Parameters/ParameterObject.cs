@@ -59,7 +59,11 @@ namespace vpet
         //!
         //! A reference to the vpet core.
         //!
-        static public Core _core = null;
+        static protected Core _core = null;
+        public static Core core
+        {
+            get => _core;
+        }
         //!
         //! Event emitted when parameter changed.
         //!
@@ -81,7 +85,7 @@ namespace vpet
         //! @param parameter The parameter that has changed. 
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected virtual void emitHasChanged (AbstractParameter parameter)
+        protected virtual void emitHasChanged(AbstractParameter parameter)
         {
             if (parameter._distribute)
                 hasChanged?.Invoke(this, parameter);
@@ -93,7 +97,7 @@ namespace vpet
         //!
         public Parameter<T> getParameter<T>(string name)
         {
-           return (Parameter<T>) _parameterList.Find(parameter => parameter.name == name);
+            return (Parameter<T>)_parameterList.Find(parameter => parameter.name == name);
         }
         //!
         //! Initialisation
@@ -102,7 +106,7 @@ namespace vpet
         {
             _parameterList = new List<AbstractParameter>();
             _id = getSoID();
-            
+
             if (_core == null)
                 _core = GameObject.FindObjectOfType<Core>();
 
