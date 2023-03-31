@@ -51,7 +51,8 @@ namespace vpet
         //!
         //! List for mapping VPET parameter types to C# types and visa versa.
         //!
-        private static readonly List<Type> _paramTypes = new List<Type> { typeof(Action),
+        private static readonly List<Type> _paramTypes = new List<Type> { typeof(void),
+                                                                          typeof(Action),
                                                                           typeof(bool),
                                                                           typeof(int),
                                                                           typeof(float),
@@ -61,11 +62,12 @@ namespace vpet
                                                                           typeof(Quaternion),
                                                                           typeof(Color),
                                                                           typeof(string),
-                                                                          typeof(int)};
+                                                                          typeof(int) 
+        };
         //!
         //! Definition of VPETs parameter types
         //!
-        public enum ParameterType : byte { ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, LIST, UNKNOWN = 100 }
+        public enum ParameterType : byte { NONE, ACTION, BOOL, INT, FLOAT, VECTOR2, VECTOR3, VECTOR4, QUATERNION, COLOR, STRING, LIST, UNKNOWN = 100 }
         //!
         //! The parameters C# type.
         //!
@@ -222,22 +224,6 @@ namespace vpet
             }
         }
         //!
-        //! The next and the previous active keyframe index (for animation).
-        //!
-        private int _nextIdx, _prevIdx;
-        //!
-        //! The list of keyframes (for animation).
-        //!
-        private List<Key<T>> _keyList = null;
-        //!
-        //! A reference to the key list (for animation).
-        //!
-        public ref List<Key<T>> _key_List { get => ref _keyList; }
-        //!
-        //! A reference to the Animation Manager.
-        //!
-        private AnimationManager _animationManager = null;
-        //!
         //! Event emitted when parameter changed.
         //!
         public event EventHandler<T> hasChanged;
@@ -258,12 +244,13 @@ namespace vpet
             _type = toVPETType(typeof(T));
             _distribute = distribute;
             _initialValue = value;
-            _nextIdx = 0;
-            _prevIdx = 0;
 
             // initialize data size
             switch (_type)
             {
+                case ParameterType.NONE:
+                    _dataSize = 0;
+                    break;
                 case ParameterType.BOOL:
                     _dataSize = 1;
                     break;
@@ -314,22 +301,8 @@ namespace vpet
             _dataSize = p._dataSize;
             _distribute = p._distribute;
             _initialValue = p._initialValue;
-            _nextIdx = 0;
-            _prevIdx = 0;
-            _keyList = p._keyList;
-            _animationManager = p._animationManager;
-
-            if (_keyList != null && _animationManager != null)
-                _animationManager.animationUpdate += updateValue;
         }
 
-        //!
-        //! Destructor
-        //!
-        ~Parameter()
-        {
-            clearKeys();
-        }
 
         //!
         //! Getter and setter for the parameters value. 
@@ -381,177 +354,6 @@ namespace vpet
             {
                 _value = _initialValue;
                 hasChanged?.Invoke(this, _value);
-            }
-        }
-
-        /////////////////////////////////////////////////////////
-        /////////////////////// Animation ///////////////////////
-        /////////////////////////////////////////////////////////
-
-        //!
-        //! Initializes the parameters animation functionality,
-        //!
-        private void initAnimation()
-        {
-            _keyList ??= new List<Key<T>>();
-
-            if (_animationManager == null)
-            {
-                _animationManager = ParameterObject.core.getManager<AnimationManager>();
-                _animationManager.animationUpdate += updateValue;
-            }
-        }
-
-        //!
-        //! Insert a given key element to the parameters key list, at the corresponding index.
-        //!
-        //! @param key The key to be added to the parameters key list.
-        //!
-        public void addKey(Key<T> key)
-        {
-            if (!isAnimated())
-                initAnimation();
-
-            int i = findNextKeyIndex(key);
-            if (i == -1)
-            {
-                int i2 = _keyList.IndexOf(key);
-                if (i2 > -1)
-                    _keyList[i2].value = key.value;
-                else
-                    _keyList.Add(key);
-            }
-            else
-                _keyList.Insert(i, key);
-
-        }
-
-        //!
-        //! Revove a given key element from the parameters key list.
-        //!
-        //! @param key The key to be removed from the parameters key list.
-        //!
-        public void removeKey(Key<T> key)
-        {
-            if (_keyList != null)
-            {
-                _keyList.Remove(key);
-                if (_keyList.Count == 0)
-                    _animationManager.animationUpdate -= updateValue;
-            }
-        }
-
-        //!
-        //! Create and insert a new key element to the parameters key list, 
-        //! based on the current parameter value and Animation Manager time.
-        //!
-        public void setKey()
-        {
-            addKey(new Key<T>(_animationManager.time, value));
-        }
-
-        //!
-        //! Clear the parameters key list and disable the animation functionality.
-        //!
-        private void clearKeys()
-        {
-            if (_animationManager != null)
-                _animationManager.animationUpdate -= updateValue;
-
-            if (_keyList != null)
-                _keyList.Clear();
-        }
-
-        //!
-        //! Calculate the parameters value based on the keylist and given time.
-        //!
-        //! @param o A reference to the Animation Manager.
-        //! @param time The given time used to calulate the parameters new value.
-        //!
-        private void updateValue(object o, float time)
-        {
-            if (isAnimated())
-            {
-                // current time is NOT in between the two active keys
-                if (time < _keyList[_prevIdx].time || time > _keyList[_nextIdx].time)
-                {
-                    int i = findNextKeyIndex(time);
-                    // current time is bigger than all keys in list
-                    if (i == -1)
-                        _nextIdx = _prevIdx = _keyList.Count - 1;
-                    else
-                    {
-                        // current time is smaller than all keys in list
-                        if (i == 0)
-                            _nextIdx = _prevIdx = 0;
-                        // current time is somewhere between all keys in list
-                        else
-                        {
-                            _nextIdx = i;
-                            _prevIdx = i - 1;
-                        }
-                    }
-                }
-                value = interpolate(time);
-            }
-        }
-
-        //!
-        //! Function for searching the next bigger key index in the key list.
-        //!
-        //! @param key The key on which the index is to be searched.
-        //! @return The next bigger index in the keylist.
-        //!
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int findNextKeyIndex(Key<T> key)
-        {
-            return _keyList.FindIndex(i => i.time > key.time);
-        }
-
-        //!
-        //! Function for searching the next bigger key index in the key list.
-        //!
-        //! @param time The time on which the index is to be searched.
-        //! @return The next bigger index in the keylist.
-        //!
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int findNextKeyIndex(float time)
-        {
-            return _keyList.FindIndex(i => i.time >= time);
-        }
-
-        //!
-        //! Function that returns the current animation state of the parameter.
-        //!
-        //! @return The current animation state of the parameter.
-        //!
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool isAnimated()
-        {
-            if (_keyList != null)
-                return _keyList.Count > 0;
-            else
-                return false;
-        }
-
-        //!
-        //! Function that interpolates the current parameter value based on a given
-        //! time and the previous and next time indices.
-        //!
-        //! @parameter time The given time used to interpolate the parameters value.
-        //! @return The interpolated parameter value.
-        //!
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T interpolate(float time)
-        {
-            switch (_type)
-            {
-                case ParameterType.FLOAT:
-                    float inBetween = (time - _keyList[_prevIdx].time) / (_keyList[_prevIdx].time - _keyList[_nextIdx].time);
-                    float s1 = 1.0f - (_keyList[_nextIdx].time - inBetween) / (_keyList[_nextIdx].time - _keyList[_prevIdx].time);
-                    return (T)(object)(((float)(object)_keyList[_prevIdx].value) * (1.0f - s1) + ((float)(object)_keyList[_nextIdx].value) * s1);
-                default:
-                    return default(T);
             }
         }
 
@@ -644,7 +446,8 @@ namespace vpet
 
                         break;
                     }
-
+                default:
+                    break;
             }
         }
 
@@ -656,9 +459,6 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void deSerialize(byte[] data, int offset)
         {
-            // [REVIEW]
-            // Would a read from a span be faster then from byte[] ???
-            //ReadOnlySpan<byte> dataSpan = new ReadOnlySpan<byte>(data);
             switch (_type)
             {
                 case ParameterType.BOOL:
@@ -706,130 +506,6 @@ namespace vpet
             _networkLock = true;
                 hasChanged?.Invoke(this, _value);
             _networkLock = false;
-        }
-    }
-
-    public class RPCParameter<T> : Parameter<T>
-    {
-        public RPCParameter(T parameterValue, string name, ParameterObject parent = null, bool distribute = true) : base(parameterValue, name, parent, distribute)
-        {
-
-        }
-        //!
-        //! Action that will be executed when the parameter is evaluated.
-        //!
-        private Action<T> m_action;
-        public Action<T> action
-        {
-            get => m_action;
-            set => m_action = value;
-        }
-
-        //!
-        //! Function for deserializing parameter _data.
-        //! 
-        //! @param _data The byte _data to be deserialized and copyed to the parameters value.
-        //! 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void deSerialize(byte[] data, int offset)
-        {
-            base.deSerialize(data, offset);
-            m_action.Invoke(_value);
-        }
-    }
-
-    [Serializable]
-    //!
-    //! ListParameter class defining the fundamental functionality and interface
-    //!
-    public class ListParameter : Parameter<int>
-    {
-        //!
-        //! The ListParamters constructor, initializing members.
-        //!
-        //! @param parameterList The list of parameders with the given type T.
-        //! @param name The parameters name.
-        //! @param name The parameters parent ParameterObject.
-        //! @param name Flag that determines whether a Parameter will be distributed.
-        //!
-        public ListParameter(List<AbstractParameter> parameterList, string name, ParameterObject parent = null, bool distribute = true) : base(0, name, parent, distribute)
-        {
-            _parameterList = parameterList;
-            _type = ParameterType.LIST;
-        }
-
-        //!
-        //! Constructor initializing members.
-        //!
-        public ListParameter(string name, ParameterObject parent = null) : this(new List<AbstractParameter>(), name, parent)
-        { }
-
-        [SerializeField]
-        //!
-        //! The ListParameters parameter list.
-        //!
-        private List<AbstractParameter> _parameterList;
-
-        //!
-        //! Getter and setter for the parameter list.
-        //!
-        public List<AbstractParameter> parameterList
-        {
-            set => _parameterList = value;
-            get => _parameterList;
-        }
-
-        //!
-        //! The function called to change a parameter in the parameter list.
-        //! @param idx The list index of the parameter to be replaced.
-        //! @param p The new parameter.
-        //!
-        public void setParameter(int idx, AbstractParameter p)
-        {
-            if (idx < _parameterList.Count)
-            {
-                _parameterList[idx] = p;
-            }
-            else
-                Helpers.Log("Parameter index for" + p.name + "exceeds length of list " + this.name, Helpers.logMsgType.WARNING);
-        }
-
-        //!
-        //! The function for adding a parameter to the parameter list.
-        //! @param p The parameter to be added to the parameter list.
-        //!
-        public void addParameter(AbstractParameter p)
-        {
-            if (!_parameterList.Contains(p))
-            {
-                _parameterList.Add(p);
-            }
-            else
-                Helpers.Log("Parameter " + p.name + " already exists in list " + this.name, Helpers.logMsgType.WARNING);
-        }
-
-        //!
-        //! The function for removing a parameter from the parameter list.
-        //! @param p The parameter to be femoved from the parameter list.
-        //!
-        public void removeParameter(AbstractParameter p)
-        {
-            if (_parameterList.Contains(p))
-            {
-                _parameterList.Remove(p);
-            }
-            else
-                Helpers.Log("Parameter " + p.name + " does not exists in list " + this.name, Helpers.logMsgType.WARNING);
-        }
-
-        //!
-        //! Function for selecting the active index.
-        //!
-        //! @param idx The new active index to be selected.
-        //!
-        public void select(int idx)
-        {
-            setValue(idx);
         }
     }
 }
