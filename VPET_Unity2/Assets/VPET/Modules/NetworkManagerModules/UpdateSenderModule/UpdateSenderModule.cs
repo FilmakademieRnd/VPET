@@ -312,9 +312,9 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte[] createParameterMessage()
         {
-            // Message structure: Header, Parameter (optional)
+            // Message structure: Header, Parameter List (optional)
             // Header: ClientID, Time, MessageType
-            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+            // ParameterList: List<SceneObjectID, ParameterID, ParameterType, Parameter message length, ParameterData>
 
             byte[] message = new byte[3 + m_modifiedParametersDataSize + 6 * m_modifiedParameters.Count];
 
