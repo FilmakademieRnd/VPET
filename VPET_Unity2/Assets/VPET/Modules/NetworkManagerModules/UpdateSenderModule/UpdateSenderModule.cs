@@ -317,11 +317,12 @@ namespace vpet
             // ParameterList: List<SceneObjectID, ParameterID, ParameterType, Parameter message length, ParameterData>
 
             byte[] message = new byte[3 + m_modifiedParametersDataSize + 6 * m_modifiedParameters.Count];
+            Span<byte> msgSpan = new Span<byte>(message);
 
             // header
-            message[0] = manager.cID; // ClientID
-            message[1] = core.time; // Time
-            message[2] = (byte)MessageType.PARAMETERUPDATE; // MessageType
+            msgSpan[0] = manager.cID; // ClientID
+            msgSpan[1] = core.time; // Time
+            msgSpan[2] = (byte)MessageType.PARAMETERUPDATE; // MessageType
 
             int start = 3;
             for (int i = 0; i < m_modifiedParameters.Count; i++)
@@ -330,7 +331,7 @@ namespace vpet
                 lock (parameter)
                 {
                     int length = 6 + parameter.dataSize();
-                    Span<byte> newSpan = new Span<byte>(message, start, length);
+                    Span<byte> newSpan = msgSpan.Slice(start, length);
 
                     BitConverter.TryWriteBytes(newSpan.Slice(0, 2), parameter.parent.id);  // SceneObjectID
                     BitConverter.TryWriteBytes(newSpan.Slice(2, 2), parameter.id);  // ParameterID

@@ -43,9 +43,9 @@ namespace vpet
     public class UpdateReceiverModule : NetworkManagerModule
     {
         //!
-        //! Buffer for storing incoming message by time.
+        //! Buffer for storing incoming message by time (array of lists of bytes).
         //!
-        private List<List<byte[]>> m_messageBuffer;
+        private List<byte[]>[] m_messageBuffer;
 
         //!
         //! Event emitted when parameter change should be added to undo/redo history
@@ -86,9 +86,9 @@ namespace vpet
         protected override void Init(object sender, EventArgs e)
         {
             // initialize message buffer
-            m_messageBuffer = new List<List<byte[]>>(core.timesteps);
+            m_messageBuffer = new List<byte[]>[core.timesteps];
             for (int i = 0; i < core.timesteps; i++)
-                m_messageBuffer.Add(new List<byte[]>(256));
+                m_messageBuffer[i] = new List<byte[]>(128);
 
             m_sceneManager = core.getManager<SceneManager>();
             m_sceneManager.sceneReady += connectAndStart;
