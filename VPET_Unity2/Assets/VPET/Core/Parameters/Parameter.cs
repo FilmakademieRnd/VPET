@@ -455,6 +455,7 @@ namespace vpet
         //! Function for deserializing parameter _data.
         //! 
         //! @param _data The byte _data to be deserialized and copyed to the parameters value.
+        //! @param _offset The start offset in the given data array.
         //! 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void deSerialize(byte[] data, int offset)
@@ -506,6 +507,12 @@ namespace vpet
             _networkLock = true;
                 hasChanged?.Invoke(this, _value);
             _networkLock = false;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void InvokeHasChanged()
+        {
+            hasChanged?.Invoke(this, _value);
         }
     }
 }

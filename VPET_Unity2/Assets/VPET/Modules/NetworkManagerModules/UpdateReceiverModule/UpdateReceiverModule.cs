@@ -92,7 +92,10 @@ namespace vpet
 
             m_sceneManager = core.getManager<SceneManager>();
             m_sceneManager.sceneReady += connectAndStart;
+
         }
+
+
 
         //!
         //! Function that connects the scene object change events for parameter queuing.
@@ -119,7 +122,6 @@ namespace vpet
             var receiver = new SubscriberSocket();
             receiver.SubscribeToAnyTopic();
             receiver.Connect("tcp://" + m_ip + ":" + m_port);
-
             Helpers.Log("Update receiver connected: " + "tcp://" + m_ip + ":" + m_port);
             byte[] message = null;
             while (m_isRunning)
@@ -240,7 +242,6 @@ namespace vpet
             // % time steps to take ring (0 to core.timesteps) into account
             // set to 1/10 second
             int bufferTime = (((core.time - core.settings.framerate / 10) + core.timesteps) % core.timesteps);
-
             lock (m_messageBuffer)
             {
                 for (int i = 0; i < m_messageBuffer[bufferTime].Count; i++)
@@ -249,25 +250,26 @@ namespace vpet
 
                     if ((MessageType)message[2] == MessageType.LOCK)
                     {
-                        short sceneObjectID = BitConverter.ToInt16(message, 3);
+                        short parameterObjectID = BitConverter.ToInt16(message, 3);
                         bool lockState = BitConverter.ToBoolean(message, 5);
 
-                        SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
-                        sceneObject._lock = lockState;
+                        ParameterObject parameterObject = core.getParameterObject(parameterObjectID);
+                        if (parameterObject.GetType() == typeof(SceneObject))
+                            ((SceneObject)parameterObject)._lock = lockState;
                     }
                     else
                     {
                         int start = 3;
                         while (start < message.Length)
                         {
-                            short sceneObjectID = BitConverter.ToInt16(message, start);
+                            short parameterObjectID = BitConverter.ToInt16(message, start);
                             short parameterID = BitConverter.ToInt16(message, start + 2);
                             int length = message[start + 5];
 
-                            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+                            ParameterObject parameterObject = core.getParameterObject(parameterObjectID);
 
-                            if (sceneObject != null)
-                                sceneObject.parameterList[parameterID].deSerialize(message, start + 6);
+                            if (parameterObject != null)
+                                parameterObject.parameterList[parameterID].deSerialize(message, start + 6);
 
                             start += length;
                         }

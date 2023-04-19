@@ -31,6 +31,7 @@ Syncronisation Server. They are licensed under the following terms:
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace vpet
@@ -324,6 +325,21 @@ namespace vpet
                 m_parameterObjectList.Add(parameterObject);
             else
                 Helpers.Log("Parameter object List already contains the Parameter Object.", Helpers.logMsgType.WARNING);
+        }
+
+        //!
+        //! Function that returns a parameter object based in the given ID.
+        //!
+        //! @param id The ID of the scene object to be returned.
+        //! @return The corresponding scene object to the gevien ID.
+        //!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ParameterObject getParameterObject(int id)
+        {
+            if (id < 1 || id > m_parameterObjectList.Count)
+                return null;
+            else
+                return m_parameterObjectList[id - 1];
         }
 
     }
