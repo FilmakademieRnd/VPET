@@ -171,9 +171,9 @@ namespace vpet
                 m_highlightLock = _lock;
             }
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
             updateSceneObjectTransform();
-#endif
+//#endif
         }
 
         //!
