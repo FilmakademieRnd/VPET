@@ -192,8 +192,7 @@ public:
     
      virtual void Serialize(char* data, std::string name) override
     {
-        //TODO - convert unreal vector and quat to unity vector and quat!!!!!!
-        
+       
         switch (_type)
         {
         case ParameterType::BOOL:

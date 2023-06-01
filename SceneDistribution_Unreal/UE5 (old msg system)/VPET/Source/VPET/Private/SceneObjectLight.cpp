@@ -14,10 +14,10 @@ void USceneObjectLight::BeginPlay()
 	kLit = Cast<ALight>(thisActor);
 	if (kLit)
 	{
-		FVector col = kLit->GetLightColor();
+		FVector4d col = (FVector4d)kLit->GetLightColor();
 		float lit = kLit->GetBrightness() * lightFactor;
 
-		Col_Vpet_Param = new Parameter<FVector>(col, thisActor, "color", &UpdateColor, this);
+		Col_Vpet_Param = new Parameter<FVector4d>(col, thisActor, "color", &UpdateColor, this);
 		lit_Vpet_Param = new Parameter<float>(lit, thisActor, "intensity", &UpdateIntensity, this);
 	}
 }

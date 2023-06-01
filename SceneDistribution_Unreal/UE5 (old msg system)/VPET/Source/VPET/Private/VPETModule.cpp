@@ -199,7 +199,47 @@ void AVPETModule::BeginPlay()
 		VPET_SceneObjectList[i]->ParameterObject_HasChanged.AddUObject(this, &AVPETModule::HasChangedIsCalled);
 	}
 
+	m_timesteps = (uint8_t)((s_timestepsBase / framerate) * framerate);
+
+	GetWorld()->GetTimerManager().SetTimer(MemberTimerHandle, this, &AVPETModule::UpdateTime, 1.0f/framerate, true);
 }
+
+void AVPETModule::UpdateTime()
+{
+	m_time = (m_time > (m_timesteps - 2) ? 0 : m_time + 1);
+
+	if ((m_time % framerate) == 0)
+	{
+		queueSyncMessage(m_time);
+	}
+}
+
+void AVPETModule::queueSyncMessage(uint8_t time)
+{
+	
+	char* messageStart = NULL;
+	int responseLength = 0;
+	char* m_controlMessage = NULL;
+	
+	responseLength = 3;
+	messageStart = m_controlMessage = (char*)malloc(responseLength);
+	
+	uint8_t intVal = m_id;
+	memcpy(m_controlMessage, &intVal, sizeof(uint8_t)); m_controlMessage += sizeof(uint8_t);
+
+	//Time (hardcoded for now)
+	intVal = time;
+	memcpy(m_controlMessage, &intVal, sizeof(uint8_t)); m_controlMessage += sizeof(uint8_t);
+
+	//Type sync val 2 in unity code
+	intVal = 2;
+	memcpy(m_controlMessage, &intVal, sizeof(uint8_t));
+	
+	msgData.push_back(messageStart);
+	msgLen.push_back(responseLength);
+	
+}
+
 
 void AVPETModule::HasChangedIsCalled(AbstractParameter* param)
 {
@@ -242,7 +282,7 @@ void AVPETModule::CreateParameterMessage()
 	memcpy(responseMessageContent, &intVal, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 
 	//Time (hardcoded for now)
-	intVal = 50;
+	intVal = m_time;
 	memcpy(responseMessageContent, &intVal, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 
 	//Type parameter update  val 0 in unity code

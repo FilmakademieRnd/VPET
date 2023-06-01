@@ -27,7 +27,7 @@ protected:
 	float lightFactor = 0.2;
 
 	// Light color buffer
-	Parameter<FVector>* Col_Vpet_Param;
+	Parameter<FVector4d>* Col_Vpet_Param;
 	// Light intensity buffer
 	Parameter<float>* lit_Vpet_Param;
 
