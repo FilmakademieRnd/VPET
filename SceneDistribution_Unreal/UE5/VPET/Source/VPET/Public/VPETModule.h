@@ -62,8 +62,6 @@
 // Development on-screen debug message
 #define OSD(debugColor, debugString, ...) if(GEngine && VerboseDisplay) GEngine->AddOnScreenDebugMessage(-1, 5.0f, debugColor, FString::Printf(TEXT(debugString), __VA_ARGS__));
 
-typedef TMulticastDelegate<void(uint8_t*)> syncEvent;
-
 UCLASS()
 class VPET_API AVPETModule : public AActor
 {
@@ -80,13 +78,11 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-
 	
 	FTimerHandle MemberTimerHandle;
 	int s_timestepsBase = 128;
 	int framerate = 60;
 	uint8_t m_timesteps;
-	syncEvent timeSyncEvent;
 	uint8_t m_time;
 
 	void UpdateTime();

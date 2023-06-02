@@ -45,6 +45,7 @@ public:
 
     ParameterType _type;
 
+    // unreat types to Vpet types
     static ParameterType toVPETType(const std::type_info& t)
     {
         if (t == typeid(void))
@@ -133,6 +134,7 @@ public:
         //history initialization
         _initialValue = value;
 
+        //Set _dataSize based on the Parameter VPET type 
         switch (_type)
         {
         case ParameterType::NONE:
@@ -189,7 +191,8 @@ public:
     T getValue() const {
         return _value;
     }
-    
+
+    //Serialize the mesege 
      virtual void Serialize(char* data, std::string name) override
     {
        

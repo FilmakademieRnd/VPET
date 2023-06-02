@@ -194,6 +194,7 @@ void AVPETModule::BeginPlay()
 	FLevelEditorModule::FActorSelectionChangedEvent fasce = levelEditor.OnActorSelectionChanged();
 	levelEditor.OnActorSelectionChanged().AddUObject(this, &AVPETModule::HandleOnActorSelectionChanged);
 
+	// subscribe to delegate 
 	for (auto i=1; i<VPET_SceneObjectList.Num(); i++)
 	{
 		VPET_SceneObjectList[i]->ParameterObject_HasChanged.AddUObject(this, &AVPETModule::HasChangedIsCalled);
@@ -201,6 +202,7 @@ void AVPETModule::BeginPlay()
 
 	m_timesteps = (uint8_t)((s_timestepsBase / framerate) * framerate);
 
+	
 	GetWorld()->GetTimerManager().SetTimer(MemberTimerHandle, this, &AVPETModule::UpdateTime, 1.0f/framerate, true);
 }
 
@@ -214,6 +216,7 @@ void AVPETModule::UpdateTime()
 	}
 }
 
+//time sync msg between server and client
 void AVPETModule::queueSyncMessage(uint8_t time)
 {
 	
@@ -223,11 +226,12 @@ void AVPETModule::queueSyncMessage(uint8_t time)
 	
 	responseLength = 3;
 	messageStart = m_controlMessage = (char*)malloc(responseLength);
-	
+
+	//client ID
 	uint8_t intVal = m_id;
 	memcpy(m_controlMessage, &intVal, sizeof(uint8_t)); m_controlMessage += sizeof(uint8_t);
 
-	//Time (hardcoded for now)
+	//Time
 	intVal = time;
 	memcpy(m_controlMessage, &intVal, sizeof(uint8_t)); m_controlMessage += sizeof(uint8_t);
 
@@ -240,7 +244,7 @@ void AVPETModule::queueSyncMessage(uint8_t time)
 	
 }
 
-
+// add or remove a parameter to the VPET_ModifiedParameterList if the parameter was modified.
 void AVPETModule::HasChangedIsCalled(AbstractParameter* param)
 {
 	UE_LOG(LogTemp, Error, TEXT("change is called with param type %hhd"), param->_type);
@@ -281,7 +285,7 @@ void AVPETModule::CreateParameterMessage()
 	uint8_t intVal = m_id;
 	memcpy(responseMessageContent, &intVal, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 
-	//Time (hardcoded for now)
+	//Time 
 	intVal = m_time;
 	memcpy(responseMessageContent, &intVal, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 
@@ -1028,7 +1032,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 		bool kHasTexture = cMat->HasTextureStreamingData();
 		if (kHasTexture)
 		{
-			//DOL(LogBasic, Warning, "[DIST buildNode] material HAS texture streaming data");
+			DOL(LogBasic, Warning, "[DIST buildNode] material HAS texture streaming data");
 
 			//TArray<UTexture*> kTextures;
 			//TArray<TArray<int32>> kIndices;
