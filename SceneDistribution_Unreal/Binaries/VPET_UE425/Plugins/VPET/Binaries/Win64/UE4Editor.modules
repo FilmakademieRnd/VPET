@@ -1,8 +1,0 @@
-{
-	"BuildId": "13144385",
-	"Modules": 
-	{
-		"libzmq": "UE4Editor-libzmq.dll",
-		"VPET": "UE4Editor-VPET.dll"
-	}
-}
