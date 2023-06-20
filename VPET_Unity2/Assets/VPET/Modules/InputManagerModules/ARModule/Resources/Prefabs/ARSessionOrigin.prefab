@@ -9,11 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7995702603731389404}
-  - component: {fileID: 7995702603731389407}
-  - component: {fileID: 7995702603731389406}
-  - component: {fileID: 7995702603731389345}
-  - component: {fileID: 7995702603731389344}
-  - component: {fileID: -4559926708153733942}
+  - component: {fileID: 7317623007763914082}
+  - component: {fileID: 4158134725958818339}
+  - component: {fileID: 8144491122876543677}
+  - component: {fileID: 3377739290662846715}
   m_Layer: 0
   m_Name: ARSessionOrigin
   m_TagString: Untagged
@@ -36,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7995702603731389407
+--- !u!114 &7317623007763914082
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,11 +44,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 7995702603731389346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 520bb47c46cf8624fafb307b7d1b862a, type: 3}
+  m_Script: {fileID: 11500000, guid: e0cb9aa70a22847b5925ee5f067c10a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Camera: {fileID: 0}
---- !u!114 &7995702603731389406
+  m_OriginBaseGameObject: {fileID: 7995702603731389346}
+  m_CameraFloorOffsetObject: {fileID: 0}
+  m_RequestedTrackingOriginMode: 2
+  m_CameraYOffset: 1.1176
+--- !u!114 &4158134725958818339
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,7 +66,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PlanePrefab: {fileID: 0}
   m_DetectionMode: -1
---- !u!114 &7995702603731389345
+--- !u!114 &8144491122876543677
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,7 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PointCloudPrefab: {fileID: 0}
---- !u!114 &7995702603731389344
+--- !u!114 &3377739290662846715
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,15 +92,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastPrefab: {fileID: 0}
---- !u!114 &-4559926708153733942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7995702603731389346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dae670d7f533b49578e92ea743ab190d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
