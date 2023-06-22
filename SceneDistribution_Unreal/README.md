@@ -1,6 +1,6 @@
 # VPET for Unreal
 
-VPET plug-in for the Unreal Engine 4.
+VPET plug-in for the Unreal Engine 4 & 5.
 
 <!--
 [![VPET Unreal Teaser](http://img.youtube.com/vi/ROlDiYnoEPc/0.jpg)](https://youtu.be/ROlDiYnoEPc?list=PLFSxFMrrXJM4PNNejIBy3ztEnA0xYLBwl "VPET Unreal Teaser")
@@ -36,7 +36,7 @@ Copy the `Plugins` folder to your UE project folder.
 In launching the project, you will be prompt to build the missing plugins.
 
 In case of failure or in need of custom modification, you might require Visual Studio and a C++ code project.  
-If you are new to programming in UE4, refer to the official [documentation](https://docs.unrealengine.com/latest/INT/Programming/index.html).
+If you are new to programming in UE4, refer to the official [documentation](https://docs.unrealengine.com/5.2/en-US/).
 
 **Note**: This plug-in has modules that build upon a third-party library from ZMQ.  
 All necessary files are provided, but custom builts might need adaptation.  
@@ -64,12 +64,12 @@ handles scene distribution and synchronization;
 
 - `VPETWindow` - an editor extension for assisting scene setup.
 
-An example minimal scene is also provided for quick testing: [`VPET_DemoContent.zip`](../../../raw/main/SceneDistribution_Unreal/VPET_DemoContent.zip)
+An example minimal scene is also provided for quick testing: [`VPET_DemoContent.zip`](https://github.com/FilmakademieRnd/VPET/blob/VPET2.0/SceneDistribution_Unreal/VPET_DemoContent.zip)
 
 
 ## Supported Platforms
 
-This plug-in was built against versions **4.23**, **4.24**, **4.25** and **4.26**
+This plug-in was built against versions **4.26** and **5.1**
 only under **Windows x64** platform.
 
 Further support will be available in the coming revisions.
