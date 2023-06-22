@@ -62,7 +62,7 @@ namespace vpet
                                                                           typeof(Quaternion),
                                                                           typeof(Color),
                                                                           typeof(string),
-                                                                          typeof(int) 
+                                                                          typeof(int)
         };
         //!
         //! Definition of VPETs parameter types
@@ -357,8 +357,8 @@ namespace vpet
             }
         }
 
-          /////////////////////////////////////////////////////////////
-         /////////////////////// Serialisation ///////////////////////
+        /////////////////////////////////////////////////////////////
+        /////////////////////// Serialisation ///////////////////////
         /////////////////////////////////////////////////////////////
 
         //!
@@ -505,10 +505,10 @@ namespace vpet
                     return;
             }
             _networkLock = true;
-                hasChanged?.Invoke(this, _value);
+            hasChanged?.Invoke(this, _value);
             _networkLock = false;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void InvokeHasChanged()
         {

@@ -55,6 +55,7 @@ namespace vpet
             }
             else
                 Helpers.Log("no light component found!");
+
         }
 
 

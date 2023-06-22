@@ -52,14 +52,28 @@ namespace vpet
         //!
         //! The unique ID of this parameter object.
         //!
+        protected byte _sceneID = 255;
+        //!
+        //! The unique ID of this parameter object.
+        //!
         public short id
         {
             get => _id;
         }
         //!
+        //! The scene ID of this parameter object.
+        //!
+        public byte sceneID
+        {
+            get => _sceneID;
+        }
+        //!
         //! A reference to the vpet core.
         //!
         static protected Core _core = null;
+        //!
+        //! A reference to the vpet core.
+        //!
         public static Core core
         {
             get => _core;
@@ -104,21 +118,18 @@ namespace vpet
         //!
         public virtual void Awake()
         {
-            _parameterList = new List<AbstractParameter>();
-            _id = getSoID();
-
             if (_core == null)
                 _core = GameObject.FindObjectOfType<Core>();
 
+            NetworkManager networkManager = _core.getManager<NetworkManager>();
+            if (_core.getManager<NetworkManager>() != null)
+                _sceneID = _core.getManager<NetworkManager>().cID;
+
+            _id = s_id++;
+            _parameterList = new List<AbstractParameter>();
+
             _core.addParameterObject(this);
         }
-        //!
-        //! provide a unique id
-        //! @return     unique id as int
-        //!
-        private static short getSoID()
-        {
-            return s_id++;
-        }
+
     }
 }

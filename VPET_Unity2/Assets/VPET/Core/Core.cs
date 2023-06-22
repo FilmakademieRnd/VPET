@@ -105,9 +105,10 @@ namespace vpet
             get => m_timesteps;
         }
         //!
-        //! The global list of parameter objects.
+        //! The global dictionary of parameter objects.
+        //! The structure is Dictionary<client/scene ID, Dictionary<ParameterObject ID, ParameterObject>>
         //!
-        private List<ParameterObject> m_parameterObjectList;
+        private Dictionary<byte, Dictionary<short, ParameterObject>> m_parameterObjectList;
         //!
         //! The current orientation of the device;
         //!
@@ -117,7 +118,7 @@ namespace vpet
         //!
         //! @return A reference to the parameter object list.
         //!
-        public ref List<ParameterObject> parameterObjectList
+        public ref Dictionary<byte, Dictionary<short, ParameterObject>> parameterObjectList
         {
             get => ref m_parameterObjectList;
         }
@@ -169,7 +170,7 @@ namespace vpet
 
             _settings = new coreSettings();
             m_timesteps = (byte)((s_timestepsBase / settings.framerate) * settings.framerate);
-            m_parameterObjectList = new List<ParameterObject>();
+            m_parameterObjectList = new Dictionary<byte, Dictionary<short, ParameterObject>>();
 
             // Create network manager
             NetworkManager networkManager = new NetworkManager(typeof(NetworkManagerModule), this);
@@ -321,26 +322,77 @@ namespace vpet
         //!
         internal void addParameterObject(ParameterObject parameterObject)
         {
-            if (!m_parameterObjectList.Contains(parameterObject))
-                m_parameterObjectList.Add(parameterObject);
-            else
-                Helpers.Log("Parameter object List already contains the Parameter Object.", Helpers.logMsgType.WARNING);
+            byte sceneID = parameterObject.sceneID;
+            short poID = parameterObject.id;
+            Dictionary<short, ParameterObject> sceneObjects;
+
+            // check scene
+            if (!m_parameterObjectList.TryGetValue(sceneID, out sceneObjects))
+            {
+                sceneObjects = new Dictionary<short, ParameterObject>();
+                m_parameterObjectList.Add(sceneID, sceneObjects);
+            }
+
+            // check ParameterObject
+            if (!sceneObjects.TryAdd(poID, parameterObject))
+                Helpers.Log("Parameter object List in scene ID: " + sceneID.ToString() + " already contains the Parameter Object.", Helpers.logMsgType.WARNING);
+        }
+
+        internal void removeParameterObject(ParameterObject parameterObject) 
+        {
+            byte sceneID = parameterObject.sceneID;
+            short poID = parameterObject.id;
+            Dictionary<short, ParameterObject> sceneObjects;
+
+            // check scene
+            if (!m_parameterObjectList.TryGetValue(sceneID, out sceneObjects))
+            {
+                Helpers.Log("Deletion of parameterObject (Scene: " + sceneID + ") not possible, object cannot be found in Dictionary!", Helpers.logMsgType.WARNING);
+            }
+            // check ParameterObject
+            else if (!sceneObjects.Remove(poID))
+                Helpers.Log("Deletion of parameterObject (ID: " + poID + ") not possible, object cannot be found in Dictionary!", Helpers.logMsgType.WARNING);
         }
 
         //!
-        //! Function that returns a parameter object based in the given ID.
+        //! Function that returns a parameter object based in the given scene and object ID.
         //!
-        //! @param id The ID of the scene object to be returned.
-        //! @return The corresponding scene object to the gevien ID.
+        //! @param poID The ID of the parameter object to be returned.
+        //! @param sceneID The ID of the scene containing the parameter object to be returned.
+        //! @return The corresponding parameter object to the gevien IDs.
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ParameterObject getParameterObject(int id)
+        public ParameterObject getParameterObject(byte sceneID, short poID)
         {
-            if (id < 1 || id > m_parameterObjectList.Count)
+            if (poID < 1 || sceneID < 0)
                 return null;
             else
-                return m_parameterObjectList[id - 1];
+            {
+                Dictionary<short, ParameterObject> sceneObjects;
+                if (m_parameterObjectList.TryGetValue(sceneID, out sceneObjects))
+                    return sceneObjects[(short)(poID)];
+                else
+                    return null;
+            }
         }
 
+        //!
+        //! Function that returns a list containing all parameter objects.
+        //!
+        //! @return The list containing all parameter objects.
+        //!
+        public List<ParameterObject> getAllParameterObjects()
+        {
+            List<ParameterObject> returnvalue = new List<ParameterObject>();
+
+            foreach (Dictionary<short, ParameterObject> dict in m_parameterObjectList.Values)
+            {
+                foreach (ParameterObject parameterObject in dict.Values)
+                {
+                    returnvalue.Add(parameterObject);
+                }
+            }
+            return returnvalue;
+        }
     }
 }

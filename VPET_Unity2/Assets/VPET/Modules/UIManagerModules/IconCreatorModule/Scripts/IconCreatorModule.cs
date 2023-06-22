@@ -127,7 +127,7 @@ namespace vpet
 
             SceneManager sceneManager = ((SceneManager)sender);
 
-            foreach (SceneObject sceneObject in sceneManager.sceneObjects)
+            foreach (SceneObject sceneObject in sceneManager.getAllSceneObjects())
             {
                 GameObject icon = null;
                 SpriteRenderer renderer = null;

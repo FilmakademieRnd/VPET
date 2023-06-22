@@ -32,8 +32,6 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.IO;
-
 
 namespace vpet
 {
@@ -79,17 +77,24 @@ namespace vpet
         public float maxExtend = 1f;
 
         //!
-        //! The list storing editable VPET scene objects in scene.
+        //! Function that returns a list containing all scene objects.
         //!
-        private List<SceneObject> m_sceneObjects = new List<SceneObject>();
+        //! @return The list containing all scene objects.
         //!
-        //! Setter and getter to List holding references to all editable VPET sceneObjects.
-        //!
-        public List<SceneObject> sceneObjects
+        public List<SceneObject> getAllSceneObjects()
         {
-            // [REVIEW] put into ParameterObjectList!
-            get { return m_sceneObjects; }
-            set { m_sceneObjects = value; }
+            List<SceneObject> returnvalue = new List<SceneObject>();
+
+            foreach (Dictionary<short, ParameterObject> dict in core.parameterObjectList.Values)
+            {
+                foreach (ParameterObject parameterObject in dict.Values)
+                {
+                    SceneObject sceneObject = parameterObject as SceneObject;
+                    if (sceneObject)
+                        returnvalue.Add((SceneObject) parameterObject);
+                }
+            }
+            return returnvalue;
         }
         //!
         //! The list storing selectable Unity lights in scene.
@@ -103,6 +108,7 @@ namespace vpet
             get { return m_sceneLightList; }
             set { m_sceneLightList = value; }
         }
+
         //!
         //! The list storing Unity cameras in scene.
         //!
@@ -189,24 +195,9 @@ namespace vpet
         //! @return The corresponding scene object to the gevien ID.
         //!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SceneObject getSceneObject(int id)
+        public SceneObject getSceneObject(byte sceneID, short poID)
         {
-            if (id < 1 || id > sceneObjects.Count)
-                return null;
-            else
-                return sceneObjects[id -1];
-        }
-
-        //!
-        //! Function that returns a id based in the given scne object.
-        //!
-        //! @param scneObject The scne object of which the ID will be returned. 
-        //! @return The corresponding ID to the gevien scene object.
-        //!
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int getSceneObjectId(ref SceneObject sceneObject)
-        {
-            return sceneObjects.IndexOf(sceneObject) + 1;  // +1 because 0 is non selectable object or background
+            return (SceneObject) core.getParameterObject(sceneID, poID);
         }
 
         //!
@@ -214,6 +205,7 @@ namespace vpet
         //!
         public void ResetScene()
         {
+            // remove all Unity GameObjects
             if (m_scnRoot != null)
             {
                 foreach (Transform child in m_scnRoot.transform)
@@ -222,9 +214,13 @@ namespace vpet
                 }
             }
 
-            m_sceneObjects.Clear();
+            // remove all Tracer SceneObjects
+            foreach (SceneObject sceneObject in getAllSceneObjects())
+                core.removeParameterObject(sceneObject);
+
             m_sceneCameraList.Clear();
             m_sceneLightList.Clear();
+
 
             sceneReset?.Invoke(this, EventArgs.Empty);
         }

@@ -176,8 +176,6 @@ namespace vpet
 
                 if (gameObject.tag == "editable")
                 {
-                    if (core.isServer)
-                        manager.sceneObjects.Add(sceneObject);
                     node.editable = true;
                 }
                 else
