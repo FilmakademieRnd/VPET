@@ -21,15 +21,30 @@ void USceneObject::BeginPlay()
 	Super::BeginPlay();
 
 	thisActor = GetOwner();
+	FVector pos;
+	FQuat rot;
+	FVector sca;
 
-	FVector pos = thisActor->GetActorLocation();
-	Position_Vpet_Param = new Parameter<FVector>(pos, thisActor, "position", &UpdatePosition, this);
-	
-	FQuat rot = thisActor->GetActorRotation().Quaternion();
-	Rotation_Vpet_Param = new Parameter<FQuat>(rot, thisActor, "rotation", &UpdateRotation, this);
-	
-	FVector sca = thisActor->GetActorScale3D();
-	Scale_Vpet_Param = new Parameter<FVector>(sca, thisActor, "scale", &UpdateScale, this);
+	if (thisActor->GetAttachParentActor()!= nullptr)
+	{
+		FTransform localTransform = thisActor->GetRootComponent()->GetRelativeTransform();
+		pos = localTransform.GetTranslation();
+		Position_Vpet_Param = new Parameter<FVector>(pos, thisActor, "position", &UpdatePosition, this);
+		rot = localTransform.GetRotation();
+		Rotation_Vpet_Param = new Parameter<FQuat>(rot, thisActor, "rotation", &UpdateRotation, this);
+		sca = localTransform.GetScale3D();
+		Scale_Vpet_Param = new Parameter<FVector>(sca, thisActor, "scale", &UpdateScale, this);
+
+	}
+	else
+	{
+		pos = thisActor->GetActorLocation();
+		Position_Vpet_Param = new Parameter<FVector>(pos, thisActor, "position", &UpdatePosition, this);
+		rot = thisActor->GetActorRotation().Quaternion();
+		Rotation_Vpet_Param = new Parameter<FQuat>(rot, thisActor, "rotation", &UpdateRotation, this);
+		sca = thisActor->GetActorScale3D();
+		Scale_Vpet_Param = new Parameter<FVector>(sca, thisActor, "scale", &UpdateScale, this);
+	}
 	
 }
 
@@ -41,9 +56,25 @@ void USceneObject::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	if (_lock)
 		return;
 
-	FVector pos = thisActor->GetActorLocation();
-	FQuat rot = thisActor->GetActorRotation().Quaternion();
-	FVector sca = thisActor->GetActorScale3D();
+	FVector pos;
+	FQuat rot;
+	FVector sca;
+
+	if (thisActor->GetAttachParentActor() != nullptr)
+	{
+		// Get local position, rotation, and scale directly.
+		FTransform localTransform = thisActor->GetRootComponent()->GetRelativeTransform();
+
+		pos = localTransform.GetTranslation();
+		rot = localTransform.GetRotation();
+		sca = localTransform.GetScale3D();
+	}
+	else
+	{
+		pos = thisActor->GetActorLocation();
+		rot = thisActor->GetActorRotation().Quaternion();
+		sca = thisActor->GetActorScale3D();
+	}
 
 	if (pos != Position_Vpet_Param->getValue())
 	{

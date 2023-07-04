@@ -29,8 +29,9 @@
 #include "Components/LocalLightComponent.h"
 
 // for level editor
+#if WITH_EDITOR
 #include "LevelEditor.h"
-
+#endif // WITH_EDITOR
 // for camera
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"

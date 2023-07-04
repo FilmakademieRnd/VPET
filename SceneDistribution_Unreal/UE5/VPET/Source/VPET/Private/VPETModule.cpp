@@ -38,7 +38,7 @@ void AVPETModule::BeginPlay()
 	if (HostIP.FindLastChar('.', idIndex))
 	{
 		FString onlyID = HostIP.RightChop(idIndex + 1);
-		m_id = FCString::Atoi(*onlyID);
+		m_id = 255;
 	}
 	DOL(LogBasic, Log, "[VPET2 BeginPlay] M_ID: %d", m_id);
 	OSD(FColor::Cyan, "[VPET2 BeginPlay] M_ID: %d", m_id);
@@ -188,12 +188,12 @@ void AVPETModule::BeginPlay()
 	auto tUpdateSender = new FAutoDeleteAsyncTask<UpdateSenderThread>(socket_s, &msgQs, m_id, LogBasic, &msgData, &msgLen);//, &runThreadSend);
 	tUpdateSender->StartBackgroundTask();
 
-
+#if WITH_EDITOR
 	// Manage editor selection changes 
 	FLevelEditorModule& levelEditor = FModuleManager::GetModuleChecked<FLevelEditorModule>("LevelEditor");
 	FLevelEditorModule::FActorSelectionChangedEvent fasce = levelEditor.OnActorSelectionChanged();
 	levelEditor.OnActorSelectionChanged().AddUObject(this, &AVPETModule::HandleOnActorSelectionChanged);
-
+#endif // WITH_EDITOR
 	// subscribe to delegate 
 	for (auto i=1; i<VPET_SceneObjectList.Num(); i++)
 	{
@@ -362,7 +362,7 @@ void AVPETModule::Tick(float DeltaTime)
 	msgQ.erase(msgQ.begin(), msgQ.begin() + count);
 
 
-
+#if WITH_EDITOR
 	// Development prints
 	if (doItOnce)
 	{
@@ -384,7 +384,7 @@ void AVPETModule::Tick(float DeltaTime)
 		DOL(LogBasic, Log, "[VPET Once] Unique object count: %d", objCount);
 	}
 
-
+#endif // WITH_EDITOR
 	if (VPET_ModifiedParameterList.Num()>0)
 	{
 		CreateParameterMessage();
@@ -569,7 +569,8 @@ bool AVPETModule::buildLocation(AActor* prim)
 	// VPET2 Hack - object type for enum
 	ObjectType objType = ObjectType::NODE;
 
-	FString aName = prim->GetActorLabel();
+	FString aName;
+	aName = prim->GetActorLabel();
 	//DOL(LogBasic, Log, "[DIST buildLocation] Build: %s", *aName);
 
 	// Temp var for camera and light tweak
@@ -1056,7 +1057,7 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 			DOL(LogMaterial, Warning, "streaming data texture %d named: %s", j, *kTex.TextureName.ToString());
 		}
 	}
-
+#if WITH_EDITOR
 	// Development tests for understanding material composition
 	// If material is made by a Vec3 parameter connected to Base Color, this will find the color values and attribute it to the node
 	if (true)
@@ -1306,10 +1307,11 @@ void AVPETModule::buildNode(NodeGeo* node, AActor* prim)
 
 			// Close file
 			delete File;
+
 		}
 
 	}
-
+#endif // WITH_EDITOR
 	// store at sharedState to access it in iterator
 	m_state.node = node;
 	m_state.numObjectNodes++;
