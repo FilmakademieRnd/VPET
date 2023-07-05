@@ -297,13 +297,18 @@ namespace vpet
         {
             if (b)
             {
+                Camera.main.transform.parent = m_arOrigin.transform;
                 manager.disableAttitudeSensor();
                 manager.cameraControl = InputManager.CameraControl.AR;
             }
             else
             {
                 manager.cameraControl = InputManager.CameraControl.NONE;
+                Camera.main.transform.parent = m_arOrigin.transform.parent;
+                m_arOrigin.transform.position = Vector3.zero;
+                m_arOrigin.transform.rotation = Quaternion.identity;
                 manager.enableAttitudeSensor();
+                manager.setCameraAttitudeOffsets();
             }
             if (arSession)
                 arSession.enabled = b;
@@ -317,10 +322,11 @@ namespace vpet
                 if (b) m_occlusionManager.enabled = enableOcclusionMapping.value;
                 else m_occlusionManager.enabled = false;
 
-            Debug.Log("Main Before move:" + Camera.main.transform.position);
-            //moveCamera(Camera.main.transform.position + camPos, Camera.main.transform.rotation * Quaternion.Inverse(camRot));
-            m_arOrigin.transform.position = Camera.main.transform.position;
-            m_arOrigin.transform.rotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, new Vector3(0, 1f, 0)); ;
+            if (b)
+            {
+                m_arOrigin.transform.position = Camera.main.transform.position;
+                m_arOrigin.transform.rotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, new Vector3(0, 1f, 0));
+            }
 
         }
 

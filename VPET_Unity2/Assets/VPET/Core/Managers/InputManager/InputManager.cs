@@ -108,6 +108,11 @@ namespace vpet
         public event EventHandler<bool> updateCameraUICommand;
 
         //!
+        //! Event linked to change of CameraControl
+        //!
+        public event EventHandler<CameraControl> cameraControlChanged;
+
+        //!
         //! Enumeration describing possible touch input gestures.
         //!
         private enum InputTouchType
@@ -171,7 +176,11 @@ namespace vpet
         public CameraControl cameraControl
         {
             get => m_cameraControl;
-            set => m_cameraControl = value;
+            set
+            {
+                m_cameraControl = value;
+                cameraControlChanged?.Invoke(this, value);
+            }
         }
         //!
         //! The previous camera control type

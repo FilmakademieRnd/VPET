@@ -352,7 +352,8 @@ namespace vpet
             else
                 m_buttons.Add(button);
 
-            button.id = m_buttons.Count - 1;
+            if(button.id != -1)
+                button.id = m_buttons.Count - 1;
             buttonsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
