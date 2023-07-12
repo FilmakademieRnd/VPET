@@ -663,11 +663,12 @@ namespace vpet
         //!
         private int createSkinnedRendererIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
         {
+            SceneManager.SceneNode sceneNode = sceneData.nodeList[idx];
 
-            SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo)sceneData.nodeList[idx];
-
-            if (node == null)
+            if (sceneNode.GetType() != typeof(SceneManager.SceneNodeSkinnedGeo))
                 return -1;
+       
+            SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo)sceneNode;
 
             Transform trans = parent.Find(Encoding.ASCII.GetString(node.name));
 
