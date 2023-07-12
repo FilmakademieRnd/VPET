@@ -4,7 +4,7 @@ This source file is part of VPET - Virtual Production Editing Tool
 http://vpet.research.animationsinstitut.de/
 http://github.com/FilmakademieRnd/VPET
 
-Copyright (c) 2018 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+Copyright (c) 2023 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 
 This project has been initiated in the scope of the EU funded project 
 Dreamspace under grant agreement no 610005 in the years 2014, 2015 and 2016.
