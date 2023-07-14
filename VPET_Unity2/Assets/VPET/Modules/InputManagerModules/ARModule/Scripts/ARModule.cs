@@ -1,24 +1,30 @@
 /*
--------------------------------------------------------------------------------
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
- 
-Copyright (c) 2021 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
- 
-This project has been initiated in the scope of the EU funded project 
+
+Copyright (c) 2023 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+
+This project has been initiated in the scope of the EU funded project
 Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
- 
-Post Dreamspace the project has been further developed on behalf of the 
+
+Post Dreamspace the project has been further developed on behalf of the
 research and development activities of Animationsinstitut.
- 
+
 In 2018 some features (Character Animation Interface and USD support) were
-addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2021
- 
-VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
-Syncronisation Server. They are licensed under the following terms:
--------------------------------------------------------------------------------
+addressed in the scope of the EU funded project SAUCE (https://www.sauceproject.eu/)
+under grant agreement no 780470, 2018-2022
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the MIT License as published by the Open Source Initiative.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the MIT License for more details.
+
+You should have received a copy of the MIT License along with
+this program; if not go to
+https://opensource.org/licenses/MIT
 */
 
 //! @file "ARModule.cs"
@@ -297,13 +303,18 @@ namespace vpet
         {
             if (b)
             {
+                Camera.main.transform.parent = m_arOrigin.transform;
                 manager.disableAttitudeSensor();
                 manager.cameraControl = InputManager.CameraControl.AR;
             }
             else
             {
                 manager.cameraControl = InputManager.CameraControl.NONE;
+                Camera.main.transform.parent = m_arOrigin.transform.parent;
+                m_arOrigin.transform.position = Vector3.zero;
+                m_arOrigin.transform.rotation = Quaternion.identity;
                 manager.enableAttitudeSensor();
+                manager.setCameraAttitudeOffsets();
             }
             if (arSession)
                 arSession.enabled = b;
@@ -317,10 +328,11 @@ namespace vpet
                 if (b) m_occlusionManager.enabled = enableOcclusionMapping.value;
                 else m_occlusionManager.enabled = false;
 
-            Debug.Log("Main Before move:" + Camera.main.transform.position);
-            //moveCamera(Camera.main.transform.position + camPos, Camera.main.transform.rotation * Quaternion.Inverse(camRot));
-            m_arOrigin.transform.position = Camera.main.transform.position;
-            m_arOrigin.transform.rotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, new Vector3(0, 1f, 0)); ;
+            if (b)
+            {
+                m_arOrigin.transform.position = Camera.main.transform.position;
+                m_arOrigin.transform.rotation = Quaternion.AngleAxis(Camera.main.transform.rotation.eulerAngles.y, new Vector3(0, 1f, 0));
+            }
 
         }
 

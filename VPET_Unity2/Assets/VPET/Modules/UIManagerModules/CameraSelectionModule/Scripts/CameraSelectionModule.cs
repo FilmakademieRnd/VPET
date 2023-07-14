@@ -1,24 +1,30 @@
 /*
--------------------------------------------------------------------------------
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
- 
-Copyright (c) 2022 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
- 
-This project has been initiated in the scope of the EU funded project 
+
+Copyright (c) 2023 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+
+This project has been initiated in the scope of the EU funded project
 Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
- 
-Post Dreamspace the project has been further developed on behalf of the 
+
+Post Dreamspace the project has been further developed on behalf of the
 research and development activities of Animationsinstitut.
- 
+
 In 2018 some features (Character Animation Interface and USD support) were
-addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
+addressed in the scope of the EU funded project SAUCE (https://www.sauceproject.eu/)
 under grant agreement no 780470, 2018-2022
- 
-VPET consists of 3 core components: VPET Unity Client, Scene Distribution and
-Syncronisation Server. They are licensed under the following terms:
--------------------------------------------------------------------------------
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the MIT License as published by the Open Source Initiative.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the MIT License for more details.
+
+You should have received a copy of the MIT License along with
+this program; if not go to
+https://opensource.org/licenses/MIT
 */
 
 //! @file "CameraSelectionModule.cs"
@@ -103,6 +109,11 @@ namespace vpet
         private SceneObjectCamera m_oldSOCamera = null;
 
         //!
+        //! safe frame button
+        //!
+        MenuButton m_safeFrameButton = null;
+
+        //!
         //! Event emitted when camera operations are in action
         //!
         public event EventHandler<bool> uiCameraOperation;
@@ -130,20 +141,21 @@ namespace vpet
             m_inputManager = core.getManager<InputManager>();
 
             m_safeFramePrefab = Resources.Load("Prefabs/SafeFrame") as GameObject;
-            MenuButton safeFrameButton = new MenuButton("", showSafeFrame, new List<UIManager.Roles>() { UIManager.Roles.DOP });
-            safeFrameButton.setIcon("Images/button_safeFrames");
+            m_safeFrameButton = new MenuButton("", showSafeFrame, new List<UIManager.Roles>() { UIManager.Roles.DOP });
+            m_safeFrameButton.setIcon("Images/button_safeFrames");
 
             MenuButton cameraSelectButton = new MenuButton("", selectNextCamera, new List<UIManager.Roles>() { UIManager.Roles.DOP });
             cameraSelectButton.setIcon("Images/button_camera");
             cameraSelectButton.isToggle = true;
 
-            core.getManager<UIManager>().addButton(safeFrameButton);
+            core.getManager<UIManager>().addButton(m_safeFrameButton);
             core.getManager<UIManager>().addButton(cameraSelectButton);
 
             m_sceneManager.sceneReady += copyCamera;
             core.getManager<UIManager>().selectionChanged += createButtons;
 
             core.syncEvent += updateTrigger;
+            m_inputManager.cameraControlChanged += updateSafeFrame;
         }
 
         //! 
@@ -158,6 +170,8 @@ namespace vpet
 
             m_sceneManager.sceneReady -= copyCamera;
             core.getManager<UIManager>().selectionChanged -= createButtons;
+            core.syncEvent -= updateTrigger;
+            m_inputManager.cameraControlChanged -= updateSafeFrame;
         }
 
         //!
@@ -291,6 +305,26 @@ namespace vpet
             {
                 GameObject.DestroyImmediate(m_safeFrame);
                 m_safeFrame = null;
+            }
+        }
+
+        //!
+        //! update safeFrame
+        //!
+        private void updateSafeFrame(object sender, InputManager.CameraControl c)
+        {
+            if (c == InputManager.CameraControl.AR)
+            {
+                m_safeFrameButton.showHighlighted(false);
+                GameObject.DestroyImmediate(m_safeFrame);
+                m_safeFrame = null;
+                core.getManager<UIManager>().removeButton(m_safeFrameButton);
+
+            }
+            else
+            {
+                if(!core.getManager<UIManager>().getButtons().Contains(m_safeFrameButton))
+                    core.getManager<UIManager>().addButton(m_safeFrameButton);
             }
         }
 

@@ -38,7 +38,7 @@ void AVPETModule::BeginPlay()
 	if (HostIP.FindLastChar('.', idIndex))
 	{
 		FString onlyID = HostIP.RightChop(idIndex + 1);
-		m_id = FCString::Atoi(*onlyID);
+		m_id = 255;
 	}
 	DOL(LogBasic, Log, "[VPET2 BeginPlay] M_ID: %d", m_id);
 	OSD(FColor::Cyan, "[VPET2 BeginPlay] M_ID: %d", m_id);

@@ -10,6 +10,7 @@
 #include <mutex>
 
 #include "CoreMinimal.h"
+#include "ParameterObject.h"
 
 namespace std
 {
@@ -45,7 +46,75 @@ public:
 
     ParameterType _type;
 
-    // unreat types to Vpet types
+    // Base template will return UNKNOWN
+    template <typename T>
+    ParameterType toVPETType() {
+        return ParameterType::UNKNOWN;
+    }
+
+    // Template specializations
+    template <>
+    ParameterType toVPETType<void>() {
+        return ParameterType::NONE;
+    }
+
+    template <>
+    ParameterType toVPETType<TFunction<void()>>() {
+        return ParameterType::ACTION;
+    }
+
+    template <>
+    ParameterType toVPETType<bool>() {
+        return ParameterType::BOOL;
+    }
+
+    template <>
+    ParameterType toVPETType<int32>() {
+        return ParameterType::INT;
+    }
+
+    template <>
+    ParameterType toVPETType<float>() {
+        return ParameterType::FLOAT;
+    }
+
+    template <>
+    ParameterType toVPETType<FVector2D>() {
+        return ParameterType::VECTOR2;
+    }
+
+    template <>
+    ParameterType toVPETType<FVector>() {
+        return ParameterType::VECTOR3;
+    }
+
+    template <>
+    ParameterType toVPETType<FVector4>() {
+        return ParameterType::VECTOR4;
+    }
+
+    template <>
+    ParameterType toVPETType<FQuat>() {
+        return ParameterType::QUATERNION;
+    }
+
+    template <>
+    ParameterType toVPETType<FColor>() {
+        return ParameterType::COLOR;
+    }
+
+    template <>
+    ParameterType toVPETType<FString>() {
+        return ParameterType::STRING;
+    }
+
+    template <>
+    ParameterType toVPETType<TArray<int32>>() {
+        return ParameterType::LIST;
+    }
+
+
+    /*// unreat types to Vpet types
     static ParameterType toVPETType(const std::type_info& t)
     {
         if (t == typeid(void))
@@ -75,6 +144,7 @@ public:
         else
             return ParameterType::UNKNOWN;
     }
+    */
     
     static std::vector<std::type_index> _paramTypes;
 
@@ -122,13 +192,13 @@ public:
     }
     
     //Parameter(T value, std::string name, void (*callback_func)(std::vector<uint8_t> kMsg), UParameterObject* parent = null, bool distribute = true)
-    Parameter(T value, AActor* actor, std::string name, void (*callback_func)(std::vector<uint8_t> kMsg, AActor* actor), UParameterObject* parent = null, bool distribute = true)
+    Parameter(T value, AActor* actor, std::string name, void (*callback_func)(std::vector<uint8_t> kMsg, AActor* actor), UParameterObject* parent, bool distribute = true)
     {
         _value = value;
         _name = name;
         _parent = parent;
         _actor = actor;
-        _type = toVPETType(typeid(T));
+        _type = toVPETType<decltype(_value)>();
         _distribute = distribute;
 
         //history initialization
