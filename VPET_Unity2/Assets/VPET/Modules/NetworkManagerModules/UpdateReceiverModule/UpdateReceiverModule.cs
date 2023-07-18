@@ -260,7 +260,8 @@ namespace vpet
                         bool lockState = BitConverter.ToBoolean(message, 5);
 
                         ParameterObject parameterObject = core.getParameterObject(parameterObjectID);
-                        if (parameterObject.GetType().IsSubclassOf(typeof(SceneObject)))
+                        if (parameterObject.GetType().IsSubclassOf(typeof(SceneObject)) ||
+                            parameterObject.GetType() == typeof(SceneObject))
                             ((SceneObject)parameterObject)._lock = lockState;
                     }
                     else
