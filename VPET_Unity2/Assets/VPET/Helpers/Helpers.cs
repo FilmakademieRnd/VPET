@@ -174,5 +174,15 @@ namespace vpet
             for (int i = 0; i < src.Length; i++)
                 dst[dstOffset + i] = src[srcOffset + i];
         }
+        
+        //!
+        //! remove all the null characters from a given string
+        //!
+        //! @param input is the string that contains null parameter.
+        //!
+        public static string RemoveNullCharacters(string input)
+        {
+            return input.Replace("\0", "");
+        }
     }
 }

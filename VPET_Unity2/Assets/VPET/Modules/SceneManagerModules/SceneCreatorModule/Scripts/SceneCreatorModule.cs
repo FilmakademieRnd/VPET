@@ -665,44 +665,37 @@ namespace vpet
         }
 
         //!
-        //! Function that recusively adds bone transforms to renderers of SkinnedMesh objects.
+        //! Function that adds bone transforms to renderers of SkinnedMesh objects.
         //!
         //! @param sceneData A reference to the VPET sceneData.
         //! @param parent the parent Unity transform.
-        //! @param idx The index for referencing into the node list.
         //!
-        private int createSkinnedRendererIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent, int idx = 0)
+        private void createSkinnedRendererIter(ref SceneManager.SceneDataHandler.SceneData sceneData, Transform parent)
         {
-
-            SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo)sceneData.nodeList[idx];
-
-            if (node == null)
-                return -1;
-
-            Transform trans = parent.Find(Encoding.ASCII.GetString(node.name));
-
-            SkinnedMeshRenderer renderer = trans.gameObject.GetComponent<SkinnedMeshRenderer>();
-
-            if (renderer)
+            for (int it = 0; it < sceneData.nodeList.Count; it++)
             {
-                renderer.rootBone = trans;
-                Transform[] meshBones = new Transform[node.skinnedMeshBoneIDs.Length];
-                for (int i = 0; i < node.skinnedMeshBoneIDs.Length; i++)
+                SceneManager.SceneNode sceneNode = sceneData.nodeList[it];
+                if (sceneNode.GetType() == typeof(SceneManager.SceneNodeSkinnedGeo))
                 {
-                    if (node.skinnedMeshBoneIDs[i] != -1)
-                        meshBones[i] = gameObjectList[node.skinnedMeshBoneIDs[i]].transform;
+                    SceneManager.SceneNodeSkinnedGeo node = (SceneManager.SceneNodeSkinnedGeo)sceneNode;
+
+                    Transform trans = Helpers.FindDeepChild(parent,
+                        Helpers.RemoveNullCharacters(Encoding.UTF8.GetString(node.name)));
+                    SkinnedMeshRenderer renderer = trans.gameObject.GetComponent<SkinnedMeshRenderer>();
+                    if (renderer)
+                    {
+                        renderer.rootBone = trans;
+                        Transform[] meshBones = new Transform[node.skinnedMeshBoneIDs.Length];
+                        for (int i = 0; i < node.skinnedMeshBoneIDs.Length; i++)
+                        {
+                            if (node.skinnedMeshBoneIDs[i] != -1)
+                                meshBones[i] = gameObjectList[node.skinnedMeshBoneIDs[i]].transform;
+                        }
+
+                        renderer.bones = meshBones;
+                    }
                 }
-                renderer.bones = meshBones;
             }
-
-            // recursive call
-            int idxChild = idx;
-            for (int k = 1; k <= node.childCount; k++)
-            {
-                idxChild = createSkinnedRendererIter(ref sceneData, trans, idxChild + 1);
-            }
-
-            return idxChild;
         }
 
         //!
