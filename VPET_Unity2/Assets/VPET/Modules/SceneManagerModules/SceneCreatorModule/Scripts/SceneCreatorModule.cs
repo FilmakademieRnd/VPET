@@ -35,8 +35,10 @@ https://opensource.org/licenses/MIT
 //! @date 03.08.2022
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UnityEditor.Animations;
 using UnityEngine;
 
 namespace vpet
@@ -127,6 +129,14 @@ namespace vpet
             createSceneGraphIter(ref sceneData, manager.scnRoot.transform);
 
             createSkinnedMeshes(ref sceneData, manager.scnRoot.transform);
+
+            foreach (var sceneCharacterObject in manager.sceneObjects)
+            {
+                if (sceneCharacterObject is SceneCharacterObject)
+                {
+                    sceneCharacterObject.gameObject.GetComponent<SceneCharacterObject>().setBones();
+                }
+            }
 
             sceneDataHandler.clearSceneByteData();
             sceneData.clear();
@@ -326,7 +336,7 @@ namespace vpet
             SceneManager.SceneNode node = sceneData.nodeList[idx];
 
             // process all registered build callbacks
-            GameObject obj = CreateObject(node, parent);
+            GameObject obj = CreateObject(ref sceneData,node, parent);
             obj.layer = LayerMask.NameToLayer("LodMixed");
 
             gameObjectList.Add(obj);
@@ -402,34 +412,35 @@ namespace vpet
                 humanDescription.legStretch = 0.05f;
                 humanDescription.feetSpacing = 0.0f;
                 humanDescription.hasTranslationDoF = false;
-
+                
                 Avatar avatar = AvatarBuilder.BuildHumanAvatar(obj, humanDescription);
                 if (avatar.isValid == false || avatar.isHuman == false)
                 {
                     Helpers.Log(GetType().FullName + ": Unable to create source Avatar for retargeting. Check that your Skeleton Asset Name and Bone Naming Convention are configured correctly.", Helpers.logMsgType.ERROR);
                     return;
                 }
+                
                 avatar.name = obj.name;
                 Animator animator = obj.AddComponent<Animator>();
                 animator.avatar = avatar;
                 animator.applyRootMotion = true;
+                
+                
 
-                //[REVIEW]
-                //.runtimeAnimatorController = (RuntimeAnimatorController)Instantiate(Resources.Load("VPET/Prefabs/AnimatorController"));
-                //obj.AddComponent<CharacterAnimationController>();
-
+                
                 obj.transform.parent = parentBackup;
+                animator.Rebind();
             }
 
         }
-
+        
         //!
         //! Creates an GameObject from an VPET SceneNode beneath the parent transform.
         //! @param node VPET SceneNode to be parsed.
         //! @param parentTransform Unity parent transform of the GameObject to-be created.
         //! @return The created GameObject.
         //!
-        private GameObject CreateObject(SceneManager.SceneNode node, Transform parentTransform)
+        private GameObject CreateObject(ref SceneManager.SceneDataHandler.SceneData sceneData, SceneManager.SceneNode node, Transform parentTransform)
         {
             GameObject objMain;
 
@@ -631,8 +642,26 @@ namespace vpet
                     if (node.editable)
                     {
                         objMain.tag = "editable";
-                        SceneObject sdo = objMain.AddComponent<SceneObject>();
-                        manager.sceneObjects.Add(sdo);
+                        bool isCharacter = false;
+                        foreach (var VARIABLE in sceneData.characterList)
+                        {
+                            if (VARIABLE.rootId == gameObjectList.Count)
+                            {
+                                isCharacter = true;
+                            }
+
+                        }
+
+                        if (!isCharacter)
+                        {
+                            SceneObject sdo = objMain.AddComponent<SceneObject>();
+                            manager.sceneObjects.Add(sdo);
+                        }
+                        else
+                        {
+                            SceneObject sdo = objMain.AddComponent<SceneCharacterObject>();
+                            manager.sceneObjects.Add(sdo);
+                        }
                     }
                 }
 
@@ -693,6 +722,7 @@ namespace vpet
                         }
 
                         renderer.bones = meshBones;
+                        renderer.updateWhenOffscreen = true;
                     }
                 }
             }

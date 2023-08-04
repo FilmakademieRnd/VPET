@@ -154,6 +154,12 @@ namespace vpet
                         if (core.isServer && !sceneObject)
                             sceneObject = gameObject.AddComponent<SceneObject>();
                 }
+                else if (trans.GetComponent<Animator>() != null)
+                {
+                    if (gameObject.tag == "editable")
+                        if (core.isServer && !sceneObject)
+                            sceneObject = gameObject.AddComponent<SceneCharacterObject>();
+                }
                 else
                 {
                     if (gameObject.tag == "editable")
@@ -641,7 +647,6 @@ namespace vpet
                 chrPack.boneScale[i * 3 + 1] = skeletonArray[i].scale.y;
                 chrPack.boneScale[i * 3 + 2] = skeletonArray[i].scale.z;
             }
-
             characterList.Add(chrPack);
         }
     }
