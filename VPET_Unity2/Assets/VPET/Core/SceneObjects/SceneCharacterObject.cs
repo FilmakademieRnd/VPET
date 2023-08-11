@@ -139,23 +139,19 @@ namespace vpet
 
         private void UpdateBoneTransform()
         {
-            //!
-            //! Loop through each bone transform stored in the dictionary.
-            //!
-            foreach (var VARIABLE in boneMap)
+               // Loop through each bone transform stored in the dictionary.
+            for (int i = 0; i < boneMap.Count; i++)
             {
-                //!
-                //! Check if the bone transform's local rotation has changed compared to the parameter's value.
-                //!
-                if (VARIABLE.Value.localRotation != ((Parameter<Quaternion>)parameterList[VARIABLE.Key]).value)
+                KeyValuePair<int, Transform> boneAtPos = boneMap.ElementAt(i);
+                Parameter<Quaternion> parameter = ((Parameter<Quaternion>)parameterList[boneAtPos.Key]);
+                Quaternion valueAtPos = parameter.value;
+                
+                if (boneAtPos.Value.localRotation != valueAtPos)
                 {
-                    //!
-                    //! If the local rotation has changed, update the parameter's value to match the bone transform.
-                    //!
-                    ((Parameter<Quaternion>)parameterList[VARIABLE.Key]).value = VARIABLE.Value.localRotation;
+                    // If the local rotation has changed, update the parameter's value to match the bone transform.
+                    parameter.setValue(boneAtPos.Value.localRotation);
                 }
             }
-
         }
     }
 }
