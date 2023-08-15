@@ -185,7 +185,7 @@ namespace vpet
         //!
         public void resetScene(object sender, bool e)
         {
-            foreach (SceneObject s in manager.sceneObjects)
+            foreach (SceneObject s in manager.getAllSceneObjects())
             {
                 foreach (AbstractParameter p in s.parameterList)
                     p.reset();

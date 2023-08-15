@@ -532,7 +532,6 @@ namespace vpet
                     {
                         objMain.tag = "editable";
                         SceneObject sco = objMain.AddComponent<SceneObject>();
-                        manager.sceneObjects.Add(sco);
                     }
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeLight))
@@ -601,7 +600,6 @@ namespace vpet
                                 break;
                         }
                         manager.sceneLightList.Add(sco);
-                        manager.sceneObjects.Add(sco);
                     }
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeCam))
@@ -623,7 +621,6 @@ namespace vpet
                         SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
 
                         manager.sceneCameraList.Add(sco);
-                        manager.sceneObjects.Add(sco);
                     }
                 }
                 else
@@ -632,7 +629,6 @@ namespace vpet
                     {
                         objMain.tag = "editable";
                         SceneObject sdo = objMain.AddComponent<SceneObject>();
-                        manager.sceneObjects.Add(sdo);
                     }
                 }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET

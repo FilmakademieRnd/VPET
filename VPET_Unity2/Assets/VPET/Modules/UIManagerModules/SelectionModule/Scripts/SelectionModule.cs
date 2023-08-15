@@ -234,10 +234,11 @@ namespace vpet
             if (cpuData.Length < pos || pos < 0)
                 return null;
             
-            Color32 packedId = cpuData[pos];
-            int id = DecodeId(packedId);
+            byte sceneID = 0;
+            short soID = 0;
+            DecodeId(cpuData[pos], ref sceneID, ref soID);
 
-            return m_sceneManager.getSceneObject(id);
+            return m_sceneManager.getSceneObject(sceneID, soID);
         }
 
         //!
@@ -377,33 +378,39 @@ namespace vpet
                 if ((sceneObject is SceneObjectCamera) || (sceneObject is SceneObjectLight))
                     continue;
 
-                int id = 0;
+                int soID = 0;
+                int sceneID = 0;
                 if (sceneObject)
-                    id = m_sceneManager.getSceneObjectId(ref sceneObject);
+                {
+                    soID = sceneObject.id;  
+                    sceneID = sceneObject.sceneID;
+                }
                 else
                 {
                     Transform t = renderer.transform;
                     Transform root = core.getManager<SceneManager>().scnRoot.transform;
-                    
+
                     while (t.parent != root)
                     {
                         if (t.parent.tag == "editable")
                         {
                             SceneObject so = t.parent.GetComponent<SceneObject>();
                             if (so)
-                                id = m_sceneManager.getSceneObjectId(ref so);
+                            {
+                                soID = so.id;  
+                                sceneID = so.sceneID;
+                            }
                             break;
                         }
                         else
                         {
                             t = t.parent;
                         }
-
                     }
-
                 }
 
-                Color32 packedId = EncodeId(id);
+                Color32 packedId;
+                EncodeId(out packedId, (byte) sceneID, (short) soID);
 
                 m_properties.Clear();
 
@@ -425,13 +432,13 @@ namespace vpet
         //! @param id The selectable id to be encoded.
         //! @return The color representing the encoded id.
         //!
-        private Color32 EncodeId(int id)
+        private void EncodeId(out Color32 color, byte sceneID, short soID)
         {
-            return new Color32(
-                (byte)(id >> (3 * 8)),
-                (byte)(id >> (2 * 8)),
-                (byte)(id >> (1 * 8)),
-                (byte)(id >> (0 * 8)));
+            color = new Color32(
+                0,
+                sceneID,
+                (byte)(soID >> (8)),
+                (byte)(soID >> (0)) );
         }
 
         //! 
@@ -440,12 +447,12 @@ namespace vpet
         //! @param color The color to decode into a selectable id.
         //! @return The decoded selectable id.
         //!
-        private int DecodeId(Color32 color)
+        private void DecodeId(Color32 color, ref byte sceneID, ref short soID)
         {
-            return (color.r << (3 * 8)) |
-                   (color.g << (2 * 8)) |
-                   (color.b << (1 * 8)) |
-                   (color.a << (0 * 8));
+            sceneID = color.g;
+            soID = (short) (
+                (color.b << (8)) | 
+                (color.a << (0)) );
         }
     }
 

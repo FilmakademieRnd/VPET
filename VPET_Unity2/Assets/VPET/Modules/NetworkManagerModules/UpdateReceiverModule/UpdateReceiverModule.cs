@@ -1,4 +1,4 @@
-/*
+﻿/*
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
@@ -202,13 +202,14 @@ namespace vpet
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void decodeLockMessage(byte[] message)
         {
-            bool lockState = BitConverter.ToBoolean(message, 5);
+            bool lockState = BitConverter.ToBoolean(message, 6);
 
             if (lockState)
             {
-                short sceneObjectID = BitConverter.ToInt16(message, 3);
+                byte sceneID = message[3];
+                short sceneObjectID = BitConverter.ToInt16(message, 4);
 
-                SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+                SceneObject sceneObject = m_sceneManager.getSceneObject(sceneID, sceneObjectID);
                 sceneObject._lock = lockState;
             }
             // delay unlock message
@@ -221,17 +222,20 @@ namespace vpet
 
         private void decodeUndoRedoMessage(byte[] message)
         {
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
-            short parameterID = BitConverter.ToInt16(message, 5);
-            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+            byte sceneID = message[3];
+            short sceneObjectID = BitConverter.ToInt16(message, 4);
+            short parameterID = BitConverter.ToInt16(message, 6);
+
+            ParameterObject sceneObject = core.getParameterObject(sceneID, sceneObjectID);
 
             receivedHistoryUpdate?.Invoke(this, sceneObject.parameterList[parameterID]);
         }
 
         private void decodeResetMessage(byte[] message)
         {
-            short sceneObjectID = BitConverter.ToInt16(message, 3);
-            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneObjectID);
+            byte sceneID = message[3];
+            short sceneObjectID = BitConverter.ToInt16(message, 4);
+            SceneObject sceneObject = m_sceneManager.getSceneObject(sceneID, sceneObjectID);
 
             foreach (AbstractParameter p in sceneObject.parameterList)
                 p.reset();
@@ -256,27 +260,27 @@ namespace vpet
 
                     if ((MessageType)message[2] == MessageType.LOCK)
                     {
-                        short parameterObjectID = BitConverter.ToInt16(message, 3);
-                        bool lockState = BitConverter.ToBoolean(message, 5);
+                        byte sceneID = message[3];
+                        short parameterObjectID = BitConverter.ToInt16(message, 4);
+                        bool lockState = BitConverter.ToBoolean(message, 6);
 
-                        ParameterObject parameterObject = core.getParameterObject(parameterObjectID);
-                        if (parameterObject.GetType().IsSubclassOf(typeof(SceneObject)) ||
-                            parameterObject.GetType() == typeof(SceneObject))
-                            ((SceneObject)parameterObject)._lock = lockState;
+                        SceneObject sceneObject = m_sceneManager.getSceneObject(sceneID, parameterObjectID);
+                        sceneObject._lock = lockState;
                     }
                     else
                     {
                         int start = 3;
                         while (start < message.Length)
                         {
-                            short parameterObjectID = BitConverter.ToInt16(message, start);
-                            short parameterID = BitConverter.ToInt16(message, start + 2);
-                            int length = message[start + 5];
+                            byte sceneID = message[start];
+                            short parameterObjectID = BitConverter.ToInt16(message, start + 1);
+                            short parameterID = BitConverter.ToInt16(message, start + 3);
+                            int length = message[start + 6];
 
-                            ParameterObject parameterObject = core.getParameterObject(parameterObjectID);
+                            ParameterObject parameterObject = core.getParameterObject(sceneID, parameterObjectID);
 
                             if (parameterObject != null)
-                                parameterObject.parameterList[parameterID].deSerialize(message, start + 6);
+                                parameterObject.parameterList[parameterID].deSerialize(message, start + 7);
 
                             start += length;
                         }

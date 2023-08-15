@@ -1,4 +1,4 @@
-/*
+﻿/*
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
@@ -94,9 +94,9 @@ namespace vpet
             if (core.isServer)
                 core.syncEvent -= queueSyncMessage;
 
-            foreach (ParameterObject parameterObject in core.parameterObjectList)
+            foreach (SceneObject sceneObject in sceneManager.getAllSceneObjects())
             {
-                parameterObject.hasChanged -= queueModifiedParameter;
+                sceneObject.hasChanged -= queueModifiedParameter;
             }
 
             core.timeEvent -= sendParameterMessages;
@@ -135,7 +135,7 @@ namespace vpet
             if (core.isServer)
                 core.syncEvent += queueSyncMessage;
 
-            foreach (SceneObject sceneObject in ((SceneManager)sender).sceneObjects)
+            foreach (SceneObject sceneObject in ((SceneManager)sender).getAllSceneObjects())
             {
                 sceneObject.hasChanged += queueModifiedParameter;
             }
@@ -151,14 +151,15 @@ namespace vpet
         //!
         private void lockSceneObject(object sender, SceneObject sceneObject)
         {
-            m_controlMessage = new byte[6];
+            m_controlMessage = new byte[7];
 
             // header
             m_controlMessage[0] = manager.cID;
             m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
-            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
-            m_controlMessage[5] = Convert.ToByte(true);
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.sceneID), 0, m_controlMessage, 3, 1);  // ScenetID
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 4, 2);  // SceneObjectID
+            m_controlMessage[6] = Convert.ToByte(true);
 
             m_mre.Set();
         }
@@ -171,14 +172,15 @@ namespace vpet
         //!
         private void unlockSceneObject(object sender, SceneObject sceneObject)
         {
-            m_controlMessage = new byte[6];
+            m_controlMessage = new byte[7];
 
             // header
             m_controlMessage[0] = manager.cID;
             m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
-            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
-            m_controlMessage[5] = Convert.ToByte(false);
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.sceneID), 0, m_controlMessage, 3, 1);  // ScenetID
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 4, 2);  // SceneObjectID
+            m_controlMessage[6] = Convert.ToByte(false);
 
             m_mre.Set();
         }
@@ -230,13 +232,13 @@ namespace vpet
         {
             // Message structure: Header, Parameter (optional)
             // Header: ClientID, Time, MessageType
-            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+            // Parameter: SceneID, ParameterObjectID, ParameterID, ParameterType, ParameterData
 
             lock (parameter)
             {
                 int parameterSize = parameter.dataSize();
-                m_controlMessage = new byte[8 + parameterSize];
-                parameter.Serialize(new Span<byte>(m_controlMessage, 8, parameterSize)); // ParameterData;
+                m_controlMessage = new byte[9 + parameterSize];
+                parameter.Serialize(new Span<byte>(m_controlMessage, 9, parameterSize)); // ParameterData;
 
                 // header
                 m_controlMessage[0] = manager.cID;
@@ -244,9 +246,10 @@ namespace vpet
                 m_controlMessage[2] = (byte)MessageType.UNDOREDOADD;
 
                 // parameter
-                Helpers.copyArray(BitConverter.GetBytes(parameter.parent.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
-                Helpers.copyArray(BitConverter.GetBytes(parameter.id), 0, m_controlMessage, 5, 2);  // ParameterID
-                m_controlMessage[7] = (byte)parameter.vpetType;  // ParameterType
+                Helpers.copyArray(BitConverter.GetBytes(parameter.parent.sceneID), 0, m_controlMessage, 3, 1);  // SceneID
+                Helpers.copyArray(BitConverter.GetBytes(parameter.parent.id), 0, m_controlMessage, 4, 2);  // SceneObjectID
+                Helpers.copyArray(BitConverter.GetBytes(parameter.id), 0, m_controlMessage, 6, 2);  // ParameterID
+                m_controlMessage[8] = (byte)parameter.vpetType;  // ParameterType
             }
 
             m_mre.Set();
@@ -261,21 +264,20 @@ namespace vpet
         {
             // Message structure: Header, Parameter (optional)
             // Header: ClientID, Time, MessageType
-            // Parameter: SceneObjectID, ParameterID, ParameterType, ParameterData
+            // Parameter: SceneID, ParameterObjectID, ParameterID, ParameterType, ParameterData
 
             lock (sceneObject)
             {
-                m_controlMessage = new byte[7]; // ParameterData;
+                m_controlMessage = new byte[6]; // ParameterData;
 
                 // header
                 m_controlMessage[0] = manager.cID;
                 m_controlMessage[1] = core.time;
                 m_controlMessage[2] = (byte)MessageType.RESETOBJECT;
-                m_controlMessage[5] = 0;
-                m_controlMessage[6] = 0;
 
                 // parameter
-                Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 3, 2);  // SceneObjectID
+                Helpers.copyArray(BitConverter.GetBytes(sceneObject.sceneID), 0, m_controlMessage, 3, 1);  // SceneID
+                Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 4, 2);  // SceneObjectID
             }
 
             m_mre.Set();
@@ -322,7 +324,7 @@ namespace vpet
             // Header: ClientID, Time, MessageType
             // ParameterList: List<SceneObjectID, ParameterID, ParameterType, Parameter message length, ParameterData>
 
-            byte[] message = new byte[3 + m_modifiedParametersDataSize + 6 * m_modifiedParameters.Count];
+            byte[] message = new byte[3 + m_modifiedParametersDataSize + 7 * m_modifiedParameters.Count];
             Span<byte> msgSpan = new Span<byte>(message);
 
             // header
@@ -336,14 +338,15 @@ namespace vpet
                 AbstractParameter parameter = m_modifiedParameters[i];
                 lock (parameter)
                 {
-                    int length = 6 + parameter.dataSize();
+                    int length = 7 + parameter.dataSize();
                     Span<byte> newSpan = msgSpan.Slice(start, length);
 
-                    BitConverter.TryWriteBytes(newSpan.Slice(0, 2), parameter.parent.id);  // SceneObjectID
-                    BitConverter.TryWriteBytes(newSpan.Slice(2, 2), parameter.id);  // ParameterID
-                    newSpan[4] = (byte)parameter.vpetType;  // ParameterType
-                    newSpan[5] = (byte)newSpan.Length;  // Parameter message length
-                    parameter.Serialize(newSpan.Slice(6)); // Parameter data
+                    newSpan[0] = parameter.parent.sceneID;  // SceneID
+                    BitConverter.TryWriteBytes(newSpan.Slice(1, 2), parameter.parent.id);  // SceneObjectID
+                    BitConverter.TryWriteBytes(newSpan.Slice(3, 2), parameter.id);  // ParameterID
+                    newSpan[5] = (byte)parameter.vpetType;  // ParameterType
+                    newSpan[6] = (byte)newSpan.Length;  // Parameter message length
+                    parameter.Serialize(newSpan.Slice(7)); // Parameter data
 
                     start += length;
                 }

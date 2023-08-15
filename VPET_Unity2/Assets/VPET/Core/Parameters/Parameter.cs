@@ -1,4 +1,4 @@
-/*
+﻿/*
 VPET - Virtual Production Editing Tools
 vpet.research.animationsinstitut.de
 https://github.com/FilmakademieRnd/VPET
@@ -511,7 +511,7 @@ namespace vpet
                     return;
             }
             _networkLock = true;
-                hasChanged?.Invoke(this, _value);
+            hasChanged?.Invoke(this, _value);
             _networkLock = false;
         }
         
