@@ -770,7 +770,8 @@ namespace vpet
         public void setCameraAttitudeOffsets()
         {
             m_cameraMainOffset = Camera.main.transform.rotation;
-            m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue() * Quaternion.Euler(0f, 0f, 180f));
+            if (AttitudeSensor.current != null)
+                m_invAttitudeSensorOffset = Quaternion.Inverse(AttitudeSensor.current.attitude.ReadValue() * Quaternion.Euler(0f, 0f, 180f));
         }
 
         //!
