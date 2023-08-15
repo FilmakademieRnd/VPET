@@ -41,7 +41,7 @@ namespace tracer
     //!
     public class RPCParameter<T> : Parameter<T>
     {
-        public RPCParameter(T parameterValue, string name, ParameterObject parent = null, bool distribute = true) : base(parameterValue, name, parent, distribute) { }
+        public RPCParameter(T parameterValue, string name, ParameterObject parent, bool distribute = true) : base(parameterValue, name, parent, distribute) { }
 
         //!
         //! Action that will be executed when the parameter is evaluated.
@@ -85,7 +85,7 @@ namespace tracer
     public class RPCParameter : RPCParameter<object>
     {
         //! Simple constructor without RPC parameter.
-        public RPCParameter(string name, ParameterObject parent = null, bool distribute = true) : base(parent, name, parent, distribute) { }
+        public RPCParameter(string name, ParameterObject parent, bool distribute = true) : base(parent, name, parent, distribute) { }
 
         //!
         //! Overrides the Parameters deserialization functionality, because we do not have a payload.
