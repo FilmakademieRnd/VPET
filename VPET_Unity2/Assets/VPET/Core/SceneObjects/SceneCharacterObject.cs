@@ -47,27 +47,24 @@ namespace vpet
     public class SceneCharacterObject : SceneObject
     {
         //!
-        //!dictionary to store bone transforms by their IDs
+        //! Dictionary to store bone transforms by their IDs
         //!
         private Dictionary<int, Transform> boneMap;
         //!
-        //!the array of bone transforms from the SkinnedMeshRenderer
+        //! The array of bone transforms from the SkinnedMeshRenderer
         //!
         private Transform[] bones;
 
-
+        //!
+        //! Initialisation
+        //!
         public override void Awake()
         {
             base.Awake();
-
-            //!
             // Initialize the dictionary to store bone transforms by their IDs.
-            //!
             boneMap = new Dictionary<int, Transform>();
             
-            //!
-            //!if server setBones is called on awake if not setBones is called from SceneCreatorModule line 137
-            //!
+            //  If server setBones is called on awake if not setBones is called from SceneCreatorModule line 137
             if (core.isServer)
             {
                 setBones();
@@ -80,32 +77,22 @@ namespace vpet
         //!
        public void setBones()
         {
-            //!
-            //! Get the array of bone transforms from the SkinnedMeshRenderer component.
-            //!
+            // Get the array of bone transforms from the SkinnedMeshRenderer component.
             bones = GetComponentInChildren<SkinnedMeshRenderer>().bones;
-            //!
-            //! Loop through each bone transform obtained from the SkinnedMeshRenderer.
-            //!
+            // Loop through each bone transform obtained from the SkinnedMeshRenderer.
             for (int i = 0; i < bones.Length; i++)
             {
                 Transform boneTransform = bones[i];
                 if (boneTransform != null)
                 {
-                    //!
-                    //! Create a new Quaternion parameter for each bone transform's local rotation.
-                    //!
+                    // Create a new Quaternion parameter for each bone transform's local rotation.
                     Parameter<Quaternion> localBoneRotationParameter =
                         new Parameter<Quaternion>(boneTransform.localRotation, boneTransform.name, this);
                     
-                    //!
-                    //! Attach a callback to the parameter's "hasChanged" event, which is triggered when the bone transform is updated.
-                    //!
+                    // Attach a callback to the parameter's "hasChanged" event, which is triggered when the bone transform is updated.
                     localBoneRotationParameter.hasChanged += updateRotation;
                     
-                    //!
-                    //! Use the parameter's ID as the key to store the bone transform in the dictionary.
-                    //!
+                    // Use the parameter's ID as the key to store the bone transform in the dictionary.
                     var id = localBoneRotationParameter.id;
                     boneMap.Add(id, boneTransform);
                 }
@@ -114,31 +101,33 @@ namespace vpet
        
        //!
        //! Callback method triggered when the bone transform's local rotation is updated.
+       //! @param   sender     Object calling the update function
+       //! @param   a          new rotation value
        //!
        private void updateRotation(object sender, Quaternion a)
         {
-            //!
-            //! Retrieve the ID of the parameter whose value has changed.
-            //!
+            // Retrieve the ID of the parameter whose value has changed.
             int id = ((Parameter<Quaternion>)sender).id;
             
-            //!
-            //! Update the bone transform's local rotation based on the new value.
-            //!
+            // Update the bone transform's local rotation based on the new value.
             boneMap[id].localRotation = a;
             
-            //!
-            //! Emit a signal to notify that the parameter has changed (if necessary).
-            //!
+            // Emit a signal to notify that the parameter has changed (if necessary).
             emitHasChanged((AbstractParameter)sender);
         }
         
+       //!
+       //! Update is called once per frame
+       //!
         public override void Update()
         {
             base.Update();
             UpdateBoneTransform();
         }
 
+        //!
+        //! updates the bones rotation and informs all connected parameters about the change
+        //!
         private void UpdateBoneTransform()
         {
                // Loop through each bone transform stored in the dictionary.
