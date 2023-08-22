@@ -51,7 +51,8 @@ namespace vpet
         {
             PARAMETERUPDATE, LOCK, // node
             SYNC, PING, RESENDUPDATE, // sync
-            UNDOREDOADD, RESETOBJECT // undo redo
+            UNDOREDOADD, RESETOBJECT, // undo redo
+            DATAHUB // DataHub
         }
 
         //!

@@ -308,8 +308,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: 16}
-  m_SizeDelta: {x: -10, y: 35}
+  m_AnchoredPosition: {x: 5, y: 18}
+  m_SizeDelta: {x: -10, y: 40}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6466877834544620518
 CanvasRenderer:
@@ -339,12 +339,16 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Volker Helzle\nPaulo Scatena \nSimon Spielmann\nJonas Trottnow\n\n\nVPET
-    - Virtual Production Editing Tools 2.0\nCopyright (c) 2022 Filmakademie Baden-Wuerttemberg,
-    \nAnimationsinstitut R&D Lab\n \nThis project has been initiated in the scope
-    of the EU funded project \nDreamspace (http://dreamspaceproject.eu/) under grant
-    agreement no 610005 2014-2016.\n\nPost Dreamspace the project has been further
-    developed on behalf of the \nresearch and development activities of Animationsinstitut."
+  m_text: "VPET - Virtual Production Editing Tools\nvpet.research.animationsinstitut.de\nhttps://github.com/FilmakademieRnd/VPET\nCopyright
+    (c) 2023 Filmakademie Baden-Wuerttemberg, \nAnimationsinstitut R&D Lab\n\nThis
+    program is free software; you can redistribute it and/or modify it under the
+    terms of the MIT License as published by the Open Source Initiative. VPET is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+    even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the MIT License for more details.\nYou should have received a copy of the
+    MIT License along with this program; \nif not go to https://opensource.org/licenses/MIT
+    \n\nVPET Unity sourcecode AND binaries incorporate the following resources:\r\nNetMQ
+    \t- LGPLv3 (https://github.com/zeromq/netmq)\r\nAsyncIO\t- MPLv2.0 (https://github.com/somdoron/AsyncIO)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1112,7 +1116,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 1
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 20
@@ -1198,8 +1203,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 420196843230718057}
   - {fileID: 607300378689921300}
+  - {fileID: 420196843230718057}
   m_Father: {fileID: 8647070050978987638}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
