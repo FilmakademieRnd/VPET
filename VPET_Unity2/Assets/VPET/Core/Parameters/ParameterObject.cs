@@ -120,6 +120,29 @@ namespace vpet
             return (Parameter<T>)_parameterList.Find(parameter => parameter.name == name);
         }
         //!
+        //! Factory to create a new ParameterObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new ParameterObject will be attached to.
+        //! @sceneID The scene ID for the new ParameterObject.
+        //!
+        public static ParameterObject Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            ParameterObject obj = gameObject.AddComponent<ParameterObject>();
+            obj.Init(sceneID);
+            
+            return obj;
+        }
+        //!
+        //! Initialisation
+        //!
+        protected void Init(byte sceneID)
+        {
+            _core.removeParameterObject(this);
+            _sceneID = sceneID;
+            _core.addParameterObject(this);
+        }
+        //!
         //! Initialisation
         //!
         public virtual void Awake()

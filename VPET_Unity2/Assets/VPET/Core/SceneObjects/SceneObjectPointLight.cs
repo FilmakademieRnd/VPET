@@ -48,6 +48,21 @@ namespace vpet
         //!
         public Parameter<float> range;
 
+        //!
+        //! Factory to create a new SceneObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new SceneObject will be attached to.
+        //! @sceneID The scene ID for the new SceneObject.
+        //!
+        public static new SceneObjectPointLight Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            SceneObjectPointLight obj = gameObject.AddComponent<SceneObjectPointLight>();
+            obj.Init(sceneID);
+
+            return obj;
+        }
+
         // Start is called before the first frame update
         public override void Awake()
         {

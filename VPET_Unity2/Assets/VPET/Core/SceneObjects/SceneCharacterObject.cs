@@ -56,6 +56,21 @@ namespace vpet
         private Transform[] bones;
 
         //!
+        //! Factory to create a new SceneObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new SceneObject will be attached to.
+        //! @sceneID The scene ID for the new SceneObject.
+        //!
+        public static new SceneCharacterObject Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            SceneCharacterObject obj = gameObject.AddComponent<SceneCharacterObject>();
+            obj.Init(sceneID);
+
+            return obj;
+        }
+
+        //!
         //! Initialisation
         //!
         public override void Awake()

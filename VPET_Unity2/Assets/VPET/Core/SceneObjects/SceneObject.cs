@@ -90,6 +90,20 @@ namespace vpet
         //!
         public Parameter<Vector3> scale;
         //!
+        //! Factory to create a new SceneObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new SceneObject will be attached to.
+        //! @sceneID The scene ID for the new SceneObject.
+        //!
+        public static new SceneObject Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            SceneObject obj = gameObject.AddComponent<SceneObject>();
+            obj.Init(sceneID);
+
+            return obj;
+        }
+        //!
         //! Initialisation
         //!
         public override void Awake()
@@ -181,7 +195,6 @@ namespace vpet
             updateSceneObjectTransform();
 //#endif
         }
-
         //!
         //! updates the scene objects transforms and informs all connected parameters about the change
         //!

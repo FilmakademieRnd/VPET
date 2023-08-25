@@ -52,6 +52,21 @@ namespace vpet
         //!
         public Parameter<float> spotAngle;
 
+        //!
+        //! Factory to create a new SceneObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new SceneObject will be attached to.
+        //! @sceneID The scene ID for the new SceneObject.
+        //!
+        public static new SceneObjectSpotLight Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            SceneObjectSpotLight obj = gameObject.AddComponent<SceneObjectSpotLight>();
+            obj.Init(sceneID);
+
+            return obj;
+        }
+
         // Start is called before the first frame update
         public override void Awake()
         {

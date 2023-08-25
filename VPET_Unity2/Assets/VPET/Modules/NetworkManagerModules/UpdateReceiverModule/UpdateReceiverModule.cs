@@ -254,6 +254,10 @@ namespace vpet
             int bufferTime = (((core.time - core.settings.framerate / 10) + core.timesteps) % core.timesteps);
             lock (m_messageBuffer)
             {
+                // caching the ParameterObject
+                byte oldSceneID = 0;
+                short oldParameterObjectID = 0;
+                ParameterObject parameterObject = null;
                 for (int i = 0; i < m_messageBuffer[bufferTime].Count; i++)
                 {
                     byte[] message = m_messageBuffer[bufferTime][i];
@@ -277,12 +281,16 @@ namespace vpet
                             short parameterID = BitConverter.ToInt16(message, start + 3);
                             int length = message[start + 6];
 
-                            ParameterObject parameterObject = core.getParameterObject(sceneID, parameterObjectID);
+                            if (sceneID != oldSceneID ||
+                                parameterObjectID != oldParameterObjectID)
+                                parameterObject = core.getParameterObject(sceneID, parameterObjectID);
 
                             if (parameterObject != null)
                                 parameterObject.parameterList[parameterID].deSerialize(message, start + 7);
 
                             start += length;
+                            oldSceneID = sceneID; 
+                            oldParameterObjectID = parameterObjectID;
                         }
                     }
                 }

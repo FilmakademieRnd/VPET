@@ -165,6 +165,7 @@ namespace vpet
         {
             //! Global factor for light intensity scaling. 
             public float lightIntensityFactor;
+            public byte senderID;
         }
 
         //!

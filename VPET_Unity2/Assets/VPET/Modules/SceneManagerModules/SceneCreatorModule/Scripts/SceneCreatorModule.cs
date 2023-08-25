@@ -60,8 +60,11 @@ namespace vpet
         //! The list storing Unity meshes in scene.
         private List<Mesh> SceneMeshList = new List<Mesh>();
 
-        //! The scaling factor for every VPET light source
+        //! The scaling factor for every VPET light source.
         private float m_LightScale;
+
+        //! The client ID from the scene sender, used as SceneObject's sceneID.
+        private byte m_senderID;
 
 
         //!
@@ -118,6 +121,7 @@ namespace vpet
             Helpers.Log(string.Format("Build scene from: {0} objects, {1} textures, {2} materials, {3} nodes", sceneData.objectList.Count, sceneData.textureList.Count, sceneData.materialList.Count, sceneData.nodeList.Count));
 
             m_LightScale = sceneData.header.lightIntensityFactor;
+            m_senderID = sceneData.header.senderID;
 
             if (manager.settings.loadTextures)
                 createTextures(ref sceneData);
@@ -542,7 +546,7 @@ namespace vpet
                     if (nodeGeo.editable)
                     {
                         objMain.tag = "editable";
-                        SceneObject sco = objMain.AddComponent<SceneObject>();
+                        SceneObject sco = SceneObject.Attach(objMain, m_senderID);
                     }
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeLight))
@@ -595,19 +599,19 @@ namespace vpet
                         switch (lightComponent.type)
                         {
                             case LightType.Point:
-                                sco = objMain.AddComponent<SceneObjectPointLight>();
+                                sco = SceneObjectPointLight.Attach(objMain, m_senderID);
                                 break;
                             case LightType.Directional:
-                                sco = objMain.AddComponent<SceneObjectDirectionalLight>();
+                                sco = SceneObjectDirectionalLight.Attach(objMain, m_senderID);
                                 break;
                             case LightType.Spot:
-                                sco = objMain.AddComponent<SceneObjectSpotLight>();
+                                sco = SceneObjectSpotLight.Attach(objMain, m_senderID);
                                 break;
                             case LightType.Area:
-                                sco = objMain.AddComponent<SceneObjectAreaLight>();
+                                sco = SceneObjectAreaLight.Attach(objMain, m_senderID);
                                 break;
                             default:
-                                sco = objMain.AddComponent<SceneObjectLight>();
+                                sco = SceneObjectLight.Attach(objMain, m_senderID);
                                 break;
                         }
                         manager.sceneLightList.Add(sco);
@@ -629,8 +633,7 @@ namespace vpet
                     if (nodeCam.editable)
                     {
                         objMain.tag = "editable";
-                        SceneObjectCamera sco = objMain.AddComponent<SceneObjectCamera>();
-
+                        SceneObjectCamera sco = SceneObjectCamera.Attach(objMain, m_senderID);
                         manager.sceneCameraList.Add(sco);
                     }
                 }
@@ -651,11 +654,11 @@ namespace vpet
 
                         if (!isCharacter)
                         {
-                            SceneObject sdo = objMain.AddComponent<SceneObject>();
+                            SceneObject sdo = SceneObject.Attach(objMain, m_senderID);
                         }
                         else
                         {
-                            SceneObject sdo = objMain.AddComponent<SceneCharacterObject>();
+                            SceneObject sdo = SceneCharacterObject.Attach(objMain, m_senderID);
                         }
                     }
                 }

@@ -45,7 +45,20 @@ namespace vpet
     //!
     public class SceneObjectDirectionalLight : SceneObjectLight
     {
+        //!
+        //! Factory to create a new SceneObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new SceneObject will be attached to.
+        //! @sceneID The scene ID for the new SceneObject.
+        //!
+        public static new SceneObjectDirectionalLight Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            SceneObjectDirectionalLight obj = gameObject.AddComponent<SceneObjectDirectionalLight>();
+            obj.Init(sceneID);
 
+            return obj;
+        }
         // Start is called before the first frame update
         public override void Awake()
         {

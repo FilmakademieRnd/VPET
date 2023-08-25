@@ -376,7 +376,7 @@ namespace vpet
             {
                 Dictionary<short, ParameterObject> sceneObjects;
                 if (m_parameterObjectList.TryGetValue(sceneID, out sceneObjects))
-                    return sceneObjects[(short)(poID)];
+                    return sceneObjects[poID];
                 else
                     return null;
             }

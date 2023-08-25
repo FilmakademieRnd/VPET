@@ -93,6 +93,12 @@ namespace vpet
         public void ParseScene(bool getLowLayer = true, bool getHighLayer = false, bool getMixedLayer = true, bool emitSceneReady = true)
         {
             SceneManager.SceneDataHandler.SceneData sceneData = new SceneManager.SceneDataHandler.SceneData();
+            NetworkManager networkManager = core.getManager<NetworkManager>();
+
+            if (networkManager != null)
+                sceneData.header.senderID = networkManager.cID;
+            else
+                sceneData.header.senderID = 0;
 
             sceneData.header.lightIntensityFactor = 1f;
 

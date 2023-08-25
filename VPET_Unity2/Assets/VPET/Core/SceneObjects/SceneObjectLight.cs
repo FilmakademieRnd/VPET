@@ -44,6 +44,20 @@ namespace vpet
     public class SceneObjectLight : SceneObject
     {
         //!
+        //! Factory to create a new SceneObject and do it's initialisation.
+        //! Use this function instead GameObject.AddComponen<>!
+        //!
+        //! @param gameObject The gameObject the new SceneObject will be attached to.
+        //! @sceneID The scene ID for the new SceneObject.
+        //!
+        public static new SceneObjectLight Attach(GameObject gameObject, byte sceneID = 0)
+        {
+            SceneObjectLight obj = gameObject.AddComponent<SceneObjectLight>();
+            obj.Init(sceneID);
+
+            return obj;
+        }
+        //!
         //! the color of the light
         //!
         private Parameter<Color> color;
