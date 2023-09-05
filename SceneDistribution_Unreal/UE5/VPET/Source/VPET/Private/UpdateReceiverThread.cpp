@@ -59,8 +59,8 @@ void UpdateReceiverThread::DoWork()
 				{
 					//decodeLockMessage(ref input);
 					UE_LOG(LogTemp, Log, TEXT("[VPET2 Parse] Lock message"));
-					int16_t objectID = *reinterpret_cast<int16_t*>(&byteVector[3]);
-					bool lockState = *reinterpret_cast<bool*>(&byteVector[5]);
+					int16_t objectID = *reinterpret_cast<int16_t*>(&byteVector[4]);
+					bool lockState = *reinterpret_cast<bool*>(&byteVector[6]);
 					manager->DecodeLockMessage(&objectID, &lockState);
 					break;
 				}
