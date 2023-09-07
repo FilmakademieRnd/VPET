@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <vector>
 #include <typeindex>
-#include <any>
 #include <mutex>
 
 #include "CoreMinimal.h"
@@ -112,14 +111,10 @@ template <class T>
 class Parameter : public AbstractParameter
 {
 public:
-    virtual int dataSize() override {
-        switch (_type) {
-        case ParameterType::STRING:
-            return static_cast<int>(std::any_cast<std::string>(_value).length());
-        default:
+        virtual int dataSize() override {
             return _dataSize;
-        }
     }
+
     
     //Parameter(T value, std::string name, void (*callback_func)(std::vector<uint8_t> kMsg), UParameterObject* parent = null, bool distribute = true)
     Parameter(T value, AActor* actor, std::string name, void (*callback_func)(std::vector<uint8_t> kMsg, AActor* actor), UParameterObject* parent = null, bool distribute = true)
@@ -196,117 +191,54 @@ public:
      virtual void Serialize(char* data, std::string name) override
     {
        
-        switch (_type)
+        /*switch (_type)
         {
         case ParameterType::BOOL:
             {
-                bool val = std::any_cast<bool>(_value);
-                std::memcpy(data, &val, sizeof(bool));
-                break;
+ 
             }
         case ParameterType::INT:
             {
-                int32 val = std::any_cast<int32>(_value);
-                std::memcpy(data, &val, sizeof(int32));
-                break;
+
             }
         case ParameterType::FLOAT:
             {
-                float val = std::any_cast<float>(_value);
-                std::memcpy(data, &val, sizeof(float));
-                break;
+
             }
         case ParameterType::VECTOR2:
             {
-                FVector2D vec2 = std::any_cast<FVector2D>(_value);
-                float x,y;
-                x = vec2.X;
-                y = vec2.Y;
-                std::memcpy(data, &x, sizeof(float)); data += sizeof(float);
-                std::memcpy(data, &y, sizeof(float));
-                break;
+
             }
         case ParameterType::VECTOR3:
             {
-                FVector vec3 = std::any_cast<FVector>(_value);
-                float x,y,z;
-                x=vec3.X;
-                y=vec3.Z;
-                z=vec3.Y;
-                //UE_LOG(LogTemp, Warning, TEXT("FVector values before memcpy inside param.h: %f %f %f"), vec3.X, vec3.Y, vec3.Z);
-                if (name == "position")
-                {
-                    x=vec3.X * -0.01;
-                    y=vec3.Z * 0.01;
-                    z=vec3.Y * 0.01;   
-                }
-                
-                std::memcpy(data, &x, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &y, sizeof(float)); data += sizeof(float);
-                std::memcpy(data, &z, sizeof(float));
-                
-                break;
+              
             }
         case ParameterType::VECTOR4:
             {
-                FVector4 vec4 = std::any_cast<FVector4>(_value);
-                float x,y,z,w;
-                x = vec4.X;
-                y = vec4.Y;
-                z = vec4.Z;
-                w = vec4.W;
 
-                std::memcpy(data, &x, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &y, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &z, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &w, sizeof(float)); 
-
-                break;
             }
 
         case ParameterType::QUATERNION:
             {
-                FQuat quat = std::any_cast<FQuat>(_value);
-                float x,y,z,w;
-                x = -quat.X;
-                y = quat.Z;
-                z = quat.Y;
-                w = quat.W;
 
-                std::memcpy(data, &x, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &y, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &z, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &w, sizeof(float)); 
-                
-                break;
             }
 
         case ParameterType::COLOR:
             {
-                FColor color = std::any_cast<FColor>(_value);
-                float r,g,b,a;
-                r = color.R;
-                g = color.G;
-                b = color.B;
-                a = color.A;
-                std::memcpy(data, &r, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &g, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &b, sizeof(float)); data += sizeof(float); 
-                std::memcpy(data, &a, sizeof(float)); 
-                break;
+
             }
 
         case ParameterType::STRING:
             {
-                std::string str = std::any_cast<std::string>(_value);
-                std::memcpy(data, &str, str.size()); 
-                break;
+
             }
             
             default:
                 break;
-        }
+        }*/
     }
+
+
 
 
     
@@ -316,7 +248,131 @@ protected:
 
 private:
     T _initialValue;
+
+
+
+
 };
+
+template<>
+void Parameter<bool>::Serialize(char* data, std::string name) {
+
+    bool val = _value;
+    std::memcpy(data, &val, sizeof(bool));
+}
+
+template<>
+void Parameter<int32>::Serialize(char* data, std::string name) {
+
+    int32 val = _value;
+    std::memcpy(data, &val, sizeof(int32));
+}
+
+template<>
+void Parameter<float>::Serialize(char* data, std::string name) {
+
+    float val = _value;
+    std::memcpy(data, &val, sizeof(float));
+    
+}
+
+template<>
+void Parameter<FVector2D>::Serialize(char* data, std::string name) {
+
+    FVector2D vec2 = _value;
+    float x, y;
+    x = vec2.X;
+    y = vec2.Y;
+    std::memcpy(data, &x, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &y, sizeof(float));
+}
+
+template<>
+void Parameter<FVector>::Serialize(char* data, std::string name) {
+
+    FVector vec3 = _value;
+    float x, y, z;
+    x = vec3.X;
+    y = vec3.Z;
+    z = vec3.Y;
+    //UE_LOG(LogTemp, Warning, TEXT("FVector values before memcpy inside param.h: %f %f %f"), vec3.X, vec3.Y, vec3.Z);
+    if (name == "position")
+    {
+        x = vec3.X * -0.01;
+        y = vec3.Z * 0.01;
+        z = vec3.Y * 0.01;
+    }
+
+    std::memcpy(data, &x, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &y, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &z, sizeof(float));
+
+}
+
+template<>
+void Parameter<FVector4>::Serialize(char* data, std::string name) {
+
+    FVector4 vec4 = _value;
+    float x, y, z, w;
+    x = vec4.X;
+    y = vec4.Y;
+    z = vec4.Z;
+    w = vec4.W;
+
+    std::memcpy(data, &x, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &y, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &z, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &w, sizeof(float));
+}
+
+
+template<>
+void Parameter<FQuat>::Serialize(char* data, std::string name) {
+
+    FQuat quat = _value;
+    float x, y, z, w;
+    x = -quat.X;
+    y = quat.Z;
+    z = quat.Y;
+    w = quat.W;
+
+    std::memcpy(data, &x, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &y, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &z, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &w, sizeof(float));
+}
+
+
+template<>
+void Parameter<FColor>::Serialize(char* data, std::string name) {
+
+    FColor color = _value;
+    float r, g, b, a;
+    r = color.R;
+    g = color.G;
+    b = color.B;
+    a = color.A;
+    std::memcpy(data, &r, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &g, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &b, sizeof(float)); data += sizeof(float);
+    std::memcpy(data, &a, sizeof(float));
+}
+
+template<>
+void Parameter<std::string>::Serialize(char* data, std::string name) {
+
+    std::string str = _value;
+    std::memcpy(data, &str, str.size());
+}
+
+template<>
+int Parameter<std::string>::dataSize() {
+
+        int length = _value.length();
+        return length;
+
+}
+
 
 
 class ListParameter : Parameter<int>
