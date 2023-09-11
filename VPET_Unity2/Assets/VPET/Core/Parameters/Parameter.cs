@@ -457,6 +457,8 @@ namespace vpet
             }
         }
 
+
+
         //!
         //! Function for deserializing parameter _data.
         //! 
@@ -514,11 +516,35 @@ namespace vpet
             hasChanged?.Invoke(this, _value);
             _networkLock = false;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void InvokeHasChanged()
         {
             hasChanged?.Invoke(this, _value);
         }
     }
+
+    //public interface IParam<T>
+    //{
+    //    public abstract void Serialize(byte data);
+    //}
+    //public class AParam: IParam<bool>, IParam<float>
+    //{
+    //    //public abstract void Serialize(byte data);
+    //    void IParam<bool>.Serialize(byte data) { }
+    //    void IParam<float>.Serialize(byte data) { }
+
+    //    private readonly AParam inst = new();
+    //    public void Serialize<T>(byte data) { } //=> (inst as IParam<T> ?? throw new NotSupportedException()).Serialize(data);
+
+    //}
+    //public class Param<T> : AParam
+    //{
+    //    public void Serialize(byte data)
+    //    {
+    //        AParam t = new AParam();
+    //        t.Serialize<T>(data);
+    //    }
+
+    //}
 }

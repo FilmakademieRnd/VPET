@@ -140,7 +140,20 @@ namespace vpet
                 sceneObject.hasChanged += queueModifiedParameter;
             }
 
+            manager.sceneObjectAdded += AddSceneObject;
+            manager.sceneObjectRemoved += RemoveSceneObject;
+
             core.timeEvent += sendParameterMessages;
+        }
+
+        private void AddSceneObject(object sender, SceneObject sceneObject)
+        {
+            sceneObject.hasChanged += queueModifiedParameter;
+        }
+
+        private void RemoveSceneObject(object sender, SceneObject sceneObject)
+        {
+            sceneObject.hasChanged -= queueModifiedParameter;
         }
 
         //!
@@ -178,7 +191,7 @@ namespace vpet
             m_controlMessage[0] = manager.cID;
             m_controlMessage[1] = core.time;
             m_controlMessage[2] = (byte)MessageType.LOCK;
-            Helpers.copyArray(BitConverter.GetBytes(sceneObject.sceneID), 0, m_controlMessage, 3, 1);  // ScenetID
+            Helpers.copyArray(BitConverter.GetBytes(sceneObject.sceneID), 0, m_controlMessage, 3, 1);  // SceneID
             Helpers.copyArray(BitConverter.GetBytes(sceneObject.id), 0, m_controlMessage, 4, 2);  // SceneObjectID
             m_controlMessage[6] = Convert.ToByte(false);
 
@@ -214,10 +227,13 @@ namespace vpet
         {
             m_controlMessage = new byte[3];
 
-            // header
-            m_controlMessage[0] = manager.cID;
-            m_controlMessage[1] = time;
-            m_controlMessage[2] = (byte)MessageType.SYNC;
+            lock (m_controlMessage)
+            {
+                // header
+                m_controlMessage[0] = manager.cID;
+                m_controlMessage[1] = time;
+                m_controlMessage[2] = (byte)MessageType.SYNC;
+            }
 
             m_mre.Set();
         }

@@ -53,7 +53,7 @@ namespace vpet
         //!
         //! Previous lock state for highlighting the sceneObject.
         //!
-        private bool m_highlightLock;
+        private bool m_highlightLock = false;
         //!
         //! Is the sceneObject reacting to physics
         //!
@@ -96,7 +96,7 @@ namespace vpet
         //! @param gameObject The gameObject the new SceneObject will be attached to.
         //! @sceneID The scene ID for the new SceneObject.
         //!
-        public static new SceneObject Attach(GameObject gameObject, byte sceneID = 0)
+        public static new SceneObject Attach(GameObject gameObject, byte sceneID = 254)
         {
             SceneObject obj = gameObject.AddComponent<SceneObject>();
             obj.Init(sceneID);

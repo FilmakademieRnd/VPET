@@ -35,6 +35,7 @@ https://opensource.org/licenses/MIT
 //! @date 13.10.2021
 
 using System;
+using System.Diagnostics;
 using System.Net;
 using NetMQ;
 
@@ -64,9 +65,30 @@ namespace vpet
         private int m_disposeCount = 0;
 
         //!
+        //! Event that is invoket when a client has left the network session.
+        //!
+        public event EventHandler<byte> clientLost;
+        
+        //!
+        //! Event that is invoket when a new client enters the network session.
+        //!
+        public event EventHandler<byte> clientRegistered;
+
+        //!
+        //! Event that is invoket when a new scene object has been added.
+        //!
+        public event EventHandler<SceneObject> sceneObjectAdded;
+
+        //!
+        //! Event that is invoket when a new scene object has been removed.
+        //!
+        public event EventHandler<SceneObject> sceneObjectRemoved;
+
+        //!
         //! Cast for accessing the settings variable with the correct type.
         //!
         public NetworkManagerSettings settings { get => (NetworkManagerSettings)_settings; }
+        
         //!
         //! Constructor initializing member variables.
         //!
@@ -89,11 +111,10 @@ namespace vpet
                     if (core.isServer)
                     {
                         // prevent equal cIDs if server and client running on the same machine
-                        m_cID = 0;
+                        m_cID = 254;
                     }
                     else
                         m_cID = byte.Parse(ip.ToString().Split('.')[3]);
-                    m_ip = ip.ToString();
                 }
             }
         }
@@ -123,23 +144,47 @@ namespace vpet
             }
         }
 
+        //!
+        //! Function to add a scene object to the network sync.
+        //!
+        //! @param sceneObject The scene object to be added to the network sync.
+        //!
+        public void AddSceneObject(SceneObject sceneObject)
+        {
+            sceneObjectAdded?.Invoke(this, sceneObject);
+        }
+
+        //!
+        //! Function to remove a scene object to the network sync.
+        //!
+        //! @param sceneObject The scene object to be removed from the network sync.
+        //!
+        public void RemoveSceneObject(SceneObject sceneObject)
+        {
+            sceneObjectRemoved?.Invoke(this, sceneObject);
+        }
 
         //!
         //! The ID if the client (based on the last digit of IP address)
         //!
-        private byte m_cID;
+        private byte m_cID = 254;
         public byte cID
         {
             get => m_cID;
         }
 
         //!
-        //! The local IP address.
+        //! Function to invoke client connection status updates.
         //!
-        private string m_ip;
-        public string ip
+        //! @param connectionStatus Wether a client has been connected or disconnected.
+        //! @param clientID The ID of the client that has been connected or disconnected.
+        //!
+        public void clientConnectionUpdate(bool connectionStatus, byte clientID)
         {
-            get => m_ip;
+            if (connectionStatus)
+                clientRegistered?.Invoke(this, clientID);
+            else
+                clientLost?.Invoke(this, clientID);
         }
     }
 }

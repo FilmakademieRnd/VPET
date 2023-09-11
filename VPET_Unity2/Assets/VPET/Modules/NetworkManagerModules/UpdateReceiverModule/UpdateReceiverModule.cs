@@ -143,14 +143,16 @@ namespace vpet
                                     decodeLockMessage(message);
                                     break;
                                 case MessageType.SYNC:
-                                    if (!core.isServer)
-                                        decodeSyncMessage(message);
+                                    decodeSyncMessage(message);
                                     break;
                                 case MessageType.RESETOBJECT:
                                     decodeResetMessage(message);
                                     break;
                                 case MessageType.UNDOREDOADD:
                                     decodeUndoRedoMessage(message);
+                                    break;
+                                case MessageType.DATAHUB:
+                                    decodeDataHubMessage(message);
                                     break;
                                 case MessageType.PARAMETERUPDATE:
                                     // make shure that producer and consumer exclude eachother
@@ -240,6 +242,18 @@ namespace vpet
             foreach (AbstractParameter p in sceneObject.parameterList)
                 p.reset();
             m_sceneManager.getModule<UndoRedoModule>().vanishHistory(sceneObject);
+        }
+
+        private void decodeDataHubMessage(byte[] message)
+        {
+            byte dhType = message[3];
+            bool status = BitConverter.ToBoolean(message, 4);
+            byte cID = message[5];
+
+            // dhType 0 = client connection status update
+            if (dhType == 0 && 
+                cID != manager.cID)
+                manager.clientConnectionUpdate(status, cID);
         }
 
         //!

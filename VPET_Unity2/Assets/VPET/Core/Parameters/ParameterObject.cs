@@ -58,7 +58,7 @@ namespace vpet
         //!
         //! The unique ID of this parameter object.
         //!
-        protected byte _sceneID = 255;
+        protected byte _sceneID = 254;
         //!
         //! The unique ID of this parameter object.
         //!
@@ -126,7 +126,7 @@ namespace vpet
         //! @param gameObject The gameObject the new ParameterObject will be attached to.
         //! @sceneID The scene ID for the new ParameterObject.
         //!
-        public static ParameterObject Attach(GameObject gameObject, byte sceneID = 0)
+        public static ParameterObject Attach(GameObject gameObject, byte sceneID = 254)
         {
             ParameterObject obj = gameObject.AddComponent<ParameterObject>();
             obj.Init(sceneID);
@@ -150,9 +150,7 @@ namespace vpet
             if (_core == null)
                 _core = GameObject.FindObjectOfType<Core>();
 
-            NetworkManager networkManager = _core.getManager<NetworkManager>();
-            if (_core.getManager<NetworkManager>() != null)
-                _sceneID = _core.getManager<NetworkManager>().cID;
+            _sceneID = 254;
 
             _id = s_id++;
             _parameterList = new List<AbstractParameter>();

@@ -50,7 +50,7 @@ namespace vpet
         //! @param gameObject The gameObject the new SceneObject will be attached to.
         //! @sceneID The scene ID for the new SceneObject.
         //!
-        public static new SceneObjectLight Attach(GameObject gameObject, byte sceneID = 0)
+        public static new SceneObjectLight Attach(GameObject gameObject, byte sceneID = 254)
         {
             SceneObjectLight obj = gameObject.AddComponent<SceneObjectLight>();
             obj.Init(sceneID);
