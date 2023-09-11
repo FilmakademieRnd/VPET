@@ -4,6 +4,7 @@ Copyright (c) 2020 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
 #pragma once
 
 #include <vector>
+#include "VPETModule.h"
 
 namespace VPET
 {
@@ -96,6 +97,7 @@ namespace VPET
 	struct VpetHeader
 	{
 		float lightIntensityFactor = 1.0;
+		unsigned char senderID;
 		//int textureBinaryType = 0;
 	};
 

@@ -2,6 +2,8 @@
 
 #include "VPETModule.h"
 
+class UMaterialExpressionTextureBase;
+class UMaterialExpressionParameter;
 using namespace VPET;
 
 // Sets default values
@@ -56,6 +58,8 @@ void AVPETModule::BeginPlay()
 
 	// Header values
 	m_state.vpetHeader.lightIntensityFactor = 1.0;
+	m_state.vpetHeader.senderID = m_id;
+	
 	//m_state.vpetHeader.textureBinaryType = 0;
 
 	// set LOD / tagging mode (from Katana)
@@ -97,7 +101,7 @@ void AVPETModule::BeginPlay()
 	DOL(LogBasic, Log, "[VPET BeginPlay] Cameras: %i", m_state.numCameras);
 
 
-	// Open ØMQ context
+	// Open Ã˜MQ context
 	context = new zmq::context_t(1);
 
 
@@ -275,7 +279,7 @@ void AVPETModule::CreateParameterMessage()
 	char* parameterData = NULL;
 	int responseLength = 0;
 	
-	responseLength = 3 + VPET_modifiedParametersDataSize + 6 * VPET_ModifiedParameterList.Num();
+	responseLength = 3 + VPET_modifiedParametersDataSize + 7 * VPET_ModifiedParameterList.Num();
 	messageStart = responseMessageContent = (char*)malloc(responseLength);
 
 
@@ -298,11 +302,15 @@ void AVPETModule::CreateParameterMessage()
 	for (auto &parameter: VPET_ModifiedParameterList )
 	{
 		//the length of the parameter msg + parameter data!
-		int length = 6 + parameter->dataSize();
+		int length = 7 + parameter->dataSize();
 
 		//lock the parameter!
 		std::lock_guard lock(parameter->mtx);
 
+		//TODO add scene id
+		uint8_t sceneID_Val = m_id;
+		memcpy(responseMessageContent, &sceneID_Val, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
+		
 		//Scene object ID
 		uint16_t shortVal = parameter->_parent->ID;
 		memcpy(responseMessageContent, &shortVal, sizeof(uint16_t)); responseMessageContent += sizeof(uint16_t);
@@ -316,7 +324,7 @@ void AVPETModule::CreateParameterMessage()
 		memcpy(responseMessageContent, &intVal, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 
 		// the length of 1 parameter msg without the header.
-		intVal = 6 + parameter->dataSize();
+		intVal = length;
 		memcpy(responseMessageContent, &intVal, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 
 		// the serialization of the parameter DATA!
@@ -324,8 +332,9 @@ void AVPETModule::CreateParameterMessage()
 		parameterData = (char*)malloc(parameter->dataSize());
 		parameter->Serialize(parameterData, parameter->GetName());
 		memcpy(responseMessageContent, parameterData, parameter->dataSize()); responseMessageContent += parameter->dataSize();
-		
-		char* startOfData = responseMessageContent - 12;
+
+		//TODO MAGIC NR  
+		char* startOfData = responseMessageContent - 13;
 
 		// Log each float in data:
 		for (int i = 0; i < 3; i++)
@@ -408,9 +417,9 @@ void AVPETModule::ParseParameterUpdate(std::vector<uint8_t> kMsg)
 
 	for (int i = 3; i < kMsg.size() ; )
 	{
-		int16_t objectID = *reinterpret_cast<int16_t*>(&kMsg[i]);
-		int16_t paramID = *reinterpret_cast<int16_t*>(&kMsg[i+2]);
-		int length = *&kMsg[i+5];
+		int16_t objectID = *reinterpret_cast<int16_t*>(&kMsg[i+1]);
+		int16_t paramID = *reinterpret_cast<int16_t*>(&kMsg[i+3]);
+		int length = *&kMsg[i+6];
 		//DOL(LogBasic, Error, "Length from position &kMsg[i+5] : %d", length);
 
 		DOL(LogBasic, Log, "[SYNC Parse] obj Id: %d", objectID);
@@ -436,7 +445,7 @@ void AVPETModule::ParseParameterUpdate(std::vector<uint8_t> kMsg)
 		{
 			// pass actual message to a parameter from an object
 			AbstractParameter* tempParam = (*tempArray)[paramID];
-			std::vector<uint8_t> subMsg = std::vector<uint8_t>(kMsg.begin()+i+6, kMsg.begin()+i+length);
+			std::vector<uint8_t> subMsg = std::vector<uint8_t>(kMsg.begin()+i+7, kMsg.begin()+i+length);
 			tempParam->ParseMessage(subMsg);
 		}
 		else
@@ -1432,18 +1441,22 @@ void AVPETModule::EncodeLockMessage(int16_t objID, bool lockState)
 	// Prepare the byte array
 	char* responseMessageContent = NULL;
 	char* messageStart = NULL;
-	int responseLength = 6;
+	int responseLength = 7;
 	messageStart = responseMessageContent = (char*)malloc(responseLength);
 	// header
 	uint8_t intVal = m_id;
 	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
 	responseMessageContent += sizeof(uint8_t);
 	// time
-	intVal = 23; //m_id
+	intVal = m_time; 
 	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
 	responseMessageContent += sizeof(uint8_t);
 	// type lock
 	intVal = 1;
+	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
+	responseMessageContent += sizeof(uint8_t);
+	// Scene ID
+	intVal = m_id;
 	memcpy(responseMessageContent, (char*)&intVal, sizeof(uint8_t));
 	responseMessageContent += sizeof(uint8_t);
 	// object id - int 16

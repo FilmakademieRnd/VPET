@@ -78,7 +78,7 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	
+
 	FTimerHandle MemberTimerHandle;
 	int s_timestepsBase = 128;
 	int framerate = 60;
@@ -90,57 +90,57 @@ public:
 
 	// IP Address of the host server
 	UPROPERTY(EditAnywhere, Category = "VPET Settings")
-		FString HostIP;
+	FString HostIP;
 
 	// Set to use textures (requires prior setup)
 	UPROPERTY(EditAnywhere, Category = "VPET Settings")
-		bool UseTexture;
+	bool UseTexture;
 
 	// Multiplying factor for light intensity
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Light settings")
-		float BrightnessMultiplier;
+	float BrightnessMultiplier;
 
 	// Multiplying factor for light range (only relevant for point and spot lights)
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Light settings")
-		float RangeMultiplier;
+	float RangeMultiplier;
 
 	// Send the attached objects under lights
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Light settings")
-		bool SendLightChild;
+	bool SendLightChild;
 
 	// Only send to VPET the actors that are tagged with LodLow or LodMix; if false, send all
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Development")
-		bool UseSendTag;
+	bool UseSendTag;
 
 	// Only treat as editable the actors with tag "editable"; if false, every movable object is editable
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Development")
-		bool UseEditableTag;
+	bool UseEditableTag;
 
 	// Display screen debug messages
 	UPROPERTY(EditAnywhere, Category = "VPET Settings|Development")
-		bool VerboseDisplay;
+	bool VerboseDisplay;
 
 	// Logging level: basic
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogBasic;
+	bool LogBasic;
 	// Logging level: material
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogMaterial;
+	bool LogMaterial;
 	// Logging level: attachment
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogAttachment;
+	bool LogAttachment;
 	// Logging level: tag
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogTag;
+	bool LogTag;
 	// Logging level: folder
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogFolder;
+	bool LogFolder;
 	// Logging level: layer
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogLayer;
+	bool LogLayer;
 	// Logging level: geometry build
 	UPROPERTY(EditAnywhere, Category = "VPET2 Settings|Development|Logging")
-		bool LogGeoBuild;
+	bool LogGeoBuild;
 
 	// Development print latch
 	bool doItOnce = true;
@@ -179,9 +179,9 @@ public:
 	//Create parameter MSG function
 	void CreateParameterMessage();
 
-	
+
 	//UFUNCTION()
-	void HasChangedIsCalled( AbstractParameter* param);
+	void HasChangedIsCalled(AbstractParameter* param);
 
 	// Material name list - for texture identification
 	TArray<FString> matNameList;
@@ -230,7 +230,7 @@ private:
 	float lgtMult = 1.0;
 
 	void ParseParameterUpdate(std::vector<uint8_t> kMsg);
-	
+
 
 	void AddActorPointer(AActor* pActor) {
 		actorList.Add(pActor);
