@@ -37,6 +37,7 @@ VPET Unity sourcecode AND binaries incorporate the following resources
 
 NetMQ  				- LGPLv3 (https://github.com/zeromq/netmq)
 AsyncIO 			- MPLv2.0 (https://github.com/somdoron/AsyncIO)
+NaCI 				- Public Domain (https://nacl.cr.yp.to/)
 
 -------------------------------------------------------------------------------
 
