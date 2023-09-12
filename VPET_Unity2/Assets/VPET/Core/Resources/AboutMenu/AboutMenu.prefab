@@ -340,15 +340,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "VPET - Virtual Production Editing Tools\nvpet.research.animationsinstitut.de\nhttps://github.com/FilmakademieRnd/VPET\nCopyright
-    (c) 2023 Filmakademie Baden-Wuerttemberg, \nAnimationsinstitut R&D Lab\n\nThis
-    program is free software; you can redistribute it and/or modify it under the
-    terms of the MIT License as published by the Open Source Initiative. VPET is
-    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-    even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the MIT License for more details.\nYou should have received a copy of the
-    MIT License along with this program; \nif not go to https://opensource.org/licenses/MIT
-    \n\nVPET Unity sourcecode AND binaries incorporate the following resources:\r\nNetMQ
-    \t- LGPLv3 (https://github.com/zeromq/netmq)\r\nAsyncIO\t- MPLv2.0 (https://github.com/somdoron/AsyncIO)"
+    (c) 2023 Filmakademie Baden-Wuerttemberg, \nAnimationsinstitut R&D Lab\n\nThe
+    client is licensed under MIT and includes libraries under other Open Source and
+    proprietary licenses. See License file for more details. All other programs have
+    dedicated Filmakademie licenses.\n\nVPET Unity sourcecode AND binaries incorporate
+    the following resources:\r\nNetMQ \t- LGPLv3 (https://github.com/zeromq/netmq)\r\nAsyncIO\t-
+    MPLv2.0 (https://github.com/somdoron/AsyncIO)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

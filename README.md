@@ -121,4 +121,4 @@ the EU funded project  SAUCE (780470) and funds on the own behalf of Filmakademi
 
 ## License
 VPET is a open-sorce development by Filmakademie Baden-Wuerttemberg's Animationsinstitut.  
-The client is licensed under MIT. All other parts have dedicated Filmakademie licenses. See [License file](LICENSE.TXT) for more details.
+The client is licensed under MIT and includes libraries under other Open Source and proprietary licenses. See [License file](LICENSE.TXT) for more details.
