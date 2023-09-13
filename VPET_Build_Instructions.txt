@@ -1,0 +1,23 @@
+VPET Building Instructions
+Virtual Production Editing Tools
+R&D at Animationsinstitut
+Filmakademie Baden-Württemberg
+
+These Instructions will guide through the process of building VPET to an iOS device based on the source code released on our GitHub repository.
+
+1.	Clone or download the content of the GitHub repository as a ZIP file:https://github.com/FilmakademieRnd/VPET
+2.	Open the subfolder "VPET_Unity2" as a project in the Unity Hub
+3.	After successfully opening the project in Unity go to the package manager, install the package "Input System". Also make sure that the "TextMeshPro" Package is installed. Add the "TextMeshPro Essential Resources" to the project (to be found in Window->TextMeshPro).
+	Optionally add the AR packages "AR Foundation", "ARKit XR Plugin" and "XR Interaction Toolkit" in the Package Manager to enable AR functionalities.
+	If you want to have AR, also enable the ARKit Plugin Provider in the Unity "Player Settings" under "XR Plug-in Management", in the iOS Tab.
+4.	Open the "VPET_Client" Scene (In VPET->Scenes)
+5.	If needed or desired you can exchange any of the used open source libraries (NetMQ, AsyncIO, NaCl)
+	by replacing the .dll files in Assets->VPET->Core->Managers->NetworkManager->Plugins
+	Note: the provided .dll files are unmodified from the original repositories and can be replaced with self compiled versions at any time.
+6.	Now switch it to the desired target platform, in our case iOS. To do that, go to the "Build Settings" in Unity, select iOS there and click on "Switch Platform".
+	Make sure that the "VPET_Client" scene is selected in the "Build Settings", then click on Build and Run.
+	In the following popup, select a folder in which Unity shall place the Xcode project. Afterwards Xcode will automatically open.
+7.	In Xcode, click on the "Unity-IPhone" project in the Hierarchy, then select the "Signing and Capabilities" Tab
+8.	Enable "Automatic manage signing" Select your Personal or Company Team with your Apple Developer Account and adjust the "Bundle Identifier" to a unique one
+9.	Connect the iPhone / IPad, on which you want to run VPET, to your Mac. Select it as target in Xcode.
+10.	Click on the Build Icon in XCode (This will automatically install and launch VPET on your device)
