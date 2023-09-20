@@ -1,0 +1,8 @@
+{
+	"BuildId": "27405482",
+	"Modules": 
+	{
+		"VPET": "UnrealEditor-VPET.dll",
+		"libzmq": "UnrealEditor-libzmq.dll"
+	}
+}
