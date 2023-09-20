@@ -1,0 +1,29 @@
+{
+    "name": "ChromaKeyAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3c8c80ae2ea220d4fb13c98317414fa5",
+        "GUID:7e30fd56ec844a64bbc7bfeb025fc7c6",
+        "GUID:a9420e37d7990b54abdef6688edbe313",
+        "GUID:dfd0ce20189d48e5b22bb4134b558f5a",
+        "GUID:92703082f92b41ba80f0d6912de66115",
+        "GUID:e40ba710768534012815d3193fa296cb",
+        "GUID:dc960734dc080426fa6612f1c5fe95f3",
+        "GUID:b13a1d1dfb13f1b489a0ff5612f36f29",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:9f89d115ccf942c4f98f9e448b526037"
+    ],
+    "includePlatforms": [
+        "iOS",
+        "macOSStandalone"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
