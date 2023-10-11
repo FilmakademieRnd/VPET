@@ -5,23 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/VPET_Server.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/VPET_Server.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/InputManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/InputManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/Inputs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/Inputs.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/Inputs.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/Inputs.inputactions" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/SceneManager/SceneManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/SceneManager/SceneManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/UIManager/UIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/UIManager/UIManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Resources/ReferenceImageLibrary.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Resources/ReferenceImageLibrary.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneParserModule/Scripts/SceneParserModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneParserModule/Scripts/SceneParserModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/CameraSelectionModule/Scripts/CameraSelectionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/CameraSelectionModule/Scripts/CameraSelectionModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/DialogCreatorModule/Resources/Prefabs/DialogCanvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/DialogCreatorModule/Resources/Prefabs/DialogCanvas.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Resources/Materials/ColorPickerMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Resources/Materials/ColorPickerMaterial.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/SnapSelect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/SnapSelect.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/SnapSelectElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/SnapSelectElement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/UICreator2DModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/UICreator2DModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ControllerModule/Scripts/ControllerModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ControllerModule/Scripts/ControllerModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneCreatorModule/Scripts/SceneCreatorModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneCreatorModule/Scripts/SceneCreatorModule.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,7 +149,7 @@
       <workItem from="1696922774191" duration="23629000" />
       <workItem from="1696957933083" duration="1000" />
       <workItem from="1696957941157" duration="5000" />
-      <workItem from="1697011078555" duration="16336000" />
+      <workItem from="1697011078555" duration="19632000" />
     </task>
     <servers />
   </component>

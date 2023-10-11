@@ -239,12 +239,20 @@ namespace tracer
             
             if (_currentState == ControllerModes.CAMERAS_MODE && !_lookThroughOn)
             {
-                //_cameraSelectionModule.lookThrough();
-                SnapSelectElement targetButton = _buttonSelectorPrefabSnapSelect.elements.FirstOrDefault(targetButton =>targetButton.buttonID == _cameraSelectionModule.cameraSelectButton().id);
-                targetButton.ControllerClick();
+                _cameraSelectionModule.lookThrough();
+                //_buttonSelectorPrefabSnapSelect = GameObject.Find("ButtonSelectorPrefab(Clone)").GetComponent<SnapSelect>();
+                //Debug.LogError(_cameraSelectionModule.cameraSelectButton().id);
+                //foreach (var VARIABLE in _buttonSelectorPrefabSnapSelect.elements)
+                //{
+                   // Debug.LogError(VARIABLE.buttonID);
+                //}
+                
+                //SnapSelectElement targetButton = _buttonSelectorPrefabSnapSelect.elements.FirstOrDefault(targetButton =>targetButton.buttonID == _cameraSelectionModule.cameraSelectButton().id);
+                
+                //targetButton.ControllerClick();
                 _lookThroughOn = true;
             }
-            else if (_currentState == ControllerModes.CAMERAS_MODE && _lookThroughOn)
+            else if (_lookThroughOn)
             {
                 _cameraSelectionModule.lookThrough();
                 SwitchToDefaultMode();
@@ -382,20 +390,30 @@ namespace tracer
                         Parameter<Vector3> paramVec3 = (Parameter<Vector3>)_selectedAbstractParam;
                         Vector3 valVec3 = paramVec3.value;
                         //_result = new Vector3(_leftStickValue.x, _rightStickValue.y, _leftStickValue.y) * (Speed * Time.deltaTime);
-                        paramVec3.setValue(paramVec3.value + _result);
+                        if (paramVec3.value + _result != paramVec3.value )
+                        {
+                            paramVec3.setValue(paramVec3.value + _result);
+                        }
                         //_selectedAbstractParam. = _result;
                         break;
                     case "rotation":
                         Parameter<Quaternion> paramQuat = (Parameter<Quaternion>)_selectedAbstractParam;
                         Quaternion rot = paramQuat.value;
                         rot = Quaternion.Euler(_leftStickValue.x, _rightStickValue.y, _leftStickValue.y);
-                        paramQuat.setValue(paramQuat.value * rot);
+                        if (paramQuat.value * rot != paramQuat.value)
+                        {
+                            paramQuat.setValue(paramQuat.value * rot);
+                        }
+                        
                         break;
                     case "sensorSize":
                         Parameter<Vector2> paramVec2 = (Parameter<Vector2>)_selectedAbstractParam;
                         //result = new Vector3(_leftStickValue.x, _rightStickValue.y, _leftStickValue.y) * (Speed * Time.deltaTime);
                         Vector2 valVec2 =new Vector2(_result.x, _result.z);
-                        paramVec2.setValue(paramVec2.value + valVec2);
+                        if (paramVec2.value + valVec2 != paramVec2.value )
+                        {
+                            paramVec2.setValue(paramVec2.value + valVec2);
+                        }
                         break;
                     case "colour":
                         break;
@@ -682,7 +700,7 @@ namespace tracer
         private void SelectorSnapSelectElementClicked(object sender, SnapSelectElement element)
         {
             _selectorCurrentSelectedSnapSelectElement = element.buttonID;
-            Debug.LogError("elem click" + _selectorCurrentSelectedSnapSelectElement);
+//            Debug.LogError("elem click" + _selectorCurrentSelectedSnapSelectElement);
 
         }
         

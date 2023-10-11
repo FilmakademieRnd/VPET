@@ -654,6 +654,7 @@ namespace tracer
                         if (!isCharacter)
                         {
                             SceneObject sdo = SceneObject.Attach(objMain, m_senderID);
+                            manager.simpleSceneObjectList.Add(sdo);
                         }
                         else
                         {
