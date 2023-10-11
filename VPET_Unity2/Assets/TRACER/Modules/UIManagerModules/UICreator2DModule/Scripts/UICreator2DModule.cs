@@ -52,8 +52,18 @@ namespace tracer
         //Currently displayed manipulator (can be null if none is displayed)
         GameObject currentManipulator;
 
+        public GameObject GetManipulator()
+        {
+            return currentManipulator;
+        }
+
         //Currently displayed AddSelector (can be null if none is displayed)
         GameObject currentAddSelector;
+        
+        public GameObject currentAddSelectorGetter
+        {
+            get => currentAddSelector;
+        }
 
         //Button for additional parameters, hidden if currentAddSelector is active
         GameObject currentAddButton;
@@ -65,6 +75,8 @@ namespace tracer
         //! Event emitted when parameter has changed
         //!
         public event EventHandler<int> parameterChanged;
+        
+        public event EventHandler<SnapSelect> createDone;
 
         private Transform UI2D;
         private Transform manipulatorPanel;
@@ -229,6 +241,7 @@ namespace tracer
             currentAddSelector.SetActive(true);
 
             createManipulator(0);
+            createDone?.Invoke(this, snapSelect);
         }
 
         //!

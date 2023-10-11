@@ -83,6 +83,11 @@ namespace tracer
         //! The list containing currently selected scene objects.
         //!
         private List<SceneObject> m_selectedObjects;
+        public List<SceneObject> SelectedObjects
+        {
+            get { return m_selectedObjects; }
+        }
+        
         //!
         //! Event emitted when the scene selection has changed.
         //!

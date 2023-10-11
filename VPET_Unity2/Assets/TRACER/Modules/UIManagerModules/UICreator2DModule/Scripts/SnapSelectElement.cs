@@ -206,6 +206,19 @@ namespace tracer
             }
         }
 
+        public void ControllerClick()
+        {
+            clicked?.Invoke(this, this);
+            clickAction?.Invoke();
+            if (isToggle)
+            {
+                txt.color = uiSettings.colors.ElementSelection_Default;
+                if (image)
+                    if (image.sprite)
+                        image.color = uiSettings.colors.ElementSelection_Default;
+            }
+        }
+
         //!
         //! Sets and resets the text color
         //! @param sender Sender of the event

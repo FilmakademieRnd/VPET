@@ -50,11 +50,16 @@ namespace tracer
         //! unique element values selectable in the SnapSelect
         //!
         private List<float> _elementValues;
-
+        
         //!
         //! non-unique list of elements
         //!
         private List<SnapSelectElement> _elements;
+
+        public List<SnapSelectElement> elements
+        {
+            get => _elements;
+        }
 
         //!
         //! is the SnapSelect scrollable vertically or horizontally?

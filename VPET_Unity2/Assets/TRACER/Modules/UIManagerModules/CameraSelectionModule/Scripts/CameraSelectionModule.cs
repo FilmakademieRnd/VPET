@@ -75,6 +75,11 @@ namespace tracer
         //! The UI button for logging the camera to an object.
         //!
         private MenuButton m_cameraSelectButton;
+
+        public MenuButton cameraSelectButton()
+        {
+            return m_cameraSelectButton;
+        }
         //!
         //! The currently selected object.
         //!
@@ -224,7 +229,7 @@ namespace tracer
         //!
         //! The function that moves the main camera to the selected object and parants it to the camera.
         //!
-        private void lookThrough()
+        public void lookThrough()
         {
             if (m_selectedObject != null)
             {

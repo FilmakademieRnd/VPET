@@ -118,6 +118,24 @@ namespace tracer
         //!
         public event EventHandler<CameraControl> cameraControlChanged;
 
+        #region Controller Events
+        public event EventHandler<float> buttonNorth;
+        public event EventHandler<float> buttonSouth;
+        public event EventHandler<float> buttonEast;
+        public event EventHandler<float> buttonWest;
+        public event EventHandler<float> buttonUp;
+        public event EventHandler<float> buttonDown;
+        public event EventHandler<float> buttonLeft;
+        public event EventHandler<float> buttonRight;
+        public event EventHandler<float> buttonLeftTrigger;
+        public event EventHandler<float> buttonRightTrigger;
+        public event EventHandler<float> buttonLeftShoulder;
+        public event EventHandler<float> buttonRighrShoulder;
+        public event EventHandler<Vector2> leftControllerStick;
+        public event EventHandler<Vector2> rightControllerStick;
+        public event EventHandler<Vector2> ControllerStickCanceled;
+        #endregion
+        
         //!
         //! Enumeration describing possible touch input gestures.
         //!
@@ -221,7 +239,29 @@ namespace tracer
             m_inputs.VPETMap.Click.started += ctx => PressStart(ctx);
             m_inputs.VPETMap.Click.performed += ctx => PressPerformed(ctx);
             m_inputs.VPETMap.Click.canceled += ctx => PressEnd(ctx);
+            
+            
+            //controller input
+            m_inputs.VPETMap.Controller_North.performed += ctx => NorthButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_South.performed += ctx =>SouthButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_East.performed += ctx =>EastButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_West.performed += ctx =>WestButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Up.performed += ctx =>UpButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Down.performed += ctx =>DownButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Left.performed += ctx =>LeftButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Right.performed += ctx =>RightButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Left_Trigger.performed += ctx =>LeftTriggerButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Right_Trigger.performed += ctx =>RightTriggerButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Left_Shoulder.performed += ctx =>LeftShoulderButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Right_Shoulder.performed += ctx =>RightShoulderButtonPressed(ctx);
+            m_inputs.VPETMap.Controller_Left_Stick.performed += ctx => LeftStick(ctx);
+            m_inputs.VPETMap.Controller_Left_Stick.canceled += ctx => LeftStick(ctx);
+            m_inputs.VPETMap.Controller_Right_Stick.performed += ctx => RightStick(ctx);
+            m_inputs.VPETMap.Controller_Right_Stick.canceled += ctx => RightStick(ctx);
+            m_inputs.VPETMap.Controller_Left_Stick.canceled += ctx => StickCanceld(ctx);;
+            m_inputs.VPETMap.Controller_Right_Stick.canceled += ctx => StickCanceld(ctx);;
 
+            
             // Keep track of cursor/touch move
             m_inputs.VPETMap.Position.performed += ctx => MovePoint(ctx);
 
@@ -250,6 +290,80 @@ namespace tracer
 #endif
         }
 
+        #region Controller Button Events Invoke
+        private void LeftShoulderButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonLeftShoulder?.Invoke(this, ctx.ReadValue<float>());
+        }
+        private void RightShoulderButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonRighrShoulder?.Invoke(this, ctx.ReadValue<float>());
+        }
+        private void RightTriggerButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonRightTrigger?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void LeftTriggerButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonLeftTrigger?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void RightButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonRight?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void LeftButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonLeft?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void DownButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonDown?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void UpButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonUp?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void WestButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonWest?.Invoke(this, ctx.ReadValue<float>());
+        }
+
+        private void EastButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonEast?.Invoke(this, ctx.ReadValue<float>());
+        }
+        private void SouthButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonSouth?.Invoke(this, ctx.ReadValue<float>());
+        }
+        private void NorthButtonPressed(InputAction.CallbackContext ctx)
+        {
+            buttonNorth?.Invoke(this, ctx.ReadValue<float>());
+            
+        }
+        private void LeftStick(InputAction.CallbackContext ctx)
+        {
+            leftControllerStick?.Invoke(this, ctx.ReadValue<Vector2>());
+        }
+        
+        private void RightStick(InputAction.CallbackContext ctx)
+        {
+            rightControllerStick?.Invoke(this, ctx.ReadValue<Vector2>());
+        }
+        
+        private void StickCanceld(InputAction.CallbackContext ctx)
+        {
+            ControllerStickCanceled?.Invoke(this, ctx.ReadValue<Vector2>());
+        }
+        
+        #endregion
+        
         //!
         //! Function to handle right mouse button input (editor only)
         //!
@@ -375,12 +489,12 @@ namespace tracer
         {
             base.Cleanup(sender, e);
 
-            m_inputs.VPETMap.Tap.performed -= ctx => TapFunction(ctx);
+            m_inputs.VPETMap.Tap.performed -= TapFunction;
 
-            m_inputs.VPETMap.Click.performed -= ctx => PressPerformed(ctx);
-            m_inputs.VPETMap.Click.canceled -= ctx => PressEnd(ctx);
+            m_inputs.VPETMap.Click.performed -= PressPerformed;
+            m_inputs.VPETMap.Click.canceled -= PressEnd;
 
-            m_inputs.VPETMap.Position.performed -= ctx => MovePoint(ctx);
+            m_inputs.VPETMap.Position.performed -= MovePoint;
 
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerDown -= FingerDown;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerUp -= FingerUp;
@@ -389,6 +503,28 @@ namespace tracer
 
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= TwoFingerMove;
             UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerMove -= ThreeFingerMove;
+            
+            //controller input
+            m_inputs.VPETMap.Controller_North.performed -= NorthButtonPressed;
+            m_inputs.VPETMap.Controller_South.performed -= SouthButtonPressed;
+            m_inputs.VPETMap.Controller_East.performed -= EastButtonPressed;
+            m_inputs.VPETMap.Controller_West.performed -= WestButtonPressed;
+            m_inputs.VPETMap.Controller_Up.performed -= UpButtonPressed;
+            m_inputs.VPETMap.Controller_Down.performed -= DownButtonPressed;
+            m_inputs.VPETMap.Controller_Left.performed -= LeftButtonPressed;
+            m_inputs.VPETMap.Controller_Right.performed -= RightButtonPressed;
+            m_inputs.VPETMap.Controller_Left_Trigger.performed -= LeftTriggerButtonPressed;
+            m_inputs.VPETMap.Controller_Right_Trigger.performed -= RightTriggerButtonPressed;
+            m_inputs.VPETMap.Controller_Left_Shoulder.performed -= LeftShoulderButtonPressed;
+            m_inputs.VPETMap.Controller_Right_Shoulder.performed -= RightShoulderButtonPressed;
+            m_inputs.VPETMap.Controller_Left_Stick.performed -= LeftStick;
+            m_inputs.VPETMap.Controller_Left_Stick.canceled -= LeftStick;
+            m_inputs.VPETMap.Controller_Right_Stick.performed -= RightStick;
+            m_inputs.VPETMap.Controller_Right_Stick.canceled -= RightStick;
+            
+            m_inputs.VPETMap.Controller_Left_Stick.canceled -= StickCanceld;
+            m_inputs.VPETMap.Controller_Right_Stick.canceled -= StickCanceld;
+            
 
 #if UNITY_EDITOR
             // Editor-only mouse camera manipulation
@@ -801,6 +937,8 @@ namespace tracer
                 m_cameraControl = CameraControl.ATTITUDE;
             }
         }
+
+       
     }
 
 }

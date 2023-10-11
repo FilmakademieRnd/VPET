@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - editable
+  - Core
   layers:
   - Default
   - TransparentFX
