@@ -42,7 +42,7 @@ using UnityEngine.XR.ARSubsystems;
 using Unity.XR.CoreUtils;
 using UnityEngine.InputSystem.XR;
 
-namespace vpet
+namespace tracer
 {
     //!
     //! implementation of VPET augmented reality (AR) tracking module
@@ -339,7 +339,7 @@ namespace vpet
         //!
         //! event handling changes to the AR occlusion mapping (active/inactive) through user input / UI
         //! @param sender event sender
-        //! @param e event arguments
+        //! @param b boolean to enable or disable feature
         //!
         private void changeOcclusion(object sender, bool b)
         {
@@ -352,11 +352,41 @@ namespace vpet
         //!
         //! event handling changes to the AR marker tracking (active/inactive) through user input / UI
         //! @param sender event sender
-        //! @param e event arguments
+        //! @param b boolean to enable or disable feature
         //!
         private void changeMarkerTracking(object sender, bool b)
         {
-            Camera.main.gameObject.AddComponent<ARTrackedImageManager>().enabled = b;
+            ARTrackedImageManager arTrackedImageManager;
+            arTrackedImageManager = Camera.main.gameObject.GetComponent<ARTrackedImageManager>();
+            if (!arTrackedImageManager)
+            {
+                arTrackedImageManager = Camera.main.gameObject.AddComponent<ARTrackedImageManager>();
+            }
+            arTrackedImageManager.enabled = b;
+
+            if (b)
+            {
+                arTrackedImageManager.trackedImagesChanged += OnTrackedImageChanged;
+            }
+            else
+            {
+                arTrackedImageManager.trackedImagesChanged -= OnTrackedImageChanged;
+            }
+        }
+
+        void OnTrackedImageChanged(ARTrackedImagesChangedEventArgs eventArgs)
+        {
+            foreach (ARTrackedImage newImage in eventArgs.added)
+            {
+                XROriginExtensions.MakeContentAppearAt(m_arOrigin, sceneRoot, newImage.transform.position, newImage.transform.rotation);
+            }
+
+            foreach (ARTrackedImage updatedImage in eventArgs.updated)
+            {
+                // Handle updated event
+                XROriginExtensions.MakeContentAppearAt(m_arOrigin, sceneRoot, updatedImage.transform.position, updatedImage.transform.rotation);
+
+            }
         }
 
         //!

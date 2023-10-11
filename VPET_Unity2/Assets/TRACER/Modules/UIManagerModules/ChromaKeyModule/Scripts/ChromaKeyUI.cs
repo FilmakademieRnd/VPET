@@ -34,7 +34,7 @@ using UnityEngine.XR;
 using UnityEngine.XR.ARFoundation;
 using Object = UnityEngine.Object;
 
-namespace vpet
+namespace tracer
 {
     public class ChromaKeyUI : UIManagerModule
     {
