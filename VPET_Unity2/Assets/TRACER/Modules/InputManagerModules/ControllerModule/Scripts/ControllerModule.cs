@@ -34,6 +34,7 @@ namespace tracer
         private InputManager _inputManager;
 
         private CameraSelectionModule _cameraSelectionModule;
+        private SelectionModule _selectionModule;
 
         private List<SceneObject> _sceneObjectsList;
         private List<SceneObjectLight> _sceneObjectLightsList;
@@ -77,7 +78,7 @@ namespace tracer
             _uiManager = core.getManager<UIManager>();
             _inputManager = core.getManager<InputManager>();
             UI2DModule = _uiManager.getModule<UICreator2DModule>();
-
+            _selectionModule = _uiManager.getModule<SelectionModule>();
             _cameraSelectionModule = _uiManager.getModule<CameraSelectionModule>();
             
             ControllerdoneEditing += _sceneManager.getModule<UndoRedoModule>().addHistoryStep;
@@ -469,6 +470,10 @@ namespace tracer
 
                 if (!sceneObject)
                     sceneObject = gameObject.transform.parent.GetComponent<SceneObject>();
+
+                if (!sceneObject)
+                    sceneObject = _selectionModule.GetSelectableAtPixel(new Vector2(Screen.width / 2, Screen.height / 2));
+
             }
 
             if (sceneObject)
