@@ -546,6 +546,7 @@ namespace tracer
                     {
                         objMain.tag = "editable";
                         SceneObject sco = SceneObject.Attach(objMain, m_senderID);
+                        manager.simpleSceneObjectList.Add(sco);
                     }
                 }
                 else if (node.GetType() == typeof(SceneManager.SceneNodeLight))

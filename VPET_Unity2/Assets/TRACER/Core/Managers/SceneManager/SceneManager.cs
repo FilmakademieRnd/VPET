@@ -239,6 +239,7 @@ namespace tracer
 
             m_sceneCameraList.Clear();
             m_sceneLightList.Clear();
+            m_simpleSceneObjectList.Clear();
 
 
             sceneReset?.Invoke(this, EventArgs.Empty);
