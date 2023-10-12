@@ -67,6 +67,8 @@ namespace tracer
         //! The default input event.
         //!
         public event EventHandler<Vector2> objectSelectionEvent;
+        
+        public event EventHandler<Vector2> ControllerObjectSelectionEvent;
 
         //!
         //! Press start event, i.e. the begin of a click.
@@ -936,6 +938,11 @@ namespace tracer
                 m_oldcameraControl = CameraControl.ATTITUDE;
                 m_cameraControl = CameraControl.ATTITUDE;
             }
+        }
+
+        public void ControllerSelect(Vector2 pos)
+        {
+            objectSelectionEvent?.Invoke(this, pos);
         }
 
        

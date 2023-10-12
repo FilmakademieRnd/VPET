@@ -456,49 +456,8 @@ namespace tracer
         private void SelectSceneObjectWithRaycastAndButton()
         {
             _uiManager.clearSelectedObject();
-            SceneObject sceneObject = null;
-            if (Physics.Raycast(_ray, out _hit, Mathf.Infinity))
-            {
-                GameObject gameObject = _hit.collider.gameObject;
-                IconUpdate iconUpdate = gameObject.GetComponent<IconUpdate>();
-                // check if an icon has been hit
-                if (iconUpdate)
-                    sceneObject = iconUpdate.m_parentObject;
-
-                if (!sceneObject)
-                    sceneObject = gameObject.GetComponent<SceneObject>();
-
-                if (!sceneObject)
-                    sceneObject = gameObject.transform.parent.GetComponent<SceneObject>();
-
-                if (!sceneObject)
-                    sceneObject = _selectionModule.GetSelectableAtPixel(new Vector2(Screen.width / 2, Screen.height / 2));
-
-            }
-
-            if (sceneObject)
-            {
-                switch (sceneObject)
-                {
-                    case SceneObjectCamera:
-                        if (_uiManager.activeRole == UIManager.Roles.EXPERT ||
-                            _uiManager.activeRole == UIManager.Roles.DOP)
-                            _uiManager.addSelectedObject(sceneObject);
-                        break;
-                    case SceneObjectLight:
-                        if (_uiManager.activeRole == UIManager.Roles.EXPERT ||
-                            _uiManager.activeRole == UIManager.Roles.LIGHTING ||
-                            _uiManager.activeRole == UIManager.Roles.SET)
-                            _uiManager.addSelectedObject(sceneObject);
-                        _currentSelectedSceneObject = sceneObject;
-                        break;
-                    default:
-                        if (_uiManager.activeRole == UIManager.Roles.EXPERT ||
-                            _uiManager.activeRole == UIManager.Roles.SET)
-                            _uiManager.addSelectedObject(sceneObject);
-                        break;
-                }
-            }
+            manager.ControllerSelect(new Vector2(Screen.width / 2, Screen.height / 2));
+            
         }
         
         #endregion
