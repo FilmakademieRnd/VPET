@@ -25,6 +25,9 @@ void USceneObjectPointLight::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (_lock)
+		return;
+	
 	if (pointLgtCmp)
 	{
 		float range = pointLgtCmp->AttenuationRadius * rangeFactor;

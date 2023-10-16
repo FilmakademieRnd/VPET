@@ -58,6 +58,9 @@ void USceneObjectCamera::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (_lock)
+		return;
+	
 	if (kCamComp)
 	{
 		float aspect = kCamComp->AspectRatio; // default: 2

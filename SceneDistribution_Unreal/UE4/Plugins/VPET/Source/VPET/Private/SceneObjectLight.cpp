@@ -27,6 +27,9 @@ void USceneObjectLight::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (_lock)
+		return;
+	
 	if (kLit)
 	{
 		FVector col = kLit->GetLightColor();

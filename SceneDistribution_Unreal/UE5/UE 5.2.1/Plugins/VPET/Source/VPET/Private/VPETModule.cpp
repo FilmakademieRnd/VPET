@@ -307,7 +307,7 @@ void AVPETModule::CreateParameterMessage()
 		//lock the parameter!
 		std::lock_guard lock(parameter->mtx);
 
-		//TODO add scene id
+		//scene id
 		uint8_t sceneID_Val = m_id;
 		memcpy(responseMessageContent, &sceneID_Val, sizeof(uint8_t)); responseMessageContent += sizeof(uint8_t);
 		

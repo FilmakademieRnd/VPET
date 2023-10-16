@@ -61,7 +61,7 @@ void AVPETModule::BeginPlay()
 	// Start populating the distributor state
 
 	// Header values
-	m_state.vpetHeader.lightIntensityFactor = 1.0;
+	m_state.vpetHeader.lightIntensityFactor = 0.1;
 	m_state.vpetHeader.senderID = m_id;
 	
 	//m_state.vpetHeader.textureBinaryType = 0;

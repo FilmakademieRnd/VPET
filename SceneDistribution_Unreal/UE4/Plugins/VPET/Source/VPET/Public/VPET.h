@@ -21,8 +21,8 @@ warranty is limited to malice. Scene DistributiorUSD may under no circumstances
 be used for racist, sexual or any illegal purposes. In all non-commercial
 productions, scientific publications, prototypical non-commercial software tools,
 etc. using the Unreal Scene Distribution Filmakademie has to be named as follows:
-“VPET-Virtual Production Editing Tool by Filmakademie Baden-Württemberg,
-Animationsinstitut (http://research.animationsinstitut.de)“.
+â€œVPET-Virtual Production Editing Tool by Filmakademie Baden-WÃ¼rttemberg,
+Animationsinstitut (http://research.animationsinstitut.de)â€œ.
 
 In case a company or individual would like to use the Unreal Scene Distribution in
 a commercial surrounding or for commercial purposes, software based on these

@@ -12,4 +12,5 @@ void USceneObjectAreaLight::BeginPlay()
 void USceneObjectAreaLight::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
 }
