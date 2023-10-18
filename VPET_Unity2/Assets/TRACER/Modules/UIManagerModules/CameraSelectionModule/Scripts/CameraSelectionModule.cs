@@ -242,6 +242,8 @@ namespace tracer
         //!
         public void lookThrough()
         {
+            copyCamera();
+
             if (m_selectedObject != null)
             {
                 InputManager inputManager = core.getManager<InputManager>();
@@ -251,6 +253,8 @@ namespace tracer
                     core.updateEvent -= updateLookThrough;
                     m_oldSOCamera.hasChanged -= updateCamera;
                     m_isLocked = false;
+                    Camera.main.fieldOfView = 60;
+                    Camera.main.transform.position -= Camera.main.transform.forward;
                 }
                 else
                 {
@@ -454,7 +458,6 @@ namespace tracer
         //!
         private void updateLookThrough(object sender, EventArgs e)
         {
-            copyCamera();
             Transform camTransform = Camera.main.transform;
             Transform objTransform = m_selectedObject.transform;
 
