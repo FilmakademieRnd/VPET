@@ -75,8 +75,8 @@ namespace tracer
         //! Event emitted when parameter has changed
         //!
         public event EventHandler<int> parameterChanged;
-        
-        public event EventHandler<SnapSelect> createDone;
+
+        public event EventHandler<ColorSelect> colorSelectActive; 
 
         private Transform UI2D;
         private Transform manipulatorPanel;
@@ -241,7 +241,6 @@ namespace tracer
             currentAddSelector.SetActive(true);
 
             createManipulator(0);
-            createDone?.Invoke(this, snapSelect);
         }
 
         //!
@@ -316,6 +315,7 @@ namespace tracer
                     GameObject resourcePrefab = Resources.Load<GameObject>("Prefabs/PRE_UI_ColorPicker");
                     currentManipulator = SceneObject.Instantiate(resourcePrefab, manipulatorPanel);
                     currentManipulator.GetComponent<ColorSelect>().Init(abstractParam);
+                    manager.ColorGameObjectActive(currentManipulator);
                     break;
                 case AbstractParameter.ParameterType.ACTION:
                 case AbstractParameter.ParameterType.BOOL:

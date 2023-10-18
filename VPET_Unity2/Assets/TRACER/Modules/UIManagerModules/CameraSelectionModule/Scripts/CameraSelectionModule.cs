@@ -212,7 +212,7 @@ namespace tracer
                     sceneObjects[0].GetType() == typeof(SceneObjectDirectionalLight) ||
                     sceneObjects[0].GetType() == typeof(SceneObjectSpotLight))
                 {
-                    m_cameraSelectButton = new MenuButton("", lookThrough);
+                    m_cameraSelectButton = new MenuButton("", lookThrough, null, "CameraSelectionButton");
                     m_cameraSelectButton.setIcon("Images/button_lookTrough");
                 }
                 else

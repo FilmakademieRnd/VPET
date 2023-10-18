@@ -489,6 +489,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""1ce0de03-5768-4bd6-b437-0d811a8f463c"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Controller_South"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""f1ea4888-f4ec-4be1-894e-7609e65621c9"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",

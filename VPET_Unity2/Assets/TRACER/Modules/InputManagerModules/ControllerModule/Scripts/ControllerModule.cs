@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using tracer;
 using UnityEngine;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace tracer
@@ -11,15 +13,13 @@ namespace tracer
 
     public class ControllerModule : InputManagerModule
     {
-
-        // TODO MOVE everything from controller test here 
-        // TODO in Input manager create events for all the buttons 
-        private GameObject _selectedObject;
         private GameObject _mainCamera;
         private GameObject _crosshair;
         private GameObject _controllerCanvasPrefab;
         private GameObject _controllerCanvas;
         private GameObject _currentAddSelector;
+
+        private Image _crossHairImg;
 
         private SceneObject _currentSelectedSceneObject;
 
@@ -27,14 +27,15 @@ namespace tracer
         private SnapSelect _spinnerSnapSelect;
         private SnapSelect _buttonSelectorPrefabSnapSelect;//(Clone)
 
+        private ColorSelect _colorSelect;
+
         private Camera _camera;
 
         private UIManager _uiManager;
+        
         private SceneManager _sceneManager;
-        private InputManager _inputManager;
 
         private CameraSelectionModule _cameraSelectionModule;
-        private SelectionModule _selectionModule;
 
         private List<SceneObject> _sceneObjectsList;
         private List<SceneObjectLight> _sceneObjectLightsList;
@@ -43,8 +44,9 @@ namespace tracer
         private List<SnapSelectElement> _spinnerSnapSelectElementsList; 
         
         private int _selectorCurrentSelectedSnapSelectElement = 0;
-        private int _spinnerCurrentSelectedSnapSelectElement = 0;
+        //private int _spinnerCurrentSelectedSnapSelectElement = 0;
         private int _selectedListObject;
+        private int _cameraSelectionButtonID;
 
         private Vector2 _leftStickValue;
         private Vector2 _rightStickValue;
@@ -59,8 +61,6 @@ namespace tracer
         private Ray _ray;
         private RaycastHit _hit;
 
-        private UICreator2DModule UI2DModule;
-
         private AbstractParameter _selectedAbstractParam;
         
         public event EventHandler<AbstractParameter> ControllerdoneEditing;
@@ -73,13 +73,8 @@ namespace tracer
             _controllerCanvasPrefab = Resources.Load("Prefabs/ControllerCanvas") as GameObject;
             _mainCamera = GameObject.FindGameObjectsWithTag("MainCamera")[0];
             _camera = _mainCamera.GetComponent<Camera>();
-            _selectedObject = _mainCamera;
             _sceneManager = core.getManager<SceneManager>();
             _uiManager = core.getManager<UIManager>();
-            _inputManager = core.getManager<InputManager>();
-            UI2DModule = _uiManager.getModule<UICreator2DModule>();
-            _selectionModule = _uiManager.getModule<SelectionModule>();
-            _cameraSelectionModule = _uiManager.getModule<CameraSelectionModule>();
             
             ControllerdoneEditing += _sceneManager.getModule<UndoRedoModule>().addHistoryStep;
             
@@ -107,7 +102,7 @@ namespace tracer
 
             _uiManager.selectionChanged += UiManagerSelectionChanged;
             _uiManager.selectionRemoved += UiManagerSelectionRemoved;
-            //UI2DModule.parameterChanged += GetSpinner;
+            _uiManager.colorSelectGameObject += GetColorSelect;
 
         }
 
@@ -135,6 +130,7 @@ namespace tracer
             
             _uiManager.selectionChanged -= UiManagerSelectionChanged;
             _uiManager.selectionRemoved -= UiManagerSelectionRemoved;
+            _uiManager.colorSelectGameObject -= GetColorSelect;
             
             ControllerdoneEditing -= _sceneManager.getModule<UndoRedoModule>().addHistoryStep;
         }
@@ -240,34 +236,27 @@ namespace tracer
             
             if (_currentState == ControllerModes.CAMERAS_MODE && !_lookThroughOn)
             {
-                _cameraSelectionModule.lookThrough();
-                //_buttonSelectorPrefabSnapSelect = GameObject.Find("ButtonSelectorPrefab(Clone)").GetComponent<SnapSelect>();
-                //Debug.LogError(_cameraSelectionModule.cameraSelectButton().id);
-                //foreach (var VARIABLE in _buttonSelectorPrefabSnapSelect.elements)
-                //{
-                   // Debug.LogError(VARIABLE.buttonID);
-                //}
-                
-                //SnapSelectElement targetButton = _buttonSelectorPrefabSnapSelect.elements.FirstOrDefault(targetButton =>targetButton.buttonID == _cameraSelectionModule.cameraSelectButton().id);
-                
-                //targetButton.ControllerClick();
+                _uiManager.getButton("CameraSelectionButton").action.Invoke();
+                _uiManager.getButton("CameraSelectionButton").showHighlighted(true);
+
                 _lookThroughOn = true;
             }
             else if (_lookThroughOn)
             {
-                _cameraSelectionModule.lookThrough();
+                _uiManager.getButton("CameraSelectionButton").action.Invoke();
+                _uiManager.getButton("CameraSelectionButton").showHighlighted(false);
+                
                 SwitchToDefaultMode();
                 _lookThroughOn = false;
             }
-
-
         }
 
         private void PressEast(object sender, float e)
         {
             if (_lookThroughOn)
             {
-                _cameraSelectionModule.lookThrough();
+                _uiManager.getButton("CameraSelectionButton").action.Invoke();
+                _uiManager.getButton("CameraSelectionButton").showHighlighted(false);
                 _lookThroughOn = false;
             }
             
@@ -317,11 +306,13 @@ namespace tracer
             private void PressLeftTrigger(object sender, float e)
         {
             SwitchToPreviousMode();
+            _isCrosshairOn = false;
         }
 
         private void PressRightTrigger(object sender, float e)
         {
             SwitchToNextMode();
+            _isCrosshairOn = false;
         }
 
         private void PressLeftShoulder(object sender, float e)
@@ -355,15 +346,27 @@ namespace tracer
 
         public ControllerModule(string name, Manager manager) : base(name, manager)
         {
+            
         }
 
         private void TracerUpdate(object sender, EventArgs e)
         {
-            // TODO manipulation based on selected Manipulation Moode; 
             if (_isCrosshairOn)
             {
                 _ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-                //TODO make obj outline glow if hit and selectable
+                if (Physics.Raycast(_ray, out _hit))
+                {
+                    if (_hit.transform.gameObject.GetComponent<SceneObject>() ||_hit.transform.gameObject.GetComponent<IconUpdate>() )
+                    {
+                        _crossHairImg.color = Color.magenta;
+                        _crossHairImg.transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
+                    }
+                }
+                else
+                {
+                    _crossHairImg.color = Color.green;
+                    _crossHairImg.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                }
             }
             
             if (_currentState != ControllerModes.MAIN_VIEW_MODE)
@@ -405,7 +408,6 @@ namespace tracer
                         {
                             paramQuat.setValue(paramQuat.value * rot);
                         }
-                        
                         break;
                     case "sensorSize":
                         Parameter<Vector2> paramVec2 = (Parameter<Vector2>)_selectedAbstractParam;
@@ -416,7 +418,8 @@ namespace tracer
                             paramVec2.setValue(paramVec2.value + valVec2);
                         }
                         break;
-                    case "colour":
+                    case "color":
+                        _colorSelect.controllerManipulator(new Vector3(_leftStickValue.x, _leftStickValue.y, _rightStickValue.y));
                         break;
                     default:
                         Parameter<float> paramFlo = (Parameter<float>)_selectedAbstractParam;
@@ -438,12 +441,19 @@ namespace tracer
             //_selectedObject.transform.Translate(_result);
         }
 
+        private void GetColorSelect(object sender, GameObject go)
+        {
+            _colorSelect = go.GetComponent<ColorSelect>();
+        }
+        
+
         #region Crosshair Logic
         private void OnOrOffCrosshair()
         {
             if (!_isCrosshairOn)
             {
                 _controllerCanvas = Object.Instantiate(_controllerCanvasPrefab, _camera.transform);
+                _crossHairImg = _controllerCanvas.GetComponentInChildren<Image>();
                 _isCrosshairOn = true;
             }
             else
@@ -452,12 +462,21 @@ namespace tracer
                 _isCrosshairOn = false;
             }
         }
+
+        private void OffCrosshair()
+        {
+            if (_isCrosshairOn)
+            {
+                Object.DestroyImmediate(_controllerCanvas);
+                _isCrosshairOn = false;
+            }
+        }
         
         private void SelectSceneObjectWithRaycastAndButton()
         {
+            OffCrosshair();
             _uiManager.clearSelectedObject();
             manager.ControllerSelect(new Vector2(Screen.width / 2, Screen.height / 2));
-            
         }
         
         #endregion
@@ -465,10 +484,10 @@ namespace tracer
         #region Selection Logic
         private void ChangeSelectedObject(int val)
         {
+            OffCrosshair();
             switch (_currentState)
             {
                 case ControllerModes.MAIN_VIEW_MODE:
-                    _selectedObject = _mainCamera;
                     _uiManager.clearSelectedObject();
                     break;
 
@@ -525,6 +544,7 @@ namespace tracer
 
         private void SelectById(SceneObject obj)
         {
+            OffCrosshair();
             _uiManager.clearSelectedObject();
 
             switch (obj)
@@ -552,6 +572,7 @@ namespace tracer
 
         private void UiManagerSelectionChanged(object sender, List<SceneObject> sceneObjects)
         {
+            OffCrosshair();
             if (sceneObjects.Count > 0)
             {
                 switch (sceneObjects[0])
@@ -583,6 +604,7 @@ namespace tracer
 
         private void UiManagerSelectionRemoved(object sender, SceneObject sceneObject)
         {
+            OffCrosshair();
             _currentState = 0;
             _selectedListObject = 0;
             _currentSelectedSceneObject = null;
@@ -596,13 +618,8 @@ namespace tracer
             if (_currentState != ControllerModes.MAIN_VIEW_MODE)
             {
                 _selectorSnapSelect = GameObject.Find("PRE_UI_AddSelector(Clone)").GetComponent<SnapSelect>();
+                _selectorSnapSelect.parameterChanged += ParamChange;
                 _selectorSnapSelectElementsList = _selectorSnapSelect.elements.GroupBy(element => element.buttonID).Select(group => group.First()).ToList();
-
-                foreach (var variable in _selectorSnapSelect.elements)
-                {
-                    variable.clicked += SelectorSnapSelectElementClicked;
-                }
-                
                 _selectorCurrentSelectedSnapSelectElement = 0;
                 _selectedAbstractParam =
                     _currentSelectedSceneObject.parameterList[_selectorCurrentSelectedSnapSelectElement];
@@ -610,6 +627,11 @@ namespace tracer
                 //GetSpinner();
                 // List<int> uniqueButtonIDs = _snapSelectElementsList.Select(element => element.buttonID).Distinct().ToList();
             }
+        }
+
+        private void ParamChange(object sender, int manipulatorMode)
+        {
+            _selectorCurrentSelectedSnapSelectElement = manipulatorMode;
         }
 
         /*private void GetSpinner()
@@ -660,13 +682,6 @@ namespace tracer
             //AbstractParameter.ParameterType type = abstractParam.vpetType;
 
         }*/
-        
-        private void SelectorSnapSelectElementClicked(object sender, SnapSelectElement element)
-        {
-            _selectorCurrentSelectedSnapSelectElement = element.buttonID;
-//            Debug.LogError("elem click" + _selectorCurrentSelectedSnapSelectElement);
-
-        }
         
         // doneEditing?.Invoke(this, abstractParam);  FOR UNDO REDO 
         private void DoneEditing(object sender, Vector2 value)

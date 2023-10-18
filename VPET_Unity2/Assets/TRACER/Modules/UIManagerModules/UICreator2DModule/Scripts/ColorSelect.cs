@@ -51,8 +51,12 @@ namespace tracer
         // development phase
         //private Image testImage;
         private float hue;
+        
         private float sat;
         private float val;
+        private float val2;
+
+        private float speed = 1f;
 
         private bool hueDrag = false;
 
@@ -137,6 +141,50 @@ namespace tracer
             }
             outputColor = Color.HSVToRGB(hue, sat, val);
 
+            mat.SetVector("_InputPos", new(sat * .8f, val, .9f, hue));
+
+            if (col != null)
+                col.setValue(outputColor);
+        }
+
+        public void controllerManipulator(Vector3 input)
+        {
+            
+            hue += input.z * speed * Time.deltaTime;
+            if (hue > 1)
+            {
+                hue = 1;
+            }
+            else if (hue < 0)
+            {
+                hue = 0;
+            }
+            mat.SetColor("_InputColor", Color.HSVToRGB(hue, 1f, 1f));
+            
+            val += input.y* speed * Time.deltaTime;
+            val2 += input.x* speed * Time.deltaTime;
+            if (val > 1)
+            {
+                val = 1;
+            }
+            else if (val < 0)
+            {
+                val = 0;
+            }
+            if (val2 > 1)
+            {
+                val2 = 1;
+            }
+            else if (val2 < 0)
+            {
+                val2 = 0;
+            }
+            
+            sat = Mathf.Clamp((val2 ) * 1.25f, 0f, 1f);
+            
+            
+            outputColor = Color.HSVToRGB(hue, sat, val);
+            
             mat.SetVector("_InputPos", new(sat * .8f, val, .9f, hue));
 
             if (col != null)
