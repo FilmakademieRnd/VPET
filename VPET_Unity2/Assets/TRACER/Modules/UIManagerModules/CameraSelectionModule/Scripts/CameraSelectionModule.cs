@@ -178,7 +178,7 @@ namespace tracer
             base.Cleanup(sender, e);
 
             m_sceneManager.sceneReady -= initCameraOnce;
-            core.getManager<UIManager>().selectionChanged -= createButtons;
+            m_uiManager.selectionChanged -= createButtons;
             m_inputManager.cameraControlChanged -= updateSafeFrame;
         }
 
@@ -437,28 +437,15 @@ namespace tracer
         {
             if (m_sceneManager.sceneCameraList.Count > 0)
             {
-                //if (m_oldSOCamera)
-                //{
-                //    m_oldSOCamera.hasChanged -= updateCamera;
-                //}
                 Camera mainCamera = Camera.main;
-                //int targetDisplay = mainCamera.targetDisplay;
                 float aspect = mainCamera.aspect;
                 SceneObjectCamera soCamera = m_sceneManager.sceneCameraList[0];
-                Camera newCamera = soCamera.GetComponent<Camera>();
-                //soCamera.hasChanged += updateCamera;
-                //Debug.Log(soCamera.name + " Camera linked.");
-                //m_oldSOCamera = soCamera;
                 mainCamera.enabled = false;
-                mainCamera.CopyFrom(newCamera);
-                //mainCamera.targetDisplay = targetDisplay;
+                mainCamera.CopyFrom(soCamera.GetComponent<Camera>());
                 mainCamera.aspect = aspect;
                 mainCamera.enabled = true;
 
                 updateCamera(soCamera, null);
-
-                // announce the UI operation to the input manager
-                //m_inputManager.updateCameraCommand();
             }
         }
 
