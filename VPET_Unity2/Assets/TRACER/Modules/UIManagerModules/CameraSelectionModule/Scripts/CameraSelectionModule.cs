@@ -50,7 +50,7 @@ namespace tracer
         //!
         //! The index of the currently selected camera.
         //!
-        private int m_cameraIndex = -1;
+        private int m_cameraIndex = 0;
         //!
         //! The initial position of the selected object.
         //!
@@ -162,7 +162,7 @@ namespace tracer
             m_uiManager.addButton(cameraSelectButton);
 
             m_sceneManager.sceneReady += initCameraOnce;
-            m_uiManager.selectionChanged += createButtons;
+            m_uiManager.selectionChanged += selection;
 
             m_inputManager.cameraControlChanged += updateSafeFrame;
         }
@@ -178,17 +178,17 @@ namespace tracer
             base.Cleanup(sender, e);
 
             m_sceneManager.sceneReady -= initCameraOnce;
-            m_uiManager.selectionChanged -= createButtons;
+            m_uiManager.selectionChanged -= selection;
             m_inputManager.cameraControlChanged -= updateSafeFrame;
         }
 
         //!
-        //! Function that creates the camera selection ui buttons. Called every time a scene object has been selected.
+        //! Function that creates the camera selection ui buttons & handles selection changes. Called every time a scene object has been selected.
         //!
         //! @param sender The UI manager.
         //! @param sceneObjects a list of the currently selected objects.
         //!
-        private void createButtons(object sender, List<SceneObject> sceneObjects)
+        private void selection(object sender, List<SceneObject> sceneObjects)
         {
             if (m_cameraSelectButton != null)
             {
@@ -224,7 +224,6 @@ namespace tracer
             }
             else
             {
-                m_cameraIndex = -1;
                 if (m_isLocked)
                 {
                     core.updateEvent -= updateLookThrough;
@@ -379,6 +378,7 @@ namespace tracer
         //!
         private void selectNextCamera()
         {
+            m_uiManager.clearSelectedObject();
             m_cameraIndex++;
 
             if (m_isLocked)
