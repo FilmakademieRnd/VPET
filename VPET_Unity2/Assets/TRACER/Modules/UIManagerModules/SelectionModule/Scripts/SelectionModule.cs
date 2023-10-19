@@ -113,6 +113,11 @@ namespace tracer
         //!
         private bool m_isRenderActive = false;
 
+        public bool isRenderActive
+        {
+            set => m_isRenderActive = value;
+        }
+
         //!
         //! Constructor
         //! @param name Name of this module
@@ -224,6 +229,7 @@ namespace tracer
         //!
         public SceneObject GetSelectableAtPixel(Vector2 screenPosition)
         {
+            
             if (!cpuData.IsCreated)
                 return null;
 

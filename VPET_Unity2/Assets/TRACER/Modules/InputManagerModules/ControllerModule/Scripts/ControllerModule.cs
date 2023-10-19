@@ -34,6 +34,8 @@ namespace tracer
         private UIManager _uiManager;
         
         private SceneManager _sceneManager;
+        
+        private SelectionModule _selectionModule;
 
         private CameraSelectionModule _cameraSelectionModule;
 
@@ -75,6 +77,7 @@ namespace tracer
             _camera = _mainCamera.GetComponent<Camera>();
             _sceneManager = core.getManager<SceneManager>();
             _uiManager = core.getManager<UIManager>();
+            _selectionModule = _uiManager.getModule<SelectionModule>();
             
             ControllerdoneEditing += _sceneManager.getModule<UndoRedoModule>().addHistoryStep;
             
@@ -353,25 +356,11 @@ namespace tracer
         {
             if (_isCrosshairOn)
             {
-                _ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-                if (Physics.Raycast(_ray, out _hit))
-                {
-                    if (_hit.transform.gameObject.GetComponent<SceneObject>() ||_hit.transform.gameObject.GetComponent<IconUpdate>() )
-                    {
-                        _crossHairImg.color = Color.magenta;
-                        _crossHairImg.transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
-                    }
-                }
-                else
-                {
-                    _crossHairImg.color = Color.green;
-                    _crossHairImg.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-                }
+                CrosshairChangeColor();
             }
             
             if (_currentState != ControllerModes.MAIN_VIEW_MODE)
             {
-                
                 // Get the camera's forward and right vectors in world space
                 Vector3 cameraForward = _mainCamera.transform.forward;
                 Vector3 cameraRight = _mainCamera.transform.right;
@@ -477,6 +466,31 @@ namespace tracer
             OffCrosshair();
             _uiManager.clearSelectedObject();
             manager.ControllerSelect(new Vector2(Screen.width / 2, Screen.height / 2));
+        }
+
+        private void CrosshairChangeColor()
+        {
+            _ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            _selectionModule.isRenderActive = true;
+            if (Physics.Raycast(_ray, out _hit))
+            {
+                if (_hit.transform.gameObject.GetComponent<SceneObject>() ||_hit.transform.gameObject.GetComponent<IconUpdate>() )
+                {
+                    _crossHairImg.color = Color.magenta;
+                    _crossHairImg.transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
+                }
+            }
+            else if (_selectionModule.GetSelectableAtPixel(new Vector2(Screen.width / 2, Screen.height / 2)))
+            {
+                _crossHairImg.color = Color.magenta;
+                _crossHairImg.transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
+            }
+            else
+            {
+                _crossHairImg.color = Color.green;
+                _crossHairImg.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            }
+            
         }
         
         #endregion
