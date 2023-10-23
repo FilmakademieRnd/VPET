@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ControllerModule/Scripts/ControllerModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ControllerModule/Scripts/ControllerModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/SelectionModule/Scripts/SelectionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/SelectionModule/Scripts/SelectionModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Resources/Materials/ColorPickerMaterial.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Resources/Materials/ColorPickerMaterial.mat" afterDir="false" />
-    </list>
+    <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -169,7 +164,7 @@
       <workItem from="1697448811903" duration="19164000" />
       <workItem from="1697524647565" duration="15037000" />
       <workItem from="1697613870054" duration="16554000" />
-      <workItem from="1697699564559" duration="1806000" />
+      <workItem from="1697699564559" duration="2401000" />
     </task>
     <servers />
   </component>
