@@ -70,6 +70,12 @@ namespace tracer
                 load = false;
         }
 
+        private bool _serverIsOn;
+        
+        private GameObject _qrCanvas;
+
+        private Parameter<Action> buttonQr;
+
         //! 
         //!  Function called when an Unity Awake() callback is triggered
         //! 
@@ -78,7 +84,9 @@ namespace tracer
         //! 
         protected override void Init(object sender, EventArgs e)
         {
+            _qrCanvas = Resources.Load("Prefab/QRCODE") as GameObject;
             Parameter<Action> button = new Parameter<Action>(Connect, "Start");
+            buttonQr = new Parameter<Action>(ShowQr, "Start and show QR");
 
             m_menu = new MenuTree()
                .Begin(MenuItem.IType.VSPLIT)
@@ -88,6 +96,7 @@ namespace tracer
                     .End()
                     .Begin(MenuItem.IType.HSPLIT)
                         .Add(button)
+                        .Add(buttonQr)
                     .End()
               .End();
 
@@ -112,14 +121,35 @@ namespace tracer
         //!
         private void Connect()
         {
-            Helpers.Log(manager.settings.ipAddress.value);
+            if (!_serverIsOn)
+            {
+                Helpers.Log(manager.settings.ipAddress.value);
 
-            core.getManager<UIManager>().hideMenu();
+                core.getManager<UIManager>().hideMenu();
 
-            SceneParserModule sceneParserModule = core.getManager<SceneManager>().getModule<SceneParserModule>();
-            sceneParserModule.ParseScene();
+                SceneParserModule sceneParserModule = core.getManager<SceneManager>().getModule<SceneParserModule>();
+                sceneParserModule.ParseScene();
+                _serverIsOn = true;
+                sendScene(manager.settings.ipAddress.value, "5555");
+            }
+        }
 
-            sendScene(manager.settings.ipAddress.value, "5555");
+        private void ShowQr()
+        {
+            if (!_serverIsOn)
+            {
+                Connect();
+            }
+            
+            if (_serverIsOn)
+            {
+                GameObject QR = GameObject.Instantiate(_qrCanvas);
+                QR.GetComponentInChildren<GenerateQRCode>().textInputField = manager.settings.ipAddress.value;
+                QR.GetComponentInChildren<GenerateQRCode>().GenerateQRCodeFromText();
+                buttonQr.name = "Show QR";
+                core.getManager<UIManager>().hideMenu();
+            }
+
         }
 
         //!

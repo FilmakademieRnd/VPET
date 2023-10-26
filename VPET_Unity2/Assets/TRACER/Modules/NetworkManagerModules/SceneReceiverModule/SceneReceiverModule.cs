@@ -40,6 +40,7 @@ using System;
 using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
+using UnityEngine;
 
 namespace tracer
 {
@@ -66,6 +67,8 @@ namespace tracer
         //! A local reference to the netMQ scene receiver socket.
         //!
         private RequestSocket m_sceneReceiver;
+        
+        private GameObject _qrCanvas;
 
         //!
         //! Constructor
@@ -98,7 +101,11 @@ namespace tracer
         //! 
         protected override void Start(object sender, EventArgs e)
         {
+            
+            _qrCanvas = Resources.Load("Prefab/QR_Reader") as GameObject;
+            
             Parameter<Action> button = new Parameter<Action>(Connect, "Connect");
+            Parameter<Action> buttonQr = new Parameter<Action>(ConnectUsingQR, "QR Connect");
 
             List<AbstractParameter> parameterList1 = new List<AbstractParameter>
             {
@@ -118,6 +125,7 @@ namespace tracer
                      .End()
                      .Begin(MenuItem.IType.HSPLIT)
                          .Add(button)
+                         .Add(buttonQr)
                      .End()
                 .End();
 
@@ -134,6 +142,7 @@ namespace tracer
                 .End()
                 .Begin(MenuItem.IType.HSPLIT)
                      .Add(button)
+                     .Add(buttonQr)
                 .End();
 
             //core.getManager<UIManager>().showMenu(m_menu);
@@ -146,6 +155,13 @@ namespace tracer
             core.getManager<UIManager>().hideMenu();
 
             receiveScene(manager.settings.ipAddress.value, "5555");
+        }
+        
+                
+        private void ConnectUsingQR()
+        {
+            GameObject QR = GameObject.Instantiate(_qrCanvas);
+            core.getManager<UIManager>().hideMenu();
         }
 
         //!

@@ -809,6 +809,7 @@ PlayerSettings:
   scriptingBackend:
     Android: 1
     Server: 0
+    Standalone: 0
   il2cppCompilerConfiguration: {}
   il2cppCodeGeneration: {}
   managedStrippingLevel: {}

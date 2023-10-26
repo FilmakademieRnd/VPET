@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="" />
+    <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/VPET_Client.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/VPET_Client.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/ControllerTest.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/ControllerTest.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Resources/Marker_v2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Resources/Marker_v2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneReceiverModule/SceneReceiverModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneReceiverModule/SceneReceiverModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneSenderModule/SceneSenderModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneSenderModule/SceneSenderModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,11 +31,13 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/e6/ef1cc563/AsyncMethodBuilderCore.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/72b2ee1a92d7b01afb76bb5f176eee8b194fa623f4d34534b7efb7ca5a3ba1c/SocketBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Scripts/ARModule.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneSenderModule/Resources/Prefab/kill.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/ChromaKeyModule/Scripts/ChromaKeyUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.editorcoroutines@1.0.0/Editor/EditorCoroutine.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.editorcoroutines@1.0.0/Editor/EditorCoroutineUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.editorcoroutines@1.0.0/Editor/EditorWaitForSeconds.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Editor/PropertyDrawers/InputActionDrawerBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Events/InputEventTrace.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@1.7.0/InputSystem/Utilities/SpriteUtilities.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.textmeshpro@3.0.6/Scripts/Editor/TMP_BaseShaderGUI.cs" root0="SKIP_HIGHLIGHTING" />
@@ -37,19 +48,28 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Editor/UI/CanvasScalerEditor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Editor/UI/GraphicEditor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Editor/UI/RawImageEditor.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/InputModules/BaseInput.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/InputModules/TouchInputModule.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/Raycasters/PhysicsRaycaster.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/EventSystem/UIElements/PanelEventHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Culling/IClipRegion.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Graphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/MaskUtilities.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Utility/VertexHelper.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Editor/InputField/ContentValidation.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Editor/RectMask2D/RectMask2DCulling.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Canvas/CoroutineWorksIfUIObjectIsAttached.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/EventSystem/SelectableTests.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Graphic/ImageTests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/LayoutGroup/LayoutGroupArrangement.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/NestedLayout/SceneWithNestedLayoutElementsLoadScript.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Util/ConcreteGraphic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Util/ExceptionUtils.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arfoundation@5.0.7/Editor/Simulation/XREnvironmentViewManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arkit@5.0.7/Editor/GuidExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arkit@5.0.7/Editor/ObjectTracking/ARObject.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arkit@5.0.7/Tests/Editor/ARObjectInfoTests.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.1/Runtime/Inputs/Simulation/XRDeviceSimulatorLoader.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.1/Tests/Runtime/UIPointerTests.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.management@4.3.3/Editor/XRGeneralSettingsPerBuildTarget.cs" root0="SKIP_HIGHLIGHTING" />
@@ -165,6 +185,10 @@
       <workItem from="1697524647565" duration="15037000" />
       <workItem from="1697613870054" duration="16554000" />
       <workItem from="1697699564559" duration="2401000" />
+      <workItem from="1698150326727" duration="8137000" />
+      <workItem from="1698159705501" duration="1195000" />
+      <workItem from="1698220820774" duration="15848000" />
+      <workItem from="1698303339156" duration="5386000" />
     </task>
     <servers />
   </component>
@@ -191,19 +215,6 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/SnapSelectElement.cs</url>
-          <line>228</line>
-          <properties documentPath="C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2\Assets\TRACER\Modules\UIManagerModules\UICreator2DModule\Scripts\SnapSelectElement.cs" initialLine="228" containingFunctionPresentation="Method 'setHighlight'">
-            <startOffsets>
-              <option value="7563" />
-            </startOffsets>
-            <endOffsets>
-              <option value="7580" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
