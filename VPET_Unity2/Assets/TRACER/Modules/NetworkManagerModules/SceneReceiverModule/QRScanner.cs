@@ -70,7 +70,7 @@ namespace tracer
             
             // Get the RawImage component for rendering the webcam feed
             var renderer = GetComponent<RawImage>();
-            webcamTexture = new WebCamTexture(300, 300); // Initialize the webcam texture
+            webcamTexture = new WebCamTexture(500, 500); // Initialize the webcam texture
             renderer.texture = webcamTexture; // Assign the webcam texture to the RawImage component
             
             // Start the QR code scanning process
@@ -83,7 +83,9 @@ namespace tracer
         IEnumerator GetQRCode()
         {
             // Create a barcode reader for decoding QR codes
-            IBarcodeReader barCodeReader = new BarcodeReader();
+            IBarcodeReader barCodeReader = new BarcodeReader {AutoRotate=false,TryInverted = true};
+            barCodeReader.Options.TryHarder = true;
+            
             
             // Start the webcam feed
             webcamTexture.Play();
