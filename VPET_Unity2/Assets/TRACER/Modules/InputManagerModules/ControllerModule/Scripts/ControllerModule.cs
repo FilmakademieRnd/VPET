@@ -476,19 +476,19 @@ namespace tracer
             {
                 if (_hit.transform.gameObject.GetComponent<SceneObject>() ||_hit.transform.gameObject.GetComponent<IconUpdate>() )
                 {
-                    _crossHairImg.color = Color.magenta;
-                    _crossHairImg.transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
+                    _crossHairImg.color = _uiManager.uiAppearanceSettings.colors.ElementSelection_Highlight;
+                    _crossHairImg.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
                 }
             }
             else if (_selectionModule.GetSelectableAtPixel(new Vector2(Screen.width / 2, Screen.height / 2)))
             {
-                _crossHairImg.color = Color.magenta;
-                _crossHairImg.transform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
+                _crossHairImg.color = _uiManager.uiAppearanceSettings.colors.ElementSelection_Highlight;
+                _crossHairImg.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
             }
             else
             {
                 _crossHairImg.color = Color.green;
-                _crossHairImg.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                _crossHairImg.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             }
             
         }

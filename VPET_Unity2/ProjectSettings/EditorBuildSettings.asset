@@ -12,7 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/VPET_Client.unity
     guid: 231bc9c176d49ec4b8e48fce8132eb44
   m_configObjects:
-    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: ac1697c6f5fbfb84caec725037e5f04a, type: 2}
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 077822fae4c0d4e69a23d78a32aeba0b, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 682871c5eb3c140e5a6248b66689f767, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 8f34375a6a46348e5a846eebda9d4eeb, type: 2}
-    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: e57d87f102a0d2a4aa3c90d91200d491, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 29bf7802f627a4e3788d5bee86b8f437, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 7a9f7dc05b1c1084aa090d77de3c5be4, type: 2}
+  m_UseUCBPForAssetBundles: 0
