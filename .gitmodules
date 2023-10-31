@@ -1,0 +1,3 @@
+[submodule "VPET_Unity2/Assets/TRACER"]
+	path = VPET_Unity2/Assets/TRACER
+	url = https://github.com/FilmakademieRnd/TRACER.git
