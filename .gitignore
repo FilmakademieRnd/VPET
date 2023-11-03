@@ -58,10 +58,16 @@ sysinfo.txt
 *.dwlt
 
 #VPET specific
+/VPET_Unity/Assets/*
+!/VPET_Unity/Assets/VPET
+/VPET_Unity/Assets/VPET/*
+!/VPET_Unity/Assets/VPET/Scripts
+/VPET_Unity/Packages
+/VPET_Unity/Projectsettings
+
 /VPET_Unity2/Assets/*
 !/VPET_Unity2/Assets/VPET
 !/VPET_Unity2/Assets/TRACER
-!/VPET_Unity2/Assets/Scenes
 /VPET_Unity2/Packages
 !/VPET_Unity2/ProjectSettings
 /VPET_Unity2/UserSettings/*

@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 1136079608}
   m_Layer: 10
   m_Name: Scene
-  m_TagString: Untagged
+  m_TagString: editable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
