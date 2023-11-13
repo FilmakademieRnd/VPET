@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/VPET_Client.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/VPET_Client.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/ControllerTest.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/InputManager/ControllerTest.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Resources/Marker_v2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Resources/Marker_v2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneReceiverModule/SceneReceiverModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneReceiverModule/SceneReceiverModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneSenderModule/SceneSenderModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneSenderModule/SceneSenderModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/SceneManager/SceneManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/SceneManager/SceneManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/DeepLinkModule/DeepLinkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/DeepLinkModule/DeepLinkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneStorageModule/Scripts/SceneStorageModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneStorageModule/Scripts/SceneStorageModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,15 +22,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/10871f9e312b442cb78b9b97db88fdcb172a00/2c/e3e0d89d/UnitySynchronizationContext.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/10871f9e312b442cb78b9b97db88fdcb172a00/68/0839b9fc/GameObject.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/82/7c108c8a/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/b0/8a9161fa/SynchronizationContextAwaitTaskContinuation.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/b3/2c4303c7/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/787acc3c9a4c471ba7d971300105af2446ac00/e6/ef1cc563/AsyncMethodBuilderCore.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/72b2ee1a92d7b01afb76bb5f176eee8b194fa623f4d34534b7efb7ca5a3ba1c/SocketBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/TRACER/Modules/InputManagerModules/ARModule/Scripts/ARModule.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/SceneSenderModule/Resources/Prefab/kill.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/ChromaKeyModule/Scripts/ChromaKeyUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.editorcoroutines@1.0.0/Editor/EditorCoroutine.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.editorcoroutines@1.0.0/Editor/EditorCoroutineUtility.cs" root0="SKIP_HIGHLIGHTING" />
@@ -57,6 +48,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/MaskUtilities.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Utility/VertexHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Editor/CanvasRenderer/ParentCanvasIsSane.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Editor/InputField/ContentValidation.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Editor/RectMask2D/RectMask2DCulling.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Canvas/CoroutineWorksIfUIObjectIsAttached.cs" root0="SKIP_HIGHLIGHTING" />
@@ -66,14 +58,6 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/NestedLayout/SceneWithNestedLayoutElementsLoadScript.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Util/ConcreteGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@1.0.0/Tests/Runtime/Util/ExceptionUtils.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arfoundation@5.0.7/Editor/Simulation/XREnvironmentViewManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arkit@5.0.7/Editor/GuidExtensions.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arkit@5.0.7/Editor/ObjectTracking/ARObject.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.arkit@5.0.7/Tests/Editor/ARObjectInfoTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.1/Runtime/Inputs/Simulation/XRDeviceSimulatorLoader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.interaction.toolkit@2.5.1/Tests/Runtime/UIPointerTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.xr.management@4.3.3/Editor/XRGeneralSettingsPerBuildTarget.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$USER_HOME$/Downloads/MenuButton.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -83,32 +67,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.3728223&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;VPET2.0&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;CodeLensConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "XThreadsFramesViewSplitterKey": "0.3728223",
+    "git-widget-placeholder": "VPET2.0",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "CodeLensConfigurable",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\m5950\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\m5950\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\m5950\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "/Users/rnd/Library/Application Support/JetBrains/Rider2023.1/resharper-host/DecompilerCache",
+      "/Users/rnd/Library/Application Support/JetBrains/Rider2023.1/resharper-host/SourcesCache",
+      "/Users/rnd/.local/share/Symbols/src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.9f1\Editor\Unity.exe" />
+      <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/2022.3.13f1/Unity.app/Contents/MacOS/Unity" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2 -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -116,7 +100,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.9f1\Editor\Unity.exe" />
+      <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/2022.3.13f1/Unity.app/Contents/MacOS/Unity" />
       <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2 -testResults Logs/results.xml -testPlatform EditMode -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -189,6 +173,7 @@
       <workItem from="1698159705501" duration="1195000" />
       <workItem from="1698220820774" duration="15848000" />
       <workItem from="1698303339156" duration="5386000" />
+      <workItem from="1699867669138" duration="8678000" />
     </task>
     <servers />
   </component>
@@ -206,14 +191,7 @@
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/TRACER/Modules/UIManagerModules/UICreator2DModule/Scripts/SnapSelect.cs</url>
           <line>299</line>
-          <properties documentPath="C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2\Assets\TRACER\Modules\UIManagerModules\UICreator2DModule\Scripts\SnapSelect.cs" initialLine="299" containingFunctionPresentation="Method 'addElement'">
-            <startOffsets>
-              <option value="8815" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8877" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\m5950\Documents\GitHub\VPET\VPET_Unity2\Assets\TRACER\Modules\UIManagerModules\UICreator2DModule\Scripts\SnapSelect.cs" initialLine="299" containingFunctionPresentation="Method 'addElement'" />
           <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
