@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17359eb0-a31f-4936-a532-d459a24ca31b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VPET_Unity2/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/SceneManager/SceneManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Core/Managers/SceneManager/SceneManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/DeepLinkModule/DeepLinkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/NetworkManagerModules/DeepLinkModule/DeepLinkModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneStorageModule/Scripts/SceneStorageModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TRACER/Modules/SceneManagerModules/SceneStorageModule/Scripts/SceneStorageModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +67,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "XThreadsFramesViewSplitterKey": "0.3728223",
-    "git-widget-placeholder": "VPET2.0",
+    "git-widget-placeholder": "master",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
