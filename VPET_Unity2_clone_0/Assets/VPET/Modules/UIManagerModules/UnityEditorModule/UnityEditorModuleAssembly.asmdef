@@ -1,0 +1,19 @@
+{
+    "name": "UnityEditorModuleAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3c8c80ae2ea220d4fb13c98317414fa5",
+        "GUID:7e30fd56ec844a64bbc7bfeb025fc7c6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
