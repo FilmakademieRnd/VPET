@@ -608,10 +608,10 @@ namespace vpet
                         dataIdx += size_float;
                     }
 
-                    // get character name (Marshalled with SizeConst = 64)
-                    ReadOnlySpan<byte> nameByte = new ReadOnlySpan<byte>(m_characterByteData, dataIdx, 64);
+                    // get character name (Marshalled with SizeConst = 256)
+                    ReadOnlySpan<byte> nameByte = new ReadOnlySpan<byte>(m_characterByteData, dataIdx, 256);
                     characterPack.sceneObjectName = Encoding.ASCII.GetBytes(nameByte.ToString());
-                    dataIdx += 64;
+                    dataIdx += 256;
 
                     characterList.Add(characterPack);
                 }
@@ -852,7 +852,7 @@ namespace vpet
                     // scene object Name
                     characterByteData = Concat<byte>(characterByteData, chrPack.sceneObjectName);
 
-                    // concate
+                    // concatenating character byte data to serialised character array
                     m_characterByteData = Concat<byte>(m_characterByteData, characterByteData);
                 }
             }
