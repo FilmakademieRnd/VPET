@@ -1,0 +1,29 @@
+Data Hub
+
+The Tracer component Data Hub is intended for research and development 
+purposes only. Commercial use of any kind is not permitted.
+
+There is no support by Filmakademie. Since the Data Hub is available for free,
+Filmakademie shall only be liable for intent and gross negligence; warranty 
+is limited to malice. Scene Distribution and Synchronization Server may under 
+no circumstances be used for racist, sexual or any illegal purposes. In all 
+non-commercial productions, scientific publications, prototypical non-commercial 
+software tools, etc. using the Data Hub Filmakademie has to be named as follows:
+"VPET-Virtual Production Editing Tools by Filmakademie Baden-Württemberg, 
+Animationsinstitut (http://research.animationsinstitut.de)".
+
+In case a company or individual would like to use the Data Hub in a commercial
+surrounding or for commercial purposes, software based on these components or 
+any part thereof, the company/individual will have to contact Filmakademie (research<at>filmakademie.de).
+
+Data Hub binaries 
+incorporate the following resources (linked dynamically):
+
+
+Syncronisation Server:
+ZeroMQ 				- LGPLv3
+					  http://zeromq.org/area:licensing
+Qt                  - LGPL 
+					  http://qt.nokia.com
+nzmqt 				- simplified BSD license 
+			 		  https://github.com/jonnydee/nzmqt
