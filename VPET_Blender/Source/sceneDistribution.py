@@ -36,6 +36,8 @@ import math
 import mathutils
 import bmesh
 import struct
+from .AbstractParameter import Parameter
+from .SceneObject import SceneObject
 
 ## Creating empty classes to store node data
 #  is there a more elegant way?
@@ -103,11 +105,14 @@ def gatherSceneData():
         objectList.insert(0, bpy.context.active_object)
 
         vpet.objectsToTransfer = objectList
-        vpet.sceneObject = editable_objects
+        
 
         #iterate over all objects in the scene
         for i, n in enumerate(vpet.objectsToTransfer):
             processSceneObject(n, i)
+
+        for i, n in enumerate(editable_objects):
+            processEditableObjects(n, i)
 
         getHeaderByteArray()
         getNodesByteArray()
@@ -244,7 +249,16 @@ def processSceneObject(obj, index):
                 vpet.nodeList.insert(i+1, node)
     else:
         vpet.nodeList.append(node)
-    
+
+
+def processEditableObjects(obj, index):
+
+    if obj.type == 'MESH':
+        aaa = SceneObject(obj)
+        vpet.SceneObjects.append(aaa)
+
+def PrintEvent(sender, new_value):
+    print("Scenedist PrintEvent ")
 ## Process a meshes material
 #
 # @param mesh The geo data to process

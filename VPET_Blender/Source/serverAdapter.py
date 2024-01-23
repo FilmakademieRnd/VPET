@@ -127,24 +127,38 @@ def listener():
 
     
 
-    if (msg != None and len(msg)> 3 ):
-        print(msg)
+    if (msg != None and len(msg)> 15 ):
+        print("the MSG LEN IS: " + str(len(msg)))
         
         clientID = msg[0]
         time = msg[1]
         type = vpet.messageType[msg[2]]
-        objID = msg[4]
+        print(str(type))
+        
+        
+        start = 3
 
-        if(type == "PARAMETERUPDATE"):
-            for i, n in enumerate(vpet.sceneObject):
-                print(str(n) + " ... " + str(i) + "  ... and msg id is:" + str(objID))
+        while(start < len(msg)):
+            if(type == "PARAMETERUPDATE"):
+                sceneID = msg[start]
+                objID = msg[start+1]
+                paramID = msg[start+3]
+                length = msg[start+6]
+                parameterData = msg[start+7]
+                for i, n in enumerate(vpet.SceneObjects):
+                    print(str(n) + " ... " + str(i) + "  ... and msg id is:" + str(objID))
+                    print("Param ID:" + str(paramID))
 
-            obj = vpet.sceneObject[objID - 1]
-            newPos = mathutils.Vector((     unpack('f', msg, 10),\
+                pos = vpet.SceneObjects[objID - 1]._parameterList[paramID]
+                newPos = mathutils.Vector(( unpack('f', msg, 10),\
                                             unpack('f', msg, 14),\
                                             unpack('f', msg, 18)))
                                             
-            obj.location = (newPos[0], newPos[2], newPos[1])
+                position = mathutils.Vector((newPos[0], newPos[2], newPos[1]))
+                pos.set_value(position)
+                start += length
+            elif(type == "UNDOREDOADD"):
+                start = len(msg)
         """
         objName = vpet.editableList[msg[2]][0]
         try:

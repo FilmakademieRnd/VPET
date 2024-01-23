@@ -32,7 +32,6 @@ Filmakademie (research<at>filmakademie.de).
 """
 
 import bpy
-from bpy.types import SceneObjects
 
 ## Class to keep editable parameters
 class VpetProperties(bpy.types.PropertyGroup):
@@ -64,6 +63,8 @@ class VpetData():
     materialList = []
     textureList = []
     editableList = []
+
+    SceneObjects = []
 
     rootChildCount = 0
     
