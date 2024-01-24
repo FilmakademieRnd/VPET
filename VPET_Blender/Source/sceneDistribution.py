@@ -36,8 +36,15 @@ import math
 import mathutils
 import bmesh
 import struct
+
+
+
 from .AbstractParameter import Parameter
-from .SceneObject import SceneObject
+from .SceneObjects.SceneObject import SceneObject
+from .SceneObjects.SceneObjectCamera import SceneObjectCamera
+from .SceneObjects.SceneObjectLight import SceneObjectLight
+from .SceneObjects.SceneObjectSpotLight import SceneObjectSpotLight
+
 
 ## Creating empty classes to store node data
 #  is there a more elegant way?
@@ -256,6 +263,19 @@ def processEditableObjects(obj, index):
     if obj.type == 'MESH':
         aaa = SceneObject(obj)
         vpet.SceneObjects.append(aaa)
+    elif obj.type == 'CAMERA':
+        aaa = SceneObjectCamera(obj)
+        vpet.SceneObjects.append(aaa)
+    elif obj.type == 'LIGHT':
+        if obj.data.type == 'SPOT':
+            aaa = SceneObjectSpotLight(obj)
+            vpet.SceneObjects.append(aaa)
+        else:
+            aaa = SceneObjectLight(obj)
+            vpet.SceneObjects.append(aaa)
+
+
+
 
 def PrintEvent(sender, new_value):
     print("Scenedist PrintEvent ")

@@ -127,7 +127,7 @@ def listener():
 
     
 
-    if (msg != None and len(msg)> 15 ):
+    if (msg != None and len(msg)> 3 ):
         print("the MSG LEN IS: " + str(len(msg)))
         
         clientID = msg[0]
@@ -139,7 +139,11 @@ def listener():
         start = 3
 
         while(start < len(msg)):
-            if(type == "PARAMETERUPDATE"):
+            
+            if(type == "LOCK"):
+                start = len(msg)
+            
+            elif(type == "PARAMETERUPDATE"):
                 sceneID = msg[start]
                 objID = msg[start+1]
                 paramID = msg[start+3]
@@ -149,14 +153,12 @@ def listener():
                     print(str(n) + " ... " + str(i) + "  ... and msg id is:" + str(objID))
                     print("Param ID:" + str(paramID))
 
-                pos = vpet.SceneObjects[objID - 1]._parameterList[paramID]
-                newPos = mathutils.Vector(( unpack('f', msg, 10),\
-                                            unpack('f', msg, 14),\
-                                            unpack('f', msg, 18)))
-                                            
-                position = mathutils.Vector((newPos[0], newPos[2], newPos[1]))
-                pos.set_value(position)
+                if 0 < objID <= len(vpet.SceneObjects) and 0 <= paramID < len(vpet.SceneObjects[objID - 1]._parameterList):
+                    pos = vpet.SceneObjects[objID - 1]._parameterList[paramID]
+                    pos.decodeMsg(msg, start+7)
+                
                 start += length
+
             elif(type == "UNDOREDOADD"):
                 start = len(msg)
         """
@@ -250,8 +252,8 @@ def listener():
     return 0.01 # repeat every .1 second
     
 
-def unpack(type, array, offset):
-    return struct.unpack_from(type, array, offset)[0]
+#def unpack(type, array, offset):
+    #return struct.unpack_from(type, array, offset)[0]
                 
 ## Stopping the thread and closing the sockets
 

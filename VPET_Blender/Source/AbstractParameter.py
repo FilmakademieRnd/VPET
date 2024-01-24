@@ -1,5 +1,7 @@
+import struct
 import bpy  
 from mathutils import Vector, Quaternion, Color
+import mathutils
 
 class AbstractParameter:
 
@@ -50,6 +52,47 @@ class Parameter(AbstractParameter):
     
     def emitHasChanged(self):
         for handler in self.hasChanged:
-            handler(self, self._value)
+            handler(self._value)
+
+    def decodeMsg(self, msg, offset):
+        type = self._type
+        if type == 2 :
+            floatVal = unpack('?', msg, offset)
+            self.set_value(floatVal)
+
+        if type == 4 :
+            floatVal = unpack('f', msg, offset)
+            self.set_value(floatVal)
+
+        if type == 6 :
+             newVector3 = mathutils.Vector(( unpack('f', msg, offset),\
+                                            unpack('f', msg, offset + 4),\
+                                            unpack('f', msg, offset + 8)))
+             
+             unityToBlenderVector3 = mathutils.Vector((newVector3[0], newVector3[2], newVector3[1]))
+
+             self.set_value(unityToBlenderVector3)
+
+        elif type == 8 :
+            quaternion = mathutils.Quaternion(( unpack('f', msg, offset ),\
+                                            unpack('f', msg, offset + 4),\
+                                            unpack('f', msg, offset + 8),\
+                                            unpack('f', msg, offset + 12)))
+            quaternion.invert()
+
+            unityToBlenderQuaternion = newQuat = mathutils.Quaternion((quaternion[3],\
+                                                                        quaternion[0],\
+                                                                        -quaternion[1],\
+                                                                        -quaternion[2]))
+            self.set_value(unityToBlenderQuaternion)
+
+        elif type == 9:
+             newColor = (unpack('f', msg, offset), unpack('f', msg, offset + 4), unpack('f', msg, offset + 8))
+
+             self.set_value(newColor)
+
+
+def unpack(type, array, offset):
+    return struct.unpack_from(type, array, offset)[0]
 
    
