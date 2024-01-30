@@ -1,4 +1,5 @@
 import functools
+import math
 from ..AbstractParameter import Parameter;
 
 
@@ -27,8 +28,6 @@ class SceneObject:
         scale.hasChanged.append(functools.partial(self.UpdateScale, scale))
 
 
-
-
     def UpdatePosition(self, parameter, new_value):
         self.editableObject.location = new_value
 
@@ -37,7 +36,18 @@ class SceneObject:
         self.editableObject.rotation_quaternion = new_value
         self.editableObject.rotation_mode = 'XYZ'
 
+        if self.editableObject.type == 'LIGHT' or self.editableObject.type == 'CAMERA':
+            self.editableObject.rotation_euler.rotate_axis("X", math.radians(90))
+
     def UpdateScale(self, parameter, new_value):
         self.editableObject.scale = new_value
+
+    def LockUnlock(self, value):
+        if value == 1:
+            self._lock = True
+            self.editableObject.hide_select = True
+        else:
+            self._lock = False
+            self.editableObject.hide_select = False
         
     

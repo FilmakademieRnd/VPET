@@ -12,3 +12,4 @@ class SceneObjectSpotLight(SceneObjectLight):
 
     def UpdatespotAngle(self, parameter, new_value):
         self.editableObject.data.spot_size = new_value
+

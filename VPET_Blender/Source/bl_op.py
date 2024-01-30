@@ -64,6 +64,8 @@ class DoDistribute(bpy.types.Operator):
         if checkZMQ():
             reset()
             objCount = gatherSceneData()
+            bpy.ops.wm.real_time_updater('INVOKE_DEFAULT')
+            bpy.ops.object.single_select('INVOKE_DEFAULT')
             cleanUp(level=1)
             if objCount > 0:
                 set_up_thread()

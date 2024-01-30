@@ -52,9 +52,11 @@ from .bl_panel import VPET_PT_Panel
 from .tools import initialize
 from .settings import VpetData
 from .settings import VpetProperties
+from .updateTRS import RealTimeUpdaterOperator
+from .singleSelect import OBJECT_OT_single_select
 
 # imported classes to register
-classes = (DoDistribute, StopDistribute, SetupScene, VPET_PT_Panel, VpetProperties, InstallZMQ) 
+classes = (DoDistribute, StopDistribute, SetupScene, VPET_PT_Panel, VpetProperties, InstallZMQ, RealTimeUpdaterOperator, OBJECT_OT_single_select) 
 
 ## Register classes and VpetSettings
 #

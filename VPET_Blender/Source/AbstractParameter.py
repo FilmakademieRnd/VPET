@@ -82,8 +82,8 @@ class Parameter(AbstractParameter):
 
             unityToBlenderQuaternion = newQuat = mathutils.Quaternion((quaternion[3],\
                                                                         quaternion[0],\
-                                                                        -quaternion[1],\
-                                                                        -quaternion[2]))
+                                                                        -quaternion[2],\
+                                                                        -quaternion[1]))
             self.set_value(unityToBlenderQuaternion)
 
         elif type == 9:

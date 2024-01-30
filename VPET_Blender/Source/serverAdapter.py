@@ -141,6 +141,12 @@ def listener():
         while(start < len(msg)):
             
             if(type == "LOCK"):
+                objID = msg[start+1]
+                if 0 < objID <= len(vpet.SceneObjects):
+                    lockstate = msg[start+3]
+                    vpet.SceneObjects[objID - 1].LockUnlock(lockstate)
+                    print(str(vpet.SceneObjects[objID - 1]._lock))
+
                 start = len(msg)
             
             elif(type == "PARAMETERUPDATE"):
@@ -161,94 +167,7 @@ def listener():
 
             elif(type == "UNDOREDOADD"):
                 start = len(msg)
-        """
-        objName = vpet.editableList[msg[2]][0]
-        try:
-            obj = bpy.data.objects[objName]
-        except:
-            return 0.01
-        #print(f'{msg[2]} {objName}')
-        objType = vpet.nodeTypes[vpet.editableList[msg[2]][1]]
         
-        if type == 'POS':
-            newPos = mathutils.Vector((     unpack('f', msg, 10),\
-                                            unpack('f', msg, 14),\
-                                            unpack('f', msg, 18)))
-                                            
-            obj.location = (newPos[0], newPos[2], newPos[1])
-            
-        elif type == 'ROT':
-            newRot = mathutils.Quaternion(( unpack('f', msg, 6),\
-                                            unpack('f', msg, 14),\
-                                            unpack('f', msg, 10),\
-                                            unpack('f', msg, 18)))
-            newRot.invert()
-            obj.rotation_mode = 'QUATERNION'
-            newQuat = mathutils.Quaternion((newRot[3],\
-                                            newRot[0],\
-                                            -newRot[1],\
-                                            -newRot[2]))
-
-            obj.rotation_quaternion = newQuat
-
-            obj.rotation_mode = 'XYZ'
-
-            if objType == 'LIGHT' or objType == 'CAMERA':
-                obj.rotation_euler.rotate_axis("X", math.radians(90))
-
-        elif type == 'SCALE':
-            newScale = mathutils.Vector((   unpack('f', msg, 6),\
-                                            unpack('f', msg, 10),\
-                                            unpack('f', msg, 14)))
-                                            
-            obj.scale = (newScale[0], newScale[2], newScale[1])
-            
-        elif type == 'LOCK':
-            pass
-        elif type == 'HIDDENLOCK':
-            pass
-        elif type == 'KINEMATIC':
-            pass
-        elif type == 'FOV':
-            print(type)
-            print(unpack('f', msg, 6))
-            
-        elif type == 'ASPECT':
-            print(type)
-            print(unpack('f', msg, 6))
-            
-        elif type == 'FOCUSDIST':
-            print(type)
-            print(unpack('f', msg, 6))
-            
-        elif type == 'FOCUSSIZE':
-            print(type)
-            print(unpack('f', msg, 6))
-            
-        elif type == 'APERTURE':
-            print(type)
-            print(unpack('f', msg, 6))
-            
-        elif type == 'COLOR':
-            newColor = (unpack('f', msg, 6), unpack('f', msg, 10), unpack('f', msg, 14))
-            obj.data.color = newColor
-            
-        elif type == 'INTENSITY':
-            obj.data.energy = unpack('f', msg, 6)*100
-            
-        elif type == 'EXPOSURE':
-            # no exposure in Blender
-            pass
-        elif type == 'RANGE':
-            # no range in Blender
-            pass
-        elif type == 'ANGLE':
-            obj.data.spot_size = math.radians(unpack('f', msg, 6))
-        elif type == 'BONEANIM':
-            pass
-            
-    
-    """
     return 0.01 # repeat every .1 second
     
 
