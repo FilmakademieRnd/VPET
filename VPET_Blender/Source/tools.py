@@ -77,6 +77,7 @@ def cleanUp(level):
         vpet.texturesByteData = bytearray([]) # texture data as bytes
         vpet.materialsByteData = bytearray([]) # materials data as bytes
         vpet.pingByteMSG = bytearray([]) # ping msg as bytes
+        ParameterUpdateMSG = bytearray([])# Parameter update msg as bytes
 
         vpet.rootChildCount = 0
 

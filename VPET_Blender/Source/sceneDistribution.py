@@ -80,6 +80,8 @@ def gatherSceneData():
     initialize()
     static_objects = []
     editable_objects = []
+     #cID
+    vpet.cID = int(str(v_prop.server_ip).split('.')[3])
     # check if VPET collections exist
     if bpy.data.collections.find(v_prop.vpet_collection) > -1:
         static_objects = list(bpy.data.collections[v_prop.vpet_collection].all_objects)
@@ -543,7 +545,7 @@ def getHeaderByteArray():
     headerBin = bytearray([])
     
     lightIntensityFactor = 1.0
-    senderID = 255
+    senderID = int(vpet.cID)
 
     headerBin.extend(struct.pack('f', lightIntensityFactor))
     headerBin.extend(struct.pack('i', senderID))

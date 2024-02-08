@@ -2,6 +2,7 @@ import functools
 import math
 from ..AbstractParameter import Parameter
 from .SceneObjectLight import SceneObjectLight
+from ..serverAdapter import SendParameterUpdate;
 
 class SceneObjectSpotLight(SceneObjectLight):
     def __init__(self, obj):
@@ -11,5 +12,8 @@ class SceneObjectSpotLight(SceneObjectLight):
         spotAngle.hasChanged.append(functools.partial(self.UpdatespotAngle, spotAngle))
 
     def UpdatespotAngle(self, parameter, new_value):
-        self.editableObject.data.spot_size = new_value
+        if self._lock == True:
+            self.editableObject.data.spot_size = new_value
+        else:
+            SendParameterUpdate(parameter)
 

@@ -71,8 +71,12 @@ class VpetData():
     socket_d = None
     socket_s = None
     socket_c = None
+    socket_u = None
     poller = None
     ctx = None
+    cID = None
+    time = 0
+    pingStartTime = 0
 
     nodesByteData = bytearray([])
     geoByteData = bytearray([])
@@ -80,6 +84,7 @@ class VpetData():
     headerByteData = bytearray([])
     materialsByteData = bytearray([])
     pingByteMSG = bytearray([])
+    ParameterUpdateMSG = bytearray([])
 
     nodeTypes = ['GROUP', 'GEO', 'LIGHT', 'CAMERA', 'SKINNEDMESH']
     lightTypes = ['SPOT', 'SUN', 'POINT', 'AREA']

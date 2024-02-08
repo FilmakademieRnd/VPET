@@ -1,4 +1,6 @@
 import bpy
+from .serverAdapter import SendLockMSG, SendUnlockMSG;
+
 
 class OBJECT_OT_single_select(bpy.types.Operator):
     bl_idname = "object.single_select"
@@ -34,6 +36,7 @@ class OBJECT_OT_single_select(bpy.types.Operator):
                 for obj in deselected_objects:
                     for scene_obj in vpet.SceneObjects:
                         if obj == scene_obj.editableObject:
+                            SendUnlockMSG(scene_obj)
                             print(f"Deselected object: {obj.name}")
 
                 # Check for new selection
@@ -41,6 +44,7 @@ class OBJECT_OT_single_select(bpy.types.Operator):
                 for obj in newly_selected_objects:
                     for scene_obj in vpet.SceneObjects:
                         if obj == scene_obj.editableObject:
+                            SendLockMSG(scene_obj)
                             print(f"Selected object: {obj.name}")
 
                 # Update the last selected objects set

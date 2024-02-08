@@ -1,6 +1,7 @@
 import functools
 import math
 from ..AbstractParameter import Parameter;
+from ..serverAdapter import SendParameterUpdate;
 
 
 
@@ -17,10 +18,10 @@ class SceneObject:
         self._lock = False
         self.editableObject = obj 
         position = Parameter(obj.location, "Position", self)
-        rotation = Parameter(obj.rotation_quaternion, "Rotation", self)
-        scale = Parameter(obj.scale, "Scale", self)
         self._parameterList.append(position)
+        rotation = Parameter(obj.rotation_quaternion, "Rotation", self)
         self._parameterList.append(rotation)
+        scale = Parameter(obj.scale, "Scale", self)
         self._parameterList.append(scale)
         # Bind UpdatePosition to the instance using functools.partial
         position.hasChanged.append(functools.partial(self.UpdatePosition, position))
@@ -29,18 +30,27 @@ class SceneObject:
 
 
     def UpdatePosition(self, parameter, new_value):
-        self.editableObject.location = new_value
+        if self._lock == True:
+            self.editableObject.location = new_value
+        else:
+            SendParameterUpdate(parameter)
 
     def Updaterotation(self, parameter, new_value):
-        self.editableObject.rotation_mode = 'QUATERNION'
-        self.editableObject.rotation_quaternion = new_value
-        self.editableObject.rotation_mode = 'XYZ'
+        if self._lock == True:
+            self.editableObject.rotation_mode = 'QUATERNION'
+            self.editableObject.rotation_quaternion = new_value
+            self.editableObject.rotation_mode = 'XYZ'
 
-        if self.editableObject.type == 'LIGHT' or self.editableObject.type == 'CAMERA':
-            self.editableObject.rotation_euler.rotate_axis("X", math.radians(90))
+            if self.editableObject.type == 'LIGHT' or self.editableObject.type == 'CAMERA':
+                self.editableObject.rotation_euler.rotate_axis("X", math.radians(90))
+        else:
+            SendParameterUpdate(parameter)
 
     def UpdateScale(self, parameter, new_value):
-        self.editableObject.scale = new_value
+        if self._lock == True:
+            self.editableObject.scale = new_value
+        else:
+            SendParameterUpdate(parameter)
 
     def LockUnlock(self, value):
         if value == 1:

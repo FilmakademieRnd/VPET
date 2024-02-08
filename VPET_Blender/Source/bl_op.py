@@ -37,9 +37,11 @@ from .serverAdapter import set_up_thread
 from .serverAdapter import close_socket_d
 from .serverAdapter import close_socket_s
 from .serverAdapter import close_socket_c
+from .serverAdapter import close_socket_u
 from .tools import cleanUp, installZmq, checkZMQ
 from .tools import setupCollections
 from .sceneDistribution import gatherSceneData
+
 
 ## operator classes
 #
@@ -110,4 +112,5 @@ def reset():
     close_socket_d()
     close_socket_s()
     close_socket_c()
+    close_socket_u()
     cleanUp(level=2)
