@@ -52,10 +52,12 @@ class VpetData():
     sceneLight = {}
     sceneCamera = {}
     sceneMesh = {}
+    sceneCgaracter = {}
 
     geoPackage = {}
     materialPackage = {}
     texturePackage = {}
+    characterPackage = {}
 
     objectsToTransfer = []
     nodeList = []
@@ -63,6 +65,7 @@ class VpetData():
     materialList = []
     textureList = []
     editableList = []
+    characterList = []
 
     SceneObjects = []
 
@@ -83,6 +86,7 @@ class VpetData():
     texturesByteData = bytearray([])
     headerByteData = bytearray([])
     materialsByteData = bytearray([])
+    charactersByteData = bytearray([])
     pingByteMSG = bytearray([])
     ParameterUpdateMSG = bytearray([])
 

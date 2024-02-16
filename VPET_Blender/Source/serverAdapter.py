@@ -125,6 +125,10 @@ def read_thread():
             elif msg == "objects":
                 print("Object request! Sending...")
                 vpet.socket_d.send(vpet.geoByteData)
+            elif msg == "characters":
+                print("Characters request! Sending...")
+                if(vpet.charactersByteData != None):
+                    vpet.socket_d.send(vpet.charactersByteData)
             elif msg == "textures":
                 print("Texture request! Sending...")
                 if(vpet.textureList != None):
@@ -181,8 +185,7 @@ def listener():
             msgtime = msg[1]
             type = vpet.messageType[msg[2]]
             #print(str(type) + "and time is" + str(time))
-            
-            
+  
             start = 3
 
             while(start < len(msg)):

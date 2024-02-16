@@ -59,6 +59,9 @@ class sceneCamera:
         
 class sceneMesh:
     pass
+
+class sceneCharacter:
+    pass
         
 class geoPackage:
     pass
@@ -67,6 +70,9 @@ class materialPackage:
     pass
 
 class texturePackage:
+    pass
+
+class characterPackage:
     pass
 
 def initialize():
@@ -120,6 +126,7 @@ def gatherSceneData():
         for i, n in enumerate(vpet.objectsToTransfer):
             processSceneObject(n, i)
 
+
         for i, n in enumerate(editable_objects):
             processEditableObjects(n, i)
 
@@ -128,6 +135,7 @@ def gatherSceneData():
         getGeoBytesArray()
         getMaterialsByteArray()
         getTexturesByteArray()
+        getCharacterByteArray()
         
         # delete Scene Root object - scene will remain unchanged
         bpy.ops.object.delete(use_global = False)
@@ -188,7 +196,6 @@ def processSceneObject(obj, index):
         nodeMesh.vpetType = vpet.nodeTypes.index('GEO')
         nodeMesh.color = (obj.color[0], obj.color[1], obj.color[2], obj.color[3])
         nodeMesh.roughness = 0.5
-        
         nodeMesh.materialId = -1
         
         # get geo data of mesh
@@ -212,9 +219,18 @@ def processSceneObject(obj, index):
                 #nodeMesh.textureId = processTexture(nodeMaterial.tex)
 
         node = nodeMesh  
+
     
+    elif obj.type == 'ARMATURE':
+        nodeCharacter = sceneCharacter()
+        nodeCharacter.vpetType = vpet.nodeTypes.index('SKINNEDMESH')
+        nodeCharacter.color = (0,0,0,1)
+
+    
+ 
     # gather general node data    
     nodeMatrix = obj.matrix_local.copy()
+
     node.position = (nodeMatrix.to_translation().x, nodeMatrix.to_translation().z, nodeMatrix.to_translation().y)
     node.scale = (nodeMatrix.to_scale().x, nodeMatrix.to_scale().z, nodeMatrix.to_scale().y)
     
@@ -259,8 +275,37 @@ def processSceneObject(obj, index):
     else:
         vpet.nodeList.append(node)
 
+def processCharacter(armature_obj, object_list):
+    chr_pack = characterPackage()
+    chr_pack.bonePosition = [()]
+    chr_pack.boneRotation = [()]
+    chr_pack.boneScale = [()]
+
+    if armature_obj.type == 'ARMATURE':
+        bones = armature_obj.data.bones
+        chr_pack.id = len(vpet.objectsToTransfer)
+
+        chr_pack.bMSize = len(bones)
+        chr_pack.boneMapping = [-1] * chr_pack.bMSize
+
+        for i, bone in enumerate(bones):
+
+            chr_pack.boneMapping[i] = object_list.index(bone.name) if bone.name in object_list else -1
+            
+            bone_matrix = armature_obj.matrix_world @ bone.matrix_local
+            position = bone_matrix.to_translation()
+            rotation = bone_matrix.to_quaternion()
+            scale = bone_matrix.to_scale()
+
+            chr_pack.bonePosition.extend([position.x, position.y, position.z])
+            chr_pack.boneRotation.extend([rotation.x, rotation.y, rotation.z, rotation.w])
+            chr_pack.boneScale.extend([scale.x, scale.y, scale.z])
+    return chr_pack
 
 def processEditableObjects(obj, index):
+
+    if obj.type == "ARMATURE":
+        processCharacter(obj, vpet.objectsToTransfer)
 
     if obj.type == 'MESH':
         aaa = SceneObject(obj)
@@ -348,6 +393,9 @@ def processMaterial(mesh):
             
 
     if matPack.tex != None:
+        print(mesh.name)
+        for a in links:
+            print(a.from_node.image)
         matPack.textureId = processTexture(matPack.tex)
     
             
@@ -364,12 +412,16 @@ def processTexture(tex):
     for i, t in enumerate(vpet.textureList):
         if t.texture == tex.name_full:
             return i
-    
-    texPack = texturePackage()
 
-    texFile = open(tex.filepath_from_user(), 'rb')
+    try:
+        texFile = open(tex.filepath_from_user(), 'rb')
+    except FileNotFoundError:
+        print(f"Error: Texture file not found at {tex.filepath_from_user()}")
+        return -1
+    
     texBytes = texFile.read()
     
+    texPack = texturePackage()
     texPack.colorMapData = texBytes
     texPack.colorMapDataSize = len(texBytes)
     texPack.width = tex.size[0]
@@ -393,73 +445,47 @@ def processTexture(tex):
     
     # return index of texture in texture list
     return (len(vpet.textureList)-1)
-    
-## Process mesh geo
-#
-# @param mesh The geo data to process    
-def processGeometryOld(mesh):
-    geoPack = sceneMesh()
-    
-    # copy mesh data to bmesh class for full access
-    bm = bmesh.new()
-    bm.from_mesh(mesh.data)
-    bm.verts.ensure_lookup_table()
-    
-    # flipping faces because the following axis swap inverts them
-    for f in bm.faces:
-        bmesh.utils.face_flip(f)
-    bm.normal_update()
-    
-    uv_layer = bm.loops.layers.uv.active
-    loop_triangles = bm.calc_loop_triangles()
-    
-    # should unify the list sizes
-    geoPack.vSize = len(loop_triangles)*3
-    geoPack.iSize = len(loop_triangles)*3
-    geoPack.nSize = len(loop_triangles)*3
-    geoPack.uvSize = len(loop_triangles)*3
-    geoPack.bWSize = 0 #no boneweights for now
-    geoPack.vertices = []
-    geoPack.indices = []
-    geoPack.normals = []
-    geoPack.uvs = []
-    geoPack.boneWeights = []
-    geoPack.boneIndices = []
-    
-    for tri in loop_triangles:
-        for loop in tri:
-            id = loop.index
 
-            if mesh.data.polygons[0].use_smooth:
-                normal = loop.vert.normal.copy().freeze() if loop.edge.smooth else loop.face.normal.copy().freeze()
-            else:
-                normal = loop.face.normal.copy().freeze()
-            
-            geoPack.normals.append(-normal[0])
-            geoPack.normals.append(-normal[2])
-            geoPack.normals.append(-normal[1])
+def get_vertex_bone_weights_and_indices(vertex, vertex_groups, bone_names):
+    bone_weights = [0.0] * 4
+    bone_indices = [-1] * 4
 
-            # geoPack.normals.append(-loop.face.normal[0])
-            # geoPack.normals.append(-loop.face.normal[2])
-            # geoPack.normals.append(-loop.face.normal[1])
-            
-            geoPack.vertices.append(loop.vert.co[0])
-            geoPack.vertices.append(loop.vert.co[2])
-            geoPack.vertices.append(loop.vert.co[1])
-            geoPack.uvs.append(loop[uv_layer].uv[0])
-            geoPack.uvs.append(loop[uv_layer].uv[1])
+    weight_bone_pairs = []
+    for group in vertex.groups:
+        if group.group < len(vertex_groups) and vertex_groups[group.group].name in bone_names:
+            bone_index = bone_names[vertex_groups[group.group].name]
+            weight_bone_pairs.append((group.weight, bone_index))
 
-    geoPack.indices = list(range(geoPack.iSize))
-    
-    bm.free()
-      
-    geoPack.mesh = mesh
-    
-    vpet.geoList.append(geoPack)
-    return (len(vpet.geoList)-1)
+    # Sort by weight in descending order and take the top 4
+    weight_bone_pairs.sort(reverse=True, key=lambda x: x[0])
+    weight_bone_pairs = weight_bone_pairs[:4]
+
+    for i, pair in enumerate(weight_bone_pairs):
+        bone_weights[i] = pair[0]
+        bone_indices[i] = pair[1]
+
+    return bone_weights, bone_indices
 
 def processGeoNew(mesh):
     geoPack = sceneMesh()
+    mesh_identifier = generate_mesh_identifier(mesh)
+
+    for existing_geo in vpet.geoList:
+        if existing_geo.identifier == mesh_identifier:
+            return vpet.geoList.index(existing_geo)
+
+
+    if mesh.parent.type == 'ARMATURE':
+        isParentArmature = True
+        armature = mesh.parent
+        bone_names = {bone.name: idx for idx, bone in enumerate(armature.data.bones)}
+        vertex_bone_weights = {}
+        vertex_bone_indices = {}
+
+        for vert in mesh.data.vertices:
+            weights, indices = get_vertex_bone_weights_and_indices(vert, mesh.vertex_groups, bone_names)
+            vertex_bone_weights[vert.index] = weights
+            vertex_bone_indices[vert.index] = indices
 
     mesh.data.calc_normals_split()
     bm = bmesh.new()
@@ -480,6 +506,7 @@ def processGeoNew(mesh):
     num_shared_verts = 0 # just for debugging purposes
     for tri in loop_triangles:
         for loop in tri:
+            original_index = loop.vert.index
             co = loop.vert.co.copy().freeze()
             uv = loop[uv_layer].uv.copy().freeze()
 
@@ -488,8 +515,11 @@ def processGeoNew(mesh):
             else:
                 normal = loop.face.normal.copy().freeze()
 
+            bone_weights = vertex_bone_weights.get(original_index, [0.0] * 4)
+            bone_indices = vertex_bone_indices.get(original_index, [-1] * 4)
+
             #normal = loop.vert.normal.copy().freeze() if loop.edge.smooth else loop.face.normal.copy().freeze()
-            new_split_vert = (co, normal, uv, )
+            new_split_vert = (co, normal, uv, tuple(bone_weights), tuple(bone_indices))
             split_vert_idx = split_verts.get(new_split_vert)
             if split_vert_idx == None: # no matching vert found, push new one with index and increment for next time
                 split_vert_idx = split_index_cur
@@ -502,20 +532,32 @@ def processGeoNew(mesh):
     split_vert_items = list(split_verts.items())
     split_vert_items.sort(key=lambda x: x[1]) #sort by index
     interleaved_buffer = [item[0] for item in split_vert_items] # strip off index
-    co_buffer, normal_buffer, uv_buffer = zip(*interleaved_buffer)
+    co_buffer, normal_buffer, uv_buffer, bone_weights_buffer, bone_indices_buffer = zip(*interleaved_buffer)
+
 
     # should unify the list sizes
     geoPack.vSize = len(co_buffer)
     geoPack.iSize = len(index_buffer)
     geoPack.nSize = len(normal_buffer)
     geoPack.uvSize = len(uv_buffer)
-    geoPack.bWSize = 0 #no boneweights for now
+    geoPack.bWSize = 0
     geoPack.vertices = []
     geoPack.indices = []
     geoPack.normals = []
     geoPack.uvs = []
     geoPack.boneWeights = []
     geoPack.boneIndices = []
+
+    if isParentArmature:
+        for vert_data in interleaved_buffer:
+            _, _, _, vert_bone_weights, vert_bone_indices = vert_data
+            geoPack.boneWeights.extend(vert_bone_weights)
+            geoPack.boneIndices.extend(vert_bone_indices)
+
+        geoPack.bWSize = len(co_buffer)
+        print("BWSIZE IS: " + str(geoPack.bWSize))
+        print("cobuffer size IS: " + str(len(co_buffer)))
+        print("BONE WEIGHTS SIZE IS: " + str(len(geoPack.boneWeights)))
 
     for i, vert in enumerate(interleaved_buffer):
         geoPack.vertices.append(vert[0][0])
@@ -530,14 +572,24 @@ def processGeoNew(mesh):
         geoPack.uvs.append(vert[2][1])
 
         #geoPack.indices.append(i)
-
+    print("geopack Vertices size is: " + str(len(geoPack.vertices)))
     bm.free()
 
+    
     geoPack.indices = index_buffer
     geoPack.mesh = mesh
+    geoPack.identifier = mesh_identifier
     
     vpet.geoList.append(geoPack)
     return (len(vpet.geoList)-1)
+
+def generate_mesh_identifier(obj):
+    if obj.type == 'MESH':
+        return f"Mesh_{obj.name}_{len(obj.data.vertices)}"
+    elif obj.type == 'ARMATURE':
+        return f"Armature_{obj.name}_{len(obj.data.bones)}"
+    else:
+        return f"{obj.type}_{obj.name}"
 
 ## generate Byte Arrays out of collected node data
 def getHeaderByteArray():
@@ -600,6 +652,10 @@ def getGeoBytesArray():
         geoBinary.extend(struct.pack('i', geo.uvSize))
         geoBinary.extend(struct.pack('%sf' % geo.uvSize*2, *geo.uvs))
         geoBinary.extend(struct.pack('i', geo.bWSize))
+        if(geo.bWSize > 0):
+            geoBinary.extend(struct.pack('%sf' % geo.bWSize*4, *geo.boneWeights))
+            geoBinary.extend(struct.pack('%si' % geo.bWSize*4, *geo.boneIndices))
+
         
         vpet.geoByteData.extend(geoBinary)
 
@@ -636,7 +692,11 @@ def getMaterialsByteArray():
                 matBinary.extend(struct.pack('f', 1)) # tex scales
                 matBinary.extend(struct.pack('f', 1)) # tex scales
 
-            vpet.materialsByteData.extend(matBinary)  
+            vpet.materialsByteData.extend(matBinary) 
+
+def getCharacterByteArray():
+    if len(vpet.characterList):
+        charBinary = bytearray([]) 
 
             
 
