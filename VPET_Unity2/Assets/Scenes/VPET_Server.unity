@@ -201,7 +201,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1136079607
+--- !u!1 &818375053
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -209,24 +209,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1136079608}
+  - component: {fileID: 818375054}
   m_Layer: 10
   m_Name: Scene
-  m_TagString: editable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1136079608
+--- !u!4 &818375054
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1136079607}
+  m_GameObject: {fileID: 818375053}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.4393513, y: -0.61445117, z: -14.313769}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -360,6 +360,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isServer: 1
+  deepLink: 
+  useRandomCID: 1
 --- !u!850595691 &1778909856
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -431,4 +433,4 @@ SceneRoots:
   - {fileID: 1672782515}
   - {fileID: 413575433}
   - {fileID: 1331304640}
-  - {fileID: 1136079608}
+  - {fileID: 818375054}
