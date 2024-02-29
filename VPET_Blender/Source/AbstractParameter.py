@@ -124,7 +124,7 @@ class Parameter(AbstractParameter):
                                                 val[2],\
                                                 -val[0]))
             self._parent.editableObject.rotation_mode = 'XYZ'
-            print(str(unity_quat))
+            #print(str(unity_quat))
             return struct.pack('4f', *unity_quat)
 
 def unpack(type, array, offset):

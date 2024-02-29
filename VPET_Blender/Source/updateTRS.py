@@ -14,7 +14,7 @@ class RealTimeUpdaterOperator(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.window_manager
-        collection = bpy.data.collections.get("VPET_editable")
+        collection = bpy.data.collections.get("VPET_Collection")
         self.start_transforms = {}
         global vpet
         vpet = bpy.context.window_manager.vpet_data
@@ -46,7 +46,7 @@ class RealTimeUpdaterOperator(bpy.types.Operator):
         return sum((c1 - c2) ** 2 for c1, c2 in zip(color1, color2)) ** 0.5
 
     def check_for_updates(self, context):
-        for obj in bpy.data.collections.get("VPET_editable").objects:
+        for obj in bpy.data.collections.get("VPET_Collection").objects:
             if obj.name not in self.start_transforms:
                 continue
 

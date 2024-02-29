@@ -52,15 +52,35 @@ def checkZMQ():
 ## Create Collections for VPET objects
 def setupCollections():
     v_prop = bpy.context.scene.vpet_properties
-    if bpy.data.collections.find(v_prop.vpet_collection) < 0:
+    
+    # Check if the collection exists. If not, create it and link it to the scene.
+    vpetColl = bpy.data.collections.get(v_prop.vpet_collection)
+    if vpetColl is None:
         vpetColl = bpy.data.collections.new(v_prop.vpet_collection)
         bpy.context.scene.collection.children.link(vpetColl)
 
+    # Check if the "VPETsceneRoot" object exists. If not, create it and link it to the collection.
+    root = bpy.context.scene.objects.get('VPETsceneRoot')
+    if root is None:
+        bpy.ops.object.empty_add(type='PLAIN_AXES', rotation=(0,0,0), location=(0, 0, 0), scale=(1, 1, 1))
+        bpy.context.active_object.name = 'VPETsceneRoot'
+        root = bpy.context.active_object
+        for coll in bpy.context.scene.collection.children:
+            if root.name in coll.objects:
+                coll.objects.unlink(root)
+        vpetColl.objects.link(root)
+
+    else:
+        # Check if the "VPETsceneRoot" object is already linked to the collection.
+        if root not in vpetColl.objects:
+            vpetColl.objects.link(root)
+
+    """
     if bpy.data.collections.find(v_prop.edit_collection) < 0:
         editColl = bpy.data.collections.new(v_prop.edit_collection)
         bpy.context.scene.collection.children.link(editColl)
         #bpy.data.collections[v_prop.vpet_collection].children.link(editColl)
-
+    """
 def cleanUp(level):
     if level > 0:
         vpet.objectsToTransfer = [] #list of all objects

@@ -49,6 +49,12 @@ class VPET_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.operator('object.zmq_install', text = 'Pip Install ZMQ')
         row.operator('object.setup_vpet', text='Setup Scene for VPET')
+
+        row = layout.row()
+        row.operator('object.setup_character', text='Setup Character for VPET')
+        row.operator('object.make_obj_editable', text='Make selected Editable')
+        row.operator('object.parent_to_root', text='Parent TO Root')
+
         
         row = layout.row()
         row.operator('object.zmq_distribute', text = "Do Distribute")
@@ -57,6 +63,6 @@ class VPET_PT_Panel(bpy.types.Panel):
         row = layout.row()
         row.prop(bpy.context.scene.vpet_properties, 'vpet_collection')
         row = layout.row()
-        row.prop(bpy.context.scene.vpet_properties, 'edit_collection')
-        row = layout.row()
+        #row.prop(bpy.context.scene.vpet_properties, 'edit_collection')
+        #row = layout.row()
         row.prop(bpy.context.scene.vpet_properties, 'server_ip')

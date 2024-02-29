@@ -41,8 +41,8 @@ class VpetProperties(bpy.types.PropertyGroup):
     update_sender_port: bpy.props.StringProperty(default = '5557')
     Command_Module_port: bpy.props.StringProperty(default = '5558')
 
-    vpet_collection: bpy.props.StringProperty(name = 'Static Collection', default = 'VPET_static', maxlen=30)
-    edit_collection: bpy.props.StringProperty(name = 'Editable Collection', default = 'VPET_editable', maxlen=30)
+    vpet_collection: bpy.props.StringProperty(name = 'Static Collection', default = 'VPET_Collection', maxlen=30)
+    #edit_collection: bpy.props.StringProperty(name = 'Editable Collection', default = 'VPET_editable', maxlen=30)
 
 ## Class to keep data
 #
@@ -66,6 +66,7 @@ class VpetData():
     textureList = []
     editableList = []
     characterList = []
+    editable_objects = []
 
     SceneObjects = []
 

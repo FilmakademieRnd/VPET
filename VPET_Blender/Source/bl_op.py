@@ -41,6 +41,7 @@ from .serverAdapter import close_socket_u
 from .tools import cleanUp, installZmq, checkZMQ
 from .tools import setupCollections
 from .sceneDistribution import gatherSceneData
+from .GenerateSkeletonObj import process_armature
 
 
 ## operator classes
@@ -107,6 +108,60 @@ class InstallZMQ(bpy.types.Operator):
         else:
             self.report({'ERROR'}, str(zmq_result))
             return {'FINISHED'}
+
+class SetupCharacter(bpy.types.Operator):
+    bl_idname = "object.setup_character"
+    bl_label = "VPET Character Setup"
+    bl_description = 'generate obj for each Character bone'
+
+    def execute(self, context):
+        print('Setup Character')
+        editobj = bpy.data.collections.get("VPET_Collection")
+        for obj in editobj.objects:
+            if obj.type == 'ARMATURE':
+                process_armature(obj)
+        return {'FINISHED'}
+    
+class MakeEditable(bpy.types.Operator):
+    bl_idname = "object.make_obj_editable"
+    bl_label = "Make selected Editable"
+    bl_description = 'generate a new custom property called Editable for all selected obj'
+
+    def execute(self, context):
+        print('Make obj Editable')
+        selected_objects = bpy.context.selected_objects
+        for obj in selected_objects:
+            # Add custom property "Editable" with type bool and default value True
+            obj["VPET-Editable"] = True
+        return{'FINISHED'}
+    
+
+
+    
+
+class ParentToRoot(bpy.types.Operator):
+    bl_idname = "object.parent_to_root"
+    bl_label = "Parent obj to root obj"
+    bl_description = 'Parent all the selectet object to the TRACER root obj'
+
+    def execute(self, context):
+        print('Parent obj')
+
+        selected_objects = bpy.context.selected_objects
+        parent_object_name = "VPETsceneRoot"
+        parent_object = bpy.data.objects.get(parent_object_name)
+        if parent_object:
+            # Iterate through selected objects
+            for obj in selected_objects:
+                # Check if the object is not the parent object itself
+                if obj != parent_object:
+                    # Set the parent of the selected object to the parent object
+                    obj.parent = parent_object
+                    obj.matrix_parent_inverse = parent_object.matrix_world.inverted()
+        else:
+            print(f"Object '{parent_object_name}' not found.")
+
+
 
 def reset():
     close_socket_d()
