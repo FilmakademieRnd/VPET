@@ -91,7 +91,7 @@ class VpetData():
     pingByteMSG = bytearray([])
     ParameterUpdateMSG = bytearray([])
 
-    nodeTypes = ['GROUP', 'GEO', 'LIGHT', 'CAMERA', 'SKINNEDMESH']
+    nodeTypes = ['GROUP', 'GEO', 'LIGHT', 'CAMERA', 'SKINNEDMESH', 'CHARACTER']
     lightTypes = ['SPOT', 'SUN', 'POINT', 'AREA']
 
     messageType = ['PARAMETERUPDATE', 'LOCK', \

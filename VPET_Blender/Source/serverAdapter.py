@@ -184,7 +184,6 @@ def listener():
         if clientID != vpet.cID:
             msgtime = msg[1]
             type = vpet.messageType[msg[2]]
-            #print(str(type) + "and time is" + str(time))
   
             start = 3
 

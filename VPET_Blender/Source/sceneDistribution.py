@@ -44,6 +44,7 @@ from .SceneObjects.SceneObject import SceneObject
 from .SceneObjects.SceneObjectCamera import SceneObjectCamera
 from .SceneObjects.SceneObjectLight import SceneObjectLight
 from .SceneObjects.SceneObjectSpotLight import SceneObjectSpotLight
+from .SceneObjects.SceneCharacterObject import SceneCharacterObject
 from .Avatar_HumanDescriptioon_Mixamo import blender_to_unity_bone_mapping
 
 
@@ -135,7 +136,7 @@ def gatherSceneData():
             #print( "OBJ NAME IS ... ", i.name , " and vpet id is ", i.vpetId )
 
         print("THE LEN OF NODE LIST IS ",  len(vpet.nodeList ))
-        for i, n in enumerate(vpet.editable_objects):
+        for i, n in enumerate(vpet.objectsToTransfer):
             processEditableObjects(n, i)
 
         getHeaderByteArray()
@@ -232,9 +233,11 @@ def processSceneObject(obj, index):
     
 
     elif obj.type == 'ARMATURE':
+        node.vpetType = vpet.nodeTypes.index('CHARACTER')
         processCharacter(obj, vpet.objectsToTransfer)
         
- 
+    print("dDSDSSDSDSDSDSDSDSDSDSDSD" , obj.type)
+    print(node.vpetType)
     # gather general node data    
     nodeMatrix = obj.matrix_local.copy()
 
@@ -346,8 +349,8 @@ def processSkinnedMesh(obj, nodeSkinMesh):
         bbox_corners = [obj.parent.matrix_world @ mathutils.Vector(corner) for corner in obj.parent.bound_box]
         bbox_center = sum(bbox_corners, mathutils.Vector((0,0,0))) / 8
         bbox_extents = max(bbox_corners, key=lambda c: (c - bbox_center).length) - bbox_center
-        nodeSkinMesh.boundCenter = [bbox_center.x, bbox_center.y, bbox_center.z]
-        nodeSkinMesh.boundExtents = [bbox_extents.x, bbox_extents.y, bbox_extents.z]
+        nodeSkinMesh.boundCenter = [bbox_center.x, bbox_center.z, bbox_center.y]
+        nodeSkinMesh.boundExtents = [bbox_extents.x, bbox_extents.z, bbox_extents.y]
 
         armature_obj = obj.parent
         if armature_obj:
@@ -364,9 +367,8 @@ def processSkinnedMesh(obj, nodeSkinMesh):
                 # If bind_poses is shorter, extend with zeroes
                 bind_poses.extend([0] * (desired_length - current_length))  
             nodeSkinMesh.bindPoses = bind_poses
-            print("AAAAAAAA bone size " ,  len(bind_poses))
+            print("AAAAAAAA bind_poses size " ,  len(bind_poses))
             nodeSkinMesh.bindPoseLength = int(len(bind_poses) / 16)
-            #TODO THE skinnedMeshBoneIDs is wrong need to grab the one that im sending!!!!!
             nodeSkinMesh.skinnedMeshBoneIDs = [-1] * 99  # Initialize all to -1
             for i, bone in enumerate(armature_data.bones):
                 bone_index = -1
@@ -447,8 +449,7 @@ def processCharacter(armature_obj, object_list):
                 chr_pack.boneRotation.extend([rot[1], rot[3], rot[2], rot[0]])
 
 
-
-        for i , bone in enumerate(bones):
+        for bone in armature_obj.pose.bones:
             bone_index = -1
             for idx, obj in enumerate(object_list):
                 if obj.name == bone.name:
@@ -457,18 +458,20 @@ def processCharacter(armature_obj, object_list):
 
             chr_pack.skeletonMapping.append(bone_index)
 
-            bone_matrix = armature_obj.matrix_world @ bone.matrix_local
+            
+            bone_matrix = armature_obj.matrix_world @ bone.matrix 
             position = bone_matrix.to_translation()
             rotation = bone_matrix.to_quaternion()
             rotation.invert()
             
-            scale = bone_matrix.to_scale()
+            
+            scale =bone.scale
             print(bone.name, "   POS   ", position, "   ROT   " , rotation, "   SCL   " , scale)
 
             chr_pack.bonePosition.extend([position.x, position.z, position.y])
-            chr_pack.boneRotation.extend([rotation.x, rotation.z, rotation.y, rotation.w])
-            chr_pack.boneScale.extend([scale.x, scale.z, scale.y])
-        
+            chr_pack.boneRotation.extend([rotation[1], rotation[3], rotation[2], rotation[0]])
+            chr_pack.boneScale.extend(scale)
+
         chr_pack.sMSize = len(chr_pack.skeletonMapping)
     vpet.characterList.append(chr_pack)
     return chr_pack
@@ -492,7 +495,8 @@ def processEditableObjects(obj, index):
             aaa = SceneObjectLight(obj)
             vpet.SceneObjects.append(aaa)
     elif obj.type == 'ARMATURE':
-        aaa = SceneObject(obj)
+        print()
+        aaa = SceneCharacterObject(obj)
         vpet.SceneObjects.append(aaa)
 
 
@@ -811,6 +815,7 @@ def getHeaderByteArray():
 
     headerBin.extend(struct.pack('f', lightIntensityFactor))
     headerBin.extend(struct.pack('i', senderID))
+    headerBin.extend(struct.pack('i', 60))# frame rate that should be modified later
 
     vpet.headerByteData.extend(headerBin)
 

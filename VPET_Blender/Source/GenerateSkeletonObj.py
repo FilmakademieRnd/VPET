@@ -1,60 +1,90 @@
 import bpy
 
-def get_layer_collection(context, collection, layer_collection=None):
-    """Recursively search for the matching LayerCollection."""
-    if layer_collection is None:
-        layer_collection = context.view_layer.layer_collection
-    if layer_collection.collection == collection:
-        return layer_collection
-    for layer_child in layer_collection.children:
-        found = get_layer_collection(context, collection, layer_child)
-        if found:
-            return found
-    return None
+def process_armature(armature):
+# Function to create an empty object
+    def create_empty(name, location, rotation, scale, parent):
+        empty = bpy.data.objects.new(name, None)
+        empty.location = location
+        empty.rotation_euler = rotation.to_euler()
+        empty.scale = scale
+        bpy.context.collection.objects.link(empty)
+        if parent:
+            empty.parent = parent
+        return empty
 
-def create_empty_for_bone(bone, parent_empty=None, armature_obj=None):
-    """Create an empty object for the bone, maintaining hierarchy."""
-    # Calculate the global matrix for the bone
-    bone_global_matrix = armature_obj.matrix_world @ bone.matrix_local
-    
-    # Create an empty at the bone's global location
-    bpy.ops.object.add(type='EMPTY', location=bone_global_matrix.to_translation())
-    empty_obj = bpy.context.object
-    empty_obj.name = bone.name
-    empty_obj.empty_display_size = 0.1
-    
-    # Set the rotation and scale to match the bone's global transform
-    empty_obj.rotation_euler = bone_global_matrix.to_euler()
-    empty_obj.scale = bone_global_matrix.to_scale()
+    # Get the active armature object
+    armature = armature
 
-    # Parent the empty to the previously created empty if it exists
-    if parent_empty:
-        empty_obj.parent = parent_empty
+    # Check if the active object is an armature
+    if armature and armature.type == 'ARMATURE':
+        bpy.ops.object.mode_set(mode='POSE')  # Switch to pose mode
+        
+        # List to store bone information
+        bone_data_list = []
+        
+        # Find the root bone (typically named "Hips")
+        root_bone = None
+        for bone in armature.pose.bones:
+            if not bone.parent:
+                root_bone = bone
+                break
+        
+        if root_bone:
+            # Create empty object for the root bone
+            empty_root = create_empty(root_bone.name, armature.matrix_world @ root_bone.head, root_bone.rotation_quaternion, root_bone.scale, None)
+            empty_objects = {root_bone.name: empty_root}
+            
+            # Parent the root empty to the armature
+            empty_root.parent = armature
+            
+            # Add root bone data to the list
+            bone_data = {
+                'name': root_bone.name,
+                'parent': None,
+                'location': armature.matrix_world @ root_bone.head,
+                'rotation': root_bone.rotation_quaternion,
+                'scale': root_bone.scale
+            }
+            bone_data_list.append(bone_data)
+        
+            # Iterate through each bone (excluding the root bone)
+            for bone in armature.pose.bones:
+                if bone != root_bone:
+                    bone_matrix_global = armature.matrix_world @ bone.matrix
+                    bone_location_global = bone_matrix_global.to_translation()
+                    bone_rotation_global = bone_matrix_global.to_quaternion()
+
+                    bone_data = {
+                        'name': bone.name,
+                        'parent': bone.parent,
+                        'location': bone_location_global,
+                        'rotation': bone_rotation_global,
+                        'scale': bone.scale
+                    }
+                    bone_data_list.append(bone_data)
+        
+        bpy.ops.object.mode_set(mode='OBJECT')  # Switch back to object mode
+        
+        if root_bone:
+            # Dictionary to store empty objects by bone name
+            for bone_data in bone_data_list[1:]:
+                parent_name = bone_data['parent'].name if bone_data['parent'] else root_bone.name
+                # Create empty object for each bone
+                empty = create_empty(bone_data['name'], bone_data['location'], bone_data['rotation'], bone_data['scale'], empty_objects[parent_name])
+                empty_objects[bone_data['name']] = empty
+
+            # Parent the empty objects hierarchy to the armature
+            for empty in empty_objects.values():
+                if empty.parent:
+                    empty.parent_type = 'OBJECT'
+                    empty.matrix_parent_inverse = empty.parent.matrix_world.inverted()
+                    armature.select_set(True)
+                    bpy.context.view_layer.objects.active = armature
+                    bpy.ops.object.parent_set(type='BONE', keep_transform=True)
+            
+            bpy.ops.object.select_all(action='DESELECT')  # Deselect all objects
+            armature.select_set(True)  # Select the armature
+            bpy.context.view_layer.objects.active = armature  # Set armature as active
     else:
-        # If no parent, this is a root bone, parent it directly to the armature
-        empty_obj.parent = armature_obj
-        empty_obj.matrix_parent_inverse = armature_obj.matrix_world.inverted()
-    
-    # Recursively create empties for child bones
-    for child_bone in bone.children:
-        create_empty_for_bone(child_bone, empty_obj, armature_obj)
-
-def process_armature(obj):
-    """Process each bone in the armature to create a corresponding empty."""
-    armature_obj = obj
-    if armature_obj and armature_obj.type == 'ARMATURE':
-        # Ensure we're in object mode
-        bpy.ops.object.mode_set(mode='OBJECT')
-        # Deselect all objects
-        for obj in bpy.context.view_layer.objects: obj.select_set(False)
-        # Activate the armature object
-        bpy.context.view_layer.objects.active = armature_obj
-        # Get the collection of the armature
-        armature_collection = armature_obj.users_collection[0] if armature_obj.users_collection else bpy.context.scene.collection
-        layer_collection = get_layer_collection(bpy.context, armature_collection)
-        bpy.context.view_layer.active_layer_collection = layer_collection
-        # Create empties for each root bone
-        for bone in armature_obj.data.bones:
-            if not bone.parent:  # Root bone
-                create_empty_for_bone(bone, None, armature_obj)
+        print("Active object is not an armature or no armature is selected.")
 
