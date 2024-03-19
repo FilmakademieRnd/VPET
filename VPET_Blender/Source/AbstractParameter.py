@@ -1,7 +1,8 @@
 import struct
-import bpy  
-from mathutils import Vector, Quaternion, Color
+import bpy
+from mathutils import Vector, Quaternion, Euler, Color, Matrix
 import mathutils
+import math
 
 class AbstractParameter:
 
@@ -80,26 +81,26 @@ class Parameter(AbstractParameter):
             self.set_value(floatVal)
 
         if type == 6 :
-             newVector3 = mathutils.Vector(( unpack('f', msg, offset),\
+            newVector3 = mathutils.Vector(( unpack('f', msg, offset),\
                                             unpack('f', msg, offset + 4),\
                                             unpack('f', msg, offset + 8)))
              
-             unityToBlenderVector3 = mathutils.Vector((newVector3[0], newVector3[2], newVector3[1]))
+            unityToBlenderVector3 = mathutils.Vector((newVector3[0], newVector3[2], newVector3[1]))
 
-             self.set_value(unityToBlenderVector3)
+            self.set_value(unityToBlenderVector3)
 
         elif type == 8 :
-            quaternion = mathutils.Quaternion(( unpack('f', msg, offset ),\
-                                            unpack('f', msg, offset + 4),\
-                                            unpack('f', msg, offset + 8),\
-                                            unpack('f', msg, offset + 12)))
-            quaternion.invert()
+            XYZW_quat = mathutils.Quaternion((  unpack('f', msg, offset ),\
+                                                unpack('f', msg, offset + 4),\
+                                                unpack('f', msg, offset + 8),\
+                                                unpack('f', msg, offset + 12)))
 
-            unityToBlenderQuaternion = mathutils.Quaternion((quaternion[3],\
-                                                                quaternion[0],\
-                                                                -quaternion[2],\
-                                                                -quaternion[1]))
-            self.set_value(unityToBlenderQuaternion)
+            WXYZ_quat = mathutils.Quaternion((  XYZW_quat[3],\
+                                                XYZW_quat[0],\
+                                                XYZW_quat[1],\
+                                                XYZW_quat[2]))
+
+            self.set_value(WXYZ_quat)
 
         elif type == 9:
              newColor = (unpack('f', msg, offset), unpack('f', msg, offset + 4), unpack('f', msg, offset + 8))

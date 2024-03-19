@@ -131,6 +131,7 @@ def read_thread():
                     vpet.socket_d.send(vpet.charactersByteData)
             elif msg == "textures":
                 print("Texture request! Sending...")
+                
                 if(vpet.textureList != None):
                     vpet.socket_d.send(vpet.texturesByteData)
             elif msg == "materials":

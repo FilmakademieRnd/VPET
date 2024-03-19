@@ -77,6 +77,9 @@ class texturePackage:
 class characterPackage:
     pass
 
+class curvePackage:
+    pass
+
 def initialize():
     global vpet, v_prop
     vpet = bpy.context.window_manager.vpet_data
@@ -235,6 +238,9 @@ def processSceneObject(obj, index):
     elif obj.type == 'ARMATURE':
         node.vpetType = vpet.nodeTypes.index('CHARACTER')
         processCharacter(obj, vpet.objectsToTransfer)
+
+    elif obj.type == 'CURVE':
+        processCurve(obj, vpet.objectsToTransfer)
         
     print("dDSDSSDSDSDSDSDSDSDSDSDSD" , obj.type)
     print(node.vpetType)
@@ -476,6 +482,38 @@ def processCharacter(armature_obj, object_list):
     vpet.characterList.append(chr_pack)
     return chr_pack
 
+def processCurve(obj, objList):
+    curve_Pack = curvePackage()
+
+    for frame in range(bpy.context.scene.frame_start, bpy.context.scene.frame_end + 1):
+        points = evaluate_curve(obj, frame)
+        vpet.points_for_frames[frame] = points
+
+
+    curve_Pack.points = list(vpet.points_for_frames.values())
+    curve_Pack.pointsLen = len(curve_Pack.points) # len is also equal to the nr of frames 
+
+    vpet.curveList.append(curve_Pack)
+
+    for frame, points in vpet.points_for_frames.items():
+        print("Frame:", frame, "Points:", points)
+
+def evaluate_curve(curve_object, frame):
+    # Set the current frame
+    bpy.context.scene.frame_set(frame)
+    
+    evaluated_points = []
+    
+    # Ensure the object is a curve and is using Bezier type
+    if curve_object.data.splines.active.type == 'BEZIER':
+        spline = curve_object.data.splines.active
+        
+        # Evaluate the curve at current frame
+        evaluated_point = spline.bezier_points[0].co.lerp(spline.bezier_points[1].co, frame / bpy.context.scene.frame_end)
+        evaluated_points.append(evaluated_point)
+    
+    return evaluated_points
+
 def processEditableObjects(obj, index):
 
     #if obj.type == "ARMATURE":
@@ -495,7 +533,7 @@ def processEditableObjects(obj, index):
             aaa = SceneObjectLight(obj)
             vpet.SceneObjects.append(aaa)
     elif obj.type == 'ARMATURE':
-        print()
+
         aaa = SceneCharacterObject(obj)
         vpet.SceneObjects.append(aaa)
 
@@ -955,6 +993,15 @@ def getCharacterByteArray():
             charBinary.extend(struct.pack(format_string_scale, *chr.boneScale))
             """
            
+def getCurveByteArray():
+    for curve in vpet.characterList:
+        curveBinary = bytearray([])
+        curveBinary.extend(struct.pack('i', curve.pointsLen))
+        curveBinary.extend(struct.pack('%sf' % chr.sMSize*3, *curve.points))
+        print("a")
+
+
+
 import struct
 
 def print_decoded_data(charBinary, chr):
