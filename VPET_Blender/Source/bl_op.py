@@ -140,6 +140,7 @@ class ParentToRoot(bpy.types.Operator):
     def execute(self, context):
         print('Parent obj')
         parent_to_root()
+        return {'FINISHED'}
        
 
 def reset():

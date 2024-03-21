@@ -169,29 +169,33 @@ def get_current_collections(obj):
     
 
 def parent_to_root():
-    selected_objects = bpy.context.selected_objects
+    selected_objects =  bpy.context.selected_objects
     parent_object_name = "VPETsceneRoot"
     parent_object = bpy.data.objects.get(parent_object_name)
-    if parent_object:
-        # Iterate through selected objects
-        for obj in selected_objects:
-            # Check if the object is not the parent object itself
-            if obj != parent_object:
-                # Set the parent of the selected object to the parent object
-                obj.parent = parent_object
-                obj.matrix_parent_inverse = parent_object.matrix_world.inverted()
-                select_hierarchy(selected_objects)
-                collection_name = "VPET_Collection"  # Specify the collection name
-                collection = bpy.data.collections.get(collection_name)
-                if collection is None:
-                    collection = bpy.data.collections.new(collection_name)
-                    bpy.context.scene.collection.children_recursive.link(collection)
-                    
-                for obj in bpy.context.selected_objects:
-                    for coll in obj.users_collection:
-                        coll.objects.unlink(obj)
+    if parent_object is None:
+        setupCollections()
+        parent_object = bpy.data.objects.get(parent_object_name)
 
-                    # Link the object to the new collection
-                    collection.objects.link(obj)
-    else:
-        print(f"Object '{parent_object_name}' not found.")
+
+    for obj in selected_objects:
+        # Check if the object is not the parent object itself
+        if obj != parent_object:
+            # Set the parent of the selected object to the parent object
+            obj.parent = parent_object
+            obj.matrix_parent_inverse = parent_object.matrix_world.inverted()
+            select_hierarchy(selected_objects)
+            switch_collection()
+
+
+def switch_collection():
+    collection_name = "VPET_Collection"  # Specify the collection name
+    collection = bpy.data.collections.get(collection_name)
+    if collection is None:
+        setupCollections
+                    
+    for obj in bpy.context.selected_objects:
+        for coll in obj.users_collection:
+            coll.objects.unlink(obj)
+
+        # Link the object to the new collection
+        collection.objects.link(obj)

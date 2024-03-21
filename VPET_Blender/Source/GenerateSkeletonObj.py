@@ -1,5 +1,5 @@
 import bpy
-from .tools import get_current_collections, select_hierarchy, parent_to_root;
+from .tools import get_current_collections, switch_collection, parent_to_root, select_hierarchy, setupCollections;
 
 def process_armature(armature):
 # Function to create an empty object
@@ -82,6 +82,20 @@ def process_armature(armature):
                     armature.select_set(True)
                     bpy.context.view_layer.objects.active = armature
                     bpy.ops.object.parent_set(type='BONE', keep_transform=True)
+
+        collection_name = "VPET_Collection"  # Specify the collection name
+        collection = bpy.data.collections.get(collection_name)
+        if collection is None:
+            setupCollections()
+
+        if(get_current_collections(armature) != get_current_collections(empty_root)):
+            bpy.ops.object.select_all(action='DESELECT')
+            select_hierarchy(empty_root)
+            switch_collection()
+        else:
+            bpy.ops.object.select_all(action='DESELECT')
+            armature.select_set(True)
+            parent_to_root()
 
 
     else:
