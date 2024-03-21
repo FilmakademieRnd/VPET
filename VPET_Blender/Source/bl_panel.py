@@ -66,3 +66,8 @@ class VPET_PT_Panel(bpy.types.Panel):
         #row.prop(bpy.context.scene.vpet_properties, 'edit_collection')
         #row = layout.row()
         row.prop(bpy.context.scene.vpet_properties, 'server_ip')
+
+        row = layout.row()
+        row.prop(bpy.context.scene.vpet_properties, 'mixamo_humanoid', text="Mixamo Humanoid?")
+
+        

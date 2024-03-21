@@ -9,7 +9,6 @@ class SceneObject:
 
     s_id = 1
     
-
     def __init__(self, obj):
         self._id = SceneObject.s_id
         SceneObject.s_id += 1

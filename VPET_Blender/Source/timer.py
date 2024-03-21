@@ -28,22 +28,7 @@ class TimerClass:
         self.accumulated_increments -= whole_increments
         
         # Update vpet.time with whole increments
-        new_time = vpet.time + whole_increments
-        
-        """
-        # Check for milestones within the update span
-        if vpet.time < 60 <= new_time:
-            # Just crossed 60
-            self.time_60_start_time = current_time  # Mark the time when crossing 60
-            elapsed_time_to_60 = self.time_60_start_time - self.start_time
-            print(f"It took {elapsed_time_to_60} seconds for vpet.time to reach 60.")
-        if vpet.time < 119 <= new_time:
-            # Just crossed 119
-            if self.time_60_start_time:
-                elapsed_time_from_60_to_119 = current_time - self.time_60_start_time
-                print(f"It took {elapsed_time_from_60_to_119} seconds for vpet.time to go from 60 to 119.")
-                # Consider resetting for the next cycle if needed
-        """
+        new_time = vpet.time + whole_increments     
 
         # Handle cycle reset and ensure vpet.time remains an integer
         if new_time >= self.m_timesteps - 1:

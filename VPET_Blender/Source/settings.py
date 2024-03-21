@@ -40,8 +40,8 @@ class VpetProperties(bpy.types.PropertyGroup):
     sync_port: bpy.props.StringProperty(default = '5556')
     update_sender_port: bpy.props.StringProperty(default = '5557')
     Command_Module_port: bpy.props.StringProperty(default = '5558')
-
-    vpet_collection: bpy.props.StringProperty(name = 'Static Collection', default = 'VPET_Collection', maxlen=30)
+    mixamo_humanoid: bpy.props.BoolProperty(name="Mixamo Unity Humanoid?",description="Check if using mixamo humanoid and you need to send the character to Unity",default=False)
+    vpet_collection: bpy.props.StringProperty(name = 'VPET Collection', default = 'VPET_Collection', maxlen=30)
     #edit_collection: bpy.props.StringProperty(name = 'Editable Collection', default = 'VPET_editable', maxlen=30)
 
 ## Class to keep data

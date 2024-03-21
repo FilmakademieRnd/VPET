@@ -49,17 +49,6 @@ class SceneCharacterObject(SceneObject):
             self.boneMap[localBoneRotationParameter._id] = bone_rotation_quaternion
 
     def set_pose_matrices(self, current_pose_bone):
-        """
-        This function sets the pose matrices for the bones in an armature.
-        The function operates recursively, meaning it sets the transformation for a bone and then
-        proceeds to do the same for all of its child bones.
-
-        Args:
-            obj (bpy.types.Object): The armature object.
-            matrix_map (dict): A dictionary mapping bone names to their transformation matrices in locale space.
-
-        """
-        
 
         if current_pose_bone.name in self.local_transform_map:
             matrix = self.local_transform_map[current_pose_bone.name]
@@ -81,28 +70,6 @@ class SceneCharacterObject(SceneObject):
         
 
     def compute_local_space_transformations(self, transforms, current_pose_bone, new_offset_quaternion):
-        """
-        This function traverses through a hierarchy of bones in an armature and computes 
-        the transformation matrices for each bone relative to the armature's root. 
-        This is referred to as 'local space' in Blender, 
-        which is not to be confused with 'local bone space' that is relative to the parent bone.
-
-        The function operates recursively, meaning it computes transformations
-        for a bone and then proceeds to do the same for all of its child bones.
-
-        Args:
-            data_bones (list): A list of bones for which the transformations should be computed. 
-                               This should be a list of all bones in the armature 
-                               (i.e., obj.data.bones).
-            transforms (dict): A dictionary mapping the names of bones to their transformations.
-                               These transformations should be in local bone space,
-                               meaning they are relative to the parent bone.
-
-        Returns:
-            custom_matrix_map (dict): A dictionary mapping the names of bones to their newly computed
-                                      transformation matrices. These transformations are in 
-                                      local space, meaning they are relative to the root of the armature.
-        """
         custom_matrix_map = {}
 
         t = transforms[current_pose_bone.name]

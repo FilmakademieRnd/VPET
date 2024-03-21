@@ -36,7 +36,6 @@ import bpy
 import struct
 import mathutils
 import math
-import zmq
 from collections import deque
 import numpy as np
 from .timer import TimerModalOperator
@@ -93,9 +92,9 @@ def set_up_thread_socket_c():
     global vpet, v_prop
     vpet = bpy.context.window_manager.vpet_data
     v_prop = bpy.context.scene.vpet_properties
-    vpet.ctx = zmq.Context()
+    #vpet.ctx = zmq.Context()
 
-    vpet.socket_c = vpet.ctx.socket(zmq.REQ)
+    #vpet.socket_c = vpet.ctx.socket(zmq.REQ)
     vpet.socket_c.connect(f'tcp://{v_prop.server_ip}:{v_prop.Command_Module_port}')
    
     ping_thread = threading.Thread(target=ping_thread_function, daemon=True)
@@ -114,7 +113,7 @@ def read_thread():
         if vpet.socket_d in sockets:
             # Receive message
             msg = vpet.socket_d.recv_string()
-            print(msg) # debug
+            #print(msg) # debug
             # Classify message
             if msg == "header":
                 print("Header request! Sending...")
@@ -130,8 +129,7 @@ def read_thread():
                 if(vpet.charactersByteData != None):
                     vpet.socket_d.send(vpet.charactersByteData)
             elif msg == "textures":
-                print("Texture request! Sending...")
-                
+                print("Texture request! Sending...")                
                 if(vpet.textureList != None):
                     vpet.socket_d.send(vpet.texturesByteData)
             elif msg == "materials":
@@ -164,20 +162,9 @@ def listener():
         
         if(vpet.messageType[msg[2]] == "SYNC"):
             current_time = time.time()
-            # Check if last_sync_time is not None to calculate the interval
-            #if last_sync_time is not None:
-                #interval = current_time - last_sync_time
-                #print(f"Time between SYNC messages: {interval} seconds")
-            #else:
-                #print("This is the first SYNC message received.")
-            
-            # Update last_sync_time with the current time
-            #last_sync_time = current_time
-
             sv_time = msg[1]
             runtime = int(pingRTT * 0.5)
             syncTime = sv_time + runtime
-            #print("DELTA IS "+str(delta_time(vpet.time, sv_time, TimerModalOperator.my_instance.m_timesteps)))
             delta = delta_time(vpet.time, sv_time, TimerModalOperator.my_instance.m_timesteps)
             if delta > 10 or delta>3 and runtime < 8:
                 vpet.time = int(round(sv_time)) % TimerModalOperator.my_instance.m_timesteps
@@ -185,6 +172,7 @@ def listener():
         if clientID != vpet.cID:
             msgtime = msg[1]
             type = vpet.messageType[msg[2]]
+            print(type)
   
             start = 3
 
@@ -211,8 +199,9 @@ def listener():
                     
                     start += length
 
-                elif(type == "UNDOREDOADD"):
+                else:
                     start = len(msg)
+
 
                 
             
@@ -225,7 +214,6 @@ def createPingMessage():
     vpet.pingByteMSG.extend(struct.pack('B', vpet.cID))
     vpet.pingByteMSG.extend(struct.pack('B', vpet.time))
     vpet.pingByteMSG.extend(struct.pack('B', 3))
-    #print(vpet.pingByteMSG)
     
 def ping_thread_function():
     while True:
@@ -239,7 +227,6 @@ def ping():
         try:
             vpet.socket_c.send(vpet.pingByteMSG)
             vpet.pingStartTime = vpet.time
-            #print("Ping sent")
             msg = vpet.socket_c.recv()
             if msg and msg[0] != vpet.cID:
                 DecodePongMessage(msg)
@@ -265,7 +252,6 @@ def DecodePongMessage(msg):
     
 
 def SendParameterUpdate(parameter):
-    #print(str(parameter))
     vpet.ParameterUpdateMSG = bytearray([])
     vpet.ParameterUpdateMSG.extend(struct.pack('B', vpet.cID))
     vpet.ParameterUpdateMSG.extend(struct.pack('B', vpet.time))
@@ -273,13 +259,10 @@ def SendParameterUpdate(parameter):
     vpet.ParameterUpdateMSG.extend(struct.pack('B', vpet.cID))
     vpet.ParameterUpdateMSG.extend(struct.pack('H', parameter._parent._id))
     vpet.ParameterUpdateMSG.extend(struct.pack('H', parameter._id))
-    #print(str(parameter._id))
     vpet.ParameterUpdateMSG.extend(struct.pack('B', parameter._type))
     length = 7+ parameter._dataSize
     vpet.ParameterUpdateMSG.extend(struct.pack('B', length))
     vpet.ParameterUpdateMSG.extend(parameter.SerializeParameter())
-    #print(str(parameter._value))
-    #print(str(parameter._parent._id) + str(parameter._id) + str(parameter._type) + str(parameter._dataSize))
 
     vpet.socket_u.send(vpet.ParameterUpdateMSG)
 

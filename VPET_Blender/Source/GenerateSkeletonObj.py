@@ -1,4 +1,5 @@
 import bpy
+from .tools import get_current_collections, select_hierarchy, parent_to_root;
 
 def process_armature(armature):
 # Function to create an empty object
@@ -81,10 +82,8 @@ def process_armature(armature):
                     armature.select_set(True)
                     bpy.context.view_layer.objects.active = armature
                     bpy.ops.object.parent_set(type='BONE', keep_transform=True)
-            
-            bpy.ops.object.select_all(action='DESELECT')  # Deselect all objects
-            armature.select_set(True)  # Select the armature
-            bpy.context.view_layer.objects.active = armature  # Set armature as active
+
+
     else:
         print("Active object is not an armature or no armature is selected.")
 

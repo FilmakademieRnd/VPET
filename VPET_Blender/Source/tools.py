@@ -81,6 +81,7 @@ def setupCollections():
         bpy.context.scene.collection.children.link(editColl)
         #bpy.data.collections[v_prop.vpet_collection].children.link(editColl)
     """
+
 def cleanUp(level):
     if level > 0:
         vpet.objectsToTransfer = [] #list of all objects
@@ -125,16 +126,6 @@ def installZmq():
                     print("bootstrap failed with: ", e)
             py_exec = sys.executable
 
-        # pip update
-        try:
-            print("Trying pip upgrade")
-            output = subprocess.check_output([py_exec, '-m', 'pip', 'install', '--upgrade', 'pip'])
-            print(output)
-        except subprocess.CalledProcessError as e:
-            print("ERROR: Couldn't update pip. Please restart Blender and try again.")
-            return (e.output)
-        print("INFO: Pip working! Installing pyzmq...")
-
         # pyzmq pip install
         try:
             print("Trying pyzmq install")
@@ -147,3 +138,60 @@ def installZmq():
         except subprocess.CalledProcessError as e:
             print("ERROR: Couldn't install pyzmq.")
             return (e.output)
+        
+def select_hierarchy(obj):
+    def select_children(obj):
+        obj.select_set(True)
+        for child in obj.children:
+            select_children(child)
+
+    # Deselect all objects first
+    bpy.ops.object.select_all(action='DESELECT')
+
+    # If obj is a single object
+    if isinstance(obj, bpy.types.Object):
+        bpy.context.view_layer.objects.active = obj
+        select_children(obj)
+    # If obj is a list of objects
+    elif isinstance(obj, list):
+        bpy.context.view_layer.objects.active = obj[0]  # Set the first object as the active object
+        for o in obj:
+            select_children(o)
+    else:
+        print("Invalid object type provided.")
+
+
+def get_current_collections(obj):
+    current_collections = []
+    for coll in obj.users_collection:
+        current_collections.append(coll.name)
+    return current_collections
+    
+
+def parent_to_root():
+    selected_objects = bpy.context.selected_objects
+    parent_object_name = "VPETsceneRoot"
+    parent_object = bpy.data.objects.get(parent_object_name)
+    if parent_object:
+        # Iterate through selected objects
+        for obj in selected_objects:
+            # Check if the object is not the parent object itself
+            if obj != parent_object:
+                # Set the parent of the selected object to the parent object
+                obj.parent = parent_object
+                obj.matrix_parent_inverse = parent_object.matrix_world.inverted()
+                select_hierarchy(selected_objects)
+                collection_name = "VPET_Collection"  # Specify the collection name
+                collection = bpy.data.collections.get(collection_name)
+                if collection is None:
+                    collection = bpy.data.collections.new(collection_name)
+                    bpy.context.scene.collection.children_recursive.link(collection)
+                    
+                for obj in bpy.context.selected_objects:
+                    for coll in obj.users_collection:
+                        coll.objects.unlink(obj)
+
+                    # Link the object to the new collection
+                    collection.objects.link(obj)
+    else:
+        print(f"Object '{parent_object_name}' not found.")

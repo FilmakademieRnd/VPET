@@ -37,8 +37,6 @@ import mathutils
 import bmesh
 import struct
 
-
-
 from .AbstractParameter import Parameter
 from .SceneObjects.SceneObject import SceneObject
 from .SceneObjects.SceneObjectCamera import SceneObjectCamera
@@ -92,41 +90,7 @@ def gatherSceneData():
      #cID
     vpet.cID = int(str(v_prop.server_ip).split('.')[3])
     objectList = getObjectList()
-    """
-    # check if VPET collections exist
-    if bpy.data.collections.find(v_prop.vpet_collection) > -1:
-        static_objects = list(bpy.data.collections[v_prop.vpet_collection].all_objects)
-        objectList = static_objects
-        print(f'found {len(static_objects)} static objects')
-    if bpy.data.collections.find(v_prop.edit_collection) > -1:    
-        editable_objects = list(bpy.data.collections[v_prop.edit_collection].all_objects)
-        for n in editable_objects:
-            print(n.name)
-        objectList += editable_objects
-        print(f'found {len(editable_objects)} editable objects')
 
-    if len(objectList) > 0:
-        # create empty as scene root node
-        root = bpy.context.scene.objects.get('VPETsceneRoot')
-        if root == None:    
-            bpy.ops.object.empty_add(type='PLAIN_AXES', rotation=(0,0,0), location=(0, 0, 0), scale=(1, 1, 1))
-            bpy.context.active_object.name = 'VPETsceneRoot'
-            root = bpy.context.active_object
-        else:
-            bpy.context.view_layer.objects.active = root
-            
-        # sort scene objects by childcount
-        objectList.sort(key=lambda x: len(x.children), reverse = True)
-        
-        # count toplevel objects bc they will be parented to sceneRoot
-        for i, obj in enumerate(objectList):
-            if type(obj.parent).__name__ == 'NoneType':
-                vpet.rootChildCount += 1
-                obj.parent = root
-        
-        # add sceneRoot to list of objects to transfer
-        objectList.insert(0, bpy.context.active_object)
-    """
     if len(objectList) > 0:
         vpet.objectsToTransfer = objectList
         
@@ -134,11 +98,7 @@ def gatherSceneData():
         #iterate over all objects in the scene
         for i, n in enumerate(vpet.objectsToTransfer):
             processSceneObject(n, i)
-            #print("the obj is ", n.name, " and the parent is ", n.parent)
-        #for i in vpet.nodeList:
-            #print( "OBJ NAME IS ... ", i.name , " and vpet id is ", i.vpetId )
 
-        print("THE LEN OF NODE LIST IS ",  len(vpet.nodeList ))
         for i, n in enumerate(vpet.objectsToTransfer):
             processEditableObjects(n, i)
 
@@ -150,13 +110,13 @@ def gatherSceneData():
         getCharacterByteArray()
         
         # delete Scene Root object - scene will remain unchanged
-        bpy.ops.object.delete(use_global = False)
+        #bpy.ops.object.delete(use_global = False)
 
         for i, v in enumerate(vpet.nodeList):
             if v.editable == 1:
                 vpet.editableList.append((bytearray(v.name).decode('ascii'), v.vpetType))
         
-        return len(vpet.objectsToTransfer)-1
+        return len(vpet.objectsToTransfer)
     
     else:
         return 0
@@ -166,19 +126,20 @@ def getObjectList():
     parent_object_name = "VPETsceneRoot"
     parent_object = bpy.data.objects.get(parent_object_name)
     objectList = []
-
+    # TODO OBJ NR 
     recursive_game_object_id_extract(parent_object, objectList)
 
     
     return objectList    
 
-def recursive_game_object_id_extract(location, game_objects):
+def recursive_game_object_id_extract(location, objectList):
     # Iterate through each child of the location
     for child in location.children:
         # Add the child object to the game_objects list
-        game_objects.append(child)
+        print(child.name)
+        objectList.append(child)
         # Recursively call the function for the child to explore its children
-        recursive_game_object_id_extract(child, game_objects)    
+        recursive_game_object_id_extract(child, objectList)    
     
 ## Process and store a scene object
 #
@@ -242,8 +203,6 @@ def processSceneObject(obj, index):
     elif obj.type == 'CURVE':
         processCurve(obj, vpet.objectsToTransfer)
         
-    print("dDSDSSDSDSDSDSDSDSDSDSDSD" , obj.type)
-    print(node.vpetType)
     # gather general node data    
     nodeMatrix = obj.matrix_local.copy()
 
@@ -270,19 +229,10 @@ def processSceneObject(obj, index):
         node.childCount = vpet.rootChildCount
         
     node.vpetId = index
-    
-    # get parent index
-    """
-    parentId = -1
-    for i, n in enumerate(vpet.objectsToTransfer):
-        if n == obj.parent:
-            parentId = i
-    """
 
     edit_property = "VPET-Editable"
     # check if node is editable
     if edit_property in obj and obj.get(edit_property):
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         node.editable = 1
         vpet.editable_objects.append(obj)
     else:
@@ -290,20 +240,7 @@ def processSceneObject(obj, index):
 
     if obj.name != 'VPETsceneRoot':
         vpet.nodeList.append(node)
-        print(" OBJ NAME IS >> " , obj.name, " AND VPETID IS >> ", node.vpetId)
     
-    """
-    # find parent in nodeList if there is one
-    if parentId != -1:
-        for i, n in enumerate(vpet.nodeList):
-            # insert after parent into nodeList
-            if n.vpetId == parentId:
-                vpet.nodeList.insert(i+1, node)
-                print(" OBJ NAME IS >> " , obj.name, " AND VPETID IS >> ", i+1)
-    else:
-        vpet.nodeList.append(node)
-        print(" OBJ NAME IS >> " , obj.name, " AND VPETID IS >> ", node.vpetId)
-    """
 def processMesh(obj, nodeMesh): 
     nodeMesh.vpetType = vpet.nodeTypes.index('GEO')
     nodeMesh.color = (obj.color[0], obj.color[1], obj.color[2], obj.color[3])
@@ -311,7 +248,6 @@ def processMesh(obj, nodeMesh):
     nodeMesh.materialId = -1
                
     # get geo data of mesh
-    #nodeMesh.geoId = processGeometry(obj)
     nodeMesh.geoId = processGeoNew(obj)
                 
     # get material of mesh
@@ -327,9 +263,6 @@ def processMesh(obj, nodeMesh):
         nodeMesh.roughness = nodeMaterial.roughness
         nodeMesh.specular = nodeMaterial.specular
                     
-        #if nodeMaterial.tex != None:
-        #nodeMesh.textureId = processTexture(nodeMaterial.tex)
-
     return(nodeMesh)
 
 def processSkinnedMesh(obj, nodeSkinMesh):
@@ -366,21 +299,19 @@ def processSkinnedMesh(obj, nodeSkinMesh):
                 bind_matrix = armature_obj.matrix_world @ bone.matrix_local
                 for row in bind_matrix:
                     bind_poses.extend(row)
-            #print(bind_poses)
+            
             desired_length = 1584
             current_length = len(bind_poses)
             if current_length < desired_length:
                 # If bind_poses is shorter, extend with zeroes
                 bind_poses.extend([0] * (desired_length - current_length))  
             nodeSkinMesh.bindPoses = bind_poses
-            print("AAAAAAAA bind_poses size " ,  len(bind_poses))
             nodeSkinMesh.bindPoseLength = int(len(bind_poses) / 16)
             nodeSkinMesh.skinnedMeshBoneIDs = [-1] * 99  # Initialize all to -1
             for i, bone in enumerate(armature_data.bones):
                 bone_index = -1
                 for idx, obj in enumerate(vpet.objectsToTransfer):
                     if obj.name == bone.name:
-                        print("BONE NAME IS ", obj.name ,  "BONE INDEX IS ", idx)
                         bone_index = idx
                         break
             #for i, bone in enumerate(armature_data.bones):  
@@ -404,27 +335,28 @@ def processCharacter(armature_obj, object_list):
 
     if armature_obj.type == 'ARMATURE':
         bones = armature_obj.data.bones
-         
         chr_pack.characterRootID = vpet.objectsToTransfer.index(armature_obj)
-        print("VAVAVAVAVAVAVAVAVAVAVAVAVAVAVAV " , vpet.objectsToTransfer.index(armature_obj))
-        print("ggggggggggggggggggggggggggggggggggggggggggggggg" , len(blender_to_unity_bone_mapping))
-        
-        #chr_pack.skeletonMapping = [-1] * chr_pack.sMSize
-        #chr_pack.boneMapping = [-1] * 
-        #chr_pack.bonePosition = [0.0] * (chr_pack.sMSize * 3)
 
-        for key, value in blender_to_unity_bone_mapping.items():
-            bone_index = -1
-            for idx, obj in enumerate(object_list):
-                if key == obj.name:
-                    bone_index = idx
-                    break
-            
-            chr_pack.boneMapping.append(bone_index)
+        if(v_prop.mixamo_humanoid):
+            for key, value in blender_to_unity_bone_mapping.items():
+                bone_index = -1
+                for idx, obj in enumerate(object_list):
+                    if key == obj.name:
+                        bone_index = idx
+                        break
+                chr_pack.boneMapping.append(bone_index)
+
+        else:
+            for i, bone in enumerate(bones):
+                bone_index = -1
+                for idx, obj in enumerate(vpet.objectsToTransfer):
+                    if obj.name == bone.name:
+                        bone_index = idx
+                        break
+
+                chr_pack.boneMapping.append(bone_index)
         
         chr_pack.bMSize = len(chr_pack.boneMapping)
-        for idx, key in enumerate(chr_pack.boneMapping):
-            print("FFFFFFFFFFFFFFFFFFFFFFFFF ", key, " and id is = ", idx)
         
         for idx, obj in enumerate(object_list):
                 if obj.name == armature_obj.name:
@@ -472,8 +404,6 @@ def processCharacter(armature_obj, object_list):
             
             
             scale =bone.scale
-            print(bone.name, "   POS   ", position, "   ROT   " , rotation, "   SCL   " , scale)
-
             chr_pack.bonePosition.extend([position.x, position.z, position.y])
             chr_pack.boneRotation.extend([rotation[1], rotation[3], rotation[2], rotation[0]])
             chr_pack.boneScale.extend(scale)
@@ -495,8 +425,6 @@ def processCurve(obj, objList):
 
     vpet.curveList.append(curve_Pack)
 
-    for frame, points in vpet.points_for_frames.items():
-        print("Frame:", frame, "Points:", points)
 
 def evaluate_curve(curve_object, frame):
     # Set the current frame
@@ -537,11 +465,6 @@ def processEditableObjects(obj, index):
         aaa = SceneCharacterObject(obj)
         vpet.SceneObjects.append(aaa)
 
-
-
-
-def PrintEvent(sender, new_value):
-    print("Scenedist PrintEvent ")
 ## Process a meshes material
 #
 # @param mesh The geo data to process
@@ -609,9 +532,6 @@ def processMaterial(mesh):
             
 
     if matPack.tex != None:
-        print(mesh.name)
-        for a in links:
-            print(a.from_node.image)
         matPack.textureId = processTexture(matPack.tex)
     
             
@@ -662,30 +582,6 @@ def processTexture(tex):
     # return index of texture in texture list
     return (len(vpet.textureList)-1)
 
-"""
-def get_vertex_bone_weights_and_indices(vertex, vertex_groups, bone_names):
-    bone_weights = [0.0] * 4
-    bone_indices = [-1] * 4
-
-    weight_bone_pairs = []
-    for group in vertex.groups:
-        if group.group < len(vertex_groups) and vertex_groups[group.group].name in bone_names:
-            bone_index = bone_names[vertex_groups[group.group].name]
-            weight_bone_pairs.append((group.weight, bone_index))
-    
-    print(vertex.groups)
-    # Sort by weight in descending order and take the top 4
-    weight_bone_pairs.sort(reverse=True, key=lambda x: x[0])
-    weight_bone_pairs = weight_bone_pairs[:4]
-
-    for i, pair in enumerate(weight_bone_pairs):
-        bone_weights[i] = pair[0]
-        bone_indices[i] = pair[1]
-        
-    print("Weight is ", bone_weights, " AND INDICES IS ", bone_indices )
-    return bone_weights, bone_indices
-"""
-
 def get_vertex_bone_weights_and_indices(vert):
     #for vert_idx, vert in enumerate(obj.data.vertices):
         # Retrieve the vertex groups and their weights for this vertex
@@ -704,12 +600,6 @@ def get_vertex_bone_weights_and_indices(vert):
         bone_weights = [g[1] for g in groups]
         
         return bone_weights, bone_indices
-    
-        print("Vertex", vert_idx)
-        print("Bone Indices:", bone_indices)
-        print("Bone Weights:", bone_weights)
-
-
 
 def processGeoNew(mesh):
     geoPack = sceneMesh()
@@ -768,7 +658,6 @@ def processGeoNew(mesh):
                 if mesh.parent.type == 'ARMATURE':
                     bone_weights = vertex_bone_weights.get(original_index, [0.0] * 4)
                     bone_indices = vertex_bone_indices.get(original_index, [-1] * 4)
-                    #print(bone_weights , "   aaa   ", bone_indices)
 
             #normal = loop.vert.normal.copy().freeze() if loop.edge.smooth else loop.face.normal.copy().freeze()
             new_split_vert = (co, normal, uv, tuple(bone_weights), tuple(bone_indices))
@@ -807,9 +696,6 @@ def processGeoNew(mesh):
             geoPack.boneIndices.extend(vert_bone_indices)
 
         geoPack.bWSize = len(co_buffer)
-        print("BWSIZE IS: " + str(geoPack.bWSize))
-        print("cobuffer size IS: " + str(len(co_buffer)))
-        print("BONE WEIGHTS SIZE IS: " + str(len(geoPack.boneWeights)))
 
     for i, vert in enumerate(interleaved_buffer):
         geoPack.vertices.append(vert[0][0])
@@ -822,9 +708,6 @@ def processGeoNew(mesh):
         
         geoPack.uvs.append(vert[2][0])
         geoPack.uvs.append(vert[2][1])
-
-        #geoPack.indices.append(i)
-    print("geopack Vertices size is: " + str(len(geoPack.vertices)))
     bm.free()
 
     
@@ -974,58 +857,12 @@ def getCharacterByteArray():
             charBinary.extend(struct.pack('%sf' % chr.sMSize*3, *chr.bonePosition))
             charBinary.extend(struct.pack('%sf' % chr.sMSize*4, *chr.boneRotation))
             charBinary.extend(struct.pack('%sf' % chr.sMSize*3, *chr.boneScale))
-            #print_decoded_data(charBinary, chr)
 
             vpet.charactersByteData.extend(charBinary) 
 
-            """
-
-            format_string_position = f'{len(chr.bonePosition)}f'
-
-            print("Packing bonePosition with format:", format_string_position)
-            print("Length of chr.bonePosition:", len(chr.bonePosition))
-            print("Contents of chr.bonePosition:", chr.bonePosition)
-
-            charBinary.extend(struct.pack(format_string_position, *chr.bonePosition))
-            format_string_rotation = f'{len(chr.boneRotation)}f'
-            charBinary.extend(struct.pack(format_string_rotation, *chr.boneRotation))
-            format_string_scale = f'{len(chr.boneScale)}f'
-            charBinary.extend(struct.pack(format_string_scale, *chr.boneScale))
-            """
            
 def getCurveByteArray():
     for curve in vpet.characterList:
         curveBinary = bytearray([])
         curveBinary.extend(struct.pack('i', curve.pointsLen))
         curveBinary.extend(struct.pack('%sf' % chr.sMSize*3, *curve.points))
-        print("a")
-
-
-
-import struct
-
-def print_decoded_data(charBinary, chr):
-    # Unpack the data based on its structure
-    bMSize, sMSize, characterRootID = struct.unpack('3i', charBinary[:12])
-    boneMapping_length = len(chr.boneMapping)
-    bonePosition_length = chr.bMSize * 3
-    boneRotation_length = chr.bMSize * 4
-    boneScale_length = chr.bMSize * 3
-
-    # Calculate the expected buffer size
-    expected_buffer_size = 8 + 4 * (boneMapping_length * 2 + bonePosition_length + boneRotation_length + boneScale_length)
-
-    # Check if the buffer size matches the expected size
-    actual_buffer_size = len(charBinary)
-    if abs(actual_buffer_size - expected_buffer_size) > 4:  # Allowing a tolerance of 4 bytes
-        print(f"Error: Buffer size doesn't match the expected size.")
-        print(f"Actual buffer size: {actual_buffer_size}, Expected buffer size: {expected_buffer_size}")
-        return
-
-    # Print the decoded data
-    print(f"bMSize: {bMSize}")
-    print(f"characterRootID: {characterRootID}")
-    print(f"boneMapping: {chr.boneMapping}")
-    print(f"bonePosition: {struct.unpack(f'{bonePosition_length}f', charBinary[12:8 + 4 * bonePosition_length])}")
-    print(f"boneRotation: {struct.unpack(f'{boneRotation_length}f', charBinary[8 + 4 * bonePosition_length:8 + 4 * bonePosition_length + 4 * boneRotation_length])}")
-    print(f"boneScale: {struct.unpack(f'{boneScale_length}f', charBinary[8 + 4 * bonePosition_length + 4 * boneRotation_length:])}")

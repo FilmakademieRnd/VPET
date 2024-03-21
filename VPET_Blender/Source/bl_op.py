@@ -32,14 +32,8 @@ Filmakademie (research<at>filmakademie.de).
 """
 
 import bpy
-
-from .serverAdapter import set_up_thread
-from .serverAdapter import close_socket_d
-from .serverAdapter import close_socket_s
-from .serverAdapter import close_socket_c
-from .serverAdapter import close_socket_u
-from .tools import cleanUp, installZmq, checkZMQ
-from .tools import setupCollections
+from .serverAdapter import set_up_thread, close_socket_d, close_socket_s, close_socket_c, close_socket_u
+from .tools import cleanUp, installZmq, checkZMQ, setupCollections, parent_to_root
 from .sceneDistribution import gatherSceneData
 from .GenerateSkeletonObj import process_armature
 
@@ -63,6 +57,8 @@ class DoDistribute(bpy.types.Operator):
     bl_description = 'Distribute the scene to VPET clients'
 
     def execute(self, context):
+        for obj in bpy.context.selected_objects:
+            obj.select_set(False)
         print("do distribute")
         if checkZMQ():
             reset()
@@ -116,10 +112,11 @@ class SetupCharacter(bpy.types.Operator):
 
     def execute(self, context):
         print('Setup Character')
-        editobj = bpy.data.collections.get("VPET_Collection")
-        for obj in editobj.objects:
+        selected_objects = bpy.context.selected_objects
+        for obj in selected_objects:
             if obj.type == 'ARMATURE':
                 process_armature(obj)
+                print 
         return {'FINISHED'}
     
 class MakeEditable(bpy.types.Operator):
@@ -135,10 +132,6 @@ class MakeEditable(bpy.types.Operator):
             obj["VPET-Editable"] = True
         return{'FINISHED'}
     
-
-
-    
-
 class ParentToRoot(bpy.types.Operator):
     bl_idname = "object.parent_to_root"
     bl_label = "Parent obj to root obj"
@@ -146,22 +139,8 @@ class ParentToRoot(bpy.types.Operator):
 
     def execute(self, context):
         print('Parent obj')
-
-        selected_objects = bpy.context.selected_objects
-        parent_object_name = "VPETsceneRoot"
-        parent_object = bpy.data.objects.get(parent_object_name)
-        if parent_object:
-            # Iterate through selected objects
-            for obj in selected_objects:
-                # Check if the object is not the parent object itself
-                if obj != parent_object:
-                    # Set the parent of the selected object to the parent object
-                    obj.parent = parent_object
-                    obj.matrix_parent_inverse = parent_object.matrix_world.inverted()
-        else:
-            print(f"Object '{parent_object_name}' not found.")
-
-
+        parent_to_root()
+       
 
 def reset():
     close_socket_d()
