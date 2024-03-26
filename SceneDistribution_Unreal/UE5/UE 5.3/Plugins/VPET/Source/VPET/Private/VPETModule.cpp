@@ -198,9 +198,11 @@ void AVPETModule::BeginPlay()
 
 #if WITH_EDITOR
 	// Manage editor selection changes 
-	FLevelEditorModule& levelEditor = FModuleManager::GetModuleChecked<FLevelEditorModule>("LevelEditor");
-	FLevelEditorModule::FActorSelectionChangedEvent fasce = levelEditor.OnActorSelectionChanged();
-	levelEditor.OnActorSelectionChanged().AddUObject(this, &AVPETModule::HandleOnActorSelectionChanged);
+	FLevelEditorModule* levelEditor = FModuleManager::GetModulePtr<FLevelEditorModule>("LevelEditor");
+	if (levelEditor != nullptr) {
+		FLevelEditorModule::FActorSelectionChangedEvent fasce = levelEditor->OnActorSelectionChanged();
+		levelEditor->OnActorSelectionChanged().AddUObject(this, &AVPETModule::HandleOnActorSelectionChanged);
+	}
 #endif // WITH_EDITOR
 	// subscribe to delegate 
 	for (auto i=1; i<VPET_SceneObjectList.Num(); i++)
