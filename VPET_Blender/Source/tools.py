@@ -35,6 +35,7 @@ import bpy
 import sys
 import subprocess  # use Python executable (for pip usage)
 from pathlib import Path  # Object-oriented filesystem paths since Python 3.4
+from .SceneObjects import SceneCharacterObject
 
 def initialize():
     global vpet, v_prop
@@ -186,6 +187,38 @@ def parent_to_root():
             select_hierarchy(selected_objects)
             switch_collection()
 
+def add_path():
+    selected_objects =  bpy.context.selected_objects
+    armature = None
+    curve = None
+    if len(selected_objects) == 2:
+        if ((selected_objects[0].type == 'ARMATURE') and (selected_objects[1].type == 'CURVE')):
+            armature    = selected_objects[0]
+            curve       = selected_objects[1]
+        elif ((selected_objects[1].type == 'ARMATURE') and (selected_objects[0].type == 'CURVE')):
+            armature    = selected_objects[1]
+            curve       = selected_objects[0]
+        else:
+            print("Select a curve and an armature")
+            return
+    else:
+        print("Select two objects, a curve and an armature")
+        return
+
+    vpetCollection = bpy.context.scene.vpet_properties.vpet_collection
+    vpet = bpy.context.window_manager.vpet_data
+
+    if armature in vpetCollection.children:
+        # TODO test having selected actual objects
+        sco = None
+        # find the SceneCharacterObject associated with the selected armature
+        for obj in vpet.SceneObjects:
+            if isinstance(obj, SceneCharacterObject) and obj.name == armature.name:
+                sco = obj
+                sco.path_to_follow = curve  # add curve/path property to SceneCharacterObj
+    else:
+        print("The armature has to be initialised as a TRACER object and, therefore, be part of the VPET Collection")
+        return
 
 def switch_collection():
     collection_name = "VPET_Collection"  # Specify the collection name

@@ -13,12 +13,15 @@ class SceneCharacterObject(SceneObject):
     local_transform_map = {}            # Stores the values updated by TRACER local bone space transformations in a dictionary (may cause issues with values updated in a TRACER non-compliant way)
     received_rot = {}
     root_bone_name = None
+    armature_obj_name = None
     armature_obj_pose_bones = None
     armature_obj_bones_rest_data = None
+    path_to_follow = None
 
     def __init__(self, obj):
         super().__init__(obj)
 
+        self.armature_obj_name = obj.name
         self.armature_obj_pose_bones = obj.pose.bones   # The pose bones (to which the rotations have to be applied)
         self.armature_obj_bones_rest_data = obj.data.bones              # The rest data of the armature bones (to compute the rest pose offsets)
         self.matrix_world = obj.matrix_world

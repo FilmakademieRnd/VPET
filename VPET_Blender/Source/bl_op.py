@@ -33,7 +33,7 @@ Filmakademie (research<at>filmakademie.de).
 
 import bpy
 from .serverAdapter import set_up_thread, close_socket_d, close_socket_s, close_socket_c, close_socket_u
-from .tools import cleanUp, installZmq, checkZMQ, setupCollections, parent_to_root
+from .tools import cleanUp, installZmq, checkZMQ, setupCollections, parent_to_root, add_path
 from .sceneDistribution import gatherSceneData
 from .GenerateSkeletonObj import process_armature
 
@@ -62,7 +62,7 @@ class DoDistribute(bpy.types.Operator):
         print("do distribute")
         if checkZMQ():
             reset()
-            objCount = gatherSceneData()
+            objCount = gatherSceneData() # TODO: is it possible to move the scene initialization (gatherSceneData()) outside of the DoDistribute function? A good place could be in the SetupScene function
             bpy.ops.wm.real_time_updater('INVOKE_DEFAULT')
             bpy.ops.object.single_select('INVOKE_DEFAULT')
             cleanUp(level=1)
@@ -140,6 +140,16 @@ class ParentToRoot(bpy.types.Operator):
     def execute(self, context):
         print('Parent obj')
         parent_to_root()
+        return {'FINISHED'}
+    
+class AddPathToCharacter(bpy.types.Operator):
+    bl_idname = "object.add_path"
+    bl_label = "Pair curve obj to a character obj"
+    bl_description = 'Associate a curve object to a character object. The character will be animated by AnimHost to follow such path'
+
+    def execute(self, context):
+        print('Add Path START')
+        add_path()
         return {'FINISHED'}
        
 
