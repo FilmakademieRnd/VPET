@@ -99,7 +99,7 @@ def setupCollections():
 
     else:
         # Check if the "VPETsceneRoot" object is already linked to the collection.
-        if root not in vpetColl.objects:
+        if not root.name in vpetColl.objects:
             vpetColl.objects.link(root)
 
     """
@@ -238,7 +238,15 @@ def add_path(character, path_name):
         anim_path["Auto Update"] = False                                # Add Auto Update property. It will hold the "mode status" for the Animation Path. It is used to enable/disable advanced editing features. 
 
         bpy.context.space_data.overlay.show_relationship_lines = False  # Disabling Relationship Lines to declutter scene view
-        anim_path.lock_location[2] = True                               # Locking Z-component of the Animation Path, as it's going to be done with its Control Points
+        anim_path.lock_location[0] = True                                  # Locking rotation/translation of the Animation Path, as it's going to be done with its Control Points
+        anim_path.lock_location[1] = True
+        anim_path.lock_location[2] = True
+        anim_path.lock_rotation[0] = True
+        anim_path.lock_rotation[1] = True
+        anim_path.lock_rotation[2] = True
+        anim_path.lock_scale[0]    = True
+        anim_path.lock_scale[1]    = True
+        anim_path.lock_scale[2]    = True
 
     # Select and set as active the first point of the Path
     anim_path["Control Points"][0].select_set(True)
@@ -267,6 +275,7 @@ def make_point(spawn_location = (0, 0, 0)):
         ptr_mesh = bpy.data.meshes.new("Pointer")
         ptr_mesh.from_pydata(vertices, edges, faces)
         ptr_mesh.validate(verbose = True)
+        ptr_mesh.uv_layers.new()
 
     # Create new object ptr_obj (with UI name "Pointer") that has ptr_mesh as a mesh
     ptr_obj = bpy.data.objects.new("Pointer", ptr_mesh)

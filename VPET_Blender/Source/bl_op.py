@@ -55,7 +55,6 @@ class SetupScene(bpy.types.Operator):
         setupCollections()
         return {'FINISHED'}
 
-
 class DoDistribute(bpy.types.Operator):
     bl_idname = "object.zmq_distribute"
     bl_label = "VPET Do Distribute"
@@ -170,6 +169,28 @@ class AddPath(bpy.types.Operator):
         print('Add Path START')
         add_path(context.active_object, self.default_name)      # Call the function resposible of creating the animation path
         bpy.ops.path.interaction_listener('INVOKE_DEFAULT')     # Invoke Modal Operaton for automatically update the Animation Path in (almost) real-time
+        return {'FINISHED'}
+
+class FKIKToggle(bpy.types.Operator):
+    bl_idname = "scene.fk_ik_toggle"
+    bl_label = "Switch to Inverse Kinematics"
+    bl_description = 'Switch between Forward and Inverse Kinematic for animating the character over its Control Path'
+
+    def execute(self, context):
+        # If the toggling should happen only when the chartacter is selected, add also the following condition -> and context.active_object.type == 'ARMATURE' (to be tested)
+        if context.active_object and context.active_object.type == 'ARMATURE' and context.active_object.data["IK_FK_Switch"] >= 0:
+            context.active_object.data["IK_FK_Switch"] = abs(round(context.active_object.data["IK_FK_Switch"]) - 1)
+
+            # Forcing update visualisation of Property Panel
+            for area in bpy.context.screen.areas:
+                if area.type == 'PROPERTIES':
+                    area.tag_redraw()
+
+            if context.active_object.data["IK_FK_Switch"] > 0:
+                FKIKToggle.bl_label = "Switch to Forward Kinematics"
+            else:
+                FKIKToggle.bl_label = "Switch to Inverse Kinematics"
+
         return {'FINISHED'}
 
 ### Operator to add a new Animation Control Point
@@ -320,26 +341,23 @@ class UpdateCurveViz(bpy.types.Operator):
         else:
             return
 
-        if anim_path["Auto Update"]:
-            # Check for deleted control points and evtl. do some cleanup before updating the curve  
-            for i, child in enumerate(anim_path.children):
-                if not bpy.context.scene in child.users_scene:
-                    print(child.name + " IS NOT in the scene")
-                    bpy.data.objects.remove(child, do_unlink=True)
-                    update_curve(anim_path)
-                    if i < len(anim_path["Control Points"]) - 1:
-                        # If the removed element was not the last point in the list
-                        # Select the element that is now in that position
-                        anim_path["Control Points"][i].select_set(True)
-                    else:
-                        # Select the new last element
-                        anim_path["Control Points"][-1].select_set(True)
-                    # Call move_point function to update the names of the points left in the list
-                    move_point(anim_path["Control Points"][0], 0)
-            
-            for area in bpy.context.screen.areas:
-                if area.type == 'PROPERTIES':
-                    area.tag_redraw()
+        # Check for deleted control points and evtl. do some cleanup before updating the curve  
+        for i, child in enumerate(anim_path.children):
+            if not bpy.context.scene in child.users_scene:
+                print(child.name + " IS NOT in the scene")
+                bpy.data.objects.remove(child, do_unlink=True)
+                update_curve(anim_path)
+                if i < len(anim_path["Control Points"]) - 1:
+                    # If the removed element was not the last point in the list
+                    # Select the element that is now in that position
+                    anim_path["Control Points"][i].select_set(True)
+                else:
+                    # Select the new last element
+                    anim_path["Control Points"][-1].select_set(True)
+        
+        for area in bpy.context.screen.areas:
+            if area.type == 'PROPERTIES':
+                area.tag_redraw()
 
 ### Operator toggling the automatic updating of the animation path
 #   Inverts value of the Auto Update bool property for the AnimPath object. Triggered by a button in the VPET Add On Panel
@@ -353,8 +371,7 @@ class ToggleAutoUpdate(bpy.types.Operator):
         if (AddPath.default_name in bpy.data.objects):
             anim_path = bpy.data.objects[AddPath.default_name]
             anim_path["Auto Update"] = not anim_path["Auto Update"]
-            #bpy.context.tool_settings.use_proportional_edit_objects = not anim_path["Auto Update"]
-            #bpy.context.tool_settings.use_proportional_edit = not anim_path["Auto Update"]
+
             # Forcing update visualisation of Property Panel
             for area in bpy.context.screen.areas:
                 if area.type == 'PROPERTIES':
@@ -458,14 +475,32 @@ class InteractionListener(bpy.types.Operator):
         self.layout.operator(EditControlPointHandle.bl_idname, text="Edit Handles", icon='HANDLE_ALIGNED')
 
     def modal(self, context, event):
-        if (event.type == 'DEL' or event.type == 'X') and event.value == 'RELEASE':
-            if AddPath.default_name in bpy.data.objects:
-                if self.anim_path["Auto Update"]:
-                    update_curve(self.anim_path)
-                else:
-                    path_points_check(self.anim_path)
-            else:
-                return {'FINISHED'}
+        
+        # If the active mode is *changing to* Object
+        if self.mode != 'OBJECT' and context.mode == 'OBJECT':
+        
+            active_cp_idx = -1
+
+            # If the active object is the control path, check which Bezier Point was being edited (if one)
+            if context.active_object and context.active_object.name == "Control Path":
+                active_object = context.active_object                   # Save the current Active Object
+                if active_object.data.splines:
+                    for i, p in enumerate(active_object.data.splines[0].bezier_points):
+                        if p.select_control_point:
+                            active_cp_idx = i
+
+            for cp in self.anim_path["Control Points"]:                 # For every Pointer Object
+                bpy.context.view_layer.objects.active = cp              # Set it as the Active Object
+                bpy.ops.object.mode_set(mode='OBJECT', toggle=False)    # Set its mode to Object
+                cp.select_set(False)                                    # Deselect it, so that the operation is transparent to the user
+            
+            # If one of the Bezier Points of the Control Path was being edited, select the corresponding Control Point Object
+            if active_cp_idx >= 0:
+                bpy.data.objects[AddPath.default_name]["Control Points"][active_cp_idx].select_set(True)
+                bpy.context.view_layer.objects.active = bpy.data.objects[AddPath.default_name]["Control Points"][active_cp_idx]
+        
+        # Update the current saved mode
+        self.mode = context.mode
 
         # If the Auto Update property is active, and Enter or the Left Mouse Button are clicked, update the animation curve
         if  (event.type == 'LEFTMOUSE' or event.type == 'RET' or event.type == 'NUMPAD_ENTER') and event.value == 'RELEASE' and \
@@ -502,14 +537,6 @@ class InteractionListener(bpy.types.Operator):
             #  - removing the entry before adding it (again) avoids duplicates
             bpy.types.VIEW3D_MT_object.remove(InteractionListener.edit_handles) # Checking whether the element is in the menu before removal takes time and does not improve the code operations
             bpy.types.VIEW3D_MT_object.append(InteractionListener.edit_handles)
-
-            # In order to make switching between modes smooth, it is necessary to be sure that all Pointer Objects are in "Object Mode" first
-            active_object = context.active_object                       # Save the current Active Object
-            for cp in self.anim_path["Control Points"]:                 # For every Pointer Object
-                bpy.context.view_layer.objects.active = cp              # Set it as the Active Object
-                bpy.ops.object.mode_set(mode='OBJECT', toggle=False)    # Set its mode to Object
-                cp.select_set(False)                                    # Deselect it, so that the operation is transparent to the user
-            bpy.context.view_layer.objects.active = active_object       # Reset the Active Object, to the saved one
         else:
             bpy.types.VIEW3D_MT_object.remove(InteractionListener.edit_handles)
             
@@ -553,6 +580,7 @@ class InteractionListener(bpy.types.Operator):
         context.window_manager.modal_handler_add(self)
         self.anim_path = bpy.data.objects[AddPath.default_name]
         self.new_cp_locations = []
+        self.mode = 'OBJECT'
         return {'RUNNING_MODAL'}
     
 class SendRpcCall(bpy.types.Operator):

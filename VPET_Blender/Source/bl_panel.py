@@ -33,7 +33,7 @@ Filmakademie (research<at>filmakademie.de).
 
 import bpy
 
-from .bl_op import AddPath, AddPointAfter, AddPointBefore, UpdateCurveViz, ToggleAutoUpdate, ControlPointSelect, EditControlPointHandle
+from .bl_op import AddPath, AddPointAfter, AddPointBefore, UpdateCurveViz, ToggleAutoUpdate, ControlPointSelect, EditControlPointHandle, FKIKToggle
 
 ## Interface
 # 
@@ -95,6 +95,8 @@ class VPET_PT_Anim_Path_Panel(VPET_Panel, bpy.types.Panel):
             row = layout.row()
             row.operator(AddPointAfter.bl_idname, text=AddPointAfter.bl_label)
             row.operator(AddPointBefore.bl_idname, text=AddPointBefore.bl_label)
+            row = layout.row()
+            row.operator(FKIKToggle.bl_idname, text=FKIKToggle.bl_label)
             if AddPath.default_name in bpy.data.objects:
                 row = layout.row()
                 row.operator(ToggleAutoUpdate.bl_idname, text=ToggleAutoUpdate.bl_label)

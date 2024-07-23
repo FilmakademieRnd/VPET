@@ -55,6 +55,7 @@ from .bl_op import ParentToRoot
 from .bl_op import AddPath
 from .bl_op import AddPointAfter
 from .bl_op import AddPointBefore
+from .bl_op import FKIKToggle
 from .bl_op import ControlPointProps
 from .bl_op import ControlPointSelect
 from .bl_op import EditControlPointHandle
@@ -74,7 +75,7 @@ from .singleSelect import OBJECT_OT_single_select
 
 # imported classes to register
 classes = (DoDistribute, StopDistribute, SetupScene, VPET_PT_Panel, VPET_PT_Anim_Path_Panel, VPET_PT_Control_Points_Panel, VPET_PT_Anim_Path_Menu, VpetProperties, InstallZMQ, RealTimeUpdaterOperator, OBJECT_OT_single_select,
-           SetupCharacter, MakeEditable, ParentToRoot, AddPath, AddPointAfter, AddPointBefore, ControlPointProps, ControlPointSelect, EditControlPointHandle, UpdateCurveViz, ToggleAutoUpdate, InteractionListener, SendRpcCall) 
+           SetupCharacter, MakeEditable, ParentToRoot, AddPath, AddPointAfter, AddPointBefore, FKIKToggle, ControlPointProps, ControlPointSelect, EditControlPointHandle, UpdateCurveViz, ToggleAutoUpdate, InteractionListener, SendRpcCall) 
 
 def add_menu_path(self, context):
     print("Registering Add Path Menu Entry")
