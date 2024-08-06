@@ -46,4 +46,4 @@ This research has received funding from the European Commission’s Seventh Fram
 
 ## License
 VPET is a open-sorce development by Filmakademie Baden-Wuerttemberg's Animationsinstitut.  
-The client is licensed under MIT and includes libraries under other Open Source and proprietary licenses. See [License file](LICENSE.TXT) for more details.
+The client is licensed under [MIT](LICENSE.TXT). See [License file](LICENSE_Info.txt) for more details.
