@@ -30,10 +30,11 @@ For an introduction, refer to our [quick-start guide](.doc/VPET_Client_Quickstar
 A detailed user guide can be found under directory *Docs*. 
 
 ## About
+![](/.doc/img/FA_AI_Logo.png) &nbsp;&nbsp;&nbsp;&nbsp;
+![](/.doc/img/logo_rnd.jpg) &nbsp;&nbsp;&nbsp;&nbsp;
+![](/.doc/img/Max-R_Logo.png)
 
-<img src="https://github.com/FilmakademieRnd/TRACER/blob/master/.doc/img/logo_rnd.jpg" width="100">
-
-VPET is a development by Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Labs in the scope of the EU funded Projects MAX-R (101070072), SAUCE (780470), Dreamspace (610005) and funds on the own behalf of Filmakademie Baden-Wuerttemberg.
+VPET is a development by [Filmakademie Baden-Wuerttemberg](https://filmakademie.de/), [Animationsinstitut R&D Labs](http://research.animationsinstitut.de/) in the scope of the EU funded Projects [MAX-R](https://max-r.eu/) (101070072), SAUCE (780470), Dreamspace (610005) and funds on the own behalf of Filmakademie Baden-Wuerttemberg.
 
 ## Funding
 
