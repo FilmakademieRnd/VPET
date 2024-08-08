@@ -1,42 +1,7 @@
-VPET - Virtual Production Editing Tools
-vpet.research.animationsinstitut.de
-https://github.com/FilmakademieRnd/VPET
+Copyright 2024 Filmakademie Baden-Württemberg, Animationsinstitut
 
-Copyright (c) 2024 Filmakademie Baden-Wuerttemberg, Animationsinstitut R&D Lab
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-This project has been initiated in the scope of the EU funded project 
-Dreamspace (http://dreamspaceproject.eu/) under grant agreement no 610005 2014-2016.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-Post Dreamspace the project has been further developed on behalf of the 
-research and development activities of Animationsinstitut.
-
-In 2018 some featrures (Character Animation Interface and USD support) were
-addressed in the scope of the EU funded project  SAUCE (https://www.sauceproject.eu/) 
-under grant agreement no 780470, 2018-2020
-
-Beginning in 2022 most of the VPET funcinality was redesigned as TRACER implementations
-and is now available through the TRACER FOUNDATION realized in the EU funded project 
-MAX-R (101070072) and funding on the own behalf of Filmakademie Baden-Wuerttemberg.
-
--------------------------------------------------------------------------------
-
-VPET Unity Client
-This program is free software; you can redistribute it and/or modify it under
-the terms of the MIT License as published by the Open Source Initiative.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the MIT License for more details.
-
-You should have received a copy of the MIT License along with
-this program; if not go to
-https://opensource.org/licenses/MIT
-
-
-VPET Unity sourcecode AND binaries incorporate the following resources 
-(linked dynamically):
-
-NetMQ  				- LGPLv3 (https://github.com/zeromq/netmq)
-AsyncIO 			- MPLv2.0 (https://github.com/somdoron/AsyncIO)
-NaCI 				  - Public Domain (https://nacl.cr.yp.to/)
-
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
