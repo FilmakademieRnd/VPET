@@ -1,3 +1,6 @@
 [submodule "VPET_Unity2/Assets/TRACER"]
 	path = VPET_Unity2/Assets/TRACER
 	url = https://github.com/FilmakademieRnd/TRACER.git
+[submodule "DataHub"]
+	path = DataHub
+	url = https://github.com/FilmakademieRnd/DataHub.git
