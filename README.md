@@ -38,7 +38,7 @@ VPET is a development by [Filmakademie Baden-Wuerttemberg](https://filmakademie.
 
 ## Funding
 
-![Funded by EU](.doc/img/main/EN_FundedbytheEU_RGB_POS_rs.png)
+![Funded by EU](.doc/img/main/EN_Co-fundedbytheEU_RGB_POS.png)
 
 This project has received funding from the European Union's Horizon Europe Research and Innovation Programme under Grant Agreement No 101070072 MAX-R.
 This project has received funding from the European Union’s Horizon 2020 Research and Innovation Programme under Grant Agreement No 780470 SAUCE.
