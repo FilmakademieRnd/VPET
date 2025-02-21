@@ -471,7 +471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isServer: 0
   deepLink: 
-  useRandomCID: 1
+  useRandomCID: 0
 --- !u!850595691 &1778909856
 LightingSettings:
   m_ObjectHideFlags: 0
